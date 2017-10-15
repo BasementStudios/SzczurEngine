@@ -221,7 +221,7 @@ Headers
 #### Example
 
 ```cpp
-#include <CorrespondingHeader.h>
+#include "CorrespondingHeader.h"
 
 #include <iostream>
 #include <ctime>
@@ -229,7 +229,8 @@ Headers
 
 #include <SFML/System.hpp>
 
-#include <AnotherProjectHeader.h>
+#include "../AnotherLocation/SomeHeader.h"
+#include "SomeOtherLocalHeader.h"
 ```
 
 
@@ -426,7 +427,9 @@ using std::string;
 #include <SFML/System.hpp>
 using sf::sleep;
 
-#include <AnotherProjectHeader.h>
+#include "../AnotherLocation/SomeHeader.h"
+using rat::OtherClassFromAnotherLocation;
+#include "SomeOtherLocalHeader.h"
 using rat::OtherClass;
 ```
 
