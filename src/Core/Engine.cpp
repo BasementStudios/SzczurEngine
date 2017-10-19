@@ -1,10 +1,16 @@
 #include "Engine.h"
 
+#include "Loader.h"
+
 namespace rat {
 	Engine::Engine() :
 		map(_core) {
 		changeResolution(400, 400);
 		map.init();
+		
+		Loader loader;
+		loader.loadTexturesFromDataDirectories("res_test/data.txt");
+		
 	}
 
 	void Engine::changeResolution(unsigned width, unsigned height) {

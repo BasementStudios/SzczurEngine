@@ -2,6 +2,7 @@
 // It's simple wrapper for sf::Texture with some utilities
 
 #include <iostream>
+#include <fstream>
 
 #include <SFML/Graphics.hpp>
 
@@ -12,23 +13,23 @@ namespace rat {
 		sf::Vector2i _frames; // Max number of horizontal/vertical frames (for sprites)
 		
 	public:
-		// Init
+	// Init
 		Texture() :
 			_frames(0,0) {
 		}
-		Texture(const std::string &filename) {
+		Texture(const std::string& filename) {
 			loadFromFile(filename);
 		}
-		Texture(const std::string &filename, int horiz, int vert) {
+		Texture(const std::string& filename, int horiz, int vert) {
 			loadFromFile(filename, horiz, vert);
 		}
-		Texture(const std::string &filename, const sf::Vector2i& frames) {
+		Texture(const std::string& filename, const sf::Vector2i& frames) {
 			loadFromFile(filename, frames);
 		}
 		
-		// Setters
-		void loadFromFile(const std::string& filename) {
-			_texture.loadFromFile("filename");
+	// Setters
+		bool loadFromFile(const std::string& filename) {
+			return _texture.loadFromFile(filename);
 		}
 		void setFrames(int horiz, int vert) {
 			_frames.x = horiz;
@@ -38,14 +39,14 @@ namespace rat {
 			_frames = frames;
 		}
 		
-		// Methods
-		void loadFromFile(const std::string& filename, int horiz, int vert) {
-			loadFromFile(filename);
+	// Modifiers
+		bool loadFromFile(const std::string& filename, int horiz, int vert) {
 			setFrames(horiz, vert);
+			return loadFromFile(filename);
 		}		
-		void loadFromFile(const std::string& filename, const sf::Vector2i& frames) {
-			loadFromFile(filename);
+		bool loadFromFile(const std::string& filename, const sf::Vector2i& frames) {
 			setFrames(frames);
+			return loadFromFile(filename);
 		}
 		
 		// Getters
