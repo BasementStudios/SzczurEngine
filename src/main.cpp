@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Szczur/Engine.h"
+#include "Core/Engine.h"
 
 int main() {
 	rat::Engine engine;
