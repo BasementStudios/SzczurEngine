@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Canvas.h"
+#include "Loader.h"
 
 namespace rat {
 	class CoreModules {
     public:
 
-        using Holder_t = std::tuple<Canvas>;
+        using Holder_t = std::tuple<Canvas, Loader>;
 
 	private:
 

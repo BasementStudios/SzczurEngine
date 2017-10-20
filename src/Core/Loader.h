@@ -2,6 +2,8 @@
 // Jest to jednak tylko placeholder tak więc nie krzyczeć
 // Napisany na szybko by móc zacząć pisać klasy odpowiedzialne za grafikę
 
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -16,6 +18,12 @@ namespace rat {
 		std::vector<Texture> _textures;
 		
 	public:
+	// Searching 
+		// TODO : zrobić wyszukiwanie z hashowaniem
+		const Texture& getTexture(int index) {
+			return _textures[index];
+		}
+		
 	// Modifiers
 		void loadNewTexture(const std::string& filename, int horiz, int vert) {
 			_textures.emplace_back(filename, horiz, vert);
@@ -33,11 +41,12 @@ namespace rat {
 				int horiz, vert;
 				while(file>>textureFilename>>horiz>>vert) {
 					loadNewTexture(path + textureFilename + ".png", horiz, vert);
-					std::cout<<"    > "<<path<<textureFilename<<".png frames("<<horiz<<", "<<vert<<")\n";
+					std::cout<<"    > "<<textureFilename<<".png frames("<<horiz<<", "<<vert<<")\n";
 				}
 				file.close();
 				return true;
 			}
+			
 			return false;
 		}
 		// loadTexturesFromDataFile for all directories in dataFile
@@ -45,13 +54,16 @@ namespace rat {
 			std::ifstream file(dataDirectoriesPath);
 			std::string path;
 			if(file.good()) {
-				std::cout<<"[Loading][TextureData] : "<<dataDirectoriesPath<<"\n";
+				std::cout<<"[Loading textures...]\n";
+				std::cout<<"Textures data : "<<dataDirectoriesPath<<'\n';
+				int dataNumber = 1;
 				while(file>>path) {
 					if(loadTexturesFromDataFile(path)) {
-						std::cout<<"  [Loading][Texture] : "<<path<<"\n";
+						std::cout<<"  Data "<<dataNumber<<" : "<<path.substr(0, path.find_last_of("\\/"))<<"\n";
 					} else {
-						std::cout<<"  [Loading][Warning] : No data file in path "<<path<<"\n";
+						std::cout<<"  Warning! No data file in path "<<path<<"\n";
 					}				
+					++dataNumber;
 				}				
 			}
 		}

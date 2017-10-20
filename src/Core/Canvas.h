@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Layer.h"
+
 namespace rat {
 	class Canvas {
 	public:
@@ -13,7 +15,7 @@ namespace rat {
 	private:
 
 		// TODO Stritch : do przerobienia dynamiczne warstwy, to wyżej wypieprzyć :p
-		sf::RenderTexture _layers[7];
+		rat::Layer _layers[7];
 		// TODO Stritch : zamiast tego & na sf::RenderWindow?
 		sf::Vector2f _windowSize;
 
@@ -25,6 +27,8 @@ namespace rat {
 
 		void render(sf::RenderTarget& target);
 
-		void render(sf::Drawable& sprite, Layer layer);		
+		void render(sf::Drawable& sprite, int layer);	
+		
+		void render(Drawable& sprite, int layer);	
 	};
 }

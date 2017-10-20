@@ -6,10 +6,8 @@ namespace rat {
 	Engine::Engine() :
 		map(_core) {
 		changeResolution(400, 400);
-		map.init();
-		
-		Loader loader;
-		loader.loadTexturesFromDataDirectories("res_test/data.txt");
+		_core.get<Loader>().loadTexturesFromDataDirectories("res_test/data.txt");
+		map.init();		
 		
 	}
 

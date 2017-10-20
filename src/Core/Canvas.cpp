@@ -18,7 +18,11 @@ namespace rat {
 		}
 	}
 
-	void Canvas::render(sf::Drawable& sprite, Layer layer) {
+	void Canvas::render(sf::Drawable& sprite, int layer) {
+		_layers[layer].draw(sprite);
+	}
+	
+	void Canvas::render(Drawable& sprite, int layer) {
 		_layers[layer].draw(sprite);
 	}
 
