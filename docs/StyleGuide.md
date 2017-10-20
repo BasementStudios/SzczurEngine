@@ -1,28 +1,29 @@
 
-C++ Code Style Guide
-====================
+# C++ Code Style Guide
 
-General
--------
+
+## General
+---
 
 ### Indents
 
-We use tabulators (`\t`) equals to 4 spaces width.
+We use tabulators (`\t`) equal to the width of 4 spaces.
 
 
 
 ### Braces
 
-Same line as name and arguments declaration.
+In the same line as the expression.
 
 ```cpp
-void some(int a, int b) const {
-    if(a > b) {
-		//...
-	} else {
-		//...
+void foo(int a, int b) const {
+    if (a > b) {
+		// ...
 	}
-	//...
+    else {
+		// ...
+	}
+	// ...
 }
 ```
 
@@ -31,17 +32,11 @@ void some(int a, int b) const {
 ### Naming Style
 
 * Local variables: `cammelCase`.  
-
-`float moveDistance = Vector<>::getDistance<float>(pos1, pos2);`
-
 * Namespaces: `PascalCase`.
-* Classes: `PascalCase`.  
+* Classes and Structs: `PascalCase`.  
 * Class field: `cammelCase`.  
 * Class constants: `PascalCase`.  
-* Constants: `UPPER_SNAKE`. 
-* Types: 
-	- `lower_snake` for primitive (i.e. enums, simple structs), 
-	- Of course `PascalCase` for normal classes. 
+* Constants: `UPPER_SNAKE`.
 * Functions and methods: `cammelCase`.  
 * Templates: `T` or `PascalCase`.
 
@@ -54,8 +49,8 @@ namespace Szczur {
 		public:
 			/// Constants
 			const static std::string BLOCK_START = "{";
-			//...
-			
+			// ...
+
 			/// Types
 			struct level {
 				enum Enum {
@@ -66,14 +61,14 @@ namespace Szczur {
 					Player
 				};
 			};
-			
+
 			/// Fields
 			Event::level::Enum level;
-			//...
-			
+			// ...
+
 			/// Functions
-			static Event loadFromFile(const string& filepath);
-			//...
+			static Event loadFromFile(const std::string& filepath);
+			// ...
 			/// Methods
 			bool unload();
 			/// Templates
@@ -85,33 +80,40 @@ namespace Szczur {
 ```
 
 
+
 ### Spacing
 
-#### Conditional 
+#### Conditional
 
-With space before and after condition/statement:
+With a space before and after the condition/statement:
+
 ```cpp
 if (some == condition) {
-	//...
+	// ...
 }
+
 for (auto it = characters.begin(); it != characters.end(); it++) {
-	//...
+	// ...
 }
 ```
+
+
 
 #### Expressions and function parameters
 
-Without space inside braces: `(x + y) * z`.
+No spaces between brackets and parameters/variables : `(x + y) * z`.
+
+
 
 #### Templates
 
-There is no space before and inside sharp braces (`<>`). 
-Notice that template code must be keep in `.h` files.  
+No spaces before nor inside the angle brackets (`<>`).  
+Template code must be kept in `.h` files.  
 
-```
+```cpp
 template<typename T>
 class Kappa {
-	//...
+	// ...
 }
 ```
 
@@ -131,7 +133,7 @@ float d;
 
 ### Pointers and references
 
-Pointer star and reference sign should be connected with typename.
+Pointer's astisks and reference's ampersands should be placed next to typename.
 
 ```cpp
 typename* foo;
@@ -144,37 +146,37 @@ typename& bar;
 
 ```cpp
 if ()
-    //...
+    // ...
 else
-    //...
+    // ...
 
 for (/*...*/)
-	//...
+	// ...
 ```
 
-There is exception - for nested oneliners.
+There is an exception – for nested oneliners.
 
 ```cpp
 for (/*...*/) {
 	if()
-		//...
+		// ...
 }
 ```
 
 
 
+## Files
+---
 
+### Extansions
 
-Files
------
-
-### Extansions 
-
-* Source: `.cpp`
-* Header: `.h`
+* Source files: `.cpp`
+* Header files: `.h`
 * Docs: `.md`
 
-#### Encoding
+
+
+### Encoding
 
 Every file should use `UTF-8` encoding.
 
@@ -183,25 +185,23 @@ Every file should use `UTF-8` encoding.
 ### Structure
 
 ```
-include/						; Includes/headers
-    Szczur/						; For scoping as <Szczur/...>
+include/                    ; Includes/headers
+    Szczur/                 ; For scoping as <Szczur/...>
         *.h
-src/							; Sources/implementation
-    Szczur/						; Just for fancy and symetry to headers :P
+src/                        ; Sources/implementation
+    Szczur/                 ; Just for fancy and symetry to headers :P
         *.cpp
-docs/							; Documentation
-    *.md						; Common docs, i.e. StyleGuide.md ;)
-	Szczur/
-		*.md
-		*.*						; For example there could be aslo images.
+docs/                       ; Documentation
+    *.md                    ; Common docs, i.e. StyleGuide.md ;)
+    Szczur/
+        *.md
+        *.*                 ; For example there could be aslo images.
 ```
 
 
 
-
-
-Headers
--------
+## Header files
+---
 
 ### Include guards
 
@@ -218,7 +218,7 @@ Headers
 3. Other libraries' .h files
 4. Your project's .h files
 
-#### Example
+
 
 ```cpp
 #include "CorrespondingHeader.h"
@@ -237,25 +237,25 @@ Headers
 
 ### Using `using`
 
-In headers you can't use `using` in file scope, but in templates and inline functions.
+Do not use `using` keyword in the global namespace nor the header files.
 
 
 
 ### Forward Declarations
 
-Avoid using forward declarations where possible. 
+Avoid using forward declarations where possible.
 
 
 
 ### Inline Functions
 
-Use functions `inline` only when they are small, say, 10 lines or fewer; or describe why you use it.
+Use `inline` functions only when they are small e.g. 10 lines or less; or describe why you use it.
 
 
 
 ### Namespaces
 
-Namespaces subdivide the global scope into distinct, named scopes, and so are useful for preventing name collisions in the global scope.
+Namespaces are useful because they allows to divide the global scope in named scopes which prevents functions/variables' names collisions.
 
 ```cpp
 namespace X {
@@ -265,15 +265,17 @@ namespace X {
 }
 ```
 
-#### Naming
 
-Our common namespace is `rat::` for Szczur.
+
+### Naming
+
+Our common namespace is `rat::` that stands for `Szczur`.
 
 
 
 ### Descriptions of function
 
-In headers files you should describe the function, at least what it does.
+In header files describe the function, at least what it does.
 
 ```cpp
 /// Does foo
@@ -284,155 +286,133 @@ void Foo(float angle, int index);
 
 
 
-### Classes
+## Classes
+---
 
-#### Description
+### Description
 
-Aslo classes should be described about what it is providing.
+Describe classes about what they provide.
 
-```
-/// Provide functions related with player character controlling.
+```cpp
+/// Provide methods related with player character controlling.
 class PlayerController {
-	//...
+	// ...
 }
 ```
 
-#### Inheritance
 
-Space before and after colon.
+
+### Inheritance
+
+Put spaces before and after the colon.
 
 ```cpp
 class DerivedClass : public BaseClass {
-    //...
+    // ...
 }
 ```
 
-#### Order of fields and methods
 
-* friend declarations
- 
+
+### Order of fields and methods
+
+* friendship declarations
+
+
 * public fields
 * protected fields
 * private fields
+
 
 * public methods
 * protected methods  
 * private methods
 
-#### Private and protected fields
 
-Add `_` in front of the field's name e.g.
+
+### Private and protected fields
+
+Add `_` in front of the private and protected field's name.
 
 ```cpp
-public:
-	typename _publicVarName;
 private:
     typename _privateVarName;
 protected:
-	typename _protectedVarName;
+    typename _protectedVarName;
 ```
 
 
 
-
-
-Sources
--------
+## Source files
+---
 
 ### Order of includes
 
 Same as in headers.
 
-### Implementation only headers
 
-In implementation there can be more headers than in headers - which are used only by implementation.
 
 ### Using `using`
 
-You should not use `using namespace`, but you can use `using` even in file scope (since it's source file which should not be included anywhere else).
+Do not use `using` in the global namespace although you can use it in source files.
 
 
 
+## Tips
+---
 
-
-Tips
-----
-
-#### Use `final` with classes that cannot be inherited.  
+#### Use `final` specifier with classes that cannot be inherited.  
 
 ```cpp
-final class NoMoreInherits : public Inheirtable {/*...*/}
+class DerivedClass final : public BaseClass {/*...*/}
 ```
 
-#### Use `override` with functions/methods that are inherited.  
+#### Use `override` specifier with methods that are inherited.  
 
 ```cpp
-class Base {
+class BaseClass {
 public:
 	virtual void foo();
-	//...
+	// ...
 }
-class Derived : public Base {
+
+class DerivedClass : public BaseClass {
 	void foo() override;
-	//...
+	// ...
 }
 ```
 
-#### Use `const` with functions/methods that do not change value of fields as specifier.
 
-```
-Vector<int> getWindowPosition() const;
-```
 
-#### Use `const T&` if function/methods do not change passed variables. 
+#### Use `const` keyword with functions and methods that do not change the value of attributes.
 
 ```cpp
-template<T>
-T rotateTo(const Vector<T> pos);
+Vector2<int> getWindowPosition() const;
 ```
 
-#### Use `struct` for `enum`s to scope its options.
 
+
+#### Use `const T&` if the passed objects are read-only and to avoid copying it.
+
+```cpp
+template<typename T>
+T distanceTo(const Vector2<T>& pos);
 ```
-struct imagetype {
-	enum Enum {
-		Standard = 0,
-		Nice = 1,
-		NotNice = -1
-	};
+
+
+
+#### Use `enum class` instead of `enum` to scope it's values.
+
+```cpp
+enum class Imagetype : int {
+	Standard = 0,
+	Nice = 1,
+	NotNice = -1
 };
-//...
-imagetype::Enum varname;
-//...
-varname = imagetype::Nice;
+// ...
+Imagetype enum_var;
+// ...
+enum_var = Imagetype::Nice;
+// ...
+auto var = static_cast<std::underlying_type<Imagetype>::type>(enum_var);
 ```
-
-#### Good practice is write every dependents of implementation with includes 
-
-Even if you still want to specify namespace i.e. `std::string` - is both possibble ;)
-
-```
-#include <CorrespondingHeader.h>
-using rat::MyClass;
-
-#include <iostream>
-using std::cout;
-using std::endl;
-#include <ctime>
-using std::time_t;
-using std::time;
-#include <string>
-using std::string;
-
-#include <SFML/System.hpp>
-using sf::sleep;
-
-#include "../AnotherLocation/SomeHeader.h"
-using rat::OtherClassFromAnotherLocation;
-#include "SomeOtherLocalHeader.h"
-using rat::OtherClass;
-```
-
-
-
-
