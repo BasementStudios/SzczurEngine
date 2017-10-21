@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
 
 #include "Loader.h"
 #include "Object.h"
@@ -26,13 +27,11 @@ namespace rat {
 			}
 			const Texture& tex = _core.get<Loader>().getTexture(1);
 			for (int i = 0; i < 16; ++i) {
-				_explosives.emplace_back(new Sprite(tex));
-				Sprite& sprite = *_explosives.back().get();
-				sprite.setFrame(rand() % sprite.getFramesNumber());
-				sprite.base().setPosition(
-					static_cast<int>((i%4)*64),
-					static_cast<int>((i/4)*64)
-				);
+				Sprite* sprite = new Sprite;
+				_explosives.emplace_back(sprite);				
+				sprite->set(tex, rand());
+				sprite->centerOrigin();
+				sprite->base().setPosition(std::floor((i%4)*64)+40, std::floor((i/4)*64)+40);
 			}
 		}
 

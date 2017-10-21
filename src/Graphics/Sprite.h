@@ -10,19 +10,15 @@
 namespace rat {
 	class Sprite : public Drawable {
 	private:
-		const Texture* _textureHandler;
-		int _frame;
+		const Texture* _textureHandler = nullptr;
+		int _frame = -1;
 		sf::Sprite _sprite;
-	
+
 	public:
 	// Init
-		Sprite() :
-			_textureHandler(nullptr), _frame(-1) {
-		}
-		Sprite(const Texture& texture, int frame=0) :
-			_frame(-1) {			
-			setTexture(texture);			
-			setFrame(frame);
+		Sprite() = default;
+		Sprite(const Texture& texture, int frame=0) {			
+			set(texture, frame);
 		}
 		
 	// Getters
@@ -31,13 +27,18 @@ namespace rat {
 		}
 		// Returns max number of frames for handled texture
 		int getFramesNumber() {
-			return _textureHandler->getFrames().x * _textureHandler->getFrames().y;
+			return _textureHandler->getFramesNumber();
 		}
 	
 	// Setters
+		void set(const Texture& texture, int frame=0) {
+			_textureHandler = &texture;
+			_sprite.setTexture(_textureHandler->getTexture());
+			setFrame(frame);
+		}
 		void setFrame(int frame) {
 			if(frame != _frame) {
-				_frame = frame;
+				_frame = frame % _textureHandler->getFramesNumber();
 				int startX = _frame % _textureHandler->getFrames().x;
 				int startY = _frame / _textureHandler->getFrames().x;
 				const sf::Vector2i& frameSize = _textureHandler->getFrameSize();
@@ -46,13 +47,15 @@ namespace rat {
 				// std::cout<<frameSize.x*startX<<' '<<frameSize.y*startY<<' '<<frameSize.x<<' '<<frameSize.y<<'\n';
 			}
 		}
-		void setTexture(const Texture& texture) {
-			_textureHandler = &texture;
-			_sprite.setTexture(_textureHandler->getTexture());
+		void setOrigin(float ox, float oy) {
+			_sprite.setOrigin(ox, oy);
 		}
-		void set(const Texture& texture, int frame=0) {
-			setTexture(texture);		
-			setFrame(frame);
+		void setOrigin(const sf::Vector2f& origin) {
+			_sprite.setOrigin(origin);
+		}
+		void centerOrigin() {
+			const sf::Vector2i& frameSize = _textureHandler->getFrameSize();
+			_sprite.setOrigin(frameSize.x/2.f, frameSize.y/2.f);
 		}
 		
 	// Utilites

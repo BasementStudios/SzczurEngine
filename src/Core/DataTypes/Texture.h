@@ -15,6 +15,7 @@ namespace rat {
 		sf::Vector2i _frames; // Max number of horizontal/vertical frames (for sprites)
 		
 		sf::Vector2i _frameSize;
+		int _framesNumber;
 		
 	public:
 	// Init
@@ -33,15 +34,20 @@ namespace rat {
 		
 	// Setters
 		void setFrames(int horiz, int vert) {
-			_frames.x = horiz;
-			_frames.y = vert;
-			_frameSize.x = _texture.getSize().x / horiz;
-			_frameSize.y = _texture.getSize().y / vert;
+			_frames = sf::Vector2i(horiz, vert);
+			_frameSize = sf::Vector2i(
+				_texture.getSize().x / horiz,
+				_texture.getSize().y / vert
+			);
+			_framesNumber = _frames.x * _frames.y;
 		}
 		void setFrames(const sf::Vector2i& frames) {
 			_frames = frames;
-			_frameSize.x = _texture.getSize().x / _frames.x;
-			_frameSize.y = _texture.getSize().y / _frames.y;
+			_frameSize = sf::Vector2i(
+				_texture.getSize().x / _frames.x,
+				_texture.getSize().y / _frames.y
+			);
+			_framesNumber = _frames.x * _frames.y;
 		}
 		
 	// Loading
@@ -65,6 +71,9 @@ namespace rat {
 		}
 		const sf::Vector2i& getFrameSize() const {
 			return _frameSize;
+		}
+		int getFramesNumber() const {
+			return _framesNumber;
 		}
 	};
 }
