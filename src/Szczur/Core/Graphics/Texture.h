@@ -1,6 +1,3 @@
-// This class keep texture loaded from files
-// It's simple wrapper for sf::Texture with some utilities
-
 #pragma once
 
 #include <iostream>
@@ -13,10 +10,10 @@ namespace rat {
 	private:
 		sf::Texture _texture;
 		sf::Vector2i _frames; // Max number of horizontal/vertical frames (for sprites)
-		
+
 		sf::Vector2i _frameSize;
 		int _framesNumber;
-		
+
 	public:
 	// Init
 		Texture() :
@@ -31,7 +28,7 @@ namespace rat {
 		Texture(const std::string& filename, const sf::Vector2i& frames) {
 			loadFromFile(filename, frames);
 		}
-		
+
 	// Setters
 		void setFrames(int horiz, int vert) {
 			_frames = sf::Vector2i(horiz, vert);
@@ -49,19 +46,19 @@ namespace rat {
 			);
 			_framesNumber = _frames.x * _frames.y;
 		}
-		
+
 	// Loading
 		bool loadFromFile(const std::string& filename, int horiz, int vert) {
 			bool ret = _texture.loadFromFile(filename);
 			setFrames(horiz, vert);
 			return ret;
-		}		
+		}
 		bool loadFromFile(const std::string& filename, const sf::Vector2i& frames) {
 			bool ret = _texture.loadFromFile(filename);
 			setFrames(frames);
 			return ret;
 		}
-		
+
 	// Getters
 		sf::Vector2i getFrames() const {
 			return _frames;
@@ -69,7 +66,7 @@ namespace rat {
 		const sf::Texture& getTexture() const {
 			return _texture;
 		}
-		const sf::Vector2i& getFrameSize() const {
+		sf::Vector2i getFrameSize() const {
 			return _frameSize;
 		}
 		int getFramesNumber() const {

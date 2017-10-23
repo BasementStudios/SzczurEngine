@@ -1,4 +1,4 @@
-
 obj/
-
 out/
+Makefile
+.clang_complete

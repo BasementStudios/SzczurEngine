@@ -1,11 +1,9 @@
-// Main class for drawing part of texture on screen
-
 #pragma once
 
 #include <SFML/Graphics.hpp>
 
-#include "../Core/DataTypes/Texture.h"
-#include "../Core/DataTypes/Drawable.h"
+#include <Szczur/Core/Graphics/Drawable.h>
+#include <Szczur/Core/Graphics/Texture.h>
 
 namespace rat {
 	class Sprite : public Drawable {
@@ -17,19 +15,22 @@ namespace rat {
 	public:
 	// Init
 		Sprite() = default;
-		Sprite(const Texture& texture, int frame=0) {			
+		Sprite(const Texture& texture, int frame=0) {
 			set(texture, frame);
 		}
-		
+
 	// Getters
 		sf::Sprite& base() {
+			return _sprite;
+		}
+		const sf::Sprite& base() const {
 			return _sprite;
 		}
 		// Returns max number of frames for handled texture
 		int getFramesNumber() {
 			return _textureHandler->getFramesNumber();
 		}
-	
+
 	// Setters
 		void set(const Texture& texture, int frame=0) {
 			_textureHandler = &texture;
@@ -57,10 +58,10 @@ namespace rat {
 			const sf::Vector2i& frameSize = _textureHandler->getFrameSize();
 			_sprite.setOrigin(frameSize.x/2.f, frameSize.y/2.f);
 		}
-		
+
 	// Utilites
 		void draw(Layer& layer) const override {
-			layer.draw(_sprite);			
+			layer.draw(_sprite);
 		}
 	};
 }

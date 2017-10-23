@@ -19,9 +19,8 @@ namespace rat {
 
     public:
 
-        BlockAllocator() : _data(nullptr), _offset(0), _capacity(0) {
-
-        }
+        BlockAllocator() :
+            _data(nullptr), _offset(0), _capacity(0) {}
 
         BlockAllocator(const BlockAllocator&) = delete;
 

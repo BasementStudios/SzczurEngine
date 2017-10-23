@@ -1,7 +1,3 @@
-// To jest zwyczajny ResourceManager tylko pod krótszą nazwą.
-// Jest to jednak tylko placeholder tak więc nie krzyczeć
-// Napisany na szybko by móc zacząć pisać klasy odpowiedzialne za grafikę
-
 #pragma once
 
 #include <iostream>
@@ -10,20 +6,23 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "DataTypes/Texture.h"
+#include <Szczur/Core/ModuleBase.h>
+#include <Szczur/Core/Graphics/Texture.h>
 
 namespace rat {
-	class Loader {
+	class AssetsLoader : public ModuleBase<> { using ModuleBase::ModuleBase;
 	private:
+
 		std::vector<Texture> _textures;
-		
+
 	public:
-	// Searching 
+
+	// Searching
 		// TODO : zrobić wyszukiwanie z hashowaniem
 		const Texture& getTexture(int index) {
 			return _textures[index];
 		}
-		
+
 	// Modifiers
 		void loadNewTexture(const std::string& filename, int horiz, int vert) {
 			_textures.emplace_back(filename, horiz, vert);
@@ -36,7 +35,7 @@ namespace rat {
 			std::ifstream file(dataPath);
 			if(file.good()) {
 				std::string path(dataPath.substr(0, dataPath.find_last_of("/\\") + 1)); // for "A/B/C/File.txt" path is "A/B/C/"
-				
+
 				std::string textureFilename;
 				int horiz, vert;
 				while(file>>textureFilename>>horiz>>vert) {
@@ -46,7 +45,7 @@ namespace rat {
 				file.close();
 				return true;
 			}
-			
+
 			return false;
 		}
 		// loadTexturesFromDataFile for all directories in dataFile
@@ -62,9 +61,9 @@ namespace rat {
 						std::cout<<"  Data "<<dataNumber<<" : "<<path.substr(0, path.find_last_of("\\/"))<<"\n";
 					} else {
 						std::cout<<"  Warning! No data file in path "<<path<<"\n";
-					}				
+					}
 					++dataNumber;
-				}				
+				}
 			}
 		}
 	};

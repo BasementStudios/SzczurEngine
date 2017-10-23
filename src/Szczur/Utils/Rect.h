@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 
-#include "Vector2.h"
+#include <Szczur/Utils/Vector2.h>
 
 namespace rat {
     class Rect {
@@ -21,18 +21,15 @@ namespace rat {
 
         Rect& operator = (const Rect&) = default;
 
-    	Rect(float x, float y, float width, float height) : x(x), y(y), width(width), height(height) {
+    	Rect(float x, float y, float width, float height) :
+            x(x), y(y), width(width), height(height) {}
 
-    	}
-
-    	Rect(const Vector2& position, const Vector2& size) : x(position.x), y(position.y), width(size.x), height(size.y) {
-
-    	}
+    	Rect(const Vector2& position, const Vector2& size) :
+            x(position.x), y(position.y), width(size.x), height(size.y) {}
 
         template <typename T>
-        Rect(const sf::Rect<T>& sfRect) : x(sfRect.x), y(sfRect.y), width(sfRect.width), height(sfRect.height) {
-
-        }
+        Rect(const sf::Rect<T>& sfRect) :
+            x(sfRect.x), y(sfRect.y), width(sfRect.width), height(sfRect.height) {}
 
         template <typename T>
         operator sf::Rect<T> () const {

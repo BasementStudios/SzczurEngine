@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-#include "Algorithm.h"
+#include <Szczur/Utils/Algorithm.h>
 
 namespace rat {
     template<typename K, typename T>
@@ -29,7 +29,6 @@ namespace rat {
         template <typename... Ts>
         Value_t& emplace(Key_t key, Ts&&... args) {
             _container.emplace_back(key, std::forward<Ts>(args)...);
-
             return std::get<1>(_container.back());
         }
 
@@ -58,7 +57,7 @@ namespace rat {
         }
 
         void sort() {
-            std::sort(std::begin(_container), std::end(_container), [](const auto& a, const auto& b){
+            std::sort(std::begin(_container), std::end(_container), [](const auto& a, const auto& b) {
                 return std::get<0>(a) < std::get<0>(b);
             });
         }

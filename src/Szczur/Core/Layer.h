@@ -2,18 +2,18 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "DataTypes/Drawable.h"
+#include <Szczur/Core/Graphics/Drawable.h>
 
 namespace rat {
 	class Layer {
 	private:
 		sf::RenderTexture _renderTexture;
 		sf::Vector2i _size;
-	
+
 	public:
 	// Init
 		Layer() = default;
-	
+
 	// Setters
 		void create(unsigned width, unsigned height) {
 			_size.x = width;
@@ -24,12 +24,12 @@ namespace rat {
 			_size = size;
 			_renderTexture.create(_size.x, _size.y);
 		}
-		
+
 	// Getters
-		const sf::Texture& getTexture() {
-			_renderTexture.getTexture();
+		const sf::Texture& getTexture() const {
+			return _renderTexture.getTexture();
 		}
-		
+
 	// Utilities
 		// Render sf::Drawable object on layer
 		void draw(const sf::Drawable& drawable) {

@@ -17,14 +17,12 @@ namespace rat {
 
     	Vector2& operator = (const Vector2&) = default;
 
-    	Vector2(float x, float y) : x(x), y(y) {
-
-        }
+    	Vector2(float x, float y) :
+            x(x), y(y) {}
 
         template<typename T>
-        Vector2(const sf::Vector2<T>& sfVec) : x(sfVec.x), y(sfVec.y) {
-
-        }
+        Vector2(const sf::Vector2<T>& sfVec) :
+            x(sfVec.x), y(sfVec.y) {}
 
         template<typename T>
         operator sf::Vector2<T> () const {

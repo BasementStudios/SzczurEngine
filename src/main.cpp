@@ -1,9 +1,6 @@
-#include <iostream>
-
-#include "Core/Engine.h"
+#include <Szczur/Core/Engine.h>
 
 int main() {
 	rat::Engine engine;
-	engine.run();
-	return 0;
+	return engine.run();
 }
