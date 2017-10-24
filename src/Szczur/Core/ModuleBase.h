@@ -4,9 +4,13 @@
 
 template<typename... Ts>
 class ModuleBase {
+public:
+
+	using Holder_t = const std::tuple<std::add_lvalue_reference_t<Ts>...>;
+
 private:
 
-	const std::tuple<std::add_lvalue_reference_t<Ts>...> _modules;
+	Holder_t _modules;
 
 public:
 

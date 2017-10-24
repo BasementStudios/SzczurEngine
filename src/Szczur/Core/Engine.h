@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Core/ModulesCollection.h>
+#include <Szczur/Core/ModulesHolder.h>
 #include <Szczur/Core/AssetsLoader.h>
 #include <Szczur/Core/Canvas.h>
 #include <Szczur/Game/Map/Map.h>
@@ -11,7 +11,7 @@ namespace rat {
 	class Engine {
 	private:
 
-		ModulesCollection<
+		ModulesHolder<
 			AssetsLoader,
 			Canvas,
 			Map
