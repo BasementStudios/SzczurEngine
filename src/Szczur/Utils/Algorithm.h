@@ -3,7 +3,7 @@
 #include <iterator>
 
 namespace rat {
-	template <typename InputIt, typename Key>
+	template<typename InputIt, typename Key>
 	constexpr InputIt interpolationSearch(InputIt begin, InputIt end, Key key) {
 		InputIt low = begin;
 		InputIt high = std::prev(end);
@@ -26,7 +26,7 @@ namespace rat {
 			return end;
 	}
 
-	template <typename InputIt, typename Key, typename Extractor>
+	template<typename InputIt, typename Key, typename Extractor>
 	constexpr InputIt interpolationSearch(InputIt begin, InputIt end, Key key, Extractor extr) {
 		InputIt low = begin;
 		InputIt high = std::prev(end);
