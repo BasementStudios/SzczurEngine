@@ -17,6 +17,10 @@ namespace rat {
 
 	public:
 
+		void init() {
+			
+		}
+
 	// Searching
 		// TODO : zrobić wyszukiwanie z hashowaniem
 		const Texture& getTexture(int index) {

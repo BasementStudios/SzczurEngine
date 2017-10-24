@@ -25,8 +25,12 @@ namespace rat {
 	public:
 
 		Engine() {
-			changeResolution(400, 400);
+			_modules.get<AssetsLoader>().init();
 			_modules.get<AssetsLoader>().loadTexturesFromDataDirectories("res_test/data.txt");
+
+			_modules.get<Canvas>().init();
+			changeResolution(400, 400);
+
 			_modules.get<Map>().init();
 		}
 
@@ -54,7 +58,7 @@ namespace rat {
 		void render() {
 			_window.clear();
 			_modules.get<Map>().render();
-			_modules.get<Canvas>().render(_window);
+			_modules.get<Canvas>().display(_window);
 			_window.display();
 		}
 

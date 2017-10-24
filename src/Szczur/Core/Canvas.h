@@ -22,6 +22,10 @@ namespace rat {
 
 	public:
 
+		void init() {
+
+		}
+
 		void resize(unsigned _width, unsigned _height) {
 			_windowSize = sf::Vector2f(_width, _height);
 			for (auto& layer : _layers) {
@@ -29,7 +33,7 @@ namespace rat {
 			}
 		}
 
-		void render(sf::RenderTarget& target) {
+		void display(sf::RenderTarget& target) {
 			sf::Sprite spr;
 			for (auto& layer : _layers) {
 				layer.display();
