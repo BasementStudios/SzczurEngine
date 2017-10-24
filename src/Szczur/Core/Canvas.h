@@ -1,58 +1,69 @@
 #pragma once
 
+#include <memory>
+
 #include <SFML/Graphics.hpp>
 
+#include <Szczur/Utils/Hash.h>
+#include <Szczur/Utils/HashVector.h>
 #include <Szczur/Core/ModuleBase.h>
 #include <Szczur/Core/Layer.h>
 
 namespace rat {
 	class Canvas : public ModuleBase<> { using ModuleBase::ModuleBase;
-	public:
-
-		enum Layer {
-			Ground, Flower, Tree, Roof, Effects, HUD, UI
-		};
-
 	private:
 
-		// TODO Stritch : do przerobienia dynamiczne warstwy, to wyżej wypieprzyć :p
-		rat::Layer _layers[7];
-		// TODO Stritch : zamiast tego & na sf::RenderWindow?
-		sf::Vector2f _windowSize;
+		rat::HashVector<rat::Hash32_t, std::unique_ptr<rat::Layer>> _layers;
+		sf::Vector2u _size;
 
 	public:
 
 		void init() {
-
+			
 		}
 
-		void resize(unsigned _width, unsigned _height) {
-			_windowSize = sf::Vector2f(_width, _height);
+		void addLayer(rat::Hash32_t layerId) {
+			_layers.emplace(layerId, new Layer);
+			_layers.sort();
+		}
+
+		void resize(const sf::Vector2u& size) {
+			_size = size;
 			for (auto& layer : _layers) {
-				layer.create(_width, _height);
+				std::get<1>(layer)->create(size);
 			}
 		}
 
-		void display(sf::RenderTarget& target) {
+		void resize(const sf::RenderWindow& window) {
+			resize(window.getSize());
+		}
+
+		void display(sf::RenderTarget& target, rat::Hash32_t layerId) {
 			sf::Sprite spr;
-			for (auto& layer : _layers) {
-				layer.display();
-				spr.setTexture(layer.getTexture());
-				target.draw(spr);
-				layer.clear(sf::Color::Transparent);
-			}
+			_layers[layerId]->display();
+			spr.setTexture(_layers[layerId]->getTexture());
+			target.draw(spr);
+			_layers[layerId]->clear(sf::Color::Transparent);
 		}
 
-		void render(sf::Drawable& sprite, int layer) {
-			_layers[layer].draw(sprite);
+		void render(sf::Drawable& drawable, rat::Hash32_t layerId) {
+			_layers[layerId]->draw(drawable);
 		}
 
-		void render(Drawable& sprite, int layer) {
-			_layers[layer].draw(sprite);
+		void render(Drawable& drawable, rat::Hash32_t layerId) {
+			_layers[layerId]->draw(drawable);
 		}
 
-		sf::Vector2f getWindowSize() {
-			return _windowSize;
+		Layer& getLayer(rat::Hash32_t layerId) {
+			return *_layers[layerId];
+		}
+
+		const Layer& getLayer(rat::Hash32_t layerId) const {
+			return *_layers[layerId];
+		}
+
+		sf::Vector2u getLayersSize() const {
+			return _size;
 		}
 	};
 }

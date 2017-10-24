@@ -20,9 +20,9 @@ namespace rat {
 
 		void init() {
 			for (int i = 0; i < 512; ++i) {
-				push(new Object(getModule<Canvas>()));
+				createNewObject();
 			}
-			const Texture& tex = getModule<AssetsLoader>().getTexture(1);
+			const Texture& tex = getModule<AssetsLoader>().getTexture(rat::fnv1a_32("res_test/Graphics/Effects/Explosion.png"));
 			for (int i = 0; i < 16; ++i) {
 				Sprite* sprite = new Sprite;
 				_explosives.emplace_back(sprite);
@@ -32,8 +32,8 @@ namespace rat {
 			}
 		}
 
-		void push(Object* newObject) {
-			_objects.emplace_back(newObject);
+		void createNewObject() {
+			_objects.emplace_back(new Object(getModule<Canvas>()));
 		}
 
 		void update(float deltaTime) {
@@ -47,7 +47,7 @@ namespace rat {
 				obj->render();
 			}
 			for (auto& spr : _explosives) {
-				getModule<Canvas>().render(*spr.get(), 0);
+				getModule<Canvas>().render(*spr, rat::fnv1a_32("GAME"));
 			}
 		}
 	};

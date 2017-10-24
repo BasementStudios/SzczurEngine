@@ -13,14 +13,24 @@ namespace rat {
 
 		using Key_t       = K;
 		using Value_t     = T;
-		using Tuple_t     = std::tuple<Key_t, Value_t>;
-		using Container_t = std::vector<Tuple_t>;
+		using Pair_t      = std::tuple<Key_t, Value_t>;
+		using Container_t = std::vector<Pair_t>;
 
 	private:
 
 		Container_t _container;
 
 	public:
+
+	    HashVector() = default;
+
+	    HashVector(const HashVector&) = default;
+
+	    HashVector& operator = (const HashVector&) = default;
+
+	    HashVector(HashVector&&) = default;
+
+	    HashVector& operator = (HashVector&&) = default;
 
 		void reserve(size_t capacity) {
 			_container.reserve(capacity);
@@ -68,12 +78,24 @@ namespace rat {
 			});
 		}
 
+		const Pair_t* getData() const {
+			return _container.data();
+		}
+
 		size_t getSize() const {
 			return _container.size();
 		}
 
 		bool isEmpty() const {
 			return getSize() == 0;
+		}
+
+		decltype(auto) begin() const {
+			return _container.begin();
+		}
+
+		decltype(auto) end() const {
+			return _container.end();
 		}
 	};
 }

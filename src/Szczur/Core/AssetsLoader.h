@@ -6,6 +6,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <Szczur/Utils/Hash.h>
+#include <Szczur/Utils/HashVector.h>
 #include <Szczur/Core/ModuleBase.h>
 #include <Szczur/Core/Graphics/Texture.h>
 
@@ -13,28 +15,30 @@ namespace rat {
 	class AssetsLoader : public ModuleBase<> { using ModuleBase::ModuleBase;
 	private:
 
-		std::vector<Texture> _textures;
+		rat::HashVector<rat::Hash32_t, std::unique_ptr<rat::Texture>> _textures;
 
 	public:
 
 		void init() {
-			
+
 		}
 
-	// Searching
-		// TODO : zrobić wyszukiwanie z hashowaniem
-		const Texture& getTexture(int index) {
-			return _textures[index];
+		Texture& getTexture(rat::Hash32_t textureId) {
+			return *_textures[textureId];
 		}
 
-	// Modifiers
+		const Texture& getTexture(rat::Hash32_t textureId) const {
+			return *_textures[textureId];
+		}
+
 		void loadNewTexture(const std::string& filename, int horiz, int vert) {
-			_textures.emplace_back(filename, horiz, vert);
+			_textures.emplace(rat::fnv1a_32(filename.data()), new rat::Texture(filename, horiz, vert));
 		}
+
 		void loadNewTexture(const std::string& filename, const sf::Vector2i& frames) {
-			_textures.emplace_back(filename, frames);
+			_textures.emplace(rat::fnv1a_32(filename.data()), new rat::Texture(filename, frames));
 		}
-		// Load all textures in one files directory
+
 		bool loadTexturesFromDataFile(const std::string& dataPath) {
 			std::ifstream file(dataPath);
 			if(file.good()) {
@@ -52,7 +56,7 @@ namespace rat {
 
 			return false;
 		}
-		// loadTexturesFromDataFile for all directories in dataFile
+
 		void loadTexturesFromDataDirectories(const std::string& dataDirectoriesPath) {
 			std::ifstream file(dataDirectoriesPath);
 			std::string path;
@@ -69,6 +73,7 @@ namespace rat {
 					++dataNumber;
 				}
 			}
+			_textures.sort();
 		}
 	};
 }

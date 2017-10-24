@@ -29,14 +29,15 @@ namespace rat {
 			_modules.get<AssetsLoader>().loadTexturesFromDataDirectories("res_test/data.txt");
 
 			_modules.get<Canvas>().init();
-			changeResolution(400, 400);
+			_modules.get<Canvas>().addLayer(rat::fnv1a_32("GAME"));
+			changeResolution(sf::Vector2u(400, 400));
 
 			_modules.get<Map>().init();
 		}
 
-		void changeResolution(unsigned width, unsigned height) {
-			_window.create(sf::VideoMode(width, height), "SzczurEngine v0.0.0");
-			_modules.get<Canvas>().resize(width, height);
+		void changeResolution(const sf::Vector2u& size) {
+			_window.create(sf::VideoMode(size.x, size.y), "SzczurEngine v0.0.0");
+			_modules.get<Canvas>().resize(size);
 		}
 
 		void input() {
@@ -58,7 +59,7 @@ namespace rat {
 		void render() {
 			_window.clear();
 			_modules.get<Map>().render();
-			_modules.get<Canvas>().display(_window);
+			_modules.get<Canvas>().display(_window, rat::fnv1a_32("GAME"));
 			_window.display();
 		}
 
