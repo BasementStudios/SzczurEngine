@@ -7,10 +7,10 @@ class ModulesHolder {
 public:
 
 	using Holder_t  = std::tuple<Ts...>;
-    using Swallow_t = int[];
+	using Swallow_t = int[];
 
-    template<typename...>
-    struct Dummy {};
+	template<typename...>
+	struct Dummy {};
 
 private:
 
@@ -23,12 +23,12 @@ public:
 
 	ModulesHolder(const ModulesHolder&) = delete;
 
-    ModulesHolder& operator = (const ModulesHolder&) = delete;
+	ModulesHolder& operator = (const ModulesHolder&) = delete;
 
 	template <typename F>
-    void forEach(F&& function) {
-        forEachImpl(std::forward<F>(function), std::index_sequence_for<Ts...>{});
-    }
+	void forEach(F&& function) {
+		forEachImpl(std::forward<F>(function), std::index_sequence_for<Ts...>{});
+	}
 
 	template <typename T>
 	T& get() {
@@ -43,8 +43,8 @@ public:
 private:
 
 	template<typename F, size_t... Is>
-    void forEachImpl(F&& function, std::index_sequence<Is...>) {
-        (void)Swallow_t{ (function(std::get<Is>(_modules)), 0)... };
-    }
+	void forEachImpl(F&& function, std::index_sequence<Is...>) {
+		(void)Swallow_t{ (function(std::get<Is>(_modules)), 0)... };
+	}
 
 };
