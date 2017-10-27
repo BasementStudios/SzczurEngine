@@ -4,22 +4,26 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Utils/Hash.h>
-#include <Szczur/Utils/HashVector.h>
-#include <Szczur/Core/ModuleBase.h>
-#include <Szczur/Core/Layer.h>
+#include "Szczur/Utils/Hash.hpp"
+#include "Szczur/Utils/HashVector.hpp"
+#include "ModuleBase.hpp"
+#include "Graphics/Layer.hpp"
 
 namespace rat {
 	class Canvas : public ModuleBase<> { using ModuleBase::ModuleBase;
+	public:
+
+		using Holder_t = rat::HashVector<rat::Hash32_t, std::unique_ptr<rat::Layer>>;
+
 	private:
 
-		rat::HashVector<rat::Hash32_t, std::unique_ptr<rat::Layer>> _layers;
+		Holder_t _layers;
 		sf::Vector2u _size;
 
 	public:
 
 		void init() {
-			
+
 		}
 
 		void addLayer(rat::Hash32_t layerId) {

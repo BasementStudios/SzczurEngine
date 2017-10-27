@@ -6,10 +6,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Utils/Hash.h>
-#include <Szczur/Utils/HashVector.h>
-#include <Szczur/Core/ModuleBase.h>
-#include <Szczur/Core/Graphics/Texture.h>
+#include "Szczur/Utils/Hash.hpp"
+#include "Szczur/Utils/HashVector.hpp"
+#include "ModuleBase.hpp"
+#include "Graphics/Texture.hpp"
 
 namespace rat {
 	class AssetsLoader : public ModuleBase<> { using ModuleBase::ModuleBase;

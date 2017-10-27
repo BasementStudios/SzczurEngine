@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Szczur/Core/ModuleBase.h>
+#include "ModuleBase.hpp"
 
 template<typename... Ts>
 class ModulesHolder {
@@ -46,5 +46,4 @@ private:
 	void forEachImpl(F&& function, std::index_sequence<Is...>) {
 		(void)Swallow_t{ (function(std::get<Is>(_modules)), 0)... };
 	}
-
 };

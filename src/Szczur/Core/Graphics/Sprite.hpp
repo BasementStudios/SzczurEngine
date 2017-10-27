@@ -2,8 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Core/Graphics/Drawable.h>
-#include <Szczur/Core/Graphics/Texture.h>
+#include "Texture.hpp"
+#include "Layer.hpp"
 
 namespace rat {
 	class Sprite : public Drawable {

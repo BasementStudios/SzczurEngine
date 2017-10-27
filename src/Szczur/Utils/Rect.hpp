@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 
-#include <Szczur/Utils/Vector2.h>
+#include "Vector2.hpp"
 
 namespace rat {
 	class Rect {

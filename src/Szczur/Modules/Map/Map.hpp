@@ -3,10 +3,10 @@
 #include <vector>
 #include <cmath>
 
-#include <Szczur/Core/ModuleBase.h>
-#include <Szczur/Core/AssetsLoader.h>
-#include <Szczur/Core/Graphics/Sprite.h>
-#include <Szczur/Game/Map/Object.h>
+#include <Szczur/Core/ModuleBase.hpp>
+#include <Szczur/Core/AssetsLoader.hpp>
+#include <Szczur/Core/Graphics/Sprite.hpp>
+#include <Szczur/Modules/Map/Object.hpp>
 
 // TODO Stritch : Zrobić prawdziwy moduł mapy, ten jest tylko testowy
 namespace rat {

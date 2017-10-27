@@ -2,10 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Core/ModulesHolder.h>
-#include <Szczur/Core/AssetsLoader.h>
-#include <Szczur/Core/Canvas.h>
-#include <Szczur/Game/Map/Map.h>
+#include "Szczur/Modules/Map/Map.hpp"
+#include "ModulesHolder.hpp"
+#include "AssetsLoader.hpp"
+#include "Canvas.hpp"
 
 namespace rat {
 	class Engine {

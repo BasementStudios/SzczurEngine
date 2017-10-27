@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Core/Graphics/Drawable.h>
+#include "Drawable.hpp"
 
 namespace rat {
 	class Layer {
@@ -33,7 +33,7 @@ namespace rat {
 		void display() {
 			_renderTexture.display();
 		}
-		
+
 		void clear(const sf::Color& color) {
 			_renderTexture.clear(color);
 		}

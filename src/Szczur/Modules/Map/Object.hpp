@@ -6,7 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Szczur/Core/Canvas.h>
+#include <Szczur/Core/Canvas.hpp>
 
 namespace rat {
 	class Object {

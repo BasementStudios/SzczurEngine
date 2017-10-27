@@ -1,4 +1,4 @@
-#include <Szczur/Core/Engine.h>
+#include "Szczur/Core/Engine.hpp"
 
 int main() {
 	rat::Engine engine;
