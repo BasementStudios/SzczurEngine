@@ -17,10 +17,10 @@ In the same line as the expression.
 
 ```cpp
 void foo(int a, int b) const {
-    if (a > b) {
+	if (a > b) {
 		// ...
 	}
-    else {
+	else {
 		// ...
 	}
 	// ...
@@ -29,7 +29,7 @@ void foo(int a, int b) const {
 
 
 
-### Naming Style
+### Naming
 
 * Local variables: `cammelCase`.  
 * Namespaces: `PascalCase`.
@@ -40,6 +40,7 @@ void foo(int a, int b) const {
 * Functions and methods: `cammelCase`.  
 * Templates: `T` or `PascalCase`.
 
+
 ```cpp
 /// Namespaces
 namespace Szczur {
@@ -47,23 +48,21 @@ namespace Szczur {
 		/// Classes
 		class Event {
 		public:
-			/// Constants
+			/// Member Constants
 			const static std::string BLOCK_START = "{";
 			// ...
 
 			/// Types
-			struct level {
-				enum Enum {
-					Null = 0,
-					GameObject,
-					Sprite,
-					Character,
-					Player
-				};
+			enum class TargetType {
+				Null = 0,
+				GameObject,
+				Sprite,
+				Character,
+				Player
 			};
 
-			/// Fields
-			Event::level::Enum level;
+			/// Member Variables
+			Event::TargetType level;
 			// ...
 
 			/// Functions
@@ -85,14 +84,18 @@ namespace Szczur {
 
 #### Conditional
 
-With a space before and after the condition/statement:
+With a space before and after the condition/statement.  
+With an `else` statement in the new line.
 
 ```cpp
-if (some == condition) {
+if (foo == bar) {
+	// ...
+}
+else {
 	// ...
 }
 
-for (auto it = characters.begin(); it != characters.end(); it++) {
+for (auto it = foo.begin(); it != foo.end(); it++) {
 	// ...
 }
 ```
@@ -101,18 +104,24 @@ for (auto it = characters.begin(); it != characters.end(); it++) {
 
 #### Expressions and function parameters
 
-No spaces between brackets and parameters/variables : `(x + y) * z`.
+No spaces between brackets and parameters/variables.  
+Use spaces between operators.
+
+ ```cpp
+ int a = (x + y) * z;
+ std::cout << "Hello World" << std::endl;
+ ```
 
 
 
 #### Templates
 
-No spaces before nor inside angle brackets (`<>`).  
-Template code must be kept in `.h` files.  
+No spaces neither before nor inside angle brackets (`<>`).  
+Template implementation code must be kept in `.tpp` files.  
 
 ```cpp
 template<typename T>
-class Kappa {
+class Foo {
 	// ...
 }
 ```
@@ -126,7 +135,6 @@ Each declaration separately.
 ```cpp
 int foo;
 int bar;
-float d;
 ```
 
 
@@ -136,8 +144,8 @@ float d;
 Pointer's astisks and reference's ampersands should be placed next to typename.
 
 ```cpp
-typename* foo;
-typename& bar;
+int* foo;
+int& bar;
 ```
 
 
@@ -146,9 +154,9 @@ typename& bar;
 
 ```cpp
 if (/* ... */)
-    // ...
+	// ...
 else
-    // ...
+	// ...
 
 for (/* ... */)
 	// ...
@@ -168,10 +176,11 @@ for (/* ... */) {
 ## Files
 ---
 
-### Extansions
+### Extensions
 
 * Source files: `.cpp`
-* Header files: `.h`
+* Header files: `.hpp`
+* Template files: `.tpp`
 * Docs: `.md`
 
 
@@ -185,17 +194,25 @@ Every file should use `UTF-8` encoding.
 ### Structure
 
 ```
-include/                    ; Includes/headers
-    Szczur/                 ; For scoping as <Szczur/...>
-        *.h
-src/                        ; Sources/implementation
-    Szczur/                 ; Just for fancy and symetry to headers :P
-        *.cpp
-docs/                       ; Documentation
-    *.md                    ; Common docs, i.e. StyleGuide.md ;)
-    Szczur/
-        *.md
-        *.*                 ; For example there could be aslo images.
+src/
+	Szczur/						; Scoping, i.e. <Szczur/...>
+		Core/					; Core Engine, e.g. Rendering, Memory Management
+			*.cpp
+			*.hpp
+			*.tpp
+		Modules/				; Scoping, i.e. <Szczur/Modules/...>
+			ExampleModule/			; Example module directory
+				*.cpp
+				*.hpp
+				*.tpp
+		Utils/					; Utility classes and functions
+			*.cpp
+			*.hpp
+			*.tpp
+docs/							; Documentation
+	*.md						; Common docs, e.g. StyleGuide.md
+	Szczur/
+		*.md
 ```
 
 
@@ -215,22 +232,29 @@ docs/                       ; Documentation
 
 1. Corresponding header file (if `.cpp`)
 2. C++ system files
-3. Other libraries' .h files
-4. Your project's .h files
+3. Other libraries' .hpp files
+4. Your project's .hpp files
+4. Template file (if `.hpp`)
 
 
 
 ```cpp
-#include "CorrespondingHeader.h"
+// Use quotation marks to include the corresponding header file
+#include "CorrespondingHeader.hpp"
 
+// Use angle brackets to include C++ libraries
 #include <iostream>
 #include <ctime>
 #include <string>
 
+// Use angle brackets to include 3rd-party libraries
+#include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../AnotherLocation/SomeHeader.h"
-#include "SomeOtherLocalHeader.h"
+// Use quotation marks to include another SzczurEngine headers
+#include "Szczur/Foo/Bar.hpp"
+// If the headers are a part of the same module use the relative path
+#include "Bar.hpp"
 ```
 
 
@@ -255,13 +279,13 @@ Use `inline` functions only when they are small e.g. 10 lines or less; or descri
 
 ### Namespaces
 
-Namespaces are useful because they allows to divide the global scope in named scopes which prevents functions/variables' names collisions.
+Namespaces are useful because they allows to divide the global scope in named scopes which prevents name collisions.
 
 ```cpp
-namespace X {
-    namespace Y {
-        // ...
-    }
+namespace Foo {
+	namespace Boo {
+		// ...
+	}
 }
 ```
 
@@ -294,8 +318,8 @@ void Foo(float angle, int index);
 Describe classes about what they provide.
 
 ```cpp
-/// Provide methods related with player character controlling.
-class PlayerController {
+/// Does foo.
+class Foo {
 	// ...
 }
 ```
@@ -308,7 +332,7 @@ Put spaces before and after the colon.
 
 ```cpp
 class DerivedClass : public BaseClass {
-    // ...
+	// ...
 }
 ```
 
@@ -319,9 +343,9 @@ class DerivedClass : public BaseClass {
 * friendship declarations
 
 
-* public fields
-* protected fields
-* private fields
+* public members
+* protected members
+* private members
 
 
 * public methods
@@ -339,11 +363,11 @@ To minimize confusion and errors. That is the order in which the initialization 
 
 ```cpp
 class Foo {
-    int m1;
-    int m2;
+	int m1;
+	int m2;
 public:
-    Foo(int x) :m2{x}, m1{++x} { }   // BAD: misleading initializer order
-    // ...
+	Foo(int x) :m2{x}, m1{++x} { }   // BAD: misleading initializer order
+	// ...
 };
 
 Foo x(1); // surprise: x.m1 == x.m2 == 2
@@ -362,9 +386,9 @@ Add a *underscore* in front of the private and protected field's name.
 
 ```cpp
 private:
-    typename _privateVarName;
+	typename _privateFoo;
 protected:
-    typename _protectedVarName;
+	typename _protectedBar;
 ```
 
 
@@ -374,9 +398,9 @@ protected:
 Left a *colon* in the same line as a declaration.
 
 ```cpp
-Class(int x, int y, const std::string& name) :
-    _x(x), _y(y), _name(name) {
-    // ...
+Foo(int x, int y, const std::string& name) :
+	_x(x), _y(y), _name(name) {
+	// ...
 }
 ```
 
@@ -393,24 +417,24 @@ Using in-class member initializers lets the compiler generate the function for y
 ##### Example, bad
 
 ```cpp
-class X1 { // BAD: doesn't use member initializers
-    std::string s;
-    int i;
+class Foo { // BAD: doesn't use member initializers
+	std::string s;
+	int i;
 public:
-    X1() :s{"default"}, i{1} { }
-    // ...
+	X1() :s{"default"}, i{1} { }
+	// ...
 };
 ```
 
 ##### Example
 
 ```cpp
-class X2 {
-    std::string s = "default";
-    int i = 1;
+class Bar {
+	std::string s = "default";
+	int i = 1;
 public:
-    // use compiler-generated default constructor
-    // ...
+	// use compiler-generated default constructor
+	// ...
 };
 ```
 
@@ -489,11 +513,11 @@ enum class Imagetype : int {
 	NotNice = -1
 };
 // ...
-Imagetype enum_var;
+Imagetype foo;
 // ...
-enum_var = Imagetype::Nice;
+foo = Imagetype::Nice;
 // ...
-auto var = static_cast<std::underlying_type_t<Imagetype>>(enum_var);
+auto bar = static_cast<std::underlying_type_t<Imagetype>>(foo);
 ```
 
 
@@ -562,9 +586,9 @@ Consider:
 ```cpp
 X* compute(args)    // don't
 {
-    X* res = new X{};
-    // ...
-    return res;
+	X* res = new X{};
+	// ...
+	return res;
 }
 ```
 
@@ -573,9 +597,9 @@ Who deletes the returned X? The problem would be harder to spot if compute retur
 ```cpp
 std::vector<double> compute(args)  // good
 {
-    std::vector<double> res(10000);
-    // ...
-    return res;
+	std::vector<double> res(10000);
+	// ...
+	return res;
 }
 ```
 
