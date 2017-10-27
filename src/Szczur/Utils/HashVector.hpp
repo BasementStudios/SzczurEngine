@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-#include <Szczur/Utils/Algorithm.h>
+#include "Algorithm.hpp"
 
 namespace rat {
 	template<typename K, typename T>
@@ -22,15 +22,15 @@ namespace rat {
 
 	public:
 
-	    HashVector() = default;
+		HashVector() = default;
 
-	    HashVector(const HashVector&) = default;
+		HashVector(const HashVector&) = default;
 
-	    HashVector& operator = (const HashVector&) = default;
+		HashVector& operator = (const HashVector&) = default;
 
-	    HashVector(HashVector&&) = default;
+		HashVector(HashVector&&) = default;
 
-	    HashVector& operator = (HashVector&&) = default;
+		HashVector& operator = (HashVector&&) = default;
 
 		void reserve(size_t capacity) {
 			_container.reserve(capacity);
@@ -47,7 +47,7 @@ namespace rat {
 		}
 
 		Value_t& get(Key_t key) {
-			return std::get<1>(*interpolationSearch(std::begin(_container), std::end(_container), key, [](const auto& a) {
+			return std::get<1>(*rat::interpolationSearch(std::begin(_container), std::end(_container), key, [](const auto& a) {
 				return std::get<0>(a);
 			}));
 		}
@@ -57,13 +57,20 @@ namespace rat {
 		}
 
 		const Value_t& get(Key_t key) const {
-			return std::get<1>(*interpolationSearch(std::begin(_container), std::end(_container), key, [](const auto& a) {
+			return std::get<1>(*rat::interpolationSearch(std::begin(_container), std::end(_container), key, [](const auto& a) {
 				return std::get<0>(a);
 			}));
 		}
 
 		const Value_t& operator [] (Key_t key) const {
 			return get(key);
+		}
+
+		template <typename F>
+		void forEach(F&& function) {
+			for(const auto& av : _container) {
+				function(*std::get<1>(av));
+			}
 		}
 
 		void sort() {
@@ -96,6 +103,30 @@ namespace rat {
 
 		decltype(auto) end() const {
 			return _container.end();
+		}
+
+		decltype(auto) cbegin() const {
+			return _container.cbegin();
+		}
+
+		decltype(auto) cend() const {
+			return _container.cend();
+		}
+
+		decltype(auto) rbegin() const {
+			return _container.rbegin();
+		}
+
+		decltype(auto) rend() const {
+			return _container.rend();
+		}
+
+		decltype(auto) crbegin() const {
+			return _container.crbegin();
+		}
+
+		decltype(auto) crend() const {
+			return _container.crend();
 		}
 	};
 }
