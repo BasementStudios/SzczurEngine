@@ -26,6 +26,21 @@ namespace rat {
 
 		BlockAllocator& operator = (const BlockAllocator&) = delete;
 
+		BlockAllocator(BlockAllocator&& other) noexcept :
+	        _data(other._data), _offset(other._offset), _capacity(other._capacity) {
+	        other.clear();
+	    }
+
+	    BlockAllocator& operator = (BlockAllocator&& other) noexcept {
+	        _data = other._data;
+	        _offset = other._offset;
+	        _capacity = other._capacity;
+
+	        other.clear();
+
+	        return *this;
+	    }
+
 		~BlockAllocator() {
 			deallocate();
 		}
@@ -85,5 +100,13 @@ namespace rat {
 		Size_t getCapacity() const {
 			return _capacity;
 		}
+
+	private:
+
+		void clear() {
+	        _data = nullptr;
+	        _offset = 0;
+	        _capacity = 0;
+    	}
 	};
 }
