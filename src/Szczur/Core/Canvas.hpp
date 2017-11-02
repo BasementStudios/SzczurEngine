@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include <boost/container/flat_map.hpp>
 
 #include <SFML/Graphics.hpp>
@@ -23,51 +21,21 @@ namespace rat {
 
 	public:
 
-		void init() {
+		void init();
 
-		}
+		void addLayer(rat::Hash32_t layerId);
 
-		void addLayer(rat::Hash32_t layerId) {
-			_layers.emplace(layerId, new Layer);
-		}
+		void resize(const sf::Vector2u& size);
+		void resize(const sf::RenderWindow& window);
 
-		void resize(const sf::Vector2u& size) {
-			_size = size;
-			for (auto& layer : _layers) {
-				std::get<1>(layer)->create(size);
-			}
-		}
+		void display(sf::RenderTarget& target, rat::Hash32_t layerId);
 
-		void resize(const sf::RenderWindow& window) {
-			resize(window.getSize());
-		}
+		void render(sf::Drawable& drawable, rat::Hash32_t layerId);
+		void render(Drawable& drawable, rat::Hash32_t layerId);
 
-		void display(sf::RenderTarget& target, rat::Hash32_t layerId) {
-			sf::Sprite spr;
-			_layers.at(layerId)->display();
-			spr.setTexture(_layers.at(layerId)->getTexture());
-			target.draw(spr);
-			_layers.at(layerId)->clear(sf::Color::Transparent);
-		}
+		Layer& getLayer(rat::Hash32_t layerId);
+		const Layer& getLayer(rat::Hash32_t layerId) const;
 
-		void render(sf::Drawable& drawable, rat::Hash32_t layerId) {
-			_layers.at(layerId)->draw(drawable);
-		}
-
-		void render(Drawable& drawable, rat::Hash32_t layerId) {
-			_layers.at(layerId)->draw(drawable);
-		}
-
-		Layer& getLayer(rat::Hash32_t layerId) {
-			return *_layers.at(layerId);
-		}
-
-		const Layer& getLayer(rat::Hash32_t layerId) const {
-			return *_layers.at(layerId);
-		}
-
-		sf::Vector2u getLayersSize() const {
-			return _size;
-		}
+		sf::Vector2u getLayersSize() const;
 	};
 }
