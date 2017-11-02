@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Szczur/Modules/Map/Map.hpp"
-#include "ModulesHolder.hpp"
+#include "Szczur/Utils/ModulesHolder.hpp"
 #include "AssetsLoader.hpp"
 #include "Canvas.hpp"
 

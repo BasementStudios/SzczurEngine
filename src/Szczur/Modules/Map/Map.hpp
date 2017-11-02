@@ -3,7 +3,7 @@
 #include <vector>
 #include <cmath>
 
-#include <Szczur/Core/ModuleBase.hpp>
+#include <Szczur/Utils/ModuleBase.hpp>
 #include <Szczur/Core/AssetsLoader.hpp>
 #include <Szczur/Core/Graphics/Sprite.hpp>
 #include <Szczur/Modules/Map/Object.hpp>

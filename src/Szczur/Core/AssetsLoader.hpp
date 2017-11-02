@@ -8,7 +8,7 @@
 
 #include "Szczur/Utils/Hash.hpp"
 #include "Szczur/Utils/HashVector.hpp"
-#include "ModuleBase.hpp"
+#include "Szczur/Utils/ModuleBase.hpp"
 #include "Graphics/Texture.hpp"
 
 namespace rat {
