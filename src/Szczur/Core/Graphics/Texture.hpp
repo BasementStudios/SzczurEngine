@@ -1,8 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <fstream>
-
 #include <SFML/Graphics.hpp>
 
 namespace rat {

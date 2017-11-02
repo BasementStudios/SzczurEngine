@@ -1,5 +1,7 @@
 #include "AssetsLoader.hpp"
 
+#include <iostream>
+
 namespace rat {
     void AssetsLoader::init() {
 
