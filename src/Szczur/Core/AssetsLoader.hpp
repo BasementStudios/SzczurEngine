@@ -4,18 +4,23 @@
 #include <vector>
 #include <fstream>
 
+#include <boost/container/flat_map.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include "Szczur/Utils/Hash.hpp"
-#include "Szczur/Utils/HashVector.hpp"
 #include "Szczur/Utils/ModuleBase.hpp"
 #include "Graphics/Texture.hpp"
 
 namespace rat {
 	class AssetsLoader : public ModuleBase<> { using ModuleBase::ModuleBase;
+	public:
+
+		using Holder_t = boost::container::flat_map<rat::Hash32_t, std::unique_ptr<rat::Texture>>;
+
 	private:
 
-		rat::HashVector<rat::Hash32_t, std::unique_ptr<rat::Texture>> _textures;
+		Holder_t _textures;
 
 	public:
 
@@ -24,11 +29,11 @@ namespace rat {
 		}
 
 		Texture& getTexture(rat::Hash32_t textureId) {
-			return *_textures[textureId];
+			return *_textures.at(textureId);
 		}
 
 		const Texture& getTexture(rat::Hash32_t textureId) const {
-			return *_textures[textureId];
+			return *_textures.at(textureId);
 		}
 
 		void loadNewTexture(const std::string& filename, int horiz, int vert) {
@@ -73,7 +78,6 @@ namespace rat {
 					++dataNumber;
 				}
 			}
-			_textures.sort();
 		}
 	};
 }
