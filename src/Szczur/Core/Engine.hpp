@@ -19,7 +19,7 @@ namespace rat {
 
 		sf::RenderWindow _window;
 		sf::Event _event;
-		sf::Clock _deltaTimeClock;
+		sf::Clock _mainClock;
 
 	public:
 

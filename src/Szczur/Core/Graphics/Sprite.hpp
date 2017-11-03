@@ -2,11 +2,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "RenderLayer.hpp"
 #include "Texture.hpp"
-#include "Layer.hpp"
 
 namespace rat {
-	class Sprite : public Drawable {
+	class Sprite : public sf::Drawable {
 	private:
 		const Texture* _textureHandler = nullptr;
 		int _frame = -1;
@@ -60,8 +60,8 @@ namespace rat {
 		}
 
 	// Utilites
-		void draw(Layer& layer) const override {
-			layer.draw(_sprite);
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+			target.draw(_sprite, states);
 		}
 	};
 }

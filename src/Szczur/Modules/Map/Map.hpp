@@ -47,7 +47,7 @@ namespace rat {
 				obj->render();
 			}
 			for (auto& spr : _explosives) {
-				getModule<Canvas>().render(*spr, rat::fnv1a_32("GAME"));
+				getModule<Canvas>().draw(rat::fnv1a_32("GAME"), *spr);
 			}
 		}
 	};
