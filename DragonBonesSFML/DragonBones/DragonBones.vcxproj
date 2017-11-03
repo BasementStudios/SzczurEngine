@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dragonBones\animation\Animation.cpp" />
+    <ClCompile Include="dragonBones\animation\AnimationState.cpp" />
+    <ClCompile Include="dragonBones\animation\BaseTimelineState.cpp" />
+    <ClCompile Include="dragonBones\animation\TimelineState.cpp" />
+    <ClCompile Include="dragonBones\animation\WorldClock.cpp" />
+    <ClCompile Include="dragonBones\armature\Armature.cpp" />
+    <ClCompile Include="dragonBones\armature\Bone.cpp" />
+    <ClCompile Include="dragonBones\armature\Constraint.cpp" />
+    <ClCompile Include="dragonBones\armature\Slot.cpp" />
+    <ClCompile Include="dragonBones\armature\TransformObject.cpp" />
+    <ClCompile Include="dragonBones\core\BaseObject.cpp" />
+    <ClCompile Include="dragonBones\core\DragonBones.cpp" />
+    <ClCompile Include="dragonBones\events\EventObject.cpp" />
+    <ClCompile Include="dragonBones\factories\BaseFactory.cpp" />
+    <ClCompile Include="dragonBones\geom\Point.cpp" />
+    <ClCompile Include="dragonBones\geom\Transform.cpp" />
+    <ClCompile Include="dragonBones\model\AnimationConfig.cpp" />
+    <ClCompile Include="dragonBones\model\AnimationData.cpp" />
+    <ClCompile Include="dragonBones\model\ArmatureData.cpp" />
+    <ClCompile Include="dragonBones\model\BoundingBoxData.cpp" />
+    <ClCompile Include="dragonBones\model\ConstraintData.cpp" />
+    <ClCompile Include="dragonBones\model\DisplayData.cpp" />
+    <ClCompile Include="dragonBones\model\DragonBonesData.cpp" />
+    <ClCompile Include="dragonBones\model\TextureAtlasData.cpp" />
+    <ClCompile Include="dragonBones\model\UserData.cpp" />
+    <ClCompile Include="dragonBones\parsers\BinaryDataParser.cpp" />
+    <ClCompile Include="dragonBones\parsers\DataParser.cpp" />
+    <ClCompile Include="dragonBones\parsers\JSONDataParser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dragonBones\animation\Animation.h" />
+    <ClInclude Include="dragonBones\animation\AnimationState.h" />
+    <ClInclude Include="dragonBones\animation\BaseTimelineState.h" />
+    <ClInclude Include="dragonBones\animation\IAnimatable.h" />
+    <ClInclude Include="dragonBones\animation\TimelineState.h" />
+    <ClInclude Include="dragonBones\animation\WorldClock.h" />
+    <ClInclude Include="dragonBones\armature\Armature.h" />
+    <ClInclude Include="dragonBones\armature\Bone.h" />
+    <ClInclude Include="dragonBones\armature\Constraint.h" />
+    <ClInclude Include="dragonBones\armature\IArmatureProxy.h" />
+    <ClInclude Include="dragonBones\armature\Slot.h" />
+    <ClInclude Include="dragonBones\armature\TransformObject.h" />
+    <ClInclude Include="dragonBones\core\BaseObject.h" />
+    <ClInclude Include="dragonBones\core\DragonBones.h" />
+    <ClInclude Include="dragonBones\DragonBonesHeaders.h" />
+    <ClInclude Include="dragonBones\events\EventObject.h" />
+    <ClInclude Include="dragonBones\events\IEventDispatcher.h" />
+    <ClInclude Include="dragonBones\factories\BaseFactory.h" />
+    <ClInclude Include="dragonBones\geom\ColorTransform.h" />
+    <ClInclude Include="dragonBones\geom\Matrix.h" />
+    <ClInclude Include="dragonBones\geom\Point.h" />
+    <ClInclude Include="dragonBones\geom\Rectangle.h" />
+    <ClInclude Include="dragonBones\geom\Transform.h" />
+    <ClInclude Include="dragonBones\model\AnimationConfig.h" />
+    <ClInclude Include="dragonBones\model\AnimationData.h" />
+    <ClInclude Include="dragonBones\model\ArmatureData.h" />
+    <ClInclude Include="dragonBones\model\BoundingBoxData.h" />
+    <ClInclude Include="dragonBones\model\ConstraintData.h" />
+    <ClInclude Include="dragonBones\model\DisplayData.h" />
+    <ClInclude Include="dragonBones\model\DragonBonesData.h" />
+    <ClInclude Include="dragonBones\model\TextureAtlasData.h" />
+    <ClInclude Include="dragonBones\model\UserData.h" />
+    <ClInclude Include="dragonBones\parsers\BinaryDataParser.h" />
+    <ClInclude Include="dragonBones\parsers\DataParser.h" />
+    <ClInclude Include="dragonBones\parsers\JSONDataParser.h" />
+    <ClInclude Include="rapidjson\allocators.h" />
+    <ClInclude Include="rapidjson\document.h" />
+    <ClInclude Include="rapidjson\encodedstream.h" />
+    <ClInclude Include="rapidjson\encodings.h" />
+    <ClInclude Include="rapidjson\error\en.h" />
+    <ClInclude Include="rapidjson\error\error.h" />
+    <ClInclude Include="rapidjson\filereadstream.h" />
+    <ClInclude Include="rapidjson\filewritestream.h" />
+    <ClInclude Include="rapidjson\fwd.h" />
+    <ClInclude Include="rapidjson\internal\biginteger.h" />
+    <ClInclude Include="rapidjson\internal\diyfp.h" />
+    <ClInclude Include="rapidjson\internal\dtoa.h" />
+    <ClInclude Include="rapidjson\internal\ieee754.h" />
+    <ClInclude Include="rapidjson\internal\itoa.h" />
+    <ClInclude Include="rapidjson\internal\meta.h" />
+    <ClInclude Include="rapidjson\internal\pow10.h" />
+    <ClInclude Include="rapidjson\internal\regex.h" />
+    <ClInclude Include="rapidjson\internal\stack.h" />
+    <ClInclude Include="rapidjson\internal\strfunc.h" />
+    <ClInclude Include="rapidjson\internal\strtod.h" />
+    <ClInclude Include="rapidjson\internal\swap.h" />
+    <ClInclude Include="rapidjson\istreamwrapper.h" />
+    <ClInclude Include="rapidjson\memorybuffer.h" />
+    <ClInclude Include="rapidjson\memorystream.h" />
+    <ClInclude Include="rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="rapidjson\pointer.h" />
+    <ClInclude Include="rapidjson\prettywriter.h" />
+    <ClInclude Include="rapidjson\rapidjson.h" />
+    <ClInclude Include="rapidjson\reader.h" />
+    <ClInclude Include="rapidjson\schema.h" />
+    <ClInclude Include="rapidjson\stream.h" />
+    <ClInclude Include="rapidjson\stringbuffer.h" />
+    <ClInclude Include="rapidjson\writer.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{F344BC20-A0F0-4CFA-9D30-48F8CE6045F5}</ProjectGuid>
+    <RootNamespace>DragonBones</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./.</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
