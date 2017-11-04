@@ -134,6 +134,7 @@ void WrapperSlot::_updateFrame()
 
 				_renderDisplay->sprite->setTexture(*currentTextureData->Sprite->getTexture());
 				_renderDisplay->sprite->setTextureRect(currentTextureData->Sprite->getTextureRect());
+				_renderDisplay->sprite->setOrigin({ 0.f, _renderDisplay->sprite->getLocalBounds().height });
 			}
 
 			_visibleDirty = true;
@@ -329,8 +330,12 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
 		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
 
-		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a, -globalTransformMatrix.c, pos.x,
-											   globalTransformMatrix.b, -globalTransformMatrix.d, pos.y,
+		static const float scale = 0.4f;
+
+		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a * scale, -globalTransformMatrix.c * scale, pos.x * scale,
+											   globalTransformMatrix.b * scale, -globalTransformMatrix.d * scale, pos.y * scale,
 											   0.f, 0.f, 0.f);
+
+		_renderDisplay->sprite->setScale({ 1.f, -1.f });
 	}
 }
