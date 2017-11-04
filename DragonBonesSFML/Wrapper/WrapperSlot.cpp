@@ -314,23 +314,23 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 			transform.m[5] *= _textureScale;*/
 		}
 
-
 		sf::Vector2f pos;
+
+		globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
+
+		auto a = globalTransformMatrix.a;
+		auto b = globalTransformMatrix.b;
+
+		globalTransformMatrix.a = -globalTransformMatrix.d;
+		globalTransformMatrix.b = -globalTransformMatrix.c;
+		globalTransformMatrix.c = b;
+		globalTransformMatrix.d = a;
 
 		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
 		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
 
-		//pos.x = globalTransformMatrix.tx - (globalTransformMatrix.d * _pivotX + globalTransformMatrix.d * _pivotY);
-	    //pos.y = -globalTransformMatrix.ty - (globalTransformMatrix.c * _pivotX + globalTransformMatrix.a * _pivotY);
-
-		static const sf::Vector2f offset(255.f, 255.f);
-
-		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a,	-globalTransformMatrix.c, pos.x,
+		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a, -globalTransformMatrix.c, pos.x,
 											   globalTransformMatrix.b, -globalTransformMatrix.d, pos.y,
 											   0.f, 0.f, 0.f);
-
-		/*_renderDisplay->matrix = sf::Transform(-globalTransformMatrix.d, globalTransformMatrix.b, pos.x,
-											   -globalTransformMatrix.c, globalTransformMatrix.a, pos.y,
-											   0.f, 0.f, 0.f);*/
 	}
 }

@@ -4,7 +4,7 @@
 
 App::App()
 {
-	_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(800, 600), "dasd");
+	_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1024, 768), "dasd");
 	_window->setFramerateLimit(60);
 
 	if (!_factory.loadDragonBonesData("dragon_boy_ske.json"))
@@ -41,12 +41,12 @@ void App::run()
 				_window->close();
 		}
 
-		_factory.update(lastUpdate.asSeconds());
+		_factory.update(lastUpdate.asSeconds() / 2);
 
-		_window->clear(sf::Color::Black);
+		_window->clear(sf::Color::White);
 
 		auto view = _window->getDefaultView();
-		view.setCenter(0.f, 0.f);
+		view.setCenter(0.f, 300.f);
 
 		_window->setView(view);
 
