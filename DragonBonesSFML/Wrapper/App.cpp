@@ -7,18 +7,18 @@ App::App()
 	_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1024, 768), "dasd");
 	_window->setFramerateLimit(60);
 
-	if (!_factory.loadDragonBonesData("dragon_boy_ske.json"))
+	if (!_factory.loadDragonBonesData("Armature_ske.json"))
 	{
 		assert(false);
 	}
 
-	if (!_factory.loadTextureAtlasData("dragon_boy_tex.json"))
+	if (!_factory.loadTextureAtlasData("Armature_tex.json"))
 	{
 		assert(false);
 	}
 
-	_armatureDisplay = std::unique_ptr<WrapperArmatureDisplay>(_factory.buildArmatureDisplay("DragonBoy"));
-	_armatureDisplay->getAnimation()->play("walk");
+	_armatureDisplay = std::unique_ptr<WrapperArmatureDisplay>(_factory.buildArmatureDisplay("Armature"));
+	_armatureDisplay->getAnimation()->play("RunCycle");
 	//_armatureDisplay->getAnimation()->stop("walk");
 }
 
@@ -41,7 +41,7 @@ void App::run()
 				_window->close();
 		}
 
-		_factory.update(lastUpdate.asSeconds() / 2);
+		_factory.update(lastUpdate.asSeconds());
 
 		_window->clear(sf::Color::White);
 

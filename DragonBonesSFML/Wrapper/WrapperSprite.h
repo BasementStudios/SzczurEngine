@@ -20,4 +20,3 @@ public:
 		target.draw(*sprite, matrix);
 	}
 };
-
