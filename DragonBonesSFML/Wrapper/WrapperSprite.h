@@ -11,12 +11,27 @@ public:
 	std::unique_ptr<sf::Sprite>		sprite;
 	sf::Transform					matrix;
 
+	sf::BlendMode					blendMode;
+
+	bool							visible;
+
 public:
-	WrapperSprite() = default;
+	WrapperSprite()
+	{
+		visible = true;
+		blendMode = sf::RenderStates::Default.blendMode;
+	}
+
 	~WrapperSprite() = default;
 
 	void render(sf::RenderTarget& target)
 	{
-		target.draw(*sprite, matrix);
+		sf::RenderStates states;
+		states.transform = matrix;
+		states.blendMode = blendMode;
+
+		if (visible)
+			target.draw(*sprite, states);
 	}
 };
+

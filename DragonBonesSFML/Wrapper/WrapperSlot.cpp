@@ -8,60 +8,68 @@
 
 void WrapperSlot::_updateVisible()
 {
-	//_renderDisplay->setVisible(_parent->getVisible());
+	_renderDisplay->visible = _parent->getVisible();
 }
 
 void WrapperSlot::_updateBlendMode()
 {
-	//WrapperSprite* spriteDisplay = dynamic_cast<WrapperSprite*>(_renderDisplay);
-	//if (spriteDisplay)
-	//{
-	//	switch (_blendMode)
-	//	{
-	//		case dragonBones::BlendMode::Normal:
-	//			//spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
-	//			break;
+	return;
 
-	//		case dragonBones::BlendMode::Add:
-	//		{
-	//			const auto texture = spriteDisplay->getTexture();
-	//			if (texture /*&& texture->hasPremultipliedAlpha()*/)
-	//			{
-	//				/*cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
-	//				spriteDisplay->setBlendFunc(blendFunc);*/
+	if (_renderDisplay)
+	{
+		switch (_blendMode)
+		{
+			case dragonBones::BlendMode::Normal:
+				// not sure is it correct
+				_renderDisplay->blendMode = sf::RenderStates::Default.blendMode;
 
-	//			}
-	//			else
-	//			{
-	//				//spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
-	//			}
-	//			break;
-	//		}
+				// in cocos2d
+				// spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
+				break;
 
-	//		default:
-	//			break;
-	//	}
-	//}
-	//else if (_childArmature)
-	//{
-	//	for (const auto slot : _childArmature->getSlots())
-	//	{
-	//		slot->_blendMode = _blendMode;
-	//		slot->_updateBlendMode();
-	//	}
-	//}
+			case dragonBones::BlendMode::Add:
+			{
+				const auto texture = _renderDisplay->sprite->getTexture();
+				if (texture)
+				{
+					// again not sure
+					_renderDisplay->blendMode = sf::BlendMode(sf::BlendMode::Factor::One, sf::BlendMode::Factor::One);
+
+					// in cocs2d
+					// cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
+				}
+				else
+				{
+					// I don't know here :/
+					// spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
+				}
+				break;
+			}
+
+			default:
+				break;
+		}
+	}
+	else if (_childArmature)
+	{
+		for (const auto slot : _childArmature->getSlots())
+		{
+			slot->_blendMode = _blendMode;
+			slot->_updateBlendMode();
+		}
+	}
 }
 
 void WrapperSlot::_updateColor()
 {
-	/*_renderDisplay->setOpacity(_colorTransform.alphaMultiplier * 255.0f);
+	sf::Color helpColor;
 
-	static cocos2d::Color3B helpColor;
+	helpColor.a = _colorTransform.alphaMultiplier * 255.0f;
 	helpColor.r = _colorTransform.redMultiplier * 255.0f;
 	helpColor.g = _colorTransform.greenMultiplier * 255.0f;
 	helpColor.b = _colorTransform.blueMultiplier * 255.0f;
 
-	_renderDisplay->setColor(helpColor);*/
+	_renderDisplay->sprite->setColor(helpColor);
 }
 
 void WrapperSlot::_initDisplay(void* value)
@@ -79,7 +87,6 @@ void WrapperSlot::_disposeDisplay(void* value)
 
 void WrapperSlot::_onUpdateDisplay()
 {
-	// musi byæ
 	_renderDisplay = static_cast<WrapperSprite*>(_display != nullptr ? _display : _rawDisplay);
 }
 
@@ -117,7 +124,6 @@ void WrapperSlot::_updateFrame()
 {
 	const auto meshData = _display == _meshDisplay ? _meshData : nullptr;
 	auto currentTextureData = static_cast<WrapperTextureData*>(_textureData);
-	//const auto frameDisplay = static_cast<WrapperSprite*>(_renderDisplay); // In cocos2dx render meshDisplay and frameDisplay are the same display
 
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
 	{
@@ -128,9 +134,7 @@ void WrapperSlot::_updateFrame()
 				const auto scale = currentTextureData->parent->scale * _armature->armatureData->scale;
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
 				_pivotY -= height;
-				_textureScale = scale; // cocos2d::Director::getInstance()->getContentScaleFactor();
-
-				 //frameDisplay->setSpriteFrame(currentTextureData->spriteFrame); // polygonInfo will be override
+				_textureScale = scale; 
 
 				_renderDisplay->sprite->setTexture(*currentTextureData->Sprite->getTexture());
 				_renderDisplay->sprite->setTextureRect(currentTextureData->Sprite->getTextureRect());
@@ -300,25 +304,14 @@ void WrapperSlot::_updateMesh()
 
 void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 {
-	/*transform.m[0] = globalTransformMatrix.a;
-	transform.m[1] = globalTransformMatrix.b;
-	transform.m[4] = -globalTransformMatrix.c;
-	transform.m[5] = -globalTransformMatrix.d;*/
-
-	if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+	if (isSkinnedMesh) // Identity transform.
 	{
-		if (_textureScale != 1.0f)
-		{
-			/*transform.m[0] *= _textureScale;
-			transform.m[1] *= _textureScale;
-			transform.m[4] *= _textureScale;
-			transform.m[5] *= _textureScale;*/
-		}
-
-		sf::Vector2f pos;
-
-		globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
-
+		_renderDisplay->matrix = sf::Transform(1.f, 0.f, 0.f,
+											   0.f, -1.f, 0.f,
+											   0.f, 0.f, 0.f);
+	}
+	else
+	{
 		auto a = globalTransformMatrix.a;
 		auto b = globalTransformMatrix.b;
 
@@ -327,15 +320,34 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 		globalTransformMatrix.c = b;
 		globalTransformMatrix.d = a;
 
-		pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
-		pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
+		sf::Vector2f pos;
 
-		static const float scale = 0.4f;
+		if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+		{
+			globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
 
-		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a * scale, -globalTransformMatrix.c * scale, pos.x * scale,
-											   globalTransformMatrix.b * scale, -globalTransformMatrix.d * scale, pos.y * scale,
+			pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
+			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
+		}
+		else if (_childArmature)
+		{
+			globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
+
+			pos.x = globalTransformMatrix.tx;
+			pos.y = globalTransformMatrix.ty;
+		}
+		else
+		{
+			// TODO (i don't know what is and how to replace getAnchorPointInPoints function
+			//const auto& anchorPoint = _renderDisplay->getAnchorPointInPoints();
+			//transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
+			//transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
+		}
+
+		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a * _textureScale, -globalTransformMatrix.c * _textureScale, pos.x * _textureScale,
+											   globalTransformMatrix.b * _textureScale, -globalTransformMatrix.d * _textureScale, pos.y * _textureScale,
 											   0.f, 0.f, 0.f);
 
-		_renderDisplay->sprite->setScale({ 1.f, -1.f });
+		_renderDisplay->matrix.scale(1.f, -1.f);
 	}
 }
