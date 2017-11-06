@@ -2,19 +2,19 @@
 
 #include <fstream>
 
-#include <boost/container/flat_map.hpp>
-
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utils/Hash.hpp"
-#include "Szczur/Utils/Modules.hpp"
+#include <m2/Utility/Hash.hpp>
+#include <m2/Utility/Modules.hpp>
+#include <m2/Container/FlatMap.hpp>
+
 #include "Graphics/Texture.hpp"
 
 namespace rat {
-	class AssetsLoader : public ModuleBase<> { using ModuleBase::ModuleBase;
+	class AssetsLoader : public m2::utility::ModuleBase<> { using ModuleBase::ModuleBase;
 	public:
 
-		using Holder_t = boost::container::flat_map<rat::Hash32_t, std::unique_ptr<rat::Texture>>;
+		using Holder_t = m2::container::FlatMap<m2::utility::Hash32_t, std::unique_ptr<rat::Texture>>;
 
 	private:
 
@@ -24,8 +24,8 @@ namespace rat {
 
 		void init();
 
-		Texture& getTexture(rat::Hash32_t textureId);
-		const Texture& getTexture(rat::Hash32_t textureId) const;
+		Texture& getTexture(m2::utility::Hash32_t textureId);
+		const Texture& getTexture(m2::utility::Hash32_t textureId) const;
 
 		void loadNewTexture(const std::string& filename, int horiz, int vert);
 		void loadNewTexture(const std::string& filename, const sf::Vector2i& frames);
