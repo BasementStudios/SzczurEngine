@@ -10,7 +10,7 @@ namespace rat {
 	class Engine {
 	private:
 
-		m2::utility::ModulesHolder<
+		ModulesHolder<
 			AssetsLoader,
 			Canvas,
 			Map

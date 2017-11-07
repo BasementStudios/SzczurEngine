@@ -7,20 +7,20 @@ namespace rat {
 
 	}
 
-	Texture& AssetsLoader::getTexture(m2::utility::Hash32_t textureId) {
-		return *_textures.get(textureId);
+	Texture& AssetsLoader::getTexture(Hash32_t textureId) {
+		return *_textures.at(textureId);
 	}
 
-	const Texture& AssetsLoader::getTexture(m2::utility::Hash32_t textureId) const {
-		return *_textures.get(textureId);
+	const Texture& AssetsLoader::getTexture(Hash32_t textureId) const {
+		return *_textures.at(textureId);
 	}
 
 	void AssetsLoader::loadNewTexture(const std::string& filename, int horiz, int vert) {
-		_textures.emplace(m2::utility::fnv1a_32(filename.data()), new rat::Texture(filename, horiz, vert));
+		_textures.emplace(rat::fnv1a_32(filename.data()), new rat::Texture(filename, horiz, vert));
 	}
 
 	void AssetsLoader::loadNewTexture(const std::string& filename, const sf::Vector2i& frames) {
-		_textures.emplace(m2::utility::fnv1a_32(filename.data()), new rat::Texture(filename, frames));
+		_textures.emplace(rat::fnv1a_32(filename.data()), new rat::Texture(filename, frames));
 	}
 
 	bool AssetsLoader::loadTexturesFromDataFile(const std::string& dataPath) {
@@ -57,6 +57,5 @@ namespace rat {
 				++dataNumber;
 			}
 		}
-		_textures.prepare();
 	}
 }

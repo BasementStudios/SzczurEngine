@@ -2,17 +2,17 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <m2/Utility/Hash.hpp>
-#include <m2/Utility/Modules.hpp>
-#include <m2/Container/FlatMap.hpp>
+#include <boost/container/flat_map.hpp>
 
+#include "Szczur/Utility/Hash.hpp"
+#include "Szczur/Utility/Modules.hpp"
 #include "Graphics/RenderLayer.hpp"
 
 namespace rat {
-	class Canvas : public m2::utility::ModuleBase<> { using ModuleBase::ModuleBase;
+	class Canvas : public ModuleBase<> { using ModuleBase::ModuleBase;
 	public:
 
-		using Holder_t = m2::container::FlatMap<m2::utility::Hash32_t, std::unique_ptr<rat::RenderLayer>>;
+		using Holder_t = boost::container::flat_map<Hash32_t, std::unique_ptr<rat::RenderLayer>>;
 
 	private:
 
@@ -27,14 +27,14 @@ namespace rat {
 
 		void recreateLayers();
 
-		void addLayer(m2::utility::Hash32_t layerId, std::size_t priority);
+		void addLayer(Hash32_t layerId, std::size_t priority);
 
-		void removeLayer(m2::utility::Hash32_t layerId);
+		void removeLayer(Hash32_t layerId);
 
-		rat::RenderLayer& getLayer(m2::utility::Hash32_t layerId);
-		const rat::RenderLayer& getLayer(m2::utility::Hash32_t layerId) const;
+		rat::RenderLayer& getLayer(Hash32_t layerId);
+		const rat::RenderLayer& getLayer(Hash32_t layerId) const;
 
-		void draw(m2::utility::Hash32_t layerId, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
+		void draw(Hash32_t layerId, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 
 		void display();
 	};

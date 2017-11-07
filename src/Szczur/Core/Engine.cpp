@@ -4,19 +4,19 @@ namespace rat {
 	Engine::Engine() {
 		_window.create(sf::VideoMode(400, 400), "SzczurEngine v0.0.0");
 
-		_modules.get_module<AssetsLoader>().init();
-		_modules.get_module<AssetsLoader>().loadTexturesFromDataDirectories("res_test/data.txt");
+		_modules.getModule<AssetsLoader>().init();
+		_modules.getModule<AssetsLoader>().loadTexturesFromDataDirectories("res_test/data.txt");
 
-		_modules.get_module<Canvas>().init(&_window);
-		_modules.get_module<Canvas>().addLayer(m2::utility::fnv1a_32("GAME"), 0);
-		_modules.get_module<Canvas>().addLayer(m2::utility::fnv1a_32("BACK"), 1);
+		_modules.getModule<Canvas>().init(&_window);
+		_modules.getModule<Canvas>().addLayer(rat::fnv1a_32("GAME"), 0);
+		_modules.getModule<Canvas>().addLayer(rat::fnv1a_32("BACK"), 1);
 
-		_modules.get_module<Map>().init();
+		_modules.getModule<Map>().init();
 	}
 
 	void Engine::changeResolution(const sf::Vector2u& size) {
 		_window.create(sf::VideoMode(size.x, size.y), "SzczurEngine v0.0.0");
-		_modules.get_module<Canvas>().recreateLayers();
+		_modules.getModule<Canvas>().recreateLayers();
 	}
 
 	void Engine::input() {
@@ -32,13 +32,13 @@ namespace rat {
 
 	void Engine::update() {
 		auto _deltaTime = _mainClock.restart().asSeconds();
-		_modules.get_module<Map>().update(_deltaTime);
+		_modules.getModule<Map>().update(_deltaTime);
 	}
 
 	void Engine::render() {
 		_window.clear();
-		_modules.get_module<Map>().render();
-		_modules.get_module<Canvas>().display();
+		_modules.getModule<Map>().render();
+		_modules.getModule<Canvas>().display();
 		_window.display();
 	}
 

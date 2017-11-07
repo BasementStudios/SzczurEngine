@@ -38,7 +38,7 @@ namespace rat {
 			shape.setOrigin({ 30.0f, 30.0f });
 			shape.setPosition(_pos);
 
-			_canvas.draw(m2::utility::fnv1a_32("BACK"), shape);
+			_canvas.draw(rat::fnv1a_32("BACK"), shape);
 		}
 	};
 }
