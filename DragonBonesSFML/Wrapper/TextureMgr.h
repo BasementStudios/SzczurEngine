@@ -15,7 +15,7 @@ public:
 	class TextureInfo
 	{
 	public:
-		std::shared_ptr<sf::Texture>	m_pTexture;
+		std::shared_ptr<sf::Texture>	texture;
 		std::string						m_imagePath;
 	};
 

@@ -24,7 +24,7 @@ sf::Texture* TextureMgr::GetTexture(const std::string &imagePath)
 	{
 		if (tex && tex->m_imagePath == imagePath)
 		{
-			return tex->m_pTexture.get();
+			return tex->texture.get();
 		}
 	}*/
 
@@ -33,7 +33,7 @@ sf::Texture* TextureMgr::GetTexture(const std::string &imagePath)
 	if (isFileExist(imagePath.c_str()))
 	{
 		auto texture = std::make_shared<sf::Texture>();
-		//texture->m_pTexture = std::make_shared<sf::Texture>();
+		//texture->texture = std::make_shared<sf::Texture>();
 
 		if (texture->loadFromFile(imagePath))
 		{

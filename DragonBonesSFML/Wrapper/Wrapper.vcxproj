@@ -31,8 +31,10 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="WrapperDisplay.h" />
     <ClInclude Include="WrapperFactory.h" />
     <ClInclude Include="WrapperArmatureDisplay.h" />
+    <ClInclude Include="WrapperMesh.h" />
     <ClInclude Include="WrapperSlot.h" />
     <ClInclude Include="WrapperSprite.h" />
     <ClInclude Include="WrapperTextureAtlasData.h" />

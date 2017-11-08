@@ -4,33 +4,22 @@
 
 #include <SFML\Graphics\Sprite.hpp>
 
-
 class WrapperSprite
 {
 public:
 	std::unique_ptr<sf::Sprite>		sprite;
-	sf::Transform					matrix;
-
-	sf::BlendMode					blendMode;
-
-	bool							visible;
 
 public:
 	WrapperSprite()
 	{
-		visible = true;
-		blendMode = sf::RenderStates::Default.blendMode;
+		sprite = nullptr;
 	}
 
 	~WrapperSprite() = default;
 
-	void render(sf::RenderTarget& target)
+	void render(sf::RenderTarget& target, sf::RenderStates states)
 	{
-		sf::RenderStates states;
-		states.transform = matrix;
-		states.blendMode = blendMode;
-
-		if (visible)
+		if (sprite)
 			target.draw(*sprite, states);
 	}
 };

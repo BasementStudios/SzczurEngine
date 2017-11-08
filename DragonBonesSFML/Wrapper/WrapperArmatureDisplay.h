@@ -25,7 +25,6 @@ public:
 	dragonBones::Armature* getArmature() const override { return _armature; }
 	dragonBones::Animation* getAnimation() const override { return _armature->getAnimation(); }
 
-	void update();
 	void render(sf::RenderWindow &window);
 };
 

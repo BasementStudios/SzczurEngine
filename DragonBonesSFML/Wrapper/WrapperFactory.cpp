@@ -11,6 +11,8 @@
 #include "Common.h"
 #include "TextureMgr.h"
 #include "WrapperSprite.h"
+#include "WrapperMesh.h"
+#include "WrapperDisplay.h"
 
 dragonBones::DragonBones* WrapperFactory::_dragonBonesInstance;
 
@@ -24,17 +26,6 @@ WrapperFactory::WrapperFactory()
 
 		_dragonBonesInstance = new dragonBones::DragonBones(eventManager);
 		_dragonBonesInstance->yDown = false;
-
-
-		// main loop
-		/*
-		cocos2d::Director::getInstance()->getScheduler()->schedule(
-			[&] (float passedTime)
-			{
-				_dragonBonesInstance->advanceTime(passedTime);
-			},
-			this, 0.0f, false, "dragonBonesClock"
-		);*/
 	}
 
 	_dragonBones = _dragonBonesInstance;
@@ -166,8 +157,7 @@ dragonBones::Armature* WrapperFactory::_buildArmature(const dragonBones::BuildAr
 dragonBones::Slot* WrapperFactory::_buildSlot(const dragonBones::BuildArmaturePackage& dataPackage, dragonBones::SlotData* slotData, std::vector<dragonBones::DisplayData*>* displays, dragonBones::Armature& armature) const
 {
 	const auto slot = dragonBones::BaseObject::borrowObject<WrapperSlot>();
-	auto rawDisplay = new WrapperSprite();
-	rawDisplay->sprite = std::make_unique<sf::Sprite>();
+	auto wrapperDisplay = new WrapperDisplay();
 
 	/*rawDisplay->retain();
 	rawDisplay->setCascadeOpacityEnabled(true);
@@ -175,7 +165,7 @@ dragonBones::Slot* WrapperFactory::_buildSlot(const dragonBones::BuildArmaturePa
 	rawDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
 	rawDisplay->setLocalZOrder(slotData->zOrder);*/
 	
-	slot->init(slotData, displays, rawDisplay, rawDisplay);
+	slot->init(slotData, displays, wrapperDisplay, wrapperDisplay);
 
 	return slot;
 }

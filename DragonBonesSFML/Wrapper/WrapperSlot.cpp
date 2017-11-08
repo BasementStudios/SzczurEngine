@@ -2,6 +2,8 @@
 
 #include <SFML\Graphics.hpp>
 
+#include "WrapperMesh.h"
+#include "WrapperSprite.h"
 #include "WrapperArmatureDisplay.h"
 #include "WrapperTextureAtlasData.h"
 #include "WrapperTextureData.h"
@@ -20,29 +22,12 @@ void WrapperSlot::_updateBlendMode()
 		switch (_blendMode)
 		{
 			case dragonBones::BlendMode::Normal:
-				// not sure is it correct
-				_renderDisplay->blendMode = sf::RenderStates::Default.blendMode;
-
-				// in cocos2d
-				// spriteDisplay->setBlendFunc(cocos2d::BlendFunc::DISABLE);
+				_renderDisplay->blendMode = sf::BlendMode();
 				break;
 
 			case dragonBones::BlendMode::Add:
 			{
-				const auto texture = _renderDisplay->sprite->getTexture();
-				if (texture)
-				{
-					// again not sure
-					_renderDisplay->blendMode = sf::BlendMode(sf::BlendMode::Factor::One, sf::BlendMode::Factor::One);
-
-					// in cocs2d
-					// cocos2d::BlendFunc blendFunc = { GL_ONE, GL_ONE };
-				}
-				else
-				{
-					// I don't know here :/
-					// spriteDisplay->setBlendFunc(cocos2d::BlendFunc::ADDITIVE);
-				}
+				_renderDisplay->blendMode = sf::BlendAdd;
 				break;
 			}
 
@@ -62,32 +47,35 @@ void WrapperSlot::_updateBlendMode()
 
 void WrapperSlot::_updateColor()
 {
-	sf::Color helpColor;
+	if (_display != _meshDisplay && _renderDisplay->_spriteDisplay)
+	{
+		sf::Color helpColor;
 
-	helpColor.a = _colorTransform.alphaMultiplier * 255.0f;
-	helpColor.r = _colorTransform.redMultiplier * 255.0f;
-	helpColor.g = _colorTransform.greenMultiplier * 255.0f;
-	helpColor.b = _colorTransform.blueMultiplier * 255.0f;
+		helpColor.a = _colorTransform.alphaMultiplier * 255.0f;
+		helpColor.r = _colorTransform.redMultiplier * 255.0f;
+		helpColor.g = _colorTransform.greenMultiplier * 255.0f;
+		helpColor.b = _colorTransform.blueMultiplier * 255.0f;
 
-	_renderDisplay->sprite->setColor(helpColor);
+		_renderDisplay->_spriteDisplay->sprite->setColor(helpColor);
+	}
 }
 
 void WrapperSlot::_initDisplay(void* value)
 {
-	//const auto renderDisplay = static_cast<sf::Sprite*>(value);
+	//const auto renderDisplay = static_cast<WrapperDisplay*>(value);
 	//renderDisplay->retain();
 }
 
 void WrapperSlot::_disposeDisplay(void* value)
 {
-	//const auto renderDisplay = static_cast<WrapperSprite*>(value);
+	//const auto renderDisplay = static_cast<WrapperDisplay*>(value);
 	//delete renderDisplay;
 
 }
 
 void WrapperSlot::_onUpdateDisplay()
 {
-	_renderDisplay = static_cast<WrapperSprite*>(_display != nullptr ? _display : _rawDisplay);
+	_renderDisplay = static_cast<WrapperDisplay*>(_display != nullptr ? _display : _rawDisplay);
 }
 
 void WrapperSlot::_addDisplay()
@@ -129,44 +117,131 @@ void WrapperSlot::_updateFrame()
 	{
 		if (currentTextureData->Sprite != nullptr)
 		{
-			if (meshData == nullptr) // Mesh.
+			if (meshData != nullptr) // Mesh
 			{
+				const auto data = meshData->parent->parent->parent;
+				const auto intArray = data->intArray;
+				const auto floatArray = data->floatArray;
+				const unsigned vertexCount = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexCount];
+				const unsigned triangleCount = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshTriangleCount];
+				int vertexOffset = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshFloatOffset];
+
+				if (vertexOffset < 0)
+				{
+					vertexOffset += 65536;
+				}
+
+				const unsigned uvOffset = vertexOffset + vertexCount * 2;
+
+				const auto& region = currentTextureData->region;
+				const auto& textureAtlasSize = currentTextureData->Sprite->getTexture()->getSize();
+				auto vertices = new sf::Vertex[vertexCount];
+				auto vertexIndices = new unsigned short[triangleCount * 3];
+				sf::FloatRect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
+
+				for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
+				{
+					const auto iH = i / 2;
+					const auto x = floatArray[vertexOffset + i];
+					const auto y = floatArray[vertexOffset + i + 1];
+					auto u = floatArray[uvOffset + i];
+					auto v = floatArray[uvOffset + i + 1];
+					sf::Vertex vertexData;
+					vertexData.position = { x, y };
+
+					if (currentTextureData->rotated)
+					{
+						vertexData.texCoords.x = (region.x + (1.0f - v) * region.width);
+						vertexData.texCoords.y = (region.y + u * region.height);
+					}
+					else
+					{
+						vertexData.texCoords.x = (region.x + u * region.width);
+						vertexData.texCoords.y = (region.y + v * region.height);
+					}
+
+					vertexData.color = sf::Color::White;
+					vertices[iH] = vertexData;
+
+					if (boundsRect.left > x)
+					{
+						boundsRect.left = x;
+					}
+
+					if (boundsRect.width < x)
+					{
+						boundsRect.width = x;
+					}
+
+					if (boundsRect.top > -y)
+					{
+						boundsRect.top = -y;
+					}
+
+					if (boundsRect.height < -y)
+					{
+						boundsRect.height = -y;
+					}
+				}
+
+				boundsRect.width -= boundsRect.left;
+				boundsRect.height -= boundsRect.top;
+
+				for (std::size_t i = 0; i < triangleCount * 3; ++i)
+				{
+					vertexIndices[i] = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexIndices + i];
+				}
+
+				_textureScale = 1.0f;
+
+				auto meshDisplay = new WrapperMesh();
+				meshDisplay->texture = currentTextureData->Sprite->getTexture();
+				meshDisplay->vertices = vertices;
+				meshDisplay->vertCount = vertexCount;
+
+				_renderDisplay->_meshDisplay = meshDisplay;
+
+			}
+			else // Normal texture
+			{
+
 				const auto scale = currentTextureData->parent->scale * _armature->armatureData->scale;
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
 				_pivotY -= height;
 				_textureScale = scale; 
 
-				_renderDisplay->sprite->setTexture(*currentTextureData->Sprite->getTexture());
-				_renderDisplay->sprite->setTextureRect(currentTextureData->Sprite->getTextureRect());
-				_renderDisplay->sprite->setOrigin({ 0.f, _renderDisplay->sprite->getLocalBounds().height });
+				auto spriteDisplay = new WrapperSprite();
+				spriteDisplay->sprite = std::make_unique<sf::Sprite>();
+				spriteDisplay->sprite->setTexture(*currentTextureData->Sprite->getTexture());
+				spriteDisplay->sprite->setTextureRect(currentTextureData->Sprite->getTextureRect());
+				spriteDisplay->sprite->setOrigin({ 0.f, spriteDisplay->sprite->getLocalBounds().height });
+				_renderDisplay->_spriteDisplay = spriteDisplay;
 			}
 
 			_visibleDirty = true;
-			_blendModeDirty = true; // Relpace texture will override blendMode and color.
+			_blendModeDirty = true;
 			_colorDirty = true;
 
 			return;
 		}
 	}
 
-	_renderDisplay->sprite->setTexture(sf::Texture());
-	_renderDisplay->sprite->setTextureRect(sf::IntRect());
-	_renderDisplay->sprite->setPosition(0.0f, 0.0f);
+	_renderDisplay->visible = false;
 }
 
 void WrapperSlot::_updateMesh()
 {
-	/*
+	
 	const auto hasFFD = !_ffdVertices.empty();
 	const auto scale = _armature->armatureData->scale;
 	const auto textureData = static_cast<WrapperTextureData*>(_textureData);
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
-	const auto meshDisplay = static_cast<WrapperSprite*>(_renderDisplay);
-	//const auto vertices = meshDisplay->getPolygonInfoModify().triangles.verts;
+	const auto meshDisplay = static_cast<WrapperDisplay*>(_renderDisplay)->_meshDisplay;
+	const auto vertices = meshDisplay->vertices;
 	sf::FloatRect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
 
-	if (!textureData || meshDisplay != textureData->Sprite)
+	if (!textureData || meshDisplay->texture != textureData->Sprite->getTexture())
 	{
 		return;
 	}
@@ -181,7 +256,7 @@ void WrapperSlot::_updateMesh()
 
 		if (weightFloatOffset < 0)
 		{
-			weightFloatOffset += 65536; // Fixed out of bouds bug. 
+			weightFloatOffset += 65536;
 		}
 
 		for (
@@ -214,30 +289,11 @@ void WrapperSlot::_updateMesh()
 				}
 			}
 
-			//auto& vertex = vertices[i];
-			//auto& vertexPosition = vertex.vertices;
+			auto& vertex = vertices[i];
+			auto& vertexPosition = vertex.position;
 
-			//vertexPosition.set(xG, -yG, 0.0f);
-
-			if (boundsRect.left > xG)
-			{			  
-				boundsRect.left = xG;
-			}
-
-			if (boundsRect.width < xG)
-			{
-				boundsRect.width = xG;
-			}
-
-			if (boundsRect.top > -yG)
-			{			   
-				boundsRect.top = -yG;
-			}
-
-			if (boundsRect.height < -yG)
-			{
-				boundsRect.height = -yG;
-			}
+			vertexPosition.x = xG;
+			vertexPosition.y = -yG + 600;
 		}
 	}
 	else if (hasFFD)
@@ -250,7 +306,7 @@ void WrapperSlot::_updateMesh()
 
 		if (vertexOffset < 0)
 		{
-			vertexOffset += 65536; // Fixed out of bouds bug. 
+			vertexOffset += 65536;
 		}
 
 		for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
@@ -259,56 +315,24 @@ void WrapperSlot::_updateMesh()
 			const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
 			const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
 
-			//auto& vertex = vertices[iH];
-			//auto& vertexPosition = vertex.vertices;
+			auto& vertex = vertices[iH];
+			auto& vertexPosition = vertex.position;
 
-			// vertexPosition.set(xG, -yG, 0.0f);
-
-			if (boundsRect.left > xG)
-			{			 
-				boundsRect.left = xG;
-			}
-
-			if (boundsRect.width < xG)
-			{
-				boundsRect.width = xG;
-			}
-
-			if (boundsRect.top > -yG)
-			{			   
-				boundsRect.top = -yG;
-			}
-
-			if (boundsRect.height < -yG)
-			{
-				boundsRect.height = -yG;
-			}
+			vertexPosition.x = xG;
+			vertexPosition.y = -yG + 600;
 		}
 	}
-
-	boundsRect.width -= boundsRect.left;
-	boundsRect.height -= boundsRect.top;
-
-	/*auto polygonInfo = meshDisplay->getPolygonInfo();
-	const auto& transform = meshDisplay->getTransform(); // Backup transform. (Set rect and polygon will override transform).
-
-#if COCOS2D_VERSION >= 0x00031400
-	polygonInfo.setRect(boundsRect);
-#else
-	polygonInfo.rect = boundsRect; // Copy
-	meshDisplay->setContentSize(boundsRect.size);
-#endif
-	meshDisplay->setPolygonInfo(polygonInfo);
-	meshDisplay->setNodeToParentTransform(transform);*/
 }
 
 void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 {
-	if (isSkinnedMesh) // Identity transform.
+	if (isSkinnedMesh)
 	{
-		_renderDisplay->matrix = sf::Transform(1.f, 0.f, 0.f,
-											   0.f, -1.f, 0.f,
-											   0.f, 0.f, 0.f);
+		auto matrix = sf::Transform(1.f, 0.f, 0.f,
+									0.f, 1.f, 0.f,
+									0.f, 0.f, 1.f);
+
+		_renderDisplay->matrix = matrix;
 	}
 	else
 	{
@@ -338,16 +362,17 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 		}
 		else
 		{
-			// TODO (i don't know what is and how to replace getAnchorPointInPoints function
-			//const auto& anchorPoint = _renderDisplay->getAnchorPointInPoints();
-			//transform.m[12] = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
-			//transform.m[13] = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
+			sf::Vector2f anchorPoint = { 1.f, 1.f };
+			pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
+			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
 		}
 
-		_renderDisplay->matrix = sf::Transform(globalTransformMatrix.a * _textureScale, -globalTransformMatrix.c * _textureScale, pos.x * _textureScale,
-											   globalTransformMatrix.b * _textureScale, -globalTransformMatrix.d * _textureScale, pos.y * _textureScale,
-											   0.f, 0.f, 0.f);
+		auto matrix = sf::Transform(globalTransformMatrix.a * _textureScale, -globalTransformMatrix.c * _textureScale, pos.x * _textureScale,
+									globalTransformMatrix.b * _textureScale, -globalTransformMatrix.d * _textureScale, pos.y * _textureScale,
+									0.f, 0.f, 1.f);
+					
+		matrix.scale(1.f, -1.f);
 
-		_renderDisplay->matrix.scale(1.f, -1.f);
+		_renderDisplay->matrix = matrix;
 	}
 }

@@ -6,8 +6,7 @@
 
 #include <SFML\Graphics.hpp>
 
-#include "WrapperSlot.h"
-#include "WrapperSprite.h"
+#include "WrapperDisplay.h"
 
 class WrapperSlot : public dragonBones::Slot
 {
@@ -15,8 +14,7 @@ class WrapperSlot : public dragonBones::Slot
 
 private:
 	float _textureScale;
-	WrapperSprite* _renderDisplay;
-
+	WrapperDisplay* _renderDisplay;
 
 public:
 	virtual void _updateVisible() override;

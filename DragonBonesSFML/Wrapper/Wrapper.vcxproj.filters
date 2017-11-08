@@ -68,5 +68,11 @@
     <ClInclude Include="WrapperFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WrapperMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WrapperDisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
