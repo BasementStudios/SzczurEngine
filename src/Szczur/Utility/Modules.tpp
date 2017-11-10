@@ -1,38 +1,38 @@
 namespace rat {
-	template<typename... Ts>
-	template<typename... Us>
-	ModuleBase<Ts...>::ModuleBase(std::tuple<Us...>& modules) :
-		_modules(std::get<Ts>(modules)...) {
+	template<typename... TModules>
+	template<typename... UModules>
+	ModuleBase<TModules...>::ModuleBase(std::tuple<UModules...>& modules) :
+		_modules(std::get<TModules>(modules)...) {
 
 	}
 
-	template<typename... Ts>
-	template<typename T>
-	T& ModuleBase<Ts...>::getModule() {
-		return std::get<T&>(_modules);
+	template<typename... TModules>
+	template<typename TModule>
+	TModule& ModuleBase<TModules...>::getModule() {
+		return std::get<TModule&>(_modules);
 	}
 
-	template<typename... Ts>
-	template<typename T>
-	const T& ModuleBase<Ts...>::getModule() const {
-		return std::get<T&>(_modules);
+	template<typename... TModules>
+	template<typename TModule>
+	const TModule& ModuleBase<TModules...>::getModule() const {
+		return std::get<TModule&>(_modules);
 	}
 
-	template<typename... Ts>
-	ModulesHolder<Ts...>::ModulesHolder() :
-		_modules(((void)Dummy<Ts>{}, _modules)...) {
+	template<typename... TModules>
+	ModulesHolder<TModules...>::ModulesHolder() :
+		_modules(((void)Dummy<TModules>{}, _modules)...) {
 
 	}
 
-	template<typename... Ts>
-	template<typename T>
-	T& ModulesHolder<Ts...>::getModule() {
-		return std::get<T>(_modules);
+	template<typename... TModules>
+	template<typename TModule>
+	TModule& ModulesHolder<TModules...>::getModule() {
+		return std::get<TModule>(_modules);
 	}
 
-	template<typename... Ts>
-	template<typename T>
-	const T& ModulesHolder<Ts...>::getModule() const {
-		return std::get<T>(_modules);
+	template<typename... TModules>
+	template<typename TModule>
+	const TModule& ModulesHolder<TModules...>::getModule() const {
+		return std::get<TModule>(_modules);
 	}
 }
