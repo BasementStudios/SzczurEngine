@@ -1,7 +1,7 @@
 namespace rat {
 	template<typename... TModules>
-	template<typename... UModules>
-	ModuleBase<TModules...>::ModuleBase(std::tuple<UModules...>& modules) :
+	template<typename UTuple>
+	ModuleBase<TModules...>::ModuleBase(UTuple&& modules) :
 		_modules(std::get<TModules>(modules)...) {
 
 	}

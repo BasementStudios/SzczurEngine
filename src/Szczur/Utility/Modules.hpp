@@ -15,8 +15,8 @@ namespace rat {
 
 	public:
 
-		template<typename... UModules>
-		ModuleBase(std::tuple<UModules...>& modules);
+		template<typename UTuple>
+		ModuleBase(UTuple&& modules);
 
 		ModuleBase(const ModuleBase&) = delete;
 
