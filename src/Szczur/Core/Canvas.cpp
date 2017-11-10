@@ -6,44 +6,38 @@
 namespace rat {
 	void Canvas::init(sf::RenderWindow* windowPtr) {
 		_windowPtr = windowPtr;
+
+		for (auto& av : _layers)
+			av.reset(new rat::RenderLayer(_windowPtr->getSize()));
 	}
 
 	void Canvas::recreateLayers() {
 		for (auto& av : _layers)
-			std::get<1>(av)->recreate(_windowPtr->getSize());
+			av->recreate(_windowPtr->getSize());
 	}
 
-	void Canvas::addLayer(Hash32_t layerId, std::size_t priority) {
-		_layers.emplace(layerId, new rat::RenderLayer(_windowPtr->getSize(), priority));
+	sf::RenderWindow& Canvas::getWindow() {
+		return *_windowPtr;
 	}
 
-	void Canvas::removeLayer(Hash32_t layerId) {
-		_layers.erase(layerId);
+	const sf::RenderWindow& Canvas::getWindow() const {
+		return *_windowPtr;
 	}
 
-	rat::RenderLayer& Canvas::getLayer(Hash32_t layerId) {
-		return *_layers.at(layerId);
+	rat::RenderLayer& Canvas::getLayer(LayerId layerId) {
+		return *_layers[(size_t)layerId];
 	}
 
-	const rat::RenderLayer& Canvas::getLayer(Hash32_t layerId) const {
-		return *_layers.at(layerId);
+	const rat::RenderLayer& Canvas::getLayer(LayerId layerId) const {
+		return *_layers[(size_t)layerId];
 	}
 
-	void Canvas::draw(Hash32_t layerId, const sf::Drawable& drawable, const sf::RenderStates& states) {
-		_layers.at(layerId)->draw(drawable, states);
+	void Canvas::draw(LayerId layerId, const sf::Drawable& drawable, const sf::RenderStates& states) {
+		_layers[(size_t)layerId]->draw(drawable, states);
 	}
 
 	void Canvas::display() {
-		// TODO better
-		std::vector<std::tuple<std::size_t, rat::RenderLayer*>> tmp;
-		for (auto& av : _layers) {
-			tmp.emplace_back(std::get<1>(av)->getPriority(), std::get<1>(av).get());
-		}
-		std::sort(tmp.begin(), tmp.end(), [](const auto& a, const auto& b) {
-			return std::get<0>(a) > std::get<0>(b);
-		});
-		for (auto& av : tmp) {
-			std::get<1>(av)->display(*_windowPtr);
-		}
+		for (auto& av : _layers)
+			av->display(*_windowPtr);
 	}
 }

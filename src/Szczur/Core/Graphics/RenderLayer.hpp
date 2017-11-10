@@ -8,40 +8,19 @@ namespace rat {
 
 		sf::RenderTexture _renderTexture;
 		sf::RenderStates _states;
-		std::size_t _priority;
 
 	public:
 
-		RenderLayer(const sf::Vector2u& size, std::size_t priority) :
-		 	_priority(priority) {
-			_renderTexture.create(size.x, size.y);
-		}
+		RenderLayer(const sf::Vector2u& size);
 
-		void recreate(const sf::Vector2u& size) {
-			_renderTexture.create(size.x, size.y);
-		}
+		void recreate(const sf::Vector2u& size);
 
-		sf::RenderTexture& base() {
-			return _renderTexture;
-		}
+		void setRenderStates(const sf::RenderStates& states);
 
-		const sf::RenderTexture& base() const {
-			return _renderTexture;
-		}
+		sf::RenderStates getRenderStates() const;
 
-		std::size_t getPriority() const {
-			return _priority;
-		}
+		void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 
-		void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) {
-			_renderTexture.draw(drawable, states);
-		}
-
-		void display(sf::RenderTarget& target) {
-			_renderTexture.display();
-			sf::Sprite spr(_renderTexture.getTexture());
-			target.draw(spr, _states);
-			_renderTexture.clear(sf::Color::Transparent);
-		}
+		void display(sf::RenderTarget& target);
 	};
 }

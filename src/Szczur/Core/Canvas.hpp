@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <array>
 
-#include <boost/container/flat_map.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "Szczur/Utility/Hash.hpp"
 #include "Szczur/Utility/Modules.hpp"
@@ -12,7 +12,13 @@ namespace rat {
 	class Canvas : public ModuleBase<> { using ModuleBase::ModuleBase;
 	public:
 
-		using Holder_t = boost::container::flat_map<Hash32_t, std::unique_ptr<rat::RenderLayer>>;
+		// TODO: Add all ids
+		enum class LayerId : size_t {
+			Back, Game,
+			Count
+		};
+
+		using Holder_t = std::array<std::unique_ptr<rat::RenderLayer>, (size_t)LayerId::Count>;
 
 	private:
 
@@ -21,20 +27,17 @@ namespace rat {
 
 	public:
 
-		Canvas() = default;
-
 		void init(sf::RenderWindow* windowPtr);
 
 		void recreateLayers();
 
-		void addLayer(Hash32_t layerId, std::size_t priority);
+		sf::RenderWindow& getWindow();
+		const sf::RenderWindow& getWindow() const;
 
-		void removeLayer(Hash32_t layerId);
+		rat::RenderLayer& getLayer(LayerId id);
+		const rat::RenderLayer& getLayer(LayerId id) const;
 
-		rat::RenderLayer& getLayer(Hash32_t layerId);
-		const rat::RenderLayer& getLayer(Hash32_t layerId) const;
-
-		void draw(Hash32_t layerId, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
+		void draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 
 		void display();
 	};

@@ -8,8 +8,6 @@ namespace rat {
 		_modules.getModule<AssetsLoader>().loadTexturesFromDataDirectories("res_test/data.txt");
 
 		_modules.getModule<Canvas>().init(&_window);
-		_modules.getModule<Canvas>().addLayer(rat::fnv1a_32("GAME"), 0);
-		_modules.getModule<Canvas>().addLayer(rat::fnv1a_32("BACK"), 1);
 
 		_modules.getModule<Map>().init();
 	}
