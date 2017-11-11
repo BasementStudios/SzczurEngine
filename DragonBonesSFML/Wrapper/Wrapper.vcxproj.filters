@@ -62,16 +62,13 @@
     <ClInclude Include="WrapperSlot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WrapperFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperMesh.h">
+    <ClInclude Include="WrapperDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperDisplay.h">
+    <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

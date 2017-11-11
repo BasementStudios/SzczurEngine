@@ -44,7 +44,6 @@ void WrapperArmatureDisplay::dispose(bool disposeProxy)
 	if (_armature)
 	{
 		delete _armature;
-		_armature = nullptr;
 	}
 }
 
@@ -57,14 +56,15 @@ void WrapperArmatureDisplay::render(sf::RenderWindow &window)
 	auto arr = _armature->getSlots();
 
 	for (auto item : arr)
+	//auto item = arr[6];
 	{
 		auto display = item->getRawDisplay();
 
-		if (!display)
-			continue;
+	//	if (!display)
+		//	continue;
 
 		WrapperDisplay* wrapperDisplay = static_cast<WrapperDisplay*>(display);
 
-		wrapperDisplay->render(window);
+		wrapperDisplay->render(window, sf::RenderStates::Default);
 	}
 }

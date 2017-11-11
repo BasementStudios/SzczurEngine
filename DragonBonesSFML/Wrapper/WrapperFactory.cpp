@@ -10,8 +10,7 @@
 #include "WrapperArmatureDisplay.h"
 #include "Common.h"
 #include "TextureMgr.h"
-#include "WrapperSprite.h"
-#include "WrapperMesh.h"
+#include "Mesh.h"
 #include "WrapperDisplay.h"
 
 dragonBones::DragonBones* WrapperFactory::_dragonBonesInstance;
@@ -20,10 +19,7 @@ WrapperFactory::WrapperFactory()
 {
 	if (_dragonBonesInstance == nullptr)
 	{
-
 		const auto eventManager = new WrapperArmatureDisplay();
-		//eventManager->retain();
-
 		_dragonBonesInstance = new dragonBones::DragonBones(eventManager);
 		_dragonBonesInstance->yDown = false;
 	}
@@ -34,6 +30,11 @@ WrapperFactory::WrapperFactory()
 WrapperFactory::~WrapperFactory()
 {
 	clear();
+
+	if (_dragonBonesInstance)
+	{
+		delete _dragonBonesInstance;
+	}
 }
 
 dragonBones::DragonBonesData* WrapperFactory::loadDragonBonesData(const std::string& filePath, const std::string& name)
@@ -102,7 +103,7 @@ sf::Sprite* WrapperFactory::getTextureDisplay(const std::string& textureName, co
 	const auto textureData = static_cast<WrapperTextureData*>(_getTextureData(dragonBonesName, textureName));
 	if (textureData != nullptr && textureData->Sprite != nullptr)
 	{
-		return textureData->Sprite;
+		return textureData->Sprite.get();
 	}
 
 	return nullptr;
@@ -113,41 +114,35 @@ void WrapperFactory::update(float lastUpdate)
 	_dragonBonesInstance->advanceTime(lastUpdate);
 }
 
-void WrapperFactory::render(sf::RenderWindow &window)
-{
-}
-
 dragonBones::TextureAtlasData* WrapperFactory::_buildTextureAtlasData(dragonBones::TextureAtlasData* textureAtlasData, void* textureAtlas) const
 {
+	auto wrappperTextureAtlasData = static_cast<WrapperTextureAtlasData*>(textureAtlasData);
+
 	if (textureAtlasData != nullptr)
 	{
 		if (textureAtlas != nullptr)
 		{
-			static_cast<WrapperTextureAtlasData*>(textureAtlasData)->setRenderTexture(static_cast<sf::Texture*>(textureAtlas));
+			wrappperTextureAtlasData->setRenderTexture(static_cast<sf::Texture*>(textureAtlas));
 		}
 		else
 		{
 			auto texture = TextureMgr::Get()->GetTexture(textureAtlasData->imagePath);
 
-			static_cast<WrapperTextureAtlasData*>(textureAtlasData)->setRenderTexture(texture);
+			wrappperTextureAtlasData->setRenderTexture(texture);
 		}
 	}
 	else
 	{
-		textureAtlasData = dragonBones::BaseObject::borrowObject<WrapperTextureAtlasData>();
+		wrappperTextureAtlasData = dragonBones::BaseObject::borrowObject<WrapperTextureAtlasData>();
 	}
 
-	return textureAtlasData;
+	return wrappperTextureAtlasData;
 }
 
 dragonBones::Armature* WrapperFactory::_buildArmature(const dragonBones::BuildArmaturePackage& dataPackage) const
 {
 	const auto armature = dragonBones::BaseObject::borrowObject<dragonBones::Armature>();
 	const auto armatureDisplay = new WrapperArmatureDisplay();
-
-	/*armatureDisplay->retain();
-	armatureDisplay->setCascadeOpacityEnabled(true);
-	armatureDisplay->setCascadeColorEnabled(true);*/
 
 	armature->init(dataPackage.armature, armatureDisplay, armatureDisplay, _dragonBones);
 
@@ -156,15 +151,11 @@ dragonBones::Armature* WrapperFactory::_buildArmature(const dragonBones::BuildAr
 
 dragonBones::Slot* WrapperFactory::_buildSlot(const dragonBones::BuildArmaturePackage& dataPackage, dragonBones::SlotData* slotData, std::vector<dragonBones::DisplayData*>* displays, dragonBones::Armature& armature) const
 {
-	const auto slot = dragonBones::BaseObject::borrowObject<WrapperSlot>();
+	auto slot = dragonBones::BaseObject::borrowObject<WrapperSlot>();
 	auto wrapperDisplay = new WrapperDisplay();
-
-	/*rawDisplay->retain();
-	rawDisplay->setCascadeOpacityEnabled(true);
-	rawDisplay->setCascadeColorEnabled(true);
-	rawDisplay->setAnchorPoint(cocos2d::Vec2::ZERO);
-	rawDisplay->setLocalZOrder(slotData->zOrder);*/
 	
+	_wrapperSlots.push_back(std::unique_ptr<WrapperSlot>(slot));
+
 	slot->init(slotData, displays, wrapperDisplay, wrapperDisplay);
 
 	return slot;

@@ -1,5 +1,7 @@
 #include "WrapperTextureAtlasData.h"
 
+#include <memory>
+
 #include <SFML\Graphics\Rect.hpp>
 #include <SFML\System\Vector2.hpp>
 
@@ -11,6 +13,9 @@ WrapperTextureAtlasData::WrapperTextureAtlasData()
 
 WrapperTextureAtlasData::~WrapperTextureAtlasData()
 {
+	printf("WrapperTextureAtlasData\n");
+
+	TextureAtlasData::_onClear();
 }
 
 void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
@@ -30,28 +35,20 @@ void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
 
 			if (textureData->Sprite == nullptr)
 			{
-
-				//_renderTexture->retain();
-
 				sf::FloatRect rect(
 					textureData->region.x, textureData->region.y,
 					textureData->rotated ? textureData->region.height : textureData->region.width,
 					textureData->rotated ? textureData->region.width : textureData->region.height
 				);
 
-				//printf("%s\n", textureData->name.c_str());
-
-				printf("[%s] %f %f %f %f\n", textureData->name.c_str(), rect.left, rect.top, rect.width, rect.height);
+				//printf("[%s] %f %f %f %f\n", textureData->name.c_str(), rect.left, rect.top, rect.width, rect.height);
 
 				sf::Vector2f originSize(rect.width, rect.height);
 
-				sf::Sprite *sprite = new sf::Sprite(*_renderTexture, sf::IntRect(rect));
+				auto sprite = std::make_unique<sf::Sprite>(*_renderTexture, sf::IntRect(rect));
 				sprite->rotate(textureData->rotated);
 
-				textureData->Sprite = sprite;
-
-				//textureData->Sprite = cocos2d::SpriteFrame::createWithTexture(_renderTexture, rect, textureData->rotated, offset, originSize);
-				//textureData->Sprite->retain();
+				textureData->Sprite = std::move(sprite);
 			}
 		}
 	}
@@ -61,23 +58,8 @@ void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
 		{
 			const auto textureData = static_cast<WrapperTextureData*>(pair.second);
 
-			if (textureData->Sprite)
-			{
-				delete textureData->Sprite;
-				textureData->Sprite = nullptr;
-			}
+			textureData->Sprite.reset();
 		}
-	}
-}
-
-void WrapperTextureAtlasData::clear()
-{
-	TextureAtlasData::_onClear();
-
-	if (_renderTexture)
-	{
-		delete _renderTexture;
-		_renderTexture = nullptr;
 	}
 }
 

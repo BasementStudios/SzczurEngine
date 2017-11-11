@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <string>
+#include <vector>
 
 #include <dragonBones\DragonBonesHeaders.h>
 
@@ -8,6 +9,9 @@
 #include <SFML\Graphics\Sprite.hpp>
 
 #include "WrapperArmatureDisplay.h"
+#include "WrapperSlot.h"
+#include "WrapperTextureData.h"
+#include "WrapperTextureAtlasData.h"
 
 class WrapperFactory : public dragonBones::BaseFactory
 {
@@ -15,6 +19,9 @@ protected:
 	static dragonBones::DragonBones* _dragonBonesInstance;
 
 	std::string _path;
+
+	mutable std::vector<std::unique_ptr<WrapperSlot>>				_wrapperSlots;
+	mutable std::vector<std::unique_ptr<WrapperTextureData>>		_wrapperTexturesData;
 
 public:
 	WrapperFactory();
@@ -27,7 +34,6 @@ public:
 	sf::Sprite* getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName = "") const;
 
 	void update(float lastUpdate);
-	void render(sf::RenderWindow &window);
 
 protected:
 	dragonBones::TextureAtlasData * _buildTextureAtlasData(dragonBones::TextureAtlasData * textureAtlasData, void * textureAtlas) const override;

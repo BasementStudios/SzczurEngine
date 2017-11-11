@@ -19,7 +19,4 @@ public:
 	sf::Texture* getRenderTexture() const { return _renderTexture; }
 
 	void setRenderTexture(sf::Texture* value);
-
-private:
-	void clear();
 };

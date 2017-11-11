@@ -2,14 +2,13 @@
 
 #include <memory>
 
-#include "WrapperMesh.h"
-#include "WrapperSprite.h"
+#include "Mesh.h"
 
 class WrapperDisplay
 {
 public:
-	WrapperMesh						*_meshDisplay;
-	WrapperSprite					*_spriteDisplay;
+	std::unique_ptr<Mesh>			_meshDisplay;
+	std::unique_ptr<sf::Sprite>		_spriteDisplay;
 
 	sf::Transform					matrix;
 	sf::BlendMode					blendMode;
@@ -24,31 +23,17 @@ public:
 		visible = true;
 	}
 
-	~WrapperDisplay()
-	{
-		if (_meshDisplay)
-		{
-			delete _meshDisplay;
-			_meshDisplay = nullptr;
-		}
+	~WrapperDisplay() = default;
 
-		if (_spriteDisplay)
-		{
-			delete _spriteDisplay;
-			_spriteDisplay = nullptr;
-		}
-	}
-
-	void render(sf::RenderTarget &window)
+	void render(sf::RenderTarget &window, sf::RenderStates states)
 	{
 		if (visible)
 		{
-			sf::RenderStates states;
 			states.blendMode = blendMode;
-			states.transform = matrix;
+			states.transform *= matrix;
 
 			if (_spriteDisplay)
-				_spriteDisplay->render(window, states);
+				window.draw(*_spriteDisplay, states);
 
 			if (_meshDisplay)
 				_meshDisplay->render(window, states);

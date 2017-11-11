@@ -14,7 +14,7 @@ class WrapperSlot : public dragonBones::Slot
 
 private:
 	float _textureScale;
-	WrapperDisplay* _renderDisplay;
+	std::unique_ptr<WrapperDisplay> _renderDisplay;
 
 public:
 	virtual void _updateVisible() override;
@@ -33,5 +33,7 @@ protected:
 	virtual void _updateFrame() override;
 	virtual void _updateMesh() override;
 	virtual void _updateTransform(bool isSkinnedMesh) override;
+
+	virtual void _onClear() override;
 };
 

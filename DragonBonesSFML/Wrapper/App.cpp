@@ -69,8 +69,7 @@ void App::run()
 		_window->clear(sf::Color::Black);
 
 		auto view = _window->getDefaultView();
-		view.setCenter(0.f, 300.f);
-
+		view.setCenter(0.f, 400);
 		_window->setView(view);
 		
 		_armatureDisplay->render(*_window);

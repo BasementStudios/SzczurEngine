@@ -34,9 +34,8 @@
     <ClInclude Include="WrapperDisplay.h" />
     <ClInclude Include="WrapperFactory.h" />
     <ClInclude Include="WrapperArmatureDisplay.h" />
-    <ClInclude Include="WrapperMesh.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="WrapperSlot.h" />
-    <ClInclude Include="WrapperSprite.h" />
     <ClInclude Include="WrapperTextureAtlasData.h" />
     <ClInclude Include="TextureMgr.h" />
     <ClInclude Include="WrapperTextureData.h" />

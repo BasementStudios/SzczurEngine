@@ -2,8 +2,7 @@
 
 #include <SFML\Graphics.hpp>
 
-#include "WrapperMesh.h"
-#include "WrapperSprite.h"
+#include "Mesh.h"
 #include "WrapperArmatureDisplay.h"
 #include "WrapperTextureAtlasData.h"
 #include "WrapperTextureData.h"
@@ -56,7 +55,7 @@ void WrapperSlot::_updateColor()
 		helpColor.g = _colorTransform.greenMultiplier * 255.0f;
 		helpColor.b = _colorTransform.blueMultiplier * 255.0f;
 
-		_renderDisplay->_spriteDisplay->sprite->setColor(helpColor);
+		_renderDisplay->_spriteDisplay->setColor(helpColor);
 	}
 }
 
@@ -75,7 +74,7 @@ void WrapperSlot::_disposeDisplay(void* value)
 
 void WrapperSlot::_onUpdateDisplay()
 {
-	_renderDisplay = static_cast<WrapperDisplay*>(_display != nullptr ? _display : _rawDisplay);
+	_renderDisplay = std::unique_ptr<WrapperDisplay>(static_cast<WrapperDisplay*>(_display != nullptr ? _display : _rawDisplay));
 }
 
 void WrapperSlot::_addDisplay()
@@ -135,71 +134,60 @@ void WrapperSlot::_updateFrame()
 
 				const auto& region = currentTextureData->region;
 				const auto& textureAtlasSize = currentTextureData->Sprite->getTexture()->getSize();
-				auto vertices = new sf::Vertex[vertexCount];
-				auto vertexIndices = new unsigned short[triangleCount * 3];
-				sf::FloatRect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
+
+				std::vector<std::shared_ptr<sf::Vertex>> vertices(vertexCount);
+				//sf::VertexArray vertices(sf::PrimitiveType::TrianglesFan);
+
+				std::vector<uint16_t> vertexIndices(triangleCount * 3);
 
 				for (std::size_t i = 0, l = vertexCount * 2; i < l; i += 2)
 				{
 					const auto iH = i / 2;
+
 					const auto x = floatArray[vertexOffset + i];
 					const auto y = floatArray[vertexOffset + i + 1];
 					auto u = floatArray[uvOffset + i];
 					auto v = floatArray[uvOffset + i + 1];
-					sf::Vertex vertexData;
-					vertexData.position = { x, y };
+					auto vertexData = std::make_shared<sf::Vertex>();
+					//sf::Vertex vertexData;
+					vertexData->position = { x, y };
 
 					if (currentTextureData->rotated)
 					{
-						vertexData.texCoords.x = (region.x + (1.0f - v) * region.width);
-						vertexData.texCoords.y = (region.y + u * region.height);
+						vertexData->texCoords.x = (region.x + (1.0f - v) * region.width);
+						vertexData->texCoords.y = (region.y + u * region.height);
 					}
 					else
 					{
-						vertexData.texCoords.x = (region.x + u * region.width);
-						vertexData.texCoords.y = (region.y + v * region.height);
+						vertexData->texCoords.x = (region.x + u * region.width);
+						vertexData->texCoords.y = (region.y + v * region.height);
 					}
 
-					vertexData.color = sf::Color::White;
+					vertexData->color = sf::Color::White;
 					vertices[iH] = vertexData;
-
-					if (boundsRect.left > x)
-					{
-						boundsRect.left = x;
-					}
-
-					if (boundsRect.width < x)
-					{
-						boundsRect.width = x;
-					}
-
-					if (boundsRect.top > -y)
-					{
-						boundsRect.top = -y;
-					}
-
-					if (boundsRect.height < -y)
-					{
-						boundsRect.height = -y;
-					}
 				}
-
-				boundsRect.width -= boundsRect.left;
-				boundsRect.height -= boundsRect.top;
 
 				for (std::size_t i = 0; i < triangleCount * 3; ++i)
 				{
-					vertexIndices[i] = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexIndices + i];
+					vertexIndices.push_back(intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexIndices + i]);
+				}
+
+				std::vector<sf::Vertex*> verticesDisplay;
+
+				// sorting
+				for (uint64_t i = 0; i < vertexIndices.size(); i++)
+				{
+					verticesDisplay.push_back(vertices[vertexIndices[i]].get());
 				}
 
 				_textureScale = 1.0f;
 
-				auto meshDisplay = new WrapperMesh();
+				auto meshDisplay = new Mesh();
 				meshDisplay->texture = currentTextureData->Sprite->getTexture();
-				meshDisplay->vertices = vertices;
-				meshDisplay->vertCount = vertexCount;
+				meshDisplay->vertices = std::move(vertices);
+				meshDisplay->verticesDisplay = std::move(verticesDisplay);
 
-				_renderDisplay->_meshDisplay = meshDisplay;
+				_renderDisplay->_meshDisplay = std::unique_ptr<Mesh>(meshDisplay);
 
 			}
 			else // Normal texture
@@ -210,12 +198,11 @@ void WrapperSlot::_updateFrame()
 				_pivotY -= height;
 				_textureScale = scale; 
 
-				auto spriteDisplay = new WrapperSprite();
-				spriteDisplay->sprite = std::make_unique<sf::Sprite>();
-				spriteDisplay->sprite->setTexture(*currentTextureData->Sprite->getTexture());
-				spriteDisplay->sprite->setTextureRect(currentTextureData->Sprite->getTextureRect());
-				spriteDisplay->sprite->setOrigin({ 0.f, spriteDisplay->sprite->getLocalBounds().height });
-				_renderDisplay->_spriteDisplay = spriteDisplay;
+				auto spriteDisplay = std::make_unique<sf::Sprite>();
+				spriteDisplay->setTexture(*currentTextureData->Sprite->getTexture());
+				spriteDisplay->setTextureRect(currentTextureData->Sprite->getTextureRect());
+				spriteDisplay->setOrigin({ 0.f, spriteDisplay->getLocalBounds().height });
+				_renderDisplay->_spriteDisplay = std::move(spriteDisplay);
 			}
 
 			_visibleDirty = true;
@@ -231,15 +218,13 @@ void WrapperSlot::_updateFrame()
 
 void WrapperSlot::_updateMesh()
 {
-	
 	const auto hasFFD = !_ffdVertices.empty();
 	const auto scale = _armature->armatureData->scale;
 	const auto textureData = static_cast<WrapperTextureData*>(_textureData);
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
-	const auto meshDisplay = static_cast<WrapperDisplay*>(_renderDisplay)->_meshDisplay;
-	const auto vertices = meshDisplay->vertices;
-	sf::FloatRect boundsRect(999999.0f, 999999.0f, -999999.0f, -999999.0f);
+	const auto meshDisplay = _renderDisplay->_meshDisplay.get();
+	auto& vertices = meshDisplay->vertices;
 
 	if (!textureData || meshDisplay->texture != textureData->Sprite->getTexture())
 	{
@@ -290,7 +275,7 @@ void WrapperSlot::_updateMesh()
 			}
 
 			auto& vertex = vertices[i];
-			auto& vertexPosition = vertex.position;
+			auto& vertexPosition = vertex->position;
 
 			vertexPosition.x = xG;
 			vertexPosition.y = -yG + 600;
@@ -315,8 +300,8 @@ void WrapperSlot::_updateMesh()
 			const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
 			const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
 
-			auto& vertex = vertices[iH];
-			auto& vertexPosition = vertex.position;
+			auto& vertex = vertices[i];
+			auto& vertexPosition = vertex->position;
 
 			vertexPosition.x = xG;
 			vertexPosition.y = -yG + 600;
@@ -346,7 +331,7 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 
 		sf::Vector2f pos;
 
-		if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
+		if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
 		{
 			globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
 
@@ -375,4 +360,13 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 
 		_renderDisplay->matrix = matrix;
 	}
+}
+
+void WrapperSlot::_onClear()
+{
+	Slot::_onClear();
+
+	_textureScale = 1.0f;
+
+	//_renderDisplay.reset();
 }
