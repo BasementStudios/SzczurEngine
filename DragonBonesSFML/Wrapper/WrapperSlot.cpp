@@ -180,7 +180,7 @@ void WrapperSlot::_updateFrame()
 					verticesDisplay.push_back(vertices[vertexIndices[i]].get());
 				}
 
-				_textureScale = 1.0f;
+				_textureScale = 1.f;
 
 				auto meshDisplay = new Mesh();
 				meshDisplay->texture = currentTextureData->Sprite->getTexture();
@@ -323,11 +323,18 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 	{
 		auto a = globalTransformMatrix.a;
 		auto b = globalTransformMatrix.b;
+		auto c = globalTransformMatrix.c;
+		auto d = globalTransformMatrix.d;
 
-		globalTransformMatrix.a = -globalTransformMatrix.d;
-		globalTransformMatrix.b = -globalTransformMatrix.c;
-		globalTransformMatrix.c = b;
-		globalTransformMatrix.d = a;
+		int flipped = 1;
+
+		if (_armature->getFlipX())
+			flipped = -1;
+
+		globalTransformMatrix.a = -d * flipped;
+		globalTransformMatrix.b = -c * flipped;
+		globalTransformMatrix.c = b * flipped;
+		globalTransformMatrix.d = a * flipped;
 
 		sf::Vector2f pos;
 
@@ -367,6 +374,4 @@ void WrapperSlot::_onClear()
 	Slot::_onClear();
 
 	_textureScale = 1.0f;
-
-	//_renderDisplay.reset();
 }
