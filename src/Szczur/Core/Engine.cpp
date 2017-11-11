@@ -8,8 +8,6 @@ namespace rat {
 		_modules.getModule<AssetsLoader>().loadTexturesFromDataDirectories("res_test/data.txt");
 
 		_modules.getModule<Canvas>().init(&_window);
-
-		_modules.getModule<Map>().init();
 	}
 
 	void Engine::changeResolution(const sf::Vector2u& size) {
@@ -30,12 +28,10 @@ namespace rat {
 
 	void Engine::update() {
 		auto _deltaTime = _mainClock.restart().asSeconds();
-		_modules.getModule<Map>().update(_deltaTime);
 	}
 
 	void Engine::render() {
 		_window.clear();
-		_modules.getModule<Map>().render();
 		_modules.getModule<Canvas>().display();
 		_window.display();
 	}

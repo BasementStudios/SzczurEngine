@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Map/Map.hpp"
 #include "AssetsLoader.hpp"
 #include "Canvas.hpp"
 
@@ -12,8 +11,7 @@ namespace rat {
 
 		ModulesHolder<
 			AssetsLoader,
-			Canvas,
-			Map
+			Canvas
 		> _modules;
 
 		sf::RenderWindow _window;
