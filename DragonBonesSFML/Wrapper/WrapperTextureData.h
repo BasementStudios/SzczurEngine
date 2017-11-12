@@ -13,14 +13,20 @@ class WrapperTextureData : public dragonBones::TextureData
 public:
 	std::unique_ptr<sf::Sprite> Sprite;
 
-public:
+public: 
 	WrapperTextureData()
 	{
 		TextureData::_onClear();
 	}
 
-	virtual ~WrapperTextureData() override
+	virtual ~WrapperTextureData()
 	{
+		TextureData::_onClear();
+	}
+
+	void _onClear() override
+	{
+		Sprite.reset();
 		TextureData::_onClear();
 	}
 };

@@ -84,7 +84,7 @@ dragonBones::TextureAtlasData* WrapperFactory::loadTextureAtlasData(const std::s
 	return static_cast<WrapperTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.c_str(), nullptr, name, scale));
 }
 
-WrapperArmatureDisplay* WrapperFactory::buildArmatureDisplay(const std::string & armatureName, const std::string & dragonBonesName, const std::string & skinName, const std::string & textureAtlasName) const
+WrapperArmatureDisplay* WrapperFactory::buildArmatureDisplay(const std::string & armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
 {
 	const auto armature = buildArmature(armatureName, dragonBonesName, skinName, textureAtlasName);
 

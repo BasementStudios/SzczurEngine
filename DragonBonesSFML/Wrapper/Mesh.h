@@ -27,7 +27,6 @@ public:
 			std::transform(std::begin(verticesDisplay), std::end(verticesDisplay), std::back_inserter(verts), [] (sf::Vertex* item) { return *item; });
 
 			target.draw(&verts[0], verts.size(), sf::PrimitiveType::Triangles, states);
-
 		}
 	}
 };

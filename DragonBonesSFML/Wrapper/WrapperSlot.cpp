@@ -374,4 +374,10 @@ void WrapperSlot::_onClear()
 	Slot::_onClear();
 
 	_textureScale = 1.0f;
+
+	if (_textureData)
+	{
+		delete _textureData;
+		_textureData = nullptr;
+	}
 }

@@ -60,8 +60,8 @@ void WrapperArmatureDisplay::render(sf::RenderWindow &window)
 	{
 		auto display = item->getRawDisplay();
 
-	//	if (!display)
-		//	continue;
+		if (!display)
+			continue;
 
 		WrapperDisplay* wrapperDisplay = static_cast<WrapperDisplay*>(display);
 

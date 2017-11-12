@@ -9,13 +9,12 @@
 
 WrapperTextureAtlasData::WrapperTextureAtlasData()
 {
+	_onClear();
 }
 
 WrapperTextureAtlasData::~WrapperTextureAtlasData()
 {
-	printf("WrapperTextureAtlasData\n");
-
-	TextureAtlasData::_onClear();
+	_onClear();
 }
 
 void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
@@ -43,8 +42,6 @@ void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
 
 				//printf("[%s] %f %f %f %f\n", textureData->name.c_str(), rect.left, rect.top, rect.width, rect.height);
 
-				sf::Vector2f originSize(rect.width, rect.height);
-
 				auto sprite = std::make_unique<sf::Sprite>(*_renderTexture, sf::IntRect(rect));
 				sprite->rotate(textureData->rotated);
 
@@ -65,5 +62,8 @@ void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
 
 dragonBones::TextureData* WrapperTextureAtlasData::createTexture() const
 {
+
 	return BaseObject::borrowObject<WrapperTextureData>();
 }
+
+
