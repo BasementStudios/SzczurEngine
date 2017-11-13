@@ -38,6 +38,7 @@ namespace rat {
 		const rat::RenderLayer& getLayer(LayerId id) const;
 
 		void draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
+		void draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 
 		void display();
 	};

@@ -21,6 +21,10 @@ namespace rat {
 		_renderTexture.draw(drawable, states);
 	}
 
+	void RenderLayer::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) {
+		_renderTexture.draw(vertices, vertexCount, type, states);
+	}
+
 	void RenderLayer::display(sf::RenderTarget& target) {
 		_renderTexture.display();
 		sf::Sprite spr(_renderTexture.getTexture());

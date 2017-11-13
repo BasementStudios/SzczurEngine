@@ -24,16 +24,21 @@ namespace rat {
 		return *_windowPtr;
 	}
 
-	rat::RenderLayer& Canvas::getLayer(LayerId layerId) {
-		return *_layers[(size_t)layerId];
+	rat::RenderLayer& Canvas::getLayer(LayerId id) {
+		return *_layers[(size_t)id];
 	}
 
-	const rat::RenderLayer& Canvas::getLayer(LayerId layerId) const {
-		return *_layers[(size_t)layerId];
+	const rat::RenderLayer& Canvas::getLayer(LayerId id) const {
+		return *_layers[(size_t)id];
 	}
 
-	void Canvas::draw(LayerId layerId, const sf::Drawable& drawable, const sf::RenderStates& states) {
-		_layers[(size_t)layerId]->draw(drawable, states);
+	void Canvas::draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states) {
+		_layers[(size_t)id]->draw(drawable, states);
+	}
+
+
+	void Canvas::draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) {
+		_layers[(size_t)id]->draw(vertices, vertexCount, type, states);
 	}
 
 	void Canvas::display() {
