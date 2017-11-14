@@ -36,7 +36,6 @@ namespace rat {
 		_layers[(size_t)id]->draw(drawable, states);
 	}
 
-
 	void Canvas::draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) {
 		_layers[(size_t)id]->draw(vertices, vertexCount, type, states);
 	}
