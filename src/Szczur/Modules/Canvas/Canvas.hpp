@@ -1,12 +1,12 @@
 #pragma once
 
 #include <array>
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/Hash.hpp"
+#include "RenderLayer.hpp"
 #include "Szczur/Utility/Modules.hpp"
-#include "Graphics/RenderLayer.hpp"
 
 namespace rat {
 	class Canvas : public ModuleBase<> { using ModuleBase::ModuleBase;
