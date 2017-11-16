@@ -1,7 +1,7 @@
 
 #
 $(info [ Makefile for SzczurEngine project ])
-$(info [   version 1.7.4 by PsychoX & <3   ])
+$(info [   version 1.7.5 by PsychoX & <3   ])
 #
 
 # Phony declarations
@@ -237,6 +237,12 @@ endif
 CXX := $(CROSS)g++
 LD  := $(CROSS)g++
 LS  := ls -AdoGh --time-style long-iso
+RM  := rm $(if $(CLEAN_FORCE),-rf,)
+PRINT := printf
+
+ifeq ($(SLIENT),yes)
+    PRINT := :
+endif
 
 
 
@@ -283,35 +289,35 @@ all: lnk
 lnk: $(OUT_FILE)
 $(OUT_FILE): $(OBJECTS)
 	@mkdir -p `dirname $@`
-	@printf "[Linking] $$ "
+	@$(PRINT) "[Linking] $$ "
 	$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
-	@printf "[Linked] -> "
+	@$(PRINT) "[Linked] -> "
 	-@$(LS) $@
 
 # Compiling
 obj: $(OBJECTS)
 $(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): $(SRC_DIR)/%$(SRC_EXT)
 	@mkdir -p `dirname $@`
-	@printf "[Compiling] $$ "
+	@$(PRINT) "[Compiling] $$ "
 	$(CXX) -c $< -o $@ $(CXXFLAGS)
-	@printf "[Compiled] -> "
+	@$(PRINT) "[Compiled] -> "
 	-@$(LS) $@
 
 # Preparsing 
 src: $(SOURCES)
 #$(SOURCES): $(SRC_DIR)/%$(SRC_EXT):
-#	@printf "[Preparsing] $$ "
+#	@$(PRINT) "[Preparsing] $$ "
 inc: $(HEADERS)
 #$(HEADERS): $(INC_DIR)/%$(INC_EXT):
-#	@printf "[Preparsing] $$ "
+#	@$(PRINT) "[Preparsing] $$ "
 tep: $(TEPLATS)
 #$(TEPLATS): $(TEP_DIR)/%$(TEP_EXT):
-#	@printf "[Preparsing] $$ "
+#	@$(PRINT) "[Preparsing] $$ "
 
 # Update sources by changes in related headers and templates
 update-compilable: 
 ifndef COMPILABLE_UPDATED
-	@printf "[Marking compilable to update] $ "
+	@$(PRINT) "[Marking compilable to update] $ "
 	# @todo ;f MrRaiN i PsychoX
 	#-@chmod +x ./helper.sh
 	#-./Update-By-Deps.sh --help work in progress ;)
@@ -320,18 +326,19 @@ endif
 
 # Run
 run: all
-	@echo "[Running]"
-	-cp $(OUT_FILE) $(RUN_FILE)
+	@$(PRINT) "[Running]\n"
+	@-cp $(OUT_FILE) $(RUN_FILE)
+	@chmod +x $(RUN_FILE)
 	cd ./$(RUN_DIR) & ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
 
 # Clean 
 clean: 
-	@echo "[Cleaning]"
+	@$(PRINT) "[Cleaning]\n"
 ifeq ($(CLEAN_FILES),) 
-	@echo Nothing to clean.
+	@$(PRINT) "Nothing to clean.\n"
 else
-	-rm $(if $(CLEAN_FORCE),-rf,) $(CLEAN_FILES)
-	-rm -d $(if $(CLEAN_FORCE),-rf,) $(CLEAN_DIRS)
+	-rm $(CLEAN_FILES)
+	-rm -d $(CLEAN_DIRS)
 endif
 
 info:
