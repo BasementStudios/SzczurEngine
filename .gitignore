@@ -10,4 +10,4 @@ settings.mk
 # Projects and sessions
 .clang_complete
 .vscode/
-.npp
+*.npp
