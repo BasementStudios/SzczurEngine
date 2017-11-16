@@ -17,7 +17,6 @@ namespace rat {
 
 	template<typename InputIt>
 	constexpr Hash64_t fnv1a_64(InputIt begin);
+}
 
 #include "Hash.tpp"
-
-}

@@ -1,7 +1,7 @@
 
-Visual Studio Code jako IDE do C++ z MinGW i SFML
-=================================================
-`#vscode #ide #c++ #mingw #sfml #gitbash #github`
+Visual Studio Code jako IDE do C++ z MinGW, Boost i SFML 
+========================================================
+`#vscode #ide #c++ #mingw #sfml #gitbash #github #boost'
 
 
 
@@ -24,27 +24,7 @@ Mingw-w64
 
 ### Instalacja
 
-Na początku pobieramy `mingw-w64-install.exe` ze strony https://sourceforge.net/projects/mingw-w64/ 
-
-Teraz instalujemy mingw-w64. Podczas instalacji najlepiej jest wybrać takie ustawienie:
-
-* dla 64-bit
-```
-	Version: 7.1.0
-	Architecture: x86_64
-	Threads: posix
-	Exception: seh
-	Build revision: 2
-```
-
-* dla 32-bit (nie testowane)
-```
-	Version: 7.1.0
-	Architecture: i686
-	Threads: posix
-	Exception: dwarf
-	Build revision: 2
-```
+Na początku pobieramy MinGW w64 (`SzczurEngine` zakłada C++17, więc raczej 7.x) ze strony https://sourceforge.net/projects/mingw-w64/files/ - może być to link `i686-posix-dwarf` dla `x32` i `x86_64-posix-seh` dla dodatkowo `x64`.
 
 Scieżkę instalacji polecam wybrać jak najprostrzą. np. `C:\mingw-w64`.
 
@@ -52,7 +32,9 @@ Scieżkę instalacji polecam wybrać jak najprostrzą. np. `C:\mingw-w64`.
 
 W folderze `.../mingw/bin` kopiujemy plik `mingw32-make.exe` jako `make.exe`.
 
-Do zmiennych środowiskowych dodajemy folder `.../mingw/bin`.
+Do zmiennych środowiskowych dodajemy folder `.../mingw/bin`, np. `C:\mingw-w64\mingw\bin`.
+
+W konsoli możemy sprawdzić pomyślność instalacji komendą `g++ --version`.
 
 
 
@@ -63,16 +45,29 @@ Biblioteka SFML
 
 ### Pobieranie
 
-Z linku https://www.sfml-dev.org/download/sfml/2.4.2/ pobieramy odpowiednie wersje:
+Z linku https://nightlybuilds.ch/project/show/1/SFML/ pobieramy odpowiednie wersje, najbliższe kompilatorowi:
 
-- dla 64-bit: `GCC 6.1.0 MinGW (SEH)`
-- dla 32-bit: `GCC 6.1.0 MinGW (DW2)`
+- dla 64-bit: `MinGW Builds Posix SEH x64`
+- dla 32-bit: `MinGW Builds Posix Dwarf x32`
 
-Dobrze jest mieć obie na dysku.
+Dobrze jest mieć obie na dysku, w dość sensowym i wspólnym miejscu, np. `E:\Libraries`.
 
 ### Informacja
 
 Pliki nagłówkowe są w folderze `include`. Możemy je dodać do podpowiedzi.
+
+
+
+
+
+Boost
+-----
+
+Pobieramy najnowszą wersję biblioteki ze strony http://www.boost.org/ i wypakowujemy w odpowienie miejsce. Dobrym miejscem jest np. także `E:\Libraries`. Wypakowne archiwum nazywamy np. `boost_builder` - bo jest to zestaw, z którego skompiluje się bilbioteka.
+
+Otwieramy terminal i wchodzimy do folderu `boost_builder` i tworzymy folder `stage`. Wchodzimy do `tools\build` i używay komendy `bootstrap.bat gcc` a następnie `b2.exe install toolset=gcc --prefix=..\..\stage`. Cofamy się do folderu `boost_builder` i używamy `stage\bin\b2.exe toolset=gcc --build-type=complete stage`. Czekamy... dłuższą chwilę ;)
+
+Chętni mogą sobie uporządkować libkę poprzez: stworzenie folderu np. `boost-1.65.1` w sensownym miesjcu, stworzenie tam folderu `include`, do którego przenosimy folder `boost_builder\boost`, przeniesienie folderu `boost_builder\stage\lib` i zmienienie jego nazwy na np.  `lib_MinGW-7.2.0-32/64`
 
 
 
@@ -98,6 +93,8 @@ Następnie zatwierdzamy enterem.
 ![img](https://i.imgur.com/GYPC6Gc.jpg "img")
 
 _(W Git Bashu, wklejamy zawartość schowka kombinacją klawiszy `Shift` + `Insert`)_
+
+Bardzo polecany jest także GitKraken - https://www.gitkraken.com/ - będącym przyjemnym i pomocnym graficznym interfejsem do Gita.
 
 
 
@@ -193,8 +190,7 @@ Koniec
 
 ### Gratulacje Szczurze!
 
-Od teraz możesz dowolnie używać Visual Studio Code by pisać swoje programy. W nagrodę będziesz pracował niewolniczo dla Pana Tomasza "Gimpera" Działowego, w produkcji jego gry, na której zarobi tylko on.
-
+Od teraz możesz pisać w Visual Studio Code C++ z MinGW, Boost i SFML.
 
 
 

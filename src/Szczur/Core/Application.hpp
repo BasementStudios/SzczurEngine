@@ -2,19 +2,16 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Map/Map.hpp"
-#include "Szczur/Utils/ModulesHolder.hpp"
-#include "AssetsLoader.hpp"
-#include "Canvas.hpp"
+#include "Szczur/Modules/Assets/Assets.hpp"
+#include "Szczur/Modules/Canvas/Canvas.hpp"
 
 namespace rat {
-	class Engine {
+	class Application {
 	private:
 
 		ModulesHolder<
-			AssetsLoader,
-			Canvas,
-			Map
+			Assets,
+			Canvas
 		> _modules;
 
 		sf::RenderWindow _window;
@@ -23,7 +20,7 @@ namespace rat {
 
 	public:
 
-		Engine();
+		Application();
 
 		void changeResolution(const sf::Vector2u& size);
 

@@ -25,7 +25,7 @@ obj/				; * Skompilowane obiekty, elementy do linkownia w aplikacje.
 out/
 	$(ARCH)/*[.exe]	; * Wynikowe pliki wykonywalne dla konkretnych platform.
 
-* - wyłączone z GitHuba - wpisane tutaj przez wzgląd na `Makefile`.
+* - wyłączone z Gita - wpisane tutaj przez wzgląd na `Makefile`.
 ```
 
 
@@ -39,6 +39,8 @@ Pliki katalogu głównego
 README.md			; Informacje ogólna o repozytorium i projekcie.
 LICENSE.md			; Licencja własna, i informacje o licencjach bibliotek.
 Makefile			; Sprypt `Makefile` do łatwej kompilacji i testowania silnika.
+settings.mk			; Ustawienia do skryptu `Makefile`.
+.gitignore			; Lista plików/katalogów do zignorowania dla Gita.
 ```
 
 

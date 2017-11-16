@@ -1,4 +1,13 @@
-obj/
-out/
-Makefile
+
+# Compiling results
+obj/*
+out/*
+!out/assets/
+
+# Configurations
+settings.mk
+
+# Projects and sessions
 .clang_complete
+.vscode/
+*.npp
