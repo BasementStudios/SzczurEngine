@@ -1,6 +1,6 @@
-#include "Szczur/Core/Engine.hpp"
+#include "Szczur/Core/Application.hpp"
 
 int main() {
-	rat::Engine engine;
-	return engine.run();
+	rat::Application app;
+	return app.run();
 }
