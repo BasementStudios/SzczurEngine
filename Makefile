@@ -1,7 +1,7 @@
 
 #
 $(info [ Makefile for SzczurEngine project ])
-$(info [   version 1.7.0 by PsychoX & <3   ])
+$(info [   version 1.7.1 by PsychoX & <3   ])
 #
 
 # Phony declarations
@@ -92,21 +92,28 @@ MXE_PKGS := sfml
 
 # Libraries 
 # 	Lists for bin/includes dirs
-LIB_INC_DIR_LIST := SFML
-LIB_BIN_DIR_LIST := SFML
+LIB_INC_DIR_LIST := SFML BOOST
+LIB_BIN_DIR_LIST := SFML 
 #		SFML
 LIB_INC_DIR_SFML_32 :=
 LIB_BIN_DIR_SFML_32 :=
 LIB_INC_DIR_SFML_64 :=
 LIB_BIN_DIR_SFML_64 :=
+#		Boost
+LIB_INC_DIR_BOOST_32 :=
+LIB_BIN_DIR_BOOST_32 :=
+LIB_INC_DIR_BOOST_64 :=
+LIB_BIN_DIR_BOOST_64 :=
 #	Lists for flags lists
-CXXFLAGS_STATIC_LIST  := SFML
-CXXFLAGS_DYNAMIC_LIST := SFML
+FLAG_LISTS  := SFML BOOST
 #		SFML
 CXXFLAGS_STATIC_SFML := -DSFML_STATIC
 LDFLAGS_STATIC_SFML  := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
 CXXFLAGS_DYNAMIC_SFML := 
 LDFLAGS_DYNAMIC_SFML  := -lsfml-graphics -lsfml-window -lsfml-system
+#		Boost
+CXXFLAGS_STATIC_BOOST :=
+CXXFLAGS_DYNAMIC_BOOST :=
 
 
 
@@ -173,6 +180,12 @@ ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
     CROSS := $(subst i686,x86_64,$(CROSS))
 endif
 
+# Linking
+ifeq ($(LINKING),static)
+    CXXFLAGS += -static
+    LDFLAGS += -static
+endif
+
 
 
 #
@@ -185,7 +198,7 @@ ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),1),1)
 	LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
 else
     # Add linking dependent flags
-    $(foreach FLAGSET, $(CXXFLAGS_$(LINKING)_LIST),				\
+    $(foreach FLAGSET, $(FLAG_LISTS)),							\
         $(eval CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(FLAGSET))) 	\
         $(eval LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(FLAGSET))) 	\
     )
@@ -304,8 +317,12 @@ run: all
 # Clean 
 clean: 
 	@echo "[Cleaning]"
+ifeq ($(CLEAN_FILES),) 
+	@echo Nothing to clean.
+else
 	-rm $(CLEAN_FILES)
 	-rmdir $(CLEAN_DIRS)
+endif
 
 info:
 	$(info  )
