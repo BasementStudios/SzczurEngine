@@ -2,12 +2,14 @@
 
 #include <memory>
 
-#include "Mesh.h"
+#include "SFMLMesh.h"
 
-class WrapperDisplay
+DRAGONBONES_NAMESPACE_BEGIN
+
+class SFMLDisplay
 {
 public:
-	std::unique_ptr<Mesh>			_meshDisplay;
+	std::unique_ptr<SFMLMesh>		_meshDisplay;
 	std::unique_ptr<sf::Sprite>		_spriteDisplay;
 
 	sf::Transform					matrix;
@@ -15,7 +17,7 @@ public:
 	bool							visible;
 
 public:
-	WrapperDisplay()
+	SFMLDisplay()
 	{
 		_meshDisplay = nullptr;
 		_spriteDisplay = nullptr;
@@ -23,7 +25,7 @@ public:
 		visible = true;
 	}
 
-	~WrapperDisplay() = default;
+	~SFMLDisplay() = default;
 
 	void render(sf::RenderTarget &window, sf::RenderStates states)
 	{
@@ -41,3 +43,4 @@ public:
 	}
 };
 
+DRAGONBONES_NAMESPACE_END

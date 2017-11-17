@@ -1,18 +1,20 @@
-#include "WrapperSlot.h"
+#include "SFMLSlot.h"
 
 #include <SFML\Graphics.hpp>
 
-#include "Mesh.h"
-#include "WrapperArmatureDisplay.h"
-#include "WrapperTextureAtlasData.h"
-#include "WrapperTextureData.h"
+#include "SFMLMesh.h"
+#include "SFMLArmatureDisplay.h"
+#include "SFMLTextureAtlasData.h"
+#include "SFMLTextureData.h"
 
-void WrapperSlot::_updateVisible()
+DRAGONBONES_NAMESPACE_BEGIN
+
+void SFMLSlot::_updateVisible()
 {
 	_renderDisplay->visible = _parent->getVisible();
 }
 
-void WrapperSlot::_updateBlendMode()
+void SFMLSlot::_updateBlendMode()
 {
 	return;
 
@@ -20,11 +22,11 @@ void WrapperSlot::_updateBlendMode()
 	{
 		switch (_blendMode)
 		{
-			case dragonBones::BlendMode::Normal:
+			case BlendMode::Normal:
 				_renderDisplay->blendMode = sf::BlendMode();
 				break;
 
-			case dragonBones::BlendMode::Add:
+			case BlendMode::Add:
 			{
 				_renderDisplay->blendMode = sf::BlendAdd;
 				break;
@@ -44,7 +46,7 @@ void WrapperSlot::_updateBlendMode()
 	}
 }
 
-void WrapperSlot::_updateColor()
+void SFMLSlot::_updateColor()
 {
 	if (_display != _meshDisplay && _renderDisplay->_spriteDisplay)
 	{
@@ -59,45 +61,45 @@ void WrapperSlot::_updateColor()
 	}
 }
 
-void WrapperSlot::_initDisplay(void* value)
+void SFMLSlot::_initDisplay(void* value)
 {
-	//const auto renderDisplay = static_cast<WrapperDisplay*>(value);
+	//const auto renderDisplay = static_cast<SFMLDisplay*>(value);
 	//renderDisplay->retain();
 }
 
-void WrapperSlot::_disposeDisplay(void* value)
+void SFMLSlot::_disposeDisplay(void* value)
 {
-	//const auto renderDisplay = static_cast<WrapperDisplay*>(value);
+	//const auto renderDisplay = static_cast<SFMLDisplay*>(value);
 	//delete renderDisplay;
 
 }
 
-void WrapperSlot::_onUpdateDisplay()
+void SFMLSlot::_onUpdateDisplay()
 {
-	_renderDisplay = std::unique_ptr<WrapperDisplay>(static_cast<WrapperDisplay*>(_display != nullptr ? _display : _rawDisplay));
+	_renderDisplay = std::unique_ptr<SFMLDisplay>(static_cast<SFMLDisplay*>(_display != nullptr ? _display : _rawDisplay));
 }
 
-void WrapperSlot::_addDisplay()
+void SFMLSlot::_addDisplay()
 {
-	//const auto container = static_cast<WrapperArmatureDisplay*>(_armature->getDisplay());
+	//const auto container = static_cast<SFMLArmatureDisplay*>(_armature->getDisplay());
 	//container->addChild(_renderDisplay);
 }
 
-void WrapperSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
+void SFMLSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
 {
-	/*const auto container = static_cast<WrapperArmatureDisplay*>(_armature->getDisplay());
+	/*const auto container = static_cast<SFMLArmatureDisplay*>(_armature->getDisplay());
 	const auto prevDisplay = isArmatureDisplay ? static_cast<WrapperSprite*>(value) : static_cast<WrapperSprite*>(value);
 	container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
 	container->removeChild(prevDisplay);
 	_textureScale = 1.0f;*/
 }
 
-void WrapperSlot::_removeDisplay()
+void SFMLSlot::_removeDisplay()
 {
 	//_renderDisplay->removeFromParent();
 }
 
-void WrapperSlot::_updateZOrder()
+void SFMLSlot::_updateZOrder()
 {
 	/*if (_renderDisplay->getLocalZOrder() == _zOrder)
 	{
@@ -107,23 +109,23 @@ void WrapperSlot::_updateZOrder()
 	_renderDisplay->setLocalZOrder(_zOrder);*/
 }
 
-void WrapperSlot::_updateFrame()
+void SFMLSlot::_updateFrame()
 {
 	const auto meshData = _display == _meshDisplay ? _meshData : nullptr;
-	auto currentTextureData = static_cast<WrapperTextureData*>(_textureData);
+	auto currentTextureData = static_cast<SFMLTextureData*>(_textureData);
 
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
 	{
 		if (currentTextureData->Sprite != nullptr)
 		{
-			if (meshData != nullptr) // Mesh
+			if (meshData != nullptr) // SFMLMesh
 			{
 				const auto data = meshData->parent->parent->parent;
 				const auto intArray = data->intArray;
 				const auto floatArray = data->floatArray;
-				const unsigned vertexCount = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexCount];
-				const unsigned triangleCount = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshTriangleCount];
-				int vertexOffset = intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshFloatOffset];
+				const unsigned vertexCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+				const unsigned triangleCount = intArray[meshData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
+				int vertexOffset = intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
 				if (vertexOffset < 0)
 				{
@@ -169,7 +171,7 @@ void WrapperSlot::_updateFrame()
 
 				for (std::size_t i = 0; i < triangleCount * 3; ++i)
 				{
-					vertexIndices.push_back(intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexIndices + i]);
+					vertexIndices.push_back(intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i]);
 				}
 
 				std::vector<sf::Vertex*> verticesDisplay;
@@ -182,12 +184,12 @@ void WrapperSlot::_updateFrame()
 
 				_textureScale = 1.f;
 
-				auto meshDisplay = new Mesh();
+				auto meshDisplay = new SFMLMesh();
 				meshDisplay->texture = currentTextureData->Sprite->getTexture();
 				meshDisplay->vertices = std::move(vertices);
 				meshDisplay->verticesDisplay = std::move(verticesDisplay);
 
-				_renderDisplay->_meshDisplay = std::unique_ptr<Mesh>(meshDisplay);
+				_renderDisplay->_meshDisplay = std::unique_ptr<SFMLMesh>(meshDisplay);
 
 			}
 			else // Normal texture
@@ -216,11 +218,11 @@ void WrapperSlot::_updateFrame()
 	_renderDisplay->visible = false;
 }
 
-void WrapperSlot::_updateMesh()
+void SFMLSlot::_updateMesh()
 {
 	const auto hasFFD = !_ffdVertices.empty();
 	const auto scale = _armature->armatureData->scale;
-	const auto textureData = static_cast<WrapperTextureData*>(_textureData);
+	const auto textureData = static_cast<SFMLTextureData*>(_textureData);
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
 	const auto meshDisplay = _renderDisplay->_meshDisplay.get();
@@ -236,8 +238,8 @@ void WrapperSlot::_updateMesh()
 		const auto data = meshData->parent->parent->parent;
 		const auto intArray = data->intArray;
 		const auto floatArray = data->floatArray;
-		const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexCount];
-		int weightFloatOffset = intArray[weightData->offset + (unsigned)dragonBones::BinaryOffset::WeigthFloatOffset];
+		const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+		int weightFloatOffset = intArray[weightData->offset + (unsigned)BinaryOffset::WeigthFloatOffset];
 
 		if (weightFloatOffset < 0)
 		{
@@ -245,7 +247,7 @@ void WrapperSlot::_updateMesh()
 		}
 
 		for (
-			std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)dragonBones::BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
+			std::size_t i = 0, iD = 0, iB = weightData->offset + (unsigned)BinaryOffset::WeigthBoneIndices + weightData->bones.size(), iV = (std::size_t)weightFloatOffset, iF = 0;
 			i < vertexCount;
 			++i
 			)
@@ -286,8 +288,8 @@ void WrapperSlot::_updateMesh()
 		const auto data = meshData->parent->parent->parent;
 		const auto intArray = data->intArray;
 		const auto floatArray = data->floatArray;
-		const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshVertexCount];
-		int vertexOffset = (std::size_t)intArray[meshData->offset + (unsigned)dragonBones::BinaryOffset::MeshFloatOffset];
+		const auto vertexCount = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexCount];
+		int vertexOffset = (std::size_t)intArray[meshData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
 		if (vertexOffset < 0)
 		{
@@ -309,7 +311,7 @@ void WrapperSlot::_updateMesh()
 	}
 }
 
-void WrapperSlot::_updateTransform(bool isSkinnedMesh)
+void SFMLSlot::_updateTransform(bool isSkinnedMesh)
 {
 	if (isSkinnedMesh)
 	{
@@ -369,7 +371,7 @@ void WrapperSlot::_updateTransform(bool isSkinnedMesh)
 	}
 }
 
-void WrapperSlot::_onClear()
+void SFMLSlot::_onClear()
 {
 	Slot::_onClear();
 
@@ -381,3 +383,5 @@ void WrapperSlot::_onClear()
 		_textureData = nullptr;
 	}
 }
+
+DRAGONBONES_NAMESPACE_END

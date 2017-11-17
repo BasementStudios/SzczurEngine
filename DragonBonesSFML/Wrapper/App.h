@@ -4,21 +4,22 @@
 
 #include <SFML\Graphics.hpp>
 
-#include "WrapperFactory.h"
+#include "SFMLFactory.h"
+#include "SFMLArmatureDisplay.h"
+
 #include "TextureMgr.h"
-#include "WrapperArmatureDisplay.h"
 
 class App
 {
 private:
-	WrapperFactory								_factory;
-	std::unique_ptr<WrapperArmatureDisplay>		_armatureDisplay;
+	dragonBones::SFMLFactory							_factory;
+	std::unique_ptr<dragonBones::SFMLArmatureDisplay>	_armatureDisplay;
 
-	TextureMgr									_textureMgr;
+	TextureMgr											_textureMgr;
 
-	std::unique_ptr<sf::RenderWindow>			_window;
+	std::unique_ptr<sf::RenderWindow>					_window;
 
-	sf::Clock									_lastUpdate;
+	sf::Clock											_lastUpdate;
 
 public:
 	App();

@@ -27,16 +27,16 @@
     <ClCompile Include="App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WrapperTextureAtlasData.cpp">
+    <ClCompile Include="SFMLArmatureDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WrapperArmatureDisplay.cpp">
+    <ClCompile Include="SFMLFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WrapperSlot.cpp">
+    <ClCompile Include="SFMLSlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WrapperFactory.cpp">
+    <ClCompile Include="SFMLTextureAtlasData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,25 +50,25 @@
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperTextureAtlasData.h">
+    <ClInclude Include="SFMLArmatureDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperTextureData.h">
+    <ClInclude Include="SFMLDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperArmatureDisplay.h">
+    <ClInclude Include="SFMLFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperSlot.h">
+    <ClInclude Include="SFMLSlot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperFactory.h">
+    <ClInclude Include="SFMLTextureAtlasData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WrapperDisplay.h">
+    <ClInclude Include="SFMLTextureData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="SFMLMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,30 +4,38 @@
 
 App::App()
 {
-	_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1024, 768), "dasd");
+	_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1024, 768), "Test animacji");
 	_window->setFramerateLimit(60);
 
-	//if (!_factory.loadDragonBonesData("Armature_ske.json"))
-	if (!_factory.loadDragonBonesData("Sheep_Ani_ske.json"))
+	//if (!_factory.loadDragonBonesData("zarzadca_ske.json"))
+	//if (!_factory.loadDragonBonesData("Sheep_Ani_ske.json"))
+	//if (!_factory.loadDragonBonesData("Cedmin_ske.json"))
+	if (!_factory.loadDragonBonesData("Cedmin2_ske.json"))
 	{
 		assert(false);
 	}
 
-	//if (!_factory.loadTextureAtlasData("Armature_tex.json"))
-	if (!_factory.loadTextureAtlasData("Sheep_Ani_tex.json"))
+	//if (!_factory.loadTextureAtlasData("zarzadca_tex.json"))
+	//if (!_factory.loadTextureAtlasData("Sheep_Ani_tex.json"))
+	//if (!_factory.loadTextureAtlasData("Cedmin_tex.json"))
+	if (!_factory.loadTextureAtlasData("Cedmin2_tex.json"))
 	{
 		assert(false);
 	}
 
-	_armatureDisplay = std::unique_ptr<WrapperArmatureDisplay>(_factory.buildArmatureDisplay("Armature"));
+	
+	_armatureDisplay = std::unique_ptr<dragonBones::SFMLArmatureDisplay>(_factory.buildArmatureDisplay("Armature"));
+	//_armatureDisplay = std::unique_ptr<SFMLArmatureDisplay>(_factory.buildArmatureDisplay("armatureName"));
 	//_armatureDisplay->getAnimation()->play("WalkCycle");
-	_armatureDisplay->getAnimation()->play("goat_walk_anim");
+	//_armatureDisplay->getAnimation()->play("stand", 100);
+	_armatureDisplay->getAnimation()->play("Cedmin_bieg");
+	//_armatureDisplay->getAnimation()->play("oddech_przerwy", 100);
+	//_armatureDisplay->getAnimation()->play("goat_walk_anim");
 }
 
 App::~App()
 {
 }
-
 
 void App::run()
 {
@@ -42,7 +50,7 @@ void App::run()
 			if (e.type == sf::Event::Closed)
 				_window->close();
 
-			static const float fadeTime = 0.2f;
+			/*static const float fadeTime = 0.2f;
 
 			if (e.type == sf::Event::KeyPressed)
 			{
@@ -61,15 +69,18 @@ void App::run()
 						_armatureDisplay->getAnimation()->fadeIn("goat_walk_anim", fadeTime);
 						break;
 				}
-			}
+			}*/
 		}
+
 
 		_factory.update(lastUpdate.asSeconds());
 
-		_window->clear(sf::Color::Black);
+		_window->clear(sf::Color::White);
 
 		auto view = _window->getDefaultView();
 		view.setCenter(0.f, 400);
+		view.zoom(5.f);
+
 		_window->setView(view);
 		
 		_armatureDisplay->render(*_window);

@@ -1,23 +1,25 @@
-#include "WrapperTextureAtlasData.h"
+#include "SFMLTextureAtlasData.h"
 
 #include <memory>
 
 #include <SFML\Graphics\Rect.hpp>
 #include <SFML\System\Vector2.hpp>
 
-#include "WrapperTextureData.h"
+#include "SFMLTextureData.h"
 
-WrapperTextureAtlasData::WrapperTextureAtlasData()
+DRAGONBONES_NAMESPACE_BEGIN
+
+SFMLTextureAtlasData::SFMLTextureAtlasData()
 {
 	_onClear();
 }
 
-WrapperTextureAtlasData::~WrapperTextureAtlasData()
+SFMLTextureAtlasData::~SFMLTextureAtlasData()
 {
 	_onClear();
 }
 
-void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
+void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 {
 	if (_renderTexture == value)
 	{
@@ -30,7 +32,7 @@ void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
 	{
 		for (const auto& pair : textures)
 		{
-			const auto textureData = static_cast<WrapperTextureData*>(pair.second);
+			const auto textureData = static_cast<SFMLTextureData*>(pair.second);
 
 			if (textureData->Sprite == nullptr)
 			{
@@ -53,17 +55,17 @@ void WrapperTextureAtlasData::setRenderTexture(sf::Texture* value)
 	{
 		for (const auto& pair : textures)
 		{
-			const auto textureData = static_cast<WrapperTextureData*>(pair.second);
+			const auto textureData = static_cast<SFMLTextureData*>(pair.second);
 
 			textureData->Sprite.reset();
 		}
 	}
 }
 
-dragonBones::TextureData* WrapperTextureAtlasData::createTexture() const
+TextureData* SFMLTextureAtlasData::createTexture() const
 {
 
-	return BaseObject::borrowObject<WrapperTextureData>();
+	return BaseObject::borrowObject<SFMLTextureData>();
 }
 
-
+DRAGONBONES_NAMESPACE_END

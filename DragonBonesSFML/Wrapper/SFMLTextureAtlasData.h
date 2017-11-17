@@ -3,20 +3,24 @@
 #include <dragonBones\DragonBonesHeaders.h>
 #include <SFML\Graphics\Texture.hpp>
 
-class WrapperTextureAtlasData : public dragonBones::TextureAtlasData
+DRAGONBONES_NAMESPACE_BEGIN
+
+class SFMLTextureAtlasData : public TextureAtlasData
 {
-	BIND_CLASS_TYPE_B(WrapperTextureAtlasData);
+	BIND_CLASS_TYPE_B(SFMLTextureAtlasData);
 
 private:
 	sf::Texture* _renderTexture;
 
 public:
-	WrapperTextureAtlasData();
-	~WrapperTextureAtlasData();
+	SFMLTextureAtlasData();
+	~SFMLTextureAtlasData();
 
-	virtual dragonBones::TextureData* createTexture() const override;
+	virtual TextureData* createTexture() const override;
 
 	sf::Texture* getRenderTexture() const { return _renderTexture; }
 
 	void setRenderTexture(sf::Texture* value);
 };
+
+DRAGONBONES_NAMESPACE_END

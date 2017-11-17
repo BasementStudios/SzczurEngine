@@ -4,17 +4,17 @@
 
 #include <dragonBones\DragonBonesHeaders.h>
 
-#include <SFML\Graphics.hpp>
+#include "SFMLDisplay.h"
 
-#include "WrapperDisplay.h"
+DRAGONBONES_NAMESPACE_BEGIN
 
-class WrapperSlot : public dragonBones::Slot
+class SFMLSlot : public Slot
 {
-	BIND_CLASS_TYPE_A(WrapperSlot);
+	BIND_CLASS_TYPE_A(SFMLSlot);
 
 private:
 	float _textureScale;
-	std::unique_ptr<WrapperDisplay> _renderDisplay;
+	std::unique_ptr<SFMLDisplay> _renderDisplay;
 
 public:
 	virtual void _updateVisible() override;
@@ -22,11 +22,11 @@ public:
 	virtual void _updateColor() override;
 
 protected:
-	virtual void _initDisplay(void * value) override;
-	virtual void _disposeDisplay(void * value) override;
+	virtual void _initDisplay(void* value) override;
+	virtual void _disposeDisplay(void* value) override;
 	virtual void _onUpdateDisplay() override;
 	virtual void _addDisplay() override;
-	virtual void _replaceDisplay(void * value, bool isArmatureDisplay) override;
+	virtual void _replaceDisplay(void* value, bool isArmatureDisplay) override;
 	virtual void _removeDisplay() override;
 	virtual void _updateZOrder() override;
 
@@ -37,3 +37,4 @@ protected:
 	virtual void _onClear() override;
 };
 
+DRAGONBONES_NAMESPACE_END

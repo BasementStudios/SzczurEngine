@@ -1,6 +1,10 @@
 #pragma once
 
-class Mesh
+#include <SFML\Graphics.hpp>
+
+DRAGONBONES_NAMESPACE_BEGIN
+
+class SFMLMesh
 {
 public:
 	const sf::Texture*									texture;
@@ -9,12 +13,12 @@ public:
 	std::vector<sf::Vertex*>							verticesDisplay;
 
 public:
-	Mesh()
+	SFMLMesh()
 	{
 		texture = nullptr;
 	}
 
-	~Mesh() = default;
+	~SFMLMesh() = default;
 
 	void render(sf::RenderTarget& target, sf::RenderStates states)
 	{
@@ -31,3 +35,4 @@ public:
 	}
 };
 
+DRAGONBONES_NAMESPACE_END

@@ -6,20 +6,22 @@
 
 #include <SFML\Graphics\Sprite.hpp>
 
-class WrapperTextureData : public dragonBones::TextureData
+DRAGONBONES_NAMESPACE_BEGIN
+
+class SFMLTextureData : public TextureData
 {
-	BIND_CLASS_TYPE_B(WrapperTextureData);
+	BIND_CLASS_TYPE_B(SFMLTextureData);
 
 public:
 	std::unique_ptr<sf::Sprite> Sprite;
 
-public: 
-	WrapperTextureData()
+public:
+	SFMLTextureData()
 	{
 		TextureData::_onClear();
 	}
 
-	virtual ~WrapperTextureData()
+	virtual ~SFMLTextureData()
 	{
 		TextureData::_onClear();
 	}
@@ -31,3 +33,4 @@ public:
 	}
 };
 
+DRAGONBONES_NAMESPACE_END
