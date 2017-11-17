@@ -17,8 +17,14 @@ namespace rat {
         return widget;
     }
 
-    void Widget::input(sf::Event event) {
+    void Widget::_input(sf::Event event) {
         
+    }
+
+    void Widget::input(sf::Event event) {
+        for(auto it : _children)
+            it->input(event);
+        _input(event);
     }
 
     void Widget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {

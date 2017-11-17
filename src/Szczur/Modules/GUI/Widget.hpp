@@ -14,14 +14,14 @@ namespace rat {
 		Widget* add(Widget* widget);
 
 		void update(float deltaTime);
-
-		virtual void input(sf::Event event);
+		void input(sf::Event event);
 
 	private:
 		
 		Widget* _parent;
 		std::vector<Widget*> _children;
 
+		virtual void _input(sf::Event event);
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		virtual void _update(float deltaTime);
 

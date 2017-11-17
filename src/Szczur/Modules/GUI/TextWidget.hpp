@@ -19,7 +19,9 @@ namespace rat {
     public:
         TextWidget(Widget* parent, sf::Text text);
 
+
     private:
+        void _input(sf::Event event) override;
         void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void _update(float deltaTime) override;
 

@@ -8,6 +8,11 @@ namespace rat {
         _text.setFont(_font);
     }
 
+    void TextWidget::_input(sf::Event event) {
+        setPosition( {(float)event.mouseMove.x, (float)event.mouseMove.y} );
+        //event.mouseMove.x;
+    }
+
     void TextWidget::_update(float deltaTime) {
 
     }
