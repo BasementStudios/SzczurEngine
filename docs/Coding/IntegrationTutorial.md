@@ -128,7 +128,7 @@ GitHub jest już dostarczony przez zainstalowanego wcześniej GitBasha.
 2. W wyświetlonym oknie, wpisujemy
 	
 	```
-	git clone https://github.com/mcrain345/SzczurEngine.git
+	git clone https://github.com/SzczurProject/SzczurEngine.git
 	```
 	
 3. Następnie zatwierdzamy enterem.
