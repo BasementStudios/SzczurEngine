@@ -6,11 +6,11 @@
 #include "Szczur/Utility/Modules.hpp"
 
 #include "Widget.hpp"
+#include "TextWidget.hpp"
 
 namespace rat {
     class GUI : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
     public:
-        //GUI() = default;
 
         void init();
         void update(float deltaTime);
