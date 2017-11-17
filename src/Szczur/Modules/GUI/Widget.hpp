@@ -13,13 +13,16 @@ namespace rat {
 
 		Widget* add(Widget* widget);
 
-		virtual void update(float deltaTime);
+		void update(float deltaTime);
 
 	private:
 		
 		Widget* _parent;
 		std::vector<Widget*> _children;
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		virtual void _update(float deltaTime);
+
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
 }

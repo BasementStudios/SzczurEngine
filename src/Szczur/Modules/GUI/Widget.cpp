@@ -17,14 +17,24 @@ namespace rat {
         return widget;
     }
 
+    void Widget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
+
+    }
+
+    void Widget::_update(float deltaTime) {
+
+    }
+
     void Widget::update(float deltaTime) {
         for(auto it : _children)
             it->update(deltaTime);
+        _update(deltaTime);
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         states.transform *= getTransform();
         for(auto it : _children)
             target.draw(*it, states);
+        _draw(target, states);
     }
 }
