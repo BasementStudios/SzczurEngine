@@ -1,20 +1,21 @@
-
 #
 # Settings
 #
-
+ 
 MXE=no
 MXE_DIR=/mnt/e/Libraries/MXE/mxe
-
-$(error Sprawdz plik konfiguracyjny settings.mk ;D)
+SLIENT=yes
+ 
+#$(error Sprawdz plik konfiguracyjny settings.mk ;D)
 # Zmień na odpowiednie ścieżki (btw, ważne dla Windowsa chyba)
-
-LIB_INC_DIR_SFML_32 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/include
-LIB_BIN_DIR_SFML_32 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/lib
-LIB_INC_DIR_SFML_64 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/include
-LIB_BIN_DIR_SFML_64 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/lib
-
-LIB_INC_DIR_BOOST_32 :=
-LIB_BIN_DIR_BOOST_32 :=
-LIB_INC_DIR_BOOST_64 :=
+ 
+ 
+LIB_INC_DIR_SFML_32 := c:/Biblioteki/GCC-2.4.2-SFML/include
+LIB_BIN_DIR_SFML_32 := c:/Biblioteki/GCC-2.4.2-SFML/lib
+LIB_INC_DIR_SFML_64 := c:/Biblioteki/GCC-2.4.2-SFML-64bit/include
+LIB_BIN_DIR_SFML_64 := c:/Biblioteki/GCC-2.4.2-SFML-64bit/lib
+ 
+LIB_INC_DIR_BOOST_32 := c:/Biblioteki/boost_1_65_1/boost
+LIB_BIN_DIR_BOOST_32 := 
+LIB_INC_DIR_BOOST_64 := c:/Biblioteki/boost_1_65_1/boost
 LIB_BIN_DIR_BOOST_64 :=

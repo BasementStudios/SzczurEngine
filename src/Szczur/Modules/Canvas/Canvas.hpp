@@ -14,7 +14,7 @@ namespace rat {
 
 		// TODO: Add all ids
 		enum class LayerId : size_t {
-			Back, Game,
+			Back, Game, GUI,
 			Count
 		};
 
