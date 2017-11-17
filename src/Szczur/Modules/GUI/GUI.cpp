@@ -8,6 +8,9 @@ namespace rat {
         ));
     }
 
+    void GUI::input(sf::Event event) {
+        _root.input(event);
+    }
 
     void GUI::update(float deltaTime) {
         _root.update(deltaTime);

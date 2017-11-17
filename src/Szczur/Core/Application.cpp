@@ -22,6 +22,9 @@ namespace rat {
 			if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Escape) {
 				_window.close();
 			}
+
+			_modules.getModule<GUI>().input(_event);
+
 		}
 	}
 
