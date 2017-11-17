@@ -15,6 +15,8 @@ namespace rat {
 
 		void update(float deltaTime);
 
+		virtual void input(sf::Event event);
+
 	private:
 		
 		Widget* _parent;
