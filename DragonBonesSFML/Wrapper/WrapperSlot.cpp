@@ -300,11 +300,11 @@ void WrapperSlot::_updateMesh()
 			const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
 			const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
 
-			auto& vertex = vertices[i];
+			auto& vertex = vertices[iH];
 			auto& vertexPosition = vertex->position;
 
 			vertexPosition.x = xG;
-			vertexPosition.y = -yG + 600;
+			vertexPosition.y = yG;
 		}
 	}
 }
