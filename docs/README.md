@@ -23,6 +23,6 @@ Informacje programistów są także przechowywane w przypiętych kartach na Disc
 
 #### Animacje
 
-* [Animacje](Animations/SkeletonAnimations.md)
+* [Animacje szkieletowe](Animations/SkeletonAnimations.md)
 
 
