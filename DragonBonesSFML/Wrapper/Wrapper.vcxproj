@@ -32,6 +32,7 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="SFMLDisplay.h" />
+    <ClInclude Include="SFMLEventDispatcher.h" />
     <ClInclude Include="SFMLFactory.h" />
     <ClInclude Include="SFMLArmatureDisplay.h" />
     <ClInclude Include="SFMLMesh.h" />

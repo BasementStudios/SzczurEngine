@@ -14,19 +14,6 @@ SFMLArmatureDisplay::~SFMLArmatureDisplay()
 {
 }
 
-bool SFMLArmatureDisplay::hasEvent(const std::string& type) const
-{
-	return true;
-}
-
-void SFMLArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& listener)
-{
-}
-
-void SFMLArmatureDisplay::removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener)
-{
-}
-
 void SFMLArmatureDisplay::dbInit(Armature* armature)
 {
 	_armature = armature;
@@ -41,16 +28,26 @@ void SFMLArmatureDisplay::dbUpdate()
 {
 }
 
+void SFMLArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& listener)
+{
+	_dispatcher.addEvent(type, listener);
+}
+
+void SFMLArmatureDisplay::removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener)
+{
+}
+
+void SFMLArmatureDisplay::_dispatchEvent(const std::string &type, EventObject *value)
+{
+	_dispatcher.dispatchEvent(type, value);
+}
+
 void SFMLArmatureDisplay::dispose(bool disposeProxy)
 {
 	if (_armature)
 	{
 		delete _armature;
 	}
-}
-
-void SFMLArmatureDisplay::_dispatchEvent(const std::string &type, EventObject *value)
-{
 }
 
 void SFMLArmatureDisplay::render(sf::RenderWindow &window)

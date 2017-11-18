@@ -71,5 +71,8 @@
     <ClInclude Include="SFMLMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SFMLEventDispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

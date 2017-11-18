@@ -1,5 +1,7 @@
 #include "App.h"
 
+#include <iostream>
+
 #include "Common.h"
 
 App::App()
@@ -31,6 +33,9 @@ App::App()
 	_armatureDisplay->getAnimation()->play("Cedmin_bieg");
 	//_armatureDisplay->getAnimation()->play("oddech_przerwy", 100);
 	//_armatureDisplay->getAnimation()->play("goat_walk_anim");
+
+	_armatureDisplay->addEvent(dragonBones::EventObject::LOOP_COMPLETE, [] (dragonBones::EventObject *e) { std::cout << "event" << std::endl; });
+
 }
 
 App::~App()
