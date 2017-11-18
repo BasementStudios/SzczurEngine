@@ -34,9 +34,9 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 		{
 			const auto textureData = static_cast<SFMLTextureData*>(pair.second);
 
-			if (textureData->Sprite == nullptr)
+			if (textureData->Texture == nullptr)
 			{
-				sf::FloatRect rect(
+				sf::IntRect rect(
 					textureData->region.x, textureData->region.y,
 					textureData->rotated ? textureData->region.height : textureData->region.width,
 					textureData->rotated ? textureData->region.width : textureData->region.height
@@ -44,10 +44,8 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 
 				//printf("[%s] %f %f %f %f\n", textureData->name.c_str(), rect.left, rect.top, rect.width, rect.height);
 
-				auto sprite = std::make_unique<sf::Sprite>(*_renderTexture, sf::IntRect(rect));
-				sprite->rotate(textureData->rotated);
-
-				textureData->Sprite = std::move(sprite);
+				textureData->Texture = _renderTexture;
+				textureData->Rect = std::move(rect);
 			}
 		}
 	}
@@ -57,14 +55,15 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 		{
 			const auto textureData = static_cast<SFMLTextureData*>(pair.second);
 
-			textureData->Sprite.reset();
+			// textureData->Sprite.reset();
+
+			// nothing to release
 		}
 	}
 }
 
 TextureData* SFMLTextureAtlasData::createTexture() const
 {
-
 	return BaseObject::borrowObject<SFMLTextureData>();
 }
 

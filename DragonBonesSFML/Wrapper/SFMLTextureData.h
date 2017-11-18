@@ -13,22 +13,24 @@ class SFMLTextureData : public TextureData
 	BIND_CLASS_TYPE_B(SFMLTextureData);
 
 public:
-	std::unique_ptr<sf::Sprite> Sprite;
+	sf::Texture*			Texture;
+	sf::IntRect				Rect;
 
 public:
 	SFMLTextureData()
 	{
-		TextureData::_onClear();
+		_onClear();
 	}
 
 	virtual ~SFMLTextureData()
 	{
-		TextureData::_onClear();
+		_onClear();
 	}
 
 	void _onClear() override
 	{
-		Sprite.reset();
+		Texture = nullptr;
+
 		TextureData::_onClear();
 	}
 };

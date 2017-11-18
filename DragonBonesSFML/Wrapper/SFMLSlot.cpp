@@ -116,7 +116,7 @@ void SFMLSlot::_updateFrame()
 
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
 	{
-		if (currentTextureData->Sprite != nullptr)
+		if (currentTextureData->Texture != nullptr)
 		{
 			if (meshData != nullptr) // SFMLMesh
 			{
@@ -135,7 +135,7 @@ void SFMLSlot::_updateFrame()
 				const unsigned uvOffset = vertexOffset + vertexCount * 2;
 
 				const auto& region = currentTextureData->region;
-				const auto& textureAtlasSize = currentTextureData->Sprite->getTexture()->getSize();
+				const auto& textureAtlasSize = currentTextureData->Texture->getSize();
 
 				std::vector<std::shared_ptr<sf::Vertex>> vertices(vertexCount);
 				//sf::VertexArray vertices(sf::PrimitiveType::TrianglesFan);
@@ -185,7 +185,7 @@ void SFMLSlot::_updateFrame()
 				_textureScale = 1.f;
 
 				auto meshDisplay = new SFMLMesh();
-				meshDisplay->texture = currentTextureData->Sprite->getTexture();
+				meshDisplay->texture = currentTextureData->Texture;
 				meshDisplay->vertices = std::move(vertices);
 				meshDisplay->verticesDisplay = std::move(verticesDisplay);
 
@@ -201,8 +201,8 @@ void SFMLSlot::_updateFrame()
 				_textureScale = scale; 
 
 				auto spriteDisplay = std::make_unique<sf::Sprite>();
-				spriteDisplay->setTexture(*currentTextureData->Sprite->getTexture());
-				spriteDisplay->setTextureRect(currentTextureData->Sprite->getTextureRect());
+				spriteDisplay->setTexture(*currentTextureData->Texture);
+				spriteDisplay->setTextureRect(currentTextureData->Rect);
 				spriteDisplay->setOrigin({ 0.f, spriteDisplay->getLocalBounds().height });
 				_renderDisplay->_spriteDisplay = std::move(spriteDisplay);
 			}
@@ -228,7 +228,7 @@ void SFMLSlot::_updateMesh()
 	const auto meshDisplay = _renderDisplay->_meshDisplay.get();
 	auto& vertices = meshDisplay->vertices;
 
-	if (!textureData || meshDisplay->texture != textureData->Sprite->getTexture())
+	if (!textureData || meshDisplay->texture != textureData->Texture)
 	{
 		return;
 	}

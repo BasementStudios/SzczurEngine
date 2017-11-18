@@ -100,12 +100,12 @@ SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatu
 	return nullptr;
 }
 
-sf::Sprite* SFMLFactory::getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName) const
+sf::Texture* SFMLFactory::getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName) const
 {
 	const auto textureData = static_cast<SFMLTextureData*>(_getTextureData(dragonBonesName, textureName));
-	if (textureData != nullptr && textureData->Sprite != nullptr)
+	if (textureData != nullptr && textureData->Texture != nullptr)
 	{
-		return textureData->Sprite.get();
+		return textureData->Texture;
 	}
 
 	return nullptr;
