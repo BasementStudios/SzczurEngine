@@ -10,7 +10,7 @@
 namespace rat {
     class ButtonWidget : public Widget {
     public:
-        ButtonWidget(std::function<bool(Widget*)> callback = NULL);
+        ButtonWidget(std::function<bool(Widget*)> callback);
         ButtonWidget(std::function<bool()> callback = NULL);
 
         ButtonWidget* setCallback(std::function<bool(Widget*)> callback);

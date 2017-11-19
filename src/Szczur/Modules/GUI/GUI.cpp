@@ -11,10 +11,13 @@ namespace rat {
         
         _root.add( new CheckboxWidget(&_root) )
             ->setPosition({700.f, 700.f});*/
-        Widget* button = _root.add( new ButtonWidget([](){
-            std::cout << "asdasdasd" << '\n';
-            return true;
-        }));
+        Widget* button = _root.add( 
+            new ButtonWidget()->setCallback(
+                []() {
+                    return true;
+                }
+            )
+        );
         button->setPosition({100.f, 100.f});
         button->add( new ImageWidget("data/button.png") );
     }
