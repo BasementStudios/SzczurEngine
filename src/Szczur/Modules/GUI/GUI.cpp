@@ -6,9 +6,11 @@ namespace rat {
             &_root, 
             TextWidget::createText("Hello Fucking World!", 100u, sf::Color(255,0,255))
         )) ->setPosition({500.f, 500.f});
-        */
+        
         _root.add( new CheckboxWidget(&_root) )
-            ->setPosition({700.f, 700.f});
+            ->setPosition({700.f, 700.f});*/
+        _root.add( new ButtonWidget(&_root) )
+            ->setPosition({100.f,100.f});
     }
 
     void GUI::input(const sf::Event& event) {

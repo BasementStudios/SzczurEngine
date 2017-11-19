@@ -8,6 +8,7 @@
 #include "Widget.hpp"
 #include "TextWidget.hpp"
 #include "CheckboxWidget.hpp"
+#include "ButtonWidget.hpp"
 
 namespace rat {
     class GUI : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;

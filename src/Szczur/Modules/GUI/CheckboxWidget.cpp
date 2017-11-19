@@ -29,7 +29,7 @@ namespace rat {
 
     }
 
-    void CheckboxWidget::_input(const sf::Event& event) {
+    bool CheckboxWidget::_input(const sf::Event& event) {
         switch(event.type) {
             case sf::Event::MouseButtonPressed: {
                 if(event.mouseButton.x >= 0 && event.mouseButton.y >= 0)

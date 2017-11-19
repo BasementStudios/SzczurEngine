@@ -17,41 +17,48 @@ namespace rat {
         return widget;
     }
 
+    sf::Vector2u Widget::getSize() {
+        sf::Vector2u size{0u,0u};
+        for(Widget* it : _children)
+            size += it->getSize();
+        return size + _getSize();
+    }
+
+    sf::Vector2u Widget::_getSize() {
+        return {0u,0u};
+    }
+
 //input
-    void Widget::_input(const sf::Event& event) {}
+    bool Widget::_input(const sf::Event& event) {
+        return true;
+    }
 
     void Widget::input(const sf::Event& event) {
-        for(Widget* it : _children){
-            switch(event.type) {
-                case sf::Event::MouseButtonReleased:
-                case sf::Event::MouseButtonPressed:
-                case sf::Event::MouseMoved: {
-                    sf::Event tempEvent(event);
-                    sf::Vector2i itPosition = static_cast<sf::Vector2i>(it->getPosition());
-                    sf::Vector2<int*> mousePosition;
+        if(_input(event)) {
+            for(Widget* it : _children) {
+                switch(event.type) {
+                    case sf::Event::MouseMoved: {
+                        sf::Event tempEvent(event);
+                        sf::Vector2i itPosition = static_cast<sf::Vector2i>(it->getPosition());
+                        sf::Vector2<int*> mousePosition{ &tempEvent.mouseMove.x, &tempEvent.mouseMove.y };
+                        *mousePosition.x -= itPosition.x;
+                        *mousePosition.y -= itPosition.y;
 
-                    if(event.type == sf::Event::MouseMoved)
-                        mousePosition = { &tempEvent.mouseMove.x, &tempEvent.mouseMove.y };
-                    else
-                        mousePosition = { &tempEvent.mouseButton.x, &tempEvent.mouseButton.y };
+                        it->input(tempEvent);
+                        break;
+                    }
 
-                    //if(*mousePosition.x >= itPosition.x && *mousePosition.y >= itPosition.y) {   
-                    *mousePosition.x -= itPosition.x;
-                    *mousePosition.y -= itPosition.y;
-                    it->input(tempEvent);
-                    //}
-                    break;
+                    case sf::Event::MouseButtonReleased:
+                    case sf::Event::MouseButtonPressed:
+                    case sf::Event::TextEntered: {
+                        it->input(event);
+                        break;
+                    }
+
+                    default: break;
                 }
-
-                case sf::Event::TextEntered: {
-                    it->input(event);
-                    break;
-                }
-
-                default: break;
             }
         }
-        _input(event);
     }
 
 //update

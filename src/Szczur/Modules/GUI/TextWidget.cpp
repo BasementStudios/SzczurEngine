@@ -8,7 +8,7 @@ namespace rat {
         _text.setFont(_font);
     }
 
-    void TextWidget::_input(const sf::Event& event) {
+    bool TextWidget::_input(const sf::Event& event) {
         
     }
 
