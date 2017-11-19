@@ -1,5 +1,7 @@
 #include "GUI.hpp"
 
+#include <iostream>
+
 namespace rat {
     void GUI::init() {
         /*_root.add(new TextWidget(
@@ -9,7 +11,10 @@ namespace rat {
         
         _root.add( new CheckboxWidget(&_root) )
             ->setPosition({700.f, 700.f});*/
-        Widget* button = _root.add( new ButtonWidget(&_root) );
+        Widget* button = _root.add( new ButtonWidget(&_root, [](){
+            std::cout << "asdasdasd" << '\n';
+            return true;
+        }));
         button->setPosition({100.f, 100.f});
         button->add( new ImageWidget(button, "data/button.png") );
     }

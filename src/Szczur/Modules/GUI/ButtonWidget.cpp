@@ -3,11 +3,30 @@
 #include <iostream>
 
 namespace rat {
-    ButtonWidget::ButtonWidget(Widget* parent) :
+    ButtonWidget::ButtonWidget(Widget* parent, std::function<bool(Widget*)> callback) :
         Widget(parent),
-        _isHovered(false) {
-        ;
+        _isHovered(false),
+        _callbackWithWidget(true) {
+        _callback = callback;
     }
+
+    ButtonWidget::ButtonWidget(Widget* parent, std::function<bool()> callback) :
+        Widget(parent),
+        _isHovered(false),
+        _callbackWithWidget(false) {
+        _callback = callback;
+    }
+
+    ButtonWidget* ButtonWidget::setCallback(std::function<bool(Widget*)> callback) {
+        _callback = callback;
+        _callbackWithWidget = true;
+    }
+
+    ButtonWidget* ButtonWidget::setCallback(std::function<bool()> callback) {
+        _callback = callback;
+        _callbackWithWidget = false;
+    }
+
 
     bool ButtonWidget::_input(const sf::Event& event) {
         switch(event.type) {
@@ -20,7 +39,10 @@ namespace rat {
 
             case sf::Event::MouseButtonReleased: {
                 if(_isHovered) {
-                    
+                    if(_callbackWithWidget)
+                        return std::get< std::function<bool(Widget*)> >(_callback)(this);
+                    else
+                        return std::get< std::function<bool()> >(_callback)();
                 }
                 break;
             }
@@ -47,7 +69,5 @@ namespace rat {
     }
 
 	void ButtonWidget::_update(float deltaTime) {
-        if(_isHovered)
-            std::cout << "HOVER\n";
     }
 }
