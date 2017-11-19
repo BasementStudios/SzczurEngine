@@ -8,11 +8,18 @@ namespace rat {
         )) ->setPosition({500.f, 500.f});
         */
         _root.add( new CheckboxWidget(&_root) )
-            ->setPosition({200.f, 200.f});
+            ->setPosition({700.f, 700.f});
     }
 
     void GUI::input(const sf::Event& event) {
-        _root.input(event);
+        if(
+            event.type == sf::Event::MouseButtonPressed || 
+            event.type == sf::Event::MouseButtonReleased || 
+            event.type == sf::Event::MouseMoved ||
+            event.type == sf::Event::TextEntered
+        ) {
+            _root.input(event);
+        }
     }
 
     void GUI::update(float deltaTime) {

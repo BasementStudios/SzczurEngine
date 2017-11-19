@@ -21,30 +21,35 @@ namespace rat {
     void Widget::_input(const sf::Event& event) {}
 
     void Widget::input(const sf::Event& event) {
-        for(auto it : _children) {
-            sf::Vector2i mousePosition;
-            if(event.type == sf::Event::MouseButtonReleased)
-                mousePosition = { event.mouseButton.x, event.mouseButton.y };
-            else if(event.type == sf::Event::MouseMoved)
-                mousePosition = { event.mouseMove.x, event.mouseMove.y };
+        for(Widget* it : _children){
+            switch(event.type) {
+                case sf::Event::MouseButtonReleased:
+                case sf::Event::MouseButtonPressed:
+                case sf::Event::MouseMoved: {
+                    sf::Event tempEvent(event);
+                    sf::Vector2i itPosition = static_cast<sf::Vector2i>(it->getPosition());
+                    sf::Vector2<int*> mousePosition;
 
-            sf::Vector2i itPosition = static_cast<sf::Vector2i>(it->getPosition());
-            if(mousePosition.x >= itPosition.x && mousePosition.y >= itPosition.y){
-                sf::Event tempEvent(event);
+                    if(event.type == sf::Event::MouseMoved)
+                        mousePosition = { &tempEvent.mouseMove.x, &tempEvent.mouseMove.y };
+                    else
+                        mousePosition = { &tempEvent.mouseButton.x, &tempEvent.mouseButton.y };
 
-                if(event.type == sf::Event::MouseButtonReleased) {
-                    tempEvent.mouseButton.x -= itPosition.x;
-                    tempEvent.mouseButton.y -= itPosition.y;
+                    //if(*mousePosition.x >= itPosition.x && *mousePosition.y >= itPosition.y) {   
+                    *mousePosition.x -= itPosition.x;
+                    *mousePosition.y -= itPosition.y;
+                    it->input(tempEvent);
+                    //}
+                    break;
                 }
 
-                else if(event.type == sf::Event::MouseMoved) {
-                    tempEvent.mouseMove.x -= itPosition.x;
-                    tempEvent.mouseMove.y -= itPosition.y;
+                case sf::Event::TextEntered: {
+                    it->input(event);
+                    break;
                 }
-                
-                it->input(tempEvent);
+
+                default: break;
             }
-            
         }
         _input(event);
     }
