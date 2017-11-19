@@ -7,7 +7,7 @@
 namespace rat {
     class CheckboxWidget : public Widget {
     public:
-        CheckboxWidget(Widget* parent);
+        CheckboxWidget();
     private:
         bool _isEnabled;
 

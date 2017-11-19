@@ -9,7 +9,7 @@
 namespace rat {
     class ImageWidget : public Widget {
     public:
-        ImageWidget(Widget* parent, const std::string& fileName);
+        ImageWidget(const std::string& fileName);
 
     private:
 

@@ -7,10 +7,10 @@
 namespace rat {
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
-		Widget(Widget* parent = nullptr);
+		Widget();
 		~Widget();
 
-
+		void setParent(Widget* parent);
 		Widget* add(Widget* widget);
 
 		sf::Vector2u getSize();

@@ -1,8 +1,7 @@
 #include "TextWidget.hpp"
 
 namespace rat {
-    TextWidget::TextWidget(Widget* parent, sf::Text text) : 
-        Widget(parent),
+    TextWidget::TextWidget(sf::Text text) : 
         _text(text) {
         _font.loadFromFile("data/consolab.ttf");
         _text.setFont(_font);

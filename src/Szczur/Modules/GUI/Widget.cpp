@@ -1,8 +1,8 @@
 #include "Widget.hpp"
 
 namespace rat {
-    Widget::Widget(Widget* parent) :
-        _parent(parent) {
+    Widget::Widget() :
+        _parent(nullptr) {
 
     }
 
@@ -11,9 +11,15 @@ namespace rat {
             delete it;
     }
 
+    void Widget::setParent(Widget* parent) {
+        _parent = parent;
+    }
+
     Widget* Widget::add(Widget* widget) {
-        if(widget)
+        if(widget){
+            widget->setParent(this);
             _children.push_back(widget);
+        }
         return widget;
     }
 

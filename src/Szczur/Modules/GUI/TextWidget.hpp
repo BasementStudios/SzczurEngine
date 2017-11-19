@@ -17,7 +17,7 @@ namespace rat {
             return temp;
         }
     public:
-        TextWidget(Widget* parent, sf::Text text);
+        TextWidget(sf::Text text);
 
 
     private:

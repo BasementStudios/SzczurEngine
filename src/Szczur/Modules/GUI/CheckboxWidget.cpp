@@ -1,8 +1,7 @@
 #include "CheckboxWidget.hpp"
 #include <iostream>
 namespace rat {
-    CheckboxWidget::CheckboxWidget(Widget* parent) :
-        Widget(parent),
+    CheckboxWidget::CheckboxWidget() :
         _isEnabled(false),
         isHover(false) {
         _textureOn.loadFromFile("data/check-box.png");

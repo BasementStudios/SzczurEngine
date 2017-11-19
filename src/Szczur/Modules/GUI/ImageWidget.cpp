@@ -1,8 +1,7 @@
 #include "ImageWidget.hpp"
 
 namespace rat {
-    ImageWidget::ImageWidget(Widget* parent, const std::string& fileName) :
-        Widget(parent) {
+    ImageWidget::ImageWidget(const std::string& fileName) {
         _texture.loadFromFile(fileName);
         _sprite.setTexture(_texture);
     }

@@ -3,15 +3,13 @@
 #include <iostream>
 
 namespace rat {
-    ButtonWidget::ButtonWidget(Widget* parent, std::function<bool(Widget*)> callback) :
-        Widget(parent),
+    ButtonWidget::ButtonWidget(std::function<bool(Widget*)> callback) :
         _isHovered(false),
         _callbackWithWidget(true) {
         _callback = callback;
     }
 
-    ButtonWidget::ButtonWidget(Widget* parent, std::function<bool()> callback) :
-        Widget(parent),
+    ButtonWidget::ButtonWidget(std::function<bool()> callback) :
         _isHovered(false),
         _callbackWithWidget(false) {
         _callback = callback;
