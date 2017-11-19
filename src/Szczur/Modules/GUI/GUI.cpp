@@ -12,8 +12,9 @@ namespace rat {
         _root.add( new CheckboxWidget(&_root) )
             ->setPosition({700.f, 700.f});*/
         Widget* button = _root.add( 
-            new ButtonWidget()->setCallback(
-                []() {
+            (new ButtonWidget())->setCallback(
+                [](Widget* owner) {
+                    std::cout << "Hello\n" << owner->getSize().x << '\n' ;
                     return true;
                 }
             )

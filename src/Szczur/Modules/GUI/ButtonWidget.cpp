@@ -18,11 +18,13 @@ namespace rat {
     ButtonWidget* ButtonWidget::setCallback(std::function<bool(Widget*)> callback) {
         _callback = callback;
         _callbackWithWidget = true;
+        return this;
     }
 
     ButtonWidget* ButtonWidget::setCallback(std::function<bool()> callback) {
         _callback = callback;
         _callbackWithWidget = false;
+        return this;
     }
 
 
@@ -48,8 +50,10 @@ namespace rat {
             case sf::Event::MouseMoved: {
                 sf::Vector2u size = getSize();
                 if(
-                    event.mouseMove.x >= 0 && event.mouseMove.x >= 0 && 
-                    event.mouseMove.x <= size.x && event.mouseMove.y <= size.y
+                    event.mouseMove.x >= 0 &&
+                    event.mouseMove.x >= 0 && 
+                    static_cast<unsigned>(event.mouseMove.x) <= size.x && 
+                    static_cast<unsigned>(event.mouseMove.y) <= size.y
                 )
                     _isHovered = true;
                 else
@@ -60,6 +64,7 @@ namespace rat {
             default:
                 break;
         }
+        return true;
     }
 
 	void ButtonWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const{

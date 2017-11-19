@@ -6,9 +6,6 @@ namespace rat {
         _sprite.setTexture(_texture);
     }
 
-    bool ImageWidget::_input(const sf::Event& event) {
-
-    }
 
 	void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
         target.draw(_sprite, states);

@@ -7,8 +7,12 @@ namespace rat {
         _text.setFont(_font);
     }
 
-    bool TextWidget::_input(const sf::Event& event) {
-        
+    sf::Text TextWidget::createText(std::string text, unsigned int size, const sf::Color& color) {
+        sf::Text temp;
+        temp.setString(text);
+        temp.setCharacterSize(size);
+        temp.setFillColor(color);
+        return temp;
     }
 
     void TextWidget::_update(float deltaTime) {

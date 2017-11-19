@@ -31,24 +31,24 @@ namespace rat {
     bool CheckboxWidget::_input(const sf::Event& event) {
         switch(event.type) {
             case sf::Event::MouseButtonPressed: {
-                if(event.mouseButton.x >= 0 && event.mouseButton.y >= 0)
-                    if(event.mouseButton.x <= _textureOn.getSize().x && event.mouseButton.y <= _textureOn.getSize().y) {
+                if(static_cast<unsigned>(event.mouseButton.x) >= 0 && static_cast<unsigned>(event.mouseButton.y) >= 0)
+                    if(static_cast<unsigned>(event.mouseButton.x) <= _textureOn.getSize().x && static_cast<unsigned>(event.mouseButton.y) <= _textureOn.getSize().y) {
                         onPress();
                     }
                 break;
             }
 
             case sf::Event::MouseButtonReleased: {
-                if(event.mouseButton.x >= 0 && event.mouseButton.y >= 0)
-                    if(event.mouseButton.x <= _textureOn.getSize().x && event.mouseButton.y <= _textureOn.getSize().y) {
+                if(static_cast<unsigned>(event.mouseButton.x) >= 0 && static_cast<unsigned>(event.mouseButton.y) >= 0)
+                    if(static_cast<unsigned>(event.mouseButton.x) <= _textureOn.getSize().x && static_cast<unsigned>(event.mouseButton.y) <= _textureOn.getSize().y) {
                         onRelease();
                     }
                 break;
             }
 
             case sf::Event::MouseMoved: {
-                if(event.mouseButton.x >= 0 && event.mouseButton.y >= 0){
-                    if(event.mouseMove.x <= _textureOn.getSize().x && event.mouseMove.y <= _textureOn.getSize().y) {
+                if(static_cast<unsigned>(event.mouseButton.x) >= 0 && static_cast<unsigned>(event.mouseButton.y) >= 0){
+                    if(static_cast<unsigned>(event.mouseMove.x) <= _textureOn.getSize().x && static_cast<unsigned>(event.mouseMove.y) <= _textureOn.getSize().y) {
                         isHover = true;
                     }
                     else
@@ -62,6 +62,7 @@ namespace rat {
             default:
                 break;
         }
+        return true;
     }
 
     void CheckboxWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {

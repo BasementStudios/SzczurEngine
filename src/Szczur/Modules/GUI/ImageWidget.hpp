@@ -16,7 +16,6 @@ namespace rat {
         sf::Sprite _sprite;
         sf::Texture _texture;
 
-        bool _input(const sf::Event& event);
 		void _draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		void _update(float deltaTime);
 		sf::Vector2u _getSize();
