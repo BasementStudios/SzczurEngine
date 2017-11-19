@@ -47,5 +47,7 @@ namespace rat {
     }
 
 	void ButtonWidget::_update(float deltaTime) {
+        if(_isHovered)
+            std::cout << "HOVER\n";
     }
 }

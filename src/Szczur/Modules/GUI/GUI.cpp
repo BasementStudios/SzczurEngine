@@ -9,8 +9,9 @@ namespace rat {
         
         _root.add( new CheckboxWidget(&_root) )
             ->setPosition({700.f, 700.f});*/
-        _root.add( new ButtonWidget(&_root) )
-            ->setPosition({100.f,100.f});
+        Widget* button = _root.add( new ButtonWidget(&_root) );
+        button->setPosition({100.f, 100.f});
+        button->add( new ImageWidget(button, "data/button.png") );
     }
 
     void GUI::input(const sf::Event& event) {
