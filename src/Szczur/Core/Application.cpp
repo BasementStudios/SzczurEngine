@@ -23,7 +23,9 @@ namespace rat {
 				_window.close();
 			}
 
-			_modules.getModule<GUI>().input(_event);
+			if(_event.type == sf::Event::MouseButtonReleased || _event.type == sf::Event::MouseMoved) {
+				_modules.getModule<GUI>().input(_event);
+			}
 
 		}
 	}

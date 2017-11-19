@@ -1,5 +1,6 @@
 #include "CheckboxWidget.hpp"
 
+
 namespace rat {
     CheckboxWidget::CheckboxWidget(Widget* parent) :
         Widget(parent),
@@ -12,15 +13,17 @@ namespace rat {
         _tempBackground.setSize(  (sf::Vector2f)_textureOn.getSize() );
         
     }
-    void CheckboxWidget::_input(sf::Event event) {
+    void CheckboxWidget::_input(const sf::Event& event) {
         if(event.type == sf::Event::MouseButtonReleased) {
-            if(_isEnabled) {
-                _isEnabled = false;
-                _sprite.setTexture(_textureOff);
-            }
-            else if(! _isEnabled) {
-                _isEnabled = true;
-                _sprite.setTexture(_textureOn);
+            if(event.mouseButton.x <= _textureOn.getSize().x && event.mouseButton.y <= _textureOn.getSize().y){
+                if(_isEnabled) {
+                    _isEnabled = false;
+                    _sprite.setTexture(_textureOff);
+                }
+                else if(! _isEnabled) {
+                    _isEnabled = true;
+                    _sprite.setTexture(_textureOn);
+                }
             }
         }
     }

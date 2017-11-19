@@ -14,7 +14,7 @@ namespace rat {
     public:
 
         void init();
-        void input(sf::Event event);
+        void input(const sf::Event& event);
         void update(float deltaTime);
         void render();
     private:

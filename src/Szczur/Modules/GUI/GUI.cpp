@@ -5,13 +5,13 @@ namespace rat {
         /*_root.add(new TextWidget(
             &_root, 
             TextWidget::createText("Hello Fucking World!", 100u, sf::Color(255,0,255))
-        ));*/
-
+        )) ->setPosition({500.f, 500.f});
+        */
         _root.add( new CheckboxWidget(&_root) )
             ->setPosition({200.f, 200.f});
     }
 
-    void GUI::input(sf::Event event) {
+    void GUI::input(const sf::Event& event) {
         _root.input(event);
     }
 
