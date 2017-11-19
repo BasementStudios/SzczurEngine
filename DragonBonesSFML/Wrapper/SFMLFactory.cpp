@@ -21,9 +21,7 @@ SFMLFactory::SFMLFactory()
 {
 	if (_dragonBonesInstance == nullptr)
 	{
-		const auto eventManager = new SFMLArmatureDisplay();
-		_dragonBonesInstance = new DragonBones(eventManager);
-		_dragonBonesInstance->yDown = false;
+		_dragonBonesInstance = new DragonBones(nullptr);
 	}
 
 	_dragonBones = _dragonBonesInstance;
@@ -70,8 +68,6 @@ DragonBonesData* SFMLFactory::loadDragonBonesData(const std::string& filePath, c
 
 TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath, const std::string& name, float scale)
 {
-	_path = filePath;
-
 	if (!isFileExist(filePath))
 		return nullptr;
 

@@ -34,7 +34,7 @@ App::App()
 	//_armatureDisplay->getAnimation()->play("oddech_przerwy", 100);
 	//_armatureDisplay->getAnimation()->play("goat_walk_anim");
 
-	_armatureDisplay->addEvent(dragonBones::EventObject::LOOP_COMPLETE, [] (dragonBones::EventObject *e) { std::cout << "event" << std::endl; });
+	//_armatureDisplay->addEvent(dragonBones::EventObject::LOOP_COMPLETE, [] (dragonBones::EventObject *e) { std::cout << "event" << std::endl; });
 
 }
 
@@ -83,8 +83,8 @@ void App::run()
 		_window->clear(sf::Color::White);
 
 		auto view = _window->getDefaultView();
-		view.setCenter(0.f, 400);
-		view.zoom(5.f);
+		view.setCenter(0.f, 0);
+		view.zoom(2.f);
 
 		_window->setView(view);
 		

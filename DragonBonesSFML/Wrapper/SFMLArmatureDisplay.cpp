@@ -8,10 +8,12 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 SFMLArmatureDisplay::SFMLArmatureDisplay()
 {
+	_armature = nullptr;
 }
 
 SFMLArmatureDisplay::~SFMLArmatureDisplay()
 {
+	_armature = nullptr;
 }
 
 void SFMLArmatureDisplay::dbInit(Armature* armature)
@@ -37,7 +39,7 @@ void SFMLArmatureDisplay::removeEvent(const std::string& type, const std::functi
 {
 }
 
-void SFMLArmatureDisplay::_dispatchEvent(const std::string &type, EventObject *value)
+void SFMLArmatureDisplay::_dispatchEvent(const std::string& type, EventObject* value)
 {
 	_dispatcher.dispatchEvent(type, value);
 }
@@ -47,15 +49,19 @@ void SFMLArmatureDisplay::dispose(bool disposeProxy)
 	if (_armature)
 	{
 		delete _armature;
+		_armature = nullptr;
 	}
 }
 
-void SFMLArmatureDisplay::render(sf::RenderWindow &window)
+void SFMLArmatureDisplay::render(sf::RenderWindow& window)
 {
 	auto arr = _armature->getSlots();
 
 	for (auto item : arr)
 	{
+		if (!item)
+			continue;
+
 		auto display = item->getRawDisplay();
 
 		if (!display)

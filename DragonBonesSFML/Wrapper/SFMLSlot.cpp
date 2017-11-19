@@ -280,7 +280,7 @@ void SFMLSlot::_updateMesh()
 			auto& vertexPosition = vertex->position;
 
 			vertexPosition.x = xG;
-			vertexPosition.y = -yG + 600;
+			vertexPosition.y = yG;
 		}
 	}
 	else if (hasFFD)
@@ -323,33 +323,18 @@ void SFMLSlot::_updateTransform(bool isSkinnedMesh)
 	}
 	else
 	{
-		auto a = globalTransformMatrix.a;
-		auto b = globalTransformMatrix.b;
-		auto c = globalTransformMatrix.c;
-		auto d = globalTransformMatrix.d;
-
-		int flipped = 1;
-
-		if (_armature->getFlipX())
-			flipped = -1;
-
-		globalTransformMatrix.a = -d * flipped;
-		globalTransformMatrix.b = -c * flipped;
-		globalTransformMatrix.c = b * flipped;
-		globalTransformMatrix.d = a * flipped;
-
 		sf::Vector2f pos;
 
 		if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
 		{
-			globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
+			globalTransformMatrix.ty = globalTransformMatrix.ty;
 
 			pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
 			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
 		}
 		else if (_childArmature)
 		{
-			globalTransformMatrix.ty = 600 - globalTransformMatrix.ty;
+			globalTransformMatrix.ty = globalTransformMatrix.ty;
 
 			pos.x = globalTransformMatrix.tx;
 			pos.y = globalTransformMatrix.ty;
