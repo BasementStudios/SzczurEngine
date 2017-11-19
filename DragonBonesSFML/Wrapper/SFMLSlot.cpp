@@ -279,8 +279,10 @@ void SFMLSlot::_updateMesh()
 			auto& vertex = vertices[i];
 			auto& vertexPosition = vertex->position;
 
-			vertexPosition.x = xG;
-			vertexPosition.y = yG;
+			sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
+
+			vertexPosition = { xG, yG };
+			vertexPosition += pos;
 		}
 	}
 	else if (hasFFD)
@@ -305,8 +307,10 @@ void SFMLSlot::_updateMesh()
 			auto& vertex = vertices[iH];
 			auto& vertexPosition = vertex->position;
 
-			vertexPosition.x = xG;
-			vertexPosition.y = yG;
+			sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
+
+			vertexPosition = { xG, yG };
+			vertexPosition += pos;
 		}
 	}
 }
@@ -345,6 +349,8 @@ void SFMLSlot::_updateTransform(bool isSkinnedMesh)
 			pos.x = globalTransformMatrix.tx - (globalTransformMatrix.a * anchorPoint.x - globalTransformMatrix.c * anchorPoint.y);
 			pos.y = globalTransformMatrix.ty - (globalTransformMatrix.b * anchorPoint.x - globalTransformMatrix.d * anchorPoint.y);
 		}
+
+		pos += static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
 
 		auto matrix = sf::Transform(globalTransformMatrix.a * _textureScale, -globalTransformMatrix.c * _textureScale, pos.x * _textureScale,
 									globalTransformMatrix.b * _textureScale, -globalTransformMatrix.d * _textureScale, pos.y * _textureScale,
