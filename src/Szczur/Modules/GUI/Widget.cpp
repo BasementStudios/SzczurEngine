@@ -23,11 +23,28 @@ namespace rat {
         return widget;
     }
 
+    sf::Vector2u Widget::getPrecountedSize() {
+        return _precountedSize;
+    }
+
     sf::Vector2u Widget::getSize() {
         sf::Vector2u size{0u,0u};
-        for(Widget* it : _children)
-            size += it->getSize();
-        return size + _getSize();
+        for(Widget* it : _children) {
+            auto itSize = it->getSize();
+            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
+            if(itPosition.x + itSize.x > size.x)
+                size.x = itPosition.x + itSize.x;
+            if(itPosition.y + itSize.y > size.y)
+                size.y = itPosition.y + itSize.y;
+        }
+        auto ownSize = _getSize();
+        if(ownSize.x > size.x)
+            size.x = ownSize.x;
+        if(ownSize.y > size.y)
+            size.y = ownSize.y;
+
+        _precountedSize = size;
+        return _precountedSize;
     }
 
     sf::Vector2u Widget::_getSize() {

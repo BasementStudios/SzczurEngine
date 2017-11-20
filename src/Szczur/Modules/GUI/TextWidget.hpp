@@ -18,6 +18,8 @@ namespace rat {
         void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         void _update(float deltaTime) override;
 
+        sf::Vector2u _getSize() override;
+
         sf::Font _font;
         sf::Text _text;
     };

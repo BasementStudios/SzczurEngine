@@ -1,5 +1,7 @@
 #include "TextWidget.hpp"
 
+#include <iostream>
+
 namespace rat {
     TextWidget::TextWidget(sf::Text text) : 
         _text(text) {
@@ -16,10 +18,17 @@ namespace rat {
     }
 
     void TextWidget::_update(float deltaTime) {
-
     }
 
     void TextWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
         target.draw(_text, states);
+    }
+
+    sf::Vector2u TextWidget::_getSize() {
+        auto it  = _text.getGlobalBounds();
+        return { 
+            static_cast<unsigned int>( it.left + it.width ),
+            static_cast<unsigned int>( it.top + it.height )
+        };
     }
 }
