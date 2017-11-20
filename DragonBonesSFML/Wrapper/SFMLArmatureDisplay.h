@@ -37,7 +37,7 @@ public:
 	void setPosition(const sf::Vector2f& pos) { _pos = pos; }
 	auto& getPosition() { return _pos; }
 
-	void render(sf::RenderWindow& window);
+	void render(sf::RenderTarget& window, sf::RenderStates states);
 };
 
 DRAGONBONES_NAMESPACE_END

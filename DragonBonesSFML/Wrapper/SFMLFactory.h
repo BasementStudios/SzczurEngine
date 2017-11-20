@@ -33,6 +33,8 @@ public:
 
 	void update(float lastUpdate);
 
+	void loadTextures(DragonBonesData *dragonBonesData, const std::string& folderPath);
+
 protected:
 	TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const override;
 	Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const override;
