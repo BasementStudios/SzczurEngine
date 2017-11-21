@@ -20,6 +20,8 @@ namespace rat {
 		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 
+		void setParent(Widget* parent);
+
 		Widget* add(Widget* object);
 
 		Widget* setCallback(CallbackType key, Function_t value);
@@ -27,18 +29,28 @@ namespace rat {
 		void input(const sf::Event& event);
 		void update(float deltaTime);
 
+		void calculateSize();
 		sf::Vector2u getSize() const;
+
+		void move(const sf::Vector2f& offset);
+		void move(float offsetX, float offsetY);
+		void setPosition(const sf::Vector2f& offset);
+		void setPosition(float x, float y);
 
 	protected:
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
+		virtual sf::Vector2u _getSize() const;
 	private:
 		std::vector<Widget*> _children;
+		Widget* _parent;
 
 		CallbacksContainer_t _callback;
 		bool _isHovered;
 		bool _isPressed;
+
+		sf::Vector2u _size;
 
 		void callback(CallbackType type);
 

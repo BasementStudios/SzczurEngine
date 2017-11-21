@@ -4,9 +4,15 @@
 
 namespace rat {
     Widget::Widget() :
+    _parent(nullptr),
     _isHovered(false),
-    _isPressed(false) {
+    _isPressed(false),
+    _size(0u,0u) {
         ;
+    }
+
+    void Widget::setParent(Widget* parent) {
+        _parent = parent;
     }
 
     Widget* Widget::setCallback(CallbackType key, Function_t value) {
@@ -21,9 +27,17 @@ namespace rat {
     }
 
     Widget* Widget::add(Widget* object) {
-        if(object) 
+        if(object) {
             _children.push_back(object);
+            object->setParent(this);
+            object->calculateSize();
+            //calculateSize();
+        }
         return object;
+    }
+
+    sf::Vector2u Widget::getSize() const {
+        return _size;
     }
 
     void Widget::input(const sf::Event& event) {
@@ -34,7 +48,7 @@ namespace rat {
                 auto thisSize = getSize();
                 if(
                     event.mouseMove.x >= 0 &&
-                    event.mouseMove.x <= thisSize.y &&
+                    event.mouseMove.x <= thisSize.x &&
                     event.mouseMove.y >= 0 &&
                     event.mouseMove.y <= thisSize.y
                 ) {
@@ -96,12 +110,9 @@ namespace rat {
         for(Widget* it : _children)
             it->update(deltaTime);
     }
+
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         states.transform *= getTransform();
-        sf::RectangleShape shape;
-        shape.setFillColor(sf::Color::Yellow);
-        shape.setSize({100.f, 100.f});
-        target.draw(shape, states);
 
         for(Widget* it : _children)
             target.draw(*it, states);
@@ -109,7 +120,44 @@ namespace rat {
         _draw(target, states);
     }
 
-    sf::Vector2u Widget::getSize() const {
-        return {100u, 100u};
+    void Widget::calculateSize() {
+        _size = {0u,0u};
+        for(Widget* it : _children) {
+            auto itSize = it->getSize();
+            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
+            if(itPosition.x + itSize.x > _size.x)
+                _size.x = itPosition.x + itSize.x;
+            if(itPosition.y + itSize.y > _size.y)
+                _size.y = itPosition.y + itSize.y;
+        }
+        auto ownSize = _getSize();
+        if(ownSize.x > _size.x)
+            _size.x = ownSize.x;
+        if(ownSize.y > _size.y)
+            _size.y = ownSize.y;
+
+        if(_parent != nullptr)
+            _parent->calculateSize();
+    }
+
+    sf::Vector2u Widget::_getSize() const {
+        return {0u, 0u};
+    }
+
+    void Widget::move(const sf::Vector2f& offset) {
+        sf::Transformable::move(offset);
+        _parent->calculateSize();
+    }
+    void Widget::move(float offsetX, float offsetY) {
+        sf::Transformable::move(offsetX, offsetY);
+        _parent->calculateSize();
+    }
+    void Widget::setPosition(const sf::Vector2f& offset) {
+        sf::Transformable::setPosition(offset);
+        _parent->calculateSize();
+    }
+    void Widget::setPosition(float x, float y) {
+        sf::Transformable::setPosition(x, y);
+        _parent->calculateSize();
     }
 }
