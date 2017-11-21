@@ -4,45 +4,23 @@
 
 namespace rat {
     void GUI::init() {
-        /*
-        _root.add(new TextWidget(
-            TextWidget::createText("Hello Fucking World!", 100u, sf::Color(255,0,255))
-        )) ->setPosition({100.f, 100.f});
-        
-        _root.add( new CheckboxWidget(&_root) )
-            ->setPosition({700.f, 700.f});*/
-            /*
-        Widget* button = _root.add( 
-            (new ButtonWidget())->setCallback(
-                [](Widget* owner) {
-                    std::cout << "Hello\n" << owner->getSize().x << '\n' ;
-                    return true;
-                }
-            )
-        );
-        button->setPosition({100.f, 100.f});
-        button->add( new ImageWidget("data/button.png") );
-        */
-
-        Widget* button = _root.add(
-            (new ButtonWidget())->setCallback([](){
-                std::cout << "HEllo CLICKED\n";
-                return true;
-            })
-        );
-        button->add(
-            new TextWidget(TextWidget::createText("Hello I'm good", 100u, sf::Color(255,255,0)))
-        );
-        button->add(
-            (new ButtonWidget())->setCallback([](){
-                std::cout << "HEllo123123 CLICKED\n";
-                return true;
-            })->add(
-                new TextWidget(TextWidget::createText("Hello I'm goaaaod", 100u, sf::Color(255,255,0)))
-            )
-        );
-
-        button->setPosition({50.f, 50.f});
+        Widget* test = _root.add(new Widget());
+        test->setCallback(Widget::CallbackType::onHover, [](Widget* owner){
+            std::cout << ".";
+        });
+        test->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner){
+            std::cout << "HoveredIn\n";
+        });
+        test->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner){
+            std::cout << "\nHoveredOut\n\n";
+        });
+        test->setCallback(Widget::CallbackType::onPress, [](Widget* owner){
+            std::cout << "\nPRESSED<==============\n";
+        });
+        test->setCallback(Widget::CallbackType::onRelease, [](Widget* owner){
+            std::cout << "\nRELEASED<==============\n";
+        });
+        test->setPosition({255.f, 120.f});
 
     }
 
