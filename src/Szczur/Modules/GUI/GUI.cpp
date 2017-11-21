@@ -4,7 +4,7 @@
 
 namespace rat {
     void GUI::init() {
-        /*
+        
         Widget* test = _root.add( new ImageWidget("data/button.png") );
         test->setCallback(Widget::CallbackType::onHover, [](Widget* owner) {
             std::cout << ".";
@@ -25,11 +25,6 @@ namespace rat {
             std::cout << "\nRELEASED<==============\n";
         });
         test->setPosition({255.f, 120.f});
-        */
-
-        Widget* test = _root.add( new ImageWidget("data/button.png") );
-        test->move({100.f, 100.f});
-        std::cout << _root.getSize().x << "  " << _root.getSize().y << '\n';
 
     }
 
