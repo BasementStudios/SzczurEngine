@@ -5,19 +5,22 @@
 namespace rat {
     void GUI::init() {
         Widget* test = _root.add(new Widget());
-        test->setCallback(Widget::CallbackType::onHover, [](Widget* owner){
+        test->setCallback(Widget::CallbackType::onHover, [](Widget* owner) {
             std::cout << ".";
         });
-        test->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner){
+        test->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner) {
             std::cout << "HoveredIn\n";
         });
-        test->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner){
+        test->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner) {
             std::cout << "\nHoveredOut\n\n";
         });
-        test->setCallback(Widget::CallbackType::onPress, [](Widget* owner){
+        test->setCallback(Widget::CallbackType::onPress, [](Widget* owner) {
             std::cout << "\nPRESSED<==============\n";
         });
-        test->setCallback(Widget::CallbackType::onRelease, [](Widget* owner){
+        test->setCallback(Widget::CallbackType::onHeld, [](Widget* owner) {
+            std::cout << ",";
+        });
+        test->setCallback(Widget::CallbackType::onRelease, [](Widget* owner) {
             std::cout << "\nRELEASED<==============\n";
         });
         test->setPosition({255.f, 120.f});

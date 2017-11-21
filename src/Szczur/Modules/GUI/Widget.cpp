@@ -9,7 +9,7 @@ namespace rat {
         ;
     }
 
-    Widget* Widget::setCallback(CallbackType key, TFunction value) {
+    Widget* Widget::setCallback(CallbackType key, Function_t value) {
         _callback.insert_or_assign(key, value);
 
         return this;
@@ -60,10 +60,9 @@ namespace rat {
 
             case sf::Event::MouseButtonReleased: {
                 if(_isPressed) {
+                    _isPressed = false;
                     if(_isHovered)
-                        callback(CallbackType::onRelease);
-                    else
-                        _isPressed = false;
+                        callback(CallbackType::onRelease);         
                 }
                 break;
             }
@@ -84,9 +83,11 @@ namespace rat {
     }
 
     void Widget::update(float deltaTime) {
-        if(_isHovered) {
+        if(_isHovered) 
             callback(CallbackType::onHover);
-        }
+
+        if(_isPressed)
+            callback(CallbackType::onHeld);
 
         for(Widget* it : _children)
             it->update(deltaTime);

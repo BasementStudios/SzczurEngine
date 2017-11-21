@@ -3,8 +3,10 @@
 #include <vector>
 #include <functional>
 
-#include <SFML/Graphics.hpp>
 #include <boost/container/flat_map.hpp>
+
+#include <SFML/Graphics.hpp>
+
 
 namespace rat {
 	class Widget : public sf::Drawable, public sf::Transformable {
@@ -12,15 +14,15 @@ namespace rat {
 		Widget();
 	public:
 		enum class CallbackType {
-			onHover, onHoverIn, onHoverOut, onPress, onRelease
+			onHover, onHoverIn, onHoverOut, onPress, onHeld, onRelease
 		};
 
-		using TFunction = std::function<void(Widget*)>;
-		using TContainer = boost::container::flat_map<CallbackType, TFunction>;
+		using Function_t = std::function<void(Widget*)>;
+		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 
 		Widget* add(Widget* object);
 
-		Widget* setCallback(CallbackType key, TFunction value);
+		Widget* setCallback(CallbackType key, Function_t value);
 
 		void input(const sf::Event& event);
 		void update(float deltaTime);
@@ -30,7 +32,7 @@ namespace rat {
 	private:
 		std::vector<Widget*> _children;
 
-		TContainer _callback;
+		CallbacksContainer_t _callback;
 		bool _isHovered;
 		bool _isPressed;
 
