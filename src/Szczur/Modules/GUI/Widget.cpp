@@ -27,6 +27,8 @@ namespace rat {
     }
 
     void Widget::input(const sf::Event& event) {
+        _input(event);
+
         switch(event.type) {
             case sf::Event::MouseMoved: {
                 auto thisSize = getSize();
@@ -83,6 +85,8 @@ namespace rat {
     }
 
     void Widget::update(float deltaTime) {
+        _update(deltaTime);
+
         if(_isHovered) 
             callback(CallbackType::onHover);
 
@@ -101,6 +105,8 @@ namespace rat {
 
         for(Widget* it : _children)
             target.draw(*it, states);
+        
+        _draw(target, states);
     }
 
     sf::Vector2u Widget::getSize() const {

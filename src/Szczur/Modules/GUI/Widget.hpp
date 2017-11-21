@@ -28,7 +28,11 @@ namespace rat {
 		void update(float deltaTime);
 
 		sf::Vector2u getSize() const;
-		
+
+	protected:
+		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
+		virtual void _update(float deltaTime) {}
+		virtual void _input(const sf::Event& event) {}
 	private:
 		std::vector<Widget*> _children;
 
