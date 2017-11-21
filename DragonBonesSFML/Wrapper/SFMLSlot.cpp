@@ -27,10 +27,8 @@ void SFMLSlot::_updateBlendMode()
 				break;
 
 			case BlendMode::Add:
-			{
 				_renderDisplay->blendMode = sf::BlendAdd;
 				break;
-			}
 
 			default:
 				break;
@@ -63,15 +61,10 @@ void SFMLSlot::_updateColor()
 
 void SFMLSlot::_initDisplay(void* value)
 {
-	//const auto renderDisplay = static_cast<SFMLDisplay*>(value);
-	//renderDisplay->retain();
 }
 
 void SFMLSlot::_disposeDisplay(void* value)
 {
-	//const auto renderDisplay = static_cast<SFMLDisplay*>(value);
-	//delete renderDisplay;
-
 }
 
 void SFMLSlot::_onUpdateDisplay()
@@ -81,22 +74,14 @@ void SFMLSlot::_onUpdateDisplay()
 
 void SFMLSlot::_addDisplay()
 {
-	//const auto container = static_cast<SFMLArmatureDisplay*>(_armature->getDisplay());
-	//container->addChild(_renderDisplay);
 }
 
 void SFMLSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
 {
-	/*const auto container = static_cast<SFMLArmatureDisplay*>(_armature->getDisplay());
-	const auto prevDisplay = isArmatureDisplay ? static_cast<WrapperSprite*>(value) : static_cast<WrapperSprite*>(value);
-	container->addChild(_renderDisplay, prevDisplay->getLocalZOrder());
-	container->removeChild(prevDisplay);
-	_textureScale = 1.0f;*/
 }
 
 void SFMLSlot::_removeDisplay()
 {
-	//_renderDisplay->removeFromParent();
 }
 
 void SFMLSlot::_updateZOrder()
@@ -116,7 +101,7 @@ void SFMLSlot::_updateFrame()
 
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
 	{
-		if (currentTextureData->Texture != nullptr)
+		if (currentTextureData->texture != nullptr)
 		{
 			if (meshData != nullptr) // SFMLMesh
 			{
@@ -135,10 +120,12 @@ void SFMLSlot::_updateFrame()
 				const unsigned uvOffset = vertexOffset + vertexCount * 2;
 
 				const auto& region = currentTextureData->region;
-				const auto& textureAtlasSize = currentTextureData->Texture->getSize();
+				const auto& textureAtlasSize = currentTextureData->texture->getSize();
 
-				std::vector<std::shared_ptr<sf::Vertex>> vertices(vertexCount);
+				std::vector<sf::Vertex> vertices(vertexCount);
 				//sf::VertexArray vertices(sf::PrimitiveType::TrianglesFan);
+
+				std::vector<std::vector<int>> verticesInTriagles;
 
 				std::vector<uint16_t> vertexIndices(triangleCount * 3);
 
@@ -150,22 +137,23 @@ void SFMLSlot::_updateFrame()
 					const auto y = floatArray[vertexOffset + i + 1];
 					auto u = floatArray[uvOffset + i];
 					auto v = floatArray[uvOffset + i + 1];
-					auto vertexData = std::make_shared<sf::Vertex>();
-					//sf::Vertex vertexData;
-					vertexData->position = { x, y };
+					//auto vertexData = std::make_shared<sf::Vertex>();
+					sf::Vertex vertexData;
+					vertexData.position = { x, y };
 
 					if (currentTextureData->rotated)
 					{
-						vertexData->texCoords.x = (region.x + (1.0f - v) * region.width);
-						vertexData->texCoords.y = (region.y + u * region.height);
+						vertexData.texCoords.x = (region.x + (1.0f - v) * region.width);
+						vertexData.texCoords.y = (region.y + u * region.height);
 					}
 					else
 					{
-						vertexData->texCoords.x = (region.x + u * region.width);
-						vertexData->texCoords.y = (region.y + v * region.height);
+						vertexData.texCoords.x = (region.x + u * region.width);
+						vertexData.texCoords.y = (region.y + v * region.height);
 					}
 
-					vertexData->color = sf::Color::White;
+					vertexData.color = sf::Color::White;
+					
 					vertices[iH] = vertexData;
 				}
 
@@ -174,20 +162,23 @@ void SFMLSlot::_updateFrame()
 					vertexIndices.push_back(intArray[meshData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i]);
 				}
 
-				std::vector<sf::Vertex*> verticesDisplay;
+				std::vector<sf::Vertex> verticesDisplay;
+
+				verticesInTriagles.resize(vertices.size());
 
 				// sorting
 				for (uint64_t i = 0; i < vertexIndices.size(); i++)
 				{
-					verticesDisplay.push_back(vertices[vertexIndices[i]].get());
+					verticesInTriagles[vertexIndices[i]].push_back(i);
+					verticesDisplay.push_back(vertices[vertexIndices[i]]);
 				}
 
 				_textureScale = 1.f;
 
 				auto meshDisplay = new SFMLMesh();
-				meshDisplay->texture = currentTextureData->Texture;
-				meshDisplay->vertices = std::move(vertices);
+				meshDisplay->texture = currentTextureData->texture;
 				meshDisplay->verticesDisplay = std::move(verticesDisplay);
+				meshDisplay->verticesInTriagles = std::move(verticesInTriagles);
 
 				_renderDisplay->_meshDisplay = std::unique_ptr<SFMLMesh>(meshDisplay);
 
@@ -201,8 +192,8 @@ void SFMLSlot::_updateFrame()
 				_textureScale = scale; 
 
 				auto spriteDisplay = std::make_unique<sf::Sprite>();
-				spriteDisplay->setTexture(*currentTextureData->Texture);
-				spriteDisplay->setTextureRect(currentTextureData->Rect);
+				spriteDisplay->setTexture(*currentTextureData->texture);
+				spriteDisplay->setTextureRect(currentTextureData->textureRect);
 				spriteDisplay->setOrigin({ 0.f, spriteDisplay->getLocalBounds().height });
 				_renderDisplay->_spriteDisplay = std::move(spriteDisplay);
 			}
@@ -226,9 +217,9 @@ void SFMLSlot::_updateMesh()
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
 	const auto meshDisplay = _renderDisplay->_meshDisplay.get();
-	auto& vertices = meshDisplay->vertices;
+	//auto& vertices = meshDisplay->vertices;
 
-	if (!textureData || meshDisplay->texture != textureData->Texture)
+	if (!textureData || meshDisplay->texture != textureData->texture)
 	{
 		return;
 	}
@@ -276,13 +267,16 @@ void SFMLSlot::_updateMesh()
 				}
 			}
 
-			auto& vertex = vertices[i];
-			auto& vertexPosition = vertex->position;
+			auto& vertsDisplay = meshDisplay->verticesDisplay;
 
-			sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
+			for (auto vert : meshDisplay->verticesInTriagles[i])
+			{
+				auto& vertexPosition = vertsDisplay[vert].position;
+				sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
 
-			vertexPosition = { xG, yG };
-			vertexPosition += pos;
+				vertexPosition = { xG, yG };
+				vertexPosition += pos;
+			}
 		}
 	}
 	else if (hasFFD)
@@ -304,13 +298,16 @@ void SFMLSlot::_updateMesh()
 			const auto xG = floatArray[vertexOffset + i] * scale + _ffdVertices[i];
 			const auto yG = floatArray[vertexOffset + i + 1] * scale + _ffdVertices[i + 1];
 
-			auto& vertex = vertices[iH];
-			auto& vertexPosition = vertex->position;
+			auto& vertsDisplay = meshDisplay->verticesDisplay;
 
-			sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
+			for (auto vert : meshDisplay->verticesInTriagles[i])
+			{
+				auto& vertexPosition = vertsDisplay[vert].position;
+				sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();
 
-			vertexPosition = { xG, yG };
-			vertexPosition += pos;
+				vertexPosition = { xG, yG };
+				vertexPosition += pos;
+			}
 		}
 	}
 }

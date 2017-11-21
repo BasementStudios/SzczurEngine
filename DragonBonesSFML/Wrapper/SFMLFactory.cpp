@@ -86,8 +86,11 @@ TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath,
 	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), nullptr, name, scale));
 }
 
-void SFMLFactory::loadTextures(DragonBonesData *dragonBonesData, const std::string& folderPath)
+bool SFMLFactory::loadTextures(DragonBonesData* dragonBonesData, const std::string& folderPath)
 {
+	if (dragonBonesData == nullptr)
+		return false;
+
 	SFMLTextureAtlasData* textureAtlasData = BaseObject::borrowObject<SFMLTextureAtlasData>();
 	textureAtlasData->name = dragonBonesData->name;
 
@@ -117,9 +120,11 @@ void SFMLFactory::loadTextures(DragonBonesData *dragonBonesData, const std::stri
 					textureData->region.y = 0.f;
 					textureData->region.width = size.x;
 					textureData->region.height = size.y;
+					textureData->parent = textureAtlasData;
+					textureData->frame = nullptr;
 
-					textureData->Texture = tex;
-					textureData->Rect = { 0, 0, (int)size.x, (int)size.y };
+					textureData->texture = tex;
+					textureData->textureRect = { 0, 0, static_cast<int>(size.x), static_cast<int>(size.y) };
 
 					textureAtlasData->addTexture(textureData);
 				}
@@ -147,9 +152,9 @@ SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatu
 sf::Texture* SFMLFactory::getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName) const
 {
 	const auto textureData = static_cast<SFMLTextureData*>(_getTextureData(dragonBonesName, textureName));
-	if (textureData != nullptr && textureData->Texture != nullptr)
+	if (textureData != nullptr && textureData->texture != nullptr)
 	{
-		return textureData->Texture;
+		return textureData->texture;
 	}
 
 	return nullptr;

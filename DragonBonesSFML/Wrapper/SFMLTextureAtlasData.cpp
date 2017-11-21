@@ -34,7 +34,7 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 		{
 			const auto textureData = static_cast<SFMLTextureData*>(pair.second);
 
-			if (textureData->Texture == nullptr)
+			if (textureData->texture == nullptr)
 			{
 				sf::IntRect rect(
 					textureData->region.x, textureData->region.y,
@@ -44,8 +44,8 @@ void SFMLTextureAtlasData::setRenderTexture(sf::Texture* value)
 
 				//printf("[%s] %f %f %f %f\n", textureData->name.c_str(), rect.left, rect.top, rect.width, rect.height);
 
-				textureData->Texture = _renderTexture;
-				textureData->Rect = std::move(rect);
+				textureData->texture = _renderTexture;
+				textureData->textureRect = std::move(rect);
 			}
 		}
 	}

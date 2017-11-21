@@ -33,7 +33,7 @@ public:
 
 	void update(float lastUpdate);
 
-	void loadTextures(DragonBonesData *dragonBonesData, const std::string& folderPath);
+	bool loadTextures(DragonBonesData* dragonBonesData, const std::string& folderPath);
 
 protected:
 	TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const override;

@@ -13,8 +13,8 @@ class SFMLTextureData : public TextureData
 	BIND_CLASS_TYPE_B(SFMLTextureData);
 
 public:
-	sf::Texture*			Texture;
-	sf::IntRect				Rect;
+	sf::Texture*			texture;
+	sf::IntRect				textureRect;
 
 public:
 	SFMLTextureData()
@@ -29,7 +29,7 @@ public:
 
 	void _onClear() override
 	{
-		Texture = nullptr;
+		texture = nullptr;
 
 		TextureData::_onClear();
 	}

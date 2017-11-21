@@ -9,8 +9,9 @@ class SFMLMesh
 public:
 	const sf::Texture*									texture;
 
-	std::vector<std::shared_ptr<sf::Vertex>>			vertices;
-	std::vector<sf::Vertex*>							verticesDisplay;
+	std::vector<std::vector<int>> 						verticesInTriagles;
+
+	std::vector<sf::Vertex>								verticesDisplay;
 
 public:
 	SFMLMesh()
@@ -26,11 +27,7 @@ public:
 		{
 			states.texture = texture;
 
-			std::vector<sf::Vertex> verts;
-			verts.reserve(verticesDisplay.size());
-			std::transform(std::begin(verticesDisplay), std::end(verticesDisplay), std::back_inserter(verts), [] (sf::Vertex* item) { return *item; });
-
-			target.draw(&verts[0], verts.size(), sf::PrimitiveType::Triangles, states);
+			target.draw(&verticesDisplay[0], verticesDisplay.size(), sf::PrimitiveType::Triangles, states);
 		}
 	}
 };
