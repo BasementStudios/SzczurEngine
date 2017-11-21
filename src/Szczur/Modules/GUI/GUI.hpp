@@ -7,8 +7,8 @@
 
 #include "Widget.hpp"
 #include "ImageWidget.hpp"
-/*#include "TextWidget.hpp"
-#include "CheckboxWidget.hpp"
+#include "TextWidget.hpp"
+/*#include "CheckboxWidget.hpp"
 #include "ButtonWidget.hpp"
 */
 

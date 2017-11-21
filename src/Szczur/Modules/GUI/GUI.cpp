@@ -5,26 +5,53 @@
 namespace rat {
     void GUI::init() {
         
-        Widget* test = _root.add( new ImageWidget("data/button.png") );
-        test->setCallback(Widget::CallbackType::onHover, [](Widget* owner) {
-            std::cout << ".";
-        });
-        test->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner) {
-            std::cout << "HoveredIn\n";
-        });
-        test->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner) {
-            std::cout << "\nHoveredOut\n\n";
-        });
-        test->setCallback(Widget::CallbackType::onPress, [](Widget* owner) {
-            std::cout << "\nPRESSED<==============\n";
-        });
-        test->setCallback(Widget::CallbackType::onHold, [](Widget* owner) {
-            std::cout << ",";
-        });
-        test->setCallback(Widget::CallbackType::onRelease, [](Widget* owner) {
-            std::cout << "\nRELEASED<==============\n";
-        });
-        test->setPosition({255.f, 120.f});
+        //Widget* test = _root.add( new ImageWidget("data/button.png") );
+        for(int i = 0; i<5; i++){
+            std::string name;
+            switch(i) {
+                case 0:
+                    name = "Start";
+                break;
+                case 1:
+                    name = "Load";
+                break;
+                case 2:
+                    name = "Options";
+                break;
+                case 3:
+                    name = "Credits";
+                break;
+                case 4:
+                    name = "Exit";
+                break;
+            }
+            TextWidget* textWidget = new TextWidget(
+                TextWidget::createText(name, sf::Color::Red, 70u),
+                "data/consolab.ttf"
+            );
+
+            Widget* test = _root.add(textWidget);
+
+            test->setCallback(Widget::CallbackType::onHoverIn, [textWidget](Widget* owner) {
+                std::cout << "Yellow\n";
+                textWidget->setColor(sf::Color::Yellow);
+            });
+            test->setCallback(Widget::CallbackType::onHoverOut, [textWidget](Widget* owner) {
+                std::cout << "Red\n";
+                textWidget->setColor(sf::Color::Red);
+            });
+            test->setCallback(Widget::CallbackType::onPress, [textWidget](Widget* owner) {
+                std::cout << "Blue\n";
+                textWidget->setColor(sf::Color::Blue);
+            });
+            test->setCallback(Widget::CallbackType::onRelease, [textWidget](Widget* owner) {
+                std::cout << "Red\n";
+                textWidget->setColor(sf::Color::Red);
+            });
+            test->setPosition({255.f, 120.f + (110.f*i)});
+        }
+
+        
 
     }
 
