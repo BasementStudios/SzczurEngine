@@ -8,6 +8,7 @@
 #include "Widget.hpp"
 #include "ImageWidget.hpp"
 #include "TextWidget.hpp"
+#include "InputWidget.hpp"
 /*#include "CheckboxWidget.hpp"
 #include "ButtonWidget.hpp"
 */

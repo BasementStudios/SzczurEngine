@@ -10,6 +10,7 @@ namespace rat {
     }
 
     TextWidget::TextWidget(const sf::Text& text, const std::string& path) :
+    Widget(),
     _text(text) {
         _font.loadFromFile(path);
         _text.setFont(_font);
@@ -33,6 +34,14 @@ namespace rat {
 
     void TextWidget::add(char letter) {
         _text.setString( _text.getString() + letter );
+    }
+
+    void TextWidget::removeLast() {
+        sf::String str = _text.getString();
+        if(str.getSize() > 0){
+            str.erase( str.getSize()-1, 1 );
+            _text.setString(str);
+        }
     }
 
 }

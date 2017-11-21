@@ -16,6 +16,8 @@ namespace rat {
         void setColor(const sf::Color& newColor);
 
         void add(char letter);
+
+        void removeLast();
     protected:
         virtual sf::Vector2u _getSize() const override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;

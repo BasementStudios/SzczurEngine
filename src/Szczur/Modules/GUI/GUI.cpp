@@ -4,8 +4,13 @@
 
 namespace rat {
     void GUI::init() {
-        
-        //Widget* test = _root.add( new ImageWidget("data/button.png") );
+        _root.add(new InputWidget(
+            TextWidget::createText("aasdasdasd", sf::Color::Red, 20u),
+            "data/consolab.ttf"
+        ))->setPosition({100.f, 100.f});
+
+
+        /*
         for(int i = 0; i<5; i++){
             std::string name;
             switch(i) {
@@ -50,7 +55,7 @@ namespace rat {
             });
             test->setPosition({255.f, 120.f + (110.f*i)});
         }
-
+        */
         
 
     }
