@@ -17,7 +17,7 @@ namespace rat {
         test->setCallback(Widget::CallbackType::onPress, [](Widget* owner) {
             std::cout << "\nPRESSED<==============\n";
         });
-        test->setCallback(Widget::CallbackType::onHeld, [](Widget* owner) {
+        test->setCallback(Widget::CallbackType::onHold, [](Widget* owner) {
             std::cout << ",";
         });
         test->setCallback(Widget::CallbackType::onRelease, [](Widget* owner) {
