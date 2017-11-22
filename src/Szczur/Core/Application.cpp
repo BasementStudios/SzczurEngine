@@ -25,7 +25,7 @@ namespace rat {
 	}
 
 	void Application::update() {
-		auto _deltaTime = _mainClock.restart().asSeconds();
+		auto deltaTime = _mainClock.restart().asSeconds();
 	}
 
 	void Application::render() {
