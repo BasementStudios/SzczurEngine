@@ -4,8 +4,6 @@
 
 namespace rat {
 	class Assets : public ModuleBase<> { using ModuleBase::ModuleBase;
-	public:
 
-		void init();
 	};
 }

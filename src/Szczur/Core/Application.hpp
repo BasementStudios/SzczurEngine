@@ -4,6 +4,7 @@
 
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
+#include "Szczur/Modules/Lua/Lua.hpp"
 
 namespace rat {
 	class Application {
@@ -11,7 +12,8 @@ namespace rat {
 
 		ModulesHolder<
 			Assets,
-			Canvas
+			Canvas,
+			Lua
 		> _modules;
 
 		sf::RenderWindow _window;
