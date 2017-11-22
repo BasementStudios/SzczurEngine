@@ -15,11 +15,8 @@ private:
 	dragonBones::SFMLFactory							_factory;
 	std::unique_ptr<dragonBones::SFMLArmatureDisplay>	_armatureDisplay;
 
-<<<<<<< Updated upstream
-=======
 	//Armature											armature;
 
->>>>>>> Stashed changes
 	TextureMgr											_textureMgr;
 
 	std::unique_ptr<sf::RenderWindow>					_window;

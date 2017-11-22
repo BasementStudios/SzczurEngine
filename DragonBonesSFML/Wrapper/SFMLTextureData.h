@@ -16,6 +16,8 @@ public:
 	sf::Texture*			texture;
 	sf::IntRect				textureRect;
 
+	std::string				path;
+
 public:
 	SFMLTextureData()
 	{
@@ -32,6 +34,19 @@ public:
 		texture = nullptr;
 
 		TextureData::_onClear();
+	}
+
+	void setTexture(sf::Texture *value)
+	{
+		auto size = value->getSize();
+
+		region.x = 0.f;
+		region.y = 0.f;
+		region.width = size.x;
+		region.height = size.y;
+
+		texture = value;
+		textureRect = { 0, 0, static_cast<int>(size.x), static_cast<int>(size.y) };
 	}
 };
 

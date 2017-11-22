@@ -21,6 +21,8 @@ SFMLFactory* SFMLFactory::_factory;
 
 SFMLFactory::SFMLFactory()
 {
+	_factory = this;
+
 	if (_dragonBonesInstance == nullptr)
 	{
 		_dragonBonesInstance = new DragonBones(nullptr);
@@ -87,53 +89,37 @@ TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath,
 	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), nullptr, name, scale));
 }
 
-bool SFMLFactory::loadTextures(DragonBonesData* dragonBonesData, const std::string& folderPath)
+std::vector<SFMLTextureData*> SFMLFactory::getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath)
 {
-	if (dragonBonesData == nullptr)
-		return false;
+	std::vector<SFMLTextureData*> texturesData;
 
-	SFMLTextureAtlasData* textureAtlasData = BaseObject::borrowObject<SFMLTextureAtlasData>();
-	textureAtlasData->name = dragonBonesData->name;
+	if (dragonBonesData == nullptr)
+		return texturesData;
 
 	for (auto& armName : dragonBonesData->armatureNames) 
 	{
-		auto arm = dragonBonesData->armatures[armName];
+		auto& arm = dragonBonesData->armatures[armName];
 
 		for (auto& skin : arm->skins)
 		{
 			for (auto& displays : skin.second->displays) 
 			{
-				for (auto& display : displays.second)
+				for (auto display : displays.second)
 				{
-					std::string fileTex = folderPath + "/" + display->path + ".png";
+					std::string path = folderPath + "/" + display->path + ".png";
 
-					auto tex = TextureMgr::Get()->GetTexture(fileTex);
-
-					if (!tex)
-						continue;
-
-					auto size = tex->getSize();
-
-					const auto textureData = static_cast<SFMLTextureData*>(textureAtlasData->createTexture());
+					const auto textureData = BaseObject::borrowObject<SFMLTextureData>();
 					textureData->rotated = false;
 					textureData->name = display->name;
-					textureData->region.x = 0.f;
-					textureData->region.y = 0.f;
-					textureData->region.width = size.x;
-					textureData->region.height = size.y;
-					textureData->parent = textureAtlasData;
-					textureData->frame = nullptr;
+					textureData->path = path;
 
-					textureData->texture = tex;
-					textureData->textureRect = { 0, 0, static_cast<int>(size.x), static_cast<int>(size.y) };
-
-					textureAtlasData->addTexture(textureData);
+					texturesData.push_back(textureData);
 				}
 			}
 		}
 	}
 
-	addTextureAtlasData(textureAtlasData);
+	return texturesData;
 }
 
 SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
