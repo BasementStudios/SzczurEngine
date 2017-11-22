@@ -20,60 +20,74 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-//
-// Created by liangshuochen on 09/06/2017.
-//
-
-#ifndef DRAGONBONESCPP_CONSTRAINTDATA_H
-#define DRAGONBONESCPP_CONSTRAINTDATA_H
+#ifndef DRAGONBONES_SKIN_DATA_H
+#define DRAGONBONES_SKIN_DATA_H
 
 #include "../core/BaseObject.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
- * @internal
- * @private
+ * - The skin data, typically a armature data instance contains at least one skinData.
+ * @version DragonBones 3.0
+ * @language en_US
  */
-class ConstraintData : public BaseObject 
-{
-    ABSTRACT_CLASS(ConstraintData)
-
-public:
-    int order;
-    std::string name;
-    const BoneData* target;
-    const BoneData* bone;
-    const BoneData* root;
-
-protected:
-    virtual void _onClear() override;
-
-public: // For WebAssembly.
-    const BoneData* getTarget() const { return  target; }
-    void setTarget(const BoneData* value) { target = value; }
-
-    const BoneData* getBone() const { return bone; }
-    void setBone(const BoneData* value) { bone = value; }
-
-    const BoneData* getRoot() const { return root; }
-    void setRoot(const BoneData* value) { root = value; }
-};
 /**
- * @internal
- * @private
+ * - 皮肤数据，通常一个骨架数据至少包含一个皮肤数据。
+ * @version DragonBones 3.0
+ * @language zh_CN
  */
-class IKConstraintData : public ConstraintData 
+class SkinData : public BaseObject
 {
-    BIND_CLASS_TYPE_A(IKConstraintData);
+    BIND_CLASS_TYPE_A(SkinData);
 
 public:
-    bool scaleEnabled;
-    bool bendPositive;
-    float weight;
+    /**
+     * - The skin name.
+     * @version DragonBones 3.0
+     * @language en_US
+     */
+    /**
+     * - 皮肤名称。
+     * @version DragonBones 3.0
+     * @language zh_CN
+     */
+    std::string name;
+    /**
+     * @private
+     */
+    std::map<std::string, std::vector<DisplayData*>> displays;
+    /**
+     * @private
+     */
+    ArmatureData* parent;
 
 protected:
+    /**
+     * @inheritDoc
+     */
     virtual void _onClear() override;
+
+public:
+    /**
+     * @internal
+     * @private
+     */
+    void addDisplay(const std::string& slotName, DisplayData* value);
+    /**
+     * @private
+     */
+    DisplayData* getDisplay(const std::string& slotName, const std::string& displayName);
+    /**
+     * @private
+     */
+    std::vector<DisplayData*>* getDisplays(const std::string& slotName)
+    {
+        return mapFindB(displays, slotName);
+    }
+
+public: // For WebAssembly. TODO parent
+    const std::map<std::string, std::vector<DisplayData*>>& getSlotDisplays() const { return displays; }
 };
 
 DRAGONBONES_NAMESPACE_END
-#endif //DRAGONBONESCPP_CONSTRAINTDATA_H
+#endif // DRAGONBONES_SKIN_DATA_H

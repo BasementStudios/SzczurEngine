@@ -11,36 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dragonBones\animation\Animation.cpp" />
-    <ClCompile Include="dragonBones\animation\AnimationState.cpp" />
-    <ClCompile Include="dragonBones\animation\BaseTimelineState.cpp" />
-    <ClCompile Include="dragonBones\animation\TimelineState.cpp" />
-    <ClCompile Include="dragonBones\animation\WorldClock.cpp" />
-    <ClCompile Include="dragonBones\armature\Armature.cpp" />
-    <ClCompile Include="dragonBones\armature\Bone.cpp" />
-    <ClCompile Include="dragonBones\armature\Constraint.cpp" />
-    <ClCompile Include="dragonBones\armature\Slot.cpp" />
-    <ClCompile Include="dragonBones\armature\TransformObject.cpp" />
-    <ClCompile Include="dragonBones\core\BaseObject.cpp" />
-    <ClCompile Include="dragonBones\core\DragonBones.cpp" />
-    <ClCompile Include="dragonBones\events\EventObject.cpp" />
-    <ClCompile Include="dragonBones\factories\BaseFactory.cpp" />
-    <ClCompile Include="dragonBones\geom\Point.cpp" />
-    <ClCompile Include="dragonBones\geom\Transform.cpp" />
-    <ClCompile Include="dragonBones\model\AnimationConfig.cpp" />
-    <ClCompile Include="dragonBones\model\AnimationData.cpp" />
-    <ClCompile Include="dragonBones\model\ArmatureData.cpp" />
-    <ClCompile Include="dragonBones\model\BoundingBoxData.cpp" />
-    <ClCompile Include="dragonBones\model\ConstraintData.cpp" />
-    <ClCompile Include="dragonBones\model\DisplayData.cpp" />
-    <ClCompile Include="dragonBones\model\DragonBonesData.cpp" />
-    <ClCompile Include="dragonBones\model\TextureAtlasData.cpp" />
-    <ClCompile Include="dragonBones\model\UserData.cpp" />
-    <ClCompile Include="dragonBones\parsers\BinaryDataParser.cpp" />
-    <ClCompile Include="dragonBones\parsers\DataParser.cpp" />
-    <ClCompile Include="dragonBones\parsers\JSONDataParser.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="dragonBones\animation\Animation.h" />
     <ClInclude Include="dragonBones\animation\AnimationState.h" />
     <ClInclude Include="dragonBones\animation\BaseTimelineState.h" />
@@ -56,9 +26,9 @@
     <ClInclude Include="dragonBones\core\BaseObject.h" />
     <ClInclude Include="dragonBones\core\DragonBones.h" />
     <ClInclude Include="dragonBones\DragonBonesHeaders.h" />
-    <ClInclude Include="dragonBones\events\EventObject.h" />
-    <ClInclude Include="dragonBones\events\IEventDispatcher.h" />
-    <ClInclude Include="dragonBones\factories\BaseFactory.h" />
+    <ClInclude Include="dragonBones\event\EventObject.h" />
+    <ClInclude Include="dragonBones\event\IEventDispatcher.h" />
+    <ClInclude Include="dragonBones\factory\BaseFactory.h" />
     <ClInclude Include="dragonBones\geom\ColorTransform.h" />
     <ClInclude Include="dragonBones\geom\Matrix.h" />
     <ClInclude Include="dragonBones\geom\Point.h" />
@@ -68,14 +38,16 @@
     <ClInclude Include="dragonBones\model\AnimationData.h" />
     <ClInclude Include="dragonBones\model\ArmatureData.h" />
     <ClInclude Include="dragonBones\model\BoundingBoxData.h" />
+    <ClInclude Include="dragonBones\model\CanvasData.h" />
     <ClInclude Include="dragonBones\model\ConstraintData.h" />
     <ClInclude Include="dragonBones\model\DisplayData.h" />
     <ClInclude Include="dragonBones\model\DragonBonesData.h" />
+    <ClInclude Include="dragonBones\model\SkinData.h" />
     <ClInclude Include="dragonBones\model\TextureAtlasData.h" />
     <ClInclude Include="dragonBones\model\UserData.h" />
-    <ClInclude Include="dragonBones\parsers\BinaryDataParser.h" />
-    <ClInclude Include="dragonBones\parsers\DataParser.h" />
-    <ClInclude Include="dragonBones\parsers\JSONDataParser.h" />
+    <ClInclude Include="dragonBones\parser\BinaryDataParser.h" />
+    <ClInclude Include="dragonBones\parser\DataParser.h" />
+    <ClInclude Include="dragonBones\parser\JSONDataParser.h" />
     <ClInclude Include="rapidjson\allocators.h" />
     <ClInclude Include="rapidjson\document.h" />
     <ClInclude Include="rapidjson\encodedstream.h" />
@@ -112,6 +84,38 @@
     <ClInclude Include="rapidjson\stringbuffer.h" />
     <ClInclude Include="rapidjson\writer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dragonBones\animation\Animation.cpp" />
+    <ClCompile Include="dragonBones\animation\AnimationState.cpp" />
+    <ClCompile Include="dragonBones\animation\BaseTimelineState.cpp" />
+    <ClCompile Include="dragonBones\animation\TimelineState.cpp" />
+    <ClCompile Include="dragonBones\animation\WorldClock.cpp" />
+    <ClCompile Include="dragonBones\armature\Armature.cpp" />
+    <ClCompile Include="dragonBones\armature\Bone.cpp" />
+    <ClCompile Include="dragonBones\armature\Constraint.cpp" />
+    <ClCompile Include="dragonBones\armature\Slot.cpp" />
+    <ClCompile Include="dragonBones\armature\TransformObject.cpp" />
+    <ClCompile Include="dragonBones\core\BaseObject.cpp" />
+    <ClCompile Include="dragonBones\core\DragonBones.cpp" />
+    <ClCompile Include="dragonBones\event\EventObject.cpp" />
+    <ClCompile Include="dragonBones\factory\BaseFactory.cpp" />
+    <ClCompile Include="dragonBones\geom\Point.cpp" />
+    <ClCompile Include="dragonBones\geom\Transform.cpp" />
+    <ClCompile Include="dragonBones\model\AnimationConfig.cpp" />
+    <ClCompile Include="dragonBones\model\AnimationData.cpp" />
+    <ClCompile Include="dragonBones\model\ArmatureData.cpp" />
+    <ClCompile Include="dragonBones\model\BoundingBoxData.cpp" />
+    <ClCompile Include="dragonBones\model\CanvasData.cpp" />
+    <ClCompile Include="dragonBones\model\ConstraintData.cpp" />
+    <ClCompile Include="dragonBones\model\DisplayData.cpp" />
+    <ClCompile Include="dragonBones\model\DragonBonesData.cpp" />
+    <ClCompile Include="dragonBones\model\SkinData.cpp" />
+    <ClCompile Include="dragonBones\model\TextureAtlasData.cpp" />
+    <ClCompile Include="dragonBones\model\UserData.cpp" />
+    <ClCompile Include="dragonBones\parser\BinaryDataParser.cpp" />
+    <ClCompile Include="dragonBones\parser\DataParser.cpp" />
+    <ClCompile Include="dragonBones\parser\JSONDataParser.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{F344BC20-A0F0-4CFA-9D30-48F8CE6045F5}</ProjectGuid>
@@ -123,10 +127,10 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -161,6 +165,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>./.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

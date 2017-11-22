@@ -20,60 +20,28 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-//
-// Created by liangshuochen on 09/06/2017.
-//
-
-#ifndef DRAGONBONESCPP_CONSTRAINTDATA_H
-#define DRAGONBONESCPP_CONSTRAINTDATA_H
+#ifndef DRAGONBONES_CANVAS_DATA_H
+#define DRAGONBONES_CANVAS_DATA_H
 
 #include "../core/BaseObject.h"
+#include "../geom/Rectangle.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 /**
  * @internal
  * @private
  */
-class ConstraintData : public BaseObject 
+class CanvasData : public BaseObject
 {
-    ABSTRACT_CLASS(ConstraintData)
+    BIND_CLASS_TYPE_A(CanvasData);
 
 public:
-    int order;
-    std::string name;
-    const BoneData* target;
-    const BoneData* bone;
-    const BoneData* root;
-
-protected:
-    virtual void _onClear() override;
-
-public: // For WebAssembly.
-    const BoneData* getTarget() const { return  target; }
-    void setTarget(const BoneData* value) { target = value; }
-
-    const BoneData* getBone() const { return bone; }
-    void setBone(const BoneData* value) { bone = value; }
-
-    const BoneData* getRoot() const { return root; }
-    void setRoot(const BoneData* value) { root = value; }
-};
-/**
- * @internal
- * @private
- */
-class IKConstraintData : public ConstraintData 
-{
-    BIND_CLASS_TYPE_A(IKConstraintData);
-
-public:
-    bool scaleEnabled;
-    bool bendPositive;
-    float weight;
+    bool hasBackground;
+    unsigned color;
+    Rectangle aabb;
 
 protected:
     virtual void _onClear() override;
 };
-
 DRAGONBONES_NAMESPACE_END
-#endif //DRAGONBONESCPP_CONSTRAINTDATA_H
+#endif // DRAGONBONES_CANVAS_DATA_H
