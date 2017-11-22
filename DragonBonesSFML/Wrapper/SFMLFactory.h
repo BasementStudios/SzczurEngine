@@ -17,6 +17,7 @@ class SFMLFactory : public BaseFactory
 {
 protected:
 	static DragonBones*											_dragonBonesInstance;
+	static SFMLFactory*											_factory;
 
 	mutable std::vector<std::unique_ptr<SFMLSlot>>				_wrapperSlots;
 	mutable std::vector<std::unique_ptr<SFMLTextureData>>		_wrapperTexturesData;
@@ -33,12 +34,14 @@ public:
 
 	void update(float lastUpdate);
 
-	bool loadTextures(DragonBonesData* dragonBonesData, const std::string& folderPath);
+	std::vector<SFMLTextureData*> getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath);
+
+	static SFMLFactory* get() { return _factory; }
 
 protected:
 	TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const override;
 	Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const override;
-	Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature& armature) const override;
+	Slot* _buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature* armature) const override;
 };
 
 DRAGONBONES_NAMESPACE_END

@@ -17,6 +17,7 @@
 DRAGONBONES_NAMESPACE_BEGIN
 
 DragonBones* SFMLFactory::_dragonBonesInstance;
+SFMLFactory* SFMLFactory::_factory;
 
 SFMLFactory::SFMLFactory()
 {
@@ -200,11 +201,11 @@ Armature* SFMLFactory::_buildArmature(const BuildArmaturePackage& dataPackage) c
 	return armature;
 }
 
-Slot* SFMLFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature& armature) const
+Slot* SFMLFactory::_buildSlot(const BuildArmaturePackage& dataPackage, SlotData* slotData, std::vector<DisplayData*>* displays, Armature* armature) const
 {
 	auto slot = BaseObject::borrowObject<SFMLSlot>();
 	auto wrapperDisplay = new SFMLDisplay();
-	
+
 	_wrapperSlots.push_back(std::unique_ptr<SFMLSlot>(slot));
 
 	slot->init(slotData, displays, wrapperDisplay, wrapperDisplay);

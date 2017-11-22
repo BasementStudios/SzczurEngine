@@ -20,10 +20,10 @@ public:
 	SFMLArmatureDisplay();
 	~SFMLArmatureDisplay();
 
-	bool hasEvent(const std::string& type) const override { return true; }
-	void addEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-	void removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-	void _dispatchEvent(const std::string& type, EventObject* value);
+	bool hasDBEventListener(const std::string &type) const override { return true; }
+	void addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+	void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
+	void dispatchDBEvent(const std::string& type, EventObject* value) override;
 
 	void dbInit(Armature* armature) override;
 	void dbClear() override;

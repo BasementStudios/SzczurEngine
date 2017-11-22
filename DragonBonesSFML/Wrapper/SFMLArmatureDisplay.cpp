@@ -30,16 +30,16 @@ void SFMLArmatureDisplay::dbUpdate()
 {
 }
 
-void SFMLArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& listener)
+void SFMLArmatureDisplay::addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener)
 {
 	_dispatcher.addEvent(type, listener);
 }
 
-void SFMLArmatureDisplay::removeEvent(const std::string& type, const std::function<void(EventObject*)>& listener)
+void SFMLArmatureDisplay::removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener)
 {
 }
 
-void SFMLArmatureDisplay::_dispatchEvent(const std::string& type, EventObject* value)
+void SFMLArmatureDisplay::dispatchDBEvent(const std::string& type, EventObject* value)
 {
 	_dispatcher.dispatchEvent(type, value);
 }

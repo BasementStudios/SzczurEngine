@@ -27,7 +27,7 @@ public:
 
 	~SFMLDisplay() = default;
 
-	void render(sf::RenderTarget &window, sf::RenderStates states)
+	void render(sf::RenderTarget& window, sf::RenderStates states)
 	{
 		if (visible)
 		{

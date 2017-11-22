@@ -86,12 +86,6 @@ void SFMLSlot::_removeDisplay()
 
 void SFMLSlot::_updateZOrder()
 {
-	/*if (_renderDisplay->getLocalZOrder() == _zOrder)
-	{
-		return;
-	}
-
-	_renderDisplay->setLocalZOrder(_zOrder);*/
 }
 
 void SFMLSlot::_updateFrame()
@@ -103,7 +97,7 @@ void SFMLSlot::_updateFrame()
 	{
 		if (currentTextureData->texture != nullptr)
 		{
-			if (meshData != nullptr) // SFMLMesh
+			if (meshData != nullptr) // Mesh
 			{
 				const auto data = meshData->parent->parent->parent;
 				const auto intArray = data->intArray;
@@ -123,7 +117,6 @@ void SFMLSlot::_updateFrame()
 				const auto& textureAtlasSize = currentTextureData->texture->getSize();
 
 				std::vector<sf::Vertex> vertices(vertexCount);
-				//sf::VertexArray vertices(sf::PrimitiveType::TrianglesFan);
 
 				std::vector<std::vector<int>> verticesInTriagles;
 
@@ -137,7 +130,7 @@ void SFMLSlot::_updateFrame()
 					const auto y = floatArray[vertexOffset + i + 1];
 					auto u = floatArray[uvOffset + i];
 					auto v = floatArray[uvOffset + i + 1];
-					//auto vertexData = std::make_shared<sf::Vertex>();
+
 					sf::Vertex vertexData;
 					vertexData.position = { x, y };
 
@@ -186,7 +179,7 @@ void SFMLSlot::_updateFrame()
 			else // Normal texture
 			{
 
-				const auto scale = currentTextureData->parent->scale * _armature->armatureData->scale;
+				const auto scale = currentTextureData->parent->scale * _armature->_armatureData->scale;
 				const auto height = (currentTextureData->rotated ? currentTextureData->region.width : currentTextureData->region.height) * scale;
 				_pivotY -= height;
 				_textureScale = scale; 
@@ -212,12 +205,11 @@ void SFMLSlot::_updateFrame()
 void SFMLSlot::_updateMesh()
 {
 	const auto hasFFD = !_ffdVertices.empty();
-	const auto scale = _armature->armatureData->scale;
+	const auto scale = _armature->_armatureData->scale;
 	const auto textureData = static_cast<SFMLTextureData*>(_textureData);
 	const auto meshData = _meshData;
 	const auto weightData = meshData->weight;
 	const auto meshDisplay = _renderDisplay->_meshDisplay.get();
-	//auto& vertices = meshDisplay->vertices;
 
 	if (!textureData || meshDisplay->texture != textureData->texture)
 	{
