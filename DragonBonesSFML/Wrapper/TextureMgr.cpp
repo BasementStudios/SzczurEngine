@@ -6,13 +6,12 @@
 
 #include "Common.h"
 
-TextureMgr *TextureMgr::s_pInst;
+TextureMgr *TextureMgr::_textureMgr;
 
 TextureMgr::TextureMgr()
 {
-	s_pInst = this;
+	_textureMgr = this;
 }
-
 
 TextureMgr::~TextureMgr()
 {
@@ -20,26 +19,20 @@ TextureMgr::~TextureMgr()
 
 sf::Texture* TextureMgr::GetTexture(const std::string &imagePath)
 {
-	/*for (auto& tex : m_textures)
+	if (_textures.find(imagePath) != _textures.end())
 	{
-		if (tex && tex->m_imagePath == imagePath)
-		{
-			return tex->texture.get();
-		}
-	}*/
+		return _textures[imagePath].get();
+	}
 
 	printf("Loading texture: '%s'... ", imagePath.c_str());
 
 	if (isFileExist(imagePath.c_str()))
 	{
 		auto texture = std::make_shared<sf::Texture>();
-		//texture->texture = std::make_shared<sf::Texture>();
 
 		if (texture->loadFromFile(imagePath))
 		{
-			//texture = imagePath;
-
-			m_textures.push_back(texture);
+			_textures[imagePath] = texture;
 
 			printf("[OK]\n");
 

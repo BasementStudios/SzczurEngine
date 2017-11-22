@@ -12,7 +12,10 @@ App::App()
 
 	auto dragonBonesData = _factory.loadDragonBonesData("Dragon_ske.json");
 
-	auto texturesData = _factory.getTexturesData(dragonBonesData, "Dragon_texture");
+	_factory.loadTextureAtlasData("Dragon_tex.json", _textureMgr.GetTexture("Dragon_tex.png"));
+
+
+	/*auto texturesData = _factory.getTexturesData(dragonBonesData, "Dragon_texture");
 
 	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
 	textureAtlasData->name = dragonBonesData->name;
@@ -29,7 +32,7 @@ App::App()
 		textureAtlasData->addTexture(textureData);
 	}
 
-	_factory.addTextureAtlasData(textureAtlasData);
+	_factory.addTextureAtlasData(textureAtlasData);*/
 
 	_armatureDisplay = std::unique_ptr<dragonBones::SFMLArmatureDisplay>(_factory.buildArmatureDisplay("Dragon"));
 	_armatureDisplay->getAnimation()->play("walk");

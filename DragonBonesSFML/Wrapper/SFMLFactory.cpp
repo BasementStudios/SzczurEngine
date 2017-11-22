@@ -11,7 +11,6 @@
 #include "SFMLArmatureDisplay.h"
 #include "SFMLDisplay.h"
 
-#include "TextureMgr.h"
 #include "Common.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -69,7 +68,7 @@ DragonBonesData* SFMLFactory::loadDragonBonesData(const std::string& filePath, c
 	return parseDragonBonesData(data.str().c_str(), name, 1.0f);
 }
 
-TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath, const std::string& name, float scale)
+TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath, sf::Texture* atlasTexture, const std::string& name, float scale)
 {
 	if (!isFileExist(filePath))
 		return nullptr;
@@ -86,7 +85,7 @@ TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath,
 	if (data.str().empty())
 		return nullptr;
 
-	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), nullptr, name, scale));
+	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
 }
 
 std::vector<SFMLTextureData*> SFMLFactory::getTexturesData(DragonBonesData* dragonBonesData, const std::string& folderPath)
@@ -164,9 +163,7 @@ TextureAtlasData* SFMLFactory::_buildTextureAtlasData(TextureAtlasData* textureA
 		}
 		else
 		{
-			auto texture = TextureMgr::Get()->GetTexture(textureAtlasData->imagePath);
-
-			textureAtlasData_->setRenderTexture(texture);
+			DRAGONBONES_ASSERT(false, "No atlas texture");
 		}
 	}
 	else

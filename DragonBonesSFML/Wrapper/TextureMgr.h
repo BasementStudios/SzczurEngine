@@ -1,28 +1,17 @@
 #pragma once
 
-#include <vector>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
-namespace sf
-{
-	class Texture;
-}
+#include <SFML\Graphics.hpp>
 
 class TextureMgr
 {
-public:
-	class TextureInfo
-	{
-	public:
-		std::shared_ptr<sf::Texture>	texture;
-		std::string						m_imagePath;
-	};
-
 private:
-	std::vector<std::shared_ptr<sf::Texture>>	m_textures;
+	std::unordered_map<std::string, std::shared_ptr<sf::Texture>> _textures;
 
-	static TextureMgr							*s_pInst;
+	static TextureMgr *_textureMgr;
 
 public:
 	TextureMgr();
@@ -30,6 +19,6 @@ public:
 
 	sf::Texture *GetTexture(const std::string &path);
 
-	static TextureMgr *Get() { return s_pInst; }
+	static TextureMgr *Get() { return _textureMgr; }
 };
 

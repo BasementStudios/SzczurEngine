@@ -28,7 +28,7 @@ public:
 
 public:
 	DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "");
-	TextureAtlasData* loadTextureAtlasData(const std::string& filePath, const std::string& name = "", float scale = 1.0f);
+	TextureAtlasData* loadTextureAtlasData(const std::string& filePath, sf::Texture *atlasTexture, const std::string& name = "", float scale = 1.0f);
 	SFMLArmatureDisplay* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "") const;
 	sf::Texture* getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName = "") const;
 
