@@ -16,11 +16,11 @@ namespace rat {
 
 		T* tmp = reinterpret_cast<T*>(_data + _size);
 
-        *tmp = T(std::forward<TArgs>(args)...);
+		*tmp = T(std::forward<TArgs>(args)...);
 
-        _size += sizeof(T);
+		_size += sizeof(T);
 
-        return tmp;
+		return tmp;
 	}
 
 	template<typename T>
