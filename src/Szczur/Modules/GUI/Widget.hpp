@@ -49,6 +49,7 @@ namespace rat {
 		CallbacksContainer_t _callback;
 		bool _isHovered;
 		bool _isPressed;
+		bool _aboutToRecalculate;
 
 		sf::Vector2u _size;
 

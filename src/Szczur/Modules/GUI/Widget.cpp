@@ -7,6 +7,7 @@ namespace rat {
     _parent(nullptr),
     _isHovered(false),
     _isPressed(false),
+    _aboutToRecalculate(false),
     _size(0u,0u) {
         ;
     }
@@ -109,6 +110,11 @@ namespace rat {
 
         for(Widget* it : _children)
             it->update(deltaTime);
+        
+        if(_aboutToRecalculate && _parent) {
+            calculateSize();
+        }
+        
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -121,6 +127,7 @@ namespace rat {
     }
 
     void Widget::calculateSize() {
+        _aboutToRecalculate = false;
         _size = {0u,0u};
         for(Widget* it : _children) {
             auto itSize = it->getSize();
@@ -146,18 +153,18 @@ namespace rat {
 
     void Widget::move(const sf::Vector2f& offset) {
         sf::Transformable::move(offset);
-        _parent->calculateSize();
+        _aboutToRecalculate = true;
     }
     void Widget::move(float offsetX, float offsetY) {
         sf::Transformable::move(offsetX, offsetY);
-        _parent->calculateSize();
+        _aboutToRecalculate = true;
     }
     void Widget::setPosition(const sf::Vector2f& offset) {
         sf::Transformable::setPosition(offset);
-        _parent->calculateSize();
+        _aboutToRecalculate = true;
     }
     void Widget::setPosition(float x, float y) {
         sf::Transformable::setPosition(x, y);
-        _parent->calculateSize();
+        _aboutToRecalculate = true;
     }
 }
