@@ -44,4 +44,8 @@ namespace rat {
         }
     }
 
+    const std::string& TextWidget::getString() const {
+        return _text.getString();
+    }
+
 }

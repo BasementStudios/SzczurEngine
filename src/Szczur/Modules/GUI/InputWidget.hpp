@@ -9,6 +9,8 @@ namespace rat {
     class InputWidget : public Widget {
     public:
         InputWidget(sf::Text text, const std::string& path);
+
+        const std::string& getString() const;
     protected:
         virtual void _input(const sf::Event& event) override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;

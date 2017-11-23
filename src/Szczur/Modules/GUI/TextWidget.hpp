@@ -17,6 +17,8 @@ namespace rat {
 
         void add(char letter);
 
+        const std::string& getString() const;
+
         void removeLast();
     protected:
         virtual sf::Vector2u _getSize() const override;

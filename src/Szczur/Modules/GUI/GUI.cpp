@@ -4,13 +4,13 @@
 
 namespace rat {
     void GUI::init() {
-        _root.add(new InputWidget(
+        /*_root.add(new InputWidget(
             TextWidget::createText("aasdasdasd", sf::Color::Red, 20u),
             "data/consolab.ttf"
-        ))->setPosition({100.f, 100.f});
+        ))->setPosition({100.f, 100.f});*/
 
 
-        /*
+        
         for(int i = 0; i<5; i++){
             std::string name;
             switch(i) {
@@ -38,24 +38,27 @@ namespace rat {
             Widget* test = _root.add(textWidget);
 
             test->setCallback(Widget::CallbackType::onHoverIn, [textWidget](Widget* owner) {
-                std::cout << "Yellow\n";
+                //std::cout << "Yellow\n";
                 textWidget->setColor(sf::Color::Yellow);
             });
             test->setCallback(Widget::CallbackType::onHoverOut, [textWidget](Widget* owner) {
-                std::cout << "Red\n";
+                //std::cout << "Red\n";
                 textWidget->setColor(sf::Color::Red);
             });
             test->setCallback(Widget::CallbackType::onPress, [textWidget](Widget* owner) {
-                std::cout << "Blue\n";
+                //std::cout << "Blue\n";
                 textWidget->setColor(sf::Color::Blue);
             });
             test->setCallback(Widget::CallbackType::onRelease, [textWidget](Widget* owner) {
-                std::cout << "Red\n";
+                //std::cout << "Red\n";
                 textWidget->setColor(sf::Color::Red);
             });
             test->setPosition({255.f, 120.f + (110.f*i)});
         }
-        */
+        _root.setCallback(Widget::CallbackType::onHover, [](Widget*){
+            //std::cout << "Im in _root\n";
+        });
+        
         
 
     }

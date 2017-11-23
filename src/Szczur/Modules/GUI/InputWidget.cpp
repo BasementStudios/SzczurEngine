@@ -24,4 +24,8 @@ namespace rat {
     void InputWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
         target.draw(_textWidget, states);
     }
+
+    const std::string& InputWidget::getString() const {
+        return _textWidget.getString();
+    }
 }
