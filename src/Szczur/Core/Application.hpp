@@ -12,12 +12,11 @@ namespace rat {
 
 		ModulesHolder<
 			Assets,
-			Canvas,
-			Lua
+			Lua,
+			Canvas
 		> _modules;
 
 		sf::RenderWindow _window;
-		sf::Event _event;
 		sf::Clock _mainClock;
 
 	public:
