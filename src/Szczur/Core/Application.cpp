@@ -2,9 +2,10 @@
 
 namespace rat {
 	Application::Application() {
-		_window.create(sf::VideoMode(400, 400), "SzczurEngine v0.0.0");
+		_window.create(sf::VideoMode(1024, 768), "SzczurEngine v0.0.0");
 
 		_modules.getModule<Canvas>().init(&_window);
+		_modules.getModule<ArmatureFactory>().init();
 	}
 
 	void Application::changeResolution(const sf::Vector2u& size) {
@@ -26,6 +27,8 @@ namespace rat {
 
 	void Application::update() {
 		auto _deltaTime = _mainClock.restart().asSeconds();
+
+		_modules.getModule<ArmatureFactory>().update(_deltaTime);
 	}
 
 	void Application::render() {
