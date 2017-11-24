@@ -114,7 +114,6 @@ void SFMLSlot::_updateFrame()
 				const unsigned uvOffset = vertexOffset + vertexCount * 2;
 
 				const auto& region = currentTextureData->region;
-				const auto& textureAtlasSize = currentTextureData->texture->getSize();
 
 				std::vector<sf::Vertex> vertices(vertexCount);
 
@@ -292,7 +291,7 @@ void SFMLSlot::_updateMesh()
 
 			auto& vertsDisplay = meshDisplay->verticesDisplay;
 
-			for (auto vert : meshDisplay->verticesInTriagles[i])
+			for (auto vert : meshDisplay->verticesInTriagles[iH])
 			{
 				auto& vertexPosition = vertsDisplay[vert].position;
 				sf::Vector2f pos = static_cast<SFMLArmatureDisplay*>(_armature->getProxy())->getPosition();

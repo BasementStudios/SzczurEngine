@@ -11,8 +11,6 @@
 #include "SFMLArmatureDisplay.h"
 #include "SFMLDisplay.h"
 
-#include "Common.h"
-
 DRAGONBONES_NAMESPACE_BEGIN
 
 DragonBones* SFMLFactory::_dragonBonesInstance;
@@ -50,9 +48,6 @@ DragonBonesData* SFMLFactory::loadDragonBonesData(const std::string& filePath, c
 			return existedData;
 	}
 
-	if (!isFileExist(filePath))
-		return nullptr;
-
 	std::stringstream data;
 
 	std::ifstream json(filePath);
@@ -70,9 +65,6 @@ DragonBonesData* SFMLFactory::loadDragonBonesData(const std::string& filePath, c
 
 TextureAtlasData* SFMLFactory::loadTextureAtlasData(const std::string& filePath, sf::Texture* atlasTexture, const std::string& name, float scale)
 {
-	if (!isFileExist(filePath))
-		return nullptr;
-
 	std::stringstream data;
 
 	std::ifstream json(filePath);
