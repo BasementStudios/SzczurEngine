@@ -4,14 +4,29 @@
 
 namespace rat {
     void GUI::init() {
-        /*_root.add(new InputWidget(
-            TextWidget::createText("aasdasdasd", sf::Color::Red, 20u),
-            "data/consolab.ttf"
-        ))->setPosition({100.f, 100.f});*/
+
+        Widget* nickname = _root.add(new ImageWidget("data/button.png"));
+        nickname->setPosition({100.f, 100.f});
+
+        InputWidget *inputWidget = new InputWidget(
+            TextWidget::createText(";", sf::Color::White, 25u),
+            "data/consolab.ttf",
+            15u
+        );
+
+        nickname->add(inputWidget);
+
+        nickname->setCallback(Widget::CallbackType::onHoverIn, [inputWidget](Widget*){
+            inputWidget->active();
+        });
+
+        nickname->setCallback(Widget::CallbackType::onHoverOut, [inputWidget](Widget*){
+            inputWidget->deactive();
+        });
 
 
         
-        for(int i = 0; i<5; i++){
+        /*for(int i = 0; i<5; i++){
             std::string name;
             switch(i) {
                 case 0:
@@ -57,7 +72,7 @@ namespace rat {
         }
         _root.setCallback(Widget::CallbackType::onHover, [](Widget*){
             //std::cout << "Im in _root\n";
-        });
+        });*/
         
         
 

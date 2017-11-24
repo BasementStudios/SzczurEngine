@@ -44,6 +44,10 @@ namespace rat {
         }
     }
 
+    size_t TextWidget::getLength() {
+        return _text.getString().getSize();
+    }
+
     const std::string& TextWidget::getString() const {
         return _text.getString();
     }

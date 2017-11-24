@@ -32,7 +32,8 @@ namespace rat {
             _children.push_back(object);
             object->setParent(this);
             object->calculateSize();
-            //calculateSize();
+            //_aboutToRecalculate = true;
+            
         }
         return object;
     }
@@ -118,12 +119,20 @@ namespace rat {
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+        sf::RectangleShape shape;
+        shape.setSize(static_cast<sf::Vector2f>(getSize()));
+        shape.setFillColor(sf::Color(0,0,255,100));
+
+
         states.transform *= getTransform();
 
+        //target.draw(shape, states);
+
+        _draw(target, states);
         for(Widget* it : _children)
             target.draw(*it, states);
         
-        _draw(target, states);
+        
     }
 
     void Widget::calculateSize() {

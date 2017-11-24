@@ -42,6 +42,8 @@ namespace rat {
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
 		virtual sf::Vector2u _getSize() const;
+
+		bool _aboutToRecalculate;
 	private:
 		std::vector<Widget*> _children;
 		Widget* _parent;
@@ -49,7 +51,7 @@ namespace rat {
 		CallbacksContainer_t _callback;
 		bool _isHovered;
 		bool _isPressed;
-		bool _aboutToRecalculate;
+		
 
 		sf::Vector2u _size;
 

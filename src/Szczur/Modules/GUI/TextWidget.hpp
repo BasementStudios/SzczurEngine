@@ -15,6 +15,8 @@ namespace rat {
 
         void setColor(const sf::Color& newColor);
 
+        size_t getLength();
+
         void add(char letter);
 
         const std::string& getString() const;
