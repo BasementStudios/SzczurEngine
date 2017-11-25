@@ -7,6 +7,7 @@ namespace rat {
     _parent(nullptr),
     _isHovered(false),
     _isPressed(false),
+    _isActivated(true),
     _aboutToRecalculate(false),
     _size(0u,0u) {
         ;
@@ -158,6 +159,18 @@ namespace rat {
 
     sf::Vector2u Widget::_getSize() const {
         return {0u, 0u};
+    }
+
+    void Widget::activate() {
+        _isActivated = true;
+    }
+
+    void Widget::deactivate() {
+        _isActivated = true;
+    }
+
+    bool Widget::isActivated() const {
+        return _isActivated;
     }
 
     void Widget::move(const sf::Vector2f& offset) {

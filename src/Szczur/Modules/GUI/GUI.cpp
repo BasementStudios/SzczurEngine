@@ -5,24 +5,9 @@
 namespace rat {
     void GUI::init() {
 
-        Widget* nickname = _root.add(new ImageWidget("data/button.png"));
-        nickname->setPosition({100.f, 100.f});
-
-        InputWidget *inputWidget = new InputWidget(
-            TextWidget::createText(";", sf::Color::White, 25u),
-            "data/consolab.ttf",
-            15u
-        );
-
-        nickname->add(inputWidget);
-
-        nickname->setCallback(Widget::CallbackType::onHoverIn, [inputWidget](Widget*){
-            inputWidget->active();
-        });
-
-        nickname->setCallback(Widget::CallbackType::onHoverOut, [inputWidget](Widget*){
-            inputWidget->deactive();
-        });
+        Widget* menu = _root.add(new Widget());
+        
+        
 
 
         

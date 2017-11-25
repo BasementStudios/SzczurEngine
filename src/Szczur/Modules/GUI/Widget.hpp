@@ -37,6 +37,10 @@ namespace rat {
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
 
+		void activate();
+		void deactivate();
+		bool isActivated() const;
+
 	protected:
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
@@ -44,6 +48,7 @@ namespace rat {
 		virtual sf::Vector2u _getSize() const;
 
 		bool _aboutToRecalculate;
+		
 	private:
 		std::vector<Widget*> _children;
 		Widget* _parent;
@@ -51,7 +56,7 @@ namespace rat {
 		CallbacksContainer_t _callback;
 		bool _isHovered;
 		bool _isPressed;
-		
+		bool _isActivated;
 
 		sf::Vector2u _size;
 
