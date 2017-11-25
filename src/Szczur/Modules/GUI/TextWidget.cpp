@@ -25,7 +25,8 @@ namespace rat {
     }
 
     void TextWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        target.draw(_text, states);
+        if(isActivated())
+            target.draw(_text, states);
     }
 
     void TextWidget::setColor(const sf::Color& newColor) {

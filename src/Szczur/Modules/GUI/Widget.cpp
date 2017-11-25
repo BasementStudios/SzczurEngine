@@ -166,7 +166,7 @@ namespace rat {
     }
 
     void Widget::deactivate() {
-        _isActivated = true;
+        _isActivated = false;
     }
 
     bool Widget::isActivated() const {

@@ -12,7 +12,7 @@
 /*#include "CheckboxWidget.hpp"
 #include "ButtonWidget.hpp"
 */
-
+ 
 namespace rat {
     class GUI : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
     public:
