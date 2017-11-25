@@ -5,6 +5,10 @@
 namespace rat {
     void GUI::init() {
 
+        _root.add(new ImageWidget("data/button.png"))
+        ->add(new CheckWidget("data/check-box.png", "data/check-box-empty.png"));
+
+        /*
         Widget* menu = _root.add(new Widget());
 
         for(int ix = 0; ix<4; ix++) {
@@ -45,7 +49,7 @@ namespace rat {
 
 
         
-        /*for(int i = 0; i<5; i++){
+        for(int i = 0; i<5; i++){
             std::string name;
             switch(i) {
                 case 0:
