@@ -8,6 +8,7 @@ namespace rat {
     _isHovered(false),
     _isPressed(false),
     _isActivated(true),
+    _isVisible(true),
     _aboutToRecalculate(false),
     _size(0u,0u) {
         ;
@@ -44,96 +45,98 @@ namespace rat {
     }
 
     void Widget::input(const sf::Event& event) {
-        _input(event);
-
-        switch(event.type) {
-            case sf::Event::MouseMoved: {
-                auto thisSize = getSize();
-                if(
-                    event.mouseMove.x >= 0 &&
-                    event.mouseMove.x <= thisSize.x &&
-                    event.mouseMove.y >= 0 &&
-                    event.mouseMove.y <= thisSize.y
-                ) {
-                    if(!_isHovered) {
-                        callback(CallbackType::onHoverIn);
-                        _isHovered = true;
+        if(isActivated()) {
+            _input(event);
+            switch(event.type) {
+                case sf::Event::MouseMoved: {
+                    auto thisSize = getSize();
+                    if(
+                        event.mouseMove.x >= 0 &&
+                        event.mouseMove.x <= thisSize.x &&
+                        event.mouseMove.y >= 0 &&
+                        event.mouseMove.y <= thisSize.y
+                    ) {
+                        if(!_isHovered) {
+                            callback(CallbackType::onHoverIn);
+                            _isHovered = true;
+                        }
                     }
+                    else {
+                        if(_isHovered) {
+                            callback(CallbackType::onHoverOut);
+                            _isHovered = false;
+                        }
+                    }
+                    break;
                 }
-                else {
+
+                case sf::Event::MouseButtonPressed: {
                     if(_isHovered) {
-                        callback(CallbackType::onHoverOut);
-                        _isHovered = false;
+                        callback(CallbackType::onPress);
+                        _isPressed = true;
                     }
+                    break;
                 }
-                break;
-            }
 
-            case sf::Event::MouseButtonPressed: {
-                if(_isHovered) {
-                    callback(CallbackType::onPress);
-                    _isPressed = true;
+                case sf::Event::MouseButtonReleased: {
+                    if(_isPressed) {
+                        _isPressed = false;
+                        if(_isHovered)
+                            callback(CallbackType::onRelease);         
+                    }
+                    break;
                 }
-                break;
-            }
 
-            case sf::Event::MouseButtonReleased: {
-                if(_isPressed) {
-                    _isPressed = false;
-                    if(_isHovered)
-                        callback(CallbackType::onRelease);         
+                default: break;
+            }
+            for(Widget* it : _children) {
+                if(event.type == sf::Event::MouseMoved) {
+                    auto itPosition = it->getPosition();
+                    sf::Event tempEvent(event);
+                    tempEvent.mouseMove.x -= itPosition.x;
+                    tempEvent.mouseMove.y -= itPosition.y;
+                    it->input(tempEvent);
                 }
-                break;
+                else
+                    it->input(event);
             }
-
-            default: break;
-        }
-        for(Widget* it : _children) {
-            if(event.type == sf::Event::MouseMoved) {
-                auto itPosition = it->getPosition();
-                sf::Event tempEvent(event);
-                tempEvent.mouseMove.x -= itPosition.x;
-                tempEvent.mouseMove.y -= itPosition.y;
-                it->input(tempEvent);
-            }
-            else
-                it->input(event);
         }
     }
 
     void Widget::update(float deltaTime) {
-        _update(deltaTime);
+        if(isActivated()) {
+            _update(deltaTime);
 
-        if(_isHovered) 
-            callback(CallbackType::onHover);
+            if(_isHovered) 
+                callback(CallbackType::onHover);
 
-        if(_isPressed)
-            callback(CallbackType::onHold);
+            if(_isPressed)
+                callback(CallbackType::onHold);
 
-        for(Widget* it : _children)
-            it->update(deltaTime);
-        
-        if(_aboutToRecalculate && _parent) {
-            calculateSize();
+            for(Widget* it : _children)
+                it->update(deltaTime);
         }
+
+        if(_aboutToRecalculate)
+            calculateSize();
         
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        sf::RectangleShape shape;
-        shape.setSize(static_cast<sf::Vector2f>(getSize()));
-        shape.setFillColor(sf::Color(0,0,255,100));
+        if(isVisible()) {
+            sf::RectangleShape shape;
+            shape.setSize(static_cast<sf::Vector2f>(getSize()));
+            shape.setFillColor(sf::Color(0,0,255,100));
 
 
-        states.transform *= getTransform();
+            states.transform *= getTransform();
 
-        //target.draw(shape, states);
+            //target.draw(shape, states);
 
-        _draw(target, states);
-        for(Widget* it : _children)
-            target.draw(*it, states);
-        
-        
+            _draw(target, states);
+            for(Widget* it : _children)
+                target.draw(*it, states);
+        }
     }
 
     void Widget::calculateSize() {
@@ -171,6 +174,18 @@ namespace rat {
 
     bool Widget::isActivated() const {
         return _isActivated;
+    }
+
+    void Widget::visible() {
+        _isVisible = true;
+    }
+
+    void Widget::invisible() {
+        _isVisible = false;
+    }
+
+    bool Widget::isVisible() const {
+        return _isVisible;
     }
 
     void Widget::move(const sf::Vector2f& offset) {

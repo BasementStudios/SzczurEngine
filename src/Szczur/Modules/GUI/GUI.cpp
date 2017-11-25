@@ -14,8 +14,8 @@ namespace rat {
             start[1] = new ImageWidget("data/button-active.png");
             start[2] = new ImageWidget("data/button-clicked.png");
 
-            start[1]->deactivate();
-            start[2]->deactivate();
+            start[1]->invisible();
+            start[2]->invisible();
 
             for(int i = 0; i<3; i++) {
                 button->add(start[i]);
@@ -25,22 +25,20 @@ namespace rat {
 
             menu->add(button);
 
-            
-            
             button->setCallback( Widget::CallbackType::onHoverIn, [start](Widget*){
-                start[0]->deactivate();
-                start[2]->deactivate();
-                start[1]->activate();
+                start[0]->invisible();
+                start[2]->invisible();
+                start[1]->visible();
             } );
             button->setCallback( Widget::CallbackType::onHoverOut, [start](Widget*){
-                start[0]->activate();
-                start[2]->deactivate();
-                start[1]->deactivate();
+                start[0]->visible();
+                start[2]->invisible();
+                start[1]->invisible();
             } );
             button->setCallback( Widget::CallbackType::onPress, [start](Widget*){
-                start[0]->deactivate();
-                start[2]->activate();
-                start[1]->deactivate();
+                start[0]->invisible();
+                start[2]->visible();
+                start[1]->invisible();
             } );
         }
         

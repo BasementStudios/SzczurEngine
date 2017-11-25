@@ -14,8 +14,6 @@ namespace rat {
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        if(isActivated()) 
-            target.draw(_sprite, states);
-        
+        target.draw(_sprite, states);
     }
 }
