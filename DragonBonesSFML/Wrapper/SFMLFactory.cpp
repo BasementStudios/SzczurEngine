@@ -113,6 +113,23 @@ std::vector<SFMLTextureData*> SFMLFactory::getTexturesData(DragonBonesData* drag
 	return texturesData;
 }
 
+TextureAtlasData* SFMLFactory::createTextureAtlasData(std::vector<SFMLTextureData*>& texturesData, DragonBonesData* dragonBonesData)
+{
+	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
+	
+	textureAtlasData->name = dragonBonesData->name;
+	
+	for (auto& textureData : texturesData)
+	{
+		textureData->parent = textureAtlasData;
+		textureAtlasData->addTexture(textureData);
+	}
+
+	addTextureAtlasData(textureAtlasData);
+
+	return textureAtlasData;
+}
+
 SFMLArmatureDisplay* SFMLFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
 {
 	const auto armature = buildArmature(armatureName, dragonBonesName, skinName, textureAtlasName);
