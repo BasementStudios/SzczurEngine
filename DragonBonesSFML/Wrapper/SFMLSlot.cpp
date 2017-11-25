@@ -16,8 +16,6 @@ void SFMLSlot::_updateVisible()
 
 void SFMLSlot::_updateBlendMode()
 {
-	return;
-
 	if (_renderDisplay)
 	{
 		switch (_blendMode)
