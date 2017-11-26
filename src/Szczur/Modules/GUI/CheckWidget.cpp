@@ -5,26 +5,32 @@ namespace rat {
     Widget(),
     _isTriggered(false)
     {
-        ImageWidget* on = new ImageWidget(path1);
-        ImageWidget* off = new ImageWidget(path2);
+        on = new ImageWidget(path1);
+        off = new ImageWidget(path2);
 
         add(on);
         add(off);
 
         on->invisible();
 
-        setCallback(CallbackType::onRelease, [on, off, this](Widget*){
-            if(_isTriggered) {
-                on->invisible();
-                off->visible();
-                _isTriggered = false;
-            }
-            else {
-                on->visible();
-                off->invisible();
-                _isTriggered = true;
-            }
+        setCallback(CallbackType::onRelease, [this](Widget*){
+            if(_isTriggered)
+                disable();
+            else
+                enable();
         });
+    }
+
+    void CheckWidget::enable() {
+        on->visible();
+        off->invisible();
+        _isTriggered = true;
+    }
+
+    void CheckWidget::disable() {
+        on->invisible();
+        off->visible();
+        _isTriggered = false;
     }
 
     bool CheckWidget::isTriggered() const {

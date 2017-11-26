@@ -10,6 +10,7 @@
 #include "TextWidget.hpp"
 #include "InputWidget.hpp"
 #include "CheckWidget.hpp"
+#include "RadioWidget.hpp"
 
  
 namespace rat {

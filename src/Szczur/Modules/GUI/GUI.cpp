@@ -5,8 +5,15 @@
 namespace rat {
     void GUI::init() {
 
-        _root.add(new ImageWidget("data/button.png"))
-        ->add(new CheckWidget("data/check-box.png", "data/check-box-empty.png"));
+        RadioWidget* radioWidget = new RadioWidget(4u, "data/check-on.png", "data/check.png");
+
+        _root.add(radioWidget) -> move({100.f, 100.f});
+
+        radioWidget->setCallback(Widget::CallbackType::onHover, [radioWidget](Widget*){
+            std::cout << radioWidget->whichTriggered() << '\n';
+        });
+
+
 
         /*
         Widget* menu = _root.add(new Widget());
