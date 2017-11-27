@@ -33,7 +33,7 @@ namespace rat {
 	}
 
 	PageSection PageSection::createSection(Size_t size) {
-		assert(_data != nullptr && _size + size <= _capacity);
+		rat_Assert(_data != nullptr && _size + size <= _capacity);
 
 		PageSection tmp(_data + _size, size);
 
@@ -52,5 +52,13 @@ namespace rat {
 
 	PageSection::Size_t PageSection::getCapacity() const {
 		return _capacity;
+	}
+
+	bool PageSection::isEmpty() const {
+		return _data == nullptr;
+	}
+
+	bool PageSection::isFull() const {
+		return _size == _capacity;
 	}
 }

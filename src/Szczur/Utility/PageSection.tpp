@@ -1,7 +1,7 @@
 namespace rat {
 	template<typename T, typename... TArgs>
 	T* PageSection::create(TArgs&&... args) {
-		assert(_data != nullptr && _size + sizeof(T) <= _capacity);
+		rat_Assert(_data != nullptr && _size + sizeof(T) <= _capacity);
 
 		T* tmp = new(_data + _size) T(std::forward<TArgs>(args)...);
 
@@ -12,7 +12,7 @@ namespace rat {
 
 	template<typename T, typename... TArgs>
 	T* PageSection::createPOD(TArgs&&... args) {
-		assert(_data != nullptr && _size + sizeof(T) <= _capacity);
+		rat_Assert(_data != nullptr && _size + sizeof(T) <= _capacity);
 
 		T* tmp = reinterpret_cast<T*>(_data + _size);
 

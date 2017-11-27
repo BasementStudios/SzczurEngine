@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cassert>
 #include <cstddef>
 #include <memory>
+
+#include "Szczur/Debug/Assert.hpp"
 
 namespace rat {
 	class PageSection {
@@ -58,6 +59,10 @@ namespace rat {
 
 		template<typename T>
 		Size_t getCapacityFor() const;
+
+		bool isEmpty() const;
+
+		bool isFull() const;
 	};
 }
 
