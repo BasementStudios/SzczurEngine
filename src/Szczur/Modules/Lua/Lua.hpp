@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Szczur/Utility/Lua.hpp"
+#include "Szczur/Lua.hpp"
 #include "Szczur/Utility/Modules.hpp"
 
 namespace rat {
