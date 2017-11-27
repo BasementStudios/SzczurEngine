@@ -4,7 +4,7 @@
 
 #include <cassert>
 
-#define rat_Assert(code) assert(code)
+#define rat_Assert(expr) assert(expr)
 
 #else
 
