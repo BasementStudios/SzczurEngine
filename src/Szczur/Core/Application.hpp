@@ -4,7 +4,7 @@
 
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
-#include "Szczur/Modules/Armature/ArmatureFactory.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat {
 	class Application {
@@ -13,7 +13,7 @@ namespace rat {
 		ModulesHolder<
 			Assets,
 			Canvas,
-			ArmatureFactory
+			DragonBones
 		> _modules;
 
 		sf::RenderWindow _window;

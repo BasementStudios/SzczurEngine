@@ -10,7 +10,7 @@
 #include "Armature.hpp"
 
 namespace rat {
-    class ArmatureFactory : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
+    class DragonBones : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
     
     friend Armature;
 
