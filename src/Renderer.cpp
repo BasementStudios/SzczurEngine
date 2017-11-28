@@ -2,8 +2,8 @@
 
 namespace rat
 {
-	Renderer::Renderer(sf::RenderWindow* window)
-		: _window(window) {
+	Renderer::Renderer(sf::RenderWindow* window, const sf::Color& clear)
+		: _window(window), _clear(clear) {
 	}
 
 	void Renderer::add_to_queue(const sf::Drawable& drawable) {
@@ -11,7 +11,7 @@ namespace rat
 	}
 
 	void Renderer::draw() const {
-		_window->clear();
+		_window->clear(_clear);
 
 		for (auto& drawable : _queue)
 		{
