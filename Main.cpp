@@ -2,16 +2,22 @@
 
 #include "Renderer.hpp"
 #include "PreparationScreen.hpp"
+#include "Player.hpp"
+#include "Elements.hpp"
+#include "AssetManager.hpp"
+
 
 int main() {
+
+	rat::AssetManager::load_sprites();
+
 	sf::RenderWindow window(sf::VideoMode(960, 540), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	rat::Renderer renderer(&window, rat::AssetManager::BackgroundColor);
 
-	rat::Renderer renderer(&window);
-	renderer.add_to_queue(shape);
+	rat::Player p1 = { { 3, 3, 3 }, { 2, 1, 3, 7 } };
 
-	rat::PreparationScreen combat(1, 2);
+	rat::PreparationScreen combat(p1, 2, 3);
+	renderer.add_to_queue(combat);
 
 	while (window.isOpen()) {
 		sf::Event event;
