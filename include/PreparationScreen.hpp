@@ -1,32 +1,30 @@
 #pragma once
 
 #include <array>
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
-#include <Utility.hpp>
+#include "Player.hpp"
+#include "Elements.hpp"
 
 namespace rat {
-	struct PreparationScreenData {
-		sf::Sprite BackgroundSprite;
-		enum class Elements : int {
-			Physic,
-			Fire,
-			Water,
-			Ground,
-			Size
-		};
-		std::array<sf::Sprite, enum_v(Elements::Size)> ElementsSprites;
-	};
-
-	class PreparationScreen final {
+	class PreparationScreen final : public sf::Drawable {
 	private:
-		const int& _player;
+		const Player& _player;
 		const int& _battler;
+		const int& _settings;
+
+		std::vector<unsigned short> _elements;
+		unsigned int _elements_count;
+		
+		std::unique_ptr<sf::Sprite> _arrow;
+		std::vector<sf::Sprite> _elements_sprites;
 
 	public:
-		PreparationScreen(const int& player, const int& battler);
+		PreparationScreen(const Player& player, const int& battler, const int& settings);
 
-		bool run();
+		void run();
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	};
 }
