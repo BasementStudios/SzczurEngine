@@ -29,12 +29,12 @@ namespace rat
 		int width = 41;
 
 		_arrow = std::make_unique<sf::Sprite>(rat::AssetManager::Arrow);
-		_arrow->setPosition(width * _elements_count + 100, 100);
+		_arrow->setPosition(width * _elements_count + 100.0f, 100.0f);
 
 		_elements_sprites.reserve(_elements_count);
 		for (unsigned int i = 0; i < _elements_count; ++i) {
 			_elements_sprites.emplace_back(rat::AssetManager::ElementsSprites[_elements[i]]);
-			_elements_sprites[i].setPosition(width * (_elements_count - i) + 100, width + 100);
+			_elements_sprites[i].setPosition(width * (i + 1) + 100.0f, width + 100.0f);
 		}
 	}
 
