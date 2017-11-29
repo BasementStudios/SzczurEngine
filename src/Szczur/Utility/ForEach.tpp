@@ -1,7 +1,7 @@
 namespace rat {
 	namespace detail {
 		template<typename T, typename F, size_t... Ns>
-		inline constexpr void ForEach(T&& tuple, F&& function, std::index_sequence<Ns...>) {
+		inline constexpr void forEach(T&& tuple, F&& function, std::index_sequence<Ns...>) {
 			(std::invoke(function, std::get<Ns>(tuple)), ...);
 		}
 	}
