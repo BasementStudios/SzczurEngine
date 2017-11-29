@@ -1,7 +1,7 @@
 
-Visual Studio Code jako IDE do C++ z MinGW, Boost i SFML 
-========================================================
-`#vscode #ide #c++ #mingw #sfml #gitbash #github #boost`
+Visual Studio Code jako IDE do C++ z MinGW, Boost, Lua, JSON i SFML 
+===================================================================
+`#vscode #ide #c++ #mingw #sfml #gitbash #github #boost #lua #json`
 
 
 
@@ -61,7 +61,9 @@ Biblioteka SFML
 
 ### Informacja
 
-Pliki nagłówkowe są w folderze `include`. Możemy je później dodać do podpowiedzi.
+Pliki nagłówkowe są w folderze `include`. Możemy je później dodać do podpowiedzi. 
+
+
 
 
 
@@ -81,7 +83,7 @@ Boost
 
 ### Kompilacja
 
-1. Otwieramy terminal i wchodzimy do folderu `boost_builder` .
+1. Otwieramy terminal i wchodzimy do folderu `boost_builder`.
 2. Tworzymy folder `stage`. 
 3. Wchodzimy do `tools\build`.
 4. Używamy komendy: 
@@ -102,9 +104,67 @@ Boost
 
 ### Polecane
 
-Chętni mogą sobie uporządkować libkę poprzez: stworzenie folderu np. `boost-1.65.1` w sensownym miesjcu, stworzenie tam folderu `include`, do którego przenosimy folder `boost_builder\boost`, przeniesienie folderu `boost_builder\stage\lib` i zmienienie jego nazwy na np.  `lib_MinGW-7.2.0-32/64`
+Chętni mogą sobie uporządkować libkę poprzez: 
+
+1. Stworzenie folderu np. `boost-1.65.1` w sensownym miesjcu.
+2. Stworzenie tam folderu `include`, do którego przenosimy folder `boost`,
+3. Przeniesienie folderu `stage\lib` i zmienienie jego nazwy na np. `lib_MinGW-7.2.0-32/64`.
 
 Pliki nagłówkowe są w folderze `boost` lub `include`, można je później dodać do systemu podpowiedzi w edytorze.
+
+
+
+
+
+Skrypty Lua 
+-----------
+
+### Pobieranie
+
+1. Wchodzimy na https://www.lua.org/download.html i pobieramy Lua (w projekcie Szczur używamy `lua-5.3.4`).
+
+	![img](https://i.imgur.com/ekjAmfY.jpg "img")
+
+2. Wypakowujemy pobrane archiwum w odpowiednie miejsce, np. `E:\Libraries`. Mamy więc tam folder `lua-5.3.4`.
+
+
+
+### Kompilacja
+
+1. Wchodzimy terminalem do tego folderu.
+2. Używamy `make mingw` dla kompilacji z MinGW.
+
+
+
+### Polecane
+
+Chętni mogą sobie uporządkować libkę poprzez: stworzenie folderu np. `lua-5.3.4` w sensownym miesjcu, stworzenie tam folderu `include`, do którego przenosimy folder `boost_builder\boost`, przeniesienie folderu `boost_builder\stage\lib` i zmienienie jego nazwy na np.  `lib_MinGW-7.2.0-32/64`
+
+Pliki nagłówkowe są w folderze `include`, można je później dodać do systemu podpowiedzi w edytorze.
+
+
+#### Biblioteka `sol2`
+
+Jest to biblioteka ułatwiająca działanie z silnikiem skryptowym Lua.
+
+Z https://github.com/ThePhD/sol2/releases pobieramy najnowszą wersję bilbioteki (może być sam plik nagłówkowy `.hpp`), wrzucamy do odpowiedniego folderu (np. `E:\Libraries` i np. `Lua-sol2\include`). 
+
+![img](https://i.imgur.com/OYmdfkd.jpg "img")
+
+
+
+
+
+JSON
+----
+
+JSON jest popularnym, prostym i dość wygodnym formatem do przetrzymywania konfiguracji.
+
+### Pobieranie
+
+Możemy go pobrać z https://github.com/nlohmann/json/releases. Pobrany plik nagłówkowy warto wrzucić do odpowiedniego folderu (np. `E:\Libraries\JSON-2.1.1-header-only\include`).
+
+![img](https://i.imgur.com/sHDso2Y.jpg "img")
 
 
 
@@ -171,12 +231,12 @@ Visual Studio Code
 
 1. Na początku musimy pobrać rozszerzenie C/C++ od Microsoftu
 
-	![img](https://i.imgur.com/tA9s0pC.jpg"img")
+	![img](https://i.imgur.com/tA9s0pC.jpg "img")
 
 2. Otwierasz jakiś plik (np. `Game.cpp`) i najeżdżając na include kursorem naciskasz żaróweczkę która się pojawi obok. Następnie wybierasz pozycję:
 `Add to "includePath": ${workspaceRoot}/include`
 
-	![img](https://i.imgur.com/AOZIYmz.jpg"img")
+	![img](https://i.imgur.com/AOZIYmz.jpg "img")
 
 	(Jeżeli żarówka się nie pojawia, to naciśnij `Ctrl` + `Shift` + `P`, a następnie wpisz `Reload Window`)
 
@@ -187,7 +247,7 @@ Visual Studio Code
 Przechodzimy do ustawień `File/Preferences/Settings` i dodajemy po prawej taką linijkę:
 `"terminal.integrated.shell.windows": "..\..\Git\bin\bash.exe(Ścieżka do basha którego pobraliśmy wcześniej)"`
 
-	![img](https://i.imgur.com/l0bjStH.jpg"img")
+	![img](https://i.imgur.com/l0bjStH.jpg "img")
 
 
 
@@ -196,11 +256,11 @@ Przechodzimy do ustawień `File/Preferences/Settings` i dodajemy po prawej taką
 1. By ustawić kompilacje pod jakimś przyciskiem, musisz utworzyć `tasks.json`. By to zrobić, naciskasz `Ctrl` + `Shift` + `P` i wpisujesz:
 `Tasks: Configure Task Runner`
 
-	![img](https://i.imgur.com/uZIbzs8.jpg"img")
+	![img](https://i.imgur.com/uZIbzs8.jpg "img")
 
 2. Następnie wybiarasz opcję: `Others`
 
-	![img](https://i.imgur.com/62e1Kog.jpg"img")
+	![img](https://i.imgur.com/62e1Kog.jpg "img")
 
 3. W nowo utworzonym pliku, zmieniasz wartości na takie i zapisujemy:
 
@@ -217,11 +277,11 @@ Przechodzimy do ustawień `File/Preferences/Settings` i dodajemy po prawej taką
 	}
 	```
 
-	![img](https://i.imgur.com/Z4ttLcB.jpg"img")
+	![img](https://i.imgur.com/Z4ttLcB.jpg "img")
 
 4. Wchodzisz w ustawienia skrótów: `File/Preferences/Keyboard Shortcuts` i wybierasz wskazaną na zdjęciu kursorem opcję: `keybindings.json`
 
-	![img](https://i.imgur.com/Ovh4xNi.jpg"img")
+	![img](https://i.imgur.com/Ovh4xNi.jpg "img")
 
 	Następnie w miejscu po prawej, dodajesz:
 	
@@ -233,7 +293,7 @@ Przechodzimy do ustawień `File/Preferences/Settings` i dodajemy po prawej taką
 	}
 	```
 	
-	![img](https://i.imgur.com/LfoarVb.jpg"img")
+	![img](https://i.imgur.com/LfoarVb.jpg "img")
 	
 	Teraz po naciśnięciu F5 powinna wywołać się komenda `make run` , która poprzez `Makefile` skompiluje i uruchomi do testu naszą aplikację.
 
@@ -244,27 +304,50 @@ Przechodzimy do ustawień `File/Preferences/Settings` i dodajemy po prawej taką
 Koniec
 ------
 
-### Uwagi
+### Nasz `Makefile`
 
-Co do `Makefile` - wymaga on dla Windowsa pliku `settings.mk` w którym będą nadpisane zmienne, przynajmniej do ścieżek folderów bibliotek:
+Co do naszego `Makefile` - wymaga on (bardziej dla Windowsa) pliku `settings.mk` w którym będą nadpisane zmienne, przynajmniej do ścieżek folderów bibliotek (nagłówków, bilbiotek do linkera i wykonywanlnych wersji), na przykład:
 
 ```makefile
-LIB_INC_DIR_SFML_32 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/include
-LIB_BIN_DIR_SFML_32 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/lib
-LIB_INC_DIR_SFML_64 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/include
-LIB_BIN_DIR_SFML_64 := e:/Libraries/SFML/SFML-2.4.2-gcc-6.1.0-mingw-32/lib
+# SFML 32bit
+INC_DIR_SFML_32 := e:/Libraries/SFML-2.4.2-MinGW-7.2-i686/include
+LIB_DIR_SFML_32 := e:/Libraries/SFML-2.4.2-MinGW-7.2-i686/lib
+BIN_DIR_SFML_32 := e:/Libraries/SFML-2.4.2-MinGW-7.2-x86_64/bin
+# SFML 64bit
+INC_DIR_SFML_64 := e:/Libraries/SFML-2.4.2-MinGW-7.2-x86_64/include
+LIB_DIR_SFML_64 := e:/Libraries/SFML-2.4.2-MinGW-7.2-x86_64/lib
+BIN_DIR_SFML_64 := e:/Libraries/SFML-2.4.2-MinGW-7.2-x86_64/bin
 
-LIB_INC_DIR_BOOST_32 := e:/Libraries/Boost/SFML-1.61.1-header-only/boost
-LIB_BIN_DIR_BOOST_32 :=
-LIB_INC_DIR_BOOST_64 := e:/Libraries/Boost/SFML-1.61.1-header-only/boost
-LIB_BIN_DIR_BOOST_64 :=
+# Boost 32bit
+INC_DIR_BOOST_32 := e:/Libraries/Boost-1.61.1-MinGW-7.2-i686/include
+LIB_DIR_BOOST_32 := e:/Libraries/Boost-1.61.1-MinGW-7.2-i686/lib
+BIN_DIR_BOOST_32 := e:/Libraries/Boost-1.61.1-MinGW-7.2-i686/bin
+# Boost 64bit
+INC_DIR_BOOST_64 := e:/Libraries/Boost-1.61.1-MinGW-7.2-x86_64/include
+LIB_DIR_BOOST_64 := e:/Libraries/Boost-1.61.1-MinGW-7.2-x86_64/lib
+BIN_DIR_BOOST_64 := e:/Libraries/Boost-1.61.1-MinGW-7.2-x86_64/bin
+
+# Lua 32bit
+INC_DIR_LUA_32 := e:/Libraries/Lua-5.3.4-MinGW-7.2-i686/include
+LIB_DIR_LUA_32 := e:/Libraries/Lua-5.3.4-MinGW-7.2-i686/lib
+BIN_DIR_LUA_32 := e:/Libraries/Lua-5.3.4-MinGW-7.2-i686/bin
+# Lua 64bit
+INC_DIR_LUA_64 := e:/Libraries/Lua-5.3.4-MinGW-7.2-x86_64/include
+LIB_DIR_LUA_64 := e:/Libraries/Lua-5.3.4-MinGW-7.2-x86_64/lib
+BIN_DIR_LUA_64 := e:/Libraries/Lua-5.3.4-MinGW-7.2-x86_64/bin
+
+# Sol2
+HEADER_INC_SOL2 := e:/Libraries/Lua-Sol2-2.18.7-header-only/include
+
+# JSON
+HEADER_INC_JSON := e:/Libraries/JSON-2.1.1-header-only/include
 ```
 
 
 
 ### Gratulacje Szczurze!
 
-Od teraz możesz pisać w Visual Studio Code C++ z MinGW, Boost i SFML.
+Od teraz możesz pisać w Visual Studio Code C++ z MinGW, Boost, Lua, JSON i SFML.
 
 
 
