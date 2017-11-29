@@ -13,7 +13,7 @@ namespace rat {
 
 		static void load_sprites()
 		{
-			BackgroundColor = { 31, 37, 41 };
+			BackgroundColor = { 50, 61, 69 };
 
 			ElementsSprites[0].loadFromFile("res/fire.png");
 			ElementsSprites[1].loadFromFile("res/water.png");
