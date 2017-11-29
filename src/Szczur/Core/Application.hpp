@@ -5,6 +5,7 @@
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+//#include "Szczur/Modules/Lua/Lua.hpp"
 
 namespace rat {
 	class Application {
@@ -14,10 +15,10 @@ namespace rat {
 			Assets,
 			Canvas,
 			GUI
+			//Lua
 		> _modules;
 
 		sf::RenderWindow _window;
-		sf::Event _event;
 		sf::Clock _mainClock;
 
 	public:

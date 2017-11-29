@@ -8,7 +8,20 @@ namespace rat {
 		_windowPtr = windowPtr;
 
 		for (auto& av : _layers)
-			av.reset(new rat::RenderLayer(_windowPtr->getSize()));
+			av.reset(new RenderLayer(_windowPtr->getSize()));
+	}
+
+	void Canvas::input(const sf::Event& event) {
+		(void)event;
+	}
+
+	void Canvas::update(float deltaTime) {
+		(void)deltaTime;
+	}
+
+	void Canvas::render() {
+		for (auto& av : _layers)
+			av->display(*_windowPtr);
 	}
 
 	void Canvas::recreateLayers() {
@@ -38,10 +51,5 @@ namespace rat {
 
 	void Canvas::draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) {
 		_layers[(size_t)id]->draw(vertices, vertexCount, type, states);
-	}
-
-	void Canvas::display() {
-		for (auto& av : _layers)
-			av->display(*_windowPtr);
 	}
 }

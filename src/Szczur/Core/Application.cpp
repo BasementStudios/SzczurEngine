@@ -15,32 +15,44 @@ namespace rat {
 	}
 
 	void Application::input() {
-		while (_window.pollEvent(_event)) {
-			if (_event.type == sf::Event::Closed) {
+		sf::Event event;
+
+		while (_window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
 				_window.close();
 			}
-			if (_event.type == sf::Event::KeyPressed && _event.key.code == sf::Keyboard::Escape) {
+			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
 				_window.close();
 			}
-			_modules.getModule<GUI>().input(_event);
+			_modules.getModule<GUI>().input(event);
 
 		}
+
+		_modules.forEach([&](auto& mod) {
+			mod.input(event);
+		});
 	}
 
 	void Application::update() {
 		auto deltaTime = _mainClock.restart().asSeconds();
-		_modules.getModule<GUI>().update(deltaTime);
+
+		_modules.forEach([=](auto& mod) {
+			mod.update(deltaTime);
+		});
 	}
 
 	void Application::render() {
 		_window.clear();
-		_modules.getModule<GUI>().render();
-		_modules.getModule<Canvas>().display();
+
+		_modules.forEach([](auto& mod) {
+			mod.render();
+		});
+
 		_window.display();
 	}
 
 	int Application::run() {
-		while(_window.isOpen()) {
+		while (_window.isOpen()) {
 			input();
 			update();
 			render();

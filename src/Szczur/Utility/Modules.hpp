@@ -2,6 +2,10 @@
 
 #include <tuple>
 
+#include <SFML/Window/Event.hpp>
+
+#include "ForEach.hpp"
+
 namespace rat {
 	template<typename... TModules>
 	class ModuleBase {
@@ -18,9 +22,13 @@ namespace rat {
 		template<typename UTuple>
 		ModuleBase(UTuple&& modules);
 
-		ModuleBase(const ModuleBase&) = delete;
+		ModuleBase(const ModuleBase&) = default;
 
-		ModuleBase& operator = (const ModuleBase&) = delete;
+		ModuleBase& operator = (const ModuleBase&) = default;
+
+		ModuleBase(ModuleBase&&) = default;
+
+		ModuleBase& operator = (ModuleBase&&) = default;
 
 	protected:
 
@@ -51,6 +59,15 @@ namespace rat {
 		ModulesHolder(const ModulesHolder&) = delete;
 
 		ModulesHolder& operator = (const ModulesHolder&) = delete;
+
+		ModulesHolder(ModulesHolder&&) = delete;
+
+		ModulesHolder& operator = (ModulesHolder&&) = delete;
+
+		template<typename F>
+		void forEach(F&& function);
+		template<typename F>
+		void forEach(F&& function) const;
 
 		template<typename TModule>
 		TModule& getModule();

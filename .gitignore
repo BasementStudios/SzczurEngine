@@ -2,12 +2,17 @@
 # Compiling results
 obj/*
 out/*
+
+# Assets exclusion
 !out/assets/
+!out/assets/*
+!out/openal32.dll
 
 # Configurations
 settings.mk
 
 # Projects and sessions
+StritchMake
 .clang_complete
 .vscode/
 *.npp
