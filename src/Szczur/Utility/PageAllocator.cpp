@@ -9,8 +9,8 @@ namespace rat {
 		_data = static_cast<Pointer_t>(::operator new(size, std::nothrow));
 
 		if(isAllocated()) {
-			_offset = 0;
-			_size = size;
+			_size = 0;
+			_capacity = size;
 
 			return true;
 		}

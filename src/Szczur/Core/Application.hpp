@@ -4,6 +4,7 @@
 
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
+#include "Szczur/Modules/Lua/Lua.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat {
@@ -12,12 +13,12 @@ namespace rat {
 
 		ModulesHolder<
 			Assets,
-			Canvas,
+			Canvas
+			Lua,
 			DragonBones
 		> _modules;
 
 		sf::RenderWindow _window;
-		sf::Event _event;
 		sf::Clock _mainClock;
 
 	public:

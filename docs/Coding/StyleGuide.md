@@ -32,7 +32,7 @@ void foo(int a, int b) const {
 ### Naming
 
 * Local variables: `cammelCase`.  
-* Namespaces: `PascalCase`.
+* Namespaces: `lower_snake`.
 * Classes and Structs: `PascalCase`.  
 * Class field: `cammelCase`.  
 * Class constants: `PascalCase`.  

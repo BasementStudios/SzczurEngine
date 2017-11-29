@@ -55,6 +55,18 @@ namespace rat {
 
 	template<typename TKey, typename... TAssets>
 	template<typename UType>
+	UType* AssetsManager<TKey, TAssets...>::getPtr(const Key_t& key) {
+		return getContainer<UType>().at(key).get();
+	}
+
+	template<typename TKey, typename... TAssets>
+	template<typename UType>
+	const UType* AssetsManager<TKey, TAssets...>::getPtr(const Key_t& key) const {
+		return getContainer<UType>().at(key).get();
+	}
+
+	template<typename TKey, typename... TAssets>
+	template<typename UType>
 	bool AssetsManager<TKey, TAssets...>::exists(const Key_t& key) const {
 		return getContainer<UType>().count(key) != 0;
 	}

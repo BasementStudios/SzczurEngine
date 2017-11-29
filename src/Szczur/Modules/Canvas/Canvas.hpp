@@ -29,6 +29,12 @@ namespace rat {
 
 		void init(sf::RenderWindow* windowPtr);
 
+		void input(const sf::Event& event);
+
+		void update(float deltaTime);
+
+		void render();
+
 		void recreateLayers();
 
 		sf::RenderWindow& getWindow();
@@ -39,7 +45,5 @@ namespace rat {
 
 		void draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 		void draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
-
-		void display();
 	};
 }

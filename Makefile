@@ -1,13 +1,14 @@
 
 #
-$(info [ Makefile for SzczurEngine project ])
-$(info [   version 1.7.5 by PsychoX & <3   ])
+# Intro
 #
+
+$(info [ Makefile for SzczurEngine project - version 1.7.6 by PsychoX & <3 ])
 
 # Phony declarations
 .PHONY: all obj src inc tep run clean info update-compilable
 
-# Space
+# Special variables
 NULL := 
 SPACE := $(NULL) $(NULL)
 
@@ -239,9 +240,15 @@ LD  := $(CROSS)g++
 LS  := ls -AdoGh --time-style long-iso
 RM  := rm $(if $(CLEAN_FORCE),-rf,)
 PRINT := printf
+FUCKING_SLIENT :=1>&2 2>/dev/null || :
 
 ifeq ($(SLIENT),yes)
     PRINT := :
+endif
+
+# Other FORCE
+ifeq ($(FORCE),yes)
+    CLEAN_FORCE := yes
 endif
 
 
@@ -324,23 +331,24 @@ ifndef COMPILABLE_UPDATED
 	$(eval COMPILABLE_UPDATED := yes)
 endif
 
-# Run
+# Compile and run the output executable
 run: all
 	@$(PRINT) "[Running]\n"
-	@-cp $(OUT_FILE) $(RUN_FILE)
+	@-cp $(OUT_FILE) $(RUN_FILE) $(FUCKING_SLIENT)
 	@chmod +x $(RUN_FILE)
-	cd ./$(RUN_DIR) & ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
+	cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
 
-# Clean 
+# Cleaning the compile environment
 clean: 
 	@$(PRINT) "[Cleaning]\n"
-ifeq ($(CLEAN_FILES),) 
+ifeq ($(or $(CLEAN_FILES),$(CLEAN_FORCE)),) 
 	@$(PRINT) "Nothing to clean.\n"
 else
-	-rm $(CLEAN_FILES)
-	-rm -d $(CLEAN_DIRS)
+	-$(RM) $(CLEAN_FILES) || :
+	-$(RM) -d $(CLEAN_DIRS) || :
 endif
 
+# Informations (for debug) 
 info:
 	$(info  )
 	$(info TARGET=$(TARGET) -> PLATFORM=$(PLATFORM), ARCH=$(ARCH), MXE=$(MXE))

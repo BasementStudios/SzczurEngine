@@ -10,7 +10,7 @@ namespace rat {
 	public:
 
 		using Key_t       = TKey;
-		using Section_t   = rat::PageSection;
+		using Section_t   = PageSection;
 		template<typename T>
 		using Container_t = boost::container::flat_map<Key_t, std::unique_ptr<T>>;
 		template<typename T>
@@ -56,6 +56,11 @@ namespace rat {
 		UType& get(const Key_t& key);
 		template<typename UType>
 		const UType& get(const Key_t& key) const;
+
+		template<typename UType>
+		UType* getPtr(const Key_t& key);
+		template<typename UType>
+		const UType* getPtr(const Key_t& key) const;
 
 		template<typename UType>
 		bool exists(const Key_t& key) const;
