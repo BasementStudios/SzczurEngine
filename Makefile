@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ Makefile for SzczurEngine project - version 1.7.6 by PsychoX & <3 ])
+$(info [ PsychoX' Makefile - version 1.7.13 ])
 
 # Phony declarations
 .PHONY: all obj src inc tep run clean info update-compilable
@@ -11,6 +11,9 @@ $(info [ Makefile for SzczurEngine project - version 1.7.6 by PsychoX & <3 ])
 # Special variables
 NULL := 
 SPACE := $(NULL) $(NULL)
+
+# More settings file
+SETTINGS_FILE := ./settings.mk
 
 
 
@@ -20,10 +23,11 @@ SPACE := $(NULL) $(NULL)
 
 # Target normalize function
 define normalize_TARGET
-    override TARGET := $(shell echo $(TARGET) | tr A-Z a-z)
-    PLATFORM := $(findstring win,$(TARGET))$(findstring lin,$(TARGET))
-    ARCH     := $(findstring 32,$(TARGET))$(findstring 64,$(TARGET))
-    override TARGET:=$(PLATFORM)$(ARCH)
+    # There MUST be so many 'eval's, because Makefile interpreter will try "optimalize" uses of variables...
+    $(eval override TARGET := $(shell echo $(TARGET) | tr A-Z a-z))
+    $(eval override PLATFORM := $(findstring win,$(TARGET))$(findstring lin,$(TARGET)))
+    $(eval override ARCH     := $(findstring 32,$(TARGET))$(findstring 64,$(TARGET)))
+    $(eval override TARGET:=$(PLATFORM)$(ARCH))
 endef
 
 # Target selection
@@ -81,12 +85,18 @@ OBJ_EXT := .o
 OUT_EXT := .exe
 RUN_EXT := .exe
 
-# Common compiler and linker flags
-CXXFLAGS := -std=c++17 -Wall -I$(INC_DIR)
+# Compiler and linker 
+CXX      := g++ 
+CXXFLAGS := -std=c++17 -Wall
+LD       := g++
 LDFLAGS  :=
 
 # Use static linking
 LINKING := static
+CXXFLAGS_STATIC  := -static
+CXXFLAGS_DYNAMIC :=
+ LDFLAGS_STATIC  := -static
+ LDFLAGS_DYNAMIC :=
 
 # Clean entries
 CLEAN_FILES := "./obj/*/*.o" "./$(OUT_DIR)/$(OUT_NAME)" "./$(RUN_DIR)/$(RUN_NAME)"
@@ -96,32 +106,35 @@ CLEAN_DIRS_FORCE := no
 # Using MXE? and its options
 MXE := no
 MXE_DIR := /usr/lib/mxe
-MXE_PKGS := sfml
 
 # Libraries 
-LIB_LIST := SFML BOOST
-# 	Directories
-#		SFML
-LIB_INC_DIR_SFML_32  :=
-LIB_BIN_DIR_SFML_32  :=
-LIB_INC_DIR_SFML_64  :=
-LIB_BIN_DIR_SFML_64  :=
-#		Boost
-LIB_INC_DIR_BOOST_32 :=
-LIB_BIN_DIR_BOOST_32 :=
-LIB_INC_DIR_BOOST_64 :=
-LIB_BIN_DIR_BOOST_64 :=
-#	Flag sets
-#		SFML
-CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
-LDFLAGS_STATIC_SFML    := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
-CXXFLAGS_DYNAMIC_SFML  :=
-LDFLAGS_DYNAMIC_SFML   := -lsfml-graphics -lsfml-window -lsfml-system
-#		Boost
-CXXFLAGS_STATIC_BOOST  :=
-LDFLAGS_STATIC_BOOST   :=
-CXXFLAGS_DYNAMIC_BOOST :=
-LDFLAGS_DYNAMIC_BOOST  :=
+LIB_LIST := SFML BOOST LUA
+#   SFML
+ CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
+  LDFLAGS_STATIC_SFML   := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
+CXXFLAGS_DYNAMIC_SFML   :=
+ LDFLAGS_DYNAMIC_SFML   := -lsfml-graphics -lsfml-window -lsfml-system
+ MXE_PACKAGENAME_SFML   := sfml
+#   Boost
+ CXXFLAGS_STATIC_BOOST  :=
+  LDFLAGS_STATIC_BOOST  :=
+CXXFLAGS_DYNAMIC_BOOST  :=
+ LDFLAGS_DYNAMIC_BOOST  :=
+ MXE_PACKAGENAME_BOOST  := boost
+#  Lua
+ CXXFLAGS_STATIC_LUA    := -lliblua
+  LDFLAGS_STATIC_LUA    :=
+CXXFLAGS_DYNAMIC_LUA    := -lliblua
+ LDFLAGS_DYNAMIC_LUA    := 
+ MXE_PACKAGENAME_LUA    := lua
+
+# Executables (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
+EXECUTABLES_SFML := openal32.dll sfml*
+
+# Header-only libs
+HEADER_LIB_LIST := SOL2 JSON
+HEADER_INC_SOL2 := 3rd-party/sol2
+HEADER_INC_JSON := 3rd-party/json
 
 
 
@@ -129,9 +142,7 @@ LDFLAGS_DYNAMIC_BOOST  :=
 # Load settings override
 #
 
-include ./settings.mk
-
-$(eval $(call normalize_TARGET))
+include $(SETTINGS_FILE)
 
 
 
@@ -141,10 +152,8 @@ $(eval $(call normalize_TARGET))
 
 # Linking
 override LINKING := $(shell echo $(LINKING) | tr a-z A-Z)
-ifeq ($(LINKING),STATIC)
-    CXXFLAGS += -static
-    LDFLAGS  += -static
-endif
+CXXFLAGS += $(CXXFLAGS_$(LINKING))
+LDFLAGS  += $( LDFLAGS_$(LINKING))
 
 # Architecture 
 # -> 32 bit
@@ -197,31 +206,45 @@ ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
     CROSS := $(subst i686,x86_64,$(CROSS))
 endif
 
+# If no selective compiler, just try use 'g++'...
+ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
+    CROSS :=
+endif
+
 
 
 #
 # Library flags selection
 #
 
-ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),1),1)
-	# MXE uses pkg-config
-	CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
-	LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
-else
-    define add_lib
-		# Add linking dependent flags
+# Compiled libs
+define add_lib
+    ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),$(MXE_PACKAGENAME_$(1)),1),1)
+        # Use MXE packages
+        MXE_PKGS += $(MXE_PACKAGENAME_$(1))
+    else
+        # Add linking dependent flags
         CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1))
         LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1))
         # Add includes/libraries object directories
-		ifneq ($(LIB_INC_DIR_$(1)_$(ARCH)),)
-            CXXFLAGS += -I$(LIB_INC_DIR_$(1)_$(ARCH))
+        ifneq ($(INC_DIR_$(1)_$(ARCH)),)
+            CXXFLAGS += -I$(INC_DIR_$(1)_$(ARCH))
         endif
-        ifneq ($(LIB_BIN_DIR_$(1)_$(ARCH)),)
-            LDFLAGS  += -L$(LIB_BIN_DIR_$(1)_$(ARCH))
+        ifneq ($(LIB_DIR_$(1)_$(ARCH)),)
+            LDFLAGS  += -L$(LIB_DIR_$(1)_$(ARCH))
         endif
-    endef
-    $(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
+    endif
+endef
+$(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
+
+# MXE uses pkg-config
+ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),1),1)
+    CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
+    LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
 endif
+
+# Header-only libs
+$(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_NAME))))
 
 
 
@@ -230,13 +253,13 @@ endif
 #
 
 # @warn To dla MrRaiNa ;)
-ifeq ($(PLATFORM),lin)
+ifneq ($(MRRAIN),)
     CROSS :=
 endif
 
 # Set tools
-CXX := $(CROSS)g++
-LD  := $(CROSS)g++
+CXX := $(CROSS)$(CXX)
+LD  := $(CROSS)$(LD)
 LS  := ls -AdoGh --time-style long-iso
 RM  := rm $(if $(CLEAN_FORCE),-rf,)
 PRINT := printf
@@ -306,13 +329,13 @@ obj: $(OBJECTS)
 $(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): $(SRC_DIR)/%$(SRC_EXT)
 	@mkdir -p `dirname $@`
 	@$(PRINT) "[Compiling] $$ "
-	$(CXX) -c $< -o $@ $(CXXFLAGS)
+	$(CXX) -I$(INC_DIR) -c $< -o $@ $(CXXFLAGS)
 	@$(PRINT) "[Compiled] -> "
 	-@$(LS) $@
 
-# Preparsing 
+# Updating and preparsing
 src: $(SOURCES)
-#$(SOURCES): $(SRC_DIR)/%$(SRC_EXT):
+$(SOURCES):
 #	@$(PRINT) "[Preparsing] $$ "
 inc: $(HEADERS)
 #$(HEADERS): $(INC_DIR)/%$(INC_EXT):
@@ -325,8 +348,8 @@ tep: $(TEPLATS)
 update-compilable: 
 ifndef COMPILABLE_UPDATED
 	@$(PRINT) "[Marking compilable to update] $ "
-	# @todo ;f MrRaiN i PsychoX
-	#-@chmod +x ./helper.sh
+	# @todo WIP. PsychoX
+	#-@chmod +x ./Update-By-Deps.sh
 	#-./Update-By-Deps.sh --help work in progress ;)
 	$(eval COMPILABLE_UPDATED := yes)
 endif
@@ -345,13 +368,14 @@ ifeq ($(or $(CLEAN_FILES),$(CLEAN_FORCE)),)
 	@$(PRINT) "Nothing to clean.\n"
 else
 	-$(RM) $(CLEAN_FILES) || :
-	-$(RM) -d $(CLEAN_DIRS) || :
+	-$(RM) -dr $(CLEAN_DIRS) || :
 endif
 
 # Informations (for debug) 
 info:
 	$(info  )
 	$(info TARGET=$(TARGET) -> PLATFORM=$(PLATFORM), ARCH=$(ARCH), MXE=$(MXE))
+	$(info  )
 	$(info PATH=$(PATH))
 	$(info  )
 	$(info Compilator: )
