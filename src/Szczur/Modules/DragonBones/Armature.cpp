@@ -1,7 +1,5 @@
 #include "Armature.hpp"
 
-#include "ArmatureFactory.hpp"
-
 rat::Armature::Armature() {
 
 }

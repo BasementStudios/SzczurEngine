@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "dragonBonesSFML/SFMLFactory.h"
+#include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Utility/Modules.hpp"

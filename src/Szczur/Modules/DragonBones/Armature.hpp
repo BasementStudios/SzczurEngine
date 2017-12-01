@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "dragonBonesSFML/SFMLArmatureDisplay.h"
+#include <dragonBones/SFMLArmatureDisplay.h>
 
 namespace rat {
     class Armature {
