@@ -5,6 +5,7 @@
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Lua/Lua.hpp"
+#include "Szczur/Modules/MusicMenager/MusicMenager.hpp"
 
 namespace rat {
 	class Application {
@@ -13,6 +14,7 @@ namespace rat {
 		ModulesHolder<
 			Assets,
 			Lua,
+			MusicMenager,
 			Canvas
 		> _modules;
 

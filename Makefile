@@ -111,7 +111,7 @@ MXE_DIR := /usr/lib/mxe
 LIB_LIST := SFML BOOST LUA
 #   SFML
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
-  LDFLAGS_STATIC_SFML   := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
+  LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
 CXXFLAGS_DYNAMIC_SFML   :=
  LDFLAGS_DYNAMIC_SFML   := -lsfml-graphics -lsfml-window -lsfml-system
  MXE_PACKAGENAME_SFML   := sfml
