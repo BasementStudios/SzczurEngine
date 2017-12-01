@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 1.7.13 ])
+$(info [ PsychoX' Makefile - version 1.8.1 ])
 
 # Phony declarations
 .PHONY: all obj src inc tep run clean info update-compilable
@@ -70,17 +70,17 @@ RUN_NAME := Szczur
 PARAMS := 
 
 # Folders structure
-INC_DIR := src
-SRC_DIR := src
-TEP_DIR := src
+INC_DIRS := src
+SRC_DIRS := src
+TEP_DIRS := src
 OBJ_DIR := obj/$(TARGET)
 OUT_DIR := out
 RUN_DIR := out
 
 # Extensions
-SRC_EXT := .cpp
-INC_EXT := .hpp
-TEP_EXT := .tpp
+SRC_EXTS := .cpp .c
+INC_EXTS := .hpp .h
+TEP_EXTS := .tpp .t
 OBJ_EXT := .o
 OUT_EXT := .exe
 RUN_EXT := .exe
@@ -274,6 +274,10 @@ ifeq ($(FORCE),yes)
     CLEAN_FORCE := yes
 endif
 
+# Adding headers and templates directories to search paths
+CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
+CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
+
 
 
 #
@@ -281,16 +285,16 @@ endif
 #
 
 # Sources to compile
-SOURCES := $(shell find $(SRC_DIR) -type f -name '*$(SRC_EXT)')
+SOURCES := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(SRC_EXTS))')
 
 # Headers to check updates
-HEADERS := $(shell find $(INC_DIR) -type f -name '*$(INC_EXT)')
+HEADERS := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
 
 # Template files to check updates
-TEPLATS := $(shell find $(TEP_DIR) -type f -name '*$(TEP_EXT)')
+TEPLATS := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
 
-# Objects to be compiled
-OBJECTS := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:$(SRC_EXT)=$(OBJ_EXT)))
+# Objects to be compiled @warn problem jestli SRC_DIR ma '..'...?
+OBJECTS := $(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES))
 
 # Output file to be linked to
 OUT_FILE := $(OUT_DIR)/$(OUT_NAME)$(OUT_EXT)
@@ -321,27 +325,29 @@ $(OUT_FILE): $(OBJECTS)
 	@mkdir -p `dirname $@`
 	@$(PRINT) "[Linking] $$ "
 	$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
-	@$(PRINT) "[Linked] -> "
+	@$(PRINT) "[Linked]\033[1m -> " 
 	-@$(LS) $@
+	@$(PRINT) "\033[0m"
 
 # Compiling
 obj: $(OBJECTS)
-$(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): $(SRC_DIR)/%$(SRC_EXT)
+$(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): %
 	@mkdir -p `dirname $@`
 	@$(PRINT) "[Compiling] $$ "
-	$(CXX) -I$(INC_DIR) -c $< -o $@ $(CXXFLAGS)
-	@$(PRINT) "[Compiled] -> "
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
+	@$(PRINT) "[Compiled]\033[1m -> "
 	-@$(LS) $@
+	@$(PRINT) "\033[0m"
 
-# Updating and preparsing
+# Preparsing
 src: $(SOURCES)
-$(SOURCES):
+#$(SOURCES):
 #	@$(PRINT) "[Preparsing] $$ "
 inc: $(HEADERS)
-#$(HEADERS): $(INC_DIR)/%$(INC_EXT):
+#$(HEADERS):
 #	@$(PRINT) "[Preparsing] $$ "
 tep: $(TEPLATS)
-#$(TEPLATS): $(TEP_DIR)/%$(TEP_EXT):
+#$(TEPLATS):
 #	@$(PRINT) "[Preparsing] $$ "
 
 # Update sources by changes in related headers and templates
@@ -364,11 +370,11 @@ run: all
 # Cleaning the compile environment
 clean: 
 	@$(PRINT) "[Cleaning]\n"
-ifeq ($(or $(CLEAN_FILES),$(CLEAN_FORCE)),) 
+ifeq ($(or $(CLEAN_FILES),$(CLEAN_DIRS),$(CLEAN_FORCE)),) 
 	@$(PRINT) "Nothing to clean.\n"
 else
 	-$(RM) $(CLEAN_FILES) || :
-	-$(RM) -dr $(CLEAN_DIRS) || :
+	-$(RM) -dr $(CLEAN_DIRS) 2> /dev/null || :
 endif
 
 # Informations (for debug) 
