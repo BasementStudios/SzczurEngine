@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 1.8.1 ])
+$(info [ PsychoX' Makefile - version 1.8.2 ])
 
 # Phony declarations
 .PHONY: all obj src inc tep run clean info update-compilable
@@ -135,6 +135,19 @@ EXECUTABLES_SFML := openal32.dll sfml*
 HEADER_LIB_LIST := SOL2 JSON
 HEADER_INC_SOL2 := 3rd-party/sol2
 HEADER_INC_JSON := 3rd-party/json
+
+# Default colors options
+COLORS := no
+COLOR_RESET     := \033[0m
+COLOR_BOLD      := \033[1m
+COLOR_COMPILING := \033[32m
+COLOR_COMPILED  := \033[92m
+COLOR_LINKING   := \033[34m
+COLOR_LINKED    := \033[94m
+COLOR_CLEANING  := \033[33m
+COLOR_CLEANED   := \033[93m
+COLOR_RUNNING   := \033[35m
+COLOR_RAN       := \033[95m
 
 
 
@@ -278,6 +291,20 @@ endif
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
 CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
 
+# Disabling colors
+ifeq ($(COLORS),no)
+    COLOR_RESET     :=
+    COLOR_BOLD      :=
+    COLOR_COMPILING :=
+    COLOR_COMPILED  :=
+    COLOR_LINKING   :=
+    COLOR_LINKED    :=
+    COLOR_CLEANING  :=
+    COLOR_CLEANED   :=
+    COLOR_RUNNING   :=
+    COLOR_RAN       :=
+endif
+
 
 
 #
@@ -323,21 +350,21 @@ all: lnk
 lnk: $(OUT_FILE)
 $(OUT_FILE): $(OBJECTS)
 	@mkdir -p `dirname $@`
-	@$(PRINT) "[Linking] $$ "
+	@$(PRINT) "$(COLOR_LINKING)[Linking]$(COLOR_RESET) $$ "
 	$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
-	@$(PRINT) "[Linked]\033[1m -> " 
-	-@$(LS) $@
-	@$(PRINT) "\033[0m"
+	@$(PRINT) "$(COLOR_LINKED)[Linked]$(COLOR_RESET) -> $(COLOR_BOLD)" 
+	@$(LS) $@
+	@$(PRINT) "$(COLOR_RESET)"
 
 # Compiling
 obj: $(OBJECTS)
 $(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): %
 	@mkdir -p `dirname $@`
-	@$(PRINT) "[Compiling] $$ "
+	@$(PRINT) "$(COLOR_COMPILING)[Compiling]$(COLOR_RESET) $$ "
 	$(CXX) -c $< -o $@ $(CXXFLAGS)
-	@$(PRINT) "[Compiled]\033[1m -> "
-	-@$(LS) $@
-	@$(PRINT) "\033[0m"
+	@$(PRINT) "$(COLOR_COMPILED)[Compiled]$(COLOR_RESET) -> $(COLOR_BOLD)"
+	@$(LS) $@
+	@$(PRINT) "$(COLOR_RESET)"
 
 # Preparsing
 src: $(SOURCES)
@@ -362,19 +389,21 @@ endif
 
 # Compile and run the output executable
 run: all
-	@$(PRINT) "[Running]\n"
+	@$(PRINT) "$(COLOR_RUNNING)[Running]$(COLOR_RESET)\n"
 	@-cp $(OUT_FILE) $(RUN_FILE) $(FUCKING_SLIENT)
 	@chmod +x $(RUN_FILE)
-	cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
+	-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
+	@$(PRINT) "$(COLOR_RAN)[Ran, exit code $$?]$(COLOR_RESET)\n"
 
 # Cleaning the compile environment
 clean: 
-	@$(PRINT) "[Cleaning]\n"
+	@$(PRINT) "$(COLOR_CLEANING)[Cleaning]$(COLOR_RESET)\n"
 ifeq ($(or $(CLEAN_FILES),$(CLEAN_DIRS),$(CLEAN_FORCE)),) 
 	@$(PRINT) "Nothing to clean.\n"
 else
 	-$(RM) $(CLEAN_FILES) || :
 	-$(RM) -dr $(CLEAN_DIRS) 2> /dev/null || :
+	@$(PRINT) "$(COLOR_CLEANED)[Cleaned]$(COLOR_RESET)\n"
 endif
 
 # Informations (for debug) 
