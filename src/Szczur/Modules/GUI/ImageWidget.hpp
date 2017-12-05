@@ -9,7 +9,10 @@
 namespace rat {
     class ImageWidget : public Widget {
     public:
+        ImageWidget();
         ImageWidget(const std::string& path);
+
+        void setTexture(const std::string& path);
     
     protected:
         virtual sf::Vector2u _getSize() const override;

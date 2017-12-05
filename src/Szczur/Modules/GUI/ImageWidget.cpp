@@ -3,8 +3,18 @@
 #include <iostream>
 
 namespace rat {
+    ImageWidget::ImageWidget() :
+    Widget() {
+
+    }
+
     ImageWidget::ImageWidget(const std::string& path) :
     Widget() {
+        _texture.loadFromFile(path);
+        _sprite.setTexture(_texture);
+    }
+
+    void ImageWidget::setTexture(const std::string &path) {
         _texture.loadFromFile(path);
         _sprite.setTexture(_texture);
     }

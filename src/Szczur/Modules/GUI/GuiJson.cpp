@@ -67,6 +67,22 @@ namespace rat {
             }
             parent->add(widget);
         }
+
+        else if(typeName == "image") {
+            ImageWidget *widget = new ImageWidget;
+            for(Json::iterator it = json.begin(); it != json.end(); ++it) {
+                if(!_handleBasicValues(it, widget)) {
+                    std::string key = it.key();
+                    if(key == "src") {
+                        widget->setTexture(it->get<std::string>());
+                    }
+                    else {
+                        _browseJsonObject(*it, widget);
+                    }
+                }
+            }
+            parent->add(widget);
+        }
     }
 
     bool GuiJson::_handleBasicValues(Json::iterator it, Widget *widget) {
