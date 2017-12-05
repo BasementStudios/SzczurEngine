@@ -11,6 +11,8 @@ namespace rat {
     public:
         static sf::Text createText(const std::string& text, const sf::Color& color, size_t charSize);
 
+        TextWidget();
+
         TextWidget(const sf::Text& text, const std::string& path );
 
         void setColor(const sf::Color& newColor);
@@ -20,6 +22,11 @@ namespace rat {
         void add(char letter);
 
         const std::string& getString() const;
+        void setString(const std::string& str);
+
+        void setFont(const std::string& path);
+
+        void setCharacterSize(unsigned int size);
 
         void removeLast();
     protected:

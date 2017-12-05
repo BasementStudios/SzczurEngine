@@ -9,6 +9,12 @@ namespace rat {
         return temp;
     }
 
+    TextWidget::TextWidget() :
+    Widget(),
+    _text() {
+
+    }
+
     TextWidget::TextWidget(const sf::Text& text, const std::string& path) :
     Widget(),
     _text(text) {
@@ -50,6 +56,20 @@ namespace rat {
 
     const std::string& TextWidget::getString() const {
         return _text.getString();
+    }
+
+    void TextWidget::setString(const std::string& str) {
+        _text.setString(str);
+    }
+
+    void TextWidget::setFont(const std::string& path) {
+        _font.loadFromFile(path);
+        _text.setFont(_font);
+
+    }
+
+    void TextWidget::setCharacterSize(unsigned int size) {
+        _text.setCharacterSize(size);
     }
 
 }

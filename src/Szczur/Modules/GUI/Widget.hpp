@@ -12,6 +12,7 @@ namespace rat {
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
 		Widget();
+		Widget(const Widget&) = default;
 	public:
 		enum class CallbackType {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
