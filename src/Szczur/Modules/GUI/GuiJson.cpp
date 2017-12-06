@@ -16,104 +16,113 @@ namespace rat {
         _browseJsonObject(json, root);
     }
 
-    void GuiJson::_browseJsonObject(Json& json, Widget *parent) {
+    template<typename T>
+    void GuiJson::_createJsonValue(Json& json, Widget* parent, std::function<bool(T*, Json::iterator it)> call) {
+        if( std::is_base_of<Widget, T>() ) {
+            T *widget = new T;
+            for(Json::iterator it = json.begin(); it != json.end(); ++it) {
+                std::string key = it.key();
+                if(!call(widget, it)) {
+                    if(key == "visible") {
+                        if(it->get<bool>())
+                            widget->visible();
+                        else
+                            widget->invisible();
+                    }
 
+                    else if(key == "active") {
+                        if(it->get<bool>())
+                            widget->activate();
+                        else
+                            widget->deactivate();
+                    }
+
+                    else if(key == "position") {
+                        widget->setPosition(
+                            _stringToValue( (*it)[0].get<std::string>(), _windowSize.x),
+                            _stringToValue( (*it)[1].get<std::string>(), _windowSize.y)
+                        );
+                    }
+
+                    //else if(key == "type") {
+
+                   // }
+
+                    else {
+                        if(it->is_object())
+                            _browseJsonObject(*it, widget);
+                    }
+                }
+            }
+            
+            parent->add(widget);
+        }
+    }
+
+    void GuiJson::_browseJsonObject(Json& json, Widget *parent) {
         std::string typeName;
         if(auto it = json.find("type"); it != json.end())
             typeName = it->get<std::string>();
         else
             typeName = "widget";
-
-
-//Add that kind of code, to add more variants of value
-
+        
+        /*
+        if(typeName == 'typename') {    
+            _createJsonValue<'widget'>(json, parent, []('widget'* widget, Json::iterator it){
+                std::string key = it.key();
+                'Conditions'
+                else
+                    return false;
+                return true;
+            });
+        }
+        */
+        
         if(typeName == "widget") {
-            Widget* widget = new Widget;
-            for(Json::iterator it = json.begin(); it != json.end(); ++it) {
-                if(!_handleBasicValues(it, widget)) {
-                    _browseJsonObject(*it, widget);
+            _createJsonValue<Widget>(json, parent, [](Widget*, Json::iterator it){
+                return false;
+            });
+        }
+
+        if(typeName == "text") {
+            _createJsonValue<TextWidget>(json, parent, [](TextWidget* widget, Json::iterator it){
+                std::string key = it.key();
+                if(key == "caption") {
+                    widget->setString( it->get<std::string>() );
                 }
-            }
-            parent->add(widget);
-        }
-
-        else if(typeName == "text") {
-            TextWidget* widget = new TextWidget;
-            for(Json::iterator it = json.begin(); it != json.end(); ++it) {
-                if(!_handleBasicValues(it, widget)) {
-                    std::string key = it.key();
-                    if(key == "caption") {
-                        widget->setString( it->get<std::string>() );
-                    }
-                    else if(key == "font") {
-                        widget->setFont( it->get<std::string>() );
-                    }
-                    else if(key == "color") {
-                        widget->setColor(
-                            sf::Color(
-                                (*it)[0].get<unsigned int>(),
-                                (*it)[1].get<unsigned int>(),
-                                (*it)[2].get<unsigned int>()
-                            )
-                        );
-                    }
-                    else if(key == "fontsize") {
-                        widget->setCharacterSize(it->get<unsigned int>());
-                    }
-                    else {
-                        _browseJsonObject(*it, widget);
-                    }
+                else if(key == "font") {
+                    widget->setFont( it->get<std::string>() );
                 }
-            }
-            parent->add(widget);
-        }
-
-        else if(typeName == "image") {
-            ImageWidget *widget = new ImageWidget;
-            for(Json::iterator it = json.begin(); it != json.end(); ++it) {
-                if(!_handleBasicValues(it, widget)) {
-                    std::string key = it.key();
-                    if(key == "src") {
-                        widget->setTexture(it->get<std::string>());
-                    }
-                    else {
-                        _browseJsonObject(*it, widget);
-                    }
+                else if(key == "color") {
+                    widget->setColor(
+                        sf::Color(
+                            (*it)[0].get<unsigned int>(),
+                            (*it)[1].get<unsigned int>(),
+                            (*it)[2].get<unsigned int>()
+                        )
+                    );
                 }
-            }
-            parent->add(widget);
-        }
-    }
-
-    bool GuiJson::_handleBasicValues(Json::iterator it, Widget *widget) {
-        std::string key = it.key();
-        if(key == "visible") {
-            if(it->get<bool>())
-                widget->visible();
-            else
-                widget->invisible();
-
-        }
-        else if(key == "active") {
-            if(it->get<bool>())
-                widget->activate();
-            else
-                widget->deactivate();
+                else if(key == "fontsize") {
+                    widget->setCharacterSize(it->get<unsigned int>());
+                }
+                else
+                    return false;
+                return true;
+            });
         }
 
-        else if(key == "position") {
-            widget->setPosition(
-                _stringToValue( (*it)[0].get<std::string>(), _windowSize.x),
-                _stringToValue( (*it)[1].get<std::string>(), _windowSize.y)
-            );
+        if(typeName == "image") {    
+            _createJsonValue<ImageWidget>(json, parent, [](ImageWidget* widget, Json::iterator it){
+                std::string key = it.key();
+                if(key == "src") {
+                    widget->setTexture(it->get<std::string>());
+                }
+                else
+                    return false;
+                return true;
+            });
         }
-
-        else if(key == "type") {
-
-        }
-        else
-            return false;
-        return true;
+        
     }
 
     int GuiJson::_stringToValue(const std::string &strOrigin, unsigned int valueOf) {

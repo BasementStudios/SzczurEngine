@@ -24,6 +24,9 @@ namespace rat {
     private:
         static void _browseJsonObject(Json &json, Widget *parent);
 
+        template<typename T>
+        static void _createJsonValue(Json& json, Widget* parent, std::function<bool(T*, Json::iterator it)> call);
+
         static bool _handleBasicValues(Json::iterator it, Widget *widget);
 
         static int _stringToValue(const std::string &strOrigin, unsigned int valueOf);
