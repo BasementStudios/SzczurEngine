@@ -22,7 +22,7 @@ namespace rat {
             T *widget = new T;
             for(Json::iterator it = json.begin(); it != json.end(); ++it) {
                 std::string key = it.key();
-                if(!valuesCall(widget, it)) {
+                if(!std::invoke(valuesCall, widget, it)) {
                     if(key == "visible") {
                         if(it->get<bool>())
                             widget->visible();
@@ -72,7 +72,7 @@ namespace rat {
                             Json temp = obj;
                             for(auto it = temp.begin(); it != temp.end(); ++it) {
                                 std::string key = it.key();
-                                if(!valuesCall(widget, it)) {
+                                if(!std::invoke(valuesCall, widget, it)) {
                                     if(key == "visible") {
                                         if(it->get<bool>())
                                             widget->visible();
