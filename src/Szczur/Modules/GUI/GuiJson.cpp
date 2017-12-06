@@ -16,13 +16,13 @@ namespace rat {
         _browseJsonObject(json, root);
     }
 
-    template<typename T>
-    void GuiJson::_createJsonValue(Json& json, Widget* parent, std::function<bool(T*, Json::iterator it)> call) {
+    template<typename T, typename F>
+    void GuiJson::_createJsonValue(Json& json, Widget* parent, F valuesCall) {
         if( std::is_base_of<Widget, T>() ) {
             T *widget = new T;
             for(Json::iterator it = json.begin(); it != json.end(); ++it) {
                 std::string key = it.key();
-                if(!call(widget, it)) {
+                if(!valuesCall(widget, it)) {
                     if(key == "visible") {
                         if(it->get<bool>())
                             widget->visible();
@@ -44,9 +44,60 @@ namespace rat {
                         );
                     }
 
-                    //else if(key == "type") {
+                    else if(
+                        key == "onHover" || 
+                        key == "onHoverIn" || 
+                        key == "onHoverOut" || 
+                        key == "onPress" || 
+                        key == "onHold" || 
+                        key == "onRelease"
+                    ) {
+                        Json obj = *it;
+                        
+                        widget->setCallback([](const std::string &key){
+                            if(key == "onHover")
+                                return Widget::CallbackType::onHover;
+                            else if(key == "onHoverIn")
+                                return Widget::CallbackType::onHoverIn;
+                            else if(key == "onHoverOut")
+                                return Widget::CallbackType::onHoverOut;
+                            else if(key == "onPress")
+                                return Widget::CallbackType::onPress;
+                            else if(key == "onHold")
+                                return Widget::CallbackType::onHold;
+                            else
+                                return Widget::CallbackType::onRelease;
+                            
+                        }(key),[obj, widget, valuesCall](Widget*){
+                            Json temp = obj;
+                            for(auto it = temp.begin(); it != temp.end(); ++it) {
+                                std::string key = it.key();
+                                if(!valuesCall(widget, it)) {
+                                    if(key == "visible") {
+                                        if(it->get<bool>())
+                                            widget->visible();
+                                        else
+                                            widget->invisible();
+                                    }
 
-                   // }
+                                    else if(key == "active") {
+                                        if(it->get<bool>())
+                                            widget->activate();
+                                        else
+                                            widget->deactivate();
+                                    }
+
+                                    else if(key == "position") {
+                                        widget->setPosition(
+                                            _stringToValue( (*it)[0].get<std::string>(), _windowSize.x),
+                                            _stringToValue( (*it)[1].get<std::string>(), _windowSize.y)
+                                        );
+                                    }
+                                }
+                            }
+                        });
+                    }
+
 
                     else {
                         if(it->is_object())

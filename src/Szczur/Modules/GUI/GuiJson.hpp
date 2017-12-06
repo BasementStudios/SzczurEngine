@@ -20,12 +20,14 @@
 namespace rat {
     class GuiJson {
     public:
+        using Function_t = std::function<bool()>;
+
         static void initJson(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize);
     private:
         static void _browseJsonObject(Json &json, Widget *parent);
 
-        template<typename T>
-        static void _createJsonValue(Json& json, Widget* parent, std::function<bool(T*, Json::iterator it)> call);
+        template<typename T, typename F>
+        static void _createJsonValue(Json& json, Widget* parent, F valuesCall);
 
         static bool _handleBasicValues(Json::iterator it, Widget *widget);
 
