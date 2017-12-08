@@ -11,8 +11,9 @@ namespace rat {
         _browseJsonObject(_json, root);
     }
 
-    void GuiJson::reload(Widget *root) {
+    void GuiJson::reload(const sf::Vector2u newWindowSize, Widget *root) {
         root->clear();
+        _windowSize = newWindowSize;
         _browseJsonObject(_json, root);
     }
 

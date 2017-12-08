@@ -24,7 +24,7 @@ namespace rat {
 
         void init(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize);
 
-        void reload(Widget *root);
+        void reload(const sf::Vector2u newWindowSize, Widget *root);
     private:
         void _browseJsonObject(Json &json, Widget *parent);
 

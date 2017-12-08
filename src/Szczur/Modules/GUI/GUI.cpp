@@ -30,6 +30,6 @@ namespace rat {
     }
 
     void GUI::reload() {
-        _guiJson.reload(&_root);
+        _guiJson.reload(getModule<Canvas>().getWindow().getSize(), &_root);
     }
 }
