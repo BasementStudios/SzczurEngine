@@ -2,18 +2,18 @@
 
 
 namespace rat {
-    sf::Vector2u GuiJson::_windowSize = {0u,0u};
-
-    void GuiJson::initJson(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize) {
-        //std::cout << std::stoi("+-100") << '\n';
-        GuiJson::_windowSize = windowSize;
-
+    void GuiJson::init(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize) {
+        _windowSize = windowSize;
         std::ifstream file(filePath);
-        Json json;
-        file >> json;
+        file >> _json;
         file.close();
 
-        _browseJsonObject(json, root);
+        _browseJsonObject(_json, root);
+    }
+
+    void GuiJson::reload(Widget *root) {
+        root->clear();
+        _browseJsonObject(_json, root);
     }
 
     template<typename T, typename F>
@@ -23,91 +23,67 @@ namespace rat {
             for(Json::iterator it = json.begin(); it != json.end(); ++it) {
                 std::string key = it.key();
                 if(!std::invoke(valuesCall, widget, it)) {
-                    if(key == "visible") {
-                        if(it->get<bool>())
-                            widget->visible();
-                        else
-                            widget->invisible();
-                    }
-
-                    else if(key == "active") {
-                        if(it->get<bool>())
-                            widget->activate();
-                        else
-                            widget->deactivate();
-                    }
-
-                    else if(key == "position") {
-                        widget->setPosition(
-                            _stringToValue( (*it)[0].get<std::string>(), _windowSize.x),
-                            _stringToValue( (*it)[1].get<std::string>(), _windowSize.y)
-                        );
-                    }
-
-                    else if(
-                        key == "onHover" || 
-                        key == "onHoverIn" || 
-                        key == "onHoverOut" || 
-                        key == "onPress" || 
-                        key == "onHold" || 
-                        key == "onRelease"
-                    ) {
-                        Json obj = *it;
-                        
-                        widget->setCallback([](const std::string &key){
-                            if(key == "onHover")
-                                return Widget::CallbackType::onHover;
-                            else if(key == "onHoverIn")
-                                return Widget::CallbackType::onHoverIn;
-                            else if(key == "onHoverOut")
-                                return Widget::CallbackType::onHoverOut;
-                            else if(key == "onPress")
-                                return Widget::CallbackType::onPress;
-                            else if(key == "onHold")
-                                return Widget::CallbackType::onHold;
-                            else
-                                return Widget::CallbackType::onRelease;
-                            
-                        }(key),[obj, widget, valuesCall](Widget*){
-                            Json temp = obj;
-                            for(auto it = temp.begin(); it != temp.end(); ++it) {
-                                std::string key = it.key();
-                                if(!std::invoke(valuesCall, widget, it)) {
-                                    if(key == "visible") {
-                                        if(it->get<bool>())
-                                            widget->visible();
-                                        else
-                                            widget->invisible();
-                                    }
-
-                                    else if(key == "active") {
-                                        if(it->get<bool>())
-                                            widget->activate();
-                                        else
-                                            widget->deactivate();
-                                    }
-
-                                    else if(key == "position") {
-                                        widget->setPosition(
-                                            _stringToValue( (*it)[0].get<std::string>(), _windowSize.x),
-                                            _stringToValue( (*it)[1].get<std::string>(), _windowSize.y)
-                                        );
+                    if(!_handleBasicValues(it, widget)) {
+                        if(
+                            key == "onHover" || 
+                            key == "onHoverIn" || 
+                            key == "onHoverOut" || 
+                            key == "onPress" || 
+                            key == "onHold" || 
+                            key == "onRelease"
+                        ) {
+                            Json &obj = *it;
+                            widget->setCallback(
+                                _stringTypeToEnum(key),
+                                [this, &obj, widget, valuesCall](Widget*){
+                                    for(auto it = obj.begin(); it != obj.end(); ++it) {
+                                        if(!std::invoke(valuesCall, widget, it)) {
+                                            _handleBasicValues(it, widget);
+                                        }
                                     }
                                 }
-                            }
-                        });
-                    }
-
-
-                    else {
-                        if(it->is_object())
-                            _browseJsonObject(*it, widget);
+                            );
+                        }
+                        else {
+                            if(it->is_object())
+                                _browseJsonObject(*it, widget);
+                        } 
                     }
                 }
             }
             
             parent->add(widget);
         }
+    }
+
+    
+
+    bool GuiJson::_handleBasicValues(Json::iterator it, Widget *widget) {
+        std::string key = it.key();
+        if(key == "visible") {
+            if(it->get<bool>())
+                widget->visible();
+            else
+                widget->invisible();
+        }
+
+        else if(key == "active") {
+            if(it->get<bool>())
+                widget->activate();
+            else
+                widget->deactivate();
+        }
+
+        else if(key == "position") {
+            widget->setPosition(
+                _stringToValue( (*it)[0].get<std::string>(), _windowSize.x),
+                _stringToValue( (*it)[1].get<std::string>(), _windowSize.y)
+            );
+        }
+
+        else
+            return false;
+        return true;   
     }
 
     void GuiJson::_browseJsonObject(Json& json, Widget *parent) {
@@ -174,6 +150,21 @@ namespace rat {
             });
         }
         
+    }
+
+    Widget::CallbackType GuiJson::_stringTypeToEnum(const std::string &name) {
+        if(name == "onHover")
+            return Widget::CallbackType::onHover;
+        else if(name == "onHoverIn")
+            return Widget::CallbackType::onHoverIn;
+        else if(name == "onHoverOut")
+            return Widget::CallbackType::onHoverOut;
+        else if(name == "onPress")
+            return Widget::CallbackType::onPress;
+        else if(name == "onHold")
+            return Widget::CallbackType::onHold;
+        else
+            return Widget::CallbackType::onRelease;
     }
 
     int GuiJson::_stringToValue(const std::string &strOrigin, unsigned int valueOf) {

@@ -22,17 +22,22 @@ namespace rat {
     public:
         using Function_t = std::function<bool()>;
 
-        static void initJson(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize);
+        void init(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize);
+
+        void reload(Widget *root);
     private:
-        static void _browseJsonObject(Json &json, Widget *parent);
+        void _browseJsonObject(Json &json, Widget *parent);
 
         template<typename T, typename F>
-        static void _createJsonValue(Json& json, Widget* parent, F valuesCall);
+        void _createJsonValue(Json& json, Widget* parent, F valuesCall);
 
-        static bool _handleBasicValues(Json::iterator it, Widget *widget);
+        bool _handleBasicValues(Json::iterator it, Widget *widget);
 
-        static int _stringToValue(const std::string &strOrigin, unsigned int valueOf);
+        int _stringToValue(const std::string &strOrigin, unsigned int valueOf);
 
-        static sf::Vector2u _windowSize;
+        Widget::CallbackType _stringTypeToEnum(const std::string &name);
+
+        sf::Vector2u _windowSize;
+        Json _json;
     };
 }
