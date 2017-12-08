@@ -17,7 +17,9 @@ namespace rat {
         void input(const sf::Event& event);
         void update(float deltaTime);
         void render();
+        void reload();
     private:
         Widget _root;
+        GuiJson _guiJson;
     };
 }

@@ -12,6 +12,7 @@ namespace rat {
 		_window.create(sf::VideoMode(size.x, size.y), "SzczurEngine v0.0.0");
 
 		_modules.getModule<Canvas>().recreateLayers();
+		_modules.getModule<GUI>().reload();
 	}
 
 	void Application::input() {

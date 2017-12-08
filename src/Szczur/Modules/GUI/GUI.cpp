@@ -5,7 +5,7 @@
 
 namespace rat {
     void GUI::init() {
-        GuiJson::initJson("data/json.json", &_root, getModule<Canvas>().getWindow().getSize());
+        _guiJson.init("data/json.json", &_root, getModule<Canvas>().getWindow().getSize());
     }
 
     
@@ -27,5 +27,9 @@ namespace rat {
 
     void GUI::render() {
         getModule<Canvas>().draw(Canvas::LayerId::GUI, _root);
+    }
+
+    void GUI::reload() {
+        _guiJson.reload(&_root);
     }
 }
