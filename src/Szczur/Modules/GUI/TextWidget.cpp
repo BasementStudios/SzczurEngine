@@ -59,7 +59,7 @@ namespace rat {
     }
 
     void TextWidget::setString(const std::string& str) {
-        _text.setString(str);
+        _text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
     }
 
     void TextWidget::setFont(const std::string& path) {
