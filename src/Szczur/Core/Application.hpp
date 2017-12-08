@@ -2,35 +2,40 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Lua/Lua.hpp"
+#include "Szczur/Modules/World/World.hpp"
 
-namespace rat {
-	class Application {
-	private:
+namespace rat
+{
 
-		ModulesHolder<
-			Assets,
-			Lua,
-			Canvas
-		> _modules;
+class Application
+{
+private:
 
-		sf::RenderWindow _window;
-		sf::Clock _mainClock;
+	ModulesHolder<
+		Canvas,
+		Lua,
+		World
+	> _modules;
 
-	public:
+	sf::RenderWindow _window;
+	sf::Clock _mainClock;
 
-		Application();
+public:
 
-		void changeResolution(const sf::Vector2u& size);
+	Application();
 
-		void input();
+	void changeResolution(const sf::Vector2u& size);
 
-		void update();
+	void input();
 
-		void render();
+	void update();
 
-		int run();
-	};
+	void render();
+
+	int run();
+
+};
+
 }

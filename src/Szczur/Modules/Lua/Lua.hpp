@@ -3,16 +3,23 @@
 #include "Szczur/Lua.hpp"
 #include "Szczur/Utility/Modules.hpp"
 
-namespace rat {
-	class Lua : public ModuleBase<> { using ModuleBase::ModuleBase;
-	public:
+namespace rat
+{
 
-		void init();
+class Lua : public ModuleBase<>
+{
+	using ModuleBase::ModuleBase;
 
-		void input(const sf::Event& event);
+public:
 
-		void update(float deltaTime);
+	void init();
 
-		void render();
-	};
+	void input(const sf::Event& event);
+
+	void update(float deltaTime);
+
+	void render();
+
+};
+
 }

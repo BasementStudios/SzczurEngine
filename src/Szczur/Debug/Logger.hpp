@@ -6,12 +6,15 @@
 #include <ctime>
 #include <fstream>
 
-namespace rat {
+namespace rat
+{
 
-class DebugLogger {
+class DebugLogger
+{
 private:
 
-	void _putTime(const char* format) {
+	void _putTime(const char* format)
+	{
 		std::time_t tm = std::time(nullptr);
 
 		std::strftime(_buffer, sizeof(_buffer), format, std::localtime(&tm));
@@ -23,7 +26,8 @@ private:
 public:
 
 	DebugLogger() :
-		_logFile(std::to_string(std::time(nullptr)) + ".log") {
+		_logFile(std::to_string(std::time(nullptr)) + ".log")
+	{
 		_putTime("%H:%M:%S - %d %B %Y\n");
 
 		_logFile << _buffer;
@@ -38,7 +42,8 @@ public:
 	DebugLogger& operator = (DebugLogger&&) = delete;
 
 	template<typename... Ts>
-	DebugLogger& log(const char* file, int line, Ts&&... args) {
+	DebugLogger& log(const char* file, int line, Ts&&... args)
+	{
 		_putTime("%H:%M:%S ");
 
 		_logFile << '\n' << '[' << _buffer << file << ' ' << line << ']' << ' ';
@@ -47,6 +52,7 @@ public:
 
 		return *this;
 	}
+
 } inline logger;
 
 }

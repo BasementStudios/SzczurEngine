@@ -1,19 +1,26 @@
 #include "Lua.hpp"
 
-namespace rat {
-	void Lua::init() {
+namespace rat
+{
 
-	}
+void Lua::init()
+{
 
-	void Lua::input(const sf::Event& event) {
-		(void)event;
-	}
+}
 
-	void Lua::update(float deltaTime) {
-		(void)deltaTime;
-	}
+void Lua::input(const sf::Event& event)
+{
+	(void)event;
+}
 
-	void Lua::render() {
+void Lua::update(float deltaTime)
+{
+	(void)deltaTime;
+}
 
-	}
+void Lua::render()
+{
+
+}
+
 }
