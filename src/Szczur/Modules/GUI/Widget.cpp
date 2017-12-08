@@ -14,6 +14,17 @@ namespace rat {
         ;
     }
 
+    Widget::~Widget() {
+        for(auto &it : _children)
+            delete it;
+    }
+
+    void Widget::clear() {
+        for(auto &it : _children)
+            delete it;
+        _children.clear();
+    }
+
     void Widget::setParent(Widget* parent) {
         _parent = parent;
     }

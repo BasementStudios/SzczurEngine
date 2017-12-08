@@ -13,6 +13,7 @@ namespace rat {
 	public:
 		Widget();
 		Widget(const Widget&) = default;
+		~Widget();
 	public:
 		enum class CallbackType {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
@@ -26,6 +27,8 @@ namespace rat {
 		Widget* add(Widget* object);
 
 		Widget* setCallback(CallbackType key, Function_t value);
+
+		void clear();
 
 		void input(const sf::Event& event);
 		void update(float deltaTime);
