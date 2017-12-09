@@ -4,14 +4,28 @@
 
 #include <dragonBones/SFMLArmatureDisplay.h>
 
-namespace rat {
-    class Armature {
-        std::unique_ptr<dragonBones::SFMLArmatureDisplay> _armatureDisplay;
+#include <SFML\Graphics\Drawable.hpp>
 
-    public:
-        Armature();
-        ~Armature();
+namespace rat
+{
+	class Armature : public sf::Drawable 
+	{
+	private:
+		std::unique_ptr<dragonBones::SFMLArmatureDisplay> _armatureDisplay;
 
-        void draw();
-    };
+	public:
+		Armature() = default;
+		Armature(std::string_view name);
+		~Armature() = default;
+
+		void create(std::string_view name);
+
+		void setPosition(const sf::Vector2f& pos) { _armatureDisplay->setPosition(pos); }
+		auto& getPosition() { return _armatureDisplay->getPosition(); }
+
+		void playAnimation(std::string_view animation) { _armatureDisplay->getAnimation()->play(animation.data()); }
+
+	protected:
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	};
 }

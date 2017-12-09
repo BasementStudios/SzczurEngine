@@ -9,18 +9,22 @@
 
 #include "Armature.hpp"
 
-namespace rat {
-    class DragonBones : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
-    
-    private:
-        std::unique_ptr<dragonBones::SFMLFactory> _factory;
+namespace rat 
+{
+	class DragonBones : public ModuleBase<Canvas> 
+	{ 
+		using ModuleBase::ModuleBase;
+	
+	private:
+		std::unique_ptr<dragonBones::SFMLFactory> _factory;
 
-    public:
-        void init();
-        void update(float deltaTime);
-        void render();
-        void input(sf::Event& e);
+	public:
+		void init();
 
-        auto getFactory() { return _factory.get(); }
-    };
+		void update(float deltaTime);
+
+		void render();
+
+		void input(sf::Event& e);
+	};
 }
