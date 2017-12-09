@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Utility/Unicode.hpp"
+
 #include "Widget.hpp"
 
 namespace rat {

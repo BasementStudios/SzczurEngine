@@ -1,11 +1,12 @@
 #include "Unicode.hpp"
 
-void setUnicodeText(sf::Text& dst, const std::string& src)
+sf::String getUnicodeString(const std::string& src)
 {
-	auto& ref = reinterpret_cast<std::basic_string<uint32_t>&>(const_cast<sf::String&>(dst.getString()));
+	std::basic_string<uint32_t> str;
 
-	ref.clear();
-	ref.reserve(detail::getUnicodeBytesCount(src.begin(), src.end()));
+	str.reserve(detail::getUnicodeBytesCount(src.begin(), src.end()));
 
-	detail::utf8ToUnicode(src.begin(), src.end(), std::back_inserter(ref));
+	detail::utf8ToUnicode(src.begin(), src.end(), std::back_inserter(str));
+
+	return str;
 }

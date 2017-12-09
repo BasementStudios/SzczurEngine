@@ -13,6 +13,6 @@ void utf8ToUnicode(InputIt begin, InputIt end, OutputIt dst);
 
 }
 
-void setUnicodeText(sf::Text& dst, const std::string& src);
+sf::String getUnicodeString(const std::string& src);
 
 #include "Unicode.tpp"

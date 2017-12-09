@@ -3,7 +3,7 @@
 namespace rat {
     sf::Text TextWidget::createText(const std::string& text, const sf::Color& color, size_t charSize) {
         sf::Text temp;
-        temp.setString(text);
+        temp.setString(getUnicodeString(text));
         temp.setFillColor(color);
         temp.setCharacterSize(charSize);
         return temp;
@@ -59,7 +59,8 @@ namespace rat {
     }
 
     void TextWidget::setString(const std::string& str) {
-        _text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
+        //_text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
+        _text.setString(getUnicodeString(str));
     }
 
     void TextWidget::setFont(const std::string& path) {
