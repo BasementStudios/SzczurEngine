@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 1.7.13 ])
+$(info [ PsychoX' Makefile - version 1.8.2 ])
 
 # Phony declarations
 .PHONY: all obj src inc tep run clean info update-compilable
@@ -70,17 +70,17 @@ RUN_NAME := Szczur
 PARAMS := 
 
 # Folders structure
-INC_DIR := src
-SRC_DIR := src
-TEP_DIR := src
+INC_DIRS := src
+SRC_DIRS := src
+TEP_DIRS := src
 OBJ_DIR := obj/$(TARGET)
 OUT_DIR := out
 RUN_DIR := out
 
 # Extensions
-SRC_EXT := .cpp
-INC_EXT := .hpp
-TEP_EXT := .tpp
+SRC_EXTS := .cpp .c
+INC_EXTS := .hpp .h
+TEP_EXTS := .tpp .t
 OBJ_EXT := .o
 OUT_EXT := .exe
 RUN_EXT := .exe
@@ -135,6 +135,19 @@ EXECUTABLES_SFML := openal32.dll sfml*
 HEADER_LIB_LIST := SOL2 JSON
 HEADER_INC_SOL2 := 3rd-party/sol2
 HEADER_INC_JSON := 3rd-party/json
+
+# Default colors options
+COLORS := no
+COLOR_RESET     := \033[0m
+COLOR_BOLD      := \033[1m
+COLOR_COMPILING := \033[32m
+COLOR_COMPILED  := \033[92m
+COLOR_LINKING   := \033[34m
+COLOR_LINKED    := \033[94m
+COLOR_CLEANING  := \033[33m
+COLOR_CLEANED   := \033[93m
+COLOR_RUNNING   := \033[35m
+COLOR_RAN       := \033[95m
 
 
 
@@ -274,6 +287,24 @@ ifeq ($(FORCE),yes)
     CLEAN_FORCE := yes
 endif
 
+# Adding headers and templates directories to search paths
+CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
+CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
+
+# Disabling colors
+ifeq ($(COLORS),no)
+    COLOR_RESET     :=
+    COLOR_BOLD      :=
+    COLOR_COMPILING :=
+    COLOR_COMPILED  :=
+    COLOR_LINKING   :=
+    COLOR_LINKED    :=
+    COLOR_CLEANING  :=
+    COLOR_CLEANED   :=
+    COLOR_RUNNING   :=
+    COLOR_RAN       :=
+endif
+
 
 
 #
@@ -281,16 +312,16 @@ endif
 #
 
 # Sources to compile
-SOURCES := $(shell find $(SRC_DIR) -type f -name '*$(SRC_EXT)')
+SOURCES := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(SRC_EXTS))')
 
 # Headers to check updates
-HEADERS := $(shell find $(INC_DIR) -type f -name '*$(INC_EXT)')
+HEADERS := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
 
 # Template files to check updates
-TEPLATS := $(shell find $(TEP_DIR) -type f -name '*$(TEP_EXT)')
+TEPLATS := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
 
-# Objects to be compiled
-OBJECTS := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:$(SRC_EXT)=$(OBJ_EXT)))
+# Objects to be compiled @warn problem jestli SRC_DIR ma '..'...?
+OBJECTS := $(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES))
 
 # Output file to be linked to
 OUT_FILE := $(OUT_DIR)/$(OUT_NAME)$(OUT_EXT)
@@ -319,29 +350,31 @@ all: lnk
 lnk: $(OUT_FILE)
 $(OUT_FILE): $(OBJECTS)
 	@mkdir -p `dirname $@`
-	@$(PRINT) "[Linking] $$ "
+	@$(PRINT) "$(COLOR_LINKING)[Linking]$(COLOR_RESET) $$ "
 	$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
-	@$(PRINT) "[Linked] -> "
-	-@$(LS) $@
+	@$(PRINT) "$(COLOR_LINKED)[Linked]$(COLOR_RESET) -> $(COLOR_BOLD)" 
+	@$(LS) $@
+	@$(PRINT) "$(COLOR_RESET)"
 
 # Compiling
 obj: $(OBJECTS)
-$(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): $(SRC_DIR)/%$(SRC_EXT)
+$(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): %
 	@mkdir -p `dirname $@`
-	@$(PRINT) "[Compiling] $$ "
-	$(CXX) -I$(INC_DIR) -c $< -o $@ $(CXXFLAGS)
-	@$(PRINT) "[Compiled] -> "
-	-@$(LS) $@
+	@$(PRINT) "$(COLOR_COMPILING)[Compiling]$(COLOR_RESET) $$ "
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
+	@$(PRINT) "$(COLOR_COMPILED)[Compiled]$(COLOR_RESET) -> $(COLOR_BOLD)"
+	@$(LS) $@
+	@$(PRINT) "$(COLOR_RESET)"
 
-# Updating and preparsing
+# Preparsing
 src: $(SOURCES)
-$(SOURCES):
+#$(SOURCES):
 #	@$(PRINT) "[Preparsing] $$ "
 inc: $(HEADERS)
-#$(HEADERS): $(INC_DIR)/%$(INC_EXT):
+#$(HEADERS):
 #	@$(PRINT) "[Preparsing] $$ "
 tep: $(TEPLATS)
-#$(TEPLATS): $(TEP_DIR)/%$(TEP_EXT):
+#$(TEPLATS):
 #	@$(PRINT) "[Preparsing] $$ "
 
 # Update sources by changes in related headers and templates
@@ -356,19 +389,21 @@ endif
 
 # Compile and run the output executable
 run: all
-	@$(PRINT) "[Running]\n"
+	@$(PRINT) "$(COLOR_RUNNING)[Running]$(COLOR_RESET)\n"
 	@-cp $(OUT_FILE) $(RUN_FILE) $(FUCKING_SLIENT)
 	@chmod +x $(RUN_FILE)
-	cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
+	-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
+	@$(PRINT) "$(COLOR_RAN)[Ran, exit code $$?]$(COLOR_RESET)\n"
 
 # Cleaning the compile environment
 clean: 
-	@$(PRINT) "[Cleaning]\n"
-ifeq ($(or $(CLEAN_FILES),$(CLEAN_FORCE)),) 
+	@$(PRINT) "$(COLOR_CLEANING)[Cleaning]$(COLOR_RESET)\n"
+ifeq ($(or $(CLEAN_FILES),$(CLEAN_DIRS),$(CLEAN_FORCE)),) 
 	@$(PRINT) "Nothing to clean.\n"
 else
 	-$(RM) $(CLEAN_FILES) || :
-	-$(RM) -dr $(CLEAN_DIRS) || :
+	-$(RM) -dr $(CLEAN_DIRS) 2> /dev/null || :
+	@$(PRINT) "$(COLOR_CLEANED)[Cleaned]$(COLOR_RESET)\n"
 endif
 
 # Informations (for debug) 

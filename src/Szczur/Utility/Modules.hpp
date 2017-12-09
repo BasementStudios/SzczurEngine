@@ -6,75 +6,81 @@
 
 #include "ForEach.hpp"
 
-namespace rat {
-	template<typename... TModules>
-	class ModuleBase {
-	public:
+namespace rat
+{
 
-		using Holder_t = const std::tuple<std::add_lvalue_reference_t<TModules>...>;
+template<typename... TModules>
+class ModuleBase
+{
+public:
 
-	private:
+	using Holder_t = const std::tuple<std::add_lvalue_reference_t<TModules>...>;
 
-		Holder_t _modules;
+private:
 
-	public:
+	Holder_t _modules;
 
-		template<typename UTuple>
-		ModuleBase(UTuple&& modules);
+public:
 
-		ModuleBase(const ModuleBase&) = default;
+	template<typename UTuple>
+	ModuleBase(UTuple&& modules);
 
-		ModuleBase& operator = (const ModuleBase&) = default;
+	ModuleBase(const ModuleBase&) = default;
 
-		ModuleBase(ModuleBase&&) = default;
+	ModuleBase& operator = (const ModuleBase&) = default;
 
-		ModuleBase& operator = (ModuleBase&&) = default;
+	ModuleBase(ModuleBase&&) = default;
 
-	protected:
+	ModuleBase& operator = (ModuleBase&&) = default;
 
-		template<typename TModule>
-		TModule& getModule();
+protected:
 
-		template<typename TModule>
-		const TModule& getModule() const;
-	};
+	template<typename TModule>
+	TModule& getModule();
 
-	template<typename... TModules>
-	class ModulesHolder {
-	public:
+	template<typename TModule>
+	const TModule& getModule() const;
 
-		using Holder_t = std::tuple<TModules...>;
+};
 
-		template<typename...>
-		struct Dummy {};
+template<typename... TModules>
+class ModulesHolder
+{
+public:
 
-	private:
+	using Holder_t = std::tuple<TModules...>;
 
-		std::tuple<TModules...> _modules;
+	template<typename...>
+	struct Dummy {};
 
-	public:
+private:
 
-		ModulesHolder();
+	std::tuple<TModules...> _modules;
 
-		ModulesHolder(const ModulesHolder&) = delete;
+public:
 
-		ModulesHolder& operator = (const ModulesHolder&) = delete;
+	ModulesHolder();
 
-		ModulesHolder(ModulesHolder&&) = delete;
+	ModulesHolder(const ModulesHolder&) = delete;
 
-		ModulesHolder& operator = (ModulesHolder&&) = delete;
+	ModulesHolder& operator = (const ModulesHolder&) = delete;
 
-		template<typename F>
-		void forEach(F&& function);
-		template<typename F>
-		void forEach(F&& function) const;
+	ModulesHolder(ModulesHolder&&) = delete;
 
-		template<typename TModule>
-		TModule& getModule();
+	ModulesHolder& operator = (ModulesHolder&&) = delete;
 
-		template<typename TModule>
-		const TModule& getModule() const;
-	};
+	template<typename F>
+	void forEach(F&& function);
+	template<typename F>
+	void forEach(F&& function) const;
+
+	template<typename TModule>
+	TModule& getModule();
+
+	template<typename TModule>
+	const TModule& getModule() const;
+
+};
 
 }
 

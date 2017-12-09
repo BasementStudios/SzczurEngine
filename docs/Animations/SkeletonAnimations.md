@@ -9,11 +9,11 @@ Animacje szkieletowe
 Niech nazwy się nie powtarzają, najlepiej gdyby były już gotowymi, **unikalnymi** nazwami, **bez znaków specjalnych** (w tym spacji i znaków polskich), z już bardziej estetyczną personalną prośbą: **małymi angielskimi** znakami.
 
 
-#### Elementy (tekstur)
+#### Elementy (kości, sloty i tekstury)
 
 Normalne elementy niech będą nazwane naturalnie, np. `head` itp.
 
-Elementy, które są w ramach zmiany tekstury, niech mają dopiski z przodu (najlepiej coś o tym mówiące): nazwa grupy tekstur i `_`, np. `blooded_`, `leather_`, `dirty_`.
+Elementy, które są w ramach zmiany tekstury, niech mają dopiski z przodu (najlepiej coś o tym mówiące): nazwa elementu, znak podłogi (`_`) i nazwa grupy/stanu, np. `blooded`, `leather`, `dirty`. 
 
 
 #### Stany
@@ -27,7 +27,7 @@ Bez kierunkowe:
 1. Bazowa nazwa stanu (np. `idle`).
 2. Indeks podanimacji.
 
-#### Przykłady:
+##### Przykłady:
 
 Kierunkowe:
 * `move_left_0`
@@ -51,6 +51,7 @@ Dla postaci mniej ważnych, ale dośc specyficznych - dość pełne nazwy, być 
 Dla postaci mało ważnych, powtarzalnych - proste nazwy i dopiski liczbowe, 
 
 - np. `Guard001`, `Villager012`, `Citizen123`.
+
 
 #### Obiekty
 
@@ -80,10 +81,10 @@ Oznaczenie `...` ma w zamyśle wskazywać na możliwość utworzenia (dowolnej) 
 ### Pliki
 
 - `skeleton.json` - w którym jest przechowywana informacja o ruchu, format z DragonBones.
-- `texture.json`  - atlas tekstur, czyli pozycje odpowiednich elementów, format z DragonBones.
-- `texture.png`   - tekstura, właściwa grafika, format z DragonBones.
 - `lists.json`    - lista z kolejnością animacji, wg. niżej opisanego formatu.
 - `groups.json`   - dane o wykorzystanych grupach elementów do szkieletów.
+- `textures/`     - folder z tekstrurami.
+- `> *.png`       - masa plików tekstur (w folderze `textures/`).
 
 
 #### Kolejność animacji i podanimacji (`lists.json`)
@@ -147,16 +148,15 @@ Pewnie często grupy będą tworzone wyłącznie z elementów z odpowiednimi prz
 ```js
 {
     "blooded": [
-        "blooded_head",
-        "blooded_arms",
-        "blooded_beniz",
-        "dirty_torso"
+        "head_blooded",
+        "arms_blooded",
+        "torso_blooded"
     ],
     "dirty": [
-        "dirty_head",
-        "dirty_arms",
-        "dirty_torso",
-        "dirty_boots"
+        "head_dirty",
+        "arms_dirty",
+        "torso_dirty",
+        "boots_dirty"
     ]
 }
 ```

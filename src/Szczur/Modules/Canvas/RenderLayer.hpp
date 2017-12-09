@@ -2,26 +2,31 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace rat {
-	class RenderLayer {
-	private:
+namespace rat
+{
 
-		sf::RenderTexture _renderTexture;
-		sf::RenderStates _states;
+class RenderLayer
+{
+private:
 
-	public:
+	sf::RenderTexture _renderTexture;
+	sf::RenderStates _states;
 
-		RenderLayer(const sf::Vector2u& size);
+public:
 
-		void recreate(const sf::Vector2u& size);
+	RenderLayer(const sf::Vector2u& size);
 
-		void setRenderStates(const sf::RenderStates& states);
+	void recreate(const sf::Vector2u& size);
 
-		sf::RenderStates getRenderStates() const;
+	void setRenderStates(const sf::RenderStates& states);
 
-		void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
-		void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
+	sf::RenderStates getRenderStates() const;
 
-		void display(sf::RenderTarget& target);
-	};
+	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
+	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
+
+	void display(sf::RenderTarget& target);
+
+};
+
 }
