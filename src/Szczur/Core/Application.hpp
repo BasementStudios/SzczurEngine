@@ -13,7 +13,7 @@ namespace rat {
 
 		ModulesHolder<
 			Assets,
-			Canvas
+			Canvas,
 			Lua,
 			DragonBones
 		> _modules;

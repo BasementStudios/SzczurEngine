@@ -12,14 +12,14 @@
 namespace rat {
     class DragonBones : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
     
-    friend Armature;
-
     private:
         std::unique_ptr<dragonBones::SFMLFactory> _factory;
 
     public:
         void init();
         void update(float deltaTime);
+        void render();
+        void input(sf::Event& e);
 
         auto getFactory() { return _factory.get(); }
     };
