@@ -6,6 +6,9 @@
 namespace rat {
     void GUI::init() {
         _guiJson.init("data/json.json", &_root, getModule<Canvas>().getWindow().getSize());
+        _assets.loadFromFile<sf::Texture>("data/button.png");
+        sf::Texture* text = _assets.get<sf::Texture>("data/button.png");
+        sprite.setTexture(*text);
     }
 
     
@@ -27,6 +30,7 @@ namespace rat {
 
     void GUI::render() {
         getModule<Canvas>().draw(Canvas::LayerId::GUI, _root);
+        getModule<Canvas>().draw(Canvas::LayerId::GUI, sprite);
     }
 
     void GUI::reload() {

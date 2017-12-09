@@ -8,6 +8,7 @@
 
 #include "Widget.hpp"
 #include "GuiJson.hpp"
+#include "GuiAssetsManager.hpp"
 
  
 namespace rat {
@@ -21,5 +22,8 @@ namespace rat {
     private:
         Widget _root;
         GuiJson _guiJson;
+        GuiAssetsManager<sf::Texture, sf::Font> _assets;
+
+        sf::Sprite sprite;
     };
 }
