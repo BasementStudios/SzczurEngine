@@ -2,19 +2,22 @@
 
 
 namespace rat {
-    void GuiJson::init(const std::string& filePath, Widget* root, const sf::Vector2u& windowSize) {
+    void GuiJson::init(Json* json, BasicGuiAssetsManager* assets, Widget* root, const sf::Vector2u& windowSize) {
         _windowSize = windowSize;
-        std::ifstream file(filePath);
-        file >> _json;
-        file.close();
-
-        _browseJsonObject(_json, root);
+        _assets = assets;
+        _json = json;
+        _browseJsonObject(*_json, root);
     }
 
-    void GuiJson::reload(const sf::Vector2u newWindowSize, Widget *root) {
+    void GuiJson::reload(const sf::Vector2u newWindowSize, Widget* root) {
         root->clear();
         _windowSize = newWindowSize;
-        _browseJsonObject(_json, root);
+        _browseJsonObject(*_json, root);
+    }
+
+    void GuiJson::changeJson(Json* json, Widget* root) {
+        _json = json;
+        reload(_windowSize, root);
     }
 
     template<typename T, typename F>
@@ -94,18 +97,6 @@ namespace rat {
         else
             typeName = "widget";
         
-        /*
-        if(typeName == 'typename') {    
-            _createJsonValue<'widget'>(json, parent, []('widget'* widget, Json::iterator it){
-                std::string key = it.key();
-                'Conditions'
-                else
-                    return false;
-                return true;
-            });
-        }
-        */
-        
         if(typeName == "widget") {
             _createJsonValue<Widget>(json, parent, [](Widget*, Json::iterator it){
                 return false;
@@ -113,13 +104,13 @@ namespace rat {
         }
 
         if(typeName == "text") {
-            _createJsonValue<TextWidget>(json, parent, [](TextWidget* widget, Json::iterator it){
+            _createJsonValue<TextWidget>(json, parent, [this](TextWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "caption") {
                     widget->setString( it->get<std::string>() );
                 }
                 else if(key == "font") {
-                    widget->setFont( it->get<std::string>() );
+                    widget->setFont(_assets->get<sf::Font>(it->get<std::string>()));
                 }
                 else if(key == "color") {
                     widget->setColor(
@@ -140,16 +131,29 @@ namespace rat {
         }
 
         if(typeName == "image") {    
-            _createJsonValue<ImageWidget>(json, parent, [](ImageWidget* widget, Json::iterator it){
+            _createJsonValue<ImageWidget>(json, parent, [this](ImageWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "src") {
-                    widget->setTexture(it->get<std::string>());
+                    widget->setTexture(_assets->get<sf::Texture>(it->get<std::string>()));
                 }
                 else
                     return false;
                 return true;
             });
         }
+
+               
+        /*
+        if(typeName == 'typename') {    
+            _createJsonValue<'widget'>(json, parent, []('widget'* widget, Json::iterator it){
+                std::string key = it.key();
+                'Conditions'
+                else
+                    return false;
+                return true;
+            });
+        }
+        */
         
     }
 

@@ -8,7 +8,7 @@
 namespace rat {
     class InputWidget : public TextWidget {
     public:
-        InputWidget(sf::Text text, const std::string& path, size_t maxLength);
+        InputWidget(sf::Text text, sf::Font* font, size_t maxLength);
 
 
     protected:

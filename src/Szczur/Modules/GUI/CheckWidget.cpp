@@ -1,12 +1,12 @@
 #include "CheckWidget.hpp"
 
 namespace rat {
-    CheckWidget::CheckWidget(const std::string& path1, const std::string& path2) :
+    CheckWidget::CheckWidget(sf::Texture* text1, sf::Texture* text2) :
     Widget(),
     _isTriggered(false)
     {
-        on = new ImageWidget(path1);
-        off = new ImageWidget(path2);
+        on = new ImageWidget(text1);
+        off = new ImageWidget(text2);
 
         add(on);
         add(off);

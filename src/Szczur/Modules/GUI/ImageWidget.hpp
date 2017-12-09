@@ -10,17 +10,14 @@ namespace rat {
     class ImageWidget : public Widget {
     public:
         ImageWidget();
-        ImageWidget(const std::string& path);
+        ImageWidget(sf::Texture* texture);
 
-        void setTexture(const std::string& path);
+        void setTexture(sf::Texture* texture);
     
     protected:
         virtual sf::Vector2u _getSize() const override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     private:
-        sf::Sprite _sprite;
-        sf::Texture _texture;
-
-        
+        sf::Sprite _sprite; 
     };
 }

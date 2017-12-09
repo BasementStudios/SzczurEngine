@@ -3,9 +3,9 @@
 #include <iostream>
 
 namespace rat {
-    InputWidget::InputWidget(sf::Text text, const std::string& path, size_t maxLength) :
+    InputWidget::InputWidget(sf::Text text, sf::Font* font, size_t maxLength) :
     _maxLength(maxLength),
-    TextWidget(text, path) {
+    TextWidget(text, font) {
         deactivate();
         _foreground.setSize(static_cast<sf::Vector2f>(getSize()));
         _foreground.setFillColor(sf::Color(0,0,0,100));

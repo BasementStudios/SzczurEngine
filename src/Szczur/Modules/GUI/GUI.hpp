@@ -4,7 +4,7 @@
 
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Utility/Modules.hpp"
-//#include "Szczur/Json.hpp"
+#include "Szczur/Json.hpp"
 
 #include "Widget.hpp"
 #include "GuiJson.hpp"
@@ -22,8 +22,6 @@ namespace rat {
     private:
         Widget _root;
         GuiJson _guiJson;
-        GuiAssetsManager<sf::Texture, sf::Font> _assets;
-
-        sf::Sprite sprite;
+        BasicGuiAssetsManager _assets;
     };
 }

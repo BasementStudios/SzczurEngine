@@ -3,13 +3,13 @@
 #include <iostream>
 
 namespace rat {
-    RadioWidget::RadioWidget(size_t amount, const std::string& path1, const std::string& path2) :
+    RadioWidget::RadioWidget(size_t amount, sf::Texture* text1, sf::Texture* text2) :
     Widget(),
     _whichTriggered(0u) {
 
         std::vector<CheckWidget*> checks;
         for(size_t i = 0; i<amount; ++i)
-            checks.push_back(new CheckWidget(path1, path2));
+            checks.push_back(new CheckWidget(text1, text2));
 
         size_t i = 0;
         for(CheckWidget* check : checks) {

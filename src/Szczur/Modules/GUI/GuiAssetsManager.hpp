@@ -1,6 +1,7 @@
 #pragma once
 
 #include <variant>
+#include <functional>
 
 #include <boost/container/flat_map.hpp>
 #include <SFML/Graphics.hpp>
@@ -21,11 +22,16 @@ namespace rat {
         void loadFromFile(const std::string& path);
 
         template<typename T>
+        void loadFromFile(const std::string& path, std::function<bool(T& obj, const std::string&)> loadFunc);
+
+        template<typename T>
         T* get(const std::string& path) const;
 
     private:
         Assets_t _assets;
     };
+
+    using BasicGuiAssetsManager = GuiAssetsManager<sf::Texture, sf::Font, Json>;
 }
 
 #include "GuiAssetsManager.tpp"

@@ -1,25 +1,16 @@
 #include "TextWidget.hpp"
 
 namespace rat {
-    sf::Text TextWidget::createText(const std::string& text, const sf::Color& color, size_t charSize) {
-        sf::Text temp;
-        temp.setString(getUnicodeString(text));
-        temp.setFillColor(color);
-        temp.setCharacterSize(charSize);
-        return temp;
-    }
-
     TextWidget::TextWidget() :
     Widget(),
     _text() {
 
     }
 
-    TextWidget::TextWidget(const sf::Text& text, const std::string& path) :
+    TextWidget::TextWidget(const sf::Text& text, sf::Font* font) :
     Widget(),
     _text(text) {
-        _font.loadFromFile(path);
-        _text.setFont(_font);
+        _text.setFont(*font);
     }
 
     sf::Vector2u TextWidget::_getSize() const {
@@ -63,9 +54,8 @@ namespace rat {
         _text.setString(getUnicodeString(str));
     }
 
-    void TextWidget::setFont(const std::string& path) {
-        _font.loadFromFile(path);
-        _text.setFont(_font);
+    void TextWidget::setFont(sf::Font* font) {
+        _text.setFont(*font);
 
     }
 

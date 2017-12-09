@@ -10,7 +10,7 @@
 namespace rat {
     class CheckWidget : public Widget {
     public:
-        CheckWidget(const std::string& path1, const std::string& path2);
+        CheckWidget(sf::Texture* text1, sf::Texture* text2);
         
         bool isTriggered() const;
         void enable();

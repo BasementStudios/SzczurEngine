@@ -8,19 +8,17 @@ namespace rat {
 
     }
 
-    ImageWidget::ImageWidget(const std::string& path) :
+    ImageWidget::ImageWidget(sf::Texture* texture) :
     Widget() {
-        _texture.loadFromFile(path);
-        _sprite.setTexture(_texture);
+        _sprite.setTexture(*texture);
     }
 
-    void ImageWidget::setTexture(const std::string &path) {
-        _texture.loadFromFile(path);
-        _sprite.setTexture(_texture);
+    void ImageWidget::setTexture(sf::Texture* texture) {
+        _sprite.setTexture(*texture);
     }
 
     sf::Vector2u ImageWidget::_getSize() const {
-        return _texture.getSize();
+        return _sprite.getTexture()->getSize();
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {

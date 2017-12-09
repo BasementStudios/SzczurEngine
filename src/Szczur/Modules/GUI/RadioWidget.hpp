@@ -8,7 +8,7 @@
 namespace rat {
     class RadioWidget : public Widget {
     public:
-        RadioWidget(size_t amount, const std::string& path1, const std::string& path2);
+        RadioWidget(size_t amount, sf::Texture* text1, sf::Texture* text2);
 
         size_t whichTriggered() const;
 

@@ -11,11 +11,9 @@
 namespace rat {
     class TextWidget : public Widget {
     public:
-        static sf::Text createText(const std::string& text, const sf::Color& color, size_t charSize);
-
         TextWidget();
 
-        TextWidget(const sf::Text& text, const std::string& path );
+        TextWidget(const sf::Text& text, sf::Font* font);
 
         void setColor(const sf::Color& newColor);
 
@@ -26,7 +24,7 @@ namespace rat {
         const std::string& getString() const;
         void setString(const std::string& str);
 
-        void setFont(const std::string& path);
+        void setFont(sf::Font* font);
 
         void setCharacterSize(unsigned int size);
 
@@ -36,6 +34,5 @@ namespace rat {
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     private:
         sf::Text _text;
-        sf::Font _font;
     };
 }
