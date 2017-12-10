@@ -42,6 +42,8 @@ namespace rat
 			_armatureDisplay->getAnimation()->fadeIn(animationName.data(), fadeInTime, playTimes, layer, group, fadeOutMode); 
 		}
 
+		void addEvent(const std::string& type, const std::function<void(dragonBones::EventObject*)>& listener) { _armatureDisplay->addDBEventListener(type, listener); }
+
 	protected:
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	};
