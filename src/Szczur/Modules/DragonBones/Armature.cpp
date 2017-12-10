@@ -49,7 +49,7 @@ namespace rat
 	void Armature::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		if (_armatureDisplay) {
-			states.transform.scale({ _scale, _scale }, _armatureDisplay->getPosition());
+			states.transform.scale({ _scale, _scale }, getPosition());
 			target.draw(*_armatureDisplay, states);
 		}
 	}

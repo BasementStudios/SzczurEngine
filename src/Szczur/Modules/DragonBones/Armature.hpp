@@ -23,16 +23,16 @@ namespace rat
 		void create(std::string_view name);
 
 		void setPosition(const sf::Vector2f& pos) { _armatureDisplay->setPosition(pos); }
-		auto& getPosition() { return _armatureDisplay->getPosition(); }
+		auto& getPosition() const { return _armatureDisplay->getPosition(); }
 
 		void setScale(float scale) { _scale = scale; }
-		float getScale() { return _scale; }
+		float getScale() const { return _scale; }
 
 		void setFlipX(bool value) { _armatureDisplay->getArmature()->setFlipX(value); }
-		bool getFlipX() { return _armatureDisplay->getArmature()->getFlipX(); }
+		bool getFlipX() const { return _armatureDisplay->getArmature()->getFlipX(); }
 
 		void setFlipY(bool value) { _armatureDisplay->getArmature()->setFlipY(value); }
-		bool getFlipY() { return _armatureDisplay->getArmature()->getFlipY(); }
+		bool getFlipY() const { return _armatureDisplay->getArmature()->getFlipY(); }
 
 		void playAnimation(std::string_view animation) { _armatureDisplay->getAnimation()->play(animation.data()); }
 		void stopAnimation(std::string_view animation) { _armatureDisplay->getAnimation()->stop(animation.data()); }
