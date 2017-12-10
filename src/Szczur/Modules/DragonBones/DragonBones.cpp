@@ -1,4 +1,5 @@
 #include "DragonBones.hpp"
+
 namespace rat {
 	void DragonBones::init() {
 		_factory = std::make_unique<dragonBones::SFMLFactory>();

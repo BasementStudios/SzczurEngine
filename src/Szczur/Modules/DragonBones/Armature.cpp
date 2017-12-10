@@ -35,7 +35,6 @@ namespace rat
 		auto textureAtlasData = factory->createTextureAtlasData(texturesData, dbData);
 
 		if (textureAtlasData == nullptr) {
-
 			for (auto& textureData : texturesData) {
 				if (textureData)
 					delete textureData;
