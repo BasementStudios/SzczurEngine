@@ -26,5 +26,7 @@ namespace rat
 		void render();
 
 		void input(sf::Event& e);
+
+		void addSoundEvent(const std::function<void(dragonBones::EventObject*)>& listener) { _factory->addSoundEventListener(listener); }
 	};
 }
