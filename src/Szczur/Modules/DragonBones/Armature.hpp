@@ -13,6 +13,8 @@ namespace rat
 	private:
 		std::unique_ptr<dragonBones::SFMLArmatureDisplay> _armatureDisplay;
 
+		float _scale = 1.f;
+
 	public:
 		Armature() = default;
 		Armature(std::string_view name);
@@ -22,6 +24,9 @@ namespace rat
 
 		void setPosition(const sf::Vector2f& pos) { _armatureDisplay->setPosition(pos); }
 		auto& getPosition() { return _armatureDisplay->getPosition(); }
+
+		void setScale(float scale) { _scale = scale; }
+		float getScale() { return _scale; }
 
 		void setFlipX(bool value) { _armatureDisplay->getArmature()->setFlipX(value); }
 		bool getFlipX() { return _armatureDisplay->getArmature()->getFlipX(); }
