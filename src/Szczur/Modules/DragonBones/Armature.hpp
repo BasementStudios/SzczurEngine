@@ -44,6 +44,8 @@ namespace rat
 
 		void addEvent(const std::string& type, const std::function<void(dragonBones::EventObject*)>& listener) { _armatureDisplay->addDBEventListener(type, listener); }
 
+		void replaceSlotsTexture(std::string_view slotName, sf::Texture* texture);
+
 	protected:
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	};
