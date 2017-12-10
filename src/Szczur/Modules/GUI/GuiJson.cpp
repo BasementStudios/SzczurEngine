@@ -97,13 +97,16 @@ namespace rat {
         else
             typeName = "widget";
         
+
+
+
         if(typeName == "widget") {
             _createJsonValue<Widget>(json, parent, [](Widget*, Json::iterator it){
                 return false;
             });
         }
 
-        if(typeName == "text") {
+        else if(typeName == "text") {
             _createJsonValue<TextWidget>(json, parent, [this](TextWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "caption") {
@@ -130,7 +133,7 @@ namespace rat {
             });
         }
 
-        if(typeName == "image") {    
+        else if(typeName == "image") {    
             _createJsonValue<ImageWidget>(json, parent, [this](ImageWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "src") {
@@ -142,10 +145,60 @@ namespace rat {
             });
         }
 
+        else if(typeName == "input") {    
+            _createJsonValue<InputWidget>(json, parent, [this](InputWidget* widget, Json::iterator it){
+                std::string key = it.key();
+                if(key == "font") {
+                    widget->setFont(_assets->get<sf::Font>(it->get<std::string>()));
+                }
+                else if(key == "color") {
+                    widget->setColor(
+                        sf::Color(
+                            (*it)[0].get<unsigned int>(),
+                            (*it)[1].get<unsigned int>(),
+                            (*it)[2].get<unsigned int>()
+                        )
+                    );
+                }
+                else if(key == "fontsize") {
+                    widget->setCharacterSize(it->get<unsigned int>());
+                }
+                else if(key == "caption") {
+                    widget->setString( it->get<std::string>() );
+                }
+                else if(key == "bgcolor") {
+                    widget->setBackgroundColor(
+                        sf::Color(
+                            (*it)[0].get<unsigned int>(),
+                            (*it)[1].get<unsigned int>(),
+                            (*it)[2].get<unsigned int>()
+                        )
+                    );
+                }
+                else if(key == "maxlength") {
+                    widget->setMaxLength( it->get<unsigned int>() );
+                }
+                else
+                    return false;
+                return true;
+            });
+        }
+
+        /*else if(typeName == "check") {    
+            _createJsonValue<CheckWidget>(json, parent, [this](CheckWidget* widget, Json::iterator it){
+                std::string key = it.key();
+                if(key == "") {
+                    
+                }
+                else
+                    return false;
+                return true;
+            });
+        }
                
         /*
-        if(typeName == 'typename') {    
-            _createJsonValue<'widget'>(json, parent, []('widget'* widget, Json::iterator it){
+        else if(typeName == 'typename') {    
+            _createJsonValue<'widget'>(json, parent, [this]('widget'* widget, Json::iterator it){
                 std::string key = it.key();
                 'Conditions'
                 else

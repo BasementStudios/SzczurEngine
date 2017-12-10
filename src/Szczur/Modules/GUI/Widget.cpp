@@ -51,10 +51,6 @@ namespace rat {
         return object;
     }
 
-    sf::Vector2u Widget::getSize() const {
-        return _size;
-    }
-
     void Widget::input(const sf::Event& event) {
         if(isActivated()) {
             _input(event);
@@ -137,7 +133,7 @@ namespace rat {
         if(isVisible()) {
             sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            shape.setFillColor(sf::Color(0,0,255,100));
+            shape.setFillColor(sf::Color(0,0,255,70));
 
 
             states.transform *= getTransform();
@@ -173,6 +169,10 @@ namespace rat {
 
     sf::Vector2u Widget::_getSize() const {
         return {0u, 0u};
+    }
+
+    sf::Vector2u Widget::getSize() const {
+        return _size;
     }
 
     void Widget::activate() {

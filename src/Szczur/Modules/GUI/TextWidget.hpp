@@ -28,6 +28,8 @@ namespace rat {
 
         void setCharacterSize(unsigned int size);
 
+        unsigned int getCharacterSize() const;
+
         void removeLast();
     protected:
         virtual sf::Vector2u _getSize() const override;

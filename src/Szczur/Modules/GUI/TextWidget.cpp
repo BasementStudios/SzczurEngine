@@ -63,4 +63,8 @@ namespace rat {
         _text.setCharacterSize(size);
     }
 
+    unsigned int TextWidget::getCharacterSize() const {
+        return _text.getCharacterSize();
+    }
+
 }
