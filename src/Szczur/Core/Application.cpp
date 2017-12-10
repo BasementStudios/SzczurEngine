@@ -30,11 +30,12 @@ void Application::input()
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
 			_window.close();
 		}
+		_modules.forEach([&](auto& mod) {
+			mod.input(event);
+		});
 	}
 
-	_modules.forEach([&](auto& mod) {
-		mod.input(event);
-	});
+	
 }
 
 void Application::update()
