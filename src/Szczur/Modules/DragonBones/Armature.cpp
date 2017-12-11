@@ -5,12 +5,12 @@
 
 namespace rat
 {
-	Armature::Armature(std::string_view name)
+	Armature::Armature(const std::string& name)
 	{
 		create(name);
 	}
 
-	void Armature::create(std::string_view name)
+	void Armature::create(const std::string& name)
 	{
 		auto factory = dragonBones::SFMLFactory::get();
 
@@ -46,7 +46,7 @@ namespace rat
 		_armatureDisplay = std::unique_ptr<dragonBones::SFMLArmatureDisplay>(factory->buildArmatureDisplay(name.data()));
 	}
 
-	void Armature::replaceSlotsTexture(std::string_view slotName, sf::Texture* texture)
+	void Armature::replaceSlotsTexture(const std::string& slotName, sf::Texture* texture)
 	{
 		if (!texture)
 			return;
