@@ -6,17 +6,21 @@ namespace rat {
 
 		_modules.getModule<Canvas>().init(&_window);
 
-		/*
-		_modules.getModule<MusicMenager>().setPlayingMode(MusicMenager::PlayingMode::Orderly);
-		_modules.getModule<MusicMenager>().setNewPlaylist({
+		/*_modules.getModule<MusicMenager>().push({
 			"R1",
 			"R2",
 			"R3",
 			"R4"
 		});
-		_modules.getModule<MusicMenager>().play();
-		*/
-		
+		_modules.getModule<MusicMenager>().push({
+			"0001 Szczur Rozpierdalacz",
+			"0002 Szczur Bezglutenowy",
+			"0003 Szczur Trailerowszy",
+			"0004 Szczur Trailerowy"
+		});
+		_modules.getModule<MusicMenager>()[0]->setPlayingMode(Playlist::PlayingMode::Orderly);
+		_modules.getModule<MusicMenager>()[0]->play();*/
+
 	}
 
 	void Application::changeResolution(const sf::Vector2u& size) {
