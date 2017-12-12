@@ -3,14 +3,18 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 1.8.2 ])
-
-# Phony declarations
-.PHONY: all obj src inc tep run clean info update-compilable
+$(info [ PsychoX' Makefile - version 2.1.0 ])
 
 # Special variables
-NULL := 
-SPACE := $(NULL) $(NULL)
+.SUFFIXES:
+NULL :=
+SPACE := ${NULL} ${NULL}
+${SPACE} := ${SPACE}
+define \n
+
+
+endef
+NEWLINE := ${\n}
 
 # More settings file
 SETTINGS_FILE := ./settings.mk
@@ -22,7 +26,7 @@ SETTINGS_FILE := ./settings.mk
 #
 
 # Target normalize function
-define normalize_TARGET
+define normalize_target
     # There MUST be so many 'eval's, because Makefile interpreter will try "optimalize" uses of variables...
     $(eval override TARGET := $(shell echo $(TARGET) | tr A-Z a-z))
     $(eval override PLATFORM := $(findstring win,$(TARGET))$(findstring lin,$(TARGET)))
@@ -30,12 +34,19 @@ define normalize_TARGET
     $(eval override TARGET:=$(PLATFORM)$(ARCH))
 endef
 
-# Target selection
-ifdef TARGET
-    $(eval $(call normalize_TARGET))
+# Try to get target from settings file if no selected
+ifndef TARGET
+    ifneq ("$(wildcard $(SETTINGS_FILE))","")
+        override TARGET := $(shell grep -Po '^(?:TARGET[ ]*[:]?=[ ]*)\K.*$$' $(SETTINGS_FILE))
+    endif
 endif
 
-# Target detection
+# Target normalization
+ifdef TARGET
+    $(eval $(call normalize_target))
+endif
+
+# Try to detect platform or arch by system if no selected
 ifeq ($(PLATFORM),)
     # Platform detection
     PLATFORM_DETECT := $(shell uname -o | tr A-Z a-z)
@@ -91,6 +102,14 @@ CXXFLAGS := -std=c++17 -Wall
 LD       := g++
 LDFLAGS  :=
 
+# Using MXE? and its options
+MXE := no
+MXE_DIR := /usr/lib/mxe
+
+# Arch tags
+ARCH_32 := i686
+ARCH_64 := x86_64
+
 # Use static linking
 LINKING := static
 CXXFLAGS_STATIC  := -static
@@ -98,14 +117,17 @@ CXXFLAGS_DYNAMIC :=
  LDFLAGS_STATIC  := -static
  LDFLAGS_DYNAMIC :=
 
-# Clean entries
-CLEAN_FILES := "./obj/*/*.o" "./$(OUT_DIR)/$(OUT_NAME)" "./$(RUN_DIR)/$(RUN_NAME)"
-CLEAN_DIRS  := "./obj/*/*"
-CLEAN_DIRS_FORCE := no
+# Cleaning
+ifeq ($(MAKECMDGOALS),clean)
+    CLEAN_FILES_CMD := rm 
+    CLEAN_FILES := "./obj/*/*.o" "./out/$(OUT_NAME)$(OUT_EXT)"
+    CLEAN_DIRS_CMD := rm -dr 
+    CLEAN_DIRS  := "./obj/*"
+endif
 
-# Using MXE? and its options
-MXE := no
-MXE_DIR := /usr/lib/mxe
+# Other tools
+LS := ls -AdoGh --time-style long-iso
+MKDIR = mkdir -p 
 
 # Libraries 
 LIB_LIST := SFML BOOST LUA
@@ -117,37 +139,35 @@ CXXFLAGS_DYNAMIC_SFML   :=
  MXE_PACKAGENAME_SFML   := sfml
 #   Boost
  CXXFLAGS_STATIC_BOOST  :=
-  LDFLAGS_STATIC_BOOST  :=
+  LDFLAGS_STATIC_BOOST  := -lboost_container-mt-s
 CXXFLAGS_DYNAMIC_BOOST  :=
- LDFLAGS_DYNAMIC_BOOST  :=
+ LDFLAGS_DYNAMIC_BOOST  := -lboost_container-mt
  MXE_PACKAGENAME_BOOST  := boost
 #  Lua
- CXXFLAGS_STATIC_LUA    := -lliblua
-  LDFLAGS_STATIC_LUA    :=
-CXXFLAGS_DYNAMIC_LUA    := -lliblua
- LDFLAGS_DYNAMIC_LUA    := 
+ CXXFLAGS_STATIC_LUA    :=
+  LDFLAGS_STATIC_LUA    := -llua
+CXXFLAGS_DYNAMIC_LUA    :=
+ LDFLAGS_DYNAMIC_LUA    := -llua
  MXE_PACKAGENAME_LUA    := lua
 
-# Executables (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
-EXECUTABLES_SFML := openal32.dll sfml*
+# Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
+FILES_DYNAMIC_SFML := openal32.dll sfml*
 
 # Header-only libs
 HEADER_LIB_LIST := SOL2 JSON
 HEADER_INC_SOL2 := 3rd-party/sol2
 HEADER_INC_JSON := 3rd-party/json
 
-# Default colors options
+# Print definitions
 COLORS := no
-COLOR_RESET     := \033[0m
-COLOR_BOLD      := \033[1m
-COLOR_COMPILING := \033[32m
-COLOR_COMPILED  := \033[92m
-COLOR_LINKING   := \033[34m
-COLOR_LINKED    := \033[94m
-COLOR_CLEANING  := \033[33m
-COLOR_CLEANED   := \033[93m
-COLOR_RUNNING   := \033[35m
-COLOR_RAN       := \033[95m
+
+# Markers to grep code with
+MARKERS := @todo @warn @err
+
+# Dependencies finding
+DEPFLAGS := -MT $$@ -MMD -MP -MF 
+DEP_EXT := .d
+DEP_TMP := .tmp
 
 
 
@@ -155,7 +175,15 @@ COLOR_RAN       := \033[95m
 # Load settings override
 #
 
-include $(SETTINGS_FILE)
+# Definition to overwrite if we want add more rules in settings
+define more_rules
+more_rules:
+endef
+
+# Include
+ifneq ("$(wildcard $(SETTINGS_FILE))","")
+    include $(SETTINGS_FILE)
+endif
 
 
 
@@ -169,14 +197,8 @@ CXXFLAGS += $(CXXFLAGS_$(LINKING))
 LDFLAGS  += $( LDFLAGS_$(LINKING))
 
 # Architecture 
-# -> 32 bit
-ifeq ($(ARCH),32)
-    CROSS := i686
-# -> 64 bit 
-else ifeq ($(ARCH),64)
-    CROSS := x86_64
-# -> Invaild architecture
-else
+CROSS := $(ARCH_$(ARCH))
+ifeq ($(CROSS),)
     $(error "Target architecture not selected propertly... ARCH=$(ARCH)")
 endif
 CXXFLAGS += -m$(ARCH)
@@ -200,9 +222,6 @@ ifeq ($(PLATFORM),win)
         else
             CROSS := $(CROSS).shared
         endif
-    else
-        # Other MinGW on Windows?
-        #...
     endif
 # -> Linux...
 else ifeq ($(PLATFORM),lin)
@@ -217,12 +236,18 @@ CROSS := $(CROSS)-
 # If true 32 bit compiler not present, use universal
 ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
     CROSS := $(subst i686,x86_64,$(CROSS))
+    $(warning "Using universal compiler... CROSS=$(CROSS)")
 endif
 
 # If no selective compiler, just try use 'g++'...
 ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
     CROSS :=
+    $(warning "Using standard system compiler... (i.e. g++)")
 endif
+
+# Finally select compiler and linker
+CXX := $(CROSS)$(CXX)
+LD  := $(CROSS)$(LD)
 
 
 
@@ -265,22 +290,8 @@ $(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_
 # Other 
 #
 
-# @warn To dla MrRaiNa ;)
-ifneq ($(MRRAIN),)
-    CROSS :=
-endif
-
-# Set tools
-CXX := $(CROSS)$(CXX)
-LD  := $(CROSS)$(LD)
-LS  := ls -AdoGh --time-style long-iso
-RM  := rm $(if $(CLEAN_FORCE),-rf,)
-PRINT := printf
-FUCKING_SLIENT :=1>&2 2>/dev/null || :
-
-ifeq ($(SLIENT),yes)
-    PRINT := :
-endif
+# Colon replacement
+COLON_REPLACEMENT := _c0loN
 
 # Other FORCE
 ifeq ($(FORCE),yes)
@@ -291,18 +302,71 @@ endif
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
 CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
 
-# Disabling colors
-ifeq ($(COLORS),no)
-    COLOR_RESET     :=
-    COLOR_BOLD      :=
-    COLOR_COMPILING :=
-    COLOR_COMPILED  :=
-    COLOR_LINKING   :=
-    COLOR_LINKED    :=
-    COLOR_CLEANING  :=
-    COLOR_CLEANED   :=
-    COLOR_RUNNING   :=
-    COLOR_RAN       :=
+
+
+#
+# Informing and colors
+#
+
+# Verbose flag
+ifeq ($(or $(V),$(VERBOSE)),yes)
+    override V :=
+else
+    override V := @
+endif
+
+# Markers grepping function
+ifndef grep_markers
+    define grep_markers
+        @grep -i -C1 '$(subst $(SPACE),\|,$(MARKERS))' $$@ || :
+    endef
+endif
+
+# Informations 
+ifeq ($(COLORS),yes)
+    ifndef inform_executable
+        inform_executable   := @printf "\033[32m[Executable] $@\033[0m \n"
+    endif
+    ifndef inform_object
+        inform_object       := @printf "\033[33m[Object] $$@\033[0m \n" 
+    endif
+    ifndef inform_source
+        inform_source       := @printf "\033[34m[Source] $@\033[0m \n"
+    endif
+    ifndef inform_header
+        inform_header       := @printf "\033[36m[Header] $@\033[0m \n"
+    endif
+    ifndef inform_template
+        inform_template     := @printf "\033[35m[Template] $@\033[0m \n"
+    endif
+    ifndef inform_running
+        inform_running      := @printf "\033[37m[Running] \033[0m \n"
+    endif
+    ifndef inform_cleaning
+        inform_cleaning     := @printf "\033[37m[Cleaning] \033[0m \n"
+    endif
+else
+    ifndef inform_executable
+        inform_executable   := @printf "[Executable] $@ \n"
+    endif
+    ifndef inform_object
+        inform_object       := @printf "[Object] $$@ \n" 
+    endif
+    ifndef inform_source
+        inform_source       := @printf "[Source] $@ \n"
+    endif
+    ifndef inform_header
+        inform_header       := @printf "[Header] $@ \n"
+    endif
+    ifndef inform_template
+        inform_template     := @printf "[Template] $@ \n"
+    endif
+    ifndef inform_running
+        inform_running      := @printf "[Running] \n"
+    endif
+    ifndef inform_cleaning
+        inform_cleaning     := @printf "[Cleaning] \n"
+    endif
 endif
 
 
@@ -311,125 +375,164 @@ endif
 # Files searching
 #
 
-# Sources to compile
-SOURCES := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(SRC_EXTS))')
-
-# Headers to check updates
-HEADERS := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
-
-# Template files to check updates
-TEPLATS := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
-
-# Objects to be compiled @warn problem jestli SRC_DIR ma '..'...?
-OBJECTS := $(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES))
-
 # Output file to be linked to
 OUT_FILE := $(OUT_DIR)/$(OUT_NAME)$(OUT_EXT)
 
 # Runtime file to run for tests
 RUN_FILE := $(RUN_DIR)/$(RUN_NAME)$(RUN_EXT)
 
-# Files to clean out
-CLEAN_FILES := $(shell find . -type f -path $(subst $(SPACE), -or -path ,$(CLEAN_FILES)))
+ifeq ($(MAKECMDGOALS),clean)
+    # Files and folders to clean out
+    CLEAN_FILES := $(shell find . -type f -path $(subst $(SPACE), -or -path ,$(CLEAN_FILES)))
+    CLEAN_DIRS  := $(shell find . -type d -path $(subst $(SPACE), -or -path ,$(CLEAN_DIRS)))
 
-# Folders to clean out
-CLEAN_DIRS  := $(shell find . -type d -path $(subst $(SPACE), -or -path ,$(CLEAN_DIRS)))
+else
+    # List of sources, headers and templates
+    SOURCES   := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(SRC_EXTS))')
+    HEADERS   := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
+    TEMPLATES := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
+
+    # List of objects to be linked
+    OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES)))
+
+    # List of dependencies files
+    DEPENDENCIES := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECTS))
+endif
 
 
 
 #
-# Recipes
+# Compile recipes
 #
 
 # Standard options
+.PHONY: default nothing all
 defualt: all
 nothing: 
-all: lnk
+all: exe more_rules
 
 # Linking 
-lnk: $(OUT_FILE)
+.PHONY: exe
+exe: $(OUT_FILE)
 $(OUT_FILE): $(OBJECTS)
-	@mkdir -p `dirname $@`
-	@$(PRINT) "$(COLOR_LINKING)[Linking]$(COLOR_RESET) $$ "
-	$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
-	@$(PRINT) "$(COLOR_LINKED)[Linked]$(COLOR_RESET) -> $(COLOR_BOLD)" 
-	@$(LS) $@
-	@$(PRINT) "$(COLOR_RESET)"
+	$(inform_executable)
+	$(V)$(MKDIR) `dirname $@`
+	$(V)$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
+	$(V)$(LS) $@
 
 # Compiling
+.PHONY: obj
 obj: $(OBJECTS)
-$(OBJECTS): $(OBJ_DIR)/%$(OBJ_EXT): %
-	@mkdir -p `dirname $@`
-	@$(PRINT) "$(COLOR_COMPILING)[Compiling]$(COLOR_RESET) $$ "
-	$(CXX) -c $< -o $@ $(CXXFLAGS)
-	@$(PRINT) "$(COLOR_COMPILED)[Compiled]$(COLOR_RESET) -> $(COLOR_BOLD)"
-	@$(LS) $@
-	@$(PRINT) "$(COLOR_RESET)"
+define recipe_object
+$(eval OBJECT := $(1))
+$(eval SOURCE := $(subst $(COLON_REPLACEMENT),:,$(patsubst $(OBJ_DIR)/%$(OBJ_EXT),%,$(OBJECT))))
+$(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
+$(OBJECT): $(SOURCE) $(DEPENDENT)
+	$(inform_object)
+	$(V)$(MKDIR) `dirname $$@`
+	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP)
+	$(V)mv -f $(DEPENDENT)$(DEP_TMP) $(DEPENDENT) && touch $$@
+	$(V)$(LS) $$@
+endef
+$(foreach _, $(OBJECTS), $(eval $(call recipe_object,$(_))))
 
-# Preparsing
-src: $(SOURCES)
-#$(SOURCES):
-#	@$(PRINT) "[Preparsing] $$ "
-inc: $(HEADERS)
-#$(HEADERS):
-#	@$(PRINT) "[Preparsing] $$ "
-tep: $(TEPLATS)
-#$(TEPLATS):
-#	@$(PRINT) "[Preparsing] $$ "
 
-# Update sources by changes in related headers and templates
-update-compilable: 
-ifndef COMPILABLE_UPDATED
-	@$(PRINT) "[Marking compilable to update] $ "
-	# @todo WIP. PsychoX
-	#-@chmod +x ./Update-By-Deps.sh
-	#-./Update-By-Deps.sh --help work in progress ;)
-	$(eval COMPILABLE_UPDATED := yes)
+
+#
+# Dependencies recipes
+#
+
+$(DEPENDENCIES): ;
+.PRECIOUS: $(DEPENDENCIES)
+ifneq ($(DEPENDENCIES),)
+    include $(wildcard $(DEPENDENCIES))
 endif
 
+# Sources
+# .PHONY: src cpp
+# cpp: src
+# src: $(SOURCES)
+# $(SOURCES):
+# 	$(inform_source)
+# 	$(grep_markers)
+
+# # Headers
+# .PHONY: inc hpp
+# hpp: inc
+# inc: $(HEADERS)
+# $(HEADERS):
+# 	$(inform_header)
+# 	$(grep_markers)
+
+# # Templates
+# .PHONY: tep tpp
+# tpp: tep
+# tep: $(TEMPLATES)
+# $(TEMPLATES):
+# 	$(inform_template)
+# 	$(grep_markers)
+
+# # Code 
+# .PHONY: code
+# code: src inc tep
+
+
+
+#
+# Other recipes 
+#
+
+.PHONY: more_rules
+$(eval $(call more_rules))
+
 # Compile and run the output executable
+.PHONY: run
 run: all
-	@$(PRINT) "$(COLOR_RUNNING)[Running]$(COLOR_RESET)\n"
-	@-cp $(OUT_FILE) $(RUN_FILE) $(FUCKING_SLIENT)
-	@chmod +x $(RUN_FILE)
-	-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
-	@$(PRINT) "$(COLOR_RAN)[Ran, exit code $$?]$(COLOR_RESET)\n"
+	$(inform_running)
+	$(V)-cp $(OUT_FILE) $(RUN_FILE) 1>&2 2>/dev/null || :
+	$(V)chmod +x $(RUN_FILE)
+	$(V)-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
+	@echo "Ran with exit code $$?."
 
 # Cleaning the compile environment
+.PHONY: clean
 clean: 
-	@$(PRINT) "$(COLOR_CLEANING)[Cleaning]$(COLOR_RESET)\n"
+	$(inform_cleaning)
 ifeq ($(or $(CLEAN_FILES),$(CLEAN_DIRS),$(CLEAN_FORCE)),) 
-	@$(PRINT) "Nothing to clean.\n"
+	@echo "Nothing to clean."
 else
-	-$(RM) $(CLEAN_FILES) || :
-	-$(RM) -dr $(CLEAN_DIRS) 2> /dev/null || :
-	@$(PRINT) "$(COLOR_CLEANED)[Cleaned]$(COLOR_RESET)\n"
+	$(V)-$(CLEAN_FILES_CMD) $(CLEAN_FILES) $(SLIENT)2> /dev/null || :
+	$(V)-$(CLEAN_DIRS_CMD) $(CLEAN_DIRS) 2> /dev/null || :
+	@echo "Cleaned."
 endif
 
 # Informations (for debug) 
-info:
-	$(info  )
-	$(info TARGET=$(TARGET) -> PLATFORM=$(PLATFORM), ARCH=$(ARCH), MXE=$(MXE))
-	$(info  )
-	$(info PATH=$(PATH))
-	$(info  )
-	$(info Compilator: )
-	$(info $(shell $(CXX) --version | head -n 1))
-	$(info Flags: )
-	$(info $(CXXFLAGS))
-	$(info  )
-	$(info Linker: )
-	$(info $(shell $(LD) --version | head -n 1))
-	$(info Flags: )
-	$(info $(LDFLAGS))
-	$(info  )
-	$(info SOURCES = $(SOURCES))
-	$(info  )
-	$(info HEADERS = $(HEADERS))
-	$(info  )
-	$(info TEPLATS = $(TEPLATS))
-	$(info  )
-	$(info OBJECTS = $(OBJECTS))
-	$(info  )
+.PHONY: info echo
+info: echo 
+echo:
+	@echo ""
+	@echo "TARGET=$(TARGET) -> PLATFORM=$(PLATFORM), ARCH=$(ARCH), MXE=$(MXE)"
+	@echo ""
+	@echo "PATH=$(PATH)"
+	@echo ""
+	@echo "Compilator:"
+	@echo "$(shell $(CXX) --version | head -n 1)"
+	@echo "Flags:"
+	@echo "$(CXXFLAGS)"
+	@echo ""
+	@echo "Linker:"
+	@echo "$(shell $(LD) --version | head -n 1)"
+	@echo "Flags:"
+	@echo "$(LDFLAGS)"
+	@echo ""
+	@echo "Sources:"
+	@echo -e "$(subst $(SPACE),\n,$(SOURCES))"
+	@echo ""
+	@echo "Headers:"
+	@echo -e "$(subst $(SPACE),\n,$(HEADERS))"
+	@echo ""
+	@echo "Templates:"
+	@echo -e "$(subst $(SPACE),\n,$(TEMPLATES))"
+	@echo ""
 
 
