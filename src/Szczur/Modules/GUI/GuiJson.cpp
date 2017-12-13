@@ -22,42 +22,42 @@ namespace rat {
 
     template<typename T, typename F>
     void GuiJson::_createJsonValue(Json& json, Widget* parent, F valuesCall) {
-        if( std::is_base_of<Widget, T>() ) {
-            T *widget = new T;
-            for(Json::iterator it = json.begin(); it != json.end(); ++it) {
-                std::string key = it.key();
-                if(!std::invoke(valuesCall, widget, it)) {
-                    if(!_handleBasicValues(it, widget)) {
-                        if(
-                            key == "onHover" || 
-                            key == "onHoverIn" || 
-                            key == "onHoverOut" || 
-                            key == "onPress" || 
-                            key == "onHold" || 
-                            key == "onRelease"
-                        ) {
-                            Json &obj = *it;
-                            widget->setCallback(
-                                _stringTypeToEnum(key),
-                                [this, &obj, widget, valuesCall](Widget*){
-                                    for(auto it = obj.begin(); it != obj.end(); ++it) {
-                                        if(!std::invoke(valuesCall, widget, it)) {
-                                            _handleBasicValues(it, widget);
-                                        }
+        static_assert( std::is_base_of<Widget, T>(), "Error in GuiJson::_createJsonValue, wrong value in template" );
+
+        T *widget = new T;
+        for(Json::iterator it = json.begin(); it != json.end(); ++it) {
+            std::string key = it.key();
+            if(!std::invoke(valuesCall, widget, it)) {
+                if(!_handleBasicValues(it, widget)) {
+                    if(
+                        key == "onHover" || 
+                        key == "onHoverIn" || 
+                        key == "onHoverOut" || 
+                        key == "onPress" || 
+                        key == "onHold" || 
+                        key == "onRelease"
+                    ) {
+                        Json &obj = *it;
+                        widget->setCallback(
+                            _stringTypeToEnum(key),
+                            [this, &obj, widget, valuesCall](Widget*){
+                                for(auto it = obj.begin(); it != obj.end(); ++it) {
+                                    if(!std::invoke(valuesCall, widget, it)) {
+                                        _handleBasicValues(it, widget);
                                     }
                                 }
-                            );
-                        }
-                        else {
-                            if(it->is_object())
-                                _browseJsonObject(*it, widget);
-                        } 
+                            }
+                        );
                     }
+                    else {
+                        if(it->is_object())
+                            _browseJsonObject(*it, widget);
+                    } 
                 }
             }
-            
-            parent->add(widget);
         }
+        
+        parent->add(widget);
     }
 
     

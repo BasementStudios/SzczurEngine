@@ -7,7 +7,7 @@ namespace rat {
     TextWidget(),
     _maxLength(16u),
     _isFocused(false) {
-        _background.setSize(sf::Vector2f{_maxLength*getCharacterSize()/1.5f, getCharacterSize()});
+        _background.setSize(sf::Vector2f{_maxLength*getCharacterSize()/1.5f, getCharacterSize()*1.2f});
 
         setCallback(CallbackType::onHoverIn, [this](Widget* owner){
             _isFocused = true;
@@ -33,7 +33,6 @@ namespace rat {
     void InputWidget::_input(const sf::Event& event) {
         if(_isFocused) {
             if (event.type == sf::Event::TextEntered) {
-                std::cout << "hi\n";
                 if (event.text.unicode < 128) {
                     if(event.text.unicode == '\b')
                         removeLast();
@@ -53,7 +52,7 @@ namespace rat {
 
     void InputWidget::setMaxLength(size_t newValue) {
         _maxLength = newValue;
-        _background.setSize(sf::Vector2f{_maxLength*getCharacterSize()/1.5f, getCharacterSize()});
+        _background.setSize(sf::Vector2f{_maxLength*getCharacterSize()/1.5f, getCharacterSize()*1.2f});
         _aboutToRecalculate = true;
     }
 

@@ -21,8 +21,9 @@ namespace rat {
         template<typename T>
         void loadFromFile(const std::string& path);
 
-        template<typename T>
+        /*template<typename T>
         void loadFromFile(const std::string& path, std::function<bool(T& obj, const std::string&)> loadFunc);
+*/
 
         template<typename T>
         T* get(const std::string& path) const;

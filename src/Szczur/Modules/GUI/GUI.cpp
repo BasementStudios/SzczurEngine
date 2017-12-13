@@ -13,15 +13,7 @@ namespace rat {
         _assets.loadFromFile<sf::Texture>("data/check-on.png");
         _assets.loadFromFile<sf::Font>("data/consolab.ttf");
         _assets.loadFromFile<sf::Texture>("data/button.png");
-        _assets.loadFromFile<Json>("data/json.json", [](Json& obj, const std::string& path){
-            std::ifstream file(path);
-            if(file.is_open()) {
-                file >> obj;
-                file.close();
-                return true;
-            }
-            return false;
-        });
+        _assets.loadFromFile<Json>("data/json.json");
         _guiJson.init(_assets.get<Json>("data/json.json"), &_assets, &_root, getModule<Canvas>().getWindow().getSize());
     }
 

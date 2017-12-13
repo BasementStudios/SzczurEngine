@@ -13,22 +13,24 @@ namespace rat {
     template<typename... Ts>
     template<typename T>
     void GuiAssetsManager<Ts...>::loadFromFile(const std::string& path) {
-        T obj;
-        if(obj.loadFromFile(path)){
-            Variant_t* var = new Variant_t;
-            *var = obj;
-            _assets.insert_or_assign(fnv1a_32(path.begin(), path.end()), var);
+        if constexpr (std::is_same_v<T, Json>) {
+            Json obj;
+            std::ifstream file(path);
+            if(file.is_open()){
+                file >> obj;
+                Variant_t* var = new Variant_t;
+                *var = obj;
+                _assets.insert_or_assign(fnv1a_32(path.begin(), path.end()), var);
+                file.close();
+            }
         }
-    }
-
-    template<typename... Ts>
-    template<typename T>
-    void GuiAssetsManager<Ts...>::loadFromFile(const std::string& path, std::function<bool(T& obj, const std::string&)> loadFunc) {
-        T obj;
-        if(std::invoke(loadFunc, obj, path)){
-            Variant_t* var = new Variant_t;
-            *var = obj;
-            _assets.insert_or_assign(fnv1a_32(path.begin(), path.end()), var);
+        else {
+            T obj;
+            if(obj.loadFromFile(path)){
+                Variant_t* var = new Variant_t;
+                *var = obj;
+                _assets.insert_or_assign(fnv1a_32(path.begin(), path.end()), var);
+            }
         }
     }
 
