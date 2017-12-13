@@ -41,7 +41,7 @@ namespace rat
 		PlayingMode _playingMode = PlayingMode::Orderly;
 		Status _status;
 
-		float _globalVolume = 100;
+		inline static float _globalVolume = 100;
 
 	public:
 

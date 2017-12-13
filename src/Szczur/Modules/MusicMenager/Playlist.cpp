@@ -97,13 +97,12 @@ namespace rat
 
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
-		if(fileName != "") 
-			_playlist[fileName]->setVolume(volume);
+		if(fileName != "")
+			_playlist[fileName]->setVolume(volume * (_globalVolume / 100));
 		else {
-			for (auto it = _playlist.begin(); it != _playlist.end(); ++it) {
-				it->second->setVolume(volume);
-			}
 			_globalVolume = volume;
+			for (auto it = _playlist.begin(); it != _playlist.end(); ++it)
+				it->second->setVolume(it->second->getVolume() * (volume / 100));
 		}
 	}
 
