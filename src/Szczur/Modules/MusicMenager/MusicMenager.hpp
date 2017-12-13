@@ -6,8 +6,10 @@
 
 #include "Playlist.hpp"
 
-namespace rat {
-    class MusicMenager : public ModuleBase<> { 
+namespace rat 
+{
+    class MusicMenager : public ModuleBase<> 
+	{ 
 		using ModuleBase::ModuleBase;
 		using Container_t = std::vector<std::shared_ptr<Playlist>>;
 

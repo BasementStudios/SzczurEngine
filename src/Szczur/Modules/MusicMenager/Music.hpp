@@ -4,8 +4,10 @@
 
 #include <SFML/Audio/Music.hpp>
 
-namespace rat {
-	class Music {
+namespace rat 
+{
+	class Music 
+	{
 
 	private:
 

@@ -8,8 +8,10 @@
 
 #include "Music.hpp"
 
-namespace rat {
-    class Playlist { 
+namespace rat 
+{
+    class Playlist 
+	{ 
 		using Container_t = boost::container::flat_map<std::string, std::shared_ptr<Music>>;
 
     public:
