@@ -3,13 +3,15 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.1.0 ])
+$(info [ PsychoX' Makefile - version 2.1.1 ])
 
 # Special variables
 .SUFFIXES:
 NULL :=
 SPACE := ${NULL} ${NULL}
 ${SPACE} := ${SPACE}
+TAB := ${NULL}	${NULL}
+${TAB} := ${TAB}
 define \n
 
 
@@ -188,6 +190,32 @@ endif
 
 
 #
+# Cleaning related script
+#
+
+ifeq ($(MAKECMDGOALS),clean)
+
+# Files and folders to clean out
+CLEAN_FILES := $(shell find . -type f -path $(subst $(SPACE), -or -path ,$(CLEAN_FILES)))
+CLEAN_DIRS  := $(shell find . -type d -path $(subst $(SPACE), -or -path ,$(CLEAN_DIRS)) | tac)
+
+# Cleaning the compile environment
+.PHONY: clean
+clean: 
+	$(inform_cleaning)
+ifeq ($(or $(CLEAN_FILES),$(CLEAN_DIRS),$(CLEAN_FORCE)),) 
+	@echo "Nothing to clean."
+else
+	$(V)-$(CLEAN_FILES_CMD) $(CLEAN_FILES) $(SLIENT) || :
+	$(V)-$(CLEAN_DIRS_CMD) $(CLEAN_DIRS) || :
+	@echo "Cleaned."
+endif
+
+endif
+
+
+
+#
 # Compiler selection
 #
 
@@ -293,11 +321,6 @@ $(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_
 # Colon replacement
 COLON_REPLACEMENT := _c0loN
 
-# Other FORCE
-ifeq ($(FORCE),yes)
-    CLEAN_FORCE := yes
-endif
-
 # Adding headers and templates directories to search paths
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
 CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
@@ -317,27 +340,25 @@ endif
 
 # Markers grepping function
 ifndef grep_markers
-    define grep_markers
-        @grep -i -C1 '$(subst $(SPACE),\|,$(MARKERS))' $$@ || :
-    endef
+    grep_markers := @xd(){ grep -i -C1 '$(subst $(SPACE),\|,$(MARKERS))' $$1 || :; }; xd
 endif
 
 # Informations 
 ifeq ($(COLORS),yes)
     ifndef inform_executable
-        inform_executable   := @printf "\033[32m[Executable] $@\033[0m \n"
+        inform_executable   := @printf "\033[32m[Executable] %s\033[0m \n"
     endif
     ifndef inform_object
-        inform_object       := @printf "\033[33m[Object] $$@\033[0m \n" 
+        inform_object       := @printf "\033[33m[Object] %s\033[0m \n" 
     endif
     ifndef inform_source
-        inform_source       := @printf "\033[34m[Source] $@\033[0m \n"
+        inform_source       := @printf "\033[34m[Source] %s\033[0m \n"
     endif
     ifndef inform_header
-        inform_header       := @printf "\033[36m[Header] $@\033[0m \n"
+        inform_header       := @printf "\033[36m[Header] %s\033[0m \n"
     endif
     ifndef inform_template
-        inform_template     := @printf "\033[35m[Template] $@\033[0m \n"
+        inform_template     := @printf "\033[35m[Template] %s\033[0m \n"
     endif
     ifndef inform_running
         inform_running      := @printf "\033[37m[Running] \033[0m \n"
@@ -347,19 +368,19 @@ ifeq ($(COLORS),yes)
     endif
 else
     ifndef inform_executable
-        inform_executable   := @printf "[Executable] $@ \n"
+        inform_executable   := @printf "[Executable] %s \n"
     endif
     ifndef inform_object
-        inform_object       := @printf "[Object] $$@ \n" 
+        inform_object       := @printf "[Object] %s \n" 
     endif
     ifndef inform_source
-        inform_source       := @printf "[Source] $@ \n"
+        inform_source       := @printf "[Source] %s \n"
     endif
     ifndef inform_header
-        inform_header       := @printf "[Header] $@ \n"
+        inform_header       := @printf "[Header] %s \n"
     endif
     ifndef inform_template
-        inform_template     := @printf "[Template] $@ \n"
+        inform_template     := @printf "[Template] %s \n"
     endif
     ifndef inform_running
         inform_running      := @printf "[Running] \n"
@@ -381,23 +402,16 @@ OUT_FILE := $(OUT_DIR)/$(OUT_NAME)$(OUT_EXT)
 # Runtime file to run for tests
 RUN_FILE := $(RUN_DIR)/$(RUN_NAME)$(RUN_EXT)
 
-ifeq ($(MAKECMDGOALS),clean)
-    # Files and folders to clean out
-    CLEAN_FILES := $(shell find . -type f -path $(subst $(SPACE), -or -path ,$(CLEAN_FILES)))
-    CLEAN_DIRS  := $(shell find . -type d -path $(subst $(SPACE), -or -path ,$(CLEAN_DIRS)))
+# List of sources, headers and templates
+SOURCES   := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(SRC_EXTS))')
+HEADERS   := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
+TEMPLATES := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
 
-else
-    # List of sources, headers and templates
-    SOURCES   := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(SRC_EXTS))')
-    HEADERS   := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
-    TEMPLATES := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
+# List of objects to be linked
+OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES)))
 
-    # List of objects to be linked
-    OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES)))
-
-    # List of dependencies files
-    DEPENDENCIES := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECTS))
-endif
+# List of dependencies files
+DEPENDENCIES := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECTS))
 
 
 
@@ -415,7 +429,7 @@ all: exe more_rules
 .PHONY: exe
 exe: $(OUT_FILE)
 $(OUT_FILE): $(OBJECTS)
-	$(inform_executable)
+	$(inform_executable) $@
 	$(V)$(MKDIR) `dirname $@`
 	$(V)$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
 	$(V)$(LS) $@
@@ -423,18 +437,18 @@ $(OUT_FILE): $(OBJECTS)
 # Compiling
 .PHONY: obj
 obj: $(OBJECTS)
-define recipe_object
+define recipe
 $(eval OBJECT := $(1))
 $(eval SOURCE := $(subst $(COLON_REPLACEMENT),:,$(patsubst $(OBJ_DIR)/%$(OBJ_EXT),%,$(OBJECT))))
 $(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
 $(OBJECT): $(SOURCE) $(DEPENDENT)
-	$(inform_object)
+	$(inform_object) $$@
 	$(V)$(MKDIR) `dirname $$@`
 	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP)
 	$(V)mv -f $(DEPENDENT)$(DEP_TMP) $(DEPENDENT) && touch $$@
 	$(V)$(LS) $$@
 endef
-$(foreach _, $(OBJECTS), $(eval $(call recipe_object,$(_))))
+$(foreach _, $(OBJECTS), $(eval $(call recipe,$(_))))
 
 
 
@@ -442,39 +456,49 @@ $(foreach _, $(OBJECTS), $(eval $(call recipe_object,$(_))))
 # Dependencies recipes
 #
 
+# Include deps maps
 $(DEPENDENCIES): ;
 .PRECIOUS: $(DEPENDENCIES)
 ifneq ($(DEPENDENCIES),)
     include $(wildcard $(DEPENDENCIES))
 endif
 
+
+
+#
+# Code check
+#
+
+# @warn przynajmniej narazie xd ;f
+ifneq ($(MARKERS),)
+#ifeq ($(findstring code,$(MAKECMDGOALS)),code)
+
 # Sources
-# .PHONY: src cpp
-# cpp: src
-# src: $(SOURCES)
-# $(SOURCES):
-# 	$(inform_source)
-# 	$(grep_markers)
+.PHONY: src $(SOURCES)
+src: $(SOURCES)
+$(SOURCES):
+	$(inform_source) $@
+	$(grep_markers) $@
 
-# # Headers
-# .PHONY: inc hpp
-# hpp: inc
-# inc: $(HEADERS)
-# $(HEADERS):
-# 	$(inform_header)
-# 	$(grep_markers)
+# Headers
+.PHONY: inc $(HEADERS)
+inc: $(HEADERS)
+$(HEADERS):
+	$(inform_header) $@
+	$(grep_markers) $@
 
-# # Templates
-# .PHONY: tep tpp
-# tpp: tep
-# tep: $(TEMPLATES)
-# $(TEMPLATES):
-# 	$(inform_template)
-# 	$(grep_markers)
+# Templates
+.PHONY: tep $(TEMPLATES)
+tep: $(TEMPLATES)
+$(TEMPLATES):
+	$(inform_template) $@
+	$(grep_markers) $@
 
-# # Code 
-# .PHONY: code
-# code: src inc tep
+# Code 
+.PHONY: code
+code: src inc tep
+
+endif
 
 
 
@@ -493,18 +517,6 @@ run: all
 	$(V)chmod +x $(RUN_FILE)
 	$(V)-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
 	@echo "Ran with exit code $$?."
-
-# Cleaning the compile environment
-.PHONY: clean
-clean: 
-	$(inform_cleaning)
-ifeq ($(or $(CLEAN_FILES),$(CLEAN_DIRS),$(CLEAN_FORCE)),) 
-	@echo "Nothing to clean."
-else
-	$(V)-$(CLEAN_FILES_CMD) $(CLEAN_FILES) $(SLIENT)2> /dev/null || :
-	$(V)-$(CLEAN_DIRS_CMD) $(CLEAN_DIRS) 2> /dev/null || :
-	@echo "Cleaned."
-endif
 
 # Informations (for debug) 
 .PHONY: info echo
