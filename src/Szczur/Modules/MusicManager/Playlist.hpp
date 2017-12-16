@@ -38,7 +38,7 @@ namespace rat
 
 		bool hasBeenEverPlayed = false;
 
-		PlayingMode _playingMode = PlayingMode::Orderly;
+		PlayingMode _playingMode = PlayingMode::Random;
 		Status _status;
 
 		inline static float _globalVolume = 100;
