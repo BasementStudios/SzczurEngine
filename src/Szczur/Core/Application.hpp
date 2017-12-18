@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Lua/Lua.hpp"
 #include "Szczur/Modules/World/World.hpp"
@@ -14,6 +15,7 @@ class Application
 private:
 
 	ModulesHolder<
+		Assets,
 		Canvas,
 		Lua,
 		World
