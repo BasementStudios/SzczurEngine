@@ -11,11 +11,6 @@ void Canvas::init(sf::RenderWindow* windowPtr)
 		av.reset(new RenderLayer(_windowPtr->getSize()));
 }
 
-void Canvas::input(const sf::Event& event)
-{
-	(void)event;
-}
-
 void Canvas::update(float deltaTime)
 {
 	(void)deltaTime;

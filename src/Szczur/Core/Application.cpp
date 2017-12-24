@@ -28,19 +28,19 @@ void Application::input()
 		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
 			_window.close();
 		}
-		_modules.forEach([&](auto& mod) {
+		_modules.forEach<Inputable>([&](auto& mod) {
 			mod.input(event);
 		});
 	}
 
-	
+
 }
 
 void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asSeconds();
 
-	_modules.forEach([=](auto& mod) {
+	_modules.forEach<Updatable>([=](auto& mod) {
 		mod.update(deltaTime);
 	});
 }
@@ -49,7 +49,7 @@ void Application::render()
 {
 	_window.clear();
 
-	_modules.forEach([](auto& mod) {
+	_modules.forEach<Renderable>([](auto& mod) {
 		mod.render();
 	});
 

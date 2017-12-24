@@ -55,14 +55,14 @@ template<typename... Ts>
 template<typename U>
 U& AssetsManager<Ts...>::get(const std::string& path)
 {
-	return *getPtr<U>();
+	return *getPtr<U>(path);
 }
 
 template<typename... Ts>
 template<typename U>
 const U& AssetsManager<Ts...>::get(const std::string& path) const
 {
-	return *getPtr<U>();
+	return *getPtr<U>(path);
 }
 
 template<typename... Ts>

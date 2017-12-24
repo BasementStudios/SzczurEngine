@@ -4,9 +4,15 @@ namespace rat
 template<typename T>
 template<typename... Us>
 Asset<T>::Asset(Us&&... args) :
-	_holder(AssetTraits<Value_t>::create(std::forward<Us>(args)...)), _refCount(0)
+	_ptr(AssetTraits<Value_t>::create(std::forward<Us>(args)...)), _refCount(0)
 {
 
+}
+
+template<typename T>
+Asset<T>::~Asset()
+{
+	delete _ptr;
 }
 
 template<typename T>
@@ -15,18 +21,18 @@ bool Asset<T>::load(Us&&... args)
 {
 	++_refCount;
 
-	return _refCount > 1 ? true : AssetTraits<Value_t>::load(*_holder, std::forward<Us>(args)...);
+	return _refCount > 1 ? true : AssetTraits<Value_t>::load(*_ptr, std::forward<Us>(args)...);
 }
 
 template<typename T>
-bool Asset<T>::unload()
+template<typename... Us>
+bool Asset<T>::unload(Us&&... args)
 {
 	if (_refCount == 0)
 		return false;
 
 	if (--_refCount == 0) {
-		AssetTraits<Value_t>::unload(*_holder);
-		_holder.reset();
+		AssetTraits<Value_t>::unload(*_ptr, std::forward<Us>(args)...);
 		return true;
 	}
 
@@ -34,25 +40,25 @@ bool Asset<T>::unload()
 }
 
 template<typename T>
-typename Asset<T>::Value_t* Asset<T>::getPtr()
+typename Asset<T>::Pointer_t Asset<T>::getPtr()
 {
-	return _refCount != 0 ? _holder.get() : nullptr;
+	return _refCount != 0 ? _ptr : nullptr;
 }
 
 template<typename T>
-const typename Asset<T>::Value_t* Asset<T>::getPtr() const
+typename Asset<T>::ConstPointer_t Asset<T>::getPtr() const
 {
-	return _refCount != 0 ? _holder.get() : nullptr;
+	return _refCount != 0 ? _ptr : nullptr;
 }
 
 template<typename T>
-typename Asset<T>::Value_t& Asset<T>::get()
+typename Asset<T>::Reference_t Asset<T>::get()
 {
 	return *getPtr();
 }
 
 template<typename T>
-const typename Asset<T>::Value_t& Asset<T>::get() const
+typename Asset<T>::ConstReference_t Asset<T>::get() const
 {
 	return *getPtr();
 }

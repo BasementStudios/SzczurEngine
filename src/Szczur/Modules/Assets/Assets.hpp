@@ -7,19 +7,13 @@
 namespace rat
 {
 
-class Assets : public ModuleBase<>
+class Assets : public Module<>
 {
-	using ModuleBase::ModuleBase;
+	using Module::Module;
 
 public:
 
 	void init();
-
-	void input(const sf::Event& event);
-
-	void update(float deltaTime);
-
-	void render();
 
 	void loadFromJsonFile(const std::string& path);
 

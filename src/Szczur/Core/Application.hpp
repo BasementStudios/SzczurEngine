@@ -4,8 +4,6 @@
 
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
-#include "Szczur/Modules/Lua/Lua.hpp"
-#include "Szczur/Modules/World/World.hpp"
 
 namespace rat
 {
@@ -16,9 +14,7 @@ private:
 
 	ModulesHolder<
 		Assets,
-		Canvas,
-		Lua,
-		World
+		Canvas
 	> _modules;
 
 	sf::RenderWindow _window;
