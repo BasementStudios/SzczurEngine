@@ -16,7 +16,7 @@ class SoundBuffer;
 namespace rat
 {
 
-template<typename T>
+template<typename>
 struct AssetTraits;
 
 template<>
