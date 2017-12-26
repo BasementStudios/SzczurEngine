@@ -1,78 +1,78 @@
 namespace rat
 {
 
-template<typename T>
-template<typename... Us>
-Asset<T>::Asset(Us&&... args) :
-	_ptr(Traits_t::create(std::forward<Us>(args)...)), _refCount(0)
+template<typename TType>
+template<typename... TArgs>
+Asset<TType>::Asset(TArgs&&... args) :
+	_ptr(Traits_t::create(std::forward<TArgs>(args)...)), _refCount(0)
 {
 
 }
 
-template<typename T>
-Asset<T>::~Asset()
+template<typename TType>
+Asset<TType>::~Asset()
 {
 	delete _ptr;
 }
 
-template<typename T>
-template<typename... Us>
-bool Asset<T>::load(Us&&... args)
+template<typename TType>
+template<typename... TArgs>
+bool Asset<TType>::load(TArgs&&... args)
 {
 	++_refCount;
-	return _refCount > 1 ? true : Traits_t::load(*_ptr, std::forward<Us>(args)...);
+	return _refCount > 1 ? true : Traits_t::load(*_ptr, std::forward<TArgs>(args)...);
 }
 
-template<typename T>
-template<typename... Us>
-bool Asset<T>::unload(Us&&... args)
+template<typename TType>
+template<typename... TArgs>
+bool Asset<TType>::unload(TArgs&&... args)
 {
 	if (_refCount == 0)
 		return false;
 
 	if (--_refCount == 0) {
-		Traits_t::unload(*_ptr, std::forward<Us>(args)...);
+		Traits_t::unload(*_ptr, std::forward<TArgs>(args)...);
 		return true;
 	}
 
 	return false;
 }
 
-template<typename T>
-template<typename... Us>
-bool Asset<T>::forceUnload(Us&&... args)
+template<typename TType>
+template<typename... TArgs>
+bool Asset<TType>::forceUnload(TArgs&&... args)
 {
 	_refCount = 0;
-	Traits_t::unload(*_ptr, std::forward<Us>(args)...);
+	Traits_t::unload(*_ptr, std::forward<TArgs>(args)...);
 	return true;
 }
 
-template<typename T>
-typename Asset<T>::Pointer_t Asset<T>::getPtr()
+template<typename TType>
+typename Asset<TType>::Pointer_t Asset<TType>::getPtr()
 {
 	return _refCount > 0 ? _ptr : nullptr;
 }
 
-template<typename T>
-typename Asset<T>::ConstPointer_t Asset<T>::getPtr() const
+template<typename TType>
+typename Asset<TType>::ConstPointer_t Asset<TType>::getPtr() const
 {
 	return _refCount > 0 ? _ptr : nullptr;
 }
 
-template<typename T>
-typename Asset<T>::Reference_t Asset<T>::get()
+template<typename TType>
+typename Asset<TType>::Reference_t Asset<TType>::get()
 {
 	return *getPtr();
 }
 
-template<typename T>
-typename Asset<T>::ConstReference_t Asset<T>::get() const
+template<typename TType>
+typename Asset<TType>::ConstReference_t Asset<TType>::get() const
 {
 	return *getPtr();
 }
 
-template<typename T>
-bool Asset<T>::isLoaded() const
+template<typename TType>
+bool Asset<TType>::isLoaded() const
 {
 	return _refCount > 0;
 }

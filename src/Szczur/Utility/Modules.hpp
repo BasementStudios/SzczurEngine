@@ -6,20 +6,20 @@
 namespace rat
 {
 
-template<typename... Ts>
+template<typename... TModules>
 class Module
 {
 public:
 
-	using Holder_t = const std::tuple<std::add_lvalue_reference_t<Ts>...>;
+	using Holder_t = const std::tuple<std::add_lvalue_reference_t<TModules>...>;
 
-	template<typename U>
+	template<typename TModule>
 	static constexpr bool dependsOn();
 
 	static constexpr size_t dependenciesCount();
 
-	template<typename U>
-	Module(U&& modules);
+	template<typename TModule>
+	Module(TModule&& modules);
 
 	Module(const Module&) = delete;
 
@@ -31,10 +31,10 @@ public:
 
 protected:
 
-	template<typename U>
-	U& getModule();
-	template<typename U>
-	const U& getModule() const;
+	template<typename TModule>
+	TModule& getModule();
+	template<typename TModule>
+	const TModule& getModule() const;
 
 private:
 
@@ -42,14 +42,14 @@ private:
 
 };
 
-template<typename... Ts>
+template<typename... TModules>
 class ModulesHolder
 {
 public:
 
-	using Holder_t    = std::tuple<Ts...>;
-	template<size_t N>
-	using NthModule_t = std::tuple_element_t<N, Holder_t>;
+	using Holder_t    = std::tuple<TModules...>;
+	template<size_t TIndex>
+	using NthModule_t = std::tuple_element_t<TIndex, Holder_t>;
 
 private:
 
@@ -69,37 +69,37 @@ public:
 
 	ModulesHolder& operator = (ModulesHolder&&) = delete;
 
-	template<typename F>
-	void forEach(F&& function);
-	template<typename F>
-	void forEach(F&& function) const;
+	template<typename TFunction>
+	void forEach(TFunction&& function);
+	template<typename TFunction>
+	void forEach(TFunction&& function) const;
 
-	template<typename U, typename F>
-	void forEach(F&& function);
-	template<typename U, typename F>
-	void forEach(F&& function) const;
+	template<typename TModule, typename TFunction>
+	void forEach(TFunction&& function);
+	template<typename TModule, typename TFunction>
+	void forEach(TFunction&& function) const;
 
-	template<typename U>
-	U& getModule();
-	template<typename U>
-	const U& getModule() const;
+	template<typename TModule>
+	TModule& getModule();
+	template<typename TModule>
+	const TModule& getModule() const;
 
 private:
 
-	template<typename F, size_t... Ns>
-	void _forEach(F&& function, std::index_sequence<Ns...>);
-	template<typename F, size_t... Ns>
-	void _forEach(F&& function, std::index_sequence<Ns...>) const;
+	template<typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>);
+	template<typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>) const;
 
-	template<typename U, typename F, size_t... Ns>
-	void _forEach(F&& function, std::index_sequence<Ns...>);
-	template<typename U, typename F, size_t... Ns>
-	void _forEach(F&& function, std::index_sequence<Ns...>) const;
+	template<typename TModule, typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>);
+	template<typename TModule, typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>) const;
 
-	template<size_t N, typename U, typename F>
-	void _forEachHelper(F&& function);
-	template<size_t N, typename U, typename F>
-	void _forEachHelper(F&& function) const;
+	template<size_t TIndex, typename TModule, typename TFunction>
+	void _forEachHelper(TFunction&& function);
+	template<size_t TIndex, typename TModule, typename TFunction>
+	void _forEachHelper(TFunction&& function) const;
 
 };
 

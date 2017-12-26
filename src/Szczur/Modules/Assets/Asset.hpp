@@ -7,12 +7,12 @@
 namespace rat
 {
 
-template<typename T>
+template<typename TType>
 class Asset
 {
 public:
 
-	using Value_t          = T;
+	using Value_t          = TType;
 	using Reference_t      = Value_t&;
 	using ConstReference_t = const Value_t&;
 	using Pointer_t        = Value_t*;
