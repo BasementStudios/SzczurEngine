@@ -52,7 +52,7 @@ bool AssetTraits<sf::Shader>::load(sf::Shader& shader, const std::string& path)
 {
 	std::ifstream file(path);
 
-	if(!file.good())
+	if (!file.good())
 		return false;
 
 	std::string buffer;

@@ -12,8 +12,8 @@ template<typename... Ts>
 template<typename U>
 bool AssetsManager<Ts...>::unload(const std::string& _Path)
 {
-	if(auto It = _find<U>(_getKeyFromPath(_Path)); It != _getContainer<U>().end()) {
-		if(It->second.unload()) {
+	if (auto It = _find<U>(_getKeyFromPath(_Path)); It != _getContainer<U>().end()) {
+		if (It->second.unload()) {
 			_getContainer<U>().erase(It);
 			return true;
 		}
@@ -33,7 +33,7 @@ template<typename... Ts>
 template<typename U>
 U* AssetsManager<Ts...>::getPtr(const std::string& path)
 {
-	if(auto It = _find(_getKeyFromPath(path)); It != _getContainer<U>().end()) {
+	if (auto It = _find(_getKeyFromPath(path)); It != _getContainer<U>().end()) {
 		return nullptr;// todo
 	}
 
@@ -44,7 +44,7 @@ template<typename... Ts>
 template<typename U>
 const U* AssetsManager<Ts...>::getPtr(const std::string& path) const
 {
-	if(auto It = _find(_getKeyFromPath(path)); It != _getContainer<U>().end()) {
+	if (auto It = _find(_getKeyFromPath(path)); It != _getContainer<U>().end()) {
 		return nullptr;// todo
 	}
 
