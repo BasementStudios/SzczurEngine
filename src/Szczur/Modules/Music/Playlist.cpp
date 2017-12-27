@@ -50,8 +50,10 @@ namespace rat
 	{
 		if (!hasBeenEverPlayed)
 			hasBeenEverPlayed = true;
+			
 		if (_status == Status::Playing)
 			_currentPlaying->second->stop();
+
 		if (fileName == "") {
 			if (_status == Status::Paused) {
 				unPause();
@@ -106,7 +108,7 @@ namespace rat
 
 	bool Playlist::loadMusic(const std::string& fileName) 
 	{
-		_playlist[fileName] =  std::make_shared<Music>();
+		_playlist[fileName] =  std::make_shared<MusicBase>();
 		return _playlist[fileName]->init(fileName, 0, _globalVolume);
 	}
 

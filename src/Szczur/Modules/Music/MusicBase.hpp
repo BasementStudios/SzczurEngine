@@ -6,7 +6,7 @@
 
 namespace rat 
 {
-	class Music 
+	class MusicBase 
 	{
 
 	private:

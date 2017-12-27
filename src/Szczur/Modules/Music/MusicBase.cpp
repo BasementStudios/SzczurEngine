@@ -1,11 +1,11 @@
-#include "Music.hpp"
+#include "MusicBase.hpp"
 
 #include <iostream>
 
 namespace rat
 { 
 
-	bool Music::init(const std::string& fileName, float postTime, float volume) 
+	bool MusicBase::init(const std::string& fileName, float postTime, float volume) 
 	{
 		_postTime = postTime; 
 		if (!loadMusic(fileName))
@@ -15,7 +15,7 @@ namespace rat
 		return true;
 	};
 
-	void Music::update(float deltaTime) 
+	void MusicBase::update(float deltaTime) 
 	{
 		if (getStatus() != sf::SoundSource::Status::Paused) {
 			_timeLeft -= deltaTime;
@@ -24,12 +24,12 @@ namespace rat
 		}
 	}
 
-	bool Music::isEnding() 
+	bool MusicBase::isEnding() 
 	{
 		return _isEnding;
 	}
 
-	bool Music::finish(float deltaTime) 
+	bool MusicBase::finish(float deltaTime) 
 	{
 		_isEnding = false;
 		_timeLeft -= deltaTime;
@@ -43,65 +43,65 @@ namespace rat
 		return true;
 	}
 
-	void Music::start(float deltaTime, float preTime) 
+	void MusicBase::start(float deltaTime, float preTime) 
 	{
 		update(deltaTime);
 		float volume = (_baseVolume * (getDuration() - _timeLeft)) / preTime;
 		_base.setVolume(volume);
 	}
 
-	bool Music::loadMusic(const std::string& fileName) 
+	bool MusicBase::loadMusic(const std::string& fileName) 
 	{
 		return _base.openFromFile(getPath(fileName));
 	}
 
-	void Music::play() 
+	void MusicBase::play() 
 	{
 		_base.play();
 	}
 
-	void Music::pause() 
+	void MusicBase::pause() 
 	{
 		_base.pause();
 	}
 
-	void Music::stop() 
+	void MusicBase::stop() 
 	{
 		_base.stop();
 	}
 
-	sf::SoundSource::Status Music::getStatus() const 
+	sf::SoundSource::Status MusicBase::getStatus() const 
 	{
 		return _base.getStatus();
 	}
 
-	float Music::getPostTime() const 
+	float MusicBase::getPostTime() const 
 	{
 		return _postTime;
 	}
 
-	float Music::getDuration() const 
+	float MusicBase::getDuration() const 
 	{
 		return _base.getDuration().asSeconds();
 	}
 
-	float Music::getVolume() const 
+	float MusicBase::getVolume() const 
 	{
 		return _baseVolume;
 	}
 
-	void Music::setVolume(float volume) 
+	void MusicBase::setVolume(float volume) 
 	{
 		_baseVolume = volume;
 		_base.setVolume(volume);
 	}
 
-	inline std::string Music::getPath(const std::string& fileName) const 
+	inline std::string MusicBase::getPath(const std::string& fileName) const 
 	{
 		return "res/Music/" + fileName + ".flac"; 
 	}
 
-	void Music::reset() 
+	void MusicBase::reset() 
 	{
 		_timeLeft = _base.getDuration().asSeconds();
 		_base.setVolume(_baseVolume);
