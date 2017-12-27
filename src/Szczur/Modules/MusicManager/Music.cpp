@@ -8,7 +8,7 @@ namespace rat
 	bool Music::init(const std::string& fileName, float postTime, float volume) 
 	{
 		_postTime = postTime; 
-		if(!loadMusic(fileName))
+		if (!loadMusic(fileName))
 			return false;
 		_timeLeft = _base.getDuration().asSeconds();
 		setVolume(volume);
@@ -33,7 +33,7 @@ namespace rat
 	{
 		_isEnding = false;
 		_timeLeft -= deltaTime;
-		if(_timeLeft > 0) {
+		if (_timeLeft > 0) {
 			float volume = (_timeLeft / _postTime) * _baseVolume;
 			_base.setVolume(volume);
 			return false;

@@ -48,7 +48,7 @@ namespace rat
 
 	void Playlist::play(const std::string& fileName) 
 	{
-		if(!hasBeenEverPlayed)
+		if (!hasBeenEverPlayed)
 			hasBeenEverPlayed = true;
 		if (_status == Status::Playing)
 			_currentPlaying->second->stop();
@@ -59,13 +59,11 @@ namespace rat
 			}
 			if (_playingMode == PlayingMode::Random)
 				_currentPlaying = _playlist.find(getNameOfRandomFile());
-			else {
+			else
 				_currentPlaying = _playlist.begin();
-			} 
 		}
-		else if (includes(fileName)) {
+		else if (includes(fileName))
 			_currentPlaying = _playlist.find(fileName);
-		}
 
 		std::cout << _currentPlaying->first << std::endl; //For Tests
 		_status = Status::Playing;
@@ -89,7 +87,7 @@ namespace rat
 
 	void Playlist::pause() 
 	{
-		if(_status == Status::Playing) {
+		if (_status == Status::Playing) {
 			_currentPlaying->second->pause();
 			_status = Status::Paused;
 		}
@@ -137,7 +135,7 @@ namespace rat
 		clear();
 		std::reverse(newPlaylist.begin() , newPlaylist.end());
 		for (auto it : newPlaylist) {
-			if(!add(it))
+			if (!add(it))
 				return false;
 		}
     	return true;
@@ -158,7 +156,7 @@ namespace rat
 
 	void Playlist::unPause() 
 	{
-		if(_status == Status::Paused) {
+		if (_status == Status::Paused) {
 			_currentPlaying->second->play();
 			_status = Status::Playing;
 		}
