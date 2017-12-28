@@ -28,13 +28,16 @@ namespace rat
 		void setScale(float scale) { _scale = scale; }
 		float getScale() const { return _scale; }
 
+		void setTimeScale(float timeScale) { _armatureDisplay->getAnimation()->timeScale = timeScale; }
+		float getTimeScale() { return _armatureDisplay->getAnimation()->timeScale; }
+
 		void setFlipX(bool value) { _armatureDisplay->getArmature()->setFlipX(value); }
 		bool getFlipX() const { return _armatureDisplay->getArmature()->getFlipX(); }
 
 		void setFlipY(bool value) { _armatureDisplay->getArmature()->setFlipY(value); }
 		bool getFlipY() const { return _armatureDisplay->getArmature()->getFlipY(); }
 
-		void playAnimation(const std::string& animation) { _armatureDisplay->getAnimation()->play(animation.data()); }
+		void playAnimation(const std::string& animation = "", int playTimes = -1) { _armatureDisplay->getAnimation()->play(animation.data(), playTimes); }
 		void stopAnimation(const std::string& animation) { _armatureDisplay->getAnimation()->stop(animation.data()); }
 		void fadeInAnimation(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1, int layer = 0, 
 							 const std::string& group = "", dragonBones::AnimationFadeOutMode fadeOutMode = dragonBones::AnimationFadeOutMode::SameLayerAndGroup) 

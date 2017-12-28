@@ -61,13 +61,9 @@ namespace rat
 	
 		auto display = static_cast<dragonBones::SFMLDisplay*>(slot->getRawDisplay());
 
-		if (display->meshDisplay) {
-			display->meshDisplay->texture = texture;
-		}
-
-		if (display->spriteDisplay) {
-			display->spriteDisplay->setTexture(*texture);
-		}
+		if (display) 
+			display->texture = texture;
+		
 	}
 
 	void Armature::draw(sf::RenderTarget& target, sf::RenderStates states) const
