@@ -20,6 +20,7 @@ namespace rat
 			if (_currentPlaying->second->isEnding()) {
 				_endingFile = _currentPlaying;
 				_isFileEnding = true;
+				_status = Status::Stopped;
 				playNext();
 			}
 			if (_isFileEnding) {
