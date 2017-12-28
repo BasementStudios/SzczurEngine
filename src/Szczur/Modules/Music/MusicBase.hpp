@@ -11,6 +11,7 @@ namespace rat
 
 	private:
 
+		float _bpm;
 		float _timeLeft;
 		float _postTime;
 		float _baseVolume;
@@ -19,7 +20,7 @@ namespace rat
 
 	public:
 
-		bool init(const std::string& fileName, float postTime, float volume);
+		bool init(const std::string& fileName, float volume);
 		void update(float deltaTime);
 
 		bool isEnding();
@@ -43,6 +44,7 @@ namespace rat
 		void reset();
 
 		bool loadMusic(const std::string& fileName);
+		void getJsonData(const std::string& fileName);
 
 		std::string getPath(const std::string& fileName) const;
 

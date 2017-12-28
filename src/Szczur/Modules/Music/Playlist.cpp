@@ -109,7 +109,7 @@ namespace rat
 	bool Playlist::loadMusic(const std::string& fileName) 
 	{
 		_playlist[fileName] =  std::make_shared<MusicBase>();
-		return _playlist[fileName]->init(fileName, 0, _globalVolume);
+		return _playlist[fileName]->init(fileName, _globalVolume);
 	}
 
 	inline bool Playlist::includes(const std::string& fileName) const 

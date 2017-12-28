@@ -1,17 +1,21 @@
 #include "MusicBase.hpp"
 
-#include <iostream>
+#include <Szczur/Json.hpp>
+
+#include <fstream>
+#include <cmath>
 
 namespace rat
 { 
 
-	bool MusicBase::init(const std::string& fileName, float postTime, float volume) 
+	bool MusicBase::init(const std::string& fileName, float volume) 
 	{
-		_postTime = postTime; 
 		if (!loadMusic(fileName))
 			return false;
 		_timeLeft = _base.getDuration().asSeconds();
+		getJsonData(fileName);
 		setVolume(volume);
+		_postTime = std::fmod(_timeLeft, (_bpm * 4 / 60)); 
 		return true;
 	};
 
@@ -53,6 +57,17 @@ namespace rat
 	bool MusicBase::loadMusic(const std::string& fileName) 
 	{
 		return _base.openFromFile(getPath(fileName));
+	}
+
+	void MusicBase::getJsonData(const std::string& fileName) 
+	{
+		Json json;
+		std::ifstream file("res/Music/Music.json");
+		if(file.is_open()){
+            file >> json;
+			file.close();
+		}
+		_bpm = json[fileName]["BPM"];
 	}
 
 	void MusicBase::play() 
