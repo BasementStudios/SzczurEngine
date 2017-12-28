@@ -3,11 +3,6 @@
 #include <fstream>
 #include <streambuf>
 
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Shader.hpp>
-#include <SFML/Audio/Music.hpp>
-#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/System/MemoryInputStream.hpp>
 
 namespace rat

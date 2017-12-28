@@ -39,13 +39,13 @@ public:
 	AssetsManager& operator = (AssetsManager&&) = default;
 
 	template<typename TType>
-	bool load(const std::string& _Path);
+	bool load(const std::string& path);
 
 	template<typename TType>
-	bool unload(const std::string& _Path);
+	bool unload(const std::string& path);
 
 	template<typename TType>
-	bool isLoaded(const std::string& _Path) const;
+	bool isLoaded(const std::string& path) const;
 
 	template<typename TType>
 	TType* getPtr(const std::string& path);
@@ -59,7 +59,7 @@ public:
 
 private:
 
-	Key_t _getKeyFromPath(const std::string& _Path) const;
+	Key_t _getKeyFromPath(const std::string& path) const;
 
 	template<typename TType>
 	Container_t<TType>& _getContainer();

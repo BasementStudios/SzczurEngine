@@ -32,9 +32,9 @@ public:
 protected:
 
 	template<typename TModule>
-	TModule& getModule();
+	TModule& _getModule();
 	template<typename TModule>
-	const TModule& getModule() const;
+	const TModule& _getModule() const;
 
 private:
 

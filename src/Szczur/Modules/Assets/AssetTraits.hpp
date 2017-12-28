@@ -2,16 +2,11 @@
 
 #include <string>
 
-namespace sf
-{
-
-class Font;
-class Texture;
-class Shader;
-class Music;
-class SoundBuffer;
-
-}
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Shader.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 
 namespace rat
 {

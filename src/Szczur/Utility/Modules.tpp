@@ -24,7 +24,7 @@ Module<TModules...>::Module(TModule&& modules) :
 
 template<typename... TModules>
 template<typename TModule>
-TModule& Module<TModules...>::getModule()
+TModule& Module<TModules...>::_getModule()
 {
 	static_assert(dependsOn<TModule>());
 
@@ -33,7 +33,7 @@ TModule& Module<TModules...>::getModule()
 
 template<typename... TModules>
 template<typename TModule>
-const TModule& Module<TModules...>::getModule() const
+const TModule& Module<TModules...>::_getModule() const
 {
 	static_assert(dependsOn<TModule>());
 

@@ -3,18 +3,18 @@ namespace rat
 
 template<typename... TTypes>
 template<typename TType>
-bool AssetsManager<TTypes...>::load(const std::string& _Path)
+bool AssetsManager<TTypes...>::load(const std::string& path)
 {
-	return _getContainer<TType>().try_emplace(_getKeyFromPath(_Path)).first->second.load(_Path);
+	return _getContainer<TType>().try_emplace(_getKeyFromPath(path)).first->second.load(path);
 }
 
 template<typename... TTypes>
 template<typename TType>
-bool AssetsManager<TTypes...>::unload(const std::string& _Path)
+bool AssetsManager<TTypes...>::unload(const std::string& path)
 {
-	if (auto It = _find<TType>(_getKeyFromPath(_Path)); It != _getContainer<TType>().end()) {
-		if (It->second.unload()) {
-			_getContainer<TType>().erase(It);
+	if (auto it = _find<TType>(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+		if (it->second.unload()) {
+			_getContainer<TType>().erase(it);
 			return true;
 		}
 	}
@@ -24,17 +24,17 @@ bool AssetsManager<TTypes...>::unload(const std::string& _Path)
 
 template<typename... TTypes>
 template<typename TType>
-bool AssetsManager<TTypes...>::isLoaded(const std::string& _Path) const
+bool AssetsManager<TTypes...>::isLoaded(const std::string& path) const
 {
-	return _find<TType>(_getKeyFromPath(_Path)) != _getContainer<TType>().end();
+	return _find<TType>(_getKeyFromPath(path)) != _getContainer<TType>().end();
 }
 
 template<typename... TTypes>
 template<typename TType>
 TType* AssetsManager<TTypes...>::getPtr(const std::string& path)
 {
-	if (auto It = _find(_getKeyFromPath(path)); It != _getContainer<TType>().end()) {
-		return nullptr;// todo
+	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+		return it.second.getPtr();
 	}
 
 	return nullptr;
@@ -44,8 +44,8 @@ template<typename... TTypes>
 template<typename TType>
 const TType* AssetsManager<TTypes...>::getPtr(const std::string& path) const
 {
-	if (auto It = _find(_getKeyFromPath(path)); It != _getContainer<TType>().end()) {
-		return nullptr;// todo
+	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+		return it.second.getPtr();
 	}
 
 	return nullptr;
@@ -55,20 +55,28 @@ template<typename... TTypes>
 template<typename TType>
 TType& AssetsManager<TTypes...>::get(const std::string& path)
 {
-	return *getPtr<TType>(path);
+	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+		return it.second.get();
+	}
+
+	return nullptr;
 }
 
 template<typename... TTypes>
 template<typename TType>
 const TType& AssetsManager<TTypes...>::get(const std::string& path) const
 {
-	return *getPtr<TType>(path);
+	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+		return it.second.get();
+	}
+
+	return nullptr;
 }
 
 template<typename... TTypes>
-typename AssetsManager<TTypes...>::Key_t AssetsManager<TTypes...>::_getKeyFromPath(const std::string& _Path) const
+typename AssetsManager<TTypes...>::Key_t AssetsManager<TTypes...>::_getKeyFromPath(const std::string& path) const
 {
-	return fnv1a_64(_Path.begin(), _Path.end());
+	return fnv1a_64(path.begin(), path.end());
 }
 
 template<typename... TTypes>

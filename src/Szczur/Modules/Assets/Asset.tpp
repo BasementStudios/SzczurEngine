@@ -12,7 +12,8 @@ Asset<TType>::Asset(TArgs&&... args) :
 template<typename TType>
 Asset<TType>::~Asset()
 {
-	delete _ptr;
+	if (_ptr)
+		delete _ptr;
 }
 
 template<typename TType>
