@@ -1,5 +1,16 @@
 #include "Application.hpp"
 
+/** @file Application.cpp
+ ** @description Main application class file.
+ **/
+
+#include <exception>	// exception
+
+#include <SFML/Graphics.hpp>			// RenderWindow
+#include <SFML/System.hpp>				// Clock, Vector2
+
+#include "Szczur/Utility/Logger.hpp"	// LOG_EXCEPTION
+
 namespace rat
 {
 
@@ -58,10 +69,16 @@ void Application::render()
 
 int Application::run()
 {
-	while (_window.isOpen()) {
-		input();
-		update();
-		render();
+	// Doubled `while` loop for preventing try-catch block from remarking code with exceptions handler. 
+	while (_window.isOpen()) try {
+		// Main loop here
+		while (_window.isOpen()) {
+			input();
+			update();
+			render();
+		}
+	} catch (...) {
+		LOG_EXCEPTION('\n', boost::current_exception_diagnostic_information());
 	}
 
 	return 0;
