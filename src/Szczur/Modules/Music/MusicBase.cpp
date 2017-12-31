@@ -15,7 +15,7 @@ namespace rat
 		_timeLeft = _base.getDuration().asSeconds();
 		getJsonData(fileName);
 		setVolume(volume);
-		_postTime = std::fmod(_timeLeft, (_bpm * 4 / 60)); 
+		_postTime = std::fmod(_timeLeft, (240 / _bpm)); 
 		return true;
 	};
 
