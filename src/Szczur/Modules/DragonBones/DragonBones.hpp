@@ -27,6 +27,8 @@ namespace rat
 
 		void input(sf::Event& e);
 
+		Armature* createArmaturee(const std::string& actorName);
+
 		void addSoundEvent(const std::function<void(dragonBones::EventObject*)>& listener) { _factory->addSoundEventListener(listener); }
 	};
 }

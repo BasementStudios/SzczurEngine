@@ -1,49 +1,14 @@
 #include "Armature.hpp"
 
-#include <dragonBones\SFMLFactory.h>
-#include <dragonBones\SFMLArmatureDisplay.h>
+#include <dragonBones/SFMLFactory.h>
+#include <dragonBones/SFMLArmatureDisplay.h>
 
 namespace rat
 {
-	Armature::Armature(const std::string& name)
+	Armature::Armature(dragonBones::SFMLArmatureDisplay* armatureDisplay)
+		: _armatureDisplay(armatureDisplay)
 	{
-		create(name);
-	}
-
-	void Armature::create(const std::string& name)
-	{
-		auto factory = dragonBones::SFMLFactory::get();
-
-		if (!factory)
-			return;
-
-		std::string path = name.data();
-
-		auto dbData = factory->loadDragonBonesData(path + "/skeleton.json");
-
-		if (dbData == nullptr)
-			return;
-
-		auto texturesData = factory->getTexturesData(dbData, path + "/textures");
-
-		for (auto& textureData : texturesData) {
-			auto tex = new sf::Texture();
-			tex->loadFromFile(textureData->path);
-			textureData->setTexture(tex);
-		}
-
-		auto textureAtlasData = factory->createTextureAtlasData(texturesData, dbData);
-
-		if (textureAtlasData == nullptr) {
-			for (auto& textureData : texturesData) {
-				if (textureData)
-					delete textureData;
-			}
-
-			return;
-		}
-
-		_armatureDisplay = std::unique_ptr<dragonBones::SFMLArmatureDisplay>(factory->buildArmatureDisplay(name.data()));
+		
 	}
 
 	void Armature::replaceSlotsTexture(const std::string& slotName, sf::Texture* texture)
