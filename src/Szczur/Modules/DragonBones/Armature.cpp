@@ -8,7 +8,6 @@ namespace rat
 	Armature::Armature(dragonBones::SFMLArmatureDisplay* armatureDisplay)
 		: _armatureDisplay(armatureDisplay)
 	{
-		
 	}
 
 	void Armature::replaceSlotsTexture(const std::string& slotName, sf::Texture* texture)

@@ -21,7 +21,7 @@ namespace rat
 	{
 		(void)e;
 	}
-	Armature* DragonBones::createArmaturee(const std::string& actorName)
+	Armature* DragonBones::createArmature(const std::string& actorName)
 	{
 		if (_factory == nullptr)
 			return nullptr;
