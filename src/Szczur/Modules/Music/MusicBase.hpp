@@ -16,6 +16,7 @@ namespace rat
 		float _postTime;
 		float _baseVolume;
 		bool _isEnding = false;
+		std::string _name;
 		sf::Music _base;
 
 	public:
@@ -39,14 +40,16 @@ namespace rat
 		float getPostTime() const;
 		float getDuration() const;
 
+		const std::string& getName() const;
+		
 	private:
 
 		void reset();
 
-		bool loadMusic(const std::string& fileName);
-		void getJsonData(const std::string& fileName);
+		bool loadMusic();
+		void getJsonData();
 
-		std::string getPath(const std::string& fileName) const;
+		std::string getPath() const;
 
 	};
 }

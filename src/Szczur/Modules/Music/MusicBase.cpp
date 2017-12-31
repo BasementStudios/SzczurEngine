@@ -8,12 +8,13 @@
 namespace rat
 { 
 
-	bool MusicBase::init(const std::string& fileName, float volume) 
+	bool MusicBase::init(const std::string& fileName, float volume)
 	{
-		if (!loadMusic(fileName))
+		_name = fileName;
+		if (!loadMusic())
 			return false;
 		_timeLeft = _base.getDuration().asSeconds();
-		getJsonData(fileName);
+		getJsonData();
 		setVolume(volume);
 		_postTime = std::fmod(_timeLeft, (240 / _bpm)); 
 		return true;
@@ -54,12 +55,12 @@ namespace rat
 		_base.setVolume(volume);
 	}
 
-	bool MusicBase::loadMusic(const std::string& fileName) 
+	bool MusicBase::loadMusic() 
 	{
-		return _base.openFromFile(getPath(fileName));
+		return _base.openFromFile(getPath());
 	}
 
-	void MusicBase::getJsonData(const std::string& fileName) 
+	void MusicBase::getJsonData() 
 	{
 		Json json;
 		std::ifstream file("res/Music/Music.json");
@@ -67,7 +68,7 @@ namespace rat
             file >> json;
 			file.close();
 		}
-		_bpm = json[fileName]["BPM"];
+		_bpm = json[_name]["BPM"];
 	}
 
 	void MusicBase::play() 
@@ -111,15 +112,20 @@ namespace rat
 		_base.setVolume(volume);
 	}
 
-	inline std::string MusicBase::getPath(const std::string& fileName) const 
+	inline std::string MusicBase::getPath() const 
 	{
-		return "res/Music/" + fileName + ".flac"; 
+		return "res/Music/" + _name + ".flac"; 
 	}
 
 	void MusicBase::reset() 
 	{
 		_timeLeft = _base.getDuration().asSeconds();
 		_base.setVolume(_baseVolume);
+	}
+
+	const std::string& MusicBase::getName() const
+	{
+		return _name;
 	}
 
 }

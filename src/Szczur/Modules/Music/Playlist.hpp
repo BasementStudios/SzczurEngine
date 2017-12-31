@@ -4,15 +4,13 @@
 #include <string>
 #include <memory>
 
-#include <boost/container/flat_map.hpp>
-
 #include "MusicBase.hpp"
 
 namespace rat 
 {
     class Playlist 
 	{ 
-		using Container_t = boost::container::flat_map<std::string, std::shared_ptr<MusicBase>>;
+		using Container_t = std::vector<std::shared_ptr<MusicBase>>;
 
     public:
 
@@ -74,6 +72,8 @@ namespace rat
 
 		void unPause();
 
+		int getID(const std::string& fileName) const;
+			
 	};
 }
 
