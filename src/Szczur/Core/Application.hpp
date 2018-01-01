@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>			// RenderWindow
 #include <SFML/System.hpp>				// Clock, Vector2
 
+#include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 
@@ -22,6 +23,7 @@ class Application
 private:
 	// Modules
 	ModulesHolder<
+		Input,
 		Assets,
 		Canvas
 	> _modules;

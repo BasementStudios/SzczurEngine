@@ -8,7 +8,6 @@
  **/
 
 #include "Szczur/Utility/Modules.hpp"
-
 #include "AssetsManager.hpp"
 
 namespace rat
