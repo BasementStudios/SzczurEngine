@@ -135,9 +135,9 @@ MKDIR = mkdir -p
 LIB_LIST := SFML BOOST LUA
 #   SFML
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
-  LDFLAGS_STATIC_SFML   := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
+  LDFLAGS_STATIC_SFML   := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lsfml-audio-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
 CXXFLAGS_DYNAMIC_SFML   :=
- LDFLAGS_DYNAMIC_SFML   := -lsfml-graphics -lsfml-window -lsfml-system
+ LDFLAGS_DYNAMIC_SFML   := -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm
  MXE_PACKAGENAME_SFML   := sfml
 #   Boost
  CXXFLAGS_STATIC_BOOST  :=
