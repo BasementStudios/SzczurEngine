@@ -11,7 +11,7 @@
 namespace rat
 {
 
-class Canvas : public Module<>, Updatable, Renderable
+class Canvas : public Module<>, Module<>::Updatable, Module<>::Renderable
 {
 	using Module::Module;
 

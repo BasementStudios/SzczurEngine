@@ -33,12 +33,12 @@ void Application::input()
 	sf::Event event;
 
 	while (_window.pollEvent(event)) {
+		_modules.forEach<Module<>::Inputable>([&](auto& mod) {
+			mod.input(event);
+		});
 		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // delete in final product
 			_window.close();
 		}
-		_modules.forEach<Inputable>([&](auto& mod) {
-			mod.input(event);
-		});
 	}
 }
 
@@ -46,10 +46,10 @@ void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asSeconds();
 
-	_modules.forEach<Updatable>([=](auto& mod) {
+	_modules.forEach<Module<>::Updatable>([=](auto& mod) {
 		mod.update(deltaTime);
 	});
-
+	
 	_modules.getModule<Input>().finish();
 }
 
@@ -57,7 +57,7 @@ void Application::render()
 {
 	_window.clear();
 
-	_modules.forEach<Renderable>([](auto& mod) {
+	_modules.forEach<Module<>::Renderable>([](auto& mod) {
 		mod.render();
 	});
 

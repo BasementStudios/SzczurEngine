@@ -10,7 +10,7 @@ namespace rat
 
 enum Status_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 
-class Input : public Module<>, Inputable
+class Input : public Module<>, Module<>::Inputable
 {
 	using Module::Module;
 
@@ -37,27 +37,38 @@ public:
 
 	Status_t getStatus(const InputCode& code) const;
 
-	bool checkStatus(const InputCode& code, Status_t _Status) const;
+	inline bool checkStatus(const InputCode& code, Status_t _Status) const
+		{ return getStatus(code) == _Status; }
 
-	bool isUnkept(const InputCode& code) const;
+	inline bool isUnkept(const InputCode& code) const
+		{ return checkStatus(code, Status_t::Unkept); }
 
-	bool isPressed(const InputCode& code) const;
+	inline bool isPressed(const InputCode& code) const
+	 	{ return checkStatus(code, Status_t::Pressed); }
 
-	bool isKept(const InputCode& code) const;
+	inline bool isKept(const InputCode& code) const
+		{ return checkStatus(code, Status_t::Kept); }
 
-	bool isReleased(const InputCode& code) const;
+	inline bool isReleased(const InputCode& code) const
+		{ return checkStatus(code, Status_t::Released); }
 
-	InputCode getRecentlyPressed() const;
+	inline InputCode getRecentlyPressed() const
+		{ return _recentlyPressed; }
 
-	InputCode getRecentlyReleased() const;
+	inline InputCode getRecentlyReleased() const 
+		{ return _recentlyReleased; }
 
-	bool isAnyPressed() const;
+	inline bool isAnyPressed() const
+		{ return _recentlyPressed.isValid(); }
 
-	bool isAnyReleased() const;
+	inline bool isAnyReleased() const
+		{ return _recentlyReleased.isValid(); }
 
-	bool isTextEntered() const;
+	inline bool isTextEntered() const
+		{ return _enteredCharacter != 0; }
 
-	unsigned getEnteredCharacter() const;
+	inline unsigned getEnteredCharacter() const
+		{ return _enteredCharacter; }
 
 private:
 

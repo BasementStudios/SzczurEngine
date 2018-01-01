@@ -79,61 +79,6 @@ Status_t Input::getStatus(const InputCode& code) const
 	return Status_t::Unkept;
 }
 
-bool Input::checkStatus(const InputCode& code, Status_t _Status) const
-{
-	return getStatus(code) == _Status;
-}
-
-bool Input::isUnkept(const InputCode& code) const
-{
-	return checkStatus(code, Status_t::Unkept);
-}
-
-bool Input::isPressed(const InputCode& code) const
-{
-	return checkStatus(code, Status_t::Pressed);
-}
-
-bool Input::isKept(const InputCode& code) const
-{
-	return checkStatus(code, Status_t::Kept);
-}
-
-bool Input::isReleased(const InputCode& code) const
-{
-	return checkStatus(code, Status_t::Released);
-}
-
-InputCode Input::getRecentlyPressed() const
-{
-	return _recentlyPressed;
-}
-
-InputCode Input::getRecentlyReleased() const
-{
-	return _recentlyReleased;
-}
-
-bool Input::isAnyPressed() const
-{
-	return _recentlyPressed.isValid();
-}
-
-bool Input::isAnyReleased() const
-{
-	return _recentlyReleased.isValid();
-}
-
-bool Input::isTextEntered() const
-{
-	return _enteredCharacter != 0;
-}
-
-unsigned Input::getEnteredCharacter() const
-{
-	return _enteredCharacter;
-}
-
 void Input::_pressKey(int id)
 {
 	if (_keyboard[id] != Status_t::Kept) {

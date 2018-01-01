@@ -164,7 +164,7 @@ HEADER_INC_JSON := 3rd-party/json
 COLORS := no
 
 # Markers to grep code with
-MARKERS := @todo @warn @err
+MARKERS := @todo @warn @err @debug
 
 # Dependencies finding
 DEPFLAGS := -MT $$@ -MMD -MP -MF 
@@ -470,8 +470,8 @@ endif
 #
 
 # @warn przynajmniej narazie xd ;f
-ifneq ($(MARKERS),)
-#ifeq ($(findstring code,$(MAKECMDGOALS)),code)
+#ifneq ($(MARKERS),)
+ifeq ($(findstring code,$(MAKECMDGOALS)),code)
 
 # Sources
 .PHONY: src $(SOURCES)
