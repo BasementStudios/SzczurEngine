@@ -124,6 +124,14 @@ extern Logger logger;
 #define LOG_EXCPT(...) { rat::logger.log(rat::Logger::Level::Exception,   __FILE__, __LINE__, __VA_ARGS__); }
 #define LOG_EXCEPTION(...) LOG_EXCPT(__VA_ARGS__)
 
+#define LOG_IF(cond, ...)       { if(cond) LOG(__VA_ARGS__); }
+#define LOG_DEBUG_IF(cond, ...) { if(cond) LOG_DEBUG(__VA_ARGS__); }
+#define LOG_INFO_IF(cond, ...)  { if(cond) LOG_INFO(__VA_ARGS__); }
+#define LOG_WARN_IF(cond, ...)  { if(cond) LOG_WARN(__VA_ARGS__); }
+#define LOG_ERROR_IF(cond, ...) { if(cond) LOG_DEBUG(__VA_ARGS__); }
+#define LOG_EXCPT_IF(cond, ...) { if(cond) LOG_EXCPT(__VA_ARGS__); }
+#define LOG_EXCEPTION_IF(...) LOG_EXCPT_IF(__VA_ARGS__)
+
 #else
 
 #define LOG(...) 
@@ -133,5 +141,13 @@ extern Logger logger;
 #define LOG_ERROR(...) 
 #define LOG_EXCPT(...) 
 #define LOG_EXCEPTION(...) 
+
+#define LOG_IF(cond, ...) 
+#define LOG_DEBUG_IF(cond, ...) 
+#define LOG_INFO_IF(cond, ...) 
+#define LOG_WARN_IF(cond, ...) 
+#define LOG_ERROR_IF(cond, ...) 
+#define LOG_EXCPT_IF(cond, ...) 
+#define LOG_EXCEPTION_IF(...) 
 
 #endif
