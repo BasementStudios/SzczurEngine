@@ -1,5 +1,16 @@
 #include "Application.hpp"
 
+/** @file Application.cpp
+ ** @description Main application class file.
+ **/
+
+#include <exception>	// exception
+
+#include <SFML/Graphics.hpp>			// RenderWindow
+#include <SFML/System.hpp>				// Clock, Vector2
+
+#include "Szczur/Utility/Logger.hpp"	// LOG_EXCEPTION
+
 namespace rat
 {
 
@@ -24,34 +35,31 @@ void Application::input()
 	sf::Event event;
 
 	while (_window.pollEvent(event)) {
-		if (event.type == sf::Event::Closed) {
-			_window.close();
-		}
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-			_window.close();
-		}
-		_modules.forEach([&](auto& mod) {
+		_modules.forEach<Module<>::Inputable>([&](auto& mod) {
 			mod.input(event);
 		});
+		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // @warn delete in final product
+			_window.close();
+		}
 	}
-
-	
 }
 
 void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asSeconds();
 
-	_modules.forEach([=](auto& mod) {
+	_modules.forEach<Module<>::Updatable>([=](auto& mod) {
 		mod.update(deltaTime);
 	});
+	
+	_modules.getModule<Input>().finish();
 }
 
 void Application::render()
 {
 	_window.clear();
 
-	_modules.forEach([](auto& mod) {
+	_modules.forEach<Module<>::Renderable>([](auto& mod) {
 		mod.render();
 	});
 
@@ -60,10 +68,17 @@ void Application::render()
 
 int Application::run()
 {
-	while (_window.isOpen()) {
-		input();
-		update();
-		render();
+	// Doubled `while` loop for preventing try-catch block from remarking code with exceptions handler. 
+	while (_window.isOpen()) try {
+		// Main loop here
+		while (_window.isOpen()) {
+			input();
+			update();
+			render();
+		}
+	}
+	catch (...) {
+		LOG_EXCEPTION('\n', boost::current_exception_diagnostic_information());
 	}
 
 	return 0;

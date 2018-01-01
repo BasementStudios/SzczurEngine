@@ -35,6 +35,16 @@ namespace rat {
 }
 ```
 
+#### Oznaczenia modułu
+
+Moduł może być oznaczony poprzez dziedziczenie z pustych klas:
+
+* `Module<>::Updatable` - będzie wywoływana jego funkcja `void update(float deltaTime)` przy każdym cyklu głównej pętli aktualizującej stan gry.
+
+* `Module<>::Inputable` - będzie wywoływana jego funkcja `void input(sf::Event event)` dla każdego wywołanego zdarzenia programistycznego.
+
+* `Module<>::Renderable` - będzie wywoływana jego funkcja `void render(float deltaTime)` przy każdym cyklu głównej pętli renderującej/rysującej.
+
 
 
 ### Lista modułów

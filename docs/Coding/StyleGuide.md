@@ -13,10 +13,13 @@ We use tabulators (`\t`) equal to the width of 4 spaces.
 
 ### Braces
 
-In the same line as the expression.
+In the next line for the code and data structures (functions, `class`, `struct`, `enum`, `namespace`).
+
+In the same line for the expressions (including lambda) and conditions (`if`, `while`, `for`, `[&](){}`).
 
 ```cpp
-void foo(int a, int b) const {
+void foo(int a, int b) const
+{
 	if (a > b) {
 		// ...
 	}
@@ -43,17 +46,21 @@ void foo(int a, int b) const {
 
 ```cpp
 /// Namespaces
-namespace Szczur {
-	namespace Core {
+namespace Szczur
+{
+	namespace Core
+	{
 		/// Classes
-		class Event {
+		class Event
+		{
 		public:
 			/// Member Constants
 			const static std::string BLOCK_START = "{";
 			// ...
 
 			/// Types
-			enum class TargetType {
+			enum class TargetType
+			{
 				Null = 0,
 				GameObject,
 				Sprite,
@@ -121,7 +128,8 @@ Template implementation code must be kept in `.tpp` files.
 
 ```cpp
 template<typename T>
-class Foo {
+class Foo 
+{
 	// ...
 }
 ```
@@ -282,8 +290,10 @@ Use `inline` functions only when they are small e.g. 10 lines or less; or descri
 Namespaces are useful because they allows to divide the global scope in named scopes which prevents name collisions.
 
 ```cpp
-namespace Foo {
-	namespace Boo {
+namespace Foo
+{
+	namespace Boo
+	{
 		// ...
 	}
 }
@@ -319,7 +329,8 @@ Describe classes about what they provide.
 
 ```cpp
 /// Does foo.
-class Foo {
+class Foo
+{
 	// ...
 }
 ```
@@ -331,7 +342,8 @@ class Foo {
 Put spaces before and after the colon.
 
 ```cpp
-class DerivedClass : public BaseClass {
+class DerivedClass : public BaseClass
+{
 	// ...
 }
 ```
@@ -362,7 +374,8 @@ To minimize confusion and errors. That is the order in which the initialization 
 ##### Example, bad
 
 ```cpp
-class Foo {
+class Foo
+{
 	int m1;
 	int m2;
 public:
@@ -399,7 +412,8 @@ Left a *colon* in the same line as a declaration.
 
 ```cpp
 Foo(int x, int y, const std::string& name) :
-	_x(x), _y(y), _name(name) {
+	_x(x), _y(y), _name(name)
+{
 	// ...
 }
 ```
@@ -473,13 +487,15 @@ class DerivedClass final : public BaseClass {/* ... */}
 ### Use `override` specifier with methods that are inherited.  
 
 ```cpp
-class BaseClass {
+class BaseClass
+{
 public:
 	virtual void foo();
 	// ...
 }
 
-class DerivedClass : public BaseClass {
+class DerivedClass : public BaseClass
+{
 	void foo() override;
 	// ...
 }
@@ -507,7 +523,8 @@ T distanceTo(const Vector2<T>& pos);
 ### Use `enum class` instead of `enum` to scope it's values
 
 ```cpp
-enum class Imagetype : int {
+enum class Imagetype : int
+{
 	Standard = 0,
 	Nice = 1,
 	NotNice = -1
@@ -606,3 +623,5 @@ std::vector<double> compute(args)  // good
 **Alternative:** Pass ownership using a *"smart pointer"*, such as *unique_ptr* (for exclusive ownership) and *shared_ptr* (for shared ownership). However, that is less elegant and often less efficient than returning the object itself, so use smart pointers only if reference semantics are needed.
 
 ###### Source: [C++ Core Guidelines – I.11](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Ri-raw)
+
+

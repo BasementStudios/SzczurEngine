@@ -12,7 +12,8 @@
 
  
 namespace rat {
-    class GUI : public ModuleBase<Canvas> { using ModuleBase::ModuleBase;
+    class GUI : public Module<Canvas>, Module<>::Inputable, Module<>::Renderable, Module<>::Updatable { 
+        using Module::Module;
     public:
         void init();
         void input(const sf::Event& event);

@@ -30,3 +30,7 @@ LIB_DIR_LUA_64 := c:/Biblioteki/lua/lua-5.3.4/lib
 BIN_DIR_LUA_64 := c:/Biblioteki/lua/lua-5.3.4/bin
 
 HEADER_INC_JSON := c:/Biblioteki/json
+CXXFLAGS_STATIC_BOOST  :=
+LDFLAGS_STATIC_BOOST  :=
+CXXFLAGS_DYNAMIC_BOOST :=
+LDFLAGS_DYNAMIC_BOOST :=

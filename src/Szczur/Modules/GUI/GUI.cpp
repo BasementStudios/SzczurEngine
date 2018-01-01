@@ -14,7 +14,7 @@ namespace rat {
         _assets.loadFromFile<sf::Font>("data/consolab.ttf");
         _assets.loadFromFile<sf::Texture>("data/button.png");
         _assets.loadFromFile<Json>("data/json.json");
-        _guiJson.init(_assets.get<Json>("data/json.json"), &_assets, &_root, getModule<Canvas>().getWindow().getSize());
+        _guiJson.init(_assets.get<Json>("data/json.json"), &_assets, &_root, _getModule<Canvas>().getWindow().getSize());
     }
 
     
@@ -35,10 +35,10 @@ namespace rat {
     }
 
     void GUI::render() {
-        getModule<Canvas>().draw(Canvas::LayerId::GUI, _root);
+        _getModule<Canvas>().draw(Canvas::LayerId::GUI, _root);
     }
 
     void GUI::reload() {
-        _guiJson.reload(getModule<Canvas>().getWindow().getSize(), &_root);
+        _guiJson.reload(_getModule<Canvas>().getWindow().getSize(), &_root);
     }
 }

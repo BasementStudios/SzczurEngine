@@ -11,9 +11,9 @@
 namespace rat
 {
 
-class Canvas : public ModuleBase<>
+class Canvas : public Module<>, Module<>::Updatable, Module<>::Renderable
 {
-	using ModuleBase::ModuleBase;
+	using Module::Module;
 
 public:
 
@@ -33,8 +33,6 @@ private:
 public:
 
 	void init(sf::RenderWindow* windowPtr);
-
-	void input(const sf::Event& event);
 
 	void update(float deltaTime);
 
