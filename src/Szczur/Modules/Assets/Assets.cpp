@@ -1,5 +1,12 @@
 #include "Assets.hpp"
 
+/** @file Assets.hpp
+ ** @description Main class of the Assets module functions' implementation file. 
+ ** @module Assets
+ ** @author Patryk (Stritch)
+ ** @auhtor Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
 #include <fstream>
 
 #include "Szczur/Json.hpp"
@@ -12,6 +19,7 @@ void Assets::init()
 
 }
 
+// @info Nie jestem pewny, czy to w ogólne będzie używane...
 bool Assets::loadFromJsonFile(const std::string& path)
 {
 	Json list;
