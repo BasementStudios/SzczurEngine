@@ -58,10 +58,10 @@ public:
 	TType* load(Us&&... args);
 
 	template<typename... Us>
-	void unload(Us&&... args);
+	bool unload(Us&&... args);
 
 	template<typename... Us>
-	void forceUnload(Us&&... args);
+	bool forceUnload(Us&&... args);
 
 	Value_t*       get()		{ return _ptr; }
 	const Value_t* get() const	{ return _ptr; }

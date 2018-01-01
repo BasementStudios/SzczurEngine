@@ -36,7 +36,7 @@ void Application::input()
 		_modules.forEach<Module<>::Inputable>([&](auto& mod) {
 			mod.input(event);
 		});
-		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // delete in final product
+		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // @warn delete in final product
 			_window.close();
 		}
 	}
@@ -74,7 +74,8 @@ int Application::run()
 			update();
 			render();
 		}
-	} catch (...) {
+	}
+	catch (...) {
 		LOG_EXCEPTION('\n', boost::current_exception_diagnostic_information());
 	}
 

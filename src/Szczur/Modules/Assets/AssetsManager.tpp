@@ -22,13 +22,15 @@ TType& AssetsManager<TTypes...>::load(const std::string& path)
 /// Unloads the resource.
 template<typename... TTypes>
 template<typename TType>
-void AssetsManager<TTypes...>::unload(const AssetsManager<TTypes...>::Key_t& key)
+bool AssetsManager<TTypes...>::unload(const AssetsManager<TTypes...>::Key_t& key)
 {
 	if (auto it = _find<TType>(key); it != _getContainer<TType>().end()) {
 		if (it->second.unload()) {
 			_getContainer<TType>().erase(it);
+			return true;
 		}
 	}
+	return false;
 }
 
 /// Get the resource (reference) without changing references counter. 

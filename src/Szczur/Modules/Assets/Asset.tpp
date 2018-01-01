@@ -28,19 +28,22 @@ TType* Asset<TType>::load(TArgs&&... args)
 
 template<typename TType>
 template<typename... TArgs>
-void Asset<TType>::unload(TArgs&&... args)
+bool Asset<TType>::unload(TArgs&&... args)
 {
 	if (--referenceCount == 1) {
 		Traits_t::unload(*_ptr, std::forward<TArgs>(args)...);
+		return true;
 	}
+	return false;
 }
 
 template<typename TType>
 template<typename... TArgs>
-void Asset<TType>::forceUnload(TArgs&&... args)
+bool Asset<TType>::forceUnload(TArgs&&... args)
 {
 	referenceCount = 0;
 	Traits_t::unload(*_ptr, std::forward<TArgs>(args)...);
+	return true;
 }
 
 }

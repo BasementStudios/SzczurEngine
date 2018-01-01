@@ -70,10 +70,10 @@ public:
 	 ** @argument key - key needed to obtain the resource.
 	 **/
 	template<typename TType>
-	inline void unload(const std::string& path) 
-		{ unload(getKey(path)); }
+	inline bool unload(const std::string& path) 
+		{ return unload(getKey(path)); }
 	template<typename TType>
-	void unload(const Key_t& key);
+	bool unload(const Key_t& key);
 
 	/** @method get
 	 ** @description Get the resource without changing references counter. 

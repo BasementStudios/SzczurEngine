@@ -58,11 +58,11 @@ public:
 	 ** @description Unloads the resource.
 	 **/
 	template<typename TType>
-	inline void unload(const std::string& path)			
-		{ this->_manager.unload<TType>(path); }
+	inline bool unload(const std::string& path)			
+		{ return this->_manager.unload<TType>(path); }
 	template<typename TType>
-	inline void unload(const Key_t& key)					
-		{ this->_manager.unload<TType>(key); }
+	inline bool unload(const Key_t& key)					
+		{ return this->_manager.unload<TType>(key); }
 
 	/** @method get
 	 ** @description Get the resource without changing references counter.
