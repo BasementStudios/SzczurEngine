@@ -5,8 +5,10 @@
 #include "Szczur/Utility/Modules.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 
+#include "ProgressBar.hpp"
+
 namespace rat {
-    class HUD : Module<Canvas>, Module<>::Inputable, Module<>::Renderable, Module<>::Updatable {
+    class HUD : Module<Canvas>, Module<>::Renderable, Module<>::Updatable {
         using Module::Module;
     public:
         void init();
@@ -14,6 +16,6 @@ namespace rat {
         void update(float deltaTime);
         void render();
     private:
-
+        ProgressBar bar;
     };
 }

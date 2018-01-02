@@ -19,6 +19,7 @@ Application::Application()
 	_window.create(sf::VideoMode(1280, 720), "SzczurEngine v0.0.0");
 
 	_modules.getModule<Canvas>().init(&_window);
+	_modules.getModule<HUD>().init();
 }
 
 void Application::changeResolution(const sf::Vector2u& size)
