@@ -9,7 +9,7 @@
 namespace rat 
 {
 
-	Playlist::Playlist(std::vector<std::string> newPlaylist) 
+	Playlist::Playlist(std::vector<std::string> newPlaylist)
 	{
 		setNewPlaylist(newPlaylist);
 	}
@@ -17,60 +17,70 @@ namespace rat
 	void Playlist::update(float deltaTime) 
 	{
 		if(hasBeenEverPlayed) {
-			if ((*_currentPlaying)->isEnding()) {
-				_endingFile = _currentPlaying;
+			if (_playlist[_currentID]->isEnding()) {
+				_endingID = _currentID;
 				_isFileEnding = true;
 				_status = Status::Stopped;
 				playNext();
 			}
 			if (_isFileEnding) {
-				(*_currentPlaying)->start(deltaTime, (*_endingFile)->getPostTime());
-				if ((*_endingFile)->finish(deltaTime))
+				_playlist[_currentID]->start(deltaTime, _playlist[_endingID]->getPostTime());
+				if (_playlist[_endingID]->finish(deltaTime))
 					_isFileEnding = false;
 			}
 			else
-				(*_currentPlaying)->update(deltaTime);
+				_playlist[_currentID]->update(deltaTime);
 		}
 	}
 
 	bool Playlist::add(const std::string& fileName)
-	{
+	{		
 		return (includes(fileName) || loadMusic(fileName));
 	}
 
 	void Playlist::remove(const std::string& fileName) 
 	{
-		if ((*_currentPlaying)->getName() == fileName) {
+		if (_playlist[_currentID]->getName() == fileName) {
 			_status = Status::Stopped;
-			(*_currentPlaying)->stop();
+			_playlist[_currentID]->stop();
 		}
 		_playlist.erase(_playlist.begin() + getID(fileName));
 	}
 
-	void Playlist::play(const std::string& fileName) 
+	void Playlist::play(unsigned int id)
 	{
+		if(id >= _playlist.size()) {
+			_currentID = _playlist.size();
+			return;
+		}
+
 		if (!hasBeenEverPlayed)
 			hasBeenEverPlayed = true;
 			
 		if (_status == Status::Playing)
-			(*_currentPlaying)->stop();
+			_playlist[_currentID]->stop();
 
+		_currentID = id;
+		std::cout << _playlist[_currentID]->getName() << std::endl; //For Tests
+		_status = Status::Playing;
+		_playlist[_currentID]->play();
+	}
+
+	void Playlist::play(const std::string& fileName) 
+	{
+		unsigned int newId = 0;
 		if (fileName == "") {
 			if (_status == Status::Paused) {
 				unPause();
 				return;
 			}
 			if (_playingMode == PlayingMode::Random)
-				_currentPlaying =  _playlist.begin() + getID(getNameOfRandomFile());
-			else
-				_currentPlaying = _playlist.begin();
+				newId = getRandomId();
 		}
-		else if (includes(fileName))
-			_currentPlaying = _playlist.begin() + getID(fileName);
+		else
+			newId = getID(fileName);
 
-		std::cout << (*_currentPlaying)->getName() << std::endl; //For Tests
-		_status = Status::Playing;
-		(*_currentPlaying)->play();
+		play(newId);
 	}
 
 	void Playlist::clear() 
@@ -78,7 +88,7 @@ namespace rat
 		_status = Status::Stopped;
 		for (auto it : _playlist)
 			it->stop();
-		_currentPlaying = _playlist.end();
+		_currentID = 0;
 		_playlist.clear();
 	}
 
@@ -90,7 +100,7 @@ namespace rat
 	void Playlist::pause() 
 	{
 		if (_status == Status::Playing) {
-			(*_currentPlaying)->pause();
+			_playlist[_currentID]->pause();
 			_status = Status::Paused;
 		}
 	}
@@ -109,32 +119,35 @@ namespace rat
 	bool Playlist::loadMusic(const std::string& fileName) 
 	{
 		_playlist.push_back(std::make_shared<MusicBase>());
-		return (*(--_playlist.end()))->init(fileName, _globalVolume);
+		return _playlist[_playlist.size() - 1]->init(fileName, _globalVolume);
 	}
 
 	inline bool Playlist::includes(const std::string& fileName) const 
 	{
-		return (getID(fileName) != -1);
+		return (getID(fileName) != _playlist.size());
 	}
 
-	std::string Playlist::getNameOfRandomFile() const 
+	unsigned int Playlist::getRandomId() const 
 	{
-		auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-		std::mt19937 mt(seed);
-		std::uniform_int_distribution<int> random(0, _playlist.size() - 1);
-		
-		Container_t::const_iterator it;
-		do {
-			it = _playlist.begin();
-			std::advance(it, random(mt));
-		} while (it == _currentPlaying);
+		unsigned int nextID = 0;
 
-		return (*it)->getName();
+		if (_playlist.size() > 1) {
+			auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+			std::mt19937 mt(seed);
+			std::uniform_int_distribution<int> random(0, _playlist.size() - 1);
+			
+			do {
+				nextID = random(mt);
+			} while (nextID == _currentID);
+		}
+
+		return nextID;
 	}
 
 	bool Playlist::setNewPlaylist(std::vector<std::string> newPlaylist) 
 	{	
 		clear();
+		_currentID = newPlaylist.size();
 		for (auto it : newPlaylist) {
 			if (!add(it))
 				return false;
@@ -145,31 +158,31 @@ namespace rat
 	void Playlist::playNext() 
 	{
 		if (_playingMode == PlayingMode::Orderly) {
-			if (std::next(_currentPlaying) != _playlist.end())
-				++_currentPlaying;
+			if (_currentID != _playlist.size() - 1)
+				++_currentID;
 			else
-				_currentPlaying = _playlist.begin();
-			play((*_currentPlaying)->getName());
+				_currentID = 0;
+			play(_currentID);
 		}
 		if (_playingMode == PlayingMode::Random)
-			play(getNameOfRandomFile());
+			play(getRandomId());
 	}
 
 	void Playlist::unPause() 
 	{
 		if (_status == Status::Paused) {
-			(*_currentPlaying)->play();
+			_playlist[_currentID]->play();
 			_status = Status::Playing;
 		}
 	}
 
-	int Playlist::getID(const std::string& fileName) const
+	unsigned int Playlist::getID(const std::string& fileName) const
 	{
 		for (unsigned int i = 0; i < _playlist.size(); ++i) {
 			if (_playlist[i]->getName() == fileName)
 				return i;
 		}
-		return -1;
+		return _playlist.size();
 	}
 
 }

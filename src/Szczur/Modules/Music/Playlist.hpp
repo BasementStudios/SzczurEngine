@@ -29,9 +29,9 @@ namespace rat
 		};
 
 		Container_t _playlist;
-		Container_t::iterator _currentPlaying;
+		unsigned int _currentID;
 
-		Container_t::iterator _endingFile;
+		unsigned int _endingID;
 		bool _isFileEnding = false;
 
 		bool hasBeenEverPlayed = false;
@@ -63,16 +63,16 @@ namespace rat
 		void setVolume(float volume, const std::string& fileName = "");
 
 	private:
+		void play(unsigned int id);
 
 		bool loadMusic(const std::string& fileName);
 
 		void playNext();
 
-		std::string getNameOfRandomFile() const;
-
 		void unPause();
 
-		int getID(const std::string& fileName) const;
+		unsigned int getID(const std::string& fileName) const;
+		unsigned int getRandomId() const;
 			
 	};
 }
