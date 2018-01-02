@@ -6,6 +6,7 @@
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 
 #include "ProgressBar.hpp"
+#include "PP.hpp"
 
 namespace rat {
     class HUD : Module<Canvas>, Module<>::Renderable, Module<>::Updatable {
@@ -17,5 +18,6 @@ namespace rat {
         void render();
     private:
         ProgressBar bar;
+        PP pp;
     };
 }
