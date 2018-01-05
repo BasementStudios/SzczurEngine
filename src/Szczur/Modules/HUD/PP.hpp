@@ -9,7 +9,6 @@ namespace rat {
     public:
         PP(float radius=25.f, float gap=5.f);
 
-        void create(float radius, float gap);
 
         enum ElementType : size_t {
             fire, water, earth, electric

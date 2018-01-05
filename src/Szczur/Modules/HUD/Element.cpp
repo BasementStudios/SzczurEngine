@@ -1,10 +1,14 @@
 #include "Element.hpp"
 
+#include <iostream>
+
 namespace rat {
     Element::Element(const std::string& file, float radius, sf::Color color) :
     _targetRadius(radius),
     _followRadius(true),
     _followPosition(false),
+    _isDead(false),
+    _aboutToDie(false),
     _background(0.f) {
         _texture.loadFromFile(file);
         _icon.setTexture(_texture);
@@ -20,6 +24,9 @@ namespace rat {
 
         if(_followPosition)
             _followTargetPosition(deltaTime);
+        
+        if(_aboutToDie && _background.getRadius() <= 0.01f)
+            _isDead = true;
     }
 
     void Element::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -52,7 +59,7 @@ namespace rat {
         move( 
             (
                 _targetPosition - getPosition()
-            ) / (10000.f*deltaTime) 
+            ) / (25000.f*deltaTime) 
         );
         sf::Vector2f delta = _targetPosition - getPosition();
         delta.x = std::abs(delta.x);
@@ -71,5 +78,25 @@ namespace rat {
     void Element::setTargetPosition(sf::Vector2f value) {
         _targetPosition = value;
         _followPosition = true;
+    }
+
+    void Element::moveTargetPosition(sf::Vector2f offset) {
+        if(_followPosition) 
+            _targetPosition += offset;
+        else
+            _targetPosition = getPosition() + offset;
+
+        
+        _followPosition = true;
+    }
+
+    Element* Element::kill() {
+        setTargetRadius(0.f);
+        _aboutToDie = true;
+        return this;
+    }
+
+    bool Element::isDead() const {
+        return _isDead;
     }
 }

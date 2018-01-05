@@ -12,6 +12,11 @@ namespace rat {
             delete it;
     }
 
+    void Elements::create(float radius, float gap) {
+        _radius = radius;
+        _gap = gap;
+    }
+
     Element* Elements::add(size_t id) {
         Element* element = _createElement(id);
         if(element) {

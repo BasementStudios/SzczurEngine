@@ -12,14 +12,17 @@ namespace rat {
         Elements(float radius, float gap);
         ~Elements();
 
+        void create(float radius, float gap);
+
         Element* add(size_t id);
 
         void update(float deltaTime);
     
-        std::vector<Element*> _elements;
+        
     protected:
         float _radius;
         float _gap;
+        std::vector<Element*> _elements;
     private:
         virtual Element* _createElement(size_t id) const;
 

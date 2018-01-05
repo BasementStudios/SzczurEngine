@@ -7,6 +7,7 @@
 
 #include "ProgressBar.hpp"
 #include "PP.hpp"
+#include "Status.hpp"
 
 namespace rat {
     class HUD : Module<Canvas>, Module<>::Renderable, Module<>::Updatable {
@@ -18,6 +19,7 @@ namespace rat {
         void render();
     private:
         ProgressBar bar;
-        PP pp;
+        //PP pp;
+        Status status;
     };
 }

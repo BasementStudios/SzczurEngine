@@ -6,10 +6,6 @@ namespace rat {
 
     }
 
-    void PP::create(float radius, float gap) {
-        _radius = radius;
-        _gap = gap;
-    }
 
     Element* PP::_createElement(size_t id) const {
         switch(id) {

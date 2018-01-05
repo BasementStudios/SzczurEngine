@@ -10,7 +10,13 @@ namespace rat {
         void setTargetRadius(float value);
         void setTargetPosition(sf::Vector2f value);
 
+        void moveTargetPosition(sf::Vector2f offset);
+
         void update(float deltaTime);
+
+        Element* kill();
+
+        bool isDead() const;
     private:
         sf::CircleShape _background;
         sf::Sprite _icon;
@@ -20,6 +26,8 @@ namespace rat {
         bool _followPosition;
         bool _followRadius;
         bool _ready;
+        bool _isDead;
+        bool _aboutToDie;
         float _targetRadius;
         sf::Vector2f _targetPosition;
 
