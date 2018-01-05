@@ -16,6 +16,11 @@ namespace rat {
             delete it;
     }
 
+    void Status::create(float radius, float gap) {
+        _radius = radius;
+        _gap = gap;
+    }
+
     Element* Status::add(size_t id) {
         auto it = std::find_if(std::begin(_elements), std::end(_elements), [id](const auto &it){
             return it.first == id;

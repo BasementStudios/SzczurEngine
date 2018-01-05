@@ -14,6 +14,8 @@ namespace rat {
         Status(float radius=25.f, float gap = 10.f);
         ~Status();
 
+        void create(float radius, float gap);
+
         Element* add(size_t id);
 
         void remove(size_t id);
