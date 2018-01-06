@@ -19,7 +19,7 @@ namespace rat {
         void render();
     private:
         ProgressBar bar;
-        //PP pp;
+        PP pp;
         Status status;
     };
 }

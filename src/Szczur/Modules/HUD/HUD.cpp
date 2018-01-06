@@ -6,14 +6,16 @@ namespace rat {
         bar.create("data/progressbar.png", sf::Color::Red, sf::Color(100,0,0));
         bar.setProgress(0.0f);
         bar.setPosition(100.f, 400.f);
-        //status.add(Status::ElementType::fire);
-        //status.add(Status::ElementType::water);
-        //status.add(Status::ElementType::electric);
+
+        pp.move(10, 80);
+
         status.move(10,10);
     }
     void HUD::update(float deltaTime) {
-        static int timeLeft = 60;
+        static int timeLeft = 20;
         status.update(deltaTime);
+        pp.update(deltaTime);
+
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
             bar.addProgress(0.4f*deltaTime);
         else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -24,22 +26,43 @@ namespace rat {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
                 if(!status.add(Status::ElementType::fire))
                     status.remove(Status::ElementType::fire);
-                timeLeft = 60;
+                timeLeft = 40;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
                 if(!status.add(Status::ElementType::electric))
                     status.remove(Status::ElementType::electric);
-                timeLeft = 60;
+                timeLeft = 40;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
                 if(!status.add(Status::ElementType::water))
                     status.remove(Status::ElementType::water);
-                timeLeft = 60;
+                timeLeft = 40;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::V)) {
                 if(!status.add(Status::ElementType::wind))
                     status.remove(Status::ElementType::wind);
-                timeLeft = 60;
+                timeLeft = 40;
+            }
+
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+                pp.add(PP::ElementType::wind);
+                timeLeft = 40;
+            }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+                pp.add(PP::ElementType::fire);
+                timeLeft = 40;
+            }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+                pp.add(PP::ElementType::electric);
+                timeLeft = 40;
+            }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
+                pp.add(PP::ElementType::water);
+                timeLeft = 40;
+            }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+                pp.remove();
+                timeLeft = 40;
             }
         }
         
@@ -47,5 +70,6 @@ namespace rat {
     void HUD::render() {
         _getModule<Canvas>().draw(Canvas::LayerId::HUD, bar);
         _getModule<Canvas>().draw(Canvas::LayerId::HUD, status);
+        _getModule<Canvas>().draw(Canvas::LayerId::HUD, pp);
     }
 }

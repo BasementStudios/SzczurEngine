@@ -61,7 +61,6 @@ namespace rat {
         for(auto& it : _elements)
             it.second->update(deltaTime);
         for(int i = 0; i<_trash.size(); ++i) {
-            std::cout << "Trash\n";
             _trash[i]->update(deltaTime);
             if(_trash[i]->isDead()) {
                 delete _trash[i];
@@ -81,7 +80,7 @@ namespace rat {
                 return new Element("data/water.png", _radius, sf::Color(73, 124, 160));
             break;
             case ElementType::wind:
-                return new Element("data/wind.png", _radius, sf::Color(107, 73, 42));
+                return new Element("data/wind.png", _radius, sf::Color(24, 68, 64));
             break;
             case ElementType::electric:
                 return new Element("data/electric.png", _radius, sf::Color(87, 42, 107));
