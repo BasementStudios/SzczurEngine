@@ -22,8 +22,10 @@ namespace rat {
 
         void remove();
 
+        void randRemove();
+
         enum ElementType : size_t {
-            fire, water, wind, electric
+            duch, esencja, fizyczny, ogien, powietrze, woda, ziemia
         };
 
     private:
@@ -34,6 +36,8 @@ namespace rat {
         Container_t _trash; 
 
         Element* _createElement(size_t id) const;
+
+        void _remove(int index);
 
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     };

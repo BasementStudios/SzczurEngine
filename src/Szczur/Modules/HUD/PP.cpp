@@ -1,10 +1,13 @@
 #include "PP.hpp"
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 namespace rat {
     PP::PP(float radius, float gap) :
     _radius(radius),
     _gap(gap) {
-
+        srand(time(NULL));
     }
 
     void PP::create(float radius, float gap) {
@@ -32,11 +35,26 @@ namespace rat {
         return nullptr;
     }
 
+    void PP::_remove(int index) {
+        for(int i = index+1; i<_elements.size(); ++i)
+            _elements[i]->moveTargetPosition(sf::Vector2f(-(2*_radius + _gap), 0));
+
+        _trash.push_back( _elements[index]->kill() );
+        _elements.erase(_elements.begin() + index);
+    }
+
     void PP::remove() {
-        if(size_t size = _elements.size(); size) {
-            
-            _trash.push_back( _elements[size-1u]->kill() );
-            _elements.pop_back();
+        if(size_t size = _elements.size(); size)
+            _remove(size-1);
+    }
+
+    void PP::randRemove() {
+        int size = _elements.size();
+        if(size>0) {
+            int pos = rand() % size;
+            int amount = pos + rand() % (size-pos+1);
+            for(int i = pos; i<amount; ++i)
+                _remove(pos);
         }
     }
 
@@ -57,20 +75,32 @@ namespace rat {
 
     Element* PP::_createElement(size_t id) const {
         switch(id) {
-            case ElementType::fire :
-                return new Element("data/fire.png", _radius, sf::Color(163,62,62));
+            case ElementType::duch :
+                return new Element("data/duch.png", _radius, sf::Color(163,62,62, 0));
             break;
 
-            case ElementType::water:
-                return new Element("data/water.png", _radius, sf::Color(58, 146, 168));
+            case ElementType::esencja:
+                return new Element("data/esencja.png", _radius, sf::Color(58, 146, 168, 0));
             break;
 
-            case ElementType::wind:
-                return new Element("data/wind.png", _radius, sf::Color(24, 68, 64));
+            case ElementType::fizyczny:
+                return new Element("data/fizyczny.png", _radius, sf::Color(24, 68, 64, 0));
             break;
 
-            case ElementType::electric:
-                return new Element("data/electric.png", _radius, sf::Color(68, 42, 104));
+            case ElementType::ogien:
+                return new Element("data/ogien.png", _radius, sf::Color(68, 42, 104, 0));
+            break;
+
+            case ElementType::powietrze:
+                return new Element("data/powietrze.png", _radius, sf::Color(68, 42, 104, 0));
+            break;
+
+            case ElementType::woda:
+                return new Element("data/woda.png", _radius, sf::Color(68, 42, 104, 0));
+            break;
+
+            case ElementType::ziemia:
+                return new Element("data/ziemia.png", _radius, sf::Color(68, 42, 104, 0));
             break;
 
             default:

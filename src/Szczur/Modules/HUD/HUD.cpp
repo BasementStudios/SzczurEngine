@@ -45,25 +45,46 @@ namespace rat {
             }
 
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-                pp.add(PP::ElementType::wind);
+                pp.add(PP::ElementType::duch);
                 timeLeft = 40;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-                pp.add(PP::ElementType::fire);
+                pp.add(PP::ElementType::esencja);
                 timeLeft = 40;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
-                pp.add(PP::ElementType::electric);
+                pp.add(PP::ElementType::fizyczny);
                 timeLeft = 40;
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
-                pp.add(PP::ElementType::water);
+                pp.add(PP::ElementType::ogien);
                 timeLeft = 40;
             }
+
+
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
+                pp.add(PP::ElementType::powietrze);
+                timeLeft = 40;
+            }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
+                pp.add(PP::ElementType::woda);
+                timeLeft = 40;
+            }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+                pp.add(PP::ElementType::ziemia);
+                timeLeft = 40;
+            }
+
+
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
                 pp.remove();
                 timeLeft = 40;
             }
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+                pp.randRemove();
+                timeLeft = 40;
+            }
+            
         }
         
     }

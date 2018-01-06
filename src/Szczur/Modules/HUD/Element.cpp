@@ -38,13 +38,9 @@ namespace rat {
 
     void Element::_followTargetRadius(float deltaTime) {
         float curR = _background.getRadius();
-        curR = curR + (
-            (
-                _targetRadius - curR
-            )/(5000.f*deltaTime)
-        );
+        curR += (_targetRadius - curR)/(5000.f*deltaTime);
         _background.setRadius(curR);
-        float k = (curR*1.5f) / _texture.getSize().y;
+        float k = (curR*2.f) / _texture.getSize().y;
         _icon.setScale(k,k);
         if(std::abs( curR - _targetRadius ) < 0.1f) {
             _background.setRadius(_targetRadius);
@@ -56,10 +52,8 @@ namespace rat {
     }
 
     void Element::_followTargetPosition(float deltaTime) {
-        move( 
-            (
-                _targetPosition - getPosition()
-            ) / (25000.f*deltaTime) 
+        move(
+            (_targetPosition - getPosition()) / (15000.f*deltaTime)
         );
         sf::Vector2f delta = _targetPosition - getPosition();
         delta.x = std::abs(delta.x);
