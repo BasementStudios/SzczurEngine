@@ -32,6 +32,9 @@ namespace rat
 		void pause();
 		void stop();
 
+		void setLoop(bool loop);
+		bool getLoop() const;
+
 		float getVolume() const;
 		void setVolume(float volume);
 

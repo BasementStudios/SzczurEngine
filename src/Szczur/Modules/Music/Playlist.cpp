@@ -17,7 +17,7 @@ namespace rat
 	void Playlist::update(float deltaTime) 
 	{
 		if(hasBeenEverPlayed) {
-			if (_playlist[_currentID]->isEnding()) {
+			if (_playlist[_currentID]->isEnding() && !_playlist[0]->getLoop()) {
 				_endingID = _currentID;
 				_isFileEnding = true;
 				_status = Status::Stopped;
@@ -35,7 +35,10 @@ namespace rat
 
 	bool Playlist::add(const std::string& fileName)
 	{		
-		return (includes(fileName) || loadMusic(fileName));
+		bool result =  (includes(fileName) || loadMusic(fileName));
+		if(_playlist[0]->getLoop() && result) 
+			_playlist[0]->setLoop(false);
+		return result;
 	}
 
 	void Playlist::remove(const std::string& fileName) 
@@ -45,6 +48,10 @@ namespace rat
 			_playlist[_currentID]->stop();
 		}
 		_playlist.erase(_playlist.begin() + getID(fileName));
+
+		if(_playlist.size() == 1) {
+			_playlist[0]->setLoop(true);
+		}
 	}
 
 	void Playlist::play(unsigned int id)
@@ -147,11 +154,16 @@ namespace rat
 	bool Playlist::setNewPlaylist(std::vector<std::string> newPlaylist) 
 	{	
 		clear();
+
 		_currentID = newPlaylist.size();
 		for (auto it : newPlaylist) {
 			if (!add(it))
 				return false;
 		}
+
+		if(_playlist.size() == 1)
+			_playlist[0]->setLoop(true);
+
 		return true;
 	}
 

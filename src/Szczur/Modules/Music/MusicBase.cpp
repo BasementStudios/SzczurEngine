@@ -86,6 +86,16 @@ namespace rat
 		_base.stop();
 	}
 
+	void MusicBase::setLoop(bool loop)
+	{
+		_base.setLoop(loop);
+	}
+
+	bool MusicBase::getLoop() const
+	{
+		return _base.getLoop();
+	}
+
 	sf::SoundSource::Status MusicBase::getStatus() const 
 	{
 		return _base.getStatus();
