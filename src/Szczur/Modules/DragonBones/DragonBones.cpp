@@ -12,15 +12,6 @@ namespace rat
 		_factory->update(deltaTime);
 	}
 
-	void DragonBones::render()
-	{
-
-	}
-
-	void DragonBones::input(sf::Event& e)
-	{
-		(void)e;
-	}
 	Armature* DragonBones::createArmature(const std::string& actorName)
 	{
 		if (_factory == nullptr)

@@ -4,17 +4,17 @@
 
 #include <dragonBones/SFMLFactory.h>
 
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Utility/Modules.hpp"
+#include "Szczur\Modules\Assets\Assets.hpp"
 
 #include "Armature.hpp"
 
 namespace rat 
 {
-	class DragonBones : public ModuleBase<Canvas> 
+	class DragonBones : Module<Assets>, Module<>::Updatable
 	{ 
-		using ModuleBase::ModuleBase;
-	
+		using Module::Module;
+
 	private:
 		std::unique_ptr<dragonBones::SFMLFactory> _factory;
 
@@ -22,10 +22,6 @@ namespace rat
 		void init();
 
 		void update(float deltaTime);
-
-		void render();
-
-		void input(sf::Event& e);
 
 		Armature* createArmature(const std::string& actorName);
 
