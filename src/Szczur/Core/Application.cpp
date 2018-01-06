@@ -1,61 +1,85 @@
 #include "Application.hpp"
 
-namespace rat {
-	Application::Application() {
-		_window.create(sf::VideoMode(1280, 720), "SzczurEngine v0.0.0");
+/** @file Application.cpp
+ ** @description Main application class file.
+ **/
 
-		_modules.getModule<Canvas>().init(&_window);
-		_modules.getModule<DragonBones>().init();
-	}
+#include <exception>	// exception
 
-	void Application::changeResolution(const sf::Vector2u& size) {
-		_window.create(sf::VideoMode(size.x, size.y), "SzczurEngine v0.0.0");
+#include <SFML/Graphics.hpp>			// RenderWindow
+#include <SFML/System.hpp>				// Clock, Vector2
 
-		_modules.getModule<Canvas>().recreateLayers();
-	}
+#include "Szczur/Utility/Logger.hpp"	// LOG_EXCEPTION
 
-	void Application::input() {
-		sf::Event event;
+namespace rat
+{
 
-		while (_window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed) {
-				_window.close();
-			}
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-				_window.close();
-			}
-		}
+Application::Application()
+{
+	_window.create(sf::VideoMode(1280, 720), "SzczurEngine v0.0.0");
 
-		_modules.forEach([&](auto& mod) {
+	_modules.getModule<Canvas>().init(&_window);
+}
+
+void Application::changeResolution(const sf::Vector2u& size)
+{
+	_window.create(sf::VideoMode(size.x, size.y), "SzczurEngine v0.0.0");
+
+	_modules.getModule<Canvas>().recreateLayers();
+}
+
+void Application::input()
+{
+	sf::Event event;
+
+	while (_window.pollEvent(event)) {
+		_modules.forEach<Module<>::Inputable>([&](auto& mod) {
 			mod.input(event);
 		});
+		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // @warn delete in final product
+			_window.close();
+		}
 	}
+}
 
-	void Application::update() {
-		auto deltaTime = _mainClock.restart().asSeconds();
+void Application::update()
+{
+	auto deltaTime = _mainClock.restart().asSeconds();
 
-		_modules.forEach([=](auto& mod) {
-			mod.update(deltaTime);
-		});
-	}
+	_modules.forEach<Module<>::Updatable>([=](auto& mod) {
+		mod.update(deltaTime);
+	});
+	
+	_modules.getModule<Input>().finish();
+}
 
-	void Application::render() {
-		_window.clear();
+void Application::render()
+{
+	_window.clear();
 
-		_modules.forEach([](auto& mod) {
-			mod.render();
-		});
+	_modules.forEach<Module<>::Renderable>([](auto& mod) {
+		mod.render();
+	});
 
-		_window.display();
-	}
+	_window.display();
+}
 
-	int Application::run() {
+int Application::run()
+{
+	// Doubled `while` loop for preventing try-catch block from remarking code with exceptions handler. 
+	while (_window.isOpen()) try {
+		// Main loop here
 		while (_window.isOpen()) {
 			input();
 			update();
 			render();
 		}
-
-		return 0;
 	}
+	catch (...) {
+		LOG_EXCEPTION('\n', boost::current_exception_diagnostic_information());
+	}
+
+	return 0;
+}
+
 }

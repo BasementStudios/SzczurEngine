@@ -1,80 +1,132 @@
 #pragma once
 
+#include <functional>
 #include <tuple>
 
-#include <SFML/Window/Event.hpp>
+namespace rat
+{
 
-#include "ForEach.hpp"
+/** @class Module
+ ** @description Module class.
+ **/
+template<typename... TModules>
+class Module
+{
+	/* Types */
+public:
+	// Traits
+	struct Inputable {};
+	struct Updatable {};
+	struct Renderable {};
+	
+	using Holder_t = const std::tuple<std::add_lvalue_reference_t<TModules>...>;
 
-namespace rat {
-	template<typename... TModules>
-	class ModuleBase {
-	public:
 
-		using Holder_t = const std::tuple<std::add_lvalue_reference_t<TModules>...>;
 
-	private:
+	/* Variables */
+private:
+	Holder_t _modulesRefs;
 
-		Holder_t _modules;
 
-	public:
 
-		template<typename UTuple>
-		ModuleBase(UTuple&& modules);
+	/* Operators */
+public:
+	template<typename TModule>
+	Module(TModule&& modules);
 
-		ModuleBase(const ModuleBase&) = default;
+	// Disable copy and move constructor and operators 
+	Module(const Module&) = delete;
+	Module& operator = (const Module&) = delete;
 
-		ModuleBase& operator = (const ModuleBase&) = default;
+	Module(Module&&) = default;
+	Module& operator = (Module&&) = default;
 
-		ModuleBase(ModuleBase&&) = default;
 
-		ModuleBase& operator = (ModuleBase&&) = default;
 
-	protected:
+	/* Methods */
+public:
+	template<typename TModule>
+	static constexpr bool dependsOn();
 
-		template<typename TModule>
-		TModule& getModule();
+	static constexpr size_t dependenciesCount();
 
-		template<typename TModule>
-		const TModule& getModule() const;
-	};
+protected:
+	template<typename TModule>
+	TModule& _getModule();
+	template<typename TModule>
+	const TModule& _getModule() const;
+};
 
-	template<typename... TModules>
-	class ModulesHolder {
-	public:
 
-		using Holder_t = std::tuple<TModules...>;
 
-		template<typename...>
-		struct Dummy {};
+/** @class ModulesHolder
+ ** @description Module holder class.
+ **/
+template<typename... TModules>
+class ModulesHolder
+{
+	/* Types */
+public:
+	using Holder_t    = std::tuple<TModules...>;
+	template<size_t TIndex>
+	using NthModule_t = std::tuple_element_t<TIndex, Holder_t>;
 
-	private:
 
-		std::tuple<TModules...> _modules;
 
-	public:
+	/* Variables */
+private:
+	Holder_t _modules;
 
-		ModulesHolder();
 
-		ModulesHolder(const ModulesHolder&) = delete;
 
-		ModulesHolder& operator = (const ModulesHolder&) = delete;
+	/* Operators */
+public:
+	static constexpr size_t modulesCount();
 
-		ModulesHolder(ModulesHolder&&) = delete;
+	ModulesHolder();
 
-		ModulesHolder& operator = (ModulesHolder&&) = delete;
+	// Disable copy and move constructor and operators
+	ModulesHolder(const ModulesHolder&) = delete;
+	ModulesHolder& operator = (const ModulesHolder&) = delete;
 
-		template<typename F>
-		void forEach(F&& function);
-		template<typename F>
-		void forEach(F&& function) const;
+	ModulesHolder(ModulesHolder&&) = delete;
+	ModulesHolder& operator = (ModulesHolder&&) = delete;
 
-		template<typename TModule>
-		TModule& getModule();
 
-		template<typename TModule>
-		const TModule& getModule() const;
-	};
+
+	/* Methods */
+public:
+	template<typename TFunction>
+	void forEach(TFunction&& function);
+	template<typename TFunction>
+	void forEach(TFunction&& function) const;
+
+	template<typename TModule, typename TFunction>
+	void forEach(TFunction&& function);
+	template<typename TModule, typename TFunction>
+	void forEach(TFunction&& function) const;
+
+	template<typename TModule>
+	TModule& getModule();
+	template<typename TModule>
+	const TModule& getModule() const;
+
+private:
+	template<typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>);
+	template<typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>) const;
+
+	template<typename TModule, typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>);
+	template<typename TModule, typename TFunction, size_t... TIndices>
+	void _forEach(TFunction&& function, std::index_sequence<TIndices...>) const;
+
+	template<size_t TIndex, typename TModule, typename TFunction>
+	void _forEachHelper(TFunction&& function);
+	template<size_t TIndex, typename TModule, typename TFunction>
+	void _forEachHelper(TFunction&& function) const;
+};
 
 }
 

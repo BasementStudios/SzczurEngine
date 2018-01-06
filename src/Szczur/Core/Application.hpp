@@ -1,38 +1,64 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+/** @file Application.cpp
+ ** @description Main application class file.
+ **/
 
+#include <SFML/Graphics.hpp>			// RenderWindow
+#include <SFML/System.hpp>				// Clock, Vector2
+
+#include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Lua/Lua.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
-namespace rat {
-	class Application {
-	private:
+namespace rat
+{
 
-		ModulesHolder<
-			Assets,
-			Canvas,
-			Lua,
-			DragonBones
-		> _modules;
+/** @class Application
+ ** @description Main application class.
+ **/
+class Application
+{
+	/* Variables */
+private:
+	// Modules
+	ModulesHolder<
+		Input,
+		Assets,
+		Canvas
+	> _modules;
 
-		sf::RenderWindow _window;
-		sf::Clock _mainClock;
+	// Window
+	sf::RenderWindow _window;
 
-	public:
+	// Clock
+	sf::Clock _mainClock;
 
-		Application();
 
-		void changeResolution(const sf::Vector2u& size);
 
-		void input();
+	/* Constructor */
+public:
+	Application();
 
-		void update();
 
-		void render();
 
-		int run();
-	};
+	/* Methods */
+public:
+	// Input loop
+	void input();
+
+	// Update loop
+	void update();
+
+	// Render loop
+	void render();
+
+	// Whole runtime
+	int run();
+
+	void changeResolution(const sf::Vector2u& size);
+};
+
 }
