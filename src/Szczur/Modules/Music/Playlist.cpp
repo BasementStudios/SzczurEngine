@@ -24,7 +24,7 @@ namespace rat
 				playNext();
 			}
 			if (_isFileEnding) {
-				_playlist[_currentID]->start(deltaTime, _playlist[_endingID]->getPostTime());
+				_playlist[_currentID]->start(deltaTime, _playlist[_endingID]->getFadeTime());
 				if (_playlist[_endingID]->finish(deltaTime))
 					_isFileEnding = false;
 			}

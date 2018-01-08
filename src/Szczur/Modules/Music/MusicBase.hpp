@@ -13,7 +13,7 @@ namespace rat
 
 		float _bpm;
 		float _timeLeft;
-		float _postTime;
+		float _fadeTime;
 		float _baseVolume;
 		bool _isEnding = false;
 		std::string _name;
@@ -26,7 +26,7 @@ namespace rat
 
 		bool isEnding();
 		bool finish(float deltaTime);
-		void start(float deltaTime, float preTime);
+		void start(float deltaTime, float introTime);
 
 		void play();
 		void pause();
@@ -40,7 +40,7 @@ namespace rat
 
 		sf::SoundSource::Status getStatus() const;
 
-		float getPostTime() const;
+		float getFadeTime() const;
 		float getDuration() const;
 
 		const std::string& getName() const;

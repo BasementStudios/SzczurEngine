@@ -11,20 +11,21 @@ namespace rat
 	bool MusicBase::init(const std::string& fileName, float volume)
 	{
 		_name = fileName;
-		if (!loadMusic())
-			return false;
-		_timeLeft = _base.getDuration().asSeconds();
-		getJsonData();
-		setVolume(volume);
-		_postTime = std::fmod(_timeLeft, (240 / _bpm)); 
-		return true;
+		if (loadMusic()) {
+			_timeLeft = _base.getDuration().asSeconds();
+			getJsonData();
+			setVolume(volume);
+			std::cout << _fadeTime << std::endl;
+			return true;
+		}
+		return false;
 	};
 
 	void MusicBase::update(float deltaTime) 
 	{
 		if (getStatus() != sf::SoundSource::Status::Paused) {
 			_timeLeft -= deltaTime;
-			if (_timeLeft <= _postTime)
+			if (_timeLeft <= _fadeTime)
 				_isEnding = true;
 		}
 	}
@@ -39,7 +40,7 @@ namespace rat
 		_isEnding = false;
 		_timeLeft -= deltaTime;
 		if (_timeLeft > 0) {
-			float volume = (_timeLeft / _postTime) * _baseVolume;
+			float volume = (_timeLeft / _fadeTime) * _baseVolume;
 			_base.setVolume(volume);
 			return false;
 		}
@@ -48,10 +49,10 @@ namespace rat
 		return true;
 	}
 
-	void MusicBase::start(float deltaTime, float preTime) 
+	void MusicBase::start(float deltaTime, float introTime) 
 	{
 		update(deltaTime);
-		float volume = (_baseVolume * (getDuration() - _timeLeft)) / preTime;
+		float volume = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
 		_base.setVolume(volume);
 	}
 
@@ -69,6 +70,13 @@ namespace rat
 			file.close();
 		}
 		_bpm = json[_name]["BPM"];
+		float numberOfBars = json[_name]["FadeTime"];
+
+		if(numberOfBars > 0) {
+			auto barTime = 240 / _bpm;
+			auto lastBar = std::fmod(_timeLeft, barTime);
+			_fadeTime = lastBar + (barTime * (numberOfBars - 1));
+		}
 	}
 
 	void MusicBase::play() 
@@ -101,9 +109,9 @@ namespace rat
 		return _base.getStatus();
 	}
 
-	float MusicBase::getPostTime() const 
+	float MusicBase::getFadeTime() const 
 	{
-		return _postTime;
+		return _fadeTime;
 	}
 
 	float MusicBase::getDuration() const 
