@@ -12,7 +12,7 @@ class Assets : public Module<>
 
 public:
 
-	using Manager_t = AssetsManager<sf::Font, sf::Texture, sf::Shader, sf::Music, sf::SoundBuffer>;
+	using Manager_t = AssetsManager<sf::Font, sf::Texture/*, sf::Shader, sf::Music, sf::SoundBuffer*/>;
 
 private:
 
@@ -22,26 +22,24 @@ public:
 
 	void init();
 
-	bool loadFromJsonFile(const std::string& path);
+	template <typename U>
+	U& load(const std::string& path);
 
-	template<typename TType>
-	bool load(const std::string& path);
-
-	template<typename TType>
+	template <typename U>
 	bool unload(const std::string& path);
 
-	template<typename TType>
+	template <typename U>
 	bool isLoaded(const std::string& path) const;
 
-	template<typename TType>
-	TType* getPtr(const std::string& path);
-	template<typename TType>
-	const TType* getPtr(const std::string& path) const;
+	template <typename U>
+	U* getPtr(const std::string& path);
+	template <typename U>
+	const U* getPtr(const std::string& path) const;
 
-	template<typename TType>
-	TType& get(const std::string& path);
-	template<typename TType>
-	const TType& get(const std::string& path) const;
+	template <typename U>
+	U& getRef(const std::string& path);
+	template <typename U>
+	const U& getRef(const std::string& path) const;
 
 };
 

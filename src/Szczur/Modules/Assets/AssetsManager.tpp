@@ -1,20 +1,28 @@
 namespace rat
 {
 
-template<typename... TTypes>
-template<typename TType>
-bool AssetsManager<TTypes...>::load(const std::string& path)
+template <typename... Ts>
+template <typename U>
+U& AssetsManager<Ts...>::load(const std::string& path)
 {
-	return _getContainer<TType>().try_emplace(_getKeyFromPath(path)).first->second.load(path);
+	if (auto it = _getContainer<U>().try_emplace(_obtainKey(path)).first; it->second.load(path)) {
+		return it->second.getRef();
+	}
+	else {
+		LOG("Cannot load ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback returned");
+		_getContainer<U>().erase(it);
+	}
+
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
-template<typename... TTypes>
-template<typename TType>
-bool AssetsManager<TTypes...>::unload(const std::string& path)
+template <typename... Ts>
+template <typename U>
+bool AssetsManager<Ts...>::unload(const std::string& path)
 {
-	if (auto it = _find<TType>(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
 		if (it->second.unload()) {
-			_getContainer<TType>().erase(it);
+			_getContainer<U>().erase(it);
 			return true;
 		}
 	}
@@ -22,89 +30,89 @@ bool AssetsManager<TTypes...>::unload(const std::string& path)
 	return false;
 }
 
-template<typename... TTypes>
-template<typename TType>
-bool AssetsManager<TTypes...>::isLoaded(const std::string& path) const
+template <typename... Ts>
+template <typename U>
+bool AssetsManager<Ts...>::isLoaded(const std::string& path) const
 {
-	return _find<TType>(_getKeyFromPath(path)) != _getContainer<TType>().end();
+	return _find<U>(_obtainKey(path)) != _getContainer<U>().end();
 }
 
-template<typename... TTypes>
-template<typename TType>
-TType* AssetsManager<TTypes...>::getPtr(const std::string& path)
+template <typename... Ts>
+template <typename U>
+U* AssetsManager<Ts...>::getPtr(const std::string& path)
 {
-	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
 		return it.second.getPtr();
 	}
 
 	return nullptr;
 }
 
-template<typename... TTypes>
-template<typename TType>
-const TType* AssetsManager<TTypes...>::getPtr(const std::string& path) const
+template <typename... Ts>
+template <typename U>
+const U* AssetsManager<Ts...>::getPtr(const std::string& path) const
 {
-	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
+	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
 		return it.second.getPtr();
 	}
 
 	return nullptr;
 }
 
-template<typename... TTypes>
-template<typename TType>
-TType& AssetsManager<TTypes...>::get(const std::string& path)
+template <typename... Ts>
+template <typename U>
+U& AssetsManager<Ts...>::getRef(const std::string& path)
 {
-	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
-		return it.second.get();
+	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it.second.getRef();
 	}
 
 	return nullptr;
 }
 
-template<typename... TTypes>
-template<typename TType>
-const TType& AssetsManager<TTypes...>::get(const std::string& path) const
+template <typename... Ts>
+template <typename U>
+const U& AssetsManager<Ts...>::getRef(const std::string& path) const
 {
-	if (auto it = _find(_getKeyFromPath(path)); it != _getContainer<TType>().end()) {
-		return it.second.get();
+	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it.second.getRef();
 	}
 
 	return nullptr;
 }
 
-template<typename... TTypes>
-typename AssetsManager<TTypes...>::Key_t AssetsManager<TTypes...>::_getKeyFromPath(const std::string& path) const
+template <typename... Ts>
+typename AssetsManager<Ts...>::Key_t AssetsManager<Ts...>::_obtainKey(const std::string& path) const
 {
 	return fnv1a_64(path.begin(), path.end());
 }
 
-template<typename... TTypes>
-template<typename TType>
-typename AssetsManager<TTypes...>::template Container_t<TType>& AssetsManager<TTypes...>::_getContainer()
+template <typename... Ts>
+template <typename U>
+typename AssetsManager<Ts...>::template Container_t<U>& AssetsManager<Ts...>::_getContainer()
 {
-	return std::get<Container_t<TType>>(_holder);
+	return std::get<1>(std::get<Held_t<U>>(_holder));
 }
 
-template<typename... TTypes>
-template<typename TType>
-const typename AssetsManager<TTypes...>::template Container_t<TType>& AssetsManager<TTypes...>::_getContainer() const
+template <typename... Ts>
+template <typename U>
+const typename AssetsManager<Ts...>::template Container_t<U>& AssetsManager<Ts...>::_getContainer() const
 {
-	return std::get<Container_t<TType>>(_holder);
+	return std::get<1>(std::get<Held_t<U>>(_holder));
 }
 
-template<typename... TTypes>
-template<typename TType>
-typename AssetsManager<TTypes...>::template Iterator_t<TType> AssetsManager<TTypes...>::_find(const Key_t& _Key)
+template <typename... Ts>
+template <typename U>
+typename AssetsManager<Ts...>::template Iterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key)
 {
-	return _getContainer<TType>().find(_Key);
+	return _getContainer<U>().find(_Key);
 }
 
-template<typename... TTypes>
-template<typename TType>
-typename AssetsManager<TTypes...>::template ConstIterator_t<TType> AssetsManager<TTypes...>::_find(const Key_t& _Key) const
+template <typename... Ts>
+template <typename U>
+typename AssetsManager<Ts...>::template ConstIterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key) const
 {
-	return _getContainer<TType>().find(_Key);
+	return _getContainer<U>().find(_Key);
 }
 
 }

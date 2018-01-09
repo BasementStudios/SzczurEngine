@@ -8,7 +8,7 @@
 namespace rat
 {
 
-enum Status_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
+enum InputStatus_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 
 class Input : public Module<>, Inputable
 {
@@ -16,9 +16,9 @@ class Input : public Module<>, Inputable
 
 private:
 
-	Status_t _keyboard[Keyboard::Count];
-	Status_t _mouse[Mouse::Count];
-	Status_t _scroll[Scroll::Count];
+	InputStatus_t _keyboard[Keyboard::Count];
+	InputStatus_t _mouse[Mouse::Count];
+	InputStatus_t _scroll[Scroll::Count];
 
 	InputCode _recentlyPressed;
 	InputCode _recentlyReleased;
@@ -35,9 +35,9 @@ public:
 
 	void release(const InputCode& code);
 
-	Status_t getStatus(const InputCode& code) const;
+	InputStatus_t getStatus(const InputCode& code) const;
 
-	bool checkStatus(const InputCode& code, Status_t _Status) const;
+	bool checkStatus(const InputCode& code, InputStatus_t _Status) const;
 
 	bool isUnkept(const InputCode& code) const;
 

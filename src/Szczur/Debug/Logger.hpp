@@ -2,69 +2,55 @@
 
 #ifndef NDEBUG
 
-// C++
 #include <ctime>
 #include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <string_view>
 
 namespace rat
 {
 
 class DebugLogger
 {
-private:
-
-	void _putTime(const char* format)
-	{
-		std::time_t tm = std::time(nullptr);
-
-		std::strftime(_buffer, sizeof(_buffer), format, std::localtime(&tm));
-	}
-
-	char _buffer[64];
-	std::ofstream _logFile;
-
 public:
 
-	DebugLogger() :
-		_logFile(std::to_string(std::time(nullptr)) + ".log")
-	{
-		_putTime("%H:%M:%S - %d %B %Y\n");
+    template <typename... Ts>
+    void log(const char* file, int line, Ts&&... args)
+    {
+        _formatTime("%H:%M:%S");
 
-		_logFile << _buffer;
-	}
+        std::string_view view = file;
+        view = view.substr(view.find_last_of('/') + 1);
 
-	DebugLogger(const DebugLogger&) = delete;
+        _logFile << '[' << _buffer << ' ' << view << ' ' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n';
+        std::cerr << '[' << _buffer << ' ' << view << ' ' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n';
+    }
 
-	DebugLogger& operator = (const DebugLogger&) = delete;
+private:
 
-	DebugLogger(DebugLogger&&) = delete;
+    void _formatTime(const char* format)
+    {
+        std::time_t tm = std::time(nullptr);
 
-	DebugLogger& operator = (DebugLogger&&) = delete;
+        std::strftime(_buffer, sizeof(_buffer), format, std::localtime(&tm));
+    }
 
-	template<typename... Ts>
-	DebugLogger& log(const char* file, int line, Ts&&... args)
-	{
-		_putTime("%H:%M:%S ");
+    char _buffer[64];
+    std::ofstream _logFile = std::ofstream(std::to_string(std::time(nullptr)) + ".log");
 
-		_logFile << '\n' << '[' << _buffer << file << ' ' << line << ']' << ' ';
-
-		(_logFile << ... << std::forward<Ts>(args));
-
-		return *this;
-	}
-
-} inline logger;
+} inline * logger;
 
 }
 
-#define rat_Log(...) { rat::logger.log(__FILE__, __LINE__, __VA_ARGS__); }
-#define rat_LogIf(condition, ...) { if (condition) { rat_Log(__VA_ARGS__) } }
-#define rat_LogIfCx(condition, ...) { if constexpr (condition) { rat_Log(__VA_ARGS__) } }
+#define LOG(...) { rat::logger->log(__FILE__, __LINE__, __VA_ARGS__); }
+#define LOG_IF(condition, ...) { if(condition) { LOG(__VA_ARGS__) } }
+#define LOG_IF_CX(condition, ...) { if constexpr(condition) { LOG(__VA_ARGS__) } }
 
 #else
 
-#define rat_Log(...)
-#define rat_LogIf(...)
-#define rat_LogIfCx(...)
+#define LOG(...)
+#define LOG_IF(...)
+#define LOG_IF_CX(...)
 
 #endif

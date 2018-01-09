@@ -7,7 +7,7 @@
 namespace rat
 {
 
-enum Input_t { Keyboard = 0x10000, Mouse = 0x20000, Scroll = 0x30000 };
+enum InputDevice_t { Keyboard = 0x10000, Mouse = 0x20000, Scroll = 0x30000 };
 
 class InputCode
 {
@@ -35,7 +35,7 @@ public:
 
 	explicit InputCode(int data);
 
-	Input_t getType() const;
+	InputDevice_t getType() const;
 
 	int getID() const;
 

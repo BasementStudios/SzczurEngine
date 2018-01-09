@@ -22,11 +22,13 @@ private:
 	sf::RenderWindow _window;
 	sf::Clock _mainClock;
 
+	// sf::Texture* tex[3];
+
 public:
 
 	Application();
 
-	void changeResolution(const sf::Vector2u& size);
+	void init();
 
 	void input();
 

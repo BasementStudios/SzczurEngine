@@ -1,46 +1,46 @@
 namespace rat
 {
 
-template<typename TType>
-bool Assets::load(const std::string& path)
+template <typename U>
+U& Assets::load(const std::string& path)
 {
-	return _manager.load<TType>(path);
+	return _manager.load<U>(path);
 }
 
-template<typename TType>
+template <typename U>
 bool Assets::unload(const std::string& path)
 {
-	return _manager.unload<TType>(path);
+	return _manager.unload<U>(path);
 }
 
-template<typename TType>
+template <typename U>
 bool Assets::isLoaded(const std::string& path) const
 {
-	return _manager.isLoaded<TType>(path);
+	return _manager.isLoaded<U>(path);
 }
 
-template<typename TType>
-TType* Assets::getPtr(const std::string& path)
+template <typename U>
+U* Assets::getPtr(const std::string& path)
 {
-	return _manager.getPtr<TType>(path);
+	return _manager.getPtr<U>(path);
 }
 
-template<typename TType>
-const TType* Assets::getPtr(const std::string& path) const
+template <typename U>
+const U* Assets::getPtr(const std::string& path) const
 {
-	return _manager.getPtr<TType>(path);
+	return _manager.getPtr<U>(path);
 }
 
-template<typename TType>
-TType& Assets::get(const std::string& path)
+template <typename U>
+U& Assets::getRef(const std::string& path)
 {
-	return _manager.get<TType>(path);
+	return _manager.getRef<U>(path);
 }
 
-template<typename TType>
-const TType& Assets::get(const std::string& path) const
+template <typename U>
+const U& Assets::getRef(const std::string& path) const
 {
-	return _manager.get<TType>(path);
+	return _manager.getRef<U>(path);
 }
 
 }

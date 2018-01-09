@@ -3,24 +3,27 @@
 #include <boost/container/flat_map.hpp>
 
 #include "Asset.hpp"
+#include "FallbackAsset.hpp"
 #include "Szczur/Utility/Hash.hpp"
 
 namespace rat
 {
 
-template<typename... TTypes>
+template <typename... Ts>
 class AssetsManager
 {
 public:
 
 	using Key_t           = Hash64_t;
-	template <typename TType>
-	using Container_t     = boost::container::flat_map<Key_t, Asset<TType>>;
-	template <typename TType>
-	using Iterator_t      = typename Container_t<TType>::iterator;
-	template <typename TType>
-	using ConstIterator_t = typename Container_t<TType>::const_iterator;
-	using Holder_t        = std::tuple<Container_t<TTypes>...>;
+	template <typename U>
+	using Container_t     = boost::container::flat_map<Key_t, Asset<U>>;
+	template <typename U>
+	using Iterator_t      = typename Container_t<U>::iterator;
+	template <typename U>
+	using ConstIterator_t = typename Container_t<U>::const_iterator;
+	template <typename U>
+	using Held_t          = std::tuple<FallbackAsset<U>, Container_t<U>>;
+	using Holder_t        = std::tuple<Held_t<Ts>...>;
 
 private:
 
@@ -38,40 +41,40 @@ public:
 
 	AssetsManager& operator = (AssetsManager&&) = default;
 
-	template<typename TType>
-	bool load(const std::string& path);
+	template <typename U>
+	U& load(const std::string& path);
 
-	template<typename TType>
+	template <typename U>
 	bool unload(const std::string& path);
 
-	template<typename TType>
+	template <typename U>
 	bool isLoaded(const std::string& path) const;
 
-	template<typename TType>
-	TType* getPtr(const std::string& path);
-	template<typename TType>
-	const TType* getPtr(const std::string& path) const;
+	template <typename U>
+	U* getPtr(const std::string& path);
+	template <typename U>
+	const U* getPtr(const std::string& path) const;
 
-	template<typename TType>
-	TType& get(const std::string& path);
-	template<typename TType>
-	const TType& get(const std::string& path) const;
+	template <typename U>
+	U& getRef(const std::string& path);
+	template <typename U>
+	const U& getRef(const std::string& path) const;
 
 private:
 
-	Key_t _getKeyFromPath(const std::string& path) const;
+	Key_t _obtainKey(const std::string& path) const;
 
-	template<typename TType>
-	Container_t<TType>& _getContainer();
+	template <typename U>
+	Container_t<U>& _getContainer();
 
-	template<typename TType>
-	const Container_t<TType>& _getContainer() const;
+	template <typename U>
+	const Container_t<U>& _getContainer() const;
 
-	template<typename TType>
-	Iterator_t<TType> _find(const Key_t& _Key);
+	template <typename U>
+	Iterator_t<U> _find(const Key_t& _Key);
 
-	template<typename TType>
-	ConstIterator_t<TType> _find(const Key_t& _Key) const;
+	template <typename U>
+	ConstIterator_t<U> _find(const Key_t& _Key) const;
 
 };
 
