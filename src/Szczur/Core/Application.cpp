@@ -13,10 +13,6 @@ void Application::init()
 	_modules.getModule<Assets>().init();
 
 	_modules.getModule<Canvas>().init(&_window);
-
-	// tex[0] = &_modules.getModule<Assets>().load<sf::Texture>("JenaLee.png");
-	// tex[1] = &_modules.getModule<Assets>().load<sf::Texture>("MrRain.png");
-	// tex[2] = &_modules.getModule<Assets>().load<sf::Texture>("NotTorvalds.png");
 }
 
 void Application::input()
@@ -51,11 +47,6 @@ void Application::render()
 	_modules.forEach<Renderable>([](auto& mod) {
 		mod.render();
 	});
-
-	// sf::Sprite spr[3]{ sf::Sprite(*tex[0]), sf::Sprite(*tex[1]), sf::Sprite(*tex[2]) };
-	// _window.draw(spr[0]);
-	// _window.draw(spr[1]);
-	// _window.draw(spr[2]);
 
 	_window.display();
 }

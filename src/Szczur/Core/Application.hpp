@@ -22,8 +22,6 @@ private:
 	sf::RenderWindow _window;
 	sf::Clock _mainClock;
 
-	// sf::Texture* tex[3];
-
 public:
 
 	Application();
