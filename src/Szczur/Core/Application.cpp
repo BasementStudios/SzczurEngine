@@ -1,31 +1,47 @@
 #include "Application.hpp"
 
+/** @file Application.cpp
+ ** @description Implementation file for application main class.
+ **/
+
+#include <exception>
+
+#include <boost/exception/diagnostic_information.hpp> 
+
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Window.hpp>
+
+#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Debug/Logger.hpp"
+
 namespace rat
 {
 
 Application::Application()
 {
-	_window.create(sf::VideoMode(1280, 720), "SzczurEngine v0.0.0");
+
 }
 
 void Application::init()
 {
-	_modules.getModule<Assets>().init();
-
-	_modules.getModule<Canvas>().init(&_window);
+	this->_modules.forEach([&](auto& mod) {
+		mod.init();
+	});
 }
 
 void Application::input()
 {
 	sf::Event event;
 
-	while (_window.pollEvent(event)) {
-		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // delete in final product
-			_window.close();
-		}
-		_modules.forEach<Inputable>([&](auto& mod) {
+	while (getWindow().pollEvent(event)) {
+		_modules.forEach<Module<>::Inputable>([&](auto& mod) {
 			mod.input(event);
 		});
+
+		 // @warn delete in final product
+		if (event.type == sf::Event::Closed || getModule<Input>().isPressed(Keyboard::Escape)) {
+			getWindow().close();
+		}
 	}
 }
 
@@ -33,35 +49,51 @@ void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asSeconds();
 
-	_modules.forEach<Updatable>([=](auto& mod) {
+	_modules.forEach<Module<>::Updatable>([=](auto& mod) {
 		mod.update(deltaTime);
 	});
-
-	_modules.getModule<Input>().finish();
+	
+	getModule<Input>().finish();
 }
 
 void Application::render()
 {
-	_window.clear();
+	// _modules.forEach<Module<>::Renderable>([](auto& mod) {
+	// 	mod.render();
+	// });
 
-	_modules.forEach<Renderable>([](auto& mod) {
-		mod.render();
-	});
-
-	_window.display();
+	getModule<Canvas>().render();
+	getModule<Window>().render();
 }
 
 int Application::run()
 {
 	init();
 
-	while (_window.isOpen()) {
-		input();
-		update();
-		render();
+	while (getWindow().isOpen()) {
+		try {
+			// Main loop here
+			while (getWindow().isOpen()) {
+				input();
+				update();
+				render();
+			}
+		}
+		catch (...) {
+			LOG_ERROR("Exception occured: \n", boost::current_exception_diagnostic_information());
+		}
 	}
 
 	return 0;
+}
+
+sf::Window& Application::getWindow()
+{
+	return this->getModule<Window>().getWindow(); 
+}
+const sf::Window& Application::getWindow() const
+{
+	return this->getModule<Window>().getWindow();
 }
 
 }

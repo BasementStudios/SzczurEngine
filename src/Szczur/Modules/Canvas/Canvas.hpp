@@ -1,54 +1,49 @@
 #pragma once
 
-#include <array>
-#include <memory>
+/** @file Canvas.hpp
+ ** @description Header file with main class of the Canvas module. 
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
 
-#include <SFML/Graphics.hpp>
+#include <string>						// string
+#include <array>						// array
+#include <memory>						// unique_ptr
 
-#include "RenderLayer.hpp"
+#include <SFML/Window/Event.hpp>
+
 #include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "RenderCanvas.hpp"
 
 namespace rat
 {
 
-class Canvas : public Module<>, Updatable, Renderable
+enum class Layers : std::size_t
 {
+	Background, 	First = Background,
+	SceneBack, 
+	Objects, 
+	SceneFront, 
+	GUI,			Last = GUI,
+	Count
+};
+
+/** @class Canvas
+ ** @description Manages the render layers, draws
+ **/
+class Canvas : public RenderCanvas<(std::size_t)Layers::Count>, public Module<Window>, Module<>::Inputable, Module<>::Renderable
+{	
 	using Module::Module;
 
+
+
+	/* Methods */
 public:
+	/// Module init
+	void init();
 
-	enum class LayerId : size_t
-	{
-		Back, Game,
-		Count
-	};
-
-	using Holder_t = std::array<std::unique_ptr<rat::RenderLayer>, (size_t)LayerId::Count>;
-
-private:
-
-	sf::RenderWindow* _windowPtr;
-	Holder_t _layers;
-
-public:
-
-	void init(sf::RenderWindow* windowPtr);
-
-	void update(float deltaTime);
-
-	void render();
-
-	void recreateLayers();
-
-	sf::RenderWindow& getWindow();
-	const sf::RenderWindow& getWindow() const;
-
-	rat::RenderLayer& getLayer(LayerId id);
-	const rat::RenderLayer& getLayer(LayerId id) const;
-
-	void draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
-	void draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
-
+	/// Module input
+	void input(const sf::Event& event);
 };
 
 }

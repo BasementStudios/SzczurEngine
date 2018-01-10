@@ -10,7 +10,7 @@ namespace rat
 
 enum InputStatus_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 
-class Input : public Module<>, Inputable
+class Input : public Module<>, Module<>::Inputable
 {
 	using Module::Module;
 
@@ -26,6 +26,8 @@ private:
 	unsigned _enteredCharacter;
 
 public:
+
+	void init();
 
 	void input(const sf::Event& event);
 

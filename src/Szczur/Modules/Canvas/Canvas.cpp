@@ -1,61 +1,42 @@
 #include "Canvas.hpp"
 
+/** @file Canvas.cpp
+ ** @description Implementation file for main class of the Canvas module.
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
+#include <tuple>						// tuple, get
+#include <string>						// string
+#include <array>						// array
+#include <memory>						// unique_ptr
+
+#include <SFML/Window/Event.hpp>
+
+#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "RenderLayer.hpp"
+
 namespace rat
 {
 
-void Canvas::init(sf::RenderWindow* windowPtr)
+// init
+void Canvas::init()
 {
-	_windowPtr = windowPtr;
-
-	for (auto& av : _layers)
-		av.reset(new RenderLayer(_windowPtr->getSize()));
+	LOG_INFO("Canvas: Initializing");
+	this->setTarget(this->_getModule<Window>().getWindow());
+	LOG_INFO("Canvas: Initialized!");
 }
 
-void Canvas::update(float deltaTime)
+// input
+void Canvas::input(const sf::Event& event)
 {
-	(void)deltaTime;
-}
-
-void Canvas::render()
-{
-	for (auto& av : _layers)
-		av->display(*_windowPtr);
-}
-
-void Canvas::recreateLayers()
-{
-	for (auto& av : _layers)
-		av->recreate(_windowPtr->getSize());
-}
-
-sf::RenderWindow& Canvas::getWindow()
-{
-	return *_windowPtr;
-}
-
-const sf::RenderWindow& Canvas::getWindow() const
-{
-	return *_windowPtr;
-}
-
-rat::RenderLayer& Canvas::getLayer(LayerId id)
-{
-	return *_layers[(size_t)id];
-}
-
-const rat::RenderLayer& Canvas::getLayer(LayerId id) const
-{
-	return *_layers[(size_t)id];
-}
-
-void Canvas::draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states)
-{
-	_layers[(size_t)id]->draw(drawable, states);
-}
-
-void Canvas::draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
-{
-	_layers[(size_t)id]->draw(vertices, vertexCount, type, states);
+	switch(event.type) {
+		case sf::Event::EventType::Resized:
+			this->setSize(event.size.width, event.size.height);
+			break;
+		// @warn @test Window::setVideoMode 
+		default: break;
+	}
 }
 
 }

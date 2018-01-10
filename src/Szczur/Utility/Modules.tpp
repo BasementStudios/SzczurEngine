@@ -46,9 +46,11 @@ constexpr size_t ModulesHolder<Ts...>::modulesCount()
 	return std::tuple_size_v<std::decay_t<Holder_t>>;
 }
 
-template <typename... Ts>
-ModulesHolder<Ts...>::ModulesHolder() :
-	_modules(Ts{ _modules }...)
+template<typename> struct Dummy {};
+
+template<typename... TModules>
+ModulesHolder<TModules...>::ModulesHolder() :
+	_modules((Dummy<TModules>{}, _modules)...)
 {
 
 }

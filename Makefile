@@ -104,6 +104,11 @@ CXXFLAGS := -std=c++17 -Wall
 LD       := g++
 LDFLAGS  :=
 
+# Optimalization
+OPTIMALIZE := no
+CXXFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
+ LDFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
+
 # Using MXE? and its options
 MXE := no
 MXE_DIR := /usr/lib/mxe
@@ -135,9 +140,9 @@ MKDIR = mkdir -p
 LIB_LIST := SFML BOOST LUA
 #   SFML
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
-  LDFLAGS_STATIC_SFML   := -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
+  LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
 CXXFLAGS_DYNAMIC_SFML   :=
- LDFLAGS_DYNAMIC_SFML   := -lsfml-graphics -lsfml-window -lsfml-system
+ LDFLAGS_DYNAMIC_SFML   := -lsfml-audio   -lsfml-graphics   -lsfml-window   -lsfml-system   -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm
  MXE_PACKAGENAME_SFML   := sfml
 #   Boost
  CXXFLAGS_STATIC_BOOST  :=
@@ -164,7 +169,7 @@ HEADER_INC_JSON := 3rd-party/json
 COLORS := no
 
 # Markers to grep code with
-MARKERS := @todo @warn @err
+MARKERS := @todo @warn @err @debug
 
 # Dependencies finding
 DEPFLAGS := -MT $$@ -MMD -MP -MF 
@@ -325,6 +330,12 @@ COLON_REPLACEMENT := _c0loN
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
 CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
 
+# Adding optimalization flags
+ifeq ($(OPTIMALIZE),yes)
+    CXXFLAGS += $(CXXFLAGS_OPTIMALIZATION)
+     LDFLAGS +=  $(LDFLAGS_OPTIMALIZATION)
+endif
+
 
 
 #
@@ -470,8 +481,8 @@ endif
 #
 
 # @warn przynajmniej narazie xd ;f
-ifneq ($(MARKERS),)
-#ifeq ($(findstring code,$(MAKECMDGOALS)),code)
+#ifneq ($(MARKERS),)
+ifeq ($(findstring code,$(MAKECMDGOALS)),code)
 
 # Sources
 .PHONY: src $(SOURCES)
@@ -516,7 +527,6 @@ run: all
 	$(V)-cp $(OUT_FILE) $(RUN_FILE) 1>&2 2>/dev/null || :
 	$(V)chmod +x $(RUN_FILE)
 	$(V)-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
-	@echo "Ran with exit code $$?."
 
 # Informations (for debug) 
 .PHONY: info echo

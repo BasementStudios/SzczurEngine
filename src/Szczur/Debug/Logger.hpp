@@ -23,8 +23,8 @@ public:
         std::string_view view = file;
         view = view.substr(view.find_last_of('/') + 1);
 
-        _logFile << '[' << _buffer << ' ' << view << ' ' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n';
-        std::cerr << '[' << _buffer << ' ' << view << ' ' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n';
+        _logFile  << '[' << _buffer << ']' << '[' << view << ':' << line << ']' << ' '; (_logFile  << ... << std::forward<Ts>(args)); _logFile  << '\n';
+        std::cerr << '[' << _buffer << ']' << '[' << view << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n';
     }
 
 private:
@@ -48,11 +48,11 @@ inline DebugLogger* logger;
 #define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
 #define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
 #define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
-#define LOG_INFO_IF(condition, ...) { if(condition) { LOG_INFO(__VA_ARGS__) } }
-#define LOG_WARN_IF(condition, ...) { if(condition) { LOG_WARN(__VA_ARGS__) } }
-#define LOG_ERROR_IF(condition, ...) { if(condition) { LOG_ERROR(__VA_ARGS__) } }
-#define LOG_INFO_IF_CX(condition, ...) { if constexpr(condition) { LOG_INFO(__VA_ARGS__) } }
-#define LOG_WARN_IF_CX(condition, ...) { if constexpr(condition) { LOG_WARN(__VA_ARGS__) } }
+#define LOG_INFO_IF(condition, ...)     { if(condition) {           LOG_INFO(__VA_ARGS__) } }
+#define LOG_WARN_IF(condition, ...)     { if(condition) {           LOG_WARN(__VA_ARGS__) } }
+#define LOG_ERROR_IF(condition, ...)    { if(condition) {           LOG_ERROR(__VA_ARGS__) } }
+#define LOG_INFO_IF_CX(condition, ...)  { if constexpr(condition) { LOG_INFO(__VA_ARGS__) } }
+#define LOG_WARN_IF_CX(condition, ...)  { if constexpr(condition) { LOG_WARN(__VA_ARGS__) } }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr(condition) { LOG_ERROR(__VA_ARGS__) } }
 
 #else

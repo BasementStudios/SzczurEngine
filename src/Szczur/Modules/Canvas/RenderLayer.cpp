@@ -1,44 +1,57 @@
 #include "RenderLayer.hpp"
 
+/** @file RemderLayer.hpp
+ ** @description Implementaion file for RenderLayer class.
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+
 namespace rat
 {
 
-RenderLayer::RenderLayer(const sf::Vector2u& size)
+// Size
+sf::Vector2u RenderLayer::getSize() const
 {
-	_renderTexture.create(size.x, size.y);
+	return this->_texture.getSize();
+}
+void RenderLayer::setSize(const sf::Vector2u& size)
+{
+	this->_texture.create(size.x, size.y);
+	this->_texture.clear(sf::Color::Black);
 }
 
-void RenderLayer::recreate(const sf::Vector2u& size)
+// RenderStates
+const sf::RenderStates RenderLayer::getRenderStates() const
 {
-	_renderTexture.create(size.x, size.y);
+	return this->_states;
 }
-
 void RenderLayer::setRenderStates(const sf::RenderStates& states)
 {
-	_states = states;
+	this->_states = states;
 }
 
-sf::RenderStates RenderLayer::getRenderStates() const
-{
-	return _states;
-}
 
+// draw
 void RenderLayer::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 {
-	_renderTexture.draw(drawable, states);
+	_texture.draw(drawable, states);
 }
 
+// draw
 void RenderLayer::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
-	_renderTexture.draw(vertices, vertexCount, type, states);
+	_texture.draw(vertices, vertexCount, type, states);
 }
 
+// display
 void RenderLayer::display(sf::RenderTarget& target)
 {
-	_renderTexture.display();
-	sf::Sprite spr(_renderTexture.getTexture());
+	_texture.display();
+	sf::Sprite spr(_texture.getTexture());
 	target.draw(spr, _states);
-	_renderTexture.clear(sf::Color::Transparent);
+	_texture.clear(sf::Color::Transparent);
 }
 
 }
