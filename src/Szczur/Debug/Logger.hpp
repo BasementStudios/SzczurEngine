@@ -39,18 +39,32 @@ private:
     char _buffer[64];
     std::ofstream _logFile = std::ofstream(std::to_string(std::time(nullptr)) + ".log");
 
-} inline * logger;
+};
+
+inline DebugLogger* logger;
 
 }
 
-#define LOG(...) { rat::logger->log(__FILE__, __LINE__, __VA_ARGS__); }
-#define LOG_IF(condition, ...) { if(condition) { LOG(__VA_ARGS__) } }
-#define LOG_IF_CX(condition, ...) { if constexpr(condition) { LOG(__VA_ARGS__) } }
+#define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
+#define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
+#define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
+#define LOG_INFO_IF(condition, ...) { if(condition) { LOG_INFO(__VA_ARGS__) } }
+#define LOG_WARN_IF(condition, ...) { if(condition) { LOG_WARN(__VA_ARGS__) } }
+#define LOG_ERROR_IF(condition, ...) { if(condition) { LOG_ERROR(__VA_ARGS__) } }
+#define LOG_INFO_IF_CX(condition, ...) { if constexpr(condition) { LOG_INFO(__VA_ARGS__) } }
+#define LOG_WARN_IF_CX(condition, ...) { if constexpr(condition) { LOG_WARN(__VA_ARGS__) } }
+#define LOG_ERROR_IF_CX(condition, ...) { if constexpr(condition) { LOG_ERROR(__VA_ARGS__) } }
 
 #else
 
-#define LOG(...)
-#define LOG_IF(...)
-#define LOG_IF_CX(...)
+#define LOG_INFO(...)
+#define LOG_WARN(...)
+#define LOG_ERROR(...)
+#define LOG_INFO_IF(...)
+#define LOG_WARN_IF(...)
+#define LOG_ERROR_IF(...)
+#define LOG_INFO_IF_CX(...)
+#define LOG_WARN_IF_CX(...)
+#define LOG_ERROR_IF_CX(...)
 
 #endif

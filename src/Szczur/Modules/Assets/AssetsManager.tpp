@@ -9,7 +9,7 @@ U& AssetsManager<Ts...>::load(const std::string& path)
 		return it->second.getRef();
 	}
 	else {
-		LOG("Cannot load ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+		LOG_WARN("Cannot load ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
 		_getContainer<U>().erase(it);
 	}
 
@@ -45,7 +45,7 @@ U* AssetsManager<Ts...>::getPtr(const std::string& path)
 		return it->second.getPtr();
 	}
 
-	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
 	return std::get<0>(std::get<Held_t<U>>(_holder)).getPtr();
 }
 
@@ -57,7 +57,7 @@ const U* AssetsManager<Ts...>::getPtr(const std::string& path) const
 		return it->second.getPtr();
 	}
 
-	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
 	return std::get<0>(std::get<Held_t<U>>(_holder)).getPtr();
 }
 
@@ -69,7 +69,7 @@ U& AssetsManager<Ts...>::getRef(const std::string& path)
 		return it->second.getRef();
 	}
 
-	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
 	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
@@ -81,7 +81,7 @@ const U& AssetsManager<Ts...>::getRef(const std::string& path) const
 		return it->second.getRef();
 	}
 
-	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
 	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
