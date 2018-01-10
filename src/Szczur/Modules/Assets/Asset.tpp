@@ -37,10 +37,10 @@ Asset<T>::~Asset()
 }
 
 template <typename T>
-template <typename... TArgs>
-bool Asset<T>::load(TArgs&&... args)
+template <typename... Us>
+bool Asset<T>::load(Us&&... args)
 {
-	return ++_refCount > 1 ? true : Traits_t::load(getRef(), std::forward<TArgs>(args)...);
+	return ++_refCount > 1 ? true : Traits_t::load(getRef(), std::forward<Us>(args)...);
 }
 
 template <typename T>

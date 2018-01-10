@@ -37,8 +37,8 @@ public:
 
 	~Asset();
 
-	template <typename... TArgs>
-	bool load(TArgs&&... args);
+	template <typename... Us>
+	bool load(Us&&... args);
 
 	bool unload();
 

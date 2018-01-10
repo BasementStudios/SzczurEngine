@@ -9,7 +9,7 @@ U& AssetsManager<Ts...>::load(const std::string& path)
 		return it->second.getRef();
 	}
 	else {
-		LOG("Cannot load ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback returned");
+		LOG("Cannot load ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
 		_getContainer<U>().erase(it);
 	}
 
@@ -41,44 +41,48 @@ template <typename... Ts>
 template <typename U>
 U* AssetsManager<Ts...>::getPtr(const std::string& path)
 {
-	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
-		return it.second.getPtr();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getPtr();
 	}
 
-	return nullptr;
+	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getPtr();
 }
 
 template <typename... Ts>
 template <typename U>
 const U* AssetsManager<Ts...>::getPtr(const std::string& path) const
 {
-	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
-		return it.second.getPtr();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getPtr();
 	}
 
-	return nullptr;
+	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getPtr();
 }
 
 template <typename... Ts>
 template <typename U>
 U& AssetsManager<Ts...>::getRef(const std::string& path)
 {
-	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
-		return it.second.getRef();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getRef();
 	}
 
-	return nullptr;
+	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
 template <typename... Ts>
 template <typename U>
 const U& AssetsManager<Ts...>::getRef(const std::string& path) const
 {
-	if (auto it = _find(_obtainKey(path)); it != _getContainer<U>().end()) {
-		return it.second.getRef();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getRef();
 	}
 
-	return nullptr;
+	LOG("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
 template <typename... Ts>
