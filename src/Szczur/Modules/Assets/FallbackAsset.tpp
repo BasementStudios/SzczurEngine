@@ -5,7 +5,7 @@ template <typename T>
 FallbackAsset<T>::FallbackAsset() :
 	_ptr(Traits_t::createFallback())
 {
-	LOG_WARN(this, " -> Created fallback asset of type ", AssetTraits<Value_t>::getName());
+	LOG_INFO(this, " -> Created fallback asset of type ", AssetTraits<Value_t>::getName());
 }
 
 template <typename T>
@@ -77,7 +77,7 @@ void FallbackAsset<T>::_clear()
 	if (isValid()) {
 		Traits_t::unload(getRef());
 		delete _ptr;
-		LOG_WARN(this, " -> Destroyed fallback asset of type ", AssetTraits<Value_t>::getName());
+		LOG_INFO(this, " -> Destroyed fallback asset of type ", AssetTraits<Value_t>::getName());
 	}
 }
 

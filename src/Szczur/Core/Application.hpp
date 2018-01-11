@@ -1,73 +1,52 @@
 #pragma once
 
-/** @file Application.cpp
- ** @description Header file with main application class.
- **/
-
 #include <SFML/System/Clock.hpp>
-#include <SFML/Window/Window.hpp>
 
-#include "Szczur/Utility/Modules.hpp"
-#include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
-#include "Szczur/Modules/Canvas/Canvas.hpp"
+#include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Utility/ModulesHolder.hpp"
 
 namespace rat
 {
 
-/** @class Application
- ** @description Main application class.
- **/
 class Application
 {
-	/* Variables */
-private:
-	// Modules
-	ModulesHolder<
-		Window,
-		Input,
-		Assets,
-		Canvas
-	> _modules;
-	
-	// Clock
-	sf::Clock _mainClock;
-
-
-
-	/* Constructor */
 public:
-	Application();
 
+	Application() = default;
 
+	Application(const Application&) = delete;
 
-	/* Methods */
-public:
-	// Init sequence
-	void init();
-	
-	// Input loop
-	void input();
+	Application& operator = (const Application&) = delete;
 
-	// Update loop
-	void update();
+	Application(Application&&) = delete;
 
-	// Render loop
-	void render();
+	Application& operator = (Application&&) = delete;
 
-	// Whole runtime
 	int run();
 
-	// Module
-	template<typename TModule>
-	TModule& getModule();
-	template<typename TModule>
-	const TModule& getModule() const;
+	void init();
 
-	// Window
-	sf::Window& getWindow();
-	const sf::Window& getWindow() const;
+	void input();
+
+	void update();
+
+	void render();
+
+	template <typename T>
+	T& getModule();
+	template <typename T>
+	const T& getModule() const;
+
+	sf::RenderWindow& getWindow();
+	const sf::RenderWindow& getWindow() const;
+
+private:
+
+	ModulesHolder<Assets, Input, Window> _modules;
+	sf::Clock _mainClock;
+
 };
 
 }

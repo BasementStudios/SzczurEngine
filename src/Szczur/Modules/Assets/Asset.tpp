@@ -80,14 +80,14 @@ typename Asset<T>::ConstPointer_t Asset<T>::getPtr() const
 template <typename T>
 typename Asset<T>::Reference_t Asset<T>::getRef()
 {
-	LOG_WARN_IF(getPtr() == nullptr, this, " -> Trying to dereference nullptr in asset of type ", AssetTraits<Value_t>::getName());
+	LOG_ERROR_IF(getPtr() == nullptr, this, " -> Trying to dereference nullptr in asset of type ", AssetTraits<Value_t>::getName());
 	return *getPtr();
 }
 
 template <typename T>
 typename Asset<T>::ConstReference_t Asset<T>::getRef() const
 {
-	LOG_WARN_IF(getPtr() == nullptr, this, " -> Trying to dereference nullptr in asset of type ", AssetTraits<Value_t>::getName());
+	LOG_ERROR_IF(getPtr() == nullptr, this, " -> Trying to dereference nullptr in asset of type ", AssetTraits<Value_t>::getName());
 	return *getPtr();
 }
 

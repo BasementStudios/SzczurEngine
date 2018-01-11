@@ -1,72 +1,66 @@
 #pragma once
 
-/** @file Window.hpp
- ** @description Header file with main class of the Window module. 
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
-
 #include <string>
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 
-#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Utility/Module.hpp"
 
-namespace rat {
-
-/** @class Window
- ** @description Manages application window. 
- **/
-class Window : public Module<>, Module<>::Inputable, Module<>::Renderable 
+namespace rat
 {
-	using Module::Module;
-	
 
+class Window;
 
-	/* Types */
-	using Window_t = sf::RenderWindow;
-	
-
-
-	/* Variables */
-private:
-	Window_t        _window;
-	sf::VideoMode   _currentVideoMode   {1280, 800};
-	std::string     _title              {"SzczurEngine"};
-
-	
-	
-	/* Methods */
+template <typename T>
+class _Window : public Module<Window, T>
+{
 public:
-	/// Module init
-	void init();
 
-	/// Module input
-	void input(const sf::Event& event);
+	using Window_t = sf::RenderWindow;
 
-	/// Module render
-	void render();
-	
-	/** @property Window
-	 ** @description Provides access to application window.
-	 ** @access get
-	 **/
-	Window_t& getWindow();
-	const Window_t& getWindow() const;
-	
-	/** @property VideoMode
-	 ** @description Defines a video mode.
-	 ** @access get set
-	 **/
-	sf::VideoMode getVideoMode() const;
-	void setVideoMode(const sf::VideoMode& mode);
+public:
 
-	/** @property Title
-	 ** @description Title of application window.
-	 ** @access get set
-	 **/
-	const std::string& getTitle() const;
-	void setTitle(const std::string& title);
+	_Window() :
+		_window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
+	{
+
+	}
+
+	_Window(const _Window&) = delete;
+
+	_Window& operator = (const _Window&) = delete;
+
+	_Window(_Window&&) = delete;
+
+	_Window& operator = (_Window&&) = delete;
+
+	void clear(const sf::Color& color = sf::Color::Transparent)
+	{
+		_window.clear(color);
+	}
+
+	void render()
+	{
+		_window.display();
+	}
+
+	Window_t& getWindow()
+	{
+		return _window;
+	}
+
+	const Window_t& getWindow() const
+	{
+		return _window;
+	}
+
+private:
+
+	Window_t _window;
+
 };
+
+REGISTER_MOD3_MODULE(Window, _Window);
 
 }

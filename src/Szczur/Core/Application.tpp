@@ -1,22 +1,18 @@
 #pragma once
 
-/** @file Application.cpp
- ** @description Templates implementation file for application main class.
- **/
-
 namespace rat
 {
 
-// Module
-template<typename TModule>
-TModule& Application::getModule()
+template <typename T>
+T& Application::getModule()
 {
-	return this->_modules.getModule<TModule>();
+	return _modules.getModule<T>();
 }
-template<typename TModule>
-const TModule& Application::getModule() const
+
+template <typename T>
+const T& Application::getModule() const
 {
-	return this->_modules.getModule<TModule>();
+	return _modules.getModule<T>();
 }
 
 }
