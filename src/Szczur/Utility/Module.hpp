@@ -14,7 +14,7 @@ using ModuleAlt_t = typename ModuleAlt<T, U>::Alt_t;
 template <typename T>
 using ModuleVoidAlt_t = typename ModuleAlt<T, void>::Alt_t;
 
-#define REGISTER_MOD3_MODULE(_Name, _Class) template <typename T> struct ModuleAlt<_Name, T> { using Alt_t = _Class<T>; }
+#define REGISTER_GAME_MODULE(_Name, _Class) template <typename T> struct ModuleAlt<_Name, T> { using Alt_t = _Class<T>; }
 
 template <typename Super, typename Info>
 class Module

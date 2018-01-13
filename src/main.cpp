@@ -8,7 +8,7 @@ int main()
 	sf::err().rdbuf(nullptr);
 
 	ON_DEBUG(
-		rat::DebugLogger logger; rat::logger = &logger;
+		rat::DebugLogger mainLogger; rat::logger = &mainLogger;
 	);
 
 	rat::Application app;

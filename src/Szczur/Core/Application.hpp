@@ -34,21 +34,16 @@ public:
 
 	void render();
 
-	template <typename T>
-	T& getModule();
-	template <typename T>
-	const T& getModule() const;
-
 	sf::RenderWindow& getWindow();
 	const sf::RenderWindow& getWindow() const;
 
+	sf::Texture* tex; // test
+
 private:
 
-	ModulesHolder<Assets, Input, Window> _modules;
+	ModulesHolder<Window, Input, Assets> _modules;
 	sf::Clock _mainClock;
 
 };
 
 }
-
-#include "Application.tpp"

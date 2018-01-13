@@ -2,7 +2,7 @@
 
 #ifndef NDEBUG
 
-#define ON_DEBUG(code) { code }
+#define ON_DEBUG(code) code
 
 #else
 

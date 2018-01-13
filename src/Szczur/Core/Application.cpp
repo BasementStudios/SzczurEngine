@@ -1,13 +1,17 @@
 #include "Application.hpp"
 
+#include <SFML/Graphics.hpp>
+
 namespace rat
 {
 
 void Application::init()
 {
-	_modules.initModule<Assets>();
-	_modules.initModule<Input>();
 	_modules.initModule<Window>();
+	_modules.initModule<Input>();
+	_modules.initModule<Assets>();
+
+	tex = &_modules.getModule<Assets>().load<sf::Texture>("Assets/MrRain.png");
 }
 
 void Application::input()
@@ -35,6 +39,7 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
+	getWindow().draw(sf::Sprite(*tex));
 	_modules.getModule<Window>().render();
 }
 

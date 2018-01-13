@@ -17,7 +17,10 @@ class _Input : public Module<Input, T>
 {
 public:
 
-	_Input() = default;
+	_Input()
+	{
+		LOG_INFO("Module Input created");
+	}
 
 	_Input(const _Input&) = delete;
 
@@ -26,6 +29,11 @@ public:
 	_Input(_Input&&) = delete;
 
 	_Input& operator = (_Input&&) = delete;
+
+	~_Input()
+	{
+		LOG_INFO("Module Input destructed");
+	}
 
 	void processEvent(const sf::Event& event)
 	{
@@ -235,6 +243,6 @@ private:
 
 };
 
-REGISTER_MOD3_MODULE(Input, _Input);
+REGISTER_GAME_MODULE(Input, _Input);
 
 }

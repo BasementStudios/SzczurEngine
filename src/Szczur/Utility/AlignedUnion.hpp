@@ -18,6 +18,16 @@ public:
 	using ConstPointer_t = const Byte_t*;
 	using Storage_t      = std::aligned_union_t<(... + sizeof(Ts)), Ts...>;
 
+	AlignedUnion()
+	{
+		(_create<Ts>(), ...);
+	}
+
+	~AlignedUnion()
+	{
+		(_destroy<Ts>(), ...);;
+	}
+
 	template <typename U>
 	U* getMemoryOf()
 	{
@@ -40,6 +50,19 @@ private:
 	ConstPointer_t _getStoragePtr() const
 	{
 		return reinterpret_cast<ConstPointer_t>(&_storage);
+	}
+
+	template <typename U>
+	void _create()
+	{
+		new (getMemoryOf<U>()) U;
+	}
+
+	template <typename U>
+	void _destroy()
+	{
+		// @todo Y U N workin' properly ;-;
+		// delete getMemoryOf<U>();
 	}
 
 	Storage_t _storage;

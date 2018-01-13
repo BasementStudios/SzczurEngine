@@ -15,7 +15,10 @@ public:
 
 	using Manager_t = AssetsManager<sf::Font, sf::Texture, sf::Shader, sf::Music, sf::SoundBuffer>;
 
-	_Assets() = default;
+	_Assets()
+	{
+		LOG_INFO("Module Assets created");
+	}
 
 	_Assets(const _Assets&) = delete;
 
@@ -24,6 +27,11 @@ public:
 	_Assets(_Assets&&) = delete;
 
 	_Assets& operator = (_Assets&&) = delete;
+
+	~_Assets()
+	{
+		LOG_INFO("Module Assets destructed");
+	}
 
 	template <typename U>
 	U& load(const std::string& path)
@@ -73,6 +81,6 @@ private:
 
 };
 
-REGISTER_MOD3_MODULE(Assets, _Assets);
+REGISTER_GAME_MODULE(Assets, _Assets);
 
 }
