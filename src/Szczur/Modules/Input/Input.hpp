@@ -19,7 +19,7 @@ public:
 
 	_Input()
 	{
-		LOG_INFO("Module Input created");
+		LOG_INFO(this, " -> Module Input created");
 	}
 
 	_Input(const _Input&) = delete;
@@ -32,7 +32,7 @@ public:
 
 	~_Input()
 	{
-		LOG_INFO("Module Input destructed");
+		LOG_INFO(this, " -> Module Input destructed");
 	}
 
 	void processEvent(const sf::Event& event)

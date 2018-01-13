@@ -24,12 +24,12 @@ public:
 	_Window() :
 		_window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
 	{
-		LOG_INFO("Module Window created");
+		LOG_INFO(this, " -> Module Window created");
 	}
 
 	~_Window()
 	{
-		LOG_INFO("Module Window destructed");
+		LOG_INFO(this, " -> Module Window destructed");
 	}
 
 	_Window(const _Window&) = delete;

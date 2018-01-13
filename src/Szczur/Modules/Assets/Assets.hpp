@@ -17,7 +17,7 @@ public:
 
 	_Assets()
 	{
-		LOG_INFO("Module Assets created");
+		LOG_INFO(this, " -> Module Assets created");
 	}
 
 	_Assets(const _Assets&) = delete;
@@ -30,7 +30,7 @@ public:
 
 	~_Assets()
 	{
-		LOG_INFO("Module Assets destructed");
+		LOG_INFO(this, " -> Module Assets destructed");
 	}
 
 	template <typename U>

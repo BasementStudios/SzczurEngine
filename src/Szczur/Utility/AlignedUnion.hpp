@@ -62,7 +62,7 @@ private:
 	void _destroy()
 	{
 		// @todo Y U N workin' properly ;-;
-		// delete getMemoryOf<U>();
+		delete getMemoryOf<U>();
 	}
 
 	Storage_t _storage;
