@@ -13,7 +13,7 @@ enum InputStatus_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 class Input;
 
 template <typename T>
-class _Input : public Module<Input, T>
+class _Input : public Module<T>
 {
 public:
 

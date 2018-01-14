@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <tuple>
+
+#include "LazyInitializer.hpp"
 
 namespace rat
 {
@@ -16,39 +19,31 @@ using ModuleVoidAlt_t = typename ModuleAlt<T, void>::Alt_t;
 
 #define REGISTER_GAME_MODULE(_Name, _Class) template <typename T> struct ModuleAlt<_Name, T> { using Alt_t = _Class<T>; }
 
-template <typename Super, typename Info>
+template <typename Info>
 class Module
 {
+template <typename... Us>
+friend class ModulesHolder;
+
 public:
+
+	using Info_t = Info;
 
 	template <typename Module>
 	ModuleAlt_t<Module, Info>& getModule()
 	{
-		using Pointer_t = std::byte*;
-
-		Pointer_t ptr = reinterpret_cast<Pointer_t>(this);
-		ptr -= Info::template offsetOf<ModuleVoidAlt_t<Super>>();
-		ptr += Info::template offsetOf<ModuleVoidAlt_t<Module>>();
-
-		return *reinterpret_cast<ModuleAlt_t<Module, Info>*>(ptr);
+		return reinterpret_cast<LazyInitializer<ModuleAlt_t<Module, Info>>&>(std::get<LazyInitializer<ModuleVoidAlt_t<Module>>>(*_holderBegin)).getRef();
 	}
 
 	template <typename Module>
 	const ModuleAlt_t<Module, Info>& getModule() const
 	{
-		using ConstPointer_t = const std::byte*;
-
-		ConstPointer_t ptr = reinterpret_cast<ConstPointer_t>(this);
-		ptr -= Info::template offsetOf<ModuleVoidAlt_t<Super>>();
-		ptr += Info::template offsetOf<ModuleVoidAlt_t<Module>>();
-
-		return *reinterpret_cast<ModuleAlt_t<Module, Info>*>(ptr);
+		return reinterpret_cast<LazyInitializer<ModuleAlt_t<Module, Info>>&>(std::get<LazyInitializer<ModuleVoidAlt_t<Module>>>(*_holderBegin)).getRef();
 	}
 
-	size_t getModulesCount()
-	{
-		return Info::typesCount();
-	}
+private:
+
+	Info_t* _holderBegin;
 
 };
 

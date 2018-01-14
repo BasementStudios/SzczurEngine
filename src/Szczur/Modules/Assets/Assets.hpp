@@ -9,7 +9,7 @@ namespace rat
 class Assets;
 
 template <typename T>
-class _Assets : public Module<Assets, T>
+class _Assets : public Module<T>
 {
 public:
 

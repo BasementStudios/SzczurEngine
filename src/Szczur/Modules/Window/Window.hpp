@@ -13,7 +13,7 @@ namespace rat
 class Window;
 
 template <typename T>
-class _Window : public Module<Window, T>
+class _Window : public Module<T>
 {
 public:
 
