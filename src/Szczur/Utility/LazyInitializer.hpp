@@ -41,7 +41,7 @@ public:
 
 	~LazyInitializer()
 	{
-		delete reinterpret_cast<Pointer_t>(_getBufferPtr());
+		reinterpret_cast<Pointer_t>(_getBufferPtr())->~Held_t();
 	}
 
 	template <typename... Us>
