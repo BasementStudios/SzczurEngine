@@ -92,12 +92,12 @@ public:
 
 private:
 
-	Buffer_t* _getBufferPtr()
+	void* _getBufferPtr()
 	{
 		return &_buffer;
 	}
 
-	const Buffer_t* _getBufferPtr() const
+	const void* _getBufferPtr() const
 	{
 		return &_buffer;
 	}
