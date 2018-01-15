@@ -41,7 +41,7 @@ public:
 
 	~LazyInitializer()
 	{
-		reinterpret_cast<Pointer_t>(_getBufferPtr())->~Held_t();
+		getRef().~Held_t();
 	}
 
 	template <typename... Us>
@@ -72,12 +72,12 @@ public:
 
 	Reference_t getRef()
 	{
-		return *reinterpret_cast<Pointer_t>(_getBufferPtr());
+		return *getPtr();
 	}
 
 	ConstReference_t getRef() const
 	{
-		return *reinterpret_cast<ConstPointer_t>(_getBufferPtr());
+		return *getPtr();
 	}
 
 	Reference_t operator * ()
