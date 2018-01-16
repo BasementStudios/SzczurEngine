@@ -1,10 +1,6 @@
-#include "GUI.hpp"
-
-#include <iostream>
-#include <fstream>
-
 namespace rat {
-    void GUI::init() {
+    template<typename T>
+    _GUI<T>::_GUI() {
         
         _assets.loadFromFile<sf::Texture>("data/button.png");
         _assets.loadFromFile<sf::Texture>("data/button-active.png");
@@ -14,12 +10,13 @@ namespace rat {
         _assets.loadFromFile<sf::Font>("data/consolab.ttf");
         _assets.loadFromFile<sf::Texture>("data/button.png");
         _assets.loadFromFile<Json>("data/json.json");
-        _guiJson.init(_assets.get<Json>("data/json.json"), &_assets, &_root, _getModule<Canvas>().getWindow().getSize());
+        //_guiJson.init(_assets.get<Json>("data/json.json"), &_assets, &_root, getModule<Window>().getSize());
+        getModule<Window>();
     }
 
     
-
-    void GUI::input(const sf::Event& event) {
+    template<typename T>
+    void _GUI<T>::input(const sf::Event& event) {
         if(
             event.type == sf::Event::MouseButtonPressed || 
             event.type == sf::Event::MouseButtonReleased || 
@@ -30,15 +27,18 @@ namespace rat {
         }
     }
 
-    void GUI::update(float deltaTime) {
+    template<typename T>
+    void _GUI<T>::update(float deltaTime) {
         _root.update(deltaTime);
     }
 
-    void GUI::render() {
-        _getModule<Canvas>().draw(Canvas::LayerId::GUI, _root);
+    template<typename T>
+    void _GUI<T>::render() {
+        getModule<Window>().getWindow().draw(_root);
     }
 
-    void GUI::reload() {
-        _guiJson.reload(_getModule<Canvas>().getWindow().getSize(), &_root);
+    template<typename T>
+    void _GUI<T>::reload() {
+        _guiJson.reload(getModule<Window>().getSize(), &_root);
     }
 }
