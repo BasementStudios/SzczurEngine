@@ -1,140 +1,63 @@
 namespace rat
 {
 
-template<typename... TModules>
-template<typename TModule>
-constexpr bool Module<TModules...>::dependsOn()
+template <typename... Ts>
+template <typename U>
+constexpr bool Module<Ts...>::dependsOn()
 {
-	return (std::is_same_v<TModule, TModules> || ...);
+	return (std::is_same_v<U, Ts> || ...);
 }
 
-template<typename... TModules>
-constexpr size_t Module<TModules...>::dependenciesCount()
+template <typename... Ts>
+constexpr size_t Module<Ts...>::dependenciesCount()
 {
-	return sizeof...(TModules);
+	return sizeof...(Ts);
 }
 
-template<typename... TModules>
-template<typename TModule>
-Module<TModules...>::Module(TModule&& modules) :
-	_modulesRefs(std::get<TModules>(modules)...)
+template <typename... Ts>
+template <typename U>
+Module<Ts...>::Module(U&& tuple) :
+	_modulesRefs(std::get<LazyInitializer<Ts>>(tuple)...)
 {
 
 }
 
-template<typename... TModules>
-template<typename TModule>
-TModule& Module<TModules...>::_getModule()
+template <typename... Ts>
+template <typename U>
+U& Module<Ts...>::getModule()
 {
-	static_assert(dependsOn<TModule>());
+	static_assert(dependsOn<U>());
 
-	return std::get<TModule&>(_modulesRefs);
+	return *std::get<Held_t<U>>(_modulesRefs);
 }
 
-template<typename... TModules>
-template<typename TModule>
-const TModule& Module<TModules...>::_getModule() const
+template <typename... Ts>
+template <typename U>
+const U& Module<Ts...>::getModule() const
 {
-	static_assert(dependsOn<TModule>());
+	static_assert(dependsOn<U>());
 
-	return std::get<TModule&>(_modulesRefs);
+	return *std::get<Held_t<U>>(_modulesRefs);
 }
 
-template<typename... TModules>
-constexpr size_t ModulesHolder<TModules...>::modulesCount()
+template <typename... Ts>
+constexpr size_t ModulesHolder<Ts...>::modulesCount()
 {
 	return std::tuple_size_v<std::decay_t<Holder_t>>;
 }
 
-template<typename... TModules>
-ModulesHolder<TModules...>::ModulesHolder() :
-	_modules(TModules{ _modules }...)
+template <typename... Ts>
+template <typename U>
+U& ModulesHolder<Ts...>::getModule()
 {
-
+	return *std::get<Held_t<U>>(_modules);
 }
 
-template<typename... TModules>
-template<typename TFunction>
-void ModulesHolder<TModules...>::forEach(TFunction&& function)
+template <typename... Ts>
+template <typename U>
+const U& ModulesHolder<Ts...>::getModule() const
 {
-	_forEach(std::forward<TFunction>(function), std::make_index_sequence<modulesCount()>{});
-}
-
-template<typename... TModules>
-template<typename TFunction>
-void ModulesHolder<TModules...>::forEach(TFunction&& function) const
-{
-	_forEach(std::forward<TFunction>(function), std::make_index_sequence<modulesCount()>{});
-}
-
-template<typename... TModules>
-template<typename TModule, typename TFunction>
-void ModulesHolder<TModules...>::forEach(TFunction&& function)
-{
-	_forEach<TModule>(std::forward<TFunction>(function), std::make_index_sequence<modulesCount()>{});
-}
-
-template<typename... TModules>
-template<typename TModule, typename TFunction>
-void ModulesHolder<TModules...>::forEach(TFunction&& function) const
-{
-	_forEach<TModule>(std::forward<TFunction>(function), std::make_index_sequence<modulesCount()>{});
-}
-
-template<typename... TModules>
-template<typename TModule>
-TModule& ModulesHolder<TModules...>::getModule()
-{
-	return std::get<TModule>(_modules);
-}
-
-template<typename... TModules>
-template<typename TModule>
-const TModule& ModulesHolder<TModules...>::getModule() const
-{
-	return std::get<TModule>(_modules);
-}
-
-template<typename... TModules>
-template<typename TFunction, size_t... TIndices>
-void ModulesHolder<TModules...>::_forEach(TFunction&& function, std::index_sequence<TIndices...>)
-{
-	(std::invoke(function, std::get<TIndices>(_modules)), ...);
-}
-
-template<typename... TModules>
-template<typename TFunction, size_t... TIndices>
-void ModulesHolder<TModules...>::_forEach(TFunction&& function, std::index_sequence<TIndices...>) const
-{
-	(std::invoke(function, std::get<TIndices>(_modules)), ...);
-}
-
-template<typename... TModules>
-template<typename TModule, typename TFunction, size_t... TIndices>
-void ModulesHolder<TModules...>::_forEach(TFunction&& function, std::index_sequence<TIndices...>)
-{
-	(_forEachHelper<TIndices, TModule>(std::forward<TFunction>(function)), ...);
-}
-
-template<typename... TModules>
-template<typename TModule, typename TFunction, size_t... TIndices>
-void ModulesHolder<TModules...>::_forEach(TFunction&& function, std::index_sequence<TIndices...>) const
-{
-	(_forEachHelper<TIndices, TModule>(std::forward<TFunction>(function)), ...);
-}
-
-template<typename... TModules>
-template<size_t TIndex, typename TModule, typename TFunction>
-void ModulesHolder<TModules...>::_forEachHelper(TFunction&& function)
-{
-	if constexpr(std::is_base_of_v<TModule, NthModule_t<TIndex>>) std::invoke(function, std::get<TIndex>(_modules));
-}
-
-template<typename... TModules>
-template<size_t TIndex, typename TModule, typename TFunction>
-void ModulesHolder<TModules...>::_forEachHelper(TFunction&& function) const
-{
-	if constexpr(std::is_base_of_v<TModule, NthModule_t<TIndex>>) std::invoke(function, std::get<TIndex>(_modules));
+	return *std::get<Held_t<U>>(_modules);
 }
 
 }

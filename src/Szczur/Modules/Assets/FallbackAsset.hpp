@@ -6,7 +6,7 @@ namespace rat
 {
 
 template <typename T>
-class Asset
+class FallbackAsset
 {
 public:
 
@@ -21,28 +21,20 @@ public:
 private:
 
 	Pointer_t _ptr;
-	Size_t _refCount;
 
 public:
 
-	Asset();
+	FallbackAsset();
 
-	Asset(const Asset&) = delete;
+	FallbackAsset(const FallbackAsset&) = delete;
 
-	Asset& operator = (const Asset&) = delete;
+	FallbackAsset& operator = (const FallbackAsset&) = delete;
 
-	Asset(Asset&& rhs) noexcept;
+	FallbackAsset(FallbackAsset&& rhs) noexcept;
 
-	Asset& operator = (Asset&& rhs) noexcept;
+	FallbackAsset& operator = (FallbackAsset&& rhs) noexcept;
 
-	~Asset();
-
-	template <typename... Us>
-	bool load(Us&&... args);
-
-	bool unload();
-
-	bool forceUnload();
+	~FallbackAsset();
 
 	Pointer_t getPtr();
 	ConstPointer_t getPtr() const;
@@ -62,4 +54,4 @@ private:
 
 }
 
-#include "Asset.tpp"
+#include "FallbackAsset.tpp"

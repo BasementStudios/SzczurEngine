@@ -1,62 +1,48 @@
 #pragma once
 
-/** @file Application.cpp
- ** @description Main application class file.
- **/
+#include <SFML/System/Clock.hpp>
 
-#include <SFML/Graphics.hpp>			// RenderWindow
-#include <SFML/System.hpp>				// Clock, Vector2
-
-#include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
+#include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Utility/Modules.hpp"
 
 namespace rat
 {
 
-/** @class Application
- ** @description Main application class.
- **/
 class Application
 {
-	/* Variables */
-private:
-	// Modules
-	ModulesHolder<
-		Input,
-		Assets,
-		Canvas
-	> _modules;
-
-	// Window
-	sf::RenderWindow _window;
-
-	// Clock
-	sf::Clock _mainClock;
-
-
-
-	/* Constructor */
 public:
-	Application();
 
+	Application() = default;
 
+	Application(const Application&) = delete;
 
-	/* Methods */
-public:
-	// Input loop
-	void input();
+	Application& operator = (const Application&) = delete;
 
-	// Update loop
-	void update();
+	Application(Application&&) = delete;
 
-	// Render loop
-	void render();
+	Application& operator = (Application&&) = delete;
 
-	// Whole runtime
 	int run();
 
-	void changeResolution(const sf::Vector2u& size);
+	void init();
+
+	void input();
+
+	void update();
+
+	void render();
+
+	sf::RenderWindow& getWindow();
+	const sf::RenderWindow& getWindow() const;
+
+private:
+
+	ModulesHolder<Assets, Input, Window, Canvas> _modules;
+	sf::Clock _mainClock;
+
 };
 
 }

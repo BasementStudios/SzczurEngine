@@ -3,14 +3,6 @@
 namespace rat
 {
 
-void Canvas::init(sf::RenderWindow* windowPtr)
-{
-	_windowPtr = windowPtr;
-
-	for (auto& av : _layers)
-		av.reset(new RenderLayer(_windowPtr->getSize()));
-}
-
 void Canvas::update(float deltaTime)
 {
 	(void)deltaTime;
@@ -19,23 +11,23 @@ void Canvas::update(float deltaTime)
 void Canvas::render()
 {
 	for (auto& av : _layers)
-		av->display(*_windowPtr);
+		av->display(_window);
 }
 
 void Canvas::recreateLayers()
 {
 	for (auto& av : _layers)
-		av->recreate(_windowPtr->getSize());
+		av->recreate(_window.getSize());
 }
 
 sf::RenderWindow& Canvas::getWindow()
 {
-	return *_windowPtr;
+	return _window;
 }
 
 const sf::RenderWindow& Canvas::getWindow() const
 {
-	return *_windowPtr;
+	return _window;
 }
 
 rat::RenderLayer& Canvas::getLayer(LayerId id)

@@ -7,11 +7,6 @@ namespace rat
 
 class RenderLayer
 {
-private:
-
-	sf::RenderTexture _renderTexture;
-	sf::RenderStates _states;
-
 public:
 
 	RenderLayer(const sf::Vector2u& size);
@@ -26,6 +21,11 @@ public:
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 
 	void display(sf::RenderTarget& target);
+
+private:
+
+	sf::RenderTexture _renderTexture;
+	sf::RenderStates _states;
 
 };
 

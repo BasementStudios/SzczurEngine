@@ -1,7 +1,7 @@
 namespace detail
 {
 
-template<typename InputIt>
+template <typename InputIt>
 size_t getUnicodeBytesCount(InputIt begin, InputIt end)
 {
 	size_t n = 0;
@@ -23,7 +23,7 @@ size_t getUnicodeBytesCount(InputIt begin, InputIt end)
 	return n;
 }
 
-template<typename InputIt, typename OutputIt>
+template <typename InputIt, typename OutputIt>
 void utf8ToUnicode(InputIt begin, InputIt end, OutputIt dst)
 {
 	uint32_t helper;
