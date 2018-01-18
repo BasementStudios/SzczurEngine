@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <SFML/Graphics.hpp>
 
 #include "Szczur/Utility/Modules.hpp"
@@ -9,6 +11,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Json.hpp"
 
+#include "Interface.hpp"
 #include "Widget.hpp"
 #include "GuiJson.hpp"
 #include "GuiAssetsManager.hpp"
@@ -20,24 +23,24 @@ namespace rat {
         template<typename Tuple>
         GUI(Tuple&& tuple) :
         Module(tuple) {
-            _assets.loadFromFile<sf::Texture>("data/button.png");
-            _assets.loadFromFile<sf::Texture>("data/button-active.png");
-            _assets.loadFromFile<sf::Texture>("data/button-clicked.png");
-            _assets.loadFromFile<sf::Texture>("data/check.png");
-            _assets.loadFromFile<sf::Texture>("data/check-on.png");
-            _assets.loadFromFile<sf::Font>("data/consolab.ttf");
-            _assets.loadFromFile<sf::Texture>("data/button.png");
-            _assets.loadFromFile<Json>("data/json.json");
-            _guiJson.init(_assets.get<Json>("data/json.json"), &_assets, &_root, getModule<Window>().getWindow().getSize());
+            _initAssets();
+            addInterface("data/json.json");
         }
+
+        ~GUI();
 
         void input(const sf::Event& event);
         void update(float deltaTime);
         void render();
         void reload();
+
+        Interface* addInterface(const std::string& jsonFile);
     private:
-        Widget _root;
-        GuiJson _guiJson;
+        std::vector<Interface*> _interfaces;
+        //Widget _root;
+        //GuiJson _guiJson;
         BasicGuiAssetsManager _assets;
+
+        void _initAssets();
     };
 }
