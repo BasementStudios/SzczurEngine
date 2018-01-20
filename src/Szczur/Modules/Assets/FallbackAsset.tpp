@@ -5,7 +5,7 @@ template <typename T>
 FallbackAsset<T>::FallbackAsset() :
 	_ptr(Traits_t::createFallback())
 {
-	LOG_INFO(this, " -> Created fallback asset of type ", AssetTraits<Value_t>::getName());
+	LOG_INFO(this, " : Created fallback asset of type ", AssetTraits<Value_t>::getName());
 }
 
 template <typename T>
@@ -48,14 +48,14 @@ typename FallbackAsset<T>::ConstPointer_t FallbackAsset<T>::getPtr() const
 template <typename T>
 typename FallbackAsset<T>::Reference_t FallbackAsset<T>::getRef()
 {
-	LOG_ERROR_IF(getPtr() == nullptr, this, " -> Trying to dereference nullptr in fallback asset of type ", AssetTraits<Value_t>::getName());
+	LOG_ERROR_IF(getPtr() == nullptr, this, " : Trying to dereference nullptr in fallback asset of type ", AssetTraits<Value_t>::getName());
 	return *getPtr();
 }
 
 template <typename T>
 typename FallbackAsset<T>::ConstReference_t FallbackAsset<T>::getRef() const
 {
-	LOG_ERROR_IF(getPtr() == nullptr, this, " -> Trying to dereference nullptr in fallback asset of type ", AssetTraits<Value_t>::getName());
+	LOG_ERROR_IF(getPtr() == nullptr, this, " : Trying to dereference nullptr in fallback asset of type ", AssetTraits<Value_t>::getName());
 	return *getPtr();
 }
 
@@ -77,7 +77,7 @@ void FallbackAsset<T>::_clear()
 	if (isValid()) {
 		Traits_t::unload(getRef());
 		delete _ptr;
-		LOG_INFO(this, " -> Destroyed fallback asset of type ", AssetTraits<Value_t>::getName());
+		LOG_INFO(this, " : Destroyed fallback asset of type ", AssetTraits<Value_t>::getName());
 	}
 }
 

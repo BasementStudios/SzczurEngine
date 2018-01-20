@@ -4,7 +4,6 @@
 #include <tuple>
 
 #include "LazyInitializer.hpp"
-
 #include "Szczur/Debug/Logger.hpp"
 
 namespace rat
@@ -71,10 +70,7 @@ public:
 	ModulesHolder& operator = (ModulesHolder&&) = delete;
 
 	template <typename U, typename... Us>
-	void initModule(Us&&... args)
-	{
-		std::get<Held_t<U>>(_modules).init(_modules, std::forward<Us>(args)...);
-	}
+	void initModule(Us&&... args);
 
 	template <typename U>
 	U& getModule();

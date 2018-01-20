@@ -39,6 +39,7 @@ void Application::render()
 {
 	_modules.getModule<Window>().clear();
 	_modules.getModule<Window>().render();
+	_modules.getModule<Window>().render();
 }
 
 int Application::run()
