@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AssetsManager.hpp"
-#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Utility/Module.hpp"
 
 namespace rat
 {

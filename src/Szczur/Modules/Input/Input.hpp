@@ -2,8 +2,8 @@
 
 #include <SFML/Window/Event.hpp>
 
-#include "Szczur/Utility/Modules.hpp"
 #include "InputCode.hpp"
+#include "Szczur/Utility/Module.hpp"
 
 namespace rat
 {

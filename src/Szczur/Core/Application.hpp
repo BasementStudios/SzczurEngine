@@ -2,11 +2,11 @@
 
 #include <SFML/System/Clock.hpp>
 
+#include "Szczur/Utility/ModulesHolder.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Utility/Modules.hpp"
 
 namespace rat
 {

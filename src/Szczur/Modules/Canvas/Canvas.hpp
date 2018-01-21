@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "RenderLayer.hpp"
-#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Utility/Module.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 
 namespace rat
