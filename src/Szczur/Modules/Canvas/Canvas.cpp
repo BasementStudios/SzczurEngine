@@ -3,51 +3,47 @@
 namespace rat
 {
 
-void Canvas::update(float deltaTime)
+Canvas::~Canvas()
 {
-	(void)deltaTime;
+	LOG_INFO(this, " : Module Canvas destructed");
+}
+
+void Canvas::clear()
+{
+	for (auto& av : _layers)
+		av->clear();
 }
 
 void Canvas::render()
 {
 	for (auto& av : _layers)
-		av->display(_window);
+		av->display(getModule<Window>().getWindow());
 }
 
 void Canvas::recreateLayers()
 {
 	for (auto& av : _layers)
-		av->recreate(_window.getSize());
+		av->recreate(getModule<Window>().getWindow().getSize());
 }
 
-sf::RenderWindow& Canvas::getWindow()
+RenderLayer& Canvas::getLayer(LayerID::Code id)
 {
-	return _window;
+	return *_layers[id];
 }
 
-const sf::RenderWindow& Canvas::getWindow() const
+const RenderLayer& Canvas::getLayer(LayerID::Code id) const
 {
-	return _window;
+	return *_layers[id];
 }
 
-rat::RenderLayer& Canvas::getLayer(LayerId id)
+void Canvas::draw(LayerID::Code id, const sf::Drawable& drawable, const sf::RenderStates& states)
 {
-	return *_layers[(size_t)id];
+	_layers[id]->draw(drawable, states);
 }
 
-const rat::RenderLayer& Canvas::getLayer(LayerId id) const
+void Canvas::draw(LayerID::Code id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
-	return *_layers[(size_t)id];
-}
-
-void Canvas::draw(LayerId id, const sf::Drawable& drawable, const sf::RenderStates& states)
-{
-	_layers[(size_t)id]->draw(drawable, states);
-}
-
-void Canvas::draw(LayerId id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
-{
-	_layers[(size_t)id]->draw(vertices, vertexCount, type, states);
+	_layers[id]->draw(vertices, vertexCount, type, states);
 }
 
 }

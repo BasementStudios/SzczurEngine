@@ -23,6 +23,11 @@ sf::RenderStates RenderLayer::getRenderStates() const
 	return _states;
 }
 
+void RenderLayer::clear(const sf::Color& color)
+{
+	_renderTexture.clear(color);
+}
+
 void RenderLayer::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 {
 	_renderTexture.draw(drawable, states);

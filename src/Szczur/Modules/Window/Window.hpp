@@ -4,8 +4,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
-
-#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Utility/Module.hpp"
 
 namespace rat
 {
@@ -16,20 +15,10 @@ public:
 
 	using Window_t = sf::RenderWindow;
 
-public:
-
 	template <typename Tuple>
-	Window(Tuple&& tuple) :
-		Module(tuple),
-		_window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
-	{
-		LOG_INFO(this, " -> Module Window created");
-	}
+	Window(Tuple&& tuple);
 
-	~Window()
-	{
-		LOG_INFO(this, " -> Module Window destructed");
-	}
+	~Window();
 
 	Window(const Window&) = delete;
 
@@ -39,30 +28,24 @@ public:
 
 	Window& operator = (Window&&) = delete;
 
-	void clear(const sf::Color& color = sf::Color::Transparent)
-	{
-		_window.clear(color);
-	}
+	void clear(const sf::Color& color = sf::Color::Transparent);
 
-	void render()
-	{
-		_window.display();
-	}
+	void render();
 
-	Window_t& getWindow()
-	{
-		return _window;
-	}
-
-	const Window_t& getWindow() const
-	{
-		return _window;
-	}
+	Window_t& getWindow();
+	const Window_t& getWindow() const;
 
 private:
 
 	Window_t _window;
 
 };
+
+template <typename Tuple>
+Window::Window(Tuple&& tuple) :
+	Module(tuple), _window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
+{
+	LOG_INFO(this, " : Module Window created");
+}
 
 }
