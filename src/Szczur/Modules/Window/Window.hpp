@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include "Szczur/Utility/Module.hpp"
