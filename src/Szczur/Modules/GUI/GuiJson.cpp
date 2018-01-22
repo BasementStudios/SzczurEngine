@@ -184,6 +184,39 @@ namespace rat {
             });
         }
 
+        else if(typeName == "textarea") {    
+            _createJsonValue<TextAreaWidget>(json, parent, [this](TextAreaWidget* widget, Json::iterator it){
+                std::string key = it.key();
+                if(key == "size") {
+                    widget->setSize({ 
+                        (*it)[0].get<unsigned int>(),
+                        (*it)[1].get<unsigned int>()
+                    });
+                }
+                else if(key == "font") {
+                    widget->setFont(_assets->get<sf::Font>(it->get<std::string>()));
+                }
+                else if(key == "color") {
+                    widget->setColor(
+                        sf::Color(
+                            (*it)[0].get<unsigned int>(),
+                            (*it)[1].get<unsigned int>(),
+                            (*it)[2].get<unsigned int>()
+                        )
+                    );
+                }
+                else if(key == "fontsize") {
+                    widget->setCharacterSize(it->get<unsigned int>());
+                }
+                else if(key=="src") {
+                    widget->setString(it->get<std::string>());
+                }
+                else
+                    return false;
+                return true;
+            });
+        }
+
         /*else if(typeName == "check") {    
             _createJsonValue<CheckWidget>(json, parent, [this](CheckWidget* widget, Json::iterator it){
                 std::string key = it.key();

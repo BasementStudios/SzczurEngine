@@ -15,6 +15,7 @@
 #include "InputWidget.hpp"
 #include "CheckWidget.hpp"
 #include "RadioWidget.hpp"
+#include "TextAreaWidget.hpp"
 
 
 
