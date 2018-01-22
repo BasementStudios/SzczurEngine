@@ -56,16 +56,18 @@ namespace rat {
 		virtual sf::Vector2u _getSize() const;
 
 		bool _aboutToRecalculate;
+
+		bool _isHovered;
+		bool _isPressed;
+		bool _isActivated;
+		bool _isVisible;
 		
 	private:
 		std::vector<Widget*> _children;
 		Widget* _parent;
 
 		CallbacksContainer_t _callback;
-		bool _isHovered;
-		bool _isPressed;
-		bool _isActivated;
-		bool _isVisible;
+		
 
 		sf::Vector2u _size;
 
