@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Szczur/Utility/Modules.hpp"
 #include "AssetsManager.hpp"
+#include "Szczur/Utility/Module.hpp"
 
 namespace rat
 {
@@ -13,11 +13,7 @@ public:
 	using Manager_t = AssetsManager<sf::Font, sf::Texture, sf::Shader, sf::Music, sf::SoundBuffer>;
 
 	template <typename Tuple>
-	Assets(Tuple&& tuple) :
-		Module(tuple)
-	{
-		LOG_INFO(this, " -> Module Assets created");
-	}
+	Assets(Tuple&& tuple);
 
 	Assets(const Assets&) = delete;
 
@@ -27,52 +23,26 @@ public:
 
 	Assets& operator = (Assets&&) = delete;
 
-	~Assets()
-	{
-		LOG_INFO(this, " -> Module Assets destructed");
-	}
+	~Assets();
 
 	template <typename U>
-	U& load(const std::string& path)
-	{
-		return _manager.load<U>(path);
-	}
+	U& load(const std::string& path);
 
 	template <typename U>
-	bool unload(const std::string& path)
-	{
-		return _manager.unload<U>(path);
-	}
+	bool unload(const std::string& path);
 
 	template <typename U>
-	bool isLoaded(const std::string& path) const
-	{
-		return _manager.isLoaded<U>(path);
-	}
+	bool isLoaded(const std::string& path) const;
 
 	template <typename U>
-	U* getPtr(const std::string& path)
-	{
-		return _manager.getPtr<U>(path);
-	}
+	U* getPtr(const std::string& path);
+	template <typename U>
+	const U* getPtr(const std::string& path) const;
 
 	template <typename U>
-	const U* getPtr(const std::string& path) const
-	{
-		return _manager.getPtr<U>(path);
-	}
-
+	U& getRef(const std::string& path);
 	template <typename U>
-	U& getRef(const std::string& path)
-	{
-		return _manager.getRef<U>(path);
-	}
-
-	template <typename U>
-	const U& getRef(const std::string& path) const
-	{
-		return _manager.getRef<U>(path);
-	}
+	const U& getRef(const std::string& path) const;
 
 private:
 
@@ -80,4 +50,13 @@ private:
 
 };
 
+template <typename Tuple>
+Assets::Assets(Tuple&& tuple) :
+	Module(tuple)
+{
+	LOG_INFO(this, " : Module Assets created");
 }
+
+}
+
+#include "Assets.tpp"

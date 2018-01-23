@@ -34,6 +34,7 @@ Dział programistów
 * Kuba (Mapet)
 * Kuba (MetRiko)
 * Mateusz (Zetiar)
+* Patryk (Stritch)
 * Patryk (Dubgron)
 * Patryk (PsychoX) Ludwikowski
 * Piotr (H4RRY)
