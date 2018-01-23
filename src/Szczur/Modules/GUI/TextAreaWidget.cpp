@@ -7,8 +7,7 @@ namespace rat {
     _toUpdate(false),
     _toCreate(false),
     _toWrap(false) {
-        _view = _area.getView();
-        _sprite.setTexture(_area.getTexture());
+        
     }
 
     TextAreaWidget::TextAreaWidget(sf::Vector2u size, sf::Font* font) :
@@ -50,12 +49,7 @@ namespace rat {
     }
 
     void TextAreaWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        sf::Sprite sprite;
-        sprite.setTexture(_area.getTexture());
-
-        //std::cout << reinterpret_cast<const void*>(sprite.getTexture()) << "  " << reinterpret_cast<const void*>(_sprite.getTexture()) << '\n';
-
-        target.draw(sprite, states);
+        target.draw(_sprite, states);
     }
 
     void TextAreaWidget::_redrawArea() {
@@ -65,7 +59,6 @@ namespace rat {
     }
 
     void TextAreaWidget::_wrapText() {
-        std::cout << "Wrap\n";
         std::string temp = _text.getString().toAnsiString();
         temp.erase(std::remove_if(temp.begin(), temp.end(), [](auto& it){return it=='\n';}), temp.end());
         for(auto i = _size.x; i<temp.size(); i+=_size.x)
@@ -84,12 +77,14 @@ namespace rat {
             _redrawArea();
             _view = _area.getView();
             _aboutToRecalculate = true;
+            _sprite.setTexture(_area.getTexture());
         }
         if(_toUpdate) {
             _toUpdate = false;
             _area.setView(_view);
             _redrawArea();
         }
+        
     }
 
     void TextAreaWidget::_input(const sf::Event& event) {
