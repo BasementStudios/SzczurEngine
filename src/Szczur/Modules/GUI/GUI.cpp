@@ -25,15 +25,8 @@ namespace rat {
     }
     
     void GUI::input(const sf::Event& event) {
-        if(
-            event.type == sf::Event::MouseButtonPressed || 
-            event.type == sf::Event::MouseButtonReleased || 
-            event.type == sf::Event::MouseMoved ||
-            event.type == sf::Event::TextEntered
-        ) {
-            for(auto it : _interfaces)
-                it->input(event);
-        }
+        for(auto it : _interfaces)
+            it->input(event);
     }
 
     void GUI::update(float deltaTime) {
