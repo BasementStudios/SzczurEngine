@@ -3,14 +3,14 @@
 namespace rat {
 
     void GUI::_initAssets() {
-        _assets.loadFromFile<sf::Texture>("data/button.png");
-        _assets.loadFromFile<sf::Texture>("data/button-active.png");
-        _assets.loadFromFile<sf::Texture>("data/button-clicked.png");
-        _assets.loadFromFile<sf::Texture>("data/check.png");
-        _assets.loadFromFile<sf::Texture>("data/check-on.png");
-        _assets.loadFromFile<sf::Font>("data/consolab.ttf");
-        _assets.loadFromFile<sf::Texture>("data/button.png");
-        _assets.loadFromFile<Json>("data/json.json");
+        addAsset<sf::Texture>("data/button.png");
+        addAsset<sf::Texture>("data/button-active.png");
+        addAsset<sf::Texture>("data/button-clicked.png");
+        addAsset<sf::Texture>("data/check.png");
+        addAsset<sf::Texture>("data/check-on.png");
+        addAsset<sf::Font>("data/consolab.ttf");
+        addAsset<sf::Texture>("data/button.png");
+        addAsset<Json>("data/json.json");
     }
 
     GUI::~GUI() {

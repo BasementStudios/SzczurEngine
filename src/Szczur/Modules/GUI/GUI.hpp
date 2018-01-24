@@ -34,6 +34,9 @@ namespace rat {
 
         template<typename T>
         T* getAsset(const std::string& key) const;
+
+        template<typename T>
+        void addAsset(const std::string& path);
     private:
         std::vector<Interface*> _interfaces;
         //Widget _root;
