@@ -12,6 +12,7 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 	_modules.initModule<GUI>();
+	_modules.initModule<Dialog>("data/dialog.json");
 }
 
 void Application::input()

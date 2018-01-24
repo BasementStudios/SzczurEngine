@@ -8,6 +8,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
 
 namespace rat
 {
@@ -41,7 +42,7 @@ public:
 
 private:
 
-	ModulesHolder<Assets, Input, Window, Canvas, GUI> _modules;
+	ModulesHolder<Assets, Input, Window, Canvas, GUI, Dialog> _modules;
 	sf::Clock _mainClock;
 
 };
