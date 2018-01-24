@@ -30,8 +30,6 @@ YourModule::YourModule(Tuple&& tuple, /* your ctor args */) :
 
 }
 
-}
-```
 
 
 ### Lista modułów
