@@ -21,11 +21,7 @@ namespace rat {
     class GUI : public Module<Canvas, Assets, Input, Window> { 
     public:
         template<typename Tuple>
-        GUI(Tuple&& tuple) :
-        Module(tuple) {
-            _initAssets();
-            addInterface("data/json.json");
-        }
+        GUI(Tuple&& tuple);
 
         ~GUI();
 
@@ -35,6 +31,12 @@ namespace rat {
         void reload();
 
         Interface* addInterface(const std::string& jsonFile);
+
+        template<typename T>
+        T* getAsset(const std::string& key) const;
+
+        template<typename T>
+        void addAsset(const std::string& path);
     private:
         std::vector<Interface*> _interfaces;
         //Widget _root;
@@ -44,3 +46,5 @@ namespace rat {
         void _initAssets();
     };
 }
+
+#include "GUI.tpp"
