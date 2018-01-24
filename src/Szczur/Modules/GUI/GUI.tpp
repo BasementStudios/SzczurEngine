@@ -3,7 +3,6 @@ namespace rat {
     GUI::GUI(Tuple&& tuple) :
     Module(tuple) {
         _initAssets();
-        addInterface("data/json.json");
     }
 
     template<typename T>
