@@ -49,6 +49,7 @@ inline DebugLogger* logger;
 
 }
 
+#define INIT_LOGGER() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger
 #define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
 #define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
 #define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
@@ -61,6 +62,7 @@ inline DebugLogger* logger;
 
 #else
 
+#define INIT_LOGGER()
 #define LOG_INFO(...)
 #define LOG_WARN(...)
 #define LOG_ERROR(...)
