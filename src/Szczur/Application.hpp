@@ -38,6 +38,9 @@ public:
 	sf::RenderWindow& getWindow();
 	const sf::RenderWindow& getWindow() const;
 
+	sf::Texture* tex;
+	sf::Music* mus;
+
 private:
 
 	ModulesHolder<Assets, Input, Window, Canvas> _modules;
