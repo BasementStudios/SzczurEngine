@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.1.1 ])
+$(info [ PsychoX' Makefile - version 2.2.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -164,6 +164,10 @@ FILES_DYNAMIC_SFML := openal32.dll sfml*
 HEADER_LIB_LIST := SOL2 JSON
 HEADER_INC_SOL2 := 3rd-party/sol2
 HEADER_INC_JSON := 3rd-party/json
+
+# Add binary resources files
+BIN_DIR := src
+BIN_EXTS := .bin .res
 
 # Print definitions
 COLORS := no
@@ -418,11 +422,15 @@ SOURCES   := $(shell find $(SRC_DIRS) -type f -name '*$(subst $(SPACE),' -or -na
 HEADERS   := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(INC_EXTS))')
 TEMPLATES := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
 
+# List of binaries to link
+BINARIES  := $(shell find $(BIN_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(BIN_EXTS))')
+
 # List of objects to be linked
-OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES)))
+SOURCE_OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES)))
+BINARY_OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(BINARIES)))
 
 # List of dependencies files
-DEPENDENCIES := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECTS))
+DEPENDENCIES := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(SOURCE_OBJECTS))
 
 
 
@@ -439,16 +447,30 @@ all: exe more_rules
 # Linking 
 .PHONY: exe
 exe: $(OUT_FILE)
-$(OUT_FILE): $(OBJECTS)
+$(OUT_FILE): $(SOURCE_OBJECTS) $(BINARY_OBJECTS)
 	$(inform_executable) $@
 	$(V)$(MKDIR) `dirname $@`
-	$(V)$(LD) $(OBJECTS) -o $@ $(LDFLAGS)
+	$(V)$(LD) $(SOURCE_OBJECTS) $(BINARY_OBJECTS) -o $@ $(LDFLAGS)
 	$(V)$(LS) $@
 
-# Compiling
+# Objects
 .PHONY: obj
-obj: $(OBJECTS)
-define recipe
+obj: $(SOURCE_OBJECTS) $(BINARY_OBJECTS)
+
+# Binary to objects converting
+define binaryobject_recipe
+$(eval OBJECT := $(1))
+$(eval BINARY := $(subst $(COLON_REPLACEMENT),:,$(patsubst $(OBJ_DIR)/%$(OBJ_EXT),%,$(OBJECT))))
+$(OBJECT): $(BINARY)
+	$(inform_object) $$@
+	$(V)$(MKDIR) `dirname $$@`
+	$(V)ld -r -b binary $$< -o $$@
+	$(V)$(LS) $$@
+endef
+$(foreach _, $(BINARY_OBJECTS), $(eval $(call binaryobject_recipe,$(_))))
+
+# Compiling
+define sourceobject_recipe
 $(eval OBJECT := $(1))
 $(eval SOURCE := $(subst $(COLON_REPLACEMENT),:,$(patsubst $(OBJ_DIR)/%$(OBJ_EXT),%,$(OBJECT))))
 $(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
@@ -459,7 +481,7 @@ $(OBJECT): $(SOURCE) $(DEPENDENT)
 	$(V)mv -f $(DEPENDENT)$(DEP_TMP) $(DEPENDENT) && touch $$@
 	$(V)$(LS) $$@
 endef
-$(foreach _, $(OBJECTS), $(eval $(call recipe,$(_))))
+$(foreach _, $(SOURCE_OBJECTS), $(eval $(call sourceobject_recipe,$(_))))
 
 
 
@@ -537,6 +559,18 @@ echo:
 	@echo ""
 	@echo "PATH=$(PATH)"
 	@echo ""
+	@echo "Sources:"
+	@echo -e "$(subst $(SPACE),\n,$(SOURCES))"
+	@echo ""
+	@echo "Headers:"
+	@echo -e "$(subst $(SPACE),\n,$(HEADERS))"
+	@echo ""
+	@echo "Templates:"
+	@echo -e "$(subst $(SPACE),\n,$(TEMPLATES))"
+	@echo ""
+	@echo "Binaries:"
+	@echo -e "$(subst $(SPACE),\n,$(BINARIES))"
+	@echo ""
 	@echo "Compilator:"
 	@echo "$(shell $(CXX) --version | head -n 1)"
 	@echo "Flags:"
@@ -546,15 +580,6 @@ echo:
 	@echo "$(shell $(LD) --version | head -n 1)"
 	@echo "Flags:"
 	@echo "$(LDFLAGS)"
-	@echo ""
-	@echo "Sources:"
-	@echo -e "$(subst $(SPACE),\n,$(SOURCES))"
-	@echo ""
-	@echo "Headers:"
-	@echo -e "$(subst $(SPACE),\n,$(HEADERS))"
-	@echo ""
-	@echo "Templates:"
-	@echo -e "$(subst $(SPACE),\n,$(TEMPLATES))"
 	@echo ""
 
 

@@ -5,17 +5,17 @@
 
 #include <SFML/System/MemoryInputStream.hpp>
 
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_Font_start[];
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_Font_end[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_Font_bin_start[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_Font_bin_end[];
 
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_Texture_start[];
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_Texture_end[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_Texture_bin_start[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_Texture_bin_end[];
 
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_Music_start[];
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_Music_end[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_Music_bin_start[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_Music_bin_end[];
 
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_start[];
-extern const char binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_end[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_bin_start[];
+extern const char _binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_bin_end[];
 
 namespace rat
 {
@@ -28,7 +28,7 @@ sf::Font* AssetTraits<sf::Font>::create()
 sf::Font* AssetTraits<sf::Font>::createFallback()
 {
 	sf::Font* tmp = new sf::Font;
-	tmp->loadFromMemory(binary_src_Szczur_Modules_Assets_Fallbacks_Font_start, binary_src_Szczur_Modules_Assets_Fallbacks_Font_end - binary_src_Szczur_Modules_Assets_Fallbacks_Font_start);
+	tmp->loadFromMemory(_binary_src_Szczur_Modules_Assets_Fallbacks_Font_bin_start, _binary_src_Szczur_Modules_Assets_Fallbacks_Font_bin_end - _binary_src_Szczur_Modules_Assets_Fallbacks_Font_bin_start);
 	return tmp;
 }
 
@@ -55,7 +55,7 @@ sf::Texture* AssetTraits<sf::Texture>::create()
 sf::Texture* AssetTraits<sf::Texture>::createFallback()
 {
 	sf::Texture* tmp = new sf::Texture;
-	tmp->loadFromMemory(binary_src_Szczur_Modules_Assets_Fallbacks_Texture_start, binary_src_Szczur_Modules_Assets_Fallbacks_Texture_end - binary_src_Szczur_Modules_Assets_Fallbacks_Texture_start);
+	tmp->loadFromMemory(_binary_src_Szczur_Modules_Assets_Fallbacks_Texture_bin_start, _binary_src_Szczur_Modules_Assets_Fallbacks_Texture_bin_end - _binary_src_Szczur_Modules_Assets_Fallbacks_Texture_bin_start);
 	tmp->setRepeated(true);
 	return tmp;
 }
@@ -136,7 +136,7 @@ sf::Music* AssetTraits<sf::Music>::create()
 sf::Music* AssetTraits<sf::Music>::createFallback()
 {
 	sf::Music* tmp = new sf::Music;
-	tmp->openFromMemory(binary_src_Szczur_Modules_Assets_Fallbacks_Music_start, binary_src_Szczur_Modules_Assets_Fallbacks_Music_end - binary_src_Szczur_Modules_Assets_Fallbacks_Music_start);
+	tmp->openFromMemory(_binary_src_Szczur_Modules_Assets_Fallbacks_Music_bin_start, _binary_src_Szczur_Modules_Assets_Fallbacks_Music_bin_end - _binary_src_Szczur_Modules_Assets_Fallbacks_Music_bin_start);
 	tmp->setLoop(true);
 	tmp->setVolume(50.0f);
 	return tmp;
@@ -165,7 +165,7 @@ sf::SoundBuffer* AssetTraits<sf::SoundBuffer>::create()
 sf::SoundBuffer* AssetTraits<sf::SoundBuffer>::createFallback()
 {
 	sf::SoundBuffer* tmp = new sf::SoundBuffer;
-	tmp->loadFromMemory(binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_start, binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_end - binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_start);
+	tmp->loadFromMemory(_binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_bin_start, _binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_bin_end - _binary_src_Szczur_Modules_Assets_Fallbacks_SoundBuffer_bin_start);
 	return tmp;
 }
 
