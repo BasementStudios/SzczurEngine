@@ -5,11 +5,9 @@
 
 int main()
 {
+	// Debug stuff
+	INIT_LOGGER();
 	sf::err().rdbuf(nullptr);
-
-	ON_DEBUG(
-		rat::DebugLogger mainLogger; rat::logger = &mainLogger;
-	);
 
 	rat::Application app;
 	return app.run();
