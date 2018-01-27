@@ -17,6 +17,8 @@ namespace rat
 
 		Container_t _playlists;
 		
+		int _currentPlaylistID = -1;
+
 	public:
 
 		void init();
@@ -26,10 +28,12 @@ namespace rat
 
 		void push(std::vector<std::string> newPlaylist, int pos = -1);
 
-		void remove(int id);
+		void remove(unsigned int id);
 
-		std::shared_ptr<Playlist> operator[](int id);
-		
+		void play(unsigned int id, const std::string& fileName = "");
+
+		std::shared_ptr<Playlist> operator[](unsigned int id);
+
 	};
 }
 

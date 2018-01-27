@@ -16,16 +16,16 @@ namespace rat
 
 	void Playlist::update(float deltaTime) 
 	{
-		if(hasBeenEverPlayed) {
+		if(hasBeenEverPlayed && _status != Status::Stopped) {
 			if (_playlist[_currentID]->isEnding() && !_playlist[0]->getLoop()) {
-				_endingID = _currentID;
+				_endingFile = _playlist[_currentID];
 				_isFileEnding = true;
 				_status = Status::Stopped;
 				playNext();
 			}
 			if (_isFileEnding) {
-				_playlist[_currentID]->start(deltaTime, _playlist[_endingID]->getFadeTime());
-				if (_playlist[_endingID]->finish(deltaTime))
+				_playlist[_currentID]->start(deltaTime, _endingFile->getFadeTime());
+				if (_endingFile->finish(deltaTime))
 					_isFileEnding = false;
 			}
 			else
@@ -33,6 +33,11 @@ namespace rat
 		}
 	}
 
+	void Playlist::stopUpdates()
+	{
+		_status = Status::Stopped;
+	}
+	
 	bool Playlist::add(const std::string& fileName)
 	{		
 		bool result =  (includes(fileName) || loadMusic(fileName));
@@ -54,6 +59,11 @@ namespace rat
 		}
 	}
 
+	std::shared_ptr<MusicBase> Playlist::getCurrentPlaying() const
+	{
+		return _playlist[_currentID];
+	}
+
 	void Playlist::play(unsigned int id)
 	{
 		if(id >= _playlist.size()) {
@@ -64,7 +74,7 @@ namespace rat
 		if (!hasBeenEverPlayed)
 			hasBeenEverPlayed = true;
 			
-		if (_status == Status::Playing)
+		if (_status == Status::Playing && !_isFileEnding)
 			_playlist[_currentID]->stop();
 
 		_currentID = id;
@@ -90,6 +100,15 @@ namespace rat
 		play(newId);
 	}
 
+	void Playlist::play(std::shared_ptr<MusicBase> prevMusicFile, const std::string& fileName)
+	{
+		if(_status != Status::Playing || _playlist[_currentID]->getName() != fileName) {
+			_isFileEnding = true;
+			_endingFile = prevMusicFile;
+		}
+		play(fileName);
+	}
+
 	void Playlist::clear() 
 	{
 		_status = Status::Stopped;
@@ -112,6 +131,13 @@ namespace rat
 		}
 	}
 
+	void Playlist::stop() 
+	{
+		_playlist[_currentID]->stop();
+		_playlist[_currentID]->reset();
+		_status = Status::Stopped;
+	}
+
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
 		if(fileName != "")
@@ -121,6 +147,11 @@ namespace rat
 			for (auto it : _playlist)
 				it->setVolume(it->getVolume() * (volume / 100));
 		}
+	}
+
+	float Playlist::getVolume(const std::string& fileName) const
+	{
+		return _playlist[getID(fileName)]->getVolume();
 	}
 
 	bool Playlist::loadMusic(const std::string& fileName) 

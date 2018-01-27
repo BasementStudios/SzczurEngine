@@ -33,14 +33,26 @@ namespace rat
 			_playlists.push_back(std::make_shared<Playlist>(newPlaylist));
 		else
 			_playlists[pos] = std::make_shared<Playlist>(newPlaylist);
-	}
+		}
 
-	void Music::remove(int id) 
+	void Music::remove(unsigned int id) 
 	{
 		_playlists.erase(_playlists.begin() + id);
 	}
 
-	std::shared_ptr<Playlist> Music::operator[](int id) 
+	void Music::play(unsigned int id, const std::string& fileName)
+	{
+		if (_currentPlaylistID == -1)
+			_playlists[id]->play(fileName);
+		else {
+			_playlists[id]->play(_playlists[_currentPlaylistID]->getCurrentPlaying(), fileName);
+			if (id != static_cast<unsigned>(_currentPlaylistID))
+				_playlists[_currentPlaylistID]->stopUpdates();
+		}
+		_currentPlaylistID = id;
+	}
+
+	std::shared_ptr<Playlist> Music::operator[](unsigned int id) 
 	{
 		return _playlists[id];
 	}

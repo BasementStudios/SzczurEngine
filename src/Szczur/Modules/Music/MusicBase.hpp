@@ -16,6 +16,9 @@ namespace rat
 		float _fadeTime;
 		float _baseVolume;
 		bool _isEnding = false;
+		bool _finishInit = true;
+		bool _startInit = true;
+		bool _finishing = false;
 		std::string _name;
 		sf::Music _base;
 
@@ -45,9 +48,9 @@ namespace rat
 
 		const std::string& getName() const;
 		
-	private:
-
 		void reset();
+
+	private:
 
 		bool loadMusic();
 		void getJsonData();

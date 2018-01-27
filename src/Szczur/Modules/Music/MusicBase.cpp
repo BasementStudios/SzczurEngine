@@ -12,10 +12,9 @@ namespace rat
 	{
 		_name = fileName;
 		if (loadMusic()) {
-			_timeLeft = _base.getDuration().asSeconds();
+			_timeLeft = getDuration();
 			getJsonData();
 			setVolume(volume);
-			std::cout << _fadeTime << std::endl;
 			return true;
 		}
 		return false;
@@ -23,7 +22,7 @@ namespace rat
 
 	void MusicBase::update(float deltaTime) 
 	{
-		if (getStatus() != sf::SoundSource::Status::Paused) {
+		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
 			_timeLeft -= deltaTime;
 			if (_timeLeft <= _fadeTime)
 				_isEnding = true;
@@ -37,20 +36,36 @@ namespace rat
 
 	bool MusicBase::finish(float deltaTime) 
 	{
-		_isEnding = false;
+		static float currVolume = _baseVolume;
+
+		if (_finishInit) {
+			currVolume = _base.getVolume();
+			_timeLeft = _fadeTime;
+			_finishing = true;
+			_finishInit = false;
+			_isEnding = false;
+		}
+
 		_timeLeft -= deltaTime;
-		if (_timeLeft > 0) {
-			float volume = (_timeLeft / _fadeTime) * _baseVolume;
+
+		if (_timeLeft >= 0) {
+			float volume = (_timeLeft / _fadeTime) * currVolume;
 			_base.setVolume(volume);
 			return false;
 		}
+		currVolume = _baseVolume;
 		reset();
 		stop();
 		return true;
 	}
 
-	void MusicBase::start(float deltaTime, float introTime) 
+	void MusicBase::start(float deltaTime, float introTime)
 	{
+		if (_startInit) {
+			_timeLeft = getDuration();
+			_base.setVolume(0);
+			_startInit = false;
+		}
 		update(deltaTime);
 		float volume = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
 		_base.setVolume(volume);
@@ -74,8 +89,7 @@ namespace rat
 
 		if(numberOfBars > 0) {
 			auto barTime = 240 / _bpm;
-			auto lastBar = std::fmod(_timeLeft, barTime);
-			_fadeTime = lastBar + (barTime * (numberOfBars - 1));
+			_fadeTime = barTime * numberOfBars;
 		}
 	}
 
@@ -138,7 +152,9 @@ namespace rat
 	void MusicBase::reset() 
 	{
 		_timeLeft = _base.getDuration().asSeconds();
-		_base.setVolume(_baseVolume);
+		_finishing = false;
+		_finishInit = true;
+		_startInit = true;
 	}
 
 	const std::string& MusicBase::getName() const

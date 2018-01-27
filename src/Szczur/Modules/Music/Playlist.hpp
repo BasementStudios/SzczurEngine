@@ -8,11 +8,12 @@
 
 namespace rat 
 {
-    class Playlist 
+	class Playlist
 	{ 
-		using Container_t = std::vector<std::shared_ptr<MusicBase>>;
+		using Pointer_t = std::shared_ptr<MusicBase>;
+		using Container_t = std::vector<Pointer_t>;
 
-    public:
+	public:
 
 		enum class PlayingMode {
 			Random,
@@ -31,7 +32,7 @@ namespace rat
 		Container_t _playlist;
 		unsigned int _currentID;
 
-		unsigned int _endingID;
+		Pointer_t _endingFile;
 		bool _isFileEnding = false;
 
 		bool hasBeenEverPlayed = false;
@@ -49,18 +50,25 @@ namespace rat
 		void clear();
 
 		void update(float deltaTime);
+		void stopUpdates();
 
 		bool includes(const std::string& fileName) const;		
 
 		bool add(const std::string& fileName);
 		void remove(const std::string& fileName);
 
+		Pointer_t getCurrentPlaying() const;
+
 		void play(const std::string& fileName = "");
+		void play(Pointer_t prevMusicFile, const std::string& fileName = "");
+
 		void pause();
+		void stop();
 
 		void setPlayingMode(PlayingMode mode);
 
 		void setVolume(float volume, const std::string& fileName = "");
+		float getVolume(const std::string& fileName) const;
 
 	private:
 		void play(unsigned int id);
