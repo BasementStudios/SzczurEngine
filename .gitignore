@@ -1,12 +1,6 @@
-
 # Compiling results
-obj/*
-out/*
-
-# Assets exclusion
-!out/assets/
-!out/assets/*
-!out/openal32.dll
+obj/
+out/
 
 # Configurations
 settings.mk

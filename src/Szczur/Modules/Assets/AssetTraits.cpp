@@ -1,74 +1,90 @@
 #include "AssetTraits.hpp"
 
-/** @file AssetTraits.cpp
- ** @description File with standard assets traits implementations.
- ** @author Patryk (Stritch)
- **/
-
 #include <fstream>
 #include <streambuf>
 
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Shader.hpp>
-#include <SFML/Audio/Music.hpp>
-#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/System/MemoryInputStream.hpp>
-
-#include "AssetNotFoundException.hpp"
 
 namespace rat
 {
 
-// sf::Font
+#include "Fallbacks/Font.bin"
+#include "Fallbacks/Texture.bin"
+#include "Fallbacks/Music.bin"
+#include "Fallbacks/SoundBuffer.bin"
+
 sf::Font* AssetTraits<sf::Font>::create()
 {
 	return new sf::Font;
 }
-sf::Font* AssetTraits<sf::Font>::load(sf::Font& font, const std::string& path)
+
+sf::Font* AssetTraits<sf::Font>::createFallback()
 {
-	if (!font.loadFromFile(path)) {
-		throw AssetNotFoundException<sf::Font>(path);
-		return nullptr;
-	}
-	return &font;
-}
-void AssetTraits<sf::Font>::unload(sf::Font& font)
-{
-	font.~Font();
+	sf::Font* tmp = new sf::Font;
+	tmp->loadFromMemory(fontData, sizeof(fontData));
+	return tmp;
 }
 
-// sf::Texture
+bool AssetTraits<sf::Font>::load(sf::Font& font, const std::string& path)
+{
+	return font.loadFromFile(path);
+}
+
+void AssetTraits<sf::Font>::unload(sf::Font&)
+{
+	// Nothing to do here, destructor will take care of freeing resource
+}
+
+const char* AssetTraits<sf::Font>::getName()
+{
+	return "sf::Font";
+}
+
 sf::Texture* AssetTraits<sf::Texture>::create()
 {
 	return new sf::Texture;
 }
-sf::Texture* AssetTraits<sf::Texture>::load(sf::Texture& texture, const std::string& path)
+
+sf::Texture* AssetTraits<sf::Texture>::createFallback()
 {
-	if (!texture.loadFromFile(path)) {
-		throw AssetNotFoundException<sf::Texture>(path);
-		return nullptr;
-	}
-	return &texture;
-}
-void AssetTraits<sf::Texture>::unload(sf::Texture& texture)
-{
-	texture.~Texture();
+	sf::Texture* tmp = new sf::Texture;
+	tmp->loadFromMemory(textureData, sizeof(textureData));
+	tmp->setRepeated(true);
+	return tmp;
 }
 
-// sf::Shader
+bool AssetTraits<sf::Texture>::load(sf::Texture& texture, const std::string& path)
+{
+	return texture.loadFromFile(path);
+}
+
+void AssetTraits<sf::Texture>::unload(sf::Texture&)
+{
+	// Nothing to do here, destructor will take care of freeing resource
+}
+
+const char* AssetTraits<sf::Texture>::getName()
+{
+	return "sf::Texture";
+}
+
 sf::Shader* AssetTraits<sf::Shader>::create()
 {
 	return new sf::Shader;
 }
-sf::Shader* AssetTraits<sf::Shader>::load(sf::Shader& shader, const std::string& path)
+
+sf::Shader* AssetTraits<sf::Shader>::createFallback()
+{
+	// @todo fallback for Shaders
+	return new sf::Shader;
+}
+
+bool AssetTraits<sf::Shader>::load(sf::Shader& shader, const std::string& path)
 {
 	std::ifstream file(path);
 
-	if (!file.good()) {
-		throw AssetNotFoundException<sf::Texture>(path);
-		return nullptr;
-	}
+	if (!file.good())
+		return false;
 
 	std::string buffer;
 
@@ -82,61 +98,83 @@ sf::Shader* AssetTraits<sf::Shader>::load(sf::Shader& shader, const std::string&
 
 	auto it1 = std::begin(buffer);
 	auto it2 = std::find(it1, std::end(buffer), '$');
-	streams[0].open(it1.base(), std::distance(it1, it2));
+	streams[0].open(&*it1, std::distance(it1, it2));
 
 	it1 = std::next(it2);
 	it2 = std::find(it1, std::end(buffer), '$');
-	streams[1].open(it1.base(), std::distance(it1, it2));
+	streams[1].open(&*it1, std::distance(it1, it2));
 
 	it1 = std::next(it2);
 	it2 = std::find(it1, std::end(buffer), '$');
-	streams[2].open(it1.base(), std::distance(it1, it2));
+	streams[2].open(&*it1, std::distance(it1, it2));
 
-	if (!shader.loadFromStream(streams[0], streams[1], streams[2])) {
-		throw AssetNotFoundException<sf::Shader>(path + " - invaild");
-		return nullptr;
-	}
-	return &shader;
+	return shader.loadFromStream(streams[0], streams[1], streams[2]);
 }
-void AssetTraits<sf::Shader>::unload(sf::Shader& shader)
+
+void AssetTraits<sf::Shader>::unload(sf::Shader&)
 {
-	shader.~Shader();
+	// Nothing to do here, destructor will take care of freeing resource
 }
 
-// sf::Music
+const char* AssetTraits<sf::Shader>::getName()
+{
+	return "sf::Shader";
+}
+
 sf::Music* AssetTraits<sf::Music>::create()
 {
 	return new sf::Music;
 }
-sf::Music* AssetTraits<sf::Music>::load(sf::Music& music, const std::string& path)
+
+sf::Music* AssetTraits<sf::Music>::createFallback()
 {
-	if (!music.openFromFile(path)) {
-		throw AssetNotFoundException<sf::Music>(path);
-		return nullptr;
-	}
-	return &music;
-}
-void AssetTraits<sf::Music>::unload(sf::Music& music)
-{
-	music.~Music();
+	sf::Music* tmp = new sf::Music;
+	tmp->openFromMemory(musicData, sizeof(musicData));
+	tmp->setLoop(true);
+	tmp->setVolume(50.0f);
+	return tmp;
 }
 
-// sf::SoundBuffer
+bool AssetTraits<sf::Music>::load(sf::Music& music, const std::string& path)
+{
+	return music.openFromFile(path);
+}
+
+void AssetTraits<sf::Music>::unload(sf::Music&)
+{
+	// Nothing to do here, destructor will take care of freeing resource
+}
+
+const char* AssetTraits<sf::Music>::getName()
+{
+	return "sf::Music";
+}
+
 sf::SoundBuffer* AssetTraits<sf::SoundBuffer>::create()
 {
 	return new sf::SoundBuffer;
 }
-sf::SoundBuffer* AssetTraits<sf::SoundBuffer>::load(sf::SoundBuffer& soundBuffer, const std::string& path)
+
+sf::SoundBuffer* AssetTraits<sf::SoundBuffer>::createFallback()
 {
-	if (!soundBuffer.loadFromFile(path)) {
-		throw AssetNotFoundException<sf::SoundBuffer>(path);
-		return nullptr;
-	}
-	return &soundBuffer;
+	sf::SoundBuffer* tmp = new sf::SoundBuffer;
+	tmp->loadFromMemory(soundBufferData, sizeof(soundBufferData));
+	return tmp;
 }
-void AssetTraits<sf::SoundBuffer>::unload(sf::SoundBuffer& soundBuffer)
+
+bool AssetTraits<sf::SoundBuffer>::load(sf::SoundBuffer& soundBuffer, const std::string& path)
 {
-	soundBuffer.~SoundBuffer();
+	return soundBuffer.loadFromFile(path);
+}
+
+void AssetTraits<sf::SoundBuffer>::unload(sf::SoundBuffer&)
+{
+	// Nothing to do here, destructor will take care of freeing resource
+}
+
+const char* AssetTraits<sf::SoundBuffer>::getName()
+{
+	return "sf::SoundBuffer";
 }
 
 }

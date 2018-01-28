@@ -9,41 +9,26 @@ Przykład modułu
 Każdy moduł powinien mieć swój główny plik z główną klasą modułu, np. `YourModule.hpp`, w odpowiednim dla modułu katalogu, czyli `src/Szczur/Modules/` i folder o nazwie jak moduł: `YourModule`.
 
 ```cpp
-#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Utility/Module.hpp"
 
-namespace rat {
-    class YourModule : public ModuleBase<Dependencies...> 
-	{
-		using ModuleBase::ModuleBase;
-		
-    private:
-        
-        // ...
-        
-    public:
-        
-        // Nie tworzyć własnego konstruktora!
-        
-        void init(); // jeśli chcemy zasymulować konstruktor
-        
-        void input(const sf::Event& event); // jeżeli chcemy obsłużyć eventy
-        
-        void update(float deltaTime); // logika modułu
-        
-        void render(); // render modułu
-    };
+namespace rat
+{
+
+class YourModule : public Module<Dependencies...>
+{
+public:
+
+    template <typename Tuple>
+    YourModule(Tuple&& tuple, /* your ctor args */);
+
+};
+
+template <typename Tuple>
+YourModule::YourModule(Tuple&& tuple, /* your ctor args */) :
+    Module(tuple), /* your ctor initializer list */
+{
+
 }
-```
-
-#### Oznaczenia modułu
-
-Moduł może być oznaczony poprzez dziedziczenie z pustych klas:
-
-* `Module<>::Updatable` - będzie wywoływana jego funkcja `void update(float deltaTime)` przy każdym cyklu głównej pętli aktualizującej stan gry.
-
-* `Module<>::Inputable` - będzie wywoływana jego funkcja `void input(sf::Event event)` dla każdego wywołanego zdarzenia programistycznego.
-
-* `Module<>::Renderable` - będzie wywoływana jego funkcja `void render(float deltaTime)` przy każdym cyklu głównej pętli renderującej/rysującej.
 
 
 
@@ -54,24 +39,33 @@ Aby moduł został załadowany, powinien zostać dodany do listy modułów w `Ap
 ```cpp
 #include "Szczur/Modules/YourModule/YourModule.hpp"
 
-namespace rat {
-    class Application {
-    private:
+namespace rat
+{
 
-        ModulesHolder<
-            // dopisać do listy
-            YourModule
-        > _modules;
-    
-        // ...
-   };
+class Application
+{
+private:
+
+    ModulesHolder</* other modules */, YourModule> _modules;
+
+};
+
 }
+```
+
+
+
+### Użycie
+
+```cpp
+_modules.getModule<ModuleName>() // w klasie Apllication
+```
+```cpp
+getModule<ModuleName>() // w środku innego modułu
 ```
 
 
 
 ### Uwagi
 
-Kolega `Stritch` powinien udzielić więcej informacji, jeśli wystąpią jakies większe trudności.
-
-
+Kolega `Patryk (Stritch)` powinien udzielić więcej informacji, jeśli wystąpią jakieś większe trudności.

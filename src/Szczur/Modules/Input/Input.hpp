@@ -2,32 +2,32 @@
 
 #include <SFML/Window/Event.hpp>
 
-#include "Szczur/Utility/Modules.hpp"
 #include "InputCode.hpp"
+#include "Szczur/Utility/Module.hpp"
 
 namespace rat
 {
 
-enum Status_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
+enum InputStatus_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 
-class Input : public Module<>, Module<>::Inputable
+class Input : public Module<>
 {
-	using Module::Module;
-
-private:
-
-	Status_t _keyboard[Keyboard::Count];
-	Status_t _mouse[Mouse::Count];
-	Status_t _scroll[Scroll::Count];
-
-	InputCode _recentlyPressed;
-	InputCode _recentlyReleased;
-
-	unsigned _enteredCharacter;
-
 public:
 
-	void input(const sf::Event& event);
+	template <typename Tuple>
+	Input(Tuple&& tuple);
+
+	Input(const Input&) = delete;
+
+	Input& operator = (const Input&) = delete;
+
+	Input(Input&&) = delete;
+
+	Input& operator = (Input&&) = delete;
+
+	~Input();
+
+	void processEvent(const sf::Event& event);
 
 	void finish();
 
@@ -35,40 +35,29 @@ public:
 
 	void release(const InputCode& code);
 
-	Status_t getStatus(const InputCode& code) const;
+	InputStatus_t getStatus(const InputCode& code) const;
 
-	inline bool checkStatus(const InputCode& code, Status_t _Status) const
-		{ return getStatus(code) == _Status; }
+	bool checkStatus(const InputCode& code, InputStatus_t _Status) const;
 
-	inline bool isUnkept(const InputCode& code) const
-		{ return checkStatus(code, Status_t::Unkept); }
+	bool isUnkept(const InputCode& code) const;
 
-	inline bool isPressed(const InputCode& code) const
-	 	{ return checkStatus(code, Status_t::Pressed); }
+	bool isPressed(const InputCode& code) const;
 
-	inline bool isKept(const InputCode& code) const
-		{ return checkStatus(code, Status_t::Kept); }
+	bool isKept(const InputCode& code) const;
 
-	inline bool isReleased(const InputCode& code) const
-		{ return checkStatus(code, Status_t::Released); }
+	bool isReleased(const InputCode& code) const;
 
-	inline InputCode getRecentlyPressed() const
-		{ return _recentlyPressed; }
+	InputCode getRecentlyPressed() const;
 
-	inline InputCode getRecentlyReleased() const 
-		{ return _recentlyReleased; }
+	InputCode getRecentlyReleased() const;
 
-	inline bool isAnyPressed() const
-		{ return _recentlyPressed.isValid(); }
+	bool isAnyPressed() const;
 
-	inline bool isAnyReleased() const
-		{ return _recentlyReleased.isValid(); }
+	bool isAnyReleased() const;
 
-	inline bool isTextEntered() const
-		{ return _enteredCharacter != 0; }
+	bool isTextEntered() const;
 
-	inline unsigned getEnteredCharacter() const
-		{ return _enteredCharacter; }
+	unsigned getEnteredCharacter() const;
 
 private:
 
@@ -82,6 +71,22 @@ private:
 
 	void _moveWheel(int which, int delta);
 
+	InputStatus_t _keyboard[Keyboard::Count];
+	InputStatus_t _mouse[Mouse::Count];
+	InputStatus_t _scroll[Scroll::Count];
+
+	InputCode _recentlyPressed;
+	InputCode _recentlyReleased;
+
+	unsigned _enteredCharacter;
+
 };
+
+template <typename Tuple>
+Input::Input(Tuple&& tuple) :
+	Module(tuple)
+{
+	LOG_INFO(this, " : Module Input created");
+}
 
 }

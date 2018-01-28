@@ -1,109 +1,122 @@
-/** @file AssetsManager.tpp
- ** @description Templates implementation file of Assets Manager class.
- ** @author Patryk (Stritch)
- ** @auhtor Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
-
-#include <string>						// string, to_string
-
-#include "AssetNotFoundException.hpp"
-
 namespace rat
 {
 
-/// Loads and returns reference to the loaded resource.
-template<typename... TTypes>
-template<typename TType>
-TType& AssetsManager<TTypes...>::load(const std::string& path)
+template <typename... Ts>
+template <typename U>
+U& AssetsManager<Ts...>::load(const std::string& path)
 {
-	return *(_getContainer<TType>().try_emplace(getKey(path)).first->second.load(path));
+	if (auto it = _getContainer<U>().try_emplace(_obtainKey(path)).first; it->second.load(path)) {
+		return it->second.getRef();
+	}
+	else {
+		LOG_WARN("Cannot load ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+		_getContainer<U>().erase(it);
+	}
+
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
-/// Unloads the resource.
-template<typename... TTypes>
-template<typename TType>
-bool AssetsManager<TTypes...>::unload(const AssetsManager<TTypes...>::Key_t& key)
+template <typename... Ts>
+template <typename U>
+bool AssetsManager<Ts...>::unload(const std::string& path)
 {
-	if (auto it = _find<TType>(key); it != _getContainer<TType>().end()) {
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
 		if (it->second.unload()) {
-			_getContainer<TType>().erase(it);
+			_getContainer<U>().erase(it);
 			return true;
 		}
 	}
+
 	return false;
 }
 
-/// Get the resource (reference) without changing references counter. 
-template<typename... TTypes>
-template<typename TType>
-TType& AssetsManager<TTypes...>::get(const AssetsManager<TTypes...>::Key_t& key)
+template <typename... Ts>
+template <typename U>
+bool AssetsManager<Ts...>::isLoaded(const std::string& path) const
 {
-	if (auto it = _find(key); it != _getContainer<TType>().end()) {
-		return it.second.ref();
+	return _find<U>(_obtainKey(path)) != _getContainer<U>().end();
+}
+
+template <typename... Ts>
+template <typename U>
+U* AssetsManager<Ts...>::getPtr(const std::string& path)
+{
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getPtr();
 	}
 
-	throw AssetNotFoundException(std::to_string((std::size_t)key));
-	return nullptr;
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getPtr();
 }
-template<typename... TTypes>
-template<typename TType>
-const TType& AssetsManager<TTypes...>::get(const AssetsManager<TTypes...>::Key_t& key) const
+
+template <typename... Ts>
+template <typename U>
+const U* AssetsManager<Ts...>::getPtr(const std::string& path) const
 {
-	if (auto it = _find(key); it != _getContainer<TType>().end()) {
-		return it.second.ref();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getPtr();
 	}
 
-	throw AssetNotFoundException(std::to_string((std::size_t)key));
-	return nullptr;
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback pointer returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getPtr();
 }
 
-/// Find the resource (pointer) without changing references counter. 
-template<typename... TTypes>
-template<typename TType>
-TType* AssetsManager<TTypes...>::find(const AssetsManager<TTypes...>::Key_t& key)
+template <typename... Ts>
+template <typename U>
+U& AssetsManager<Ts...>::getRef(const std::string& path)
 {
-	if (auto it = _find(key); it != _getContainer<TType>().end()) {
-		return it.second.ptr();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getRef();
 	}
 
-	return nullptr;
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
-template<typename... TTypes>
-template<typename TType>
-const TType* AssetsManager<TTypes...>::find(const AssetsManager<TTypes...>::Key_t& key) const
+
+template <typename... Ts>
+template <typename U>
+const U& AssetsManager<Ts...>::getRef(const std::string& path) const
 {
-	if (auto it = _find(key); it != _getContainer<TType>().end()) {
-		return it.second.ptr();
+	if (auto it = _find<U>(_obtainKey(path)); it != _getContainer<U>().end()) {
+		return it->second.getRef();
 	}
 
-	return nullptr;
+	LOG_WARN("Cannot find ", AssetTraits<U>::getName(), " from path ", std::quoted(path), ", fallback reference returned");
+	return std::get<0>(std::get<Held_t<U>>(_holder)).getRef();
 }
 
-/// Count the references from loading/unloading the resource.
-template<typename... TTypes>
-template<typename TType>
-std::size_t AssetsManager<TTypes...>::referenceCount(const AssetsManager<TTypes...>::Key_t& key) const
+template <typename... Ts>
+typename AssetsManager<Ts...>::Key_t AssetsManager<Ts...>::_obtainKey(const std::string& path) const
 {
-	if (auto it = _find(key); it != _getContainer<TType>().end()) {
-		return it.second.referenceCount;
-	}
-
-	return 0;
-}
-
-/// Checks if the resource is loaded. 
-template<typename... TTypes>
-template<typename TType>
-bool AssetsManager<TTypes...>::isLoaded(const AssetsManager<TTypes...>::Key_t& key) const
-{
-	return _find<TType>(key) != _getContainer<TType>().end();
-}
-
-/// Gets key (hash) from the path.
-template<typename... TTypes>
-typename AssetsManager<TTypes...>::Key_t AssetsManager<TTypes...>::getKey(const std::string& path) const
-{	// @todo , Rozwijanie  `../` `/./` itp.
 	return fnv1a_64(path.begin(), path.end());
+}
+
+template <typename... Ts>
+template <typename U>
+typename AssetsManager<Ts...>::template Container_t<U>& AssetsManager<Ts...>::_getContainer()
+{
+	return std::get<1>(std::get<Held_t<U>>(_holder));
+}
+
+template <typename... Ts>
+template <typename U>
+const typename AssetsManager<Ts...>::template Container_t<U>& AssetsManager<Ts...>::_getContainer() const
+{
+	return std::get<1>(std::get<Held_t<U>>(_holder));
+}
+
+template <typename... Ts>
+template <typename U>
+typename AssetsManager<Ts...>::template Iterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key)
+{
+	return _getContainer<U>().find(_Key);
+}
+
+template <typename... Ts>
+template <typename U>
+typename AssetsManager<Ts...>::template ConstIterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key) const
+{
+	return _getContainer<U>().find(_Key);
 }
 
 }

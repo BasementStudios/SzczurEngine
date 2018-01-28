@@ -1,7 +1,7 @@
 namespace rat
 {
 
-template<typename InputIt>
+template <typename InputIt>
 constexpr Hash32_t fnv1a_32(InputIt begin, InputIt end)
 {
 	Hash32_t value = 0x811C9DC5u;
@@ -15,7 +15,7 @@ constexpr Hash32_t fnv1a_32(InputIt begin, InputIt end)
 	return value;
 }
 
-template<typename InputIt>
+template <typename InputIt>
 constexpr Hash32_t fnv1a_32(InputIt begin)
 {
 	Hash32_t value = 0x811C9DC5u;
@@ -29,7 +29,7 @@ constexpr Hash32_t fnv1a_32(InputIt begin)
 	return value;
 }
 
-template<typename InputIt>
+template <typename InputIt>
 constexpr Hash64_t fnv1a_64(InputIt begin, InputIt end)
 {
 	Hash64_t value = 0xCBF29CE484222325ull;
@@ -43,7 +43,7 @@ constexpr Hash64_t fnv1a_64(InputIt begin, InputIt end)
 	return value;
 }
 
-template<typename InputIt>
+template <typename InputIt>
 constexpr Hash64_t fnv1a_64(InputIt begin)
 {
 	Hash64_t value = 0xCBF29CE484222325ull;
