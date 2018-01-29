@@ -93,28 +93,28 @@ typename AssetsManager<Ts...>::Key_t AssetsManager<Ts...>::_obtainKey(const std:
 
 template <typename... Ts>
 template <typename U>
-typename AssetsManager<Ts...>::template Container_t<U>& AssetsManager<Ts...>::_getContainer()
+typename AssetsManager<Ts...>::DEPENDENT_TEMPLATE_SCOPE Container_t<U>& AssetsManager<Ts...>::_getContainer()
 {
 	return std::get<1>(std::get<Held_t<U>>(_holder));
 }
 
 template <typename... Ts>
 template <typename U>
-const typename AssetsManager<Ts...>::template Container_t<U>& AssetsManager<Ts...>::_getContainer() const
+const typename AssetsManager<Ts...>::DEPENDENT_TEMPLATE_SCOPE Container_t<U>& AssetsManager<Ts...>::_getContainer() const
 {
 	return std::get<1>(std::get<Held_t<U>>(_holder));
 }
 
 template <typename... Ts>
 template <typename U>
-typename AssetsManager<Ts...>::template Iterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key)
+typename AssetsManager<Ts...>::DEPENDENT_TEMPLATE_SCOPE Iterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key)
 {
 	return _getContainer<U>().find(_Key);
 }
 
 template <typename... Ts>
 template <typename U>
-typename AssetsManager<Ts...>::template ConstIterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key) const
+typename AssetsManager<Ts...>::DEPENDENT_TEMPLATE_SCOPE ConstIterator_t<U> AssetsManager<Ts...>::_find(const Key_t& _Key) const
 {
 	return _getContainer<U>().find(_Key);
 }
