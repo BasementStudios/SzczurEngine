@@ -5,7 +5,7 @@ namespace rat
 
 Input::~Input()
 {
-    LOG_INFO(this, " : Module Input destructed");
+    LOG_DESTRUCTOR();
 }
 
 void Input::processEvent(const sf::Event& event)

@@ -54,7 +54,7 @@ template <typename Tuple>
 Assets::Assets(Tuple&& tuple) :
 	Module(tuple)
 {
-	LOG_INFO(this, " : Module Assets created");
+	LOG_CONSTRUCTOR();
 }
 
 }

@@ -7,6 +7,10 @@
 #include <iostream>
 #include <iomanip>
 #include <string_view>
+#include <type_traits>
+
+#include "DemangleType.hpp"
+#include "Szczur/CompilerPortability.hpp"
 
 namespace rat
 {
@@ -21,7 +25,7 @@ public:
         _formatTime("%H:%M:%S");
 
         std::string_view view = file;
-        view = view.substr(view.find_last_of('/') + 1);
+        view = view.substr(view.find_last_of(DIRECTORY_SEPARATOR_CHAR) + 1);
 
         _logFile.open(_logFilePath, std::ios::app);
         _logFile << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n';
@@ -50,6 +54,8 @@ inline DebugLogger* logger;
 }
 
 #define INIT_LOGGER() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger
+#define LOG_CONSTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", DemangleType<std::remove_pointer_t<decltype(this)>>(), " constructed"); }
+#define LOG_DESTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", DemangleType<std::remove_pointer_t<decltype(this)>>(), " destructed"); }
 #define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
 #define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
 #define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
@@ -63,6 +69,8 @@ inline DebugLogger* logger;
 #else
 
 #define INIT_LOGGER()
+#define LOG_CONSTRUCTOR()
+#define LOG_DESTRUCTOR()
 #define LOG_INFO(...)
 #define LOG_WARN(...)
 #define LOG_ERROR(...)

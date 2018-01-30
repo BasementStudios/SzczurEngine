@@ -5,7 +5,7 @@ namespace rat
 
 Window::~Window()
 {
-    LOG_INFO(this, " : Module Window destructed");
+    LOG_DESTRUCTOR();
 }
 
 void Window::clear(const sf::Color& color)

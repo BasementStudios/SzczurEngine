@@ -5,7 +5,7 @@ namespace rat
 
 Assets::~Assets()
 {
-    LOG_INFO(this, " : Module Assets destructed");
+    LOG_DESTRUCTOR();
 }
 
 }

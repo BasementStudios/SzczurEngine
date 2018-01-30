@@ -68,7 +68,7 @@ Canvas::Canvas(Tuple&& tuple) :
 	for (auto& av : _layers)
 		av.reset(new RenderLayer(getModule<Window>().getWindow().getSize()));
 
-	LOG_INFO(this, " : Module Canvas created");
+	LOG_CONSTRUCTOR();
 }
 
 }

@@ -5,7 +5,7 @@ namespace rat
 
 Canvas::~Canvas()
 {
-	LOG_INFO(this, " : Module Canvas destructed");
+	LOG_DESTRUCTOR();
 }
 
 void Canvas::clear()

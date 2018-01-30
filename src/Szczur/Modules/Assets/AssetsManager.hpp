@@ -6,7 +6,7 @@
 #include "FallbackAsset.hpp"
 #include "Szczur/Utility/Hash.hpp"
 
-#include "Szczur/Utility/CompilerPortability.hpp"
+#include "Szczur/CompilerPortability.hpp"
 
 namespace rat
 {

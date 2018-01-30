@@ -43,7 +43,7 @@ template <typename Tuple>
 Window::Window(Tuple&& tuple) :
 	Module(tuple), _window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
 {
-	LOG_INFO(this, " : Module Window created");
+	LOG_CONSTRUCTOR();
 }
 
 }

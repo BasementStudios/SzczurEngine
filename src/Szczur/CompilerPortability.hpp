@@ -12,6 +12,8 @@
 
 #if defined(COMPILER_MSVC)
 #define DEPENDENT_TEMPLATE_SCOPE
+#define DIRECTORY_SEPARATOR_CHAR '\\'
 #else
 #define DEPENDENT_TEMPLATE_SCOPE template
+#define DIRECTORY_SEPARATOR_CHAR '/'
 #endif

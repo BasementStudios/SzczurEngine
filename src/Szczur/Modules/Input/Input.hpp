@@ -86,7 +86,7 @@ template <typename Tuple>
 Input::Input(Tuple&& tuple) :
 	Module(tuple)
 {
-	LOG_INFO(this, " : Module Input created");
+	LOG_CONSTRUCTOR();
 }
 
 }
