@@ -8,7 +8,7 @@
 
 namespace rat 
 {
-    class Music : public ModuleBase<> 
+	class Music : public ModuleBase<>
 	{ 
 		using ModuleBase::ModuleBase;
 		using Container_t = std::vector<std::shared_ptr<Playlist>>;
@@ -26,7 +26,7 @@ namespace rat
 		void render();
 		void update(float deltaTime);
 
-		void push(std::vector<std::string> newPlaylist, int pos = -1);
+		void push(const std::vector<std::string>& newPlaylist, int pos = -1);
 
 		void remove(unsigned int id);
 

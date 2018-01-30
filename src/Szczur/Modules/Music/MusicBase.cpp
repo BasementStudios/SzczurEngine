@@ -53,6 +53,7 @@ namespace rat
 			_base.setVolume(volume);
 			return false;
 		}
+		
 		currVolume = _baseVolume;
 		reset();
 		stop();
@@ -81,14 +82,14 @@ namespace rat
 		Json json;
 		std::ifstream file("res/Music/Music.json");
 		if(file.is_open()){
-            file >> json;
+			file >> json;
 			file.close();
 		}
 		_bpm = json[_name]["BPM"];
 		float numberOfBars = json[_name]["FadeTime"];
 
 		if(numberOfBars > 0) {
-			auto barTime = 240 / _bpm;
+			float barTime = 240 / _bpm;
 			_fadeTime = barTime * numberOfBars;
 		}
 	}
@@ -151,7 +152,7 @@ namespace rat
 
 	void MusicBase::reset() 
 	{
-		_timeLeft = _base.getDuration().asSeconds();
+		_timeLeft = getDuration();
 		_finishing = false;
 		_finishInit = true;
 		_startInit = true;

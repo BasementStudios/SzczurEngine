@@ -27,13 +27,13 @@ namespace rat
 	}
 
 
-	void Music::push(std::vector<std::string> newPlaylist, int pos) 
+	void Music::push(const std::vector<std::string>& newPlaylist, int pos) 
 	{
 		if (pos < 0 || static_cast<unsigned>(pos) >= _playlists.size())
 			_playlists.push_back(std::make_shared<Playlist>(newPlaylist));
 		else
 			_playlists[pos] = std::make_shared<Playlist>(newPlaylist);
-		}
+	}
 
 	void Music::remove(unsigned int id) 
 	{

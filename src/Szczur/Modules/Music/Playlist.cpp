@@ -9,14 +9,14 @@
 namespace rat 
 {
 
-	Playlist::Playlist(std::vector<std::string> newPlaylist)
+	Playlist::Playlist(const std::vector<std::string>& newPlaylist)
 	{
 		setNewPlaylist(newPlaylist);
 	}
 
 	void Playlist::update(float deltaTime) 
 	{
-		if(hasBeenEverPlayed && _status != Status::Stopped) {
+		if (hasBeenEverPlayed && _status != Status::Stopped) {
 			if (_playlist[_currentID]->isEnding() && !_playlist[0]->getLoop()) {
 				_endingFile = _playlist[_currentID];
 				_isFileEnding = true;
@@ -54,7 +54,7 @@ namespace rat
 		}
 		_playlist.erase(_playlist.begin() + getID(fileName));
 
-		if(_playlist.size() == 1) {
+		if (_playlist.size() == 1) {
 			_playlist[0]->setLoop(true);
 		}
 	}
@@ -66,7 +66,7 @@ namespace rat
 
 	void Playlist::play(unsigned int id)
 	{
-		if(id >= _playlist.size()) {
+		if (id >= _playlist.size()) {
 			_currentID = _playlist.size();
 			return;
 		}
@@ -78,7 +78,6 @@ namespace rat
 			_playlist[_currentID]->stop();
 
 		_currentID = id;
-		std::cout << _playlist[_currentID]->getName() << std::endl; //For Tests
 		_status = Status::Playing;
 		_playlist[_currentID]->play();
 	}
@@ -86,7 +85,7 @@ namespace rat
 	void Playlist::play(const std::string& fileName) 
 	{
 		unsigned int newId = 0;
-		if (fileName == "") {
+		if (fileName.empty()) {
 			if (_status == Status::Paused) {
 				unPause();
 				return;
@@ -102,7 +101,7 @@ namespace rat
 
 	void Playlist::play(std::shared_ptr<MusicBase> prevMusicFile, const std::string& fileName)
 	{
-		if(_status != Status::Playing || _playlist[_currentID]->getName() != fileName) {
+		if (_status != Status::Playing || _playlist[_currentID]->getName() != fileName) {
 			_isFileEnding = true;
 			_endingFile = prevMusicFile;
 		}
@@ -140,7 +139,7 @@ namespace rat
 
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
-		if(fileName != "")
+		if (!fileName.empty())
 			_playlist[getID(fileName)]->setVolume(volume * (_globalVolume / 100));
 		else {
 			_globalVolume = volume;
@@ -182,7 +181,7 @@ namespace rat
 		return nextID;
 	}
 
-	bool Playlist::setNewPlaylist(std::vector<std::string> newPlaylist) 
+	bool Playlist::setNewPlaylist(const std::vector<std::string>& newPlaylist) 
 	{	
 		clear();
 
@@ -192,7 +191,7 @@ namespace rat
 				return false;
 		}
 
-		if(_playlist.size() == 1)
+		if (_playlist.size() == 1)
 			_playlist[0]->setLoop(true);
 
 		return true;

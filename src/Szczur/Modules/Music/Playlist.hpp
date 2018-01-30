@@ -44,9 +44,9 @@ namespace rat
 
 	public:
 
-		Playlist(std::vector<std::string> newPlaylist);
+		Playlist(const std::vector<std::string>& newPlaylist);
 	
-		bool setNewPlaylist(std::vector<std::string> newPlaylist);
+		bool setNewPlaylist(const std::vector<std::string>& newPlaylist);
 		void clear();
 
 		void update(float deltaTime);
@@ -71,6 +71,7 @@ namespace rat
 		float getVolume(const std::string& fileName) const;
 
 	private:
+	
 		void play(unsigned int id);
 
 		bool loadMusic(const std::string& fileName);

@@ -5,21 +5,6 @@ namespace rat {
 		_window.create(sf::VideoMode(1280, 720), "SzczurEngine v0.0.0");
 
 		_modules.getModule<Canvas>().init(&_window);
-
-		/*_modules.getModule<Music>().push({
-			"R1",
-			"R2",
-			"R3",
-			"R4"
-		});
-		_modules.getModule<Music>().push({
-			"0001 Szczur Rozpierdalacz",
-			"0002 Szczur Bezglutenowy",
-			"0003 Szczur Trailerowszy",
-			"0004 Szczur Trailerowy"
-		});
-		_modules.getModule<Music>()[0]->setPlayingMode(Playlist::PlayingMode::Orderly);
-		_modules.getModule<Music>()[0]->play();*/
 	}
 
 	void Application::changeResolution(const sf::Vector2u& size) {
