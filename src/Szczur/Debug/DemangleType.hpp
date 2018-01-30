@@ -14,7 +14,7 @@ template <typename T>
 inline std::string DemangleType()
 {
 	#if __has_include(<cxxabi.h>)
-	return std::unique_ptr<char, void(*)(void*)>{ abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, nullptr), std::free }.get();
+	return std::unique_ptr<char, decltype(&std::free)>{ abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, nullptr), std::free }.get();
 	#else
 	return typeid(T).name();
 	#endif
