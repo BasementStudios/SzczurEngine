@@ -11,7 +11,7 @@ namespace rat
 {
 
 template <typename T>
-inline std::string DemangleType()
+inline std::string demangleType()
 {
 	#if __has_include(<cxxabi.h>)
 	return std::unique_ptr<char, decltype(&std::free)>{ abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, nullptr), std::free }.get();

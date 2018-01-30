@@ -54,8 +54,8 @@ inline DebugLogger* logger;
 }
 
 #define INIT_LOGGER() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger
-#define LOG_CONSTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", DemangleType<std::remove_pointer_t<decltype(this)>>(), " constructed"); }
-#define LOG_DESTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", DemangleType<std::remove_pointer_t<decltype(this)>>(), " destructed"); }
+#define LOG_CONSTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", demangleType<std::remove_pointer_t<decltype(this)>>(), " constructed"); }
+#define LOG_DESTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", demangleType<std::remove_pointer_t<decltype(this)>>(), " destructed"); }
 #define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
 #define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
 #define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
