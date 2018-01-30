@@ -1,19 +1,11 @@
 #include "Assets.hpp"
 
-namespace rat {
-	void Assets::init() {
+namespace rat
+{
 
-	}
+Assets::~Assets()
+{
+    LOG_DESTRUCTOR();
+}
 
-	void Assets::input(const sf::Event& event) {
-		(void)event;
-	}
-
-	void Assets::update(float deltaTime) {
-		(void)deltaTime;
-	}
-
-	void Assets::render() {
-
-	}
 }

@@ -1,6 +1,14 @@
-#include "Szczur/Core/Application.hpp"
+#include <SFML/System/Err.hpp>
 
-int main() {
+#include "Szczur/Debug/OnDebug.hpp"
+#include "Szczur/Application.hpp"
+
+int main()
+{
+	// Debug stuff
+	INIT_LOGGER();
+	sf::err().rdbuf(nullptr);
+
 	rat::Application app;
 	return app.run();
 }

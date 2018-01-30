@@ -4,10 +4,10 @@
 
 #include <cassert>
 
-#define rat_Assert(expr) assert(expr)
+#define ASSERT(message, expr) assert(!message && (expr))
 
 #else
 
-#define rat_Assert(...)
+#define ASSERT(...)
 
 #endif

@@ -2,10 +2,10 @@
 
 #ifndef NDEBUG
 
-#define rat_OnDebug(code) { code }
+#define ON_DEBUG(code) code
 
 #else
 
-#define rat_OnDebug(...)
+#define ON_DEBUG(...)
 
 #endif
