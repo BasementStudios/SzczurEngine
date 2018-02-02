@@ -38,6 +38,7 @@ public:
 	sf::RenderWindow& getWindow();
 	const sf::RenderWindow& getWindow() const;
 
+	/// @test Testing Assets module
 	sf::Texture* tex;
 	sf::Music* mus;
 
