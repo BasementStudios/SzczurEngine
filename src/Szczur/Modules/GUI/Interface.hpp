@@ -14,7 +14,8 @@ namespace rat {
         Interface(BasicGuiAssetsManager* assets, sf::Vector2u windowSize);
         Interface(BasicGuiAssetsManager* assets, sf::Vector2u windowSize, const std::string& jsonFile);
 
-        Widget* add(Widget* widget);
+        Widget* add(const std::string& key, Widget* widget);
+        Widget* get(const std::string& key) const;
 
         void input(const sf::Event& event);
         void update(float deltaTime);
