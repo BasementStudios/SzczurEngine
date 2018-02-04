@@ -1,4 +1,5 @@
 #include "GuiJson.hpp"
+#include <iostream>
 
 
 namespace rat {
@@ -6,13 +7,13 @@ namespace rat {
         _windowSize = windowSize;
         _assets = assets;
         _json = json;
-        _browseJsonObject(*_json, root);
+        _browseJsonObject(*_json, "_root", root);
     }
 
     void GuiJson::reload(const sf::Vector2u newWindowSize, Widget* root) {
         root->clear();
         _windowSize = newWindowSize;
-        _browseJsonObject(*_json, root);
+        _browseJsonObject(*_json, "_root", root);
     }
 
     void GuiJson::changeJson(Json* json, Widget* root) {
@@ -21,7 +22,7 @@ namespace rat {
     }
 
     template<typename T, typename F>
-    void GuiJson::_createJsonValue(Json& json, Widget* parent, F valuesCall) {
+    void GuiJson::_createJsonValue(Json& json, const std::string& name, Widget* parent, F valuesCall) {
         static_assert( std::is_base_of<Widget, T>(), "Error in GuiJson::_createJsonValue, wrong value in template" );
 
         T *widget = new T;
@@ -51,13 +52,12 @@ namespace rat {
                     }
                     else {
                         if(it->is_object())
-                            _browseJsonObject(*it, widget);
+                            _browseJsonObject(*it, key, widget);
                     } 
                 }
             }
         }
-        
-        parent->add(widget);
+        parent->add(name, widget);
     }
 
     
@@ -90,7 +90,7 @@ namespace rat {
         return true;   
     }
 
-    void GuiJson::_browseJsonObject(Json& json, Widget *parent) {
+    void GuiJson::_browseJsonObject(Json& json, const std::string& name, Widget *parent) {
         std::string typeName;
         if(auto it = json.find("type"); it != json.end())
             typeName = it->get<std::string>();
@@ -99,15 +99,15 @@ namespace rat {
         
 
 
-
+        
         if(typeName == "widget") {
-            _createJsonValue<Widget>(json, parent, [](Widget*, Json::iterator it){
+            _createJsonValue<Widget>(json, name, parent, [](Widget*, Json::iterator it){
                 return false;
             });
         }
 
         else if(typeName == "text") {
-            _createJsonValue<TextWidget>(json, parent, [this](TextWidget* widget, Json::iterator it){
+            _createJsonValue<TextWidget>(json, name, parent, [this](TextWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "caption") {
                     widget->setString( it->get<std::string>() );
@@ -134,7 +134,7 @@ namespace rat {
         }
 
         else if(typeName == "image") {    
-            _createJsonValue<ImageWidget>(json, parent, [this](ImageWidget* widget, Json::iterator it){
+            _createJsonValue<ImageWidget>(json, name, parent, [this](ImageWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "src") {
                     widget->setTexture(_assets->get<sf::Texture>(it->get<std::string>()));
@@ -146,7 +146,7 @@ namespace rat {
         }
 
         else if(typeName == "input") {    
-            _createJsonValue<InputWidget>(json, parent, [this](InputWidget* widget, Json::iterator it){
+            _createJsonValue<InputWidget>(json, name, parent, [this](InputWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "font") {
                     widget->setFont(_assets->get<sf::Font>(it->get<std::string>()));
@@ -185,7 +185,7 @@ namespace rat {
         }
 
         else if(typeName == "textarea") {    
-            _createJsonValue<TextAreaWidget>(json, parent, [this](TextAreaWidget* widget, Json::iterator it){
+            _createJsonValue<TextAreaWidget>(json, name, parent, [this](TextAreaWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "size") {
                     widget->setSize({ 
@@ -218,7 +218,7 @@ namespace rat {
         }
 
         /*else if(typeName == "check") {    
-            _createJsonValue<CheckWidget>(json, parent, [this](CheckWidget* widget, Json::iterator it){
+            _createJsonValue<CheckWidget>(json, name, parent, [this](CheckWidget* widget, Json::iterator it){
                 std::string key = it.key();
                 if(key == "") {
                     
@@ -231,7 +231,7 @@ namespace rat {
                
         /*
         else if(typeName == 'typename') {    
-            _createJsonValue<'widget'>(json, parent, [this]('widget'* widget, Json::iterator it){
+            _createJsonValue<'widget'>(json, name, parent, [this]('widget'* widget, Json::iterator it){
                 std::string key = it.key();
                 'Conditions'
                 else

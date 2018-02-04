@@ -8,8 +8,8 @@ namespace rat {
         on = new ImageWidget(text1);
         off = new ImageWidget(text2);
 
-        add(on);
-        add(off);
+        add("on", on);
+        add("off", off);
 
         on->invisible();
 

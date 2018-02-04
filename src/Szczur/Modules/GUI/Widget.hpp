@@ -7,6 +7,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Utility/Hash.hpp"
+
 
 namespace rat {
 	class Widget : public sf::Drawable, public sf::Transformable {
@@ -21,10 +23,13 @@ namespace rat {
 
 		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
+		using Children_t = boost::container::flat_map<Hash32_t, Widget*>;
 
 		void setParent(Widget* parent);
 
-		Widget* add(Widget* object);
+		Widget* add(const std::string& key, Widget* object);
+
+		Widget* get(const std::string& key) const;
 
 		Widget* setCallback(CallbackType key, Function_t value);
 
@@ -63,7 +68,7 @@ namespace rat {
 		bool _isVisible;
 		
 	private:
-		std::vector<Widget*> _children;
+		Children_t _children;
 		Widget* _parent;
 
 		CallbacksContainer_t _callback;
