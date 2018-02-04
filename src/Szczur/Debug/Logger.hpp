@@ -44,7 +44,7 @@ private:
     }
 
     char _buffer[64];
-    std::string _logFilePath = std::to_string(std::time(nullptr)) + ".log";
+    std::string _logFilePath = "Logs/" + std::to_string(std::time(nullptr)) + ".log";
     std::ofstream _logFile;
 
 };

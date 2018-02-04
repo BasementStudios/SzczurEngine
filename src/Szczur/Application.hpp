@@ -36,13 +36,9 @@ public:
 	sf::RenderWindow& getWindow();
 	const sf::RenderWindow& getWindow() const;
 
-	/// @test Testing Assets module
-	sf::Texture* tex;
-	sf::Music* mus;
-
 private:
 
-	ModulesHolder<Assets, Input, Window, Canvas> _modules;
+	ModulesHolder<Window, Canvas, Input, Assets> _modules;
 	sf::Clock _mainClock;
 
 };

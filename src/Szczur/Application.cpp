@@ -44,6 +44,7 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
+	_modules.getModule<Canvas>().clear();
 	_modules.getModule<Canvas>().render();
 	_modules.getModule<Canvas>().render();
 	
