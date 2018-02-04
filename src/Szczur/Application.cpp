@@ -12,7 +12,7 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 
-	/// @test Testing Assets module
+	/// @test Testing Assets & Canvas modules
 	tex = &_modules.getModule<Assets>().load<sf::Texture>("null");
 	mus = &_modules.getModule<Assets>().load<sf::Music>("null");
 
@@ -47,10 +47,10 @@ void Application::render()
 	_modules.getModule<Canvas>().render();
 	_modules.getModule<Canvas>().render();
 	
-	/// @test Testing Assets module
+	/// @test Testing Assets & Canvas modules
 	sf::Sprite spr(*tex);
-	getWindow().draw(spr);
-	
+	//_modules.getModule<Canvas>().getLayer<(std::size_t)Layers::First>().draw(spr);
+	_modules.getModule<Canvas>().getLayer((std::size_t)Layers::First).draw(spr);
 	_modules.getModule<Window>().render();
 }
 

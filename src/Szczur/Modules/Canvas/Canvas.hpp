@@ -1,74 +1,89 @@
 #pragma once
 
-#include <array>
-#include <memory>
+/** @file Canvas.hpp
+ ** @description Header file with main class of the Canvas module. 
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
 
-#include <SFML/Graphics.hpp>
+#include <string>						// string
+#include <array>						// array
+#include <memory>						// unique_ptr
 
-#include "RenderLayer.hpp"
+#include <SFML/Window/Event.hpp>
+
 #include "Szczur/Utility/Module.hpp"
+#include "Szczur/Debug/Logger.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "RenderLayer.hpp"
+#include "RenderCanvas.hpp"
 
 namespace rat
 {
 
-class Canvas : public Module<Window>
+/** @enum Layers
+ ** @description List of layers IDs.
+ ** @info Done inside main `rat` naming space instead of packing into `rat::Canvas` as shorthand.
+ **/
+enum class Layers : std::size_t
 {
-public:
-
-	struct LayerID
-	{
-		enum Code : size_t
-		{
-			Back, Game,
-			Count
-		};
-	};
-
-	using Holder_t = std::array<std::unique_ptr<RenderLayer>, LayerID::Count>;
-
-	template <typename Tuple>
-	Canvas(Tuple&& tuple);
-
-	Canvas(const Canvas&) = delete;
-
-	Canvas& operator = (const Canvas&) = delete;
-
-	Canvas(Canvas&&) = delete;
-
-	Canvas& operator = (Canvas&&) = delete;
-
-	~Canvas();
-
-	void clear();
-
-	void render();
-
-	void recreateLayers();
-
-	sf::RenderWindow& getWindow();
-	const sf::RenderWindow& getWindow() const;
-
-	RenderLayer& getLayer(LayerID::Code id);
-	const RenderLayer& getLayer(LayerID::Code id) const;
-
-	void draw(LayerID::Code id, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
-	void draw(LayerID::Code id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
-
-private:
-
-	Holder_t _layers;
-
+	Background, 	First = Background,
+	SceneBack, 
+	Objects, 
+	SceneFront, 
+	GUI,			Last = GUI,
+	Count
 };
 
-template <typename Tuple>
-Canvas::Canvas(Tuple&& tuple) :
+
+
+/** @class Canvas
+ ** @description Manages the render layers, draws them on the window.
+ **/
+class Canvas : public RenderCanvas<(std::size_t)Layers::Count>, public Module<Window>
+{	
+	using Module::Module;
+
+
+
+	/* Operators */
+public:
+	/// Module constructor/destructor
+	template <typename ModulesTuple>
+	Canvas(ModulesTuple&& tuple);
+	~Canvas();
+
+	// Disable copy operators
+	Canvas(const Canvas&) = delete;
+	Canvas& operator = (const Canvas&) = delete;
+
+	// Disable move operators
+	Canvas(Canvas&&) = delete;
+	Canvas& operator = (Canvas&&) = delete;
+
+
+
+	/* Methods */
+public:
+	/// Module init
+	void init();
+
+	/// Module input
+	void input(const sf::Event& event);
+};
+
+
+
+/// Module constructor/destructor
+template <typename ModulesTuple>
+Canvas::Canvas(ModulesTuple&& tuple) :
 	Module(tuple)
 {
-	for (auto& av : _layers)
-		av.reset(new RenderLayer(getModule<Window>().getWindow().getSize()));
-
 	LOG_CONSTRUCTOR();
+	init();
+}
+inline Canvas::~Canvas()
+{
+	LOG_DESTRUCTOR();
 }
 
 }
