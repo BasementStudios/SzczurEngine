@@ -47,8 +47,7 @@ namespace rat {
                 delete it->second;
             _children.insert_or_assign(k, object);
             object->setParent(this);
-            object->calculateSize();
-            //_aboutToRecalculate = true;
+            _aboutToRecalculate = true;
             
         }
         return object;

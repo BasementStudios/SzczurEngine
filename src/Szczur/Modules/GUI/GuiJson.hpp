@@ -4,7 +4,6 @@
 #include <fstream>
 
 #include <SFML/Graphics.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <Szczur/Json.hpp>
 
