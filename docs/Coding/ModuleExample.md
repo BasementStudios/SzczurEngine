@@ -56,6 +56,9 @@ private:
 ### Użycie
 
 ```cpp
+_modules.initModule<ModuleName>(/* your ctor args */) // tworzenie modułu
+```
+```cpp
 _modules.getModule<ModuleName>() // w klasie Apllication
 ```
 ```cpp
