@@ -3,7 +3,6 @@ Przykład modułu
 ---------------
 
 
-
 ### Plik główny modułu
 
 Każdy moduł powinien mieć swój główny plik z główną klasą modułu, np. `YourModule.hpp`, w odpowiednim dla modułu katalogu, czyli `src/Szczur/Modules/` i folder o nazwie jak moduł: `YourModule`.
@@ -29,7 +28,7 @@ YourModule::YourModule(Tuple&& tuple, /* your ctor args */) :
 {
 
 }
-
+```
 
 
 ### Lista modułów
@@ -54,7 +53,6 @@ private:
 ```
 
 
-
 ### Użycie
 
 ```cpp
@@ -63,7 +61,6 @@ _modules.getModule<ModuleName>() // w klasie Apllication
 ```cpp
 getModule<ModuleName>() // w środku innego modułu
 ```
-
 
 
 ### Uwagi
