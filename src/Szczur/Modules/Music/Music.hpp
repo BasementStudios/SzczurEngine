@@ -2,16 +2,21 @@
 
 #include <memory>
 
-#include "Szczur/Utility/Modules.hpp"
+#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Modules/Assets/Assets.hpp"
 
 #include "Playlist.hpp"
 
 namespace rat 
 {
-	class Music : public ModuleBase<>
+	class Music : public Module<Assets>
 	{ 
-		using ModuleBase::ModuleBase;
-		using Container_t = std::vector<std::shared_ptr<Playlist>>;
+		using MusicPointer_t = std::unique_ptr<sf::Music>;
+		using Container_t = std::vector<std::unique_ptr<Playlist>>;
+
+	public:
+
+		using PlayingMode = Playlist::PlayingMode;
 
 	private:
 
@@ -21,18 +26,26 @@ namespace rat
 
 	public:
 
-		void init();
-		void input(const sf::Event& event);
-		void render();
+		template <typename Tuple>
+    	Music(Tuple&& tuple)
+			: Module(tuple)
+		{
+			
+		}
+
 		void update(float deltaTime);
 
-		void push(const std::vector<std::string>& newPlaylist, int pos = -1);
+		void addPlaylist(const std::vector<std::string>& newPlaylist);
 
 		void remove(unsigned int id);
 
 		void play(unsigned int id, const std::string& fileName = "");
 
-		std::shared_ptr<Playlist> operator[](unsigned int id);
+		Playlist& operator[](unsigned int id);
+
+	private:
+
+		std::string getPath(const std::string& fileName) const;
 
 	};
 }

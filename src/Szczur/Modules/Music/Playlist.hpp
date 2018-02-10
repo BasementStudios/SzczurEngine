@@ -10,8 +10,8 @@ namespace rat
 {
 	class Playlist
 	{ 
-		using Pointer_t = std::shared_ptr<MusicBase>;
-		using Container_t = std::vector<Pointer_t>;
+		using BasePointer_t = std::shared_ptr<MusicBase>;
+		using Container_t = std::vector<BasePointer_t>;
 
 	public:
 
@@ -30,23 +30,21 @@ namespace rat
 		};
 
 		Container_t _playlist;
+
 		unsigned int _currentID;
 
-		Pointer_t _endingFile;
+		BasePointer_t _endingFile = nullptr;
 		bool _isFileEnding = false;
 
 		bool hasBeenEverPlayed = false;
 
 		PlayingMode _playingMode = PlayingMode::Random;
-		Status _status;
+		Status _status = Status::Stopped;
 
 		inline static float _globalVolume = 100;
 
 	public:
-
-		Playlist(const std::vector<std::string>& newPlaylist);
 	
-		bool setNewPlaylist(const std::vector<std::string>& newPlaylist);
 		void clear();
 
 		void update(float deltaTime);
@@ -54,13 +52,14 @@ namespace rat
 
 		bool includes(const std::string& fileName) const;		
 
-		bool add(const std::string& fileName);
+		void add(MusicBase&& base);
 		void remove(const std::string& fileName);
 
-		Pointer_t getCurrentPlaying() const;
+		BasePointer_t getCurrentPlaying() const;
 
+		void play(unsigned int id, float timeLeft);
 		void play(const std::string& fileName = "");
-		void play(Pointer_t prevMusicFile, const std::string& fileName = "");
+		void play(BasePointer_t prevMusicFile, const std::string& fileName = "");
 
 		void pause();
 		void stop();
@@ -70,18 +69,19 @@ namespace rat
 		void setVolume(float volume, const std::string& fileName = "");
 		float getVolume(const std::string& fileName) const;
 
-	private:
+		unsigned int getID(const std::string& fileName) const;
 	
-		void play(unsigned int id);
+	private:
 
-		bool loadMusic(const std::string& fileName);
+		void play(unsigned int id);
 
 		void playNext();
 
 		void unPause();
 
-		unsigned int getID(const std::string& fileName) const;
 		unsigned int getRandomId() const;
+		
+		void setPlaylistToPlaying(int id);
 			
 	};
 }

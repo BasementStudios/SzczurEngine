@@ -7,6 +7,7 @@
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Music/Music.hpp"
 
 namespace rat
 {
@@ -38,12 +39,9 @@ public:
 	sf::RenderWindow& getWindow();
 	const sf::RenderWindow& getWindow() const;
 
-	sf::Texture* tex;
-	sf::Music* mus;
-
 private:
 
-	ModulesHolder<Assets, Input, Window, Canvas> _modules;
+	ModulesHolder<Assets, Input, Window, Canvas, Music> _modules;
 	sf::Clock _mainClock;
 
 };

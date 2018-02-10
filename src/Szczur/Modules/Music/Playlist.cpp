@@ -4,33 +4,29 @@
 #include <chrono>
 #include <algorithm>
 
-#include <iostream>
 
 namespace rat 
 {
 
-	Playlist::Playlist(const std::vector<std::string>& newPlaylist)
-	{
-		setNewPlaylist(newPlaylist);
-	}
-
 	void Playlist::update(float deltaTime) 
 	{
-		if (hasBeenEverPlayed && _status != Status::Stopped) {
-			if (_playlist[_currentID]->isEnding() && !_playlist[0]->getLoop()) {
-				_endingFile = _playlist[_currentID];
-				_isFileEnding = true;
-				_status = Status::Stopped;
-				playNext();
-			}
-			if (_isFileEnding) {
-				_playlist[_currentID]->start(deltaTime, _endingFile->getFadeTime());
-				if (_endingFile->finish(deltaTime))
-					_isFileEnding = false;
-			}
-			else
-				_playlist[_currentID]->update(deltaTime);
+		if (!hasBeenEverPlayed || _status == Status::Stopped) 
+			return;
+		
+		if (_playlist[_currentID]->isEnding() && !_playlist[0]->getLoop()) {
+			_endingFile = _playlist[_currentID];
+			_isFileEnding =	true;
+			_status = Status::Stopped;
+			playNext();
 		}
+
+		if (_isFileEnding) {
+			_playlist[_currentID]->start(deltaTime, _endingFile->getFadeTime());
+			if (_endingFile->finish(deltaTime))
+				_isFileEnding = false;
+		}
+		else
+			_playlist[_currentID]->update(deltaTime);
 	}
 
 	void Playlist::stopUpdates()
@@ -38,12 +34,15 @@ namespace rat
 		_status = Status::Stopped;
 	}
 	
-	bool Playlist::add(const std::string& fileName)
-	{		
-		bool result =  (includes(fileName) || loadMusic(fileName));
-		if(_playlist[0]->getLoop() && result) 
-			_playlist[0]->setLoop(false);
-		return result;
+	void Playlist::add(MusicBase&& base)
+	{	
+		if(!includes(base.getName())) {
+			_playlist.push_back(std::make_shared<MusicBase>(std::move(base)));
+			_playlist.back()->setVolume(_globalVolume);
+		}	
+
+		if (_playlist.size() == 1) _playlist[0]->setLoop(true);
+		if (_playlist.size() == 2) _playlist[0]->setLoop(false);
 	}
 
 	void Playlist::remove(const std::string& fileName) 
@@ -54,14 +53,19 @@ namespace rat
 		}
 		_playlist.erase(_playlist.begin() + getID(fileName));
 
-		if (_playlist.size() == 1) {
+		if (_playlist.size() == 1)
 			_playlist[0]->setLoop(true);
-		}
 	}
 
-	std::shared_ptr<MusicBase> Playlist::getCurrentPlaying() const
+	Playlist::BasePointer_t Playlist::getCurrentPlaying() const
 	{
 		return _playlist[_currentID];
+	}
+
+	void Playlist::play(unsigned int id, float timeLeft)
+	{
+		setPlaylistToPlaying(id);
+		_playlist[_currentID]->setTimeLeft(timeLeft);
 	}
 
 	void Playlist::play(unsigned int id)
@@ -70,36 +74,23 @@ namespace rat
 			_currentID = _playlist.size();
 			return;
 		}
-
-		if (!hasBeenEverPlayed)
-			hasBeenEverPlayed = true;
 			
 		if (_status == Status::Playing && !_isFileEnding)
 			_playlist[_currentID]->stop();
 
-		_currentID = id;
-		_status = Status::Playing;
+		setPlaylistToPlaying(id);
 		_playlist[_currentID]->play();
 	}
 
 	void Playlist::play(const std::string& fileName) 
 	{
-		unsigned int newId = 0;
-		if (fileName.empty()) {
-			if (_status == Status::Paused) {
-				unPause();
-				return;
-			}
-			if (_playingMode == PlayingMode::Random)
-				newId = getRandomId();
-		}
-		else
-			newId = getID(fileName);
-
-		play(newId);
+		if (_status == Status::Paused) 				  unPause();
+		else if (!fileName.empty())					  play(getID(fileName));
+		else if (_playingMode == PlayingMode::Random) play(getRandomId());
+		else										  play(0);
 	}
 
-	void Playlist::play(std::shared_ptr<MusicBase> prevMusicFile, const std::string& fileName)
+	void Playlist::play(Playlist::BasePointer_t prevMusicFile, const std::string& fileName)
 	{
 		if (_status != Status::Playing || _playlist[_currentID]->getName() != fileName) {
 			_isFileEnding = true;
@@ -153,12 +144,6 @@ namespace rat
 		return _playlist[getID(fileName)]->getVolume();
 	}
 
-	bool Playlist::loadMusic(const std::string& fileName) 
-	{
-		_playlist.push_back(std::make_shared<MusicBase>());
-		return _playlist[_playlist.size() - 1]->init(fileName, _globalVolume);
-	}
-
 	inline bool Playlist::includes(const std::string& fileName) const 
 	{
 		return (getID(fileName) != _playlist.size());
@@ -173,28 +158,11 @@ namespace rat
 			std::mt19937 mt(seed);
 			std::uniform_int_distribution<int> random(0, _playlist.size() - 1);
 			
-			do {
-				nextID = random(mt);
-			} while (nextID == _currentID);
+			do nextID = random(mt);
+			while (nextID == _currentID);
 		}
 
 		return nextID;
-	}
-
-	bool Playlist::setNewPlaylist(const std::vector<std::string>& newPlaylist) 
-	{	
-		clear();
-
-		_currentID = newPlaylist.size();
-		for (auto it : newPlaylist) {
-			if (!add(it))
-				return false;
-		}
-
-		if (_playlist.size() == 1)
-			_playlist[0]->setLoop(true);
-
-		return true;
 	}
 
 	void Playlist::playNext() 
@@ -206,7 +174,7 @@ namespace rat
 				_currentID = 0;
 			play(_currentID);
 		}
-		if (_playingMode == PlayingMode::Random)
+		if (_playingMode == PlayingMode::Random) 
 			play(getRandomId());
 	}
 
@@ -225,6 +193,14 @@ namespace rat
 				return i;
 		}
 		return _playlist.size();
+	}
+
+	void Playlist::setPlaylistToPlaying(int id)
+	{
+		_currentID = id;
+		if (!hasBeenEverPlayed)
+			hasBeenEverPlayed = true;
+		_status = Status::Playing;
 	}
 
 }

@@ -1,38 +1,23 @@
 #include "Music.hpp"
 
-#include <iostream>
 
 namespace rat 
 {
 
-	void Music::init() 
-	{
-
-	}
-
-	void Music::input(const sf::Event& event) 
-	{
-
-	}
-
-	void Music::render() 
-	{
-
-	}
-
 	void Music::update(float deltaTime) 
 	{
-		for (auto& it : _playlists)
-			it->update(deltaTime);
+		_playlists[_currentPlaylistID]->update(deltaTime);
 	}
 
-
-	void Music::push(const std::vector<std::string>& newPlaylist, int pos) 
+	void Music::addPlaylist(const std::vector<std::string>& newPlaylist) 
 	{
-		if (pos < 0 || static_cast<unsigned>(pos) >= _playlists.size())
-			_playlists.push_back(std::make_shared<Playlist>(newPlaylist));
-		else
-			_playlists[pos] = std::make_shared<Playlist>(newPlaylist);
+		_playlists.push_back(std::make_unique<Playlist>());
+
+		for (auto it : newPlaylist) {
+			auto& source = getModule<Assets>().load<sf::Music>(getPath(it));
+			auto&& base = MusicBase(it, source);
+			_playlists.back()->add(std::move(base));
+		}
 	}
 
 	void Music::remove(unsigned int id) 
@@ -42,19 +27,31 @@ namespace rat
 
 	void Music::play(unsigned int id, const std::string& fileName)
 	{
-		if (_currentPlaylistID == -1)
+		if (_currentPlaylistID == -1) 
 			_playlists[id]->play(fileName);
 		else {
-			_playlists[id]->play(_playlists[_currentPlaylistID]->getCurrentPlaying(), fileName);
-			if (id != static_cast<unsigned>(_currentPlaylistID))
+			auto currentPlaying = _playlists[_currentPlaylistID]->getCurrentPlaying();
+			auto samePlaylist = (id == static_cast<unsigned>(_currentPlaylistID));
+
+			if(currentPlaying->getName() != fileName)
+				_playlists[id]->play(currentPlaying, fileName);
+			else if(!samePlaylist)
+				_playlists[id]->play(_playlists[id]->getID(fileName), currentPlaying->getTimeLeft());
+
+			if (!samePlaylist)
 				_playlists[_currentPlaylistID]->stopUpdates();
 		}
 		_currentPlaylistID = id;
 	}
 
-	std::shared_ptr<Playlist> Music::operator[](unsigned int id) 
+	Playlist& Music::operator[](unsigned int id) 
 	{
-		return _playlists[id];
+		return *(_playlists[id].get());
+	}
+
+	inline std::string Music::getPath(const std::string& fileName) const 
+	{
+		return "res/Music/" + fileName + ".flac"; 
 	}
 	
 }

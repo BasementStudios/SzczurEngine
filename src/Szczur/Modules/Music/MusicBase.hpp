@@ -1,30 +1,35 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include <SFML/Audio/Music.hpp>
 
 namespace rat 
 {
-	class MusicBase 
+	class MusicBase
 	{
 
 	private:
 
+		sf::Music& _base;
+		
+		std::string _name;
 		float _bpm;
 		float _timeLeft;
 		float _fadeTime;
 		float _baseVolume;
+
 		bool _isEnding = false;
+		bool _finishing = false;
+
 		bool _finishInit = true;
 		bool _startInit = true;
-		bool _finishing = false;
-		std::string _name;
-		sf::Music _base;
 
 	public:
 
-		bool init(const std::string& fileName, float volume);
+		MusicBase(const std::string& fileName, sf::Music& source);
+
 		void update(float deltaTime);
 
 		bool isEnding();
@@ -46,16 +51,19 @@ namespace rat
 		float getFadeTime() const;
 		float getDuration() const;
 
+		float getTimeLeft() const;
+		void setTimeLeft(float timeLeft);
+
 		const std::string& getName() const;
 		
 		void reset();
 
 	private:
 
-		bool loadMusic();
+		void loadMusic();
 		void getJsonData();
 
-		std::string getPath() const;
+		const std::string& getPath() const;
 
 	};
 }

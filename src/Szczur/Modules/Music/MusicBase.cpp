@@ -1,24 +1,19 @@
 #include "MusicBase.hpp"
 
-#include <Szczur/Json.hpp>
-
 #include <fstream>
 #include <cmath>
+
+#include <Szczur/Json.hpp>
 
 namespace rat
 { 
 
-	bool MusicBase::init(const std::string& fileName, float volume)
+	MusicBase::MusicBase(const std::string& fileName, sf::Music& source)
+		: _base(source), _name(fileName)
 	{
-		_name = fileName;
-		if (loadMusic()) {
-			_timeLeft = getDuration();
-			getJsonData();
-			setVolume(volume);
-			return true;
-		}
-		return false;
-	};
+		_timeLeft = getDuration();
+		getJsonData();
+	}
 
 	void MusicBase::update(float deltaTime) 
 	{
@@ -36,25 +31,21 @@ namespace rat
 
 	bool MusicBase::finish(float deltaTime) 
 	{
-		static float currVolume = _baseVolume;
 
-		if (_finishInit) {
-			currVolume = _base.getVolume();
+		if (_finishInit) { 	
+			_finishInit = false;
 			_timeLeft = _fadeTime;
 			_finishing = true;
-			_finishInit = false;
 			_isEnding = false;
 		}
 
 		_timeLeft -= deltaTime;
 
 		if (_timeLeft >= 0) {
-			float volume = (_timeLeft / _fadeTime) * currVolume;
-			_base.setVolume(volume);
+			_base.setVolume((_timeLeft / _fadeTime) * _baseVolume);
 			return false;
 		}
 		
-		currVolume = _baseVolume;
 		reset();
 		stop();
 		return true;
@@ -68,23 +59,19 @@ namespace rat
 			_startInit = false;
 		}
 		update(deltaTime);
-		float volume = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
-		_base.setVolume(volume);
-	}
-
-	bool MusicBase::loadMusic() 
-	{
-		return _base.openFromFile(getPath());
+		_base.setVolume((_baseVolume * (getDuration() - _timeLeft)) / introTime);
 	}
 
 	void MusicBase::getJsonData() 
 	{
 		Json json;
 		std::ifstream file("res/Music/Music.json");
+		
 		if(file.is_open()){
 			file >> json;
 			file.close();
 		}
+
 		_bpm = json[_name]["BPM"];
 		float numberOfBars = json[_name]["FadeTime"];
 
@@ -134,6 +121,16 @@ namespace rat
 		return _base.getDuration().asSeconds();
 	}
 
+	float MusicBase::getTimeLeft() const
+	{
+		return _timeLeft;
+	}
+
+	void MusicBase::setTimeLeft(float timeLeft)
+	{
+		_timeLeft = timeLeft;
+	}
+
 	float MusicBase::getVolume() const 
 	{
 		return _baseVolume;
@@ -141,15 +138,13 @@ namespace rat
 
 	void MusicBase::setVolume(float volume) 
 	{
+		if (volume > 100) volume = 100;
+		else if (volume < 0) volume = 0;
+
 		_baseVolume = volume;
 		_base.setVolume(volume);
 	}
-
-	inline std::string MusicBase::getPath() const 
-	{
-		return "res/Music/" + _name + ".flac"; 
-	}
-
+	
 	void MusicBase::reset() 
 	{
 		_timeLeft = getDuration();
