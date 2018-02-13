@@ -37,7 +37,7 @@ namespace rat
 
 		void addPlaylist(const std::vector<std::string>& newPlaylist);
 
-		void remove(unsigned int id);
+		void remove(unsigned int id, const std::string& fileName = "");
 
 		void play(unsigned int id, const std::string& fileName = "");
 
@@ -46,6 +46,10 @@ namespace rat
 	private:
 
 		std::string getPath(const std::string& fileName) const;
+
+		bool isUsingByOtherPlaylist(unsigned int id, const std::string& fileName) const;
+
+		void unLoad(unsigned int id, const std::string& fileName);
 
 	};
 }

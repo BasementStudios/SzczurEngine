@@ -195,6 +195,11 @@ namespace rat
 		return _playlist.size();
 	}
 
+	const Playlist::Container_t& Playlist::getContainerRef() const
+	{
+		return _playlist;
+	}
+
 	void Playlist::setPlaylistToPlaying(int id)
 	{
 		_currentID = id;

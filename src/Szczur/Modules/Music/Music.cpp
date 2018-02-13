@@ -6,7 +6,8 @@ namespace rat
 
 	void Music::update(float deltaTime) 
 	{
-		_playlists[_currentPlaylistID]->update(deltaTime);
+		if(_currentPlaylistID != -1)
+			_playlists[_currentPlaylistID]->update(deltaTime);
 	}
 
 	void Music::addPlaylist(const std::vector<std::string>& newPlaylist) 
@@ -20,9 +21,21 @@ namespace rat
 		}
 	}
 
-	void Music::remove(unsigned int id) 
+	void Music::remove(unsigned int id, const std::string& fileName) 
 	{
-		_playlists.erase(_playlists.begin() + id);
+		if(id > _playlists.size()) return;
+
+		if (fileName.empty()) {
+			if (id == static_cast<unsigned>(_currentPlaylistID)) 
+				_currentPlaylistID = -1;
+
+			for (auto& it : _playlists[id]->getContainerRef())
+				unLoad(id, it->getName());
+
+			_playlists.erase(_playlists.begin() + id);
+		}
+		else
+			unLoad(id, fileName);
 	}
 
 	void Music::play(unsigned int id, const std::string& fileName)
@@ -52,6 +65,24 @@ namespace rat
 	inline std::string Music::getPath(const std::string& fileName) const 
 	{
 		return "res/Music/" + fileName + ".flac"; 
+	}
+
+	bool Music::isUsingByOtherPlaylist(unsigned int id, const std::string& fileName) const
+	{
+		for (unsigned int i = 0; i < _playlists.size(); ++i) {
+			if (i != id) {
+				if (_playlists[i]->includes(fileName))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+
+	void Music::unLoad(unsigned int id, const std::string& fileName)
+	{
+		if (!isUsingByOtherPlaylist(id, fileName))
+			getModule<Assets>().unload<sf::Music>(getPath(fileName));
 	}
 	
 }

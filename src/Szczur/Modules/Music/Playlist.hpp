@@ -70,6 +70,8 @@ namespace rat
 		float getVolume(const std::string& fileName) const;
 
 		unsigned int getID(const std::string& fileName) const;
+
+		const Container_t& getContainerRef() const;
 	
 	private:
 
