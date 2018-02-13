@@ -59,7 +59,7 @@ private:
 _modules.initModule<ModuleName>(/* your ctor args */) // tworzenie modułu
 ```
 ```cpp
-_modules.getModule<ModuleName>() // w klasie Apllication
+_modules.getModule<ModuleName>() // w klasie Application
 ```
 ```cpp
 getModule<ModuleName>() // w środku innego modułu
