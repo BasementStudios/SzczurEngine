@@ -73,10 +73,10 @@ public:
 	 ** @access get
 	 ** @argument LayerID_t LayerID - ID of layer to reference return. 
 	 **/
-	template<LayerID_t LayerID>
-	rat::RenderLayer& getLayer();
-	template<LayerID_t LayerID>
-	const rat::RenderLayer& getLayer() const;
+	//template<LayerID_t LayerID>
+	//rat::RenderLayer& getLayer();
+	//template<LayerID_t LayerID>
+	//const rat::RenderLayer& getLayer() const;
 	rat::RenderLayer& getLayer(LayerID_t LayerID);
 	const rat::RenderLayer& getLayer(LayerID_t LayerID) const;
 
@@ -92,21 +92,20 @@ public:
 	
 	/* Methods */
 public:
-	/** @method render
+	/** @method display
      ** @description Renders the layers to the target. 
      **/
-	void render();
+	void display();
 
 	/** @method draw
-	 ** @description Draw a drawable objects to the render target.
+	 ** @description Draw a drawable objects or primitives (by an array of vertices) to the render target.
 	 **/
-	template<LayerID_t LayerID>
- 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) const;
-	/** @method draw
-	 ** @description Draw primitives defined by an array of vertices. 
-	 **/
-	template<LayerID_t LayerID>
-  	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default) const;
+	//template<LayerID_t LayerID>
+ 	//void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) const;
+	//template<LayerID_t LayerID>
+  	//void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default) const;
+ 	void draw(LayerID_t LayerID, const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) const;
+  	void draw(LayerID_t LayerID, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default) const;
 
 private:
 	/// resetLayers

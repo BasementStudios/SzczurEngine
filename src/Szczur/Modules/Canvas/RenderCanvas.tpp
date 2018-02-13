@@ -67,18 +67,18 @@ void RenderCanvas<N>::setSize(unsigned int width, unsigned int height)
 }
 
 /// Layer
-template<std::size_t N>
-template<typename RenderCanvas<N>::LayerID_t LayerID>
-rat::RenderLayer& RenderCanvas<N>::getLayer()
-{
-	return *(this->_layers[LayerID]);
-}
-template<std::size_t N>
-template<typename RenderCanvas<N>::LayerID_t LayerID>
-const rat::RenderLayer& RenderCanvas<N>::getLayer() const
-{
-	return *(this->_layers[LayerID]);
-}
+//template<std::size_t N>
+//template<typename RenderCanvas<N>::LayerID_t LayerID>
+//rat::RenderLayer& RenderCanvas<N>::getLayer()
+//{
+//	return *(this->_layers[LayerID]);
+//}
+//template<std::size_t N>
+//template<typename RenderCanvas<N>::LayerID_t LayerID>
+//const rat::RenderLayer& RenderCanvas<N>::getLayer() const
+//{
+//	return *(this->_layers[LayerID]);
+//}
 template<std::size_t N>
 rat::RenderLayer& RenderCanvas<N>::getLayer(RenderCanvas<N>::LayerID_t LayerID)
 {
@@ -109,9 +109,9 @@ RenderCanvas<N>::RenderCanvas(sf::RenderTarget& target, const sf::RenderStates& 
 
 
 /* Methods */
-/// render
+/// display
 template<std::size_t N>
-void RenderCanvas<N>::render()
+void RenderCanvas<N>::display()
 {
 	for (auto& layer : this->_layers) 
 	    layer->display(this->getTarget());
@@ -119,15 +119,25 @@ void RenderCanvas<N>::render()
 }
 
 /// draw
+//template<std::size_t N>
+//template<typename RenderCanvas<N>::LayerID_t LayerID>
+//void RenderCanvas<N>::draw(const sf::Drawable& drawable, const sf::RenderStates& states) const
+//{
+//	this->_layers[(size_t)LayerID]->draw(drawable, states);
+//}
+//template<std::size_t N>
+//template<typename RenderCanvas<N>::LayerID_t LayerID>
+//void RenderCanvas<N>::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) const
+//{
+//	this->_layers[(size_t)LayerID]->draw(vertices, vertexCount, type, states); 
+//}
 template<std::size_t N>
-template<typename RenderCanvas<N>::LayerID_t LayerID>
-void RenderCanvas<N>::draw(const sf::Drawable& drawable, const sf::RenderStates& states) const
+void RenderCanvas<N>::draw(LayerID_t LayerID, const sf::Drawable& drawable, const sf::RenderStates& states) const
 {
 	this->_layers[(size_t)LayerID]->draw(drawable, states);
 }
 template<std::size_t N>
-template<typename RenderCanvas<N>::LayerID_t LayerID>
-void RenderCanvas<N>::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) const
+void RenderCanvas<N>::draw(LayerID_t LayerID, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states) const
 {
 	this->_layers[(size_t)LayerID]->draw(vertices, vertexCount, type, states); 
 }

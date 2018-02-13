@@ -11,6 +11,7 @@ void Application::init()
 	_modules.initModule<Canvas>();
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
+	_modules.initModule<World>();
 }
 
 void Application::input()
@@ -41,6 +42,7 @@ void Application::render()
 	_modules.getModule<Window>().clear();
 
 	// @info Render all things here.
+	_modules.getModule<World>().render();
 
 	_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();

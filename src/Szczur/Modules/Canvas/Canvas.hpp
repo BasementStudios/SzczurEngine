@@ -27,9 +27,8 @@ namespace rat
 enum class Layers : std::size_t
 {
 	Background, 	First = Background,
-	SceneBack, 
-	Objects, 
-	SceneFront, 
+	Scene, 
+	Foreground,
 	GUI,			Last = GUI,
 	Count
 };
@@ -64,11 +63,10 @@ public:
 
 	/* Methods */
 public:
-	/// Module init
+	/// Module system
 	void init();
-
-	/// Module input
 	void input(const sf::Event& event);
+	void render();
 };
 
 
@@ -78,12 +76,13 @@ template <typename ModulesTuple>
 Canvas::Canvas(ModulesTuple&& tuple) :
 	Module(tuple)
 {
-	LOG_CONSTRUCTOR();
+	LOG_INFO("[Canvas] Module initializing");
 	init();
+	LOG_INFO("[Canvas] Module initialized!");
 }
 inline Canvas::~Canvas()
 {
-	LOG_DESTRUCTOR();
+	LOG_INFO("[Canvas] Module descructed");
 }
 
 }

@@ -39,4 +39,11 @@ void Canvas::input(const sf::Event& event)
 	}
 }
 
+/// render
+void Canvas::render()
+{
+	// Invoke `display` from RenderCanvas.
+	this->display();
+}
+
 }
