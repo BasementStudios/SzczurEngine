@@ -28,9 +28,8 @@ void Application::input()
 
 void Application::update()
 {
-	auto deltaTime = _mainClock.restart().asSeconds();
+	auto deltaTime = _mainClock.restart().asFSeconds();
 
-	// @info Update all things here.
 	(void)deltaTime;
 
 	_modules.getModule<Input>().finish();
@@ -39,9 +38,7 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-
-	// @info Render all things here.
-
+	_modules.getModule<Canvas>().clear();
 	_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
 }

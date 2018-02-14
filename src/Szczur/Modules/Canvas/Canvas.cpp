@@ -1,42 +1,49 @@
 #include "Canvas.hpp"
 
-/** @file Canvas.cpp
- ** @description Implementation file for main class of the Canvas module.
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
-
-#include <tuple>						// tuple, get
-#include <string>						// string
-#include <array>						// array
-#include <memory>						// unique_ptr
-
-#include <SFML/Window/Event.hpp>
-
-#include "Szczur/Debug/Logger.hpp"
-#include "Szczur/Modules/Window/Window.hpp"
-#include "RenderLayer.hpp"
-
 namespace rat
 {
 
-/* Methods */
-/// init
-void Canvas::init()
+Canvas::~Canvas()
 {
-	// Set target (it will aslo recreate layers to fit the target)
-	this->setTarget(this->getModule<Window>().getWindow());
+	LOG_DESTRUCTOR();
 }
 
-/// input
-void Canvas::input(const sf::Event& event)
+void Canvas::clear()
 {
-	switch(event.type) {
-		case sf::Event::EventType::Resized:
-			this->setSize(event.size.width, event.size.height);
-			break;
-		// @warn @test Window::setVideoMode 
-		default: break;
-	}
+	for (auto& av : _layers)
+		av->clear();
+}
+
+void Canvas::render()
+{
+	for (auto& av : _layers)
+		av->display(getModule<Window>().getWindow());
+}
+
+void Canvas::recreateLayers()
+{
+	for (auto& av : _layers)
+		av->recreate(getModule<Window>().getWindow().getSize());
+}
+
+RenderLayer& Canvas::getLayer(LayerID::Code id)
+{
+	return *_layers[id];
+}
+
+const RenderLayer& Canvas::getLayer(LayerID::Code id) const
+{
+	return *_layers[id];
+}
+
+void Canvas::draw(LayerID::Code id, const sf::Drawable& drawable, const sf::RenderStates& states)
+{
+	_layers[id]->draw(drawable, states);
+}
+
+void Canvas::draw(LayerID::Code id, const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
+{
+	_layers[id]->draw(vertices, vertexCount, type, states);
 }
 
 }
