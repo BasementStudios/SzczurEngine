@@ -11,11 +11,6 @@ void Application::init()
 	_modules.initModule<Canvas>();
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
-
-	tex = &_modules.getModule<Assets>().load<sf::Texture>("null");
-	mus = &_modules.getModule<Assets>().load<sf::Music>("null");
-
-	mus->play();
 }
 
 void Application::input()
@@ -33,7 +28,7 @@ void Application::input()
 
 void Application::update()
 {
-	auto deltaTime = _mainClock.restart().asSeconds();
+	auto deltaTime = _mainClock.restart().asFSeconds();
 
 	(void)deltaTime;
 
@@ -43,10 +38,8 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
+	_modules.getModule<Canvas>().clear();
 	_modules.getModule<Canvas>().render();
-	_modules.getModule<Canvas>().render();
-	sf::Sprite spr(*tex);
-	getWindow().draw(spr);
 	_modules.getModule<Window>().render();
 }
 
