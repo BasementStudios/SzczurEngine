@@ -11,6 +11,8 @@ void Application::init()
 	_modules.initModule<Canvas>();
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
+	_modules.initModule<Script>();
+	_modules.initModule<ScriptTest>();
 }
 
 void Application::input()
@@ -30,6 +32,8 @@ void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asFSeconds();
 
+	_modules.getModule<ScriptTest>().update();
+	
 	(void)deltaTime;
 
 	_modules.getModule<Input>().finish();
@@ -38,9 +42,15 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-	_modules.getModule<Canvas>().clear();
+	_modules.getModule<Canvas>().clear();	
+	
+	// Tests
+	_modules.getModule<Script>().render();
+	_modules.getModule<ScriptTest>().render();
+	
 	_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
+	
 }
 
 int Application::run()

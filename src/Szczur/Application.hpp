@@ -6,6 +6,8 @@
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Script/ScriptTest.hpp"
 
 namespace rat
 {
@@ -37,7 +39,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Canvas, Input, Assets> _modules;
+	ModulesHolder<Window, Canvas, Input, Assets, Script, ScriptTest> _modules;
 	Clock _mainClock;
 
 };
