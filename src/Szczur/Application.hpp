@@ -7,7 +7,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/Script/ScriptTest.hpp"
+#include "Szczur/Modules/BattleField/BattleField.hpp"
 
 namespace rat
 {
@@ -39,7 +39,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Canvas, Input, Assets, Script, ScriptTest> _modules;
+	ModulesHolder<Window, Canvas, Input, Assets, Script, BattleField> _modules;
 	Clock _mainClock;
 
 };

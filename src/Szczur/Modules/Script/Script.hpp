@@ -11,6 +11,7 @@
 
 namespace rat
 {
+
 class Script : public Module<Canvas>
 {
 private:
@@ -48,6 +49,17 @@ public:
 		return _lua;
 	}
 	
+	template <typename T, typename U, typename ...Ts>
+	void initClasses() {
+		T::initScript(*this);
+		initClasses<Ts...>();
+	}
+	
+	template <typename T>
+	void initClasses() {
+		T::initScript(*this);
+	}
+	
 };
 
 template <typename Tuple>
@@ -58,3 +70,4 @@ Script::Script(Tuple&& tuple) :
 	init();
 }
 }
+

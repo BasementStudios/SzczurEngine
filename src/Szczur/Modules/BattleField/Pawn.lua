@@ -1,5 +1,6 @@
 --[[
-	Class script: Button
+	Class script: Pawn
+	Module: 	  BattleField
 	
 	[src]	
 	:setPosition(x,y)
@@ -8,13 +9,13 @@
 	size
 ]]
 	
-local Button = ScriptTest.Button
+local Pawn = BattleField.Pawn
 
-function Button:setStat(stat)
+function Pawn:setStat(stat)
 	if stat.pos then self:setPosition(stat.pos[1], stat.pos[2]) end
 	if stat.size then self:setSize(stat.size[1], stat.size[2]) end
 	end
 	
-function Button:more(delta)
+function Pawn:more(delta)
 	self.size.y = self.size.y + delta
 	end

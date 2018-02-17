@@ -12,7 +12,11 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 	_modules.initModule<Script>();
-	_modules.initModule<ScriptTest>();
+	_modules.initModule<BattleField>();
+	
+	// std::cout<<'\n'<<std::flush;
+	_modules.getModule<BattleField>().testInit();
+	std::cout.flush();
 }
 
 void Application::input()
@@ -32,7 +36,7 @@ void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asFSeconds();
 
-	_modules.getModule<ScriptTest>().update();
+	_modules.getModule<BattleField>().update();
 	
 	(void)deltaTime;
 
@@ -46,7 +50,7 @@ void Application::render()
 	
 	// Tests
 	_modules.getModule<Script>().render();
-	_modules.getModule<ScriptTest>().render();
+	_modules.getModule<BattleField>().render();
 	
 	_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
@@ -56,7 +60,7 @@ void Application::render()
 int Application::run()
 {
 	init();
-
+	
 	while (getWindow().isOpen()) {
 		input();
 		update();

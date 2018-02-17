@@ -7,10 +7,10 @@
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
-namespace rat
+namespace rat { namespace battle_field
 {
 
-struct Button
+struct Pawn
 {
 	sf::Vector2f pos {0,0};
 	sf::Vector2f size {0,0};
@@ -36,27 +36,28 @@ struct Button
 	}
 	
 	static auto instance() {
-		return std::unique_ptr<Button>(new Button());
+		return std::unique_ptr<Pawn>(new Pawn());
 	}
-	
-	static void initScript(Script& script) {
+
+	static void initScript(Script& script) {	
 		auto& lua = script.get();
-		sol::table scriptTest = lua["ScriptTest"];
+		sol::table battleField = lua["BattleField"];
 		
-		auto button = scriptTest.create_simple_usertype<Button>();
-		// Methods
-		button.set("setPosition", &Button::setPosition);
-		button.set("setSize", &Button::setSize);		
-		// Functions
-		button.set("instance", &Button::instance);
-		button.set("is", [](sol::object obj) {return obj.is<Button*>() || obj.is<std::unique_ptr<Button>>();});
+		auto pawn = battleField.create_simple_usertype<Pawn>();
+		
 		// Variables
-		button.set("size", &Button::size);
-		button.set("pos", &Button::pos);
+		pawn.set("size", &Pawn::size);
+		pawn.set("pos", &Pawn::pos);
+		// Methods
+		pawn.set("setPosition", &Pawn::setPosition);
+		pawn.set("setSize", &Pawn::setSize);
+		// Functions
+		pawn.set("instance", &Pawn::instance);
+		pawn.set("is", [](sol::object obj) {return obj.is<Pawn*>() || obj.is<std::unique_ptr<Pawn>>();});
 		
-		scriptTest.set_usertype("Button", button);		
-		lua.script_file("../src/Szczur/Modules/Script/Button.lua");
+		battleField.set_usertype("Pawn", pawn);
+		lua.script_file("../src/Szczur/Modules/BattleField/Pawn.lua");
 	}
 };
 
-}
+}}
