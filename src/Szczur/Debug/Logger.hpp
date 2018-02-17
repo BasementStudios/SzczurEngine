@@ -28,10 +28,10 @@ public:
         view = view.substr(view.find_last_of(DIRECTORY_SEPARATOR_CHAR) + 1);
 
         _logFile.open(_logFilePath, std::ios::app);
-        _logFile << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n';
+        _logFile << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;
         _logFile.close();
 
-        std::cerr << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n';
+        std::cerr << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n' << std::flush;
     }
 
 private:
