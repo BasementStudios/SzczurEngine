@@ -39,24 +39,38 @@ struct Pawn
 		return std::unique_ptr<Pawn>(new Pawn());
 	}
 
+
+
+// auto object = script.newClass<Pawn>();
+// SCRIPT_SET_CLASS(Pawn, size, pos, setPosition, setSize, instance)
+// SCRIPT_INIT_CLASS(Pawn, "../src/Szczur/Modules/BattleField/Pawn.lua")
+	
 	static void initScript(Script& script) {	
-		auto& lua = script.get();
-		sol::table battleField = lua["BattleField"];
+		auto object = script.newClass<Pawn>("Pawn", "BattleField", "../src/Szczur/Modules/BattleField/Pawn.lua");
+		SCRIPT_SET_CLASS(Pawn, size, pos, setPosition, setSize, instance)
+		object.initClass();
 		
-		auto pawn = battleField.create_simple_usertype<Pawn>();
+		// auto& lua = script.get();
+		// sol::table module = lua["BattleField"];
 		
-		// Variables
-		pawn.set("size", &Pawn::size);
-		pawn.set("pos", &Pawn::pos);
-		// Methods
-		pawn.set("setPosition", &Pawn::setPosition);
-		pawn.set("setSize", &Pawn::setSize);
-		// Functions
-		pawn.set("instance", &Pawn::instance);
-		pawn.set("is", [](sol::object obj) {return obj.is<Pawn*>() || obj.is<std::unique_ptr<Pawn>>();});
+		// auto object = module.create_simple_usertype<Pawn>();
 		
-		battleField.set_usertype("Pawn", pawn);
-		lua.script_file("../src/Szczur/Modules/BattleField/Pawn.lua");
+		
+		// // Variables
+		// object.set("size", &Pawn::size);
+		// object.set("pos", &Pawn::pos);
+		// // Methods
+		// object.set("setPosition", &Pawn::setPosition);
+		// object.set("setSize", &Pawn::setSize);
+		// // Functions
+		// object.set("instance", &Pawn::instance);
+		// object.set("is", [](sol::object obj) {return obj.is<Pawn*>() || obj.is<std::unique_ptr<Pawn>>();});
+		
+		
+		// script.initClass(object, "../src/Szczur/Modules/BattleField/Pawn.lua");
+		
+		// module.set_usertype("Pawn", object);
+		// lua.script_file("../src/Szczur/Modules/BattleField/Pawn.lua");
 	}
 };
 

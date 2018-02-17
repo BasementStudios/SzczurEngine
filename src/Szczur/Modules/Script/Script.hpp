@@ -12,6 +12,43 @@
 namespace rat
 {
 
+
+template <typename T>
+class ScriptClass {
+private:
+	
+	std::string _className;
+	std::string _moduleName;
+	std::string _scriptPath = "";
+	
+	sol::state &_lua;
+	
+	sol::simple_usertype<T> _object;
+	
+public:
+
+	ScriptClass(sol::state &lua, const std::string& className, const std::string& moduleName, const std::string& scriptPath = "") :
+		_lua(lua), _object(_lua.create_simple_usertype<T>()) {
+		
+		_className = className;
+		_moduleName = moduleName;
+		_scriptPath = scriptPath;
+	}
+	
+	template <typename N, typename A>
+	void set(N&& memberName, A&& memberAddress) {
+		_object.set(memberName, memberAddress);
+	}
+	
+	void initClass() {		
+		_object.set("is", [](sol::object obj) {return obj.is<T*>() || obj.is<std::unique_ptr<T>>();});
+		
+		_lua.get<sol::table>(_moduleName).set_usertype(_className, _object);
+		
+		if(_scriptPath != "") _lua.script_file(_scriptPath);
+	}
+};
+
 class Script : public Module<Canvas>
 {
 private:
@@ -60,6 +97,28 @@ public:
 		T::initScript(*this);
 	}
 	
+	sol::table newModule(const std::string& moduleName, const std::string &scriptPath = "") {
+		_lua.create_table(moduleName);
+		if(scriptPath != "") _lua.script_file(scriptPath);
+		return _lua[moduleName];
+	}
+	
+	template <typename T>
+	auto newClass(const std::string& className, const std::string& moduleName, const std::string& scriptPath = "") {
+		// sol::table module = _lua[moduleName];
+		// auto object = module.create_simple_usertype<T>();
+		auto ret = ScriptClass<T>(_lua, className, moduleName, scriptPath);
+		ret.set("is", [](sol::object obj) {return obj.is<T*>() || obj.is<std::unique_ptr<T>>();});
+		return ret;
+	}
+	
+	template <typename T>
+	void initClass(ScriptClass<T>& scriptClass, const std::string& scriptPath = "") {
+		sol::table module = _lua[scriptClass.moduleName];
+		module.set_usertype(scriptClass.className, scriptClass.object);
+		if(scriptPath != "") _lua.script_file(scriptPath);
+	}
+	
 };
 
 template <typename Tuple>
@@ -71,3 +130,55 @@ Script::Script(Tuple&& tuple) :
 }
 }
 
+
+// MACROOOOOS! <3
+
+// BASE FOR OVERLOADING MACROS
+
+#define OVERLOADED_MACRO(M, ...) _OVR(M, _COUNT_ARGS(__VA_ARGS__)) (__VA_ARGS__)
+#define _OVR(macroName, number_of_args)   _OVR_EXPAND(macroName, number_of_args)
+#define _OVR_EXPAND(macroName, number_of_args)    macroName##number_of_args
+
+#define _COUNT_ARGS(...)  _ARG_PATTERN_MATCH(__VA_ARGS__, 9,8,7,6,5,4,3,2,1)
+#define _ARG_PATTERN_MATCH(_1,_2,_3,_4,_5,_6,_7,_8,_9, N, ...)   N
+	
+// MODULE : SCRIPT_SET_MODULE_BODY
+	
+#define SCRIPT_SET_MODULE_BODY(c, f) module.set_function( #f , & c :: f , this);
+
+// MODULE : SCRIPT_SET_MODULE (functions only)
+
+#define SCRIPT_SET_MODULE(className, ...) OVERLOADED_MACRO(SCRIPT_SET_MODULE_, className, __VA_ARGS__)
+
+#define SCRIPT_SET_MODULE_2(c, f) SCRIPT_SET_MODULE_BODY(c, f) 
+#define SCRIPT_SET_MODULE_3(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_2(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_4(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_3(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_5(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_4(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_6(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_5(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_7(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_6(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_8(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_7(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_9(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_8(c, __VA_ARGS__)
+
+// MODULE : SCRIPT_NEW_MODULE
+
+#define SCRIPT_NEW_MODULE(...) OVERLOADED_MACRO(SCRIPT_NEW_MODULE_, __VA_ARGS__)
+
+#define SCRIPT_NEW_MODULE_1(className) sol::state& lua = getModule<Script>().get(); auto module=lua.create_table(#className);
+#define SCRIPT_NEW_MODULE_2(className,scriptPath) SCRIPT_NEW_MODULE_1(className) lua.script_file(scriptPath);
+
+// CLASS : SCRIPT_SET_CLASS_BODY
+
+#define SCRIPT_SET_CLASS_BODY(c, m) object.set( #m , & c :: m);
+
+// CLASS : SCRIPT_SET_CLASS
+
+#define SCRIPT_SET_CLASS(className, ...) OVERLOADED_MACRO(SCRIPT_SET_CLASS_, className, __VA_ARGS__)
+
+#define SCRIPT_SET_CLASS_2(c, m) SCRIPT_SET_CLASS_BODY(c, m)
+#define SCRIPT_SET_CLASS_3(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_2(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_4(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_3(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_5(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_4(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_6(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_5(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_7(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_6(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_8(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_7(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_9(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_8(c, __VA_ARGS__)
