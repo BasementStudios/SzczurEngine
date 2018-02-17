@@ -25,7 +25,7 @@ struct Pawn
 		size.y = y;
 	}
 	
-	void render(Canvas& canvas) {
+	virtual void render(Canvas& canvas) {
 		sf::RectangleShape shape;
 		shape.setSize(size);
 		shape.setPosition(pos);
@@ -38,40 +38,39 @@ struct Pawn
 	static auto instance() {
 		return std::unique_ptr<Pawn>(new Pawn());
 	}
-
-
-
-// auto object = script.newClass<Pawn>();
-// SCRIPT_SET_CLASS(Pawn, size, pos, setPosition, setSize, instance)
-// SCRIPT_INIT_CLASS(Pawn, "../src/Szczur/Modules/BattleField/Pawn.lua")
 	
 	static void initScript(Script& script) {	
 		auto object = script.newClass<Pawn>("Pawn", "BattleField", "../src/Szczur/Modules/BattleField/Pawn.lua");
 		SCRIPT_SET_CLASS(Pawn, size, pos, setPosition, setSize, instance)
-		object.initClass();
-		
-		// auto& lua = script.get();
-		// sol::table module = lua["BattleField"];
-		
-		// auto object = module.create_simple_usertype<Pawn>();
-		
-		
-		// // Variables
-		// object.set("size", &Pawn::size);
-		// object.set("pos", &Pawn::pos);
-		// // Methods
-		// object.set("setPosition", &Pawn::setPosition);
-		// object.set("setSize", &Pawn::setSize);
-		// // Functions
-		// object.set("instance", &Pawn::instance);
-		// object.set("is", [](sol::object obj) {return obj.is<Pawn*>() || obj.is<std::unique_ptr<Pawn>>();});
-		
-		
-		// script.initClass(object, "../src/Szczur/Modules/BattleField/Pawn.lua");
-		
-		// module.set_usertype("Pawn", object);
-		// lua.script_file("../src/Szczur/Modules/BattleField/Pawn.lua");
+		object.init();
 	}
 };
+
+// struct PawnPlayer : public Pawn {
+	
+	// bool selected = false;
+
+	// void select(bool flag) {
+		// selected = flag;
+	// }
+	
+	// void render(Canvas& canvas) {
+		// sf::RectangleShape shape;
+		// shape.setSize(size);
+		// shape.setPosition(pos);
+		// shape.setFillColor(sf::Color(60+_selected*60, 50+_selected*60, 20));
+		// shape.setOutlineColor(sf::Color(100, 20, 100));
+		// shape.setOutlineThickness(-4);
+		// canvas.draw(Canvas::LayerID::Game, shape);
+	// }
+	
+	// static void initScript(Script& script) {	
+		// auto object = script.newClass<PlayerPawn>("PlayerPawn", "BattleField");
+		// object.set("instance", [](){return std::unique_ptr<PlayerPawn>(new PlayerPawn());});
+		// SCRIPT_SET_CLASS(PlayerPawn, select)
+		// object.set
+		// object.init();
+	// }
+// };
 
 }}

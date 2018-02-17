@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+// #define SOL_NO_EXCEPTIONS 
 #include <sol.hpp>
 
 #include "Szczur/Utility/Module.hpp"
@@ -40,7 +41,22 @@ public:
 		_object.set(memberName, memberAddress);
 	}
 	
-	void initClass() {		
+	template <typename N, typename GA, typename SA>
+	void setProperty(N&& memberName, GA&& getterAddress, SA&& setterAddress) {
+		_object.set(memberName, sol::property(getterAddress, setterAddress));
+	}
+	
+	template <typename N, typename ...Fs>
+	void setOverload(N&& memberName,  Fs&&... functions) {
+		_object.set(memberName, sol::overload(functions...));
+	}
+	
+	void makeStatter() {
+		_object.set("setStat", &T::setStat);
+		setProperty("stat", [](T& o)->T&{return o;}, &T::setStat);
+	}		
+	
+	void init() {		
 		_object.set("is", [](sol::object obj) {return obj.is<T*>() || obj.is<std::unique_ptr<T>>();});
 		
 		_lua.get<sol::table>(_moduleName).set_usertype(_className, _object);
@@ -76,6 +92,10 @@ public:
 			"x", &sf::Vector2f::x,
 			"y", &sf::Vector2f::y
 		);
+		sfml.new_simple_usertype<sf::Vector2i>("Vector2i",
+			"x", &sf::Vector2i::x,
+			"y", &sf::Vector2i::y
+		);
 	}
 	
 	void render() {
@@ -89,7 +109,7 @@ public:
 	template <typename T, typename U, typename ...Ts>
 	void initClasses() {
 		T::initScript(*this);
-		initClasses<Ts...>();
+		initClasses<U, Ts...>();
 	}
 	
 	template <typename T>
@@ -117,8 +137,7 @@ public:
 		sol::table module = _lua[scriptClass.moduleName];
 		module.set_usertype(scriptClass.className, scriptClass.object);
 		if(scriptPath != "") _lua.script_file(scriptPath);
-	}
-	
+	}	
 };
 
 template <typename Tuple>
