@@ -44,7 +44,7 @@ void Application::render()
 	// @info Render all things here.
 	_modules.getModule<World>().render();
 
-	_modules.getModule<Canvas>().render();
+	//_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
 }
 

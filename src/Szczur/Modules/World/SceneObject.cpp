@@ -65,10 +65,12 @@ SceneObject::SceneObject()
 }
 SceneObject::SceneObject(Assets* assetsStupidPtr, const std::string& type, const std::string& state)
 {
+    this->_assetsStupidPtr = assetsStupidPtr;
+
+    this->setState(state);
+    
     // Set type, so create vaild Displayer.
     this->setType(type);
-    this->setState(state);
-    this->_assetsStupidPtr = assetsStupidPtr;
 }
 SceneObject::~SceneObject()
 {

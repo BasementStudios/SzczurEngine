@@ -15,13 +15,13 @@ namespace rat
 /// init
 void World::init()
 {
-    this->_sceneObjects.emplace_back(&getModule<Assets>(), "Exodus", "default");
+	this->_sceneObjects.emplace_back(&getModule<Assets>(), "Exodus", "default");
 }
 
 /// update
 void World::update(float deltaTime)
 {
-	for (auto& object : _sceneObjects) {
+	for (auto& object : this->_sceneObjects) {
 		object.update(deltaTime);
 	}
 }

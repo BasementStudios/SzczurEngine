@@ -47,7 +47,7 @@ class SpriteDisplayer<SceneObject> : public Displayer<SceneObject>
 	/* Fields */
 protected:
 	// @todo ! ratAsset do użycia
-    //rat::Asset*     _textureAsset   = nullptr;
+    //rat::Asset<sf::Texture>*     _textureAsset   = nullptr;
     sf::Texture*    _texture         = nullptr;
     sf::Vector2f    _origin         {0, 0};
     sf::Vertex      _vertices[4];

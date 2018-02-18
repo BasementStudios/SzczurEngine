@@ -29,7 +29,7 @@ protected:
     std::string     _type       {""};
     Vector_t        _position   {0.f, 0.f};
     Vector_t        _speed      {0.f, 0.f};
-    std::string     _state      {""};
+    std::string     _state      {"default"};
     Displayer_t*    _displayer  = nullptr;
 
     Assets* _assetsStupidPtr = nullptr; // @todo ! RREEEEEEEEEE ;f

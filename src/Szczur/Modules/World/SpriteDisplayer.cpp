@@ -20,7 +20,7 @@ namespace rat
 /* Properties */
 void SpriteDisplayer<SceneObject>::setTextureRect(const sf::IntRect rect)
 {
-	if(this->_textureRect == rect) {
+	if(this->_textureRect != rect) {
 		this->_textureRect = rect;
 		this->updateVertices();
 	}
@@ -36,7 +36,7 @@ SpriteDisplayer<SceneObject>::SpriteDisplayer(Assets& assets, SceneObject& objec
 	// @todo ! ratAsset do użycia
 	// @info For testing purposes World_Some1.png
 	//_textureAsset = &assets.load<sf::Asset<sf::Texture>>("Assets/Objects/" + object.getType() + "/" + object.getState() + ".png");
-	this->_texture = &assets.load<sf::Texture>("Assets/Objects/" + object.getType() + "/" + object.getState() + ".png");
+	this->_texture = &(assets.load<sf::Texture>("Assets/Objects/" + object.getType() + "/" + object.getState() + ".png"));
 
 	// @todo ! ładowanie texrect z json
 	//this->setTextureRect(sf::IntRect(0, 0, _textureAsset.getRef().getSize().x, _textureAsset.getRef().getSize().y));
