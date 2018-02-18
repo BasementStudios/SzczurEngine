@@ -13,7 +13,6 @@
 namespace rat
 {
 
-
 template <typename T>
 class ScriptClass {
 private:
@@ -96,10 +95,20 @@ public:
 			"x", &sf::Vector2i::x,
 			"y", &sf::Vector2i::y
 		);
+		sfml.new_simple_usertype<sf::Color>("Color",
+			"r", &sf::Color::r,
+			"g", &sf::Color::g,
+			"b", &sf::Color::b,
+			"a", &sf::Color::a
+		);
 	}
 	
 	void render() {
 		
+	}
+	
+	void scriptFile(const std::string& filePath) {
+		_lua.script_file(filePath);
 	}
 	
 	sol::state& get() {

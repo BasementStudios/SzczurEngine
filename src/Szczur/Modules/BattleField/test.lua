@@ -10,9 +10,17 @@ board.grid:setPosition(100,100)
 board.grid:setCellSize(70,60)
 board.grid:setSize(5,7)
 
+local pawn = BattleField.PawnPlayer.instance()
+board:addPawn(pawn, 0, 0)
+
+-- pawn:select(false)
+pawn:setFillColor(40,130,130,255)
+
 board:addPawn(4, 3)
--- board:addPawn(2, 1)
+board:addPawn(2, 1)
 board:addPawn(3, 2)
+
+
 
 -- ============================
 
