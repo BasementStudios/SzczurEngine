@@ -2,6 +2,7 @@
 
 /** @file RemderLayer.hpp
  ** @description Implementaion file for RenderLayer class.
+ ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 

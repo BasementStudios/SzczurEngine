@@ -2,6 +2,7 @@
 
 /** @file RemderLayer.hpp
  ** @description Header file with RenderLayer class.
+ ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
@@ -20,12 +21,8 @@ class RenderLayer
 {
 	/* Types */
 public:
-	using LayerID_t = std::size_t;
-	
-
-
 	/* Fields */
-private:
+protected:
 	sf::RenderTexture _texture;
 	sf::RenderStates _states;
 
@@ -66,16 +63,16 @@ public:
 
 
 	/* Methods */
-	/// clear
+	/// Clears layer with color
 	void clear(const sf::Color& color = sf::Color::Transparent);
 
-	/// draw
+	/// Draws any Drawable object
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	
-	/// draw
+	/// Draws primitive verticles on the layer
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 
-	/// display
+	/// Displays on the RenderTarget
 	void display(sf::RenderTarget& target);
 };
 

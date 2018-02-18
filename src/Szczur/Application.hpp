@@ -4,7 +4,6 @@
 
 #include "Szczur/Utility/ModulesHolder.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/World/World.hpp"
@@ -39,7 +38,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Canvas, Input, Assets, World> _modules;
+	ModulesHolder<Window, Input, Assets, World> _modules;
 	sf::Clock _mainClock;
 
 };

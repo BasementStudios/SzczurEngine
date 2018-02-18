@@ -8,7 +8,6 @@ namespace rat
 void Application::init()
 {
 	_modules.initModule<Window>();
-	_modules.initModule<Canvas>();
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 	_modules.initModule<World>();
@@ -44,7 +43,6 @@ void Application::render()
 	// @info Render all things here.
 	_modules.getModule<World>().render();
 
-	//_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
 }
 

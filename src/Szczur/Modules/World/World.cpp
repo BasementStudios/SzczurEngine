@@ -6,7 +6,6 @@
  **/
 
 #include "Szczur/Debug/Logger.hpp"
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 
 namespace rat
 {

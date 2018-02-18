@@ -2,6 +2,7 @@
 
 /** @file Window.cpp
  ** @description Implementation file with main class of the Window module. 
+ ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
@@ -70,7 +71,17 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-    _window.clear(color);
+    this->getWindow().clear(color);
+}
+
+void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
+{
+	this->getWindow().draw(drawable, states);
+}
+
+void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
+{
+	this->getWindow().draw(vertices, vertexCount, type, states); 
 }
 
 }
