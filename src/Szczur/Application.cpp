@@ -8,7 +8,6 @@ namespace rat
 void Application::init()
 {
 	_modules.initModule<Window>();
-	_modules.initModule<Canvas>();
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 }
@@ -38,8 +37,6 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-	_modules.getModule<Canvas>().clear();
-	_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
 }
 

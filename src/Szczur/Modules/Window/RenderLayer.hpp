@@ -1,6 +1,7 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 namespace rat
 {
@@ -15,7 +16,7 @@ public:
 
 	void setRenderStates(const sf::RenderStates& states);
 
-	sf::RenderStates getRenderStates() const;
+	const sf::RenderStates& getRenderStates() const;
 
 	void clear(const sf::Color& color = sf::Color::Transparent);
 
@@ -28,6 +29,7 @@ private:
 
 	sf::RenderTexture _renderTexture;
 	sf::RenderStates _states;
+	sf::Sprite _sprite;
 
 };
 
