@@ -27,11 +27,7 @@ namespace rat
 	public:
 
 		template <typename Tuple>
-    	Music(Tuple&& tuple)
-			: Module(tuple)
-		{
-			
-		}
+    	Music(Tuple&& tuple);
 
 		void update(float deltaTime);
 
@@ -55,11 +51,18 @@ namespace rat
 
 		std::string getPath(const std::string& fileName) const;
 
-		bool isUsingByOtherPlaylist(unsigned int id, const std::string& fileName) const;
+		bool usingByOtherPlaylist(unsigned int id, const std::string& fileName) const;
 
 		void unLoad(unsigned int id, const std::string& fileName);
 
 	};
+
+	template <typename Tuple>
+    Music::Music(Tuple&& tuple)
+		: Module(tuple)
+	{
+		LOG_CONSTRUCTOR();
+	}
 }
 
 

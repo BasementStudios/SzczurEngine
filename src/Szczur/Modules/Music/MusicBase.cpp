@@ -1,7 +1,6 @@
 #include "MusicBase.hpp"
 
 #include <fstream>
-#include <cmath>
 
 #include <Szczur/Json.hpp>
 

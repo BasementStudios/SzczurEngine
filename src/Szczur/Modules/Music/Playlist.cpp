@@ -36,7 +36,7 @@ namespace rat
 	
 	void Playlist::add(MusicBase&& base)
 	{	
-		if(!includes(base.getName())) {
+		if (!includes(base.getName())) {
 			_playlist.push_back(std::make_shared<MusicBase>(std::move(base)));
 			_playlist.back()->setVolume(_globalVolume);
 		}	
