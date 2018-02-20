@@ -15,6 +15,7 @@
 #include "CheckWidget.hpp"
 #include "RadioWidget.hpp"
 #include "TextAreaWidget.hpp"
+#include "CircleChooseWidget.hpp"
 
 
 

@@ -23,6 +23,12 @@ namespace rat {
         _interfaces.push_back(interface);
         return interface;
     }
+
+    Interface* GUI::addInterface() {
+        Interface* interface = new Interface(&_assets, getModule<Window>().getWindow().getSize());
+        _interfaces.push_back(interface);
+        return interface;
+    }
     
     void GUI::input(const sf::Event& event) {
         for(auto it : _interfaces)

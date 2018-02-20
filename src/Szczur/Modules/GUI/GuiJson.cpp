@@ -217,6 +217,32 @@ namespace rat {
             });
         }
 
+        else if(typeName == "circle") {    
+            _createJsonValue<CircleChooseWidget>(json, name, parent, [this](CircleChooseWidget* widget, Json::iterator it){
+                std::string key = it.key();
+                if(key == "radius") {
+                    widget->setRadius(it->get<float>());
+                }
+                else if(key == "gap") {
+                    widget->setGap(it->get<float>());
+                }
+                else if(key == "extension") {
+                    widget->setExtension(it->get<float>());
+                }
+                else if(key == "color")
+                    widget->setColor(
+                        sf::Color(
+                            (*it)[0].get<unsigned int>(),
+                            (*it)[1].get<unsigned int>(),
+                            (*it)[2].get<unsigned int>()
+                        )
+                    );
+                else
+                    return false;
+                return true;
+            });
+        }
+
         /*else if(typeName == "check") {    
             _createJsonValue<CheckWidget>(json, name, parent, [this](CheckWidget* widget, Json::iterator it){
                 std::string key = it.key();
