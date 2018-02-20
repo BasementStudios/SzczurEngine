@@ -14,11 +14,15 @@ namespace rat
 	{
 		_playlists.push_back(std::make_unique<Playlist>());
 
-		for (auto it : newPlaylist) {
-			auto& source = getModule<Assets>().load<sf::Music>(getPath(it));
-			auto&& base = MusicBase(it, source);
-			_playlists.back()->add(std::move(base));
-		}
+		for (auto it : newPlaylist)
+			add(_playlists.size() - 1, it);
+	}
+
+	void Music::add(unsigned int id, const std::string& fileName)
+	{
+		auto& source = getModule<Assets>().load<sf::Music>(getPath(fileName));
+		auto&& base = MusicBase(fileName, source);
+		_playlists[id]->add(std::move(base));
 	}
 
 	void Music::remove(unsigned int id, const std::string& fileName) 
@@ -57,9 +61,34 @@ namespace rat
 		_currentPlaylistID = id;
 	}
 
-	Playlist& Music::operator[](unsigned int id) 
+	void Music::pause(unsigned int id)
 	{
-		return *(_playlists[id].get());
+		_playlists[id]->pause();
+	}
+
+	void Music::stop(unsigned int id)
+	{
+		_playlists[id]->stop();
+	}
+
+	bool Music::includes(unsigned int id, const std::string& fileName) const
+	{
+		return _playlists[id]->includes(fileName);
+	}
+
+	void Music::setPlayingMode(unsigned int id, PlayingMode mode)
+	{
+		_playlists[id]->setPlayingMode(mode);
+	}
+
+	void Music::setVolume(unsigned int id, float volume, const std::string& fileName)
+	{
+		_playlists[id]->setVolume(volume, fileName);
+	}
+
+	float Music::getVolume(unsigned int id, const std::string& fileName) const
+	{
+		return _playlists[id]->getVolume(fileName);
 	}
 
 	inline std::string Music::getPath(const std::string& fileName) const 

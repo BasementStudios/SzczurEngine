@@ -37,11 +37,19 @@ namespace rat
 
 		void addPlaylist(const std::vector<std::string>& newPlaylist);
 
+		void add(unsigned int id, const std::string& fileName);
 		void remove(unsigned int id, const std::string& fileName = "");
 
 		void play(unsigned int id, const std::string& fileName = "");
+		void pause(unsigned int id);
+		void stop(unsigned int id);
 
-		Playlist& operator[](unsigned int id);
+		bool includes(unsigned int id, const std::string& fileName) const;
+
+		void setPlayingMode(unsigned int id, PlayingMode mode);
+
+		void setVolume(unsigned int id, float volume, const std::string& fileName = "");
+		float getVolume(unsigned int id, const std::string& fileName) const;
 
 	private:
 
