@@ -20,6 +20,8 @@ namespace rat
                 int getID(const std::string &fileName = "");
 
                 void changeSound(const std::string &fileName);
+                void chooseOption(int option,const std::string &fileName="");
+                void addOption(int offset, int newOffset,  const std::string &newfileName="",const std::string &fileName="");
 
                 void play(const std::string &fileName = "");
 

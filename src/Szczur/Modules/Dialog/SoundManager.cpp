@@ -33,6 +33,24 @@ namespace rat
             _currentSoundID = getSound(fileName);
         }
 
+        void SoundManager::chooseOption(int option, const std::string &fileName)
+        {
+            int i = getID(fileName);
+            int offset = _sounds[i].getOffsetOption(option);
+            std::string newSound = _sounds[i].chooseOption(option);
+            if( newSound != ""){
+                changeSound( newSound);
+            }
+            _sounds[_currentSoundID].setOffset(offset);
+              play();
+        }
+
+        void SoundManager::addOption(int offset, int newOffset,  const std::string &newfileName, const std::string &fileName)
+        {
+             int i = getID(fileName);
+             _sounds[i].addOption(offset,newOffset,newfileName);
+        }
+
         void SoundManager::setVolume(float volume, const std::string &fileName)
         {
             if (fileName==""){
