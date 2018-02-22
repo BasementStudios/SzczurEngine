@@ -7,7 +7,7 @@
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 
-#include "DialogManager.hpp"
+#include "TextManager.hpp"
 
 namespace rat {
     class Dialog : public Module<GUI> {
@@ -18,7 +18,7 @@ namespace rat {
     private:
         Interface* _interface;
         TextAreaWidget* _area;
-        DialogManager _dialogManager;
+        TextManager _textManager;
     };
 }
 
