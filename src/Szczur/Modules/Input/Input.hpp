@@ -8,7 +8,7 @@
 namespace rat
 {
 
-enum InputStatus_t { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
+enum InputStatus_e { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 
 class Input : public Module<>
 {
@@ -29,15 +29,15 @@ public:
 
 	void processEvent(const sf::Event& event);
 
-	void finish();
+	void finishLogic();
 
 	void press(const InputCode& code);
 
 	void release(const InputCode& code);
 
-	InputStatus_t getStatus(const InputCode& code) const;
+	InputStatus_e getStatus(const InputCode& code) const;
 
-	bool checkStatus(const InputCode& code, InputStatus_t _Status) const;
+	bool checkStatus(const InputCode& code, InputStatus_e _Status) const;
 
 	bool isUnkept(const InputCode& code) const;
 
@@ -71,9 +71,9 @@ private:
 
 	void _moveWheel(int which, int delta);
 
-	InputStatus_t _keyboard[Keyboard::Count];
-	InputStatus_t _mouse[Mouse::Count];
-	InputStatus_t _scroll[Scroll::Count];
+	InputStatus_e _keyboard[Keyboard::Count];
+	InputStatus_e _mouse[Mouse::Count];
+	InputStatus_e _scroll[Scroll::Count];
 
 	InputCode _recentlyPressed;
 	InputCode _recentlyReleased;

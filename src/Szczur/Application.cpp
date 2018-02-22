@@ -27,11 +27,9 @@ void Application::input()
 
 void Application::update()
 {
-	auto deltaTime = _mainClock.restart().asFSeconds();
+	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 
-	(void)deltaTime;
-
-	_modules.getModule<Input>().finish();
+	_modules.getModule<Input>().finishLogic();
 }
 
 void Application::render()
