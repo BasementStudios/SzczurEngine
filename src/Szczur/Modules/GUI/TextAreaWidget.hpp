@@ -12,7 +12,7 @@ namespace rat {
         TextAreaWidget();
         TextAreaWidget(sf::Vector2u size, sf::Font* font);
 
-        void setString(std::string text);
+        void setString(const std::string& text);
 
         void setSize(sf::Vector2u size);
 

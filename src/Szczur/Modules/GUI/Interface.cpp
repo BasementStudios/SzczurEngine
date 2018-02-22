@@ -12,10 +12,12 @@ namespace rat {
         guiJson.init(assets->get<Json>(jsonFile), assets, &_root, windowSize);
     }
 
-    Widget* Interface::add(Widget* widget) {
-        if(widget)
-            _root.add(widget);
-        return widget;
+    Widget* Interface::add(const std::string& key, Widget* widget) {
+        return _root.add(key, widget);
+    }
+
+    Widget* Interface::get(const std::string& key) const {
+        return _root.get(key);
     }
 
     void Interface::input(const sf::Event& event) {

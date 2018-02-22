@@ -7,7 +7,7 @@ namespace rat {
     _toUpdate(false),
     _toCreate(false),
     _toWrap(false) {
-        
+
     }
 
     TextAreaWidget::TextAreaWidget(sf::Vector2u size, sf::Font* font) :
@@ -22,7 +22,7 @@ namespace rat {
         _sprite.setTexture(_area.getTexture());
     }
 
-    void TextAreaWidget::setString(std::string text) {
+    void TextAreaWidget::setString(const std::string& text) {
         _text.setString(text);
         _toCreate = true;
         _toWrap = true;
@@ -67,6 +67,7 @@ namespace rat {
     }
 
     void TextAreaWidget::_update(float deltaTime) {
+        
         if(_toWrap) {
             _toWrap = false;
             _wrapText();

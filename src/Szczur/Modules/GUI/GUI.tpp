@@ -2,7 +2,7 @@ namespace rat {
     template<typename Tuple>
     GUI::GUI(Tuple&& tuple) :
     Module(tuple) {
-        _initAssets();
+        _initAssets();  
     }
 
     template<typename T>

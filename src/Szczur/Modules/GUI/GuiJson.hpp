@@ -4,7 +4,6 @@
 #include <fstream>
 
 #include <SFML/Graphics.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <Szczur/Json.hpp>
 
@@ -29,10 +28,10 @@ namespace rat {
         void reload(const sf::Vector2u newWindowSize, Widget *root);
         void changeJson(Json* json, Widget* root);
     private:
-        void _browseJsonObject(Json &json, Widget *parent);
+        void _browseJsonObject(Json &json, const std::string& name, Widget *parent);
 
         template<typename T, typename F>
-        void _createJsonValue(Json& json, Widget* parent, F valuesCall);
+        void _createJsonValue(Json& json, const std::string& name, Widget* parent, F valuesCall);
 
         bool _handleBasicValues(Json::iterator it, Widget *widget);
 

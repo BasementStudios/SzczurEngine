@@ -16,12 +16,12 @@ namespace rat {
 
     Widget::~Widget() {
         for(auto &it : _children)
-            delete it;
+            delete it.second;
     }
 
     void Widget::clear() {
         for(auto &it : _children)
-            delete it;
+            delete it.second;
         _children.clear();
     }
 
@@ -40,15 +40,23 @@ namespace rat {
             std::invoke(std::get<1>(*it), this);
     }
 
-    Widget* Widget::add(Widget* object) {
+    Widget* Widget::add(const std::string& key, Widget* object) {
         if(object) {
-            _children.push_back(object);
+            auto k = fnv1a_32(key.begin(), key.end());
+            if(auto it = _children.find(k); it != _children.end())
+                delete it->second;
+            _children.insert_or_assign(k, object);
             object->setParent(this);
-            object->calculateSize();
-            //_aboutToRecalculate = true;
+            _aboutToRecalculate = true;
             
         }
         return object;
+    }
+
+    Widget* Widget::get(const std::string& key) const {
+        if(auto it = _children.find(fnv1a_32(key.begin(), key.end())); it != _children.end())
+            return it->second;
+        return nullptr;
     }
 
     void Widget::input(const sf::Event& event) {
@@ -96,16 +104,16 @@ namespace rat {
 
                 default: break;
             }
-            for(Widget* it : _children) {
+            for(auto& it : _children) {
                 if(event.type == sf::Event::MouseMoved) {
-                    auto itPosition = it->getPosition();
+                    auto itPosition = it.second->getPosition();
                     sf::Event tempEvent(event);
                     tempEvent.mouseMove.x -= itPosition.x;
                     tempEvent.mouseMove.y -= itPosition.y;
-                    it->input(tempEvent);
+                    it.second->input(tempEvent);
                 }
                 else
-                    it->input(event);
+                    it.second->input(event);
             }
         }
     }
@@ -120,8 +128,8 @@ namespace rat {
             if(_isPressed)
                 callback(CallbackType::onHold);
 
-            for(Widget* it : _children)
-                it->update(deltaTime);
+            for(auto& it : _children)
+                it.second->update(deltaTime);
         }
 
         if(_aboutToRecalculate)
@@ -141,17 +149,17 @@ namespace rat {
             //target.draw(shape, states);
 
             _draw(target, states);
-            for(Widget* it : _children)
-                target.draw(*it, states);
+            for(auto& it : _children)
+                target.draw(*(it.second), states);
         }
     }
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
         _size = {0u,0u};
-        for(Widget* it : _children) {
-            auto itSize = it->getSize();
-            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
+        for(auto& it : _children) {
+            auto itSize = it.second->getSize();
+            auto itPosition = static_cast<sf::Vector2i>(it.second->getPosition());
             if(itPosition.x + itSize.x > _size.x)
                 _size.x = itPosition.x + itSize.x;
             if(itPosition.y + itSize.y > _size.y)
