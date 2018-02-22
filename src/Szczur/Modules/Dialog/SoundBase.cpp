@@ -68,6 +68,38 @@ namespace rat
             play();
         }
 
+        const std::string SoundBase::chooseOption(int option)
+        {
+            if(option<0||option>=_offsets.size())
+                return "";
+
+            if(_offsets[_currentOffsetID]._options[option]._file=="")
+                setOffset(_offsets[_currentOffsetID]._options[option].offsetNumber);
+            else
+                return _offsets[_currentOffsetID]._options[option]._file;
+
+
+            return "";
+        }
+
+        int SoundBase::getOffsetOption(int option)
+        {
+             if(option<0||option>=_offsets.size())
+                return 0;
+
+            return _offsets[_currentOffsetID]._options[option].offsetNumber;
+        }
+
+        void SoundBase::addOption(int offset, int newOffset,  const std::string &fileName)
+        {
+            if(offset<0||offset>_offsets.size())
+                return;
+
+            _offsets[offset]._options.emplace_back();
+            _offsets[offset]._options[_offsets[offset]._options.size()-1].offsetNumber=newOffset;
+            _offsets[offset]._options[_offsets[offset]._options.size()-1]._file=fileName;
+        }
+
         float SoundBase::getOffset()
         {
             return sound.getPlayingOffset().asSeconds();

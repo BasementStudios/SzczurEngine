@@ -12,6 +12,14 @@ namespace rat
             {
                 float beginTime;
                 float endTime;
+
+                struct option
+                {
+                    int offsetNumber=-1;
+                    std::string _file="";
+                };
+                std::vector<option> _options;
+
             };
 
             float _volume {100};
@@ -39,6 +47,10 @@ namespace rat
             void setOffset(int offset);
             void repeat();
             void next();
+            const std::string chooseOption(int option);
+            int getOffsetOption(int option);
+            void addOption(int offset, int newOffset,  const std::string &fileName="");
+
             float getOffset();
             int getOffsetID();
             void addOffset(float beginT, float endT);
