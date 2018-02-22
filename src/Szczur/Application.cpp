@@ -34,6 +34,7 @@ void Application::update()
 	auto deltaTime = _mainClock.restart().asSeconds();
 
 	_modules.getModule<GUI>().update(deltaTime);
+	_modules.getModule<Dialog>().update();
 
 	_modules.getModule<Input>().finish();
 }

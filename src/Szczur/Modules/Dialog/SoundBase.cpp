@@ -202,6 +202,6 @@ namespace rat
 
         std::string SoundBase::getPath()
         {
-            return "sounds/" + _name + ".flac";
+            return _name + ".flac";
         }
 }

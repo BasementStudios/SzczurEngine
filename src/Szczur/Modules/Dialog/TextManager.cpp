@@ -15,6 +15,10 @@ namespace rat {
     }
 
     void TextManager::load(const std::string& path) {
+        for(auto& it : _texts)
+            delete it.second;
+        _texts.clear();
+
         using namespace std::string_literals;
         //std::fstream file(path, std::ios::in);
         std::ifstream file(path);
@@ -40,7 +44,7 @@ namespace rat {
                     ptr->setVoiceLength(std::stoi(it->str()));
                 break;
                 case 4:
-                    ptr->setVoiceLength(60u*ptr->getVoiceLength() + std::stoi(it->str()) - ptr->getVoiceStart());
+                    ptr->setVoiceLength(60u*ptr->getVoiceLength() + std::stoi(it->str()));
                 break;
                 case 5:
                     ptr->setSpeaker(it->str());
@@ -54,14 +58,6 @@ namespace rat {
             i++;
             if(i>=7)
                 i = 0;
-        }
-
-        for(auto& it : _texts) {
-            std::cout << it.second->getId() << '\n';
-            std::cout << it.second->getVoiceStart() << '\n';
-            std::cout << it.second->getVoiceLength() << '\n';
-            std::cout << it.second->getSpeaker() << '\n';
-            std::cout << it.second->getText() << '\n';
         }
     }
 

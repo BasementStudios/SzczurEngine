@@ -7,7 +7,7 @@
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 
-#include "TextManager.hpp"
+#include "DialogManager.hpp"
 
 namespace rat {
     class Dialog : public Module<GUI> {
@@ -15,10 +15,13 @@ namespace rat {
         template<typename Tuple>
         Dialog(Tuple&& tuple, const std::string& file);
 
+        void update();
+
     private:
         Interface* _interface;
         TextAreaWidget* _area;
-        TextManager _textManager;
+        DialogManager _dialogManager;
+
     };
 }
 
