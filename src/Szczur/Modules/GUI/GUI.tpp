@@ -1,8 +1,11 @@
+#include "CircleChooseWidget.hpp"
 namespace rat {
     template<typename Tuple>
     GUI::GUI(Tuple&& tuple) :
     Module(tuple) {
-        _initAssets();  
+        _initAssets();
+        auto* a = reinterpret_cast<CircleChooseWidget*>(addInterface("data/json.json")->get("_root")->get("test"));
+        a->setAmount(7u);
     }
 
     template<typename T>

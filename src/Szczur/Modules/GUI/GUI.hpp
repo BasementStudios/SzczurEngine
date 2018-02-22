@@ -31,6 +31,7 @@ namespace rat {
         void reload();
 
         Interface* addInterface(const std::string& jsonFile);
+        Interface* addInterface();
 
         template<typename T>
         T* getAsset(const std::string& key) const;
