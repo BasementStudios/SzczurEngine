@@ -14,7 +14,16 @@ namespace rat
 /// init
 void World::init()
 {
-	this->_sceneObjects.emplace_back(&getModule<Assets>(), "Exodus", "default");
+	// @info Testing propouses
+	// Kostka ;f
+	sf::Texture* kostkatex = &(getModule<Assets>.load<sf::Texture>("Assets/Objects/Exodus/default.png"));
+	this->objectTypes.emplace_back("Kostka", DisplayData {
+		kostkatex,
+		sf::Vector2f(0.f, 0.f),
+		sf::IntRect(0, 0, kostkatex->getSize().x, kostkatex->getSize().y),
+	});
+	auto kostka = this->objectTypes.back();
+	this->sceneObjects.emplace_back(kostka, "Exodus", "default");
 }
 
 /// update
@@ -28,10 +37,10 @@ void World::update(float deltaTime)
 /// render
 void World::render()
 {
-	auto& target = getModule<Window>().getWindow();
+	auto& target = getModule<Window>();
 
-	for (auto& object : this->_sceneObjects) {
-		object.draw(target, this->_sceneRenderStates);
+	for (auto& object : this->sceneObjects) {
+		target.draw(object, this->sceneRenderStates);
 	}
 }
 

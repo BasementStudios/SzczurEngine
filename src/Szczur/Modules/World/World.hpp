@@ -5,13 +5,15 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-#include <string>
+#include <vector>
+#include <list>
 
 #include "Szczur/Utility/Module.hpp"
 #include "Szczur/Debug/Logger.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
-#include "SceneObject.hpp"
+#include "GameObject.hpp"
+#include "GameObjectType.hpp"
 
 namespace rat {
 
@@ -25,21 +27,23 @@ class World : public Module<Window, Assets>
 
 
     /* Types */
-    using SceneObject_t = rat::SceneObject;
+    using Object_t = rat::GameObject;
 	
-	template <typename TObjectSection>
-	using Container_t = std::vector<TObjectSection>;
+	template <typename TObjectType>
+	using Container_t = std::vector<TObjectType>; // @todo . There should be custom 
 	
 
 
     /* Variables */
 private:
-    Container_t<SceneObject_t> 	_sceneObjects; // @todo . trzeba zrobić własny container na to lepszy ;f
-	sf::RenderStates			_sceneRenderStates	= sf::RenderStates::Default;
-	//Container_t<BackgroundObject_t> _backObjects; // @todo .
-	//sf::RenderStates			_backRenderStates	= sf::RenderStates::Default;
-	//Container_t<ForegroundObject_t> _foreObjects; // @todo .
-	//sf::RenderStates			_foreRenderStates	= sf::RenderStates::Default;
+    std::vector<GameObjectType> objectTypes; // @todo , Use some better container; (std::list?)
+	
+	Container_t<Object_t>		sceneObjects;
+	sf::RenderStates			sceneRenderStates	= sf::RenderStates::Default;
+	//Container_t<Object_t>		backObjects; // @todo .
+	//sf::RenderStates			backRenderStates	= sf::RenderStates::Default;
+	//Container_t<Object_t>		foreObjects; // @todo .
+	//sf::RenderStates			foreRenderStates	= sf::RenderStates::Default;
 
 
 
@@ -67,8 +71,8 @@ public:
 	void update(float deltaTime);
 	void render();
 
-	// @todo wczytywanie/zapisywanie? 
-	// @todo ...
+	// @todo . load
+	// @todo . save
 };
 
 
