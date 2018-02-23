@@ -11,7 +11,6 @@ namespace rat
 {
 	class Music : public Module<Assets>
 	{ 
-		using MusicPointer_t = std::unique_ptr<sf::Music>;
 		using Container_t = std::vector<std::unique_ptr<Playlist>>;
 
 	public:
