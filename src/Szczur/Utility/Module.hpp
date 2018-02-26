@@ -15,13 +15,7 @@ public:
 
 	using Holder_t = const std::tuple<std::add_lvalue_reference_t<Ts>...>;
 
-	template <typename U>
-	static constexpr bool dependsOn();
-
-	static constexpr size_t dependenciesCount();
-
-	template <typename U>
-	Module(U&& tuple);
+	Module();
 
 	Module(const Module&) = default;
 
@@ -38,9 +32,15 @@ public:
 
 private:
 
+	template <typename U>
+	static constexpr bool _dependsOn();
+
 	Holder_t _modulesRefs;
 
 };
+
+template <typename T>
+inline T* modulePtr_v = nullptr;
 
 }
 

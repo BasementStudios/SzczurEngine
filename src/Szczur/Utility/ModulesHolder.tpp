@@ -11,7 +11,7 @@ template <typename... Ts>
 template <typename U, typename... Us>
 void ModulesHolder<Ts...>::initModule(Us&&... args)
 {
-	std::get<Held_t<U>>(_modules).init(_modules, std::forward<Us>(args)...);
+	std::get<Held_t<U>>(_modules).init(std::forward<Us>(args)...);
 }
 
 template <typename... Ts>

@@ -3,9 +3,14 @@
 namespace rat
 {
 
+Input::Input()
+{
+	LOG_INFO(this, " : Module Input constructed");
+}
+
 Input::~Input()
 {
-    LOG_DESTRUCTOR();
+    LOG_INFO(this, " : Module Input destructed");
 }
 
 void Input::processEvent(const sf::Event& event)

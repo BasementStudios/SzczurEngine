@@ -2,6 +2,7 @@
 
 #include <tuple>
 
+#include "Module.hpp"
 #include "LazyInitializer.hpp"
 
 namespace rat
@@ -21,7 +22,10 @@ public:
 
 	static constexpr size_t modulesCount();
 
-	ModulesHolder() = default;
+	ModulesHolder()
+	{
+		((modulePtr_v<Ts> = std::get<Held_t<Ts>>(_modules).getPtr()), ...);
+	}
 
 	ModulesHolder(const ModulesHolder&) = delete;
 

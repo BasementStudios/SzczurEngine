@@ -3,9 +3,15 @@
 namespace rat
 {
 
+Window::Window() :
+	_window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
+{
+	LOG_INFO(this, " : Module Window constructed");
+}
+
 Window::~Window()
 {
-    LOG_DESTRUCTOR();
+    LOG_INFO(this, " : Module Window destructed");
 }
 
 void Window::clear(const sf::Color& color)

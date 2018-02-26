@@ -13,8 +13,7 @@ public:
 
 	using Window_t = sf::RenderWindow;
 
-	template <typename Tuple>
-	Window(Tuple&& tuple);
+	Window();
 
 	~Window();
 
@@ -39,11 +38,7 @@ private:
 
 };
 
-template <typename Tuple>
-Window::Window(Tuple&& tuple) :
-	Module(tuple), _window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
-{
-	LOG_CONSTRUCTOR();
-}
+template <>
+inline Window* modulePtr_v<Window> = nullptr;
 
 }

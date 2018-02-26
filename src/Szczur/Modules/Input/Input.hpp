@@ -14,8 +14,7 @@ class Input : public Module<>
 {
 public:
 
-	template <typename Tuple>
-	Input(Tuple&& tuple);
+	Input();
 
 	Input(const Input&) = delete;
 
@@ -82,11 +81,7 @@ private:
 
 };
 
-template <typename Tuple>
-Input::Input(Tuple&& tuple) :
-	Module(tuple)
-{
-	LOG_CONSTRUCTOR();
-}
+template <>
+inline Input* modulePtr_v<Input> = nullptr;
 
 }

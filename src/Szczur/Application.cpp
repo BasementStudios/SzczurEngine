@@ -9,7 +9,6 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
-	_modules.initModule<Assets>();
 }
 
 void Application::input()
@@ -27,8 +26,6 @@ void Application::input()
 
 void Application::update()
 {
-	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-
 	_modules.getModule<Input>().finishLogic();
 }
 

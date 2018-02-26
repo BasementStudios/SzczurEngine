@@ -9,7 +9,6 @@
 #include <string_view>
 #include <type_traits>
 
-#include "DemangleType.hpp"
 #include "Szczur/CompilerPortability.hpp"
 
 namespace rat
@@ -49,7 +48,7 @@ private:
 
 };
 
-inline DebugLogger* logger;
+inline DebugLogger* logger = nullptr;
 
 }
 
@@ -57,8 +56,6 @@ inline DebugLogger* logger;
 
 #ifndef NDEBUG
 #   define INIT_LOGGER() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger
-#   define LOG_CONSTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", demangleType<std::remove_pointer_t<decltype(this)>>(), " constructed"); }
-#   define LOG_DESTRUCTOR() { rat::logger->log(__FILE__, __LINE__, "[CLASS] ", this, " : Object of class ", demangleType<std::remove_pointer_t<decltype(this)>>(), " destructed"); }
 #   define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
 #   define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
 #   define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
@@ -70,8 +67,6 @@ inline DebugLogger* logger;
 #   define LOG_ERROR_IF_CX(condition, ...) { if constexpr(condition) LOG_ERROR(__VA_ARGS__) }
 #else
 #   define INIT_LOGGER()
-#   define LOG_CONSTRUCTOR()
-#   define LOG_DESTRUCTOR()
 #   define LOG_INFO(...)
 #   define LOG_WARN(...)
 #   define LOG_ERROR(...)
