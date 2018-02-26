@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Szczur/Utility/Clock.hpp"
-#include "Szczur/Utility/ModulesHolder.hpp"
+#include "Szczur/Utility/Time/Clock.hpp"
+#include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 

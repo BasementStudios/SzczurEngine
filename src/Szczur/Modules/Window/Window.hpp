@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat
 {

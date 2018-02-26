@@ -3,7 +3,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "InputCode.hpp"
-#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat
 {
