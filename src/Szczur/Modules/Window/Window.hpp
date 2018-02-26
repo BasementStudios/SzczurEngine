@@ -38,7 +38,6 @@ private:
 
 };
 
-template <>
-inline Window* modulePtr_v<Window> = nullptr;
+REGISTER_MODULE(Window);
 
 }

@@ -81,7 +81,6 @@ private:
 
 };
 
-template <>
-inline Input* modulePtr_v<Input> = nullptr;
+REGISTER_MODULE(Input);
 
 }

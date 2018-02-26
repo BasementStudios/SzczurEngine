@@ -42,6 +42,8 @@ private:
 template <typename T>
 inline T* modulePtr_v = nullptr;
 
+#define REGISTER_MODULE(className) template <> inline className* modulePtr_v<className> = nullptr
+
 }
 
 #include "Module.tpp"
