@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+#include <SFML/System/Time.hpp>
+
 namespace rat
 {
 
@@ -38,6 +40,8 @@ public:
 	std::chrono::seconds::rep asSeconds() const;
 
 	std::chrono::duration<float>::rep asFSeconds() const;
+
+	sf::Time asSfTime() const;
 
 	bool operator == (const Time& time) const;
 

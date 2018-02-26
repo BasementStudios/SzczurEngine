@@ -33,6 +33,11 @@ std::chrono::duration<float>::rep Time::asFSeconds() const
 	return std::chrono::duration_cast<std::chrono::duration<float>>(_duration).count();
 }
 
+sf::Time Time::asSfTime() const
+{
+	return sf::seconds(asFSeconds());
+}
+
 bool Time::operator == (const Time& time) const
 {
 	return _duration == time._duration;
