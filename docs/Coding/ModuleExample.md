@@ -17,6 +17,8 @@ class YourModule : public Module<Dependencies...>
 {
     // code
 };
+
+}
 ```
 
 
@@ -49,9 +51,6 @@ _modules.initModule<ModuleName>(/* your ctor args */) // tworzenie modułu
 ```
 ```cpp
 _modules.getModule<ModuleName>() // w klasie Application
-```
-```cpp
-getModule<ModuleName>() // w środku innego modułu
 ```
 ```cpp
 getModule<ModuleName>() // w środku innego modułu
