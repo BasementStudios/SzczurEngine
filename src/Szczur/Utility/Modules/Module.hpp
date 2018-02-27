@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 #include "LazyInitializer.hpp"
 
 namespace rat
