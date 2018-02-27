@@ -13,6 +13,7 @@
 #define LOG_WARN_IF_CX(...)
 #define LOG_ERROR_IF_CX(...)
 #define ASSERT(...)
+#define IF_EDITOR if constexpr(false)
 
 #else
 
@@ -79,5 +80,6 @@ inline DebugLogger* logger = nullptr;
 #define LOG_INFO_IF_CX(condition, ...) { if constexpr(condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARN_IF_CX(condition, ...) { if constexpr(condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr(condition) LOG_ERROR(__VA_ARGS__) }
+#define IF_EDITOR if constexpr(true)
 
 #endif

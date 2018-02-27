@@ -9,5 +9,3 @@
 #else
 #	error No <imgui.h> and <imgui-SFML.h> headers are avaible
 #endif
-
-#define IF_EDITOR if constexpr(true)
