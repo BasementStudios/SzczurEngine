@@ -38,6 +38,4 @@ private:
 
 };
 
-REGISTER_MODULE(Window);
-
 }
