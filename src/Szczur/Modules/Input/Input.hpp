@@ -81,6 +81,4 @@ private:
 
 };
 
-REGISTER_MODULE(Input);
-
 }

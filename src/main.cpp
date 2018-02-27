@@ -1,6 +1,6 @@
 #include <SFML/System/Err.hpp>
 
-#include "Szczur/Debug/OnDebug.hpp"
+#include "Szczur/Debug.hpp"
 #include "Szczur/Application.hpp"
 
 int main()

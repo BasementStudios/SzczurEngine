@@ -1,7 +1,22 @@
 #pragma once
 
-#ifndef NDEBUG
+#if defined(NDEBUG)
 
+#define INIT_LOGGER()
+#define LOG_INFO(...)
+#define LOG_WARN(...)
+#define LOG_ERROR(...)
+#define LOG_INFO_IF(...)
+#define LOG_WARN_IF(...)
+#define LOG_ERROR_IF(...)
+#define LOG_INFO_IF_CX(...)
+#define LOG_WARN_IF_CX(...)
+#define LOG_ERROR_IF_CX(...)
+#define ASSERT(...)
+
+#else
+
+#include <cassert>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -13,6 +28,8 @@
 
 namespace rat
 {
+
+#define ASSERT(message, expr) assert(!message && (expr))
 
 class DebugLogger
 {
@@ -52,28 +69,15 @@ inline DebugLogger* logger = nullptr;
 
 }
 
-#endif
+#define INIT_LOGGER() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger
+#define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
+#define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
+#define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
+#define LOG_INFO_IF(condition, ...) { if(condition) LOG_INFO(__VA_ARGS__) }
+#define LOG_WARN_IF(condition, ...) { if(condition) LOG_WARN(__VA_ARGS__) }
+#define LOG_ERROR_IF(condition, ...) { if(condition) LOG_ERROR(__VA_ARGS__) }
+#define LOG_INFO_IF_CX(condition, ...) { if constexpr(condition) LOG_INFO(__VA_ARGS__) }
+#define LOG_WARN_IF_CX(condition, ...) { if constexpr(condition) LOG_WARN(__VA_ARGS__) }
+#define LOG_ERROR_IF_CX(condition, ...) { if constexpr(condition) LOG_ERROR(__VA_ARGS__) }
 
-#ifndef NDEBUG
-#   define INIT_LOGGER() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger
-#   define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
-#   define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
-#   define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
-#   define LOG_INFO_IF(condition, ...) { if(condition) LOG_INFO(__VA_ARGS__) }
-#   define LOG_WARN_IF(condition, ...) { if(condition) LOG_WARN(__VA_ARGS__) }
-#   define LOG_ERROR_IF(condition, ...) { if(condition) LOG_ERROR(__VA_ARGS__) }
-#   define LOG_INFO_IF_CX(condition, ...) { if constexpr(condition) LOG_INFO(__VA_ARGS__) }
-#   define LOG_WARN_IF_CX(condition, ...) { if constexpr(condition) LOG_WARN(__VA_ARGS__) }
-#   define LOG_ERROR_IF_CX(condition, ...) { if constexpr(condition) LOG_ERROR(__VA_ARGS__) }
-#else
-#   define INIT_LOGGER()
-#   define LOG_INFO(...)
-#   define LOG_WARN(...)
-#   define LOG_ERROR(...)
-#   define LOG_INFO_IF(...)
-#   define LOG_WARN_IF(...)
-#   define LOG_ERROR_IF(...)
-#   define LOG_INFO_IF_CX(...)
-#   define LOG_WARN_IF_CX(...)
-#   define LOG_ERROR_IF_CX(...)
 #endif

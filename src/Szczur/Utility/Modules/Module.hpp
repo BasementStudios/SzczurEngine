@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 #include "LazyInitializer.hpp"
 
 namespace rat
@@ -41,8 +41,6 @@ private:
 
 template <typename T>
 inline T* modulePtr_v = nullptr;
-
-#define REGISTER_MODULE(className) template <> inline className* modulePtr_v<className> = nullptr
 
 }
 
