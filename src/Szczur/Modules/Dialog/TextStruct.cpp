@@ -1,10 +1,10 @@
 #include "TextStruct.hpp"
 
 namespace rat {
-    TextStruct::TextStruct(size_t id, size_t voiceStart, size_t voiceLength, const std::string& speaker, const std::string& text) :
+    TextStruct::TextStruct(size_t id, size_t voiceStart, size_t voiceEnd, const std::string& speaker, const std::string& text) :
     _id(id),
     _voiceStart(voiceStart),
-    _voiceLength(voiceLength),
+    _voiceEnd(voiceEnd),
     _speaker(speaker),
     _text(text)
     {
@@ -24,6 +24,14 @@ namespace rat {
         return _id;
     }
 
+    void TextStruct::setMinorId(size_t minorId) {
+        _minorId = minorId;
+    }
+    
+    size_t TextStruct::getMinorId() const {
+        return _minorId;
+    }
+
     void TextStruct::setVoiceStart(size_t voiceStart) {
         _voiceStart = voiceStart;
     }
@@ -32,12 +40,12 @@ namespace rat {
         return _voiceStart;
     }
 
-    void TextStruct::setVoiceLength(size_t voiceLength) {
-        _voiceLength = voiceLength;
+    void TextStruct::setVoiceEnd(size_t voiceEnd) {
+        _voiceEnd = voiceEnd;
     }
     
-    size_t TextStruct::getVoiceLength() const {
-        return _voiceLength;
+    size_t TextStruct::getVoiceEnd() const {
+        return _voiceEnd;
     }
 
     void TextStruct::setSpeaker(const std::string& speaker) {

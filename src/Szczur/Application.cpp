@@ -1,6 +1,7 @@
 #include "Application.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 namespace rat
 {
@@ -18,7 +19,6 @@ void Application::init()
 void Application::input()
 {
 	sf::Event event;
-
 	while (getWindow().pollEvent(event)) {
 		_modules.getModule<Input>().processEvent(event);
 		_modules.getModule<GUI>().input(event);
@@ -32,9 +32,8 @@ void Application::input()
 void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asSeconds();
-
 	_modules.getModule<GUI>().update(deltaTime);
-	_modules.getModule<Dialog>().update();
+	_modules.getModule<Dialog>().update(deltaTime);
 
 	_modules.getModule<Input>().finish();
 }
