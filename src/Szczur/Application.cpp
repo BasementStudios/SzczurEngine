@@ -1,7 +1,6 @@
 #include "Application.hpp"
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
 
 namespace rat
 {
