@@ -37,21 +37,21 @@ namespace rat {
         options1->setRunners(1u);
         options1->addOption(
             "4",
-            NULL,
+            nullptr,
             4u,
-            [](){std::cout << "asdasdasd\n"; return false;}
+            [](){std::cout << "asdasdasd\n";}
         );
         options1->addOption(
             "3",
-            NULL,
+            nullptr,
             3u,
-            NULL
+            nullptr
         );
         options1->addOption(
             "2",
-            NULL,
+            nullptr,
             2u,
-            NULL
+            nullptr
         );
 
         
@@ -60,9 +60,9 @@ namespace rat {
         options2->setRunners(4u, 3u, 2u);
         options2->addOption(
             "Wezwanie",
-            NULL,
+            nullptr,
             1u,
-            NULL
+            nullptr
         );
 
         auto* mngr = load("data/dialog");

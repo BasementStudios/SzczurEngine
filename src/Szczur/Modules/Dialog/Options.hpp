@@ -12,14 +12,17 @@ namespace rat {
 
         using Key_t = size_t;
         using Runners_t = boost::container::flat_set<Key_t>;
-        using Callback_t = std::function<bool()>;
+        template<typename R>
+        using Callback_t = std::function<R()>;
+        using Condition_t = Callback_t<bool>;
+        using AfterAction_t = Callback_t<void>;
         using Options_t = std::vector<Option*>;
 
         struct Option {
             std::string name;
-            Callback_t condition;
+            Condition_t condition;
             Key_t target;
-            Callback_t afterAction;
+            AfterAction_t afterAction;
         };
 
         Options();
@@ -38,9 +41,9 @@ namespace rat {
 
         void addOption( 
             const std::string& name, 
-            Callback_t condition, 
+            Condition_t condition, 
             Key_t target, 
-            Callback_t afterAction
+            AfterAction_t afterAction
         );
 
         void forEach(std::function<void(Option*)> func);

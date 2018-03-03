@@ -29,7 +29,7 @@ namespace rat {
     void DialogGUI::interpretOptions(Options& options, std::function<void(size_t)> callback) {
         int i = 0;
         options.forEach([&i, this, callback](Options::Option* option){
-            if(option->condition == NULL || std::invoke(option->condition)) {
+            if(option->condition == nullptr || std::invoke(option->condition)) {
                 TextWidget* button = new TextWidget;
                 button->move({0.f, 50.f*i - 300.f});
                 button->setFont(_gui.getAsset<sf::Font>("data/consolab.ttf"));

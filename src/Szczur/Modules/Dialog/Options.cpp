@@ -10,7 +10,7 @@ namespace rat {
             delete it;
     }
 
-    void Options::addOption(const std::string& name, Callback_t condition, Key_t target, Callback_t afterAction) {
+    void Options::addOption(const std::string& name, Condition_t condition, Key_t target, AfterAction_t afterAction) {
         _options.push_back(new Option{name, condition, target, afterAction});
     }
 
