@@ -48,7 +48,7 @@ namespace rat
             void repeat();
             void next();
             const std::string chooseOption(int option);
-            int getOffsetOption(int option);
+            int getOptionOffset(int option);
             void addOption(int offset, int newOffset,  const std::string &fileName="");
 
             float getOffset();

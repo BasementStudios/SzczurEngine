@@ -73,20 +73,19 @@ namespace rat
             if(option<0||option>=_offsets.size())
                 return "";
 
-            if(_offsets[_currentOffsetID]._options[option]._file=="")
+            if(_offsets[_currentOffsetID]._options[option]._file==""){
                 setOffset(_offsets[_currentOffsetID]._options[option].offsetNumber);
-            else
+            }else{
                 return _offsets[_currentOffsetID]._options[option]._file;
-
+            }
 
             return "";
         }
 
-        int SoundBase::getOffsetOption(int option)
+        int SoundBase::getOptionOffset(int option)
         {
              if(option<0||option>=_offsets.size())
                 return 0;
-
             return _offsets[_currentOffsetID]._options[option].offsetNumber;
         }
 
@@ -94,7 +93,6 @@ namespace rat
         {
             if(offset<0||offset>_offsets.size())
                 return;
-
             _offsets[offset]._options.emplace_back();
             _offsets[offset]._options[_offsets[offset]._options.size()-1].offsetNumber=newOffset;
             _offsets[offset]._options[_offsets[offset]._options.size()-1]._file=fileName;
@@ -172,8 +170,7 @@ namespace rat
             if (_currentOffsetID>_offsets.size())
                 _currentOffsetID = 0;
 
-            if (getOffset()>=_offsets[_currentOffsetID].endTime)
-            {
+            if (getOffset()>=_offsets[_currentOffsetID].endTime){
                 sound.pause();
             }
             return sound.getStatus();
