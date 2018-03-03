@@ -1,5 +1,7 @@
 #include <SFML/Audio.hpp>
 
+#include <memory>
+
 #include "SoundBase.hpp"
 
 namespace rat
@@ -8,13 +10,14 @@ namespace rat
         {
         private:
 
-                std::vector<SoundBase> _sounds;
+                std::vector<std::shared_ptr<SoundBase>> _sounds;
                 float _volumeGame {100};
                 int _currentSoundID {0};
 
         public:
 
                 void newSound(const std::string &fileName);
+                void removeSound(const std::string &fileName);
 
                 int getSound(const std::string &fileName);
                 int getID(const std::string &fileName = "");
