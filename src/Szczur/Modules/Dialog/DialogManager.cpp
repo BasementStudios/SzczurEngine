@@ -80,6 +80,7 @@ namespace rat {
         _soundManager.addOffset((float)strct->getVoiceStart(), (float)strct->getVoiceEnd());
         _soundManager.setPlayingOffset((float)strct->getVoiceStart());
         _soundManager.play();
+        _dialogGUI.setText(strct->getText());
         return true;
     }
 }
