@@ -1,3 +1,6 @@
+namespace rat
+{
+
 namespace detail
 {
 
@@ -57,6 +60,59 @@ void utf8ToUnicode(InputIt begin, InputIt end, OutputIt dst)
 		}
 		++dst;
 	}
+}
+
+template <typename InputIt>
+size_t getUtf8BytesCount(InputIt begin, InputIt end)
+{
+    size_t n = 0;
+
+    while (begin != end) {
+        if ((~*begin & 0xFFFFFF80) == 0xFFFFFF80)
+            ++n;
+        else if ((~*begin & 0xFFFFF800) == 0xFFFFF800)
+            n += 2;
+        else if ((~*begin & 0xFFFF0000) == 0xFFFF0000)
+            n += 3;
+        else
+            n += 4;
+
+        ++begin;
+    }
+
+    return n;
+}
+
+template <typename InputIt, typename OutputIt>
+void unicodeToUtf8(InputIt begin, InputIt end, OutputIt dst)
+{
+    uint32_t aux;
+
+    while (begin != end) {
+        aux = *begin;
+        if ((~aux & 0xFFFFFF80) == 0xFFFFFF80) {
+            *dst = aux;
+        }
+        else if ((~aux & 0xFFFFF800) == 0xFFFFF800) {
+            *dst = ((aux & 0xFC0)   >>  6) | 0xC0; ++dst;
+            *dst =  (aux & 0x3F)           | 0x80;
+        }
+        else if ((~aux & 0xFFFF0000) == 0xFFFF0000) {
+            *dst = ((aux & 0x3F000) >> 12) | 0xE0; ++dst;
+            *dst = ((aux & 0xFC0)   >>  6) | 0x80; ++dst;
+            *dst =  (aux & 0x3F)           | 0x80;
+        }
+        else {
+            *dst = ((aux & 0xFC000) >> 18) | 0xF0; ++dst;
+            *dst = ((aux & 0x3F000) >> 12) | 0x80; ++dst;
+            *dst = ((aux & 0xFC0)   >>  6) | 0x80; ++dst;
+            *dst =  (aux & 0x3F)           | 0x80;
+        }
+
+        ++begin; ++dst;
+    }
+}
+
 }
 
 }

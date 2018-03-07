@@ -1,21 +1,11 @@
 #include "Unicode.hpp"
 
-sf::String getUnicodeString(const char* src)
+namespace rat
 {
-	std::basic_string<uint32_t> str;
-
-	auto len = std::strlen(src);
-
-	str.reserve(detail::getUnicodeBytesCount(src, src + len));
-
-	detail::utf8ToUnicode(src, src + len, std::back_inserter(str));
-
-	return str;
-}
 
 sf::String getUnicodeString(const std::string& src)
 {
-	std::basic_string<uint32_t> str;
+	std::basic_string<unsigned> str;
 
 	str.reserve(detail::getUnicodeBytesCount(src.begin(), src.end()));
 
@@ -24,13 +14,17 @@ sf::String getUnicodeString(const std::string& src)
 	return str;
 }
 
-sf::String getUnicodeString(std::string_view src)
+std::string getUtf8String(const sf::String& src)
 {
-	std::basic_string<uint32_t> str;
+	std::string str;
 
-	str.reserve(detail::getUnicodeBytesCount(src.begin(), src.end()));
+	str.reserve(detail::getUtf8BytesCount(src.begin(), src.end()));
 
-	detail::utf8ToUnicode(src.begin(), src.end(), std::back_inserter(str));
+	detail::unicodeToUtf8(src.begin(), src.end(), std::back_inserter(str));
 
 	return str;
+}
+
+
+
 }
