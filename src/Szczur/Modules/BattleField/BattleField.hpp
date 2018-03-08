@@ -10,17 +10,17 @@
 #include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 
 #include "Pawn.hpp"
 #include "Board.hpp"
 
 namespace rat
 {
-using namespace battle_field;
 
-struct BattleField : public Module<Canvas, Script, Input>
+struct BattleField : public Module<Canvas, Script, Input, Window>
 {
-	std::unique_ptr<Board> board;
+	std::unique_ptr<battle_field::Board> board;
 	
 	template <typename Tuple>
 	BattleField(Tuple&& tuple) :
@@ -31,11 +31,11 @@ struct BattleField : public Module<Canvas, Script, Input>
 		init();
 	}
 	
-	void setBoard(std::unique_ptr<Board> &newBoard) {
+	void setBoard(std::unique_ptr<battle_field::Board> &newBoard) {
 		board = std::move(newBoard);
 	}
 	
-	Board* getBoard() {
+	battle_field::Board* getBoard() {
 		return board.get();
 	}
 	
@@ -49,6 +49,7 @@ struct BattleField : public Module<Canvas, Script, Input>
 			// reset();
 			init();
 		}
+		if(board) board->update(getModule<Window>().getWindow());
 	}
 
 	void testInit() {
@@ -56,15 +57,17 @@ struct BattleField : public Module<Canvas, Script, Input>
 	}
 	
 	void init() {
-		getModule<Script>().scriptFile("../src/Szczur/Modules/BattleField/test.lua");
+		getModule<Script>().scriptFile("../src/Szczur/Modules/BattleField/Scripts/test.lua");
 		// sol::state& lua = getModule<Script>().get();
 		// lua.script_file("../src/Szczur/Modules/BattleField/test.lua");
 	}
 	
 	void initScript() {
-		auto module = getModule<Script>().newModule("BattleField");
-		SCRIPT_SET_MODULE(BattleField, setBoard, getBoard)
-		getModule<Script>().initClasses<
+		using namespace battle_field;
+		Script& script = getModule<Script>();
+		auto module = script.newModule("BattleField");
+		SCRIPT_SET_MODULE(BattleField, getBoard, setBoard)
+		script.initClasses<
 			Pawn, 
 			Board, 
 			Grid, 

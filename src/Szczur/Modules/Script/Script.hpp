@@ -53,7 +53,17 @@ public:
 	void makeStatter() {
 		_object.set("setStat", &T::setStat);
 		setProperty("stat", [](T& o)->T&{return o;}, &T::setStat);
-	}		
+	}
+	
+	void makeInstance() {
+		sol::state *_luap = &_lua;
+		_object.set("instance", [lp = _luap, n = _moduleName, c = _className](){
+			auto object = new T();
+			sol::function init = (*lp)[n][c]["_instance"];
+			if(init.valid()) init(object);
+			return std::unique_ptr<T>(object);
+		});
+	}
 	
 	void init() {		
 		_object.set("is", [](sol::object obj) {return obj.is<T*>() || obj.is<std::unique_ptr<T>>();});
@@ -66,11 +76,13 @@ public:
 
 class Script : public Module<Canvas>
 {
-private:
+private:	
 	
-	sol::state _lua;
+	sol::state _lua;	
 
 public:
+
+	inline static Script* _this;
 
 	template <typename Tuple>
 	Script(Tuple&& tuple);
@@ -111,9 +123,17 @@ public:
 		_lua.script_file(filePath);
 	}
 	
+	void script(const std::string& code) {
+		_lua.script(code);
+	}
+	
 	sol::state& get() {
 		return _lua;
 	}
+	
+	// void runFunction(const std::string& moduleName, const std::string& className, const std::string& functionName) {
+		// sol::function 
+	// }
 	
 	template <typename T, typename U, typename ...Ts>
 	void initClasses() {
@@ -147,6 +167,10 @@ public:
 		module.set_usertype(scriptClass.className, scriptClass.object);
 		if(scriptPath != "") _lua.script_file(scriptPath);
 	}	
+		
+	static Script& ref() {
+		return *_this;
+	}
 };
 
 template <typename Tuple>
@@ -155,6 +179,7 @@ Script::Script(Tuple&& tuple) :
 {
 	LOG_CONSTRUCTOR();
 	init();
+	if(!_this) _this = this;
 }
 }
 
@@ -167,8 +192,8 @@ Script::Script(Tuple&& tuple) :
 #define _OVR(macroName, number_of_args)   _OVR_EXPAND(macroName, number_of_args)
 #define _OVR_EXPAND(macroName, number_of_args)    macroName##number_of_args
 
-#define _COUNT_ARGS(...)  _ARG_PATTERN_MATCH(__VA_ARGS__, 9,8,7,6,5,4,3,2,1)
-#define _ARG_PATTERN_MATCH(_1,_2,_3,_4,_5,_6,_7,_8,_9, N, ...)   N
+#define _COUNT_ARGS(...)  _ARG_PATTERN_MATCH(__VA_ARGS__, 17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+#define _ARG_PATTERN_MATCH(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,_17, N, ...)   N
 	
 // MODULE : SCRIPT_SET_MODULE_BODY
 	
@@ -186,6 +211,14 @@ Script::Script(Tuple&& tuple) :
 #define SCRIPT_SET_MODULE_7(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_6(c, __VA_ARGS__)
 #define SCRIPT_SET_MODULE_8(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_7(c, __VA_ARGS__)
 #define SCRIPT_SET_MODULE_9(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_8(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_10(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_9(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_11(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_10(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_12(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_11(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_13(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_12c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_14(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_13(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_15(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_14(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_16(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_15(c, __VA_ARGS__)
+#define SCRIPT_SET_MODULE_17(c, f, ...) SCRIPT_SET_MODULE_BODY(c, f) SCRIPT_SET_MODULE_16(c, __VA_ARGS__)
 
 // MODULE : SCRIPT_NEW_MODULE
 
@@ -210,3 +243,11 @@ Script::Script(Tuple&& tuple) :
 #define SCRIPT_SET_CLASS_7(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_6(c, __VA_ARGS__)
 #define SCRIPT_SET_CLASS_8(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_7(c, __VA_ARGS__)
 #define SCRIPT_SET_CLASS_9(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_8(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_10(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_9(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_11(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_10(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_12(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_11(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_13(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_12(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_14(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_13(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_15(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_14(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_16(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_15(c, __VA_ARGS__)
+#define SCRIPT_SET_CLASS_17(c, m, ...) SCRIPT_SET_CLASS_BODY(c, m) SCRIPT_SET_CLASS_16(c, __VA_ARGS__)

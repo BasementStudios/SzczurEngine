@@ -35,6 +35,11 @@ struct Pawn
 		size.y = y;
 	}
 	
+	void setSize(const sf::Vector2f& vec) {
+		size.x = vec.x;
+		size.y = vec.y;
+	}
+	
 	virtual void render(Canvas& canvas) {
 		sf::RectangleShape shape;
 		shape.setSize(size);
@@ -45,33 +50,54 @@ struct Pawn
 		canvas.draw(Canvas::LayerID::Game, shape);
 	}
 	
-	static void initScript(Script& script) {	
+	static void initScript(Script& script) {
+		
 		auto object = script.newClass<Pawn>("Pawn", "BattleField");
-		SCRIPT_SET_CLASS(Pawn, setFillColor, setOutlineColor)
-		object.set("instance", [](){return std::unique_ptr<Pawn>(new Pawn());});		
+		
+		SCRIPT_SET_CLASS(Pawn, pos, setFillColor, setOutlineColor)
+		
+		object.makeInstance();
+		
 		object.init();
 	}
 };
 
-struct PawnPlayer : public Pawn {
-	
-	bool selected = true;
+struct PawnPlayer : public Pawn 
+{
+	bool selected = false;
 
 	void select(bool flag) {
 		selected = flag;
 	}
 	
 	void render(Canvas& canvas) {
-		fillColor.a = selected*255;
-		Pawn::render(canvas);
+		sf::Color temp = fillColor;
+		
+		if(selected) {
+			temp.r *= 1.5;
+			if(temp.r>255) temp.r = 255;
+			temp.g *= 1.5;
+			if(temp.g>255) temp.g = 255;
+			temp.b *= 1.5;
+			if(temp.b>255) temp.b = 255;
+		}
+
+		sf::RectangleShape shape;
+		shape.setSize(size);
+		shape.setPosition(pos);
+		shape.setFillColor(temp);
+		shape.setOutlineColor(outlineColor);
+		shape.setOutlineThickness(-4);
+		canvas.draw(Canvas::LayerID::Game, shape);
 	}
 	
 	static void initScript(Script& script) {	
 		auto object = script.newClass<PawnPlayer>("PawnPlayer", "BattleField");
-		// object.set(sol::base_classes, sol::bases<Pawn>());
 		SCRIPT_SET_CLASS(Pawn, setFillColor, setOutlineColor)
 		SCRIPT_SET_CLASS(PawnPlayer, select)
-		object.set("instance", [](){return std::unique_ptr<PawnPlayer>(new PawnPlayer());});
+		object.setProperty("selected", [](PawnPlayer &obj){return obj.selected;}, [](PawnPlayer &obj, bool value){obj.select(value);});
+		
+		object.makeInstance();
 		object.init();
 	}
 };

@@ -2,7 +2,7 @@
 	Class script: Pawn
 	Module: 	  BattleField
 	
-	[src]	
+	[src]
 	:setPosition(x,y)
 	:setSize(x,y)	
 	.instance()	
