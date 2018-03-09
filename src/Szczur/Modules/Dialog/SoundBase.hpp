@@ -66,6 +66,7 @@ namespace rat
             int getOffsetID();
             void addOffset(float beginT, float endT);
             void addCallback(float seconds, const std::function<void(void)>& cback);
+            void eraseCallbacks();
             bool soundEnd();
 
             float getPitch();

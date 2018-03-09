@@ -37,6 +37,7 @@ namespace rat
 
                 void setPlayingOffset(float seconds, const std::string &fileName = "");
                 void setCallback(float seconds, const std::function<void(void)>& func);
+                void eraseCallbacks();
                 void setOffsetID(int offset, const std::string &fileName = "");
 
                 float getOffset(const std::string &fileName = "");

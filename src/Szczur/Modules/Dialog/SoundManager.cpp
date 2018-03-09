@@ -109,6 +109,11 @@ namespace rat
                _sounds[_currentSoundID]->addCallback(seconds,cback);
         }
 
+        void SoundManager::eraseCallbacks()
+        {
+               _sounds[_currentSoundID]->eraseCallbacks();
+        }
+
         void SoundManager::setOffsetID(int offset,const std::string &fileName)
         {
             int i = getID(fileName);

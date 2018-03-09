@@ -129,6 +129,12 @@ namespace rat
             _callbacks.push_back(callback);
         }
 
+        void SoundBase::eraseCallbacks()
+        {
+            _callbacks.clear();
+            _currentCallback = 0;
+        }
+
         bool SoundBase::soundEnd()
         {
             if(getOffset()>=_length){
@@ -179,10 +185,10 @@ namespace rat
             if (_currentOffsetID>_offsets.size())
                 _currentOffsetID = 0;
 
-            if(_callbacks.size()>0&&_currentCallback<_callbacks.size()){
+            if(_callbacks.size() > 0 && _currentCallback < _callbacks.size()){
 
                 if((int)getOffset()==(int)_callbacks[_currentCallback].time){
-                        _callbacks[_currentCallback].cback();
+                        std::invoke(_callbacks[_currentCallback].cback);
                         _currentCallback++;
                     }
             }
@@ -191,6 +197,7 @@ namespace rat
             {
                 sound.pause();
             }
+            
             return sound.getStatus();
         }
 
