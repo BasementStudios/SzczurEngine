@@ -1,6 +1,9 @@
 #include <string>
+#include <iostream>
 
 #include <SFML/Audio.hpp>
+
+#include <functional>
 
 namespace rat
 {
@@ -22,16 +25,24 @@ namespace rat
 
             };
 
+            struct callback
+            {
+                float time;
+                std::function<void(void)> cback;
+            };
+
             float _volume {100};
             float _pitch;
             float  _offset {0};
             int _length;
             unsigned int _currentOffsetID {0};
+            unsigned int _currentCallback {0};
             std::string _name;
             sf::SoundBuffer buffer;
             sf::Sound sound;
 
             std::vector<offset> _offsets;
+            std::vector<callback> _callbacks;
 
         public:
 
@@ -54,6 +65,7 @@ namespace rat
             float getOffset();
             int getOffsetID();
             void addOffset(float beginT, float endT);
+            void addCallback(float seconds, const std::function<void(void)>& cback);
             bool soundEnd();
 
             float getPitch();

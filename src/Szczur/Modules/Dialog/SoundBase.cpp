@@ -120,6 +120,15 @@ namespace rat
             _offsets.push_back(offset);
         }
 
+        void SoundBase::addCallback(float seconds, const std::function<void(void)>& cback)
+        {
+            callback callback;
+            callback.time=seconds;
+            callback.cback=cback;
+
+            _callbacks.push_back(callback);
+        }
+
         bool SoundBase::soundEnd()
         {
             if(getOffset()>=_length){
@@ -170,7 +179,16 @@ namespace rat
             if (_currentOffsetID>_offsets.size())
                 _currentOffsetID = 0;
 
-            if (getOffset()>=_offsets[_currentOffsetID].endTime){
+            if(_callbacks.size()>0&&_currentCallback<_callbacks.size()){
+
+                if((int)getOffset()==(int)_callbacks[_currentCallback].time){
+                        _callbacks[_currentCallback].cback();
+                        _currentCallback++;
+                    }
+            }
+
+            if (getOffset()>=_offsets[_currentOffsetID].endTime)
+            {
                 sound.pause();
             }
             return sound.getStatus();
@@ -184,6 +202,7 @@ namespace rat
                 _offset = _offsets[offset].beginTime;
 
                 _currentOffsetID = offset;
+                _currentCallback = 0;
                 sound.stop();
         }
 
