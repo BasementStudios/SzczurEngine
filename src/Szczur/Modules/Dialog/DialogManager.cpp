@@ -30,11 +30,6 @@ namespace rat {
                             _dialogGUI.interpretOptions(*it, [this](size_t id){
                                 _current = id;
                                 return play();
-                                /*
-                                Problemem jest czyszczenie kontenera widgetów, w czasie 
-                                kiedy wątek obsluguje jeden widget i wywołuje callback 
-                                onRelease. Callback onRelease czyści
-                                */
                             });
                             break;
                         }
@@ -53,34 +48,47 @@ namespace rat {
         _soundManager.changeSound(path);
     }
 
-    void DialogManager::play(size_t id) {
-        _textManager.set(id);
-        auto* strct = _textManager.getStruct();
-        _soundManager.addOffset((float)strct->getVoiceStart(), (float)strct->getVoiceEnd());
-        _soundManager.setPlayingOffset((float)strct->getVoiceStart());
-        _soundManager.play();
-        _dialogGUI.setText( strct->getText() );
-        _clearButtons = true;
+    void DialogManager::startWith(size_t id) {
+        _current = id;
     }
-
+    
     void DialogManager::play() {
         _paused = false;
         return play(_current);
     }
 
-    void DialogManager::startWith(size_t id) {
-        _current = id;
+    void DialogManager::play(size_t id) {
+        _textManager.set(id);
+        _changeStruct(_textManager.getStruct());
+        _clearButtons = true;
     }
+
 
     bool DialogManager::_nextMinor() {
         _textManager.nextMinor();
         if(_textManager.isMinorFinished())
             return false;
-        auto* strct = _textManager.getStruct();
-        _soundManager.addOffset((float)strct->getVoiceStart(), (float)strct->getVoiceEnd());
-        _soundManager.setPlayingOffset((float)strct->getVoiceStart());
-        _soundManager.play();
-        _dialogGUI.setText(strct->getText());
+        _changeStruct(_textManager.getStruct());
         return true;
+    }
+
+    void DialogManager::_changeStruct(TextStruct* strct) {
+        _soundManager.eraseCallbacks();
+        _soundManager.addOffset(
+            static_cast<float>(strct->getVoiceStart()), 
+            static_cast<float>(strct->getVoiceEnd())
+        );
+        _soundManager.setPlayingOffset((float)strct->getVoiceStart());
+        strct->forEach([this](TextStruct::Texts_t::iterator it){
+            _soundManager.setCallback( 
+                static_cast<float>(it->first),
+                [this, it](){
+                    _dialogGUI.setText(it->second.second);
+                }
+            );
+        });
+
+        _soundManager.play();
+        
     }
 }

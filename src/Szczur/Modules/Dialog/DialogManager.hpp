@@ -27,6 +27,8 @@ namespace rat {
         void play(size_t id);
         void play();
 
+        
+
         template<typename... Ts>
         void addOptions(Ts*... options) {
             (_options.push_back(options), ...);
@@ -46,5 +48,7 @@ namespace rat {
         bool _clearButtons;
 
         bool _nextMinor();
+
+        void _changeStruct(TextStruct* strct);
     };
 }

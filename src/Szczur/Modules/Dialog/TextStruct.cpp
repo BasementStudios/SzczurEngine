@@ -1,12 +1,14 @@
 #include "TextStruct.hpp"
+#include <sstream>
+#include <iostream>
+#include <regex>
 
 namespace rat {
-    TextStruct::TextStruct(size_t id, size_t voiceStart, size_t voiceEnd, const std::string& speaker, const std::string& text) :
+    TextStruct::TextStruct(size_t id, size_t minorId, size_t voiceStart, size_t voiceEnd) :
     _id(id),
+    _minorId(minorId),
     _voiceStart(voiceStart),
-    _voiceEnd(voiceEnd),
-    _speaker(speaker),
-    _text(text)
+    _voiceEnd(voiceEnd)
     {
 
     }
@@ -47,20 +49,23 @@ namespace rat {
     size_t TextStruct::getVoiceEnd() const {
         return _voiceEnd;
     }
+    void TextStruct::interpretText(const std::string& text) {
+        using namespace std::string_literals;
+        std::stringstream stream;
+        stream << text;
+        std::string temp;
+        std::regex word_regex( R"([\s]*\[(\d+)\:(\d+)\][\s]*\[(\w+)\]([\w\s\?\!\.\,]+))"s);
+        while(std::getline(stream, temp)) {
+            for(auto it = std::sregex_iterator(temp.begin(), temp.end(), word_regex); it!=std::sregex_iterator(); ++it) {
+                _texts[static_cast<Key_t>(std::stoi(it->str(1))*60+std::stoi(it->str(2)))] = 
+                    {std::make_pair(it->str(3), it->str(4))};
+            }
+        }
+    }
 
-    void TextStruct::setSpeaker(const std::string& speaker) {
-        _speaker = speaker;
-    }
-    
-    const std::string& TextStruct::getSpeaker() const {
-        return _speaker;
+    void TextStruct::forEach(std::function<void(Texts_t::iterator)> func) {
+        for(auto it = _texts.begin(); it != _texts.end(); ++it)
+            std::invoke(func, it);
     }
 
-    void TextStruct::setText(const std::string& text) {
-        _text = text;
-    }
-    
-    const std::string& TextStruct::getText() const {
-        return _text;
-    }
 }

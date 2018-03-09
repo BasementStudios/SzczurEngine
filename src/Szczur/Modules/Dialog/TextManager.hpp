@@ -26,9 +26,8 @@ namespace rat {
         void set(const Key_t key);
         void next();
 
-        const std::string& setMinor(const Key_t key);
-        const std::string& nextMinor();
-        const std::string& getText() const;
+        void setMinor(const Key_t key);
+        void nextMinor();
         Type_t* getStruct() const;
 
         bool isMinorFinished();

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <regex>
 #include <memory>
+#include "Szczur/Debug/Logger.hpp"
 
 namespace rat {
     TextManager::TextManager() :
@@ -26,45 +27,22 @@ namespace rat {
         std::ifstream file(path);
         std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         file.close();
-        std::regex word_regex( R"(\d+|[^\[\]\d\:\-\n]+)"s);
-        int i = 0;
-        size_t id = 0u;
-        size_t minor = 0u;
-        std::unique_ptr<TextStruct> ptr = std::make_unique<TextStruct>();
+        //  \[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\{\n?([\d\D][^\}]+)
+        std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\{\n?([\d\D][^\}]+))"s);
         for(auto it = std::sregex_iterator(str.begin(), str.end(), word_regex); it!=std::sregex_iterator(); ++it) {
-            switch(i) {
-                case 0:
-                    id=std::stoi(it->str());
-                    ptr->setId(id);
-                break;
-                case 1:
-                    minor = std::stoi(it->str());
-                    ptr->setMinorId(minor);
-                break;
-                case 2:
-                    ptr->setVoiceStart(std::stoi(it->str()));
-                break;
-                case 3:
-                    ptr->setVoiceStart(60u*ptr->getVoiceStart() + std::stoi(it->str()));
-                break;
-                case 4:
-                    ptr->setVoiceEnd(std::stoi(it->str()));
-                break;
-                case 5:
-                    ptr->setVoiceEnd(60u*ptr->getVoiceEnd() + std::stoi(it->str()));
-                break;
-                case 6:
-                    ptr->setSpeaker(it->str());
-                break;
-                case 7:
-                    ptr->setText(it->str());
-                    add(id, minor, ptr.release());
-                    ptr = std::make_unique<TextStruct>();
-                break;
-            }
-            i++;
-            if(i>=8)
-                i = 0;
+            Type_t* obj = new Type_t;
+            obj->setId( std::stoi(it->str(1u)) );
+            obj->setMinorId( std::stoi(it->str(2u)) );
+
+            obj->setVoiceStart( std::stoi(it->str(3u)) * 60 );
+            obj->setVoiceStart( std::stoi(it->str(4u)) + obj->getVoiceStart() );
+
+            obj->setVoiceEnd( std::stoi(it->str(5u)) * 60 );
+            obj->setVoiceEnd( std::stoi(it->str(6u)) + obj->getVoiceEnd() );
+
+            obj->interpretText(it->str(7u));
+
+            add(obj->getId(), obj->getMinorId(), obj);
         }
     }
 
@@ -99,23 +77,18 @@ namespace rat {
         _finishedMinor = false;
     }
 
-    const std::string& TextManager::setMinor(const Key_t key) {
+    void TextManager::setMinor(const Key_t key) {
         _minorCurrent = _current->second.find(key);
         _finishedMinor = false;
     }
 
-    const std::string& TextManager::nextMinor() {
+    void TextManager::nextMinor() {
         auto temp = _minorCurrent;
         ++_minorCurrent;
         if(_minorCurrent == _current->second.end()) {
             _finishedMinor = true;
             _minorCurrent = _current->second.begin();
         }
-        return temp->second->getText();
-    }
-
-    const std::string& TextManager::getText() const {
-        return _minorCurrent->second->getText();
     }
 
     TextManager::Type_t* TextManager::getStruct() const {
