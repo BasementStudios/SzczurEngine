@@ -65,7 +65,28 @@ Folder - z `/`, plik bez. Dla opisu informacji zawartych w plikach konfiguracyjn
 
 ```
 Objects/*
-	LeverBehindInARoom/
+	Lever01/					; Przykład obiektu typu Sprite (obrazek).
+		texture.png				; ! Tekstura z klatkami dla poszczególnych stanów
+		object.json				; ! Plik z informacjami o obiekcie
+			- states {}			; ! Tablica opisująca klatki dla poszczególnych stanów
+				- Up {}			; ! Każdy stan ma swoją nazwę tekstową.
+								;	Musi istnieć conajmniej jeden stan dla każdego obiektu.
+					- oX		; Punkt pochodzenia - wskzany punkt jest miejscem względem 
+					- oY		;   klatki, od którego jest uznawany środek obiektu dla dla gry.
+								; 	Jeśli nieokreślone - używane {0, 0}.
+					- lX		; Długości w odpowiednich osiach obiektu (wymusza rozmiar).
+					- lY		;	Jeśli nieokreślone - wyliczane przez wymiary tekstury.
+								;   zakładając, że klatki stanów są rozmieszone po wysokości.
+					- pX		; Pozycja klatki na teksturze. 
+					- pY		;   Jeśli nieokreślone - wyliczane przez wymiary tekstury.
+								;
+				- Down {}
+					- || - 		; Podobnie jak wyżej ;)
+	
+	Grass01/					; Przykład obiektu typu AnimatedSprite (animowany obrazek).
+		; todo ;f
+
+	Guard01/					; Przykład obiektu typu Armature (animacja szkieletowa).
 		skeleton.json			; Informacje o animacji szkieletowej.
 		texture.json			; Informacje o teksturach dla animacji (szkieletowej wg. schematu z DB lub dla sprite:
 			- states {} 		; ! Tablica stanów, klucze np. `moving_left`, `idle`...

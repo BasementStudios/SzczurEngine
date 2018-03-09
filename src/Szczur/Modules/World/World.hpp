@@ -6,45 +6,32 @@
  **/
 
 #include <vector>
-#include <list>
 
 #include "Szczur/Utility/Module.hpp"
 #include "Szczur/Debug/Logger.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Assets/Assets.hpp"
-#include "GameObject.hpp"
-#include "GameObjectType.hpp"
+#include "ObjectType.hpp"
+#include "Map.hpp"
 
 namespace rat {
 
 /** @class World
- ** @description Manages objects in the game world.
+ ** @description Manages objects in the game world through the maps system, including loading and saving, object types management and other.
  **/
 class World : public Module<Window, Assets>
 {
     using Module::Module;
-    
 
 
-    /* Types */
-    using Object_t = rat::GameObject;
 	
-	template <typename TObjectType>
-	using Container_t = std::vector<TObjectType>; // @todo . There should be custom 
-	
-
-
     /* Variables */
 private:
-    std::vector<GameObjectType> objectTypes; // @todo , Use some better container; (std::list?)
+    std::vector<ObjectType*> types; // @todo , Use some better container; (std::list?)
 	
-	Container_t<Object_t>		sceneObjects;
-	sf::RenderStates			sceneRenderStates	= sf::RenderStates::Default;
-	//Container_t<Object_t>		backObjects; // @todo .
-	//sf::RenderStates			backRenderStates	= sf::RenderStates::Default;
-	//Container_t<Object_t>		foreObjects; // @todo .
-	//sf::RenderStates			foreRenderStates	= sf::RenderStates::Default;
-
+	std::vector<Map>	maps;
+	Map* 				currentMap;
+	
 
 
 	/* Operators */
