@@ -97,8 +97,8 @@ public:
 	void clear(const sf::Color& color = sf::Color::Transparent);
 
 	/// Drawing
-	void draw(const sf::Drawable& drawable, const sf::RenderStates& states);
-	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states);
+	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
+	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 };
 
 
