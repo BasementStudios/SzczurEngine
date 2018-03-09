@@ -104,6 +104,11 @@ namespace rat
             _sounds[i]->setPlayingOffset(seconds);
         }
 
+        void SoundManager::setCallback(float seconds, const std::function<void(void)>& cback)
+        {
+               _sounds[_currentSoundID]->addCallback(seconds,cback);
+        }
+
         void SoundManager::setOffsetID(int offset,const std::string &fileName)
         {
             int i = getID(fileName);
