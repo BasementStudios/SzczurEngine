@@ -67,6 +67,8 @@ private:
 
 inline DebugLogger* logger = nullptr;
 
+#include "NotoMono.ttf.bin"
+
 }
 
 }
