@@ -12,9 +12,9 @@ void Application::init()
 
 	IF_EDITOR {
 		ImGui::CreateContext();
-        static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
-        ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
-        ImGui::SFML::Init(getWindow());
+		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
+		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
+		ImGui::SFML::Init(getWindow());
 	}
 }
 
