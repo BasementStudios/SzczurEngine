@@ -18,7 +18,7 @@ void Application::input()
 	while (getWindow().pollEvent(event)) {
 		_modules.getModule<Input>().getManager().processEvent(event);
 
-		if (event.type == sf::Event::Closed || _modules.getModule<Input>().getManager().isPressed(Keyboard::Escape)) { // @warn delete in final product
+		if (event.type == sf::Event::Closed) {
 			getWindow().close();
 		}
 	}
