@@ -35,33 +35,33 @@ class DebugLogger
 {
 public:
 
-    template <typename... Ts>
-    void log(const char* file, int line, Ts&&... args)
-    {
-        _formatTime("%H:%M:%S");
+	template <typename... Ts>
+	void log(const char* file, int line, Ts&&... args)
+	{
+		_formatTime("%H:%M:%S");
 
-        std::string_view view = file;
-        view = view.substr(view.find_last_of(DIRECTORY_SEPARATOR_CHAR) + 1);
+		std::string_view view = file;
+		view = view.substr(view.find_last_of(DIRECTORY_SEPARATOR_CHAR) + 1);
 
-        _logFile.open(_logFilePath, std::ios::app);
-        _logFile << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;
-        _logFile.close();
+		_logFile.open(_logFilePath, std::ios::app);
+		_logFile << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;
+		_logFile.close();
 
-        std::cerr << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n' << std::flush;
-    }
+		std::cerr << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n' << std::flush;
+	}
 
 private:
 
-    void _formatTime(const char* format)
-    {
-        std::time_t tm = std::time(nullptr);
+	void _formatTime(const char* format)
+	{
+		std::time_t tm = std::time(nullptr);
 
-        std::strftime(_buffer, sizeof(_buffer), format, std::localtime(&tm));
-    }
+		std::strftime(_buffer, sizeof(_buffer), format, std::localtime(&tm));
+	}
 
-    char _buffer[64];
-    std::string _logFilePath = "Logs/" + std::to_string(std::time(nullptr)) + ".log";
-    std::ofstream _logFile;
+	char _buffer[64];
+	std::string _logFilePath = "Logs/" + std::to_string(std::time(nullptr)) + ".log";
+	std::ofstream _logFile;
 
 };
 
