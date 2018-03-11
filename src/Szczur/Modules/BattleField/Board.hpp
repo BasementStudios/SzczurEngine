@@ -10,6 +10,7 @@
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "Pawn.hpp"
+#include "PawnPlayer.hpp"
 #include "Grid.hpp"
 
 namespace rat { namespace battle_field

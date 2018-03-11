@@ -8,8 +8,9 @@
 
 int main()
 {
+	// TURN OFF too many logs
     std::cerr.rdbuf(nullptr);
-	//sf::err().rdbuf(nullptr);
+	
 	INIT_LOGGER();
 
 	rat::Application app;

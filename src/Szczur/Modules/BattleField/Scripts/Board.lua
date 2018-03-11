@@ -1,11 +1,8 @@
 --[[ 
 	Script:	Battle gui
 	
-	Key words:
-	stat
-	init
-	instance
-	
+	stat: pos, cellSize, size
+	makeInstance: true
 --]]
 
 local Board = BattleField.Board

@@ -28,7 +28,7 @@ struct BattleField : public Module<Canvas, Script, Input, Window>
 	{
 		LOG_CONSTRUCTOR();
 		initScript();
-		init();
+		reset();
 	}
 	
 	void setBoard(std::unique_ptr<battle_field::Board> &newBoard) {
@@ -45,21 +45,12 @@ struct BattleField : public Module<Canvas, Script, Input, Window>
 
 	void update() {
 		auto& input = getModule<Input>();
-		if(input.isPressed(Keyboard::Space)) {
-			// reset();
-			init();
-		}
+		if(input.isPressed(Keyboard::Space)) reset();
 		if(board) board->update(getModule<Window>().getWindow());
 	}
-
-	void testInit() {
 	
-	}
-	
-	void init() {
+	void reset() {
 		getModule<Script>().scriptFile("../src/Szczur/Modules/BattleField/Scripts/test.lua");
-		// sol::state& lua = getModule<Script>().get();
-		// lua.script_file("../src/Szczur/Modules/BattleField/test.lua");
 	}
 	
 	void initScript() {

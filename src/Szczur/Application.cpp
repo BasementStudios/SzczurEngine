@@ -12,10 +12,10 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 	_modules.initModule<Script>();
+	
+	// For testing `Script`
 	_modules.initModule<BattleField>();
 	
-	// std::cout<<'\n'<<std::flush;
-	_modules.getModule<BattleField>().testInit();
 	std::cout.flush();
 }
 
@@ -48,8 +48,7 @@ void Application::render()
 	_modules.getModule<Window>().clear();
 	_modules.getModule<Canvas>().clear();	
 	
-	// Tests
-	_modules.getModule<Script>().render();
+	// For testing `Script`
 	_modules.getModule<BattleField>().render();
 	
 	_modules.getModule<Canvas>().render();
