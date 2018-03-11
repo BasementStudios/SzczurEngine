@@ -22,6 +22,7 @@
 #include <iostream>
 #include <iomanip>
 #include <map>
+#include <string>
 #include <string_view>
 
 #include "Szczur/CompilerPortability.hpp"
