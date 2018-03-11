@@ -4,7 +4,7 @@
 
 #include <sol.hpp>
 
-#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 
 #include "Szczur/Modules/Script/ScriptClass.hpp"
 
@@ -111,16 +111,20 @@ public:
 	static Script& ref() {
 		return *_this;
 	}
+	
+	Script()
+	{
+		LOG_INFO(this, " : Module Script constructed");
+		init();
+		if(!_this) _this = this;
+	}
+	
+	~Script()
+	{
+		LOG_INFO(this, " : Module Script destructed");
+	}
 };
 
-template <typename Tuple>
-Script::Script(Tuple&& tuple) :
-	Module(tuple)
-{
-	LOG_CONSTRUCTOR();
-	init();
-	if(!_this) _this = this;
-}
 }
 
 

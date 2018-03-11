@@ -6,7 +6,6 @@
 
 #include <sol.hpp>
 
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "Pawn.hpp"
@@ -35,7 +34,7 @@ struct Board
 		script(Script::ref()) { 
 	}
 	
-	void render(Canvas& canvas) {
+	void render(sf::RenderTexture& canvas) {
 		grid.render(canvas);
 		for(auto& obj : pawns) {
 			obj->render(canvas);

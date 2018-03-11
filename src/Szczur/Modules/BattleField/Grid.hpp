@@ -4,7 +4,6 @@
 
 #include <sol.hpp>
 
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat { namespace battle_field
@@ -61,7 +60,7 @@ public:
 		return selectedCell.x != -1 && selectedCell.y != -1;
 	}
 	
-	void render(Canvas& canvas) {
+	void render(sf::RenderTexture& canvas) {
 		sf::RectangleShape shape;
 		shape.setSize(cellSize);
 		shape.setOutlineThickness(-4);
@@ -70,13 +69,13 @@ public:
 		
 		for(auto& pos : cells) {
 			shape.setPosition(pos);
-			canvas.draw(Canvas::LayerID::Game, shape);
+			canvas.draw(shape);
 		}
 		
 		if(selected()) {			
 			shape.setFillColor(selectColor);
 			shape.setPosition(cells[selectedCell.x + selectedCell.y*size.x]);
-			canvas.draw(Canvas::LayerID::Game, shape);
+			canvas.draw(shape);
 		}
 	}
 	

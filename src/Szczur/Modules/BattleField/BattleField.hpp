@@ -7,7 +7,6 @@
 
 #include <sol.hpp>
 
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
@@ -18,17 +17,24 @@
 namespace rat
 {
 
-struct BattleField : public Module<Canvas, Script, Input, Window>
+struct BattleField : public Module<Script, Input, Window>
 {
 	std::unique_ptr<battle_field::Board> board;
 	
-	template <typename Tuple>
-	BattleField(Tuple&& tuple) :
-		Module(tuple)
+	sf::RenderTexture canvas;
+	
+	BattleField()
 	{
-		LOG_CONSTRUCTOR();
+		LOG_INFO(this, " : Module BattleField constructed");
 		initScript();
+		auto& window = getModule<Window>().getWindow();
+		canvas.create(window.getSize().x, window.getSize().y);
 		reset();
+	}
+	
+	~BattleField()
+	{
+		LOG_INFO(this, " : Module BattleField destructed");
 	}
 	
 	void setBoard(std::unique_ptr<battle_field::Board> &newBoard) {
@@ -40,11 +46,14 @@ struct BattleField : public Module<Canvas, Script, Input, Window>
 	}
 	
 	void render() {
-		if(board) board->render(getModule<Canvas>());
+		canvas.clear();
+		if(board) board->render(canvas);
+		canvas.display();
+		getModule<Window>().getWindow().draw(sf::Sprite(canvas.getTexture()));
 	}
 
 	void update() {
-		auto& input = getModule<Input>();
+		auto& input = getModule<Input>().getManager();
 		if(input.isPressed(Keyboard::Space)) reset();
 		if(board) board->update(getModule<Window>().getWindow());
 	}

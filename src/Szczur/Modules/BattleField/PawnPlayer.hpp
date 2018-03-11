@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat { namespace battle_field
@@ -16,7 +15,7 @@ struct PawnPlayer : public Pawn
 		selected = flag;
 	}
 	
-	void render(Canvas& canvas) {
+	void render(sf::RenderTexture& canvas) {
 		sf::Color temp = fillColor;
 		
 		if(selected) {
@@ -34,7 +33,7 @@ struct PawnPlayer : public Pawn
 		shape.setFillColor(temp);
 		shape.setOutlineColor(outlineColor);
 		shape.setOutlineThickness(-4);
-		canvas.draw(Canvas::LayerID::Game, shape);
+		canvas.draw(shape);
 	}
 	
 	static void initScript(Script& script) {	

@@ -4,7 +4,6 @@
 
 #include <sol.hpp>
 
-#include "Szczur/Modules/Canvas/Canvas.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat { namespace battle_field
@@ -40,14 +39,14 @@ struct Pawn
 		size.y = vec.y;
 	}
 	
-	virtual void render(Canvas& canvas) {
+	virtual void render(sf::RenderTexture& canvas) {
 		sf::RectangleShape shape;
 		shape.setSize(size);
 		shape.setPosition(pos);
 		shape.setFillColor(fillColor);
 		shape.setOutlineColor(outlineColor);
 		shape.setOutlineThickness(-4);
-		canvas.draw(Canvas::LayerID::Game, shape);
+		canvas.draw(shape);
 	}
 	
 	static void initScript(Script& script) {
