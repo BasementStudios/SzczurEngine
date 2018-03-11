@@ -44,6 +44,16 @@ void Application::update()
 {
 	IF_EDITOR {
 		ImGui::ShowDemoWindow();
+
+		detail::setVar("time", _mainClock.getElapsedTime().asFSeconds());
+
+		ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
+		ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+		ImGui::Text("%.1f time", detail::getVar<float>("time"));
+		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+		// magic
+		ImGui::End();
 	}
 
 	_modules.getModule<Input>().getManager().finishLogic();
@@ -51,7 +61,7 @@ void Application::update()
 
 void Application::render()
 {
-	_modules.getModule<Window>().clear();
+	_modules.getModule<Window>().clear(sf::Color{ 64, 96, 64 });
 
 	IF_EDITOR {
 		getWindow().resetGLStates();
