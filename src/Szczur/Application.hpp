@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Szczur/Utility/Clock.hpp"
-#include "Szczur/Utility/ModulesHolder.hpp"
-#include "Szczur/Modules/Assets/Assets.hpp"
-#include "Szczur/Modules/Canvas/Canvas.hpp"
+#include "Szczur/Utility/Time/Clock.hpp"
+#include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -19,9 +17,11 @@ public:
 	Application() = default;
 
 	Application(const Application&) = delete;
+
 	Application& operator = (const Application&) = delete;
 
 	Application(Application&&) = delete;
+
 	Application& operator = (Application&&) = delete;
 
 	int run();
@@ -39,7 +39,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Canvas, Input, Assets, Script, BattleField> _modules;
+	ModulesHolder<Window, Input> _modules;
 	Clock _mainClock;
 
 };

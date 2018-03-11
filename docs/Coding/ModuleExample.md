@@ -15,17 +15,8 @@ namespace rat
 
 class YourModule : public Module<Dependencies...>
 {
-public:
-
-    template <typename Tuple>
-    YourModule(Tuple&& tuple, /* your ctor args */);
-
+    // code
 };
-
-template <typename Tuple>
-YourModule::YourModule(Tuple&& tuple, /* your ctor args */) :
-    Module(tuple), /* your ctor initializer list */
-{
 
 }
 ```
@@ -63,6 +54,9 @@ _modules.getModule<ModuleName>() // w klasie Application
 ```
 ```cpp
 getModule<ModuleName>() // w środku innego modułu
+```
+```cpp
+modulePtr_v<ModuleName> // tylko w celach TESTÓW!
 ```
 
 

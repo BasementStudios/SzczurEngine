@@ -8,7 +8,6 @@ namespace rat
 void Application::init()
 {
 	_modules.initModule<Window>();
-	_modules.initModule<Canvas>();
 	_modules.initModule<Input>();
 	_modules.initModule<Assets>();
 	_modules.initModule<Script>();
@@ -24,9 +23,9 @@ void Application::input()
 	sf::Event event;
 
 	while (getWindow().pollEvent(event)) {
-		_modules.getModule<Input>().processEvent(event);
+		_modules.getModule<Input>().getManager().processEvent(event);
 
-		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // @warn delete in final product
+		if (event.type == sf::Event::Closed) {
 			getWindow().close();
 		}
 	}
@@ -34,24 +33,15 @@ void Application::input()
 
 void Application::update()
 {
-	auto deltaTime = _mainClock.restart().asFSeconds();
-
+	_modules.getModule<Input>().getManager().finishLogic();
 	_modules.getModule<BattleField>().update();
-	
-	(void)deltaTime;
-
-	_modules.getModule<Input>().finish();
 }
 
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-	_modules.getModule<Canvas>().clear();	
-	
 	// For testing `Script`
 	_modules.getModule<BattleField>().render();
-	
-	_modules.getModule<Canvas>().render();
 	_modules.getModule<Window>().render();
 	
 }
