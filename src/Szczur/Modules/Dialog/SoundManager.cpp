@@ -2,175 +2,241 @@
 
 namespace rat
 {
-        void SoundManager::newSound(const std::string &fileName)
+        bool SoundManager::load(const std::string& fileName)
         {
-            if(getSound(fileName)!=_sounds.size())
+            _name = fileName;
+            if (!loadBuffer())
+                return false;
+
+            _length = buffer.getDuration().asSeconds();
+            return true;
+        };
+
+        float SoundManager::getVolume()
+        {
+            return _volume;
+        }
+
+        void SoundManager::setVolume(float volume)
+        {
+            sound.setVolume(volume);
+        }
+
+        void SoundManager::setBaseVolume(float volume)
+        {
+            _volume = volume;
+            sound.setVolume(volume);
+        }
+
+        void SoundManager::setPlayingOffset(Second_t seconds)
+        {
+            _offset = seconds;
+            sound.setPlayingOffset(sf::seconds(seconds));
+
+            for (unsigned int i = 0; i < _offsets.size(); ++i){
+                if(seconds >= _offsets[i]->beginTime && seconds < _offsets[i]->endTime){
+                    _currentOffsetID = i;
+                    break;
+                }
+            }
+        }
+
+        void SoundManager::setOffsetID(int offset)
+        {
+            if (offset >= _offsets.size() || offset < 0)
                 return;
-            std::shared_ptr<SoundBase> sound(new SoundBase);
-            if (sound->init(fileName))
-                _sounds.push_back(sound);
+
+            _offset = _offsets[offset]->beginTime;
+            sound.setPlayingOffset(sf::seconds(_offset));
+            _currentOffsetID = offset;
+            play();
         }
 
-        void SoundManager::removeSound(const std::string &fileName)
+        void SoundManager::pause()
         {
-            int i = getID(fileName);
-            if(_currentSoundID==i){
-                restart();
-                _currentSoundID=0;
-             }
-            _sounds.erase(_sounds.begin() + i);
+            _pauseTime = getOffset();
+            sound.pause();
         }
 
-        int SoundManager::getSound(const std::string &fileName)
+        void SoundManager::unPause()
         {
-            for (unsigned int i=0; i<_sounds.size(); ++i){
-                    if(fileName == _sounds[i]->getName())
-                       return i;
+            sound.play();
+            sound.setPlayingOffset(sf::seconds(_pauseTime));
+        }
+
+        void SoundManager::repeat()
+        {
+            _offset = _offsets[_currentOffsetID]->beginTime;
+            sound.setPlayingOffset(sf::seconds(_offset));
+
+            play();
+        }
+        void SoundManager::next()
+        {
+            _currentOffsetID++;
+            _offset = _offsets[_currentOffsetID]->beginTime;
+            sound.setPlayingOffset(sf::seconds(_offset));
+
+            play();
+        }
+
+        const std::string SoundManager::chooseOption(int option)
+        {
+            if(option < 0 || option >= _offsets.size())
+                return "";
+
+            if(_offsets[_currentOffsetID]->_options[option]._file == ""){
+                setOffsetID(_offsets[_currentOffsetID]->_options[option].offsetNumber);
+            }else{
+                return _offsets[_currentOffsetID]->_options[option]._file;
             }
 
-            return _sounds.size();
+            return "";
         }
 
-        int SoundManager::getID(const std::string &fileName)
+        int SoundManager::getOptionOffset(int option)
         {
-            if (fileName==""||getSound(fileName)<0||getSound(fileName)>=_sounds.size())
-                return _currentSoundID;
+            if(option < 0 || option >= _offsets.size())
+                return 0;
+            return _offsets[_currentOffsetID]->_options[option].offsetNumber;
+        }
+
+        void SoundManager::addOption(int offset, int newOffset,  const std::string &fileName)
+        {
+            if(offset < 0||offset > _offsets.size())
+                return;
+            _offsets[offset]->_options.emplace_back();
+            _offsets[offset]->_options[_offsets[offset]->_options.size()-1].offsetNumber=newOffset;
+            _offsets[offset]->_options[_offsets[offset]->_options.size()-1]._file=fileName;
+        }
+
+        SoundManager::Second_t SoundManager::getOffset()
+        {
+            return sound.getPlayingOffset().asSeconds();
+        }
+
+        int SoundManager::getOffsetID()
+        {
+            return _currentOffsetID;
+        }
+
+        void SoundManager::addOffset(Second_t beginT, Second_t endT)
+        {
+            std::shared_ptr<SoundManager::offset> offset(new SoundManager::offset);
+            offset->beginTime = beginT;
+
+            if(endT == -1)
+                offset->endTime = _length;
             else
-                return getSound(fileName);
+                offset->endTime = endT;
+
+            _offsets.push_back(offset);
         }
 
-        void SoundManager::changeSound(const std::string &fileName)
+        void SoundManager::addCallback(Second_t seconds, const std::function<void(void)>& cback)
         {
-            restart("",-1);
-            _currentSoundID = getSound(fileName);
-        }
+            std::shared_ptr<SoundManager::callback> callback(new SoundManager::callback);
+            callback->time = seconds;
+            callback->cback = cback;
 
-        void SoundManager::chooseOption(int option, const std::string &fileName)
-        {
-            int i = getID(fileName);
-            int offset = _sounds[i]->getOptionOffset(option);
-            std::string newSound = _sounds[i]->chooseOption(option);
-            if( newSound != ""){
-                changeSound( newSound);
-            }
-            _sounds[_currentSoundID]->setOffset(offset);
-              play();
-        }
-
-        void SoundManager::addOption(int offset, int newOffset,  const std::string &newfileName,const std::string &fileName)
-        {
-             int i = getID(fileName);
-             _sounds[i]->addOption(offset,newOffset,newfileName);
-        }
-
-        void SoundManager::setVolume(float volume, const std::string &fileName)
-        {
-            if (fileName==""){
-                _volumeGame = volume;
-                for (unsigned int i=0; i<_sounds.size(); ++i)
-                    _sounds[i]->setVolume(_sounds[i]->getVolume()*(volume/100));
-            }
-            else{
-                int i = _currentSoundID;
-                _sounds[i]->setBaseVolume(volume*(_volumeGame/100));
-            }
-        }
-
-        void SoundManager::setPitch(float pitch, const std::string &fileName)
-        {
-            int i = getID(fileName);
-            _sounds[i]->setPitch(pitch);
-        }
-
-        void SoundManager::setLoop(bool loop,const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->setLoop(loop);
-        }
-
-        void SoundManager::changeLoop(const std::string &fileName)
-        {
-            int i = getSound(fileName);
-
-            if (_sounds[i]->getLoop())
-                _sounds[i]->setLoop(false);
-            else
-                _sounds[i]->setLoop(true);
-        }
-
-        void SoundManager::setPlayingOffset(float seconds,const std::string &fileName)
-        {
-            int i = getID(fileName);
-            _sounds[i]->setPlayingOffset(seconds);
-        }
-
-        void SoundManager::setCallback(float seconds, const std::function<void(void)>& cback)
-        {
-               _sounds[_currentSoundID]->addCallback(seconds,cback);
+            _callbacks.push_back(callback);
         }
 
         void SoundManager::eraseCallbacks()
         {
-               _sounds[_currentSoundID]->eraseCallbacks();
+            _callbacks.clear();
+            _currentCallback = 0;
         }
 
-        void SoundManager::setOffsetID(int offset,const std::string &fileName)
+        bool SoundManager::soundEnd()
         {
-            int i = getID(fileName);
-            _sounds[i]->setOffset(offset);
+            if(getOffset() >= _length){
+                restart();
+                return true;
+            }
+            return false;
         }
 
-        float SoundManager::getOffset(const std::string &fileName)
+        float SoundManager::getPitch() const
         {
-            int i = getID(fileName);
-            return _sounds[i]->getOffset();
+            return sound.getPitch();
         }
 
-        int SoundManager::getOffsetID(const std::string &fileName)
+        void SoundManager::setPitch(float pitch)
         {
-            int i = getID(fileName);
-            return _sounds[i]->getOffsetID();
+            _pitch = pitch;
+            sound.setPitch(pitch);
         }
 
-        void SoundManager::addOffset(float beginT,float endT,const std::string &fileName)
+        bool SoundManager::getLoop() const
         {
-            int i = getID(fileName);
-            _sounds[i]->addOffset(beginT,endT);
+            return sound.getLoop();
         }
 
-        void SoundManager::repeat(const std::string &fileName)
+        void SoundManager::setLoop(bool loop)
         {
-            int i = getID(fileName);
-            _sounds[i]->repeat();
+            sound.setLoop(loop);
         }
 
-        void SoundManager::next(const std::string &fileName)
+        void SoundManager::play()
         {
-            int i = getID(fileName);
-            _sounds[i]->next();
+            sound.setBuffer(buffer);
+            sound.play();
+            sound.setPlayingOffset(sf::seconds(_offset));
         }
 
-        bool SoundManager::soundEnd(const std::string &fileName)
+        sf::SoundSource::Status SoundManager::update()
         {
-            int i = getID(fileName);
-            return _sounds[i]->soundEnd();
+            if (_offsets.size() <= 0)
+                return sound.getStatus();
+
+            if(getOffset() >= _length){
+                restart();
+                return sound.getStatus();
+            }
+
+            if (_currentOffsetID > _offsets.size())
+                _currentOffsetID = 0;
+
+            if(_callbacks.size() > 0 && _currentCallback >=0 && _currentCallback < _callbacks.size()){
+                if(getOffset() == _callbacks[_currentCallback]->time){
+                        std::invoke(_callbacks[_currentCallback]->cback);
+                        _currentCallback++;
+                    }
+            }
+
+            if (getOffset() >= _offsets[_currentOffsetID]->endTime)
+            {
+                sound.pause();
+            }
+
+            return sound.getStatus();
         }
 
-        void SoundManager::restart(const std::string &fileName,int offset)
+        void SoundManager::restart(int offset)
         {
-            int i = getID(fileName);
-            _sounds[i]->restart(offset);
+            if (offset < 0 || offset >= _offsets.size())
+                _offset = 0;
+            else
+                _offset = _offsets[offset]->beginTime;
+
+            _currentOffsetID = offset;
+            _currentCallback = 0;
+            sound.stop();
         }
 
-        sf::SoundSource::Status SoundManager::update(const std::string &fileName)
+        const std::string& SoundManager::getName() const
         {
-            int i = getID(fileName);
-            return _sounds[i]->update();
+            return _name;
         }
 
-        void SoundManager::play(const std::string &fileName)
+        bool SoundManager::loadBuffer()
         {
-            int i = getID(fileName);
-            _sounds[i]->play();
+            return buffer.loadFromFile(getPath());
+        }
+
+        std::string SoundManager::getPath() const
+        {
+            return _name + ".flac";
         }
 }

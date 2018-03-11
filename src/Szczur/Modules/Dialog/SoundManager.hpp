@@ -1,58 +1,106 @@
+#include <string>
+
+#include <iostream>
+
 #include <SFML/Audio.hpp>
+
+#include <functional>
 
 #include <memory>
 
-#include "SoundBase.hpp"
-
-#include <functional>
 namespace rat
 {
         class SoundManager
         {
+        public:
+
+            using Second_t = size_t;
+
         private:
 
-                std::vector<std::shared_ptr<SoundBase>> _sounds;
-                float _volumeGame {100};
-                int _currentSoundID {0};
+            struct offset
+            {
+                Second_t beginTime;
+                Second_t endTime;
+
+                struct option
+                {
+                    int offsetNumber{-1};
+                    std::string _file{""};
+                };
+                std::vector<option> _options;
+            };
+
+            struct callback
+            {
+                Second_t time;
+                std::function<void(void)> cback;
+            };
+
+            float _volume {100};
+            float _pitch {1};
+
+            Second_t  _offset {0};
+            Second_t _pauseTime{0};
+
+            int _length;
+
+            unsigned int _currentOffsetID {0};
+            unsigned int _currentCallback {0};
+
+            std::string _name;
+            sf::SoundBuffer buffer;
+            sf::Sound sound;
+
+            std::vector<std::shared_ptr<offset>> _offsets;
+            std::vector<std::shared_ptr<callback>> _callbacks;
 
         public:
 
-                void newSound(const std::string &fileName);
-                void removeSound(const std::string &fileName);
+            bool load(const std::string &filename);
 
-                int getSound(const std::string &fileName);
-                int getID(const std::string &fileName = "");
+            void play();
 
-                void changeSound(const std::string &fileName);
-                void chooseOption(int option,const std::string &fileName="");
-                void addOption(int offset, int newOffset,  const std::string &newfileName="",const std::string &fileName="");
+            float getVolume();
+            void setVolume(float volume);
+            void setBaseVolume(float volume);
 
-                void play(const std::string &fileName = "");
+            void setPlayingOffset(Second_t seconds);
+            void setOffsetID(int offset);
 
-                void setVolume(float volume, const std::string &fileName = "");
-                void setPitch(float pitch, const std::string &fileName = "");
+            void pause();
+            void unPause();
+            void repeat();
+            void next();
 
-                void setLoop(bool loop,const std::string &fileName);
-                void changeLoop(const std::string &fileName);
+            const std::string chooseOption(int option);
+            int getOptionOffset(int option);
+            void addOption(int offset, int newOffset,  const std::string &fileName="");
 
-                void setPlayingOffset(float seconds, const std::string &fileName = "");
-                void setCallback(float seconds, const std::function<void(void)>& func);
-                void eraseCallbacks();
-                void setOffsetID(int offset, const std::string &fileName = "");
+            Second_t getOffset();
+            int getOffsetID();
+            void addOffset(Second_t beginT, Second_t endT);
 
-                float getOffset(const std::string &fileName = "");
-                int getOffsetID(const std::string &fileName = "");
+            void addCallback(Second_t seconds, const std::function<void(void)>& cback);
+            void eraseCallbacks();
 
-                void addOffset(float beginT,float endT=-1,const std::string &fileName=  "");
+            bool soundEnd();
 
-                void repeat(const std::string &fileName = "");
-                void next(const std::string &fileName = "");
-                bool soundEnd(const std::string &fileName = "");
+            float getPitch() const;
+            void setPitch(float pitch);
 
-                void restart(const std::string &fileName = "",int offset=0);
-                sf::SoundSource::Status update(const std::string &fileName = "");
+            bool getLoop() const;
+            void setLoop(bool loop);
 
-            private:
+            sf::SoundSource::Status update();
+            void restart(int offset=0);
+
+            const std::string& getName() const;
+
+        private:
+
+            bool loadBuffer();
+            std::string getPath() const;
+
         };
 }
-
