@@ -44,8 +44,7 @@ namespace rat {
 
     void DialogManager::load(const std::string& path) {
         _textManager.load(path+".dlg");
-        _soundManager.newSound(path);
-        _soundManager.changeSound(path);
+        _soundManager.load(path);
     }
 
     void DialogManager::startWith(size_t id) {
@@ -80,7 +79,7 @@ namespace rat {
         );
         _soundManager.setPlayingOffset((float)strct->getVoiceStart());
         strct->forEach([this](TextStruct::Texts_t::iterator it){
-            _soundManager.setCallback( 
+            _soundManager.addCallback( 
                 static_cast<float>(it->first),
                 [this, it](){
                     _dialogGUI.setText(it->second.second);
