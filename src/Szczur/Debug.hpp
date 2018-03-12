@@ -18,10 +18,12 @@
 
 #include <any>
 #include <ctime>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
 #include <map>
+#include <streambuf>
 #include <string>
 #include <string_view>
 
@@ -71,6 +73,12 @@ private:
 inline DebugLogger* logger = nullptr;
 
 inline std::map<std::string, std::any> vars;
+
+template <typename T, typename K, typename... Ts>
+void createVar(K&& name, Ts&&... args)
+{
+	vars[std::forward<K>(name)].DEPENDENT_TEMPLATE_SCOPE emplace<T>(std::forward<Ts>(args)...);
+}
 
 template <typename T, typename K>
 void setVar(K&& name, T&& arg)
