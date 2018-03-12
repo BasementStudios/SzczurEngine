@@ -10,13 +10,14 @@
 
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Input/Input.hpp"
 
 #include "DialogManager.hpp"
 
 #include "DialogGUI.hpp"
 
 namespace rat {
-    class Dialog : public Module<GUI, Script> {
+    class Dialog : public Module<GUI, Script, Input> {
     public:
         using Key_t = Hash32_t;
         using Dialogs_t = boost::container::flat_map<Key_t, DialogManager*>;

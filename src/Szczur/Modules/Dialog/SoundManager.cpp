@@ -185,6 +185,18 @@ namespace rat
             sound.setPlayingOffset(sf::seconds(_offset));
         }
 
+        void SoundManager::skip() {
+            if(_currentCallback >= _callbacks.size()) {
+                sound.pause();
+                _currentCallback = 0;
+                return;
+            }
+            std::invoke(_callbacks[_currentCallback]->cback);
+            setPlayingOffset(_callbacks[_currentCallback]->time);
+            ++_currentCallback;
+
+        }
+
         sf::SoundSource::Status SoundManager::update()
         {
             if (_offsets.size() <= 0)

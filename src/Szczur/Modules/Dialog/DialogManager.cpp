@@ -17,7 +17,7 @@ namespace rat {
 
     void DialogManager::initScript(Script& script) {
         auto object = script.newClass<DialogManager>("DialogManager", "Dialog");
-        
+
         object.set("startWith", &DialogManager::startWith);
         object.set("play", sol::resolve<void()>(&DialogManager::play));
         object.set(
@@ -34,6 +34,10 @@ namespace rat {
 
         //
         object.init();
+    }
+
+    void DialogManager::skip() {
+        _soundManager.skip();
     }
 
     void DialogManager::update(float deltaTime) {
@@ -95,13 +99,13 @@ namespace rat {
     void DialogManager::_changeStruct(TextStruct* strct) {
         _soundManager.eraseCallbacks();
         _soundManager.addOffset(
-            static_cast<float>(strct->getVoiceStart()), 
-            static_cast<float>(strct->getVoiceEnd())
+            strct->getVoiceStart(), 
+            strct->getVoiceEnd()
         );
-        _soundManager.setPlayingOffset((float)strct->getVoiceStart());
+        _soundManager.setPlayingOffset(strct->getVoiceStart());
         strct->forEach([this](TextStruct::Texts_t::iterator it){
             _soundManager.addCallback( 
-                static_cast<float>(it->first),
+                it->first,
                 [this, it](){
                     _dialogGUI.setText(it->second.second);
                 }

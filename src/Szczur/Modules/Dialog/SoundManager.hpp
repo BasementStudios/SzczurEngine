@@ -57,6 +57,8 @@ namespace rat
 
         public:
 
+            void skip();
+
             bool load(const std::string &filename);
 
             void play();

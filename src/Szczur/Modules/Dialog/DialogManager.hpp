@@ -28,6 +28,8 @@ namespace rat {
 
         void load(const std::string& path);
 
+        void skip();
+
         void startWith(size_t id);
 
         void play(size_t id);

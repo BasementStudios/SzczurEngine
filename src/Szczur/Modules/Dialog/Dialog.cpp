@@ -90,6 +90,9 @@ namespace rat {
     void Dialog::update(float deltaTime) {
         for(auto& it : _dialogs)
             it.second->update(deltaTime);
+        if(getModule<Input>().getManager().isReleased(Keyboard::Space))
+            for(auto& it : _dialogs)
+                it.second->skip();
     }
 
     DialogManager* Dialog::load(const std::string& path) {
