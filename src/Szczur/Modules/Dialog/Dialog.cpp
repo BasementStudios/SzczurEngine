@@ -10,8 +10,11 @@ namespace rat {
         gui.addAsset<sf::Font>("data/consolab.ttf");
         
         _dialogGUI.create();
+        _initScript();
 
-        Options* opt1 = new Options;
+        
+
+/*        Options* opt1 = new Options;
         opt1->setRunners(1u);
         opt1->addOption(
             "Nie powinno cie tu byc",
@@ -61,6 +64,7 @@ namespace rat {
         mngr->addOptions(opt1, opt2, opt3);
         mngr->startWith(1u);
         mngr->play();
+        */
     }
 
 
@@ -69,6 +73,19 @@ namespace rat {
         for(auto& it : _dialogs)
             delete it.second;
     }
+
+    void Dialog::_initScript() {
+        Script& script = getModule<Script>();
+        auto module = script.newModule("Dialog");
+
+        SCRIPT_SET_MODULE(Dialog, load)
+        ;
+
+
+        script.initClasses<DialogManager, Options>();
+    }
+
+
 
     void Dialog::update(float deltaTime) {
         for(auto& it : _dialogs)

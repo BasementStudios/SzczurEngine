@@ -3,6 +3,8 @@
 #include <functional>
 #include <vector>
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 #include <boost/container/flat_set.hpp>
 
 namespace rat {
@@ -27,6 +29,8 @@ namespace rat {
 
         Options();
         ~Options();
+
+        static void initScript(Script& script);
 
         template<typename... Ts>
         void setRunners(Ts... runners) {

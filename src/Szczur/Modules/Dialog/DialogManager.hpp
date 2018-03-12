@@ -1,11 +1,15 @@
 #pragma once
 
+
+
 #include "TextManager.hpp"
-#include "SoundManager.hpp"
 
 #include "Options.hpp"
 
+#include "SoundManager.hpp"
+
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 #include "DialogGUI.hpp"
 
@@ -18,6 +22,8 @@ namespace rat {
 
         ~DialogManager();
 
+        static void initScript(Script& script);
+
         void update(float deltaTime);
 
         void load(const std::string& path);
@@ -26,8 +32,6 @@ namespace rat {
 
         void play(size_t id);
         void play();
-
-        
 
         template<typename... Ts>
         void addOptions(Ts*... options) {

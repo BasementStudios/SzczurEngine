@@ -8,6 +8,7 @@
 #include "Szczur/Json.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 
 #include "DialogManager.hpp"
@@ -15,7 +16,7 @@
 #include "DialogGUI.hpp"
 
 namespace rat {
-    class Dialog : public Module<GUI> {
+    class Dialog : public Module<GUI, Script> {
     public:
         using Key_t = Hash32_t;
         using Dialogs_t = boost::container::flat_map<Key_t, DialogManager*>;
@@ -23,6 +24,8 @@ namespace rat {
         Dialog(const std::string& file);
 
         ~Dialog();
+
+        
 
         void update(float deltaTime=1.f/60.f);
 
@@ -36,5 +39,6 @@ namespace rat {
         TextAreaWidget* _area;
         Dialogs_t _dialogs;
 
+        void _initScript();
     };
 }

@@ -15,6 +15,27 @@ namespace rat {
             delete it;
     }
 
+    void DialogManager::initScript(Script& script) {
+        auto object = script.newClass<DialogManager>("DialogManager", "Dialog");
+        
+        object.set("startWith", &DialogManager::startWith);
+        object.set("play", sol::resolve<void()>(&DialogManager::play));
+        object.set(
+            "newOptions", 
+            [](DialogManager& owner, sol::variadic_args va) {
+                Options* options = new Options;
+                for(auto v : va)
+                    options->addRunners<Options::Key_t>(v);
+
+                owner.addOptions(options);
+                return options;
+            }
+        );
+
+        //
+        object.init();
+    }
+
     void DialogManager::update(float deltaTime) {
         if(_clearButtons) {
             _clearButtons = false;
