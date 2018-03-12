@@ -104,6 +104,11 @@ CXXFLAGS := -std=c++17 -Wall
 LD       := g++
 LDFLAGS  :=
 
+# Optimalization
+OPTIMALIZE := no
+CXXFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
+ LDFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
+
 # Using MXE? and its options
 MXE := no
 MXE_DIR := /usr/lib/mxe
@@ -325,6 +330,12 @@ COLON_REPLACEMENT := _c0loN
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
 CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
 
+# Adding optimalization flags
+ifeq ($(OPTIMALIZE),yes)
+    CXXFLAGS += $(CXXFLAGS_OPTIMALIZATION)
+     LDFLAGS +=  $(LDFLAGS_OPTIMALIZATION)
+endif
+
 
 
 #
@@ -516,7 +527,6 @@ run: all
 	$(V)-cp $(OUT_FILE) $(RUN_FILE) 1>&2 2>/dev/null || :
 	$(V)chmod +x $(RUN_FILE)
 	$(V)-cd ./$(RUN_DIR) ; ./$(RUN_NAME)$(RUN_EXT) $(PARAMS)
-	@echo "Ran with exit code $$?."
 
 # Informations (for debug) 
 .PHONY: info echo

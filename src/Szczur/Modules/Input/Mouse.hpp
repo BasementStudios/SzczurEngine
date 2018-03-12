@@ -7,7 +7,7 @@ namespace rat
 
 struct Mouse
 {
-	enum Code
+	enum Code_e
 	{
 		Left     = sf::Mouse::Left,
 		Middle   = sf::Mouse::Middle,

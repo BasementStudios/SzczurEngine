@@ -7,7 +7,7 @@ namespace rat
 
 struct Keyboard
 {
-	enum Code
+	enum Code_e
 	{
 		A         = sf::Keyboard::A,
 		B         = sf::Keyboard::B,

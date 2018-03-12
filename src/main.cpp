@@ -1,15 +1,12 @@
 #include <SFML/System/Err.hpp>
 
-#include "Szczur/Debug/OnDebug.hpp"
+#include "Szczur/Debug.hpp"
 #include "Szczur/Application.hpp"
 
 int main()
 {
 	sf::err().rdbuf(nullptr);
-
-	ON_DEBUG(
-		rat::DebugLogger mainLogger; rat::logger = &mainLogger;
-	);
+	INIT_LOGGER();
 
 	rat::Application app;
 	return app.run();

@@ -1,10 +1,7 @@
 #pragma once
 
-#include <SFML/System/Clock.hpp>
-
-#include "Szczur/Utility/ModulesHolder.hpp"
-#include "Szczur/Modules/Assets/Assets.hpp"
-#include "Szczur/Modules/Canvas/Canvas.hpp"
+#include "Szczur/Utility/Time/Clock.hpp"
+#include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
@@ -41,9 +38,8 @@ public:
 
 private:
 
-	ModulesHolder<Assets, Input, Window, Canvas, GUI> _modules;
-	sf::Clock _mainClock;
-
+	ModulesHolder<Window, Input, GUI> _modules;
+	Clock _mainClock;
 };
 
 }
