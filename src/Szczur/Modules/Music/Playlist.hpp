@@ -72,6 +72,9 @@ namespace rat
 		unsigned int getID(const std::string& fileName) const;
 
 		const Container_t& getContainerRef() const;
+
+		template <typename T>
+		T& getEffect(const std::string& fileName);
 	
 	private:
 
@@ -86,6 +89,12 @@ namespace rat
 		void setPlaylistToPlaying(int id);
 			
 	};
+
+	template <typename T>
+	T& Playlist::getEffect(const std::string& fileName)
+	{
+		return _playlist[getID(fileName)]->getEffect<T>();
+	}
 }
 
 

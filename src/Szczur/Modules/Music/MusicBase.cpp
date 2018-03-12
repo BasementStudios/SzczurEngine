@@ -7,7 +7,7 @@
 namespace rat
 { 
 
-	MusicBase::MusicBase(const std::string& fileName, sf::Music& source)
+	MusicBase::MusicBase(const std::string& fileName, RatMusic& source)
 		: _base(source), _name(fileName)
 	{
 		_timeLeft = getDuration();

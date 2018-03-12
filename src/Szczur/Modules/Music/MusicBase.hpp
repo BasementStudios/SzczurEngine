@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 
-#include <SFML/Audio/Music.hpp>
+#include "Szczur/Utility/Audio/RatMusic.hpp"
 
 namespace rat 
 {
@@ -12,7 +12,7 @@ namespace rat
 
 	private:
 
-		sf::Music& _base;
+		RatMusic& _base;
 		
 		std::string _name;
 		float _bpm;
@@ -28,7 +28,7 @@ namespace rat
 
 	public:
 
-		MusicBase(const std::string& fileName, sf::Music& source);
+		MusicBase(const std::string& fileName, RatMusic& source);
 
 		void update(float deltaTime);
 
@@ -57,6 +57,12 @@ namespace rat
 		const std::string& getName() const;
 		
 		void reset();
+
+		template <typename T>
+		T& getEffect()
+		{
+			return _base.getEffect<T>();
+		}
 
 	private:
 

@@ -46,6 +46,9 @@ namespace rat
 		void setVolume(unsigned int id, float volume, const std::string& fileName = "");
 		float getVolume(unsigned int id, const std::string& fileName) const;
 
+		template <typename T>
+		T& getEffect(unsigned int id, const std::string& fileName);
+
 	private:
 
 		std::string getPath(const std::string& fileName) const;
@@ -62,6 +65,13 @@ namespace rat
 	{
 		LOG_CONSTRUCTOR();
 	}
+
+	template <typename T>
+	T& Music::getEffect(unsigned int id, const std::string& fileName)
+	{
+		return _playlists[id]->getEffect<T>(fileName);
+	}
+
 }
 
 

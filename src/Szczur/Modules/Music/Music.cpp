@@ -20,7 +20,7 @@ namespace rat
 
 	void Music::add(unsigned int id, const std::string& fileName)
 	{
-		auto& source = getModule<Assets>().load<sf::Music>(getPath(fileName));
+		auto& source = getModule<Assets>().load<RatMusic>(getPath(fileName));
 		auto&& base = MusicBase(fileName, source);
 		_playlists[id]->add(std::move(base));
 	}
@@ -111,7 +111,7 @@ namespace rat
 	void Music::unLoad(unsigned int id, const std::string& fileName)
 	{
 		if (!usingByOtherPlaylist(id, fileName))
-			getModule<Assets>().unload<sf::Music>(getPath(fileName));
+			getModule<Assets>().unload<RatMusic>(getPath(fileName));
 	}
 	
 }
