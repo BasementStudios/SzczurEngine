@@ -4,9 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/Module.hpp"
-#include "Szczur/Modules/Canvas/Canvas.hpp"
-#include "Szczur/Modules/Assets/Assets.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Json.hpp"
@@ -18,15 +16,14 @@
 
  
 namespace rat {
-    class GUI : public Module<Canvas, Assets, Input, Window> { 
+    class GUI : public Module<Input, Window> { 
     public:
-        template<typename Tuple>
-        GUI(Tuple&& tuple);
+        GUI();
 
         ~GUI();
 
         void input(const sf::Event& event);
-        void update(float deltaTime);
+        void update(float deltaTime=1.f/60.f);
         void render();
         void reload();
 
@@ -43,6 +40,8 @@ namespace rat {
         //Widget _root;
         //GuiJson _guiJson;
         BasicGuiAssetsManager _assets;
+
+        sf::RenderTexture _canvas;
 
         void _initAssets();
     };

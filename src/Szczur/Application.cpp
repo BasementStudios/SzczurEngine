@@ -9,6 +9,8 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	_modules.initModule<GUI>();
+	_modules.initModule<Dialog>("data/dialog.json");
 }
 
 void Application::input()
@@ -17,7 +19,6 @@ void Application::input()
 	while (getWindow().pollEvent(event)) {
 		_modules.getModule<Input>().getManager().processEvent(event);
 		_modules.getModule<GUI>().input(event);
-
 		if (event.type == sf::Event::Closed) {
 			getWindow().close();
 		}
@@ -26,9 +27,8 @@ void Application::input()
 
 void Application::update()
 {
-	_modules.getModule<GUI>().update();
 	_modules.getModule<Dialog>().update();
-
+	_modules.getModule<GUI>().update();
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 

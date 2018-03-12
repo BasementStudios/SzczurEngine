@@ -1,7 +1,71 @@
 #include "Dialog.hpp"
 
 namespace rat {
+    Dialog::Dialog(const std::string& file) :
+    _dialogGUI(getModule<GUI>()) {
+        LOG_INFO(this, "Module Dialog constructed")
+        auto& gui = getModule<GUI>();
+        gui.addAsset<Json>(file);
+        gui.addAsset<sf::Texture>("data/dial_back.png");
+        gui.addAsset<sf::Font>("data/consolab.ttf");
+        
+        _dialogGUI.create();
+
+        Options* opt1 = new Options;
+        opt1->setRunners(1u);
+        opt1->addOption(
+            "Nie powinno cie tu byc",
+            nullptr,
+            2u,
+            nullptr
+        );
+        opt1->addOption(
+            "Znasz ich?",
+            nullptr,
+            3u,
+            nullptr
+        );
+
+        Options* opt2 = new Options;
+        opt2->setRunners(2u);
+        opt2->addOption(
+            "Widok ze zbocza",
+            nullptr,
+            1u,
+            nullptr
+        );
+        opt2->addOption(
+            "Znasz ich?",
+            nullptr,
+            3u,
+            nullptr
+        );
+
+        Options* opt3 = new Options;
+        opt3->setRunners(3u);
+        opt3->addOption(
+            "Widok ze zbocza",
+            nullptr,
+            1u,
+            nullptr
+        );
+        opt3->addOption(
+            "Nie powinno cie tu byc",
+            nullptr,
+            2u,
+            nullptr
+        );
+
+
+        auto* mngr = load("data/dialog2");
+        mngr->addOptions(opt1, opt2, opt3);
+        mngr->startWith(1u);
+        mngr->play();
+    }
+
+
     Dialog::~Dialog() {
+        LOG_INFO(this, "Module Dialog destructed")
         for(auto& it : _dialogs)
             delete it.second;
     }

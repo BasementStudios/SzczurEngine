@@ -39,8 +39,6 @@ namespace rat {
                         if(option->afterAction)
                             std::invoke(option->afterAction);
                         std::invoke(callback, option->target);
-                        //Problem is with clearing. :(
-                        //clear();
                 });
                 ++i;
                 _buttons->add("button"+std::to_string(i), button);

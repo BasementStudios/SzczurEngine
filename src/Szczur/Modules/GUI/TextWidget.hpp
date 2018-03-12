@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/Unicode.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
 
 #include "Widget.hpp"
 

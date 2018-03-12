@@ -20,8 +20,7 @@ namespace rat {
         using Key_t = Hash32_t;
         using Dialogs_t = boost::container::flat_map<Key_t, DialogManager*>;
 
-        template<typename Tuple>
-        Dialog(Tuple&& tuple, const std::string& file);
+        Dialog(const std::string& file);
 
         ~Dialog();
 
@@ -39,5 +38,3 @@ namespace rat {
 
     };
 }
-
-#include "Dialog.tpp"
