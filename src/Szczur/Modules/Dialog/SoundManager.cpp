@@ -186,15 +186,16 @@ namespace rat
         }
 
         void SoundManager::skip() {
-            if(_currentCallback >= _callbacks.size()) {
-                sound.pause();
-                _currentCallback = 0;
-                return;
+            if(sound.getStatus() != sf::SoundSource::Status::Paused) {
+                if(_currentCallback >= _callbacks.size()) {
+                    sound.pause();
+                    _currentCallback = 0;
+                    return;
+                }
+                std::invoke(_callbacks[_currentCallback]->cback);
+                setPlayingOffset(_callbacks[_currentCallback]->time);
+                ++_currentCallback;
             }
-            std::invoke(_callbacks[_currentCallback]->cback);
-            setPlayingOffset(_callbacks[_currentCallback]->time);
-            ++_currentCallback;
-
         }
 
         sf::SoundSource::Status SoundManager::update()
