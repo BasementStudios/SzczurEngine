@@ -1,48 +1,40 @@
 #include "DragonBones.hpp"
 
+/** @file DragonBones.cpp
+ ** @description Implementation file with main class of the World module. 
+ ** @author Piotr (H4RRY) <piotrkrupa06@gmail.com>
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
+#include <dragonBones/SFMLFactory.h>
+
 namespace rat 
 {
 
-void DragonBones::update(float deltaTime)
+/* Properties */
+/// Factory
+DragonBones::Factory_t& DragonBones::getFactory()
 {
-	_factory.update(deltaTime);
+	return this->factory;
+}
+const DragonBones::Factory_t& DragonBones::getFactory() const
+{
+	return this->factory;
 }
 
-Armature* DragonBones::createArmature(const std::string& actorName)
+
+
+/* Methods */
+/// init
+void DragonBones::init()
 {
-	std::string path = actorName.data();
+	;
+}
 
-	auto dbData = _factory.loadDragonBonesData(path + "/skeleton.json");
-
-	if (!dbData)
-		return nullptr;
-
-	auto texturesData = _factory.getTexturesData(dbData, path + "/textures");
-
-	for (auto& textureData : texturesData) {
-		auto tex = &getModule<Assets>().load<sf::Texture>(textureData->path);
-		textureData->setTexture(tex);
-	}
-
-	auto textureAtlasData = _factory.createTextureAtlasData(texturesData, dbData);
-
-	if (textureAtlasData == nullptr) {
-		for (auto& textureData : texturesData) {
-			if (textureData)
-				delete textureData;
-		}
-
-		return nullptr;
-	}
-
-	auto armatureDisplay = _factory.buildArmatureDisplay(actorName.data());
-
-	if (!armatureDisplay)
-		return nullptr;
-
-	auto armature = new Armature(armatureDisplay);
-
-	return armature;
+/// update
+void DragonBones::update(float deltaTime)
+{
+	this->factory.update(deltaTime);
 }
 
 }

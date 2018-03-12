@@ -23,22 +23,15 @@ namespace rat
  **/
 class Object : public sf::Drawable
 {   
-    /* Types */
-public:
-	using Vector_t = sf::Vector2f;
-	using StateID_t = ObjectType::StateID_t;
-
-
-
 	/* Variables */
 public:
 	std::string	name;
 protected:
 	ObjectType*	type;
-	StateID_t	stateID		{ObjectType::defaultStateID};
+	ObjectType::StateID_t   stateID		{ObjectType::defaultStateID};
 
-	Vector_t	position	{0.f, 0.f};
-	Vector_t	speed		{0.f, 0.f};
+	World::Vector_t	        position	{0.f, 0.f};
+	World::Vector_t	        speed		{0.f, 0.f};
 
 
 
@@ -57,8 +50,8 @@ public:
      ** @virtual set    
      ** @info virtual setter for detecting updates
      **/
-    const StateID_t getState() const;
-    virtual void    setState(const StateID_t stateID);
+    const ObjectType::StateID_t getState() const;
+    virtual void    setState(const ObjectType::StateID_t stateID);
     const std::string& getStateString() const;
     void               setState(const std::string& stateString);
     

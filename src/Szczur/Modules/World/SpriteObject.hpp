@@ -12,19 +12,22 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
-#include "Object.hpp"
-#include "SpriteObjectType.hpp"
+#include "Szczur/Modules/World/World.hpp"
+#include "Szczur/Modules/World/Object.hpp"
+#include "Szczur/Modules/World/ObjectType.hpp"
+#include "Szczur/Modules/World/SpriteObjectType.hpp"
 
 namespace rat
 {
 
 /** @class SpriteObject
- ** @extends Object
+ ** @implements Object
  ** @description Simplest, sprite object.
  **/
 class SpriteObject : public Object 
 {
 	/* Properties */
+public:
 	/** @property Texture
 	 ** @description Texture used to draw the object.
 	 ** @access const get
@@ -35,7 +38,7 @@ class SpriteObject : public Object
 	 ** @description Origin on texture for the object center.
 	 ** @access const get
 	 **/
-	const Vector_t getOrigin() const;
+	const World::Vector_t getOrigin() const;
 	
 	/** @property Vertices
 	 ** @description Vertices used to draw the texture on the target.
@@ -46,11 +49,13 @@ class SpriteObject : public Object
 
 
 	/* Operators */
-	SpriteObject(const SpriteObjectType* type, const std::string& name, ObjectType::StateID_t stateID = ObjectType::defaultStateID, Vector_t position = {0.f, 0.f}, Vector_t speed = {0.f, 0.f});
+public:
+	SpriteObject(const SpriteObjectType* type, const std::string& name, ObjectType::StateID_t stateID = ObjectType::defaultStateID, World::Vector_t position = {0.f, 0.f}, World::Vector_t speed = {0.f, 0.f});
 
 
 
 	/* Methods */
+public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
 };
 

@@ -8,7 +8,6 @@
 
 #include <string>
 
-
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -38,9 +37,10 @@ class Window : public Module<>
 
     /* Variables */
 private:
-    Window_t        _window;
-    sf::VideoMode   _currentVideoMode   {1280, 800};
-    std::string     _title              {"SzczurEngine"};
+    Window_t        window;
+    sf::VideoMode   videoMode	{1280, 800};
+    std::string     title 		{"SzczurEngine"};
+	unsigned int	frameRate	{60};
 
     
     
@@ -48,7 +48,7 @@ private:
 public:
     /** @property Window
      ** @description Provides access to application window.
-     ** @access get
+     ** @access reference get
      **/
     Window_t& getWindow();
     const Window_t& getWindow() const;
@@ -59,6 +59,13 @@ public:
 	 **/
 	sf::VideoMode getVideoMode() const;
 	void setVideoMode(const sf::VideoMode& mode);
+
+	/** @property FrameRate
+	 ** @description Limit of updated and rendered frames per second.
+	 ** @access get set
+	 **/
+	unsigned int getFrameRate() const;
+	void setFrameRate(const unsigned int limit);
 
     /** @property Title
      ** @description Title of application window.
@@ -76,11 +83,11 @@ public:
 	Window(ModulesTuple&& tuple);
 	~Window();
 
-	// Disable copy operators
+	// Disable coping
 	Window(const Window&) = delete;
 	Window& operator = (const Window&) = delete;
 
-	// Disable move operators
+	// Disable moving
 	Window(Window&&) = delete;
 	Window& operator = (Window&&) = delete;
 
@@ -88,7 +95,7 @@ public:
 
 	/* Methods */
 public:
-    /// Module system
+    // Module system
 	void init();
 	void input(const sf::Event& event);
 	void render();
@@ -105,11 +112,10 @@ public:
 
 // Module constructor/destructor
 template <typename ModulesTuple>
-Window::Window(ModulesTuple&& tuple) :
-	Module(tuple), _window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close) // @todo zrobic to z jakiegoś conf albo stałych
+inline Window::Window(ModulesTuple&& tuple) : Module(tuple)
 {
 	LOG_INFO("[Window] Module initializing");
-	init();
+	this->init();
 	LOG_INFO("[Window] Module initialized");
 }
 inline Window::~Window()

@@ -6,6 +6,8 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
+#include <string>
+
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
 
@@ -18,32 +20,43 @@ namespace rat
 /// Window
 Window::Window_t& Window::getWindow()
 {
-    return this->_window;
+    return this->window;
 }
 const Window::Window_t& Window::getWindow() const
 {
-    return this->_window;
+    return this->window;
 }
 
 /// VideoMode
 sf::VideoMode Window::getVideoMode() const
 {
-	return this->_currentVideoMode;
+	return this->videoMode;
 }
 void Window::setVideoMode(const sf::VideoMode& mode)
 {
-	this->_currentVideoMode = mode;
-	this->getWindow().create(this->_currentVideoMode, this->_title);
+	this->videoMode = mode;
+	this->getWindow().create(this->videoMode, this->title);
+}
+
+/// FrameRate
+unsigned int Window::getFrameRate() const
+{
+	return this->frameRate;
+}
+void Window::setFrameRate(const unsigned int limit)
+{
+	this->frameRate = mode;
+	this->getWindow().setFrameRate(this->frameRate);
 }
 
 /// Title
 const std::string& Window::getTitle() const
 {
-    return this->_title;
+    return this->title;
 }
 void Window::setTitle(const std::string& title)
 {
-    this->_title = title;
+    this->title = title;
 }
 
 
@@ -53,7 +66,9 @@ void Window::setTitle(const std::string& title)
 void Window::init()
 {
 	// Create 
-    this->setVideoMode(this->_currentVideoMode);
+    this->setVideoMode(this->videoMode);
+	this->getWindow().setFrameRate(this->frameRate);
+	// @todo load from settings
 }
 
 /// input

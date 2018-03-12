@@ -43,7 +43,7 @@ const Object::Vector_t SpriteObjectType::getOrigin(Object::StateID_t stateID) co
 }
 
 /// Vertices
-const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(Object::StateID_t stateID) const
+const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(ObjectType::StateID_t stateID) const
 {
 	if (this->statesDetails.size() < stateID) {
 		return this->statesDetails[stateID].vertices;

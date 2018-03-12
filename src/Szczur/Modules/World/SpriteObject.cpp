@@ -13,9 +13,10 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 
-#include "Object.hpp"
-#include "ObjectType.hpp"
-#include "SpriteObjectType.hpp"
+#include "Szczur/Modules/World/World.hpp"
+#include "Szczur/Modules/World/Object.hpp"
+#include "Szczur/Modules/World/ObjectType.hpp"
+#include "Szczur/Modules/World/SpriteObjectType.hpp"
 
 namespace rat
 {
@@ -28,7 +29,7 @@ const sf::Texture& SpriteObject::getTexture() const
 }
 
 /// Origin
-const SpriteObject::Vector_t SpriteObject::getOrigin() const
+const World::Vector_t SpriteObject::getOrigin() const
 {
 	return reinterpret_cast<const SpriteObjectType*>(this->getType())->getOrigin(this->getState());
 }
@@ -42,7 +43,7 @@ const std::array<sf::Vertex, 4> SpriteObject::getVertices() const
 
 
 /* Operators */
-SpriteObject::SpriteObject(const SpriteObjectType* type, const std::string& name, ObjectType::StateID_t stateID, Object::Vector_t position, Object::Vector_t speed)
+SpriteObject::SpriteObject(const SpriteObjectType* type, const std::string& name, ObjectType::StateID_t stateID, World::Vector_t position, World::Vector_t speed)
 	: Object::Object((ObjectType*)type, name, stateID, position, speed)
 {}
 

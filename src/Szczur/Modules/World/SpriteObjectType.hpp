@@ -11,19 +11,20 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 
-#include "Object.hpp"
-#include "ObjectType.hpp"
+#include "Szczur/Modules/World/World.hpp"
+#include "Szczur/Modules/World/Object.hpp"
+#include "Szczur/Modules/World/ObjectType.hpp"
 
 namespace rat
 {
 
-class SpriteObjectType : ObjectType
+class SpriteObjectType : public ObjectType
 {
-	/* Types*/
+	/* Types */
 protected:
 	struct StateDetails
 	{
-		Object::Vector_t 			origin		{0, 0};
+		World::Vector_t 			origin		{0, 0};
 		std::array<sf::Vertex, 4>	vertices;
 	};
 
@@ -57,14 +58,14 @@ public:
 	 ** @access const get
 	 ** @argument stateID - since returns for specific state
 	 **/
-	const Object::Vector_t getOrigin(Object::StateID_t stateID) const;
+	const World::Vector_t getOrigin(ObjectType::StateID_t stateID) const;
 
 	/** @property Vertices
 	 ** @description Vertices used to render the texture as the object.
 	 ** @access const get
 	 ** @argument stateID - since returns for specific state
 	 **/
-	const std::array<sf::Vertex, 4> getVertices(Object::StateID_t stateID) const;
+	const std::array<sf::Vertex, 4> getVertices(ObjectType::StateID_t stateID) const;
 
 	
 
@@ -79,7 +80,7 @@ public:
 
 
 	/* Functions */
-private:
+protected:
 	std::array<sf::Vertex, 4> calculateVertices(const sf::IntRect& rect);
 };
 

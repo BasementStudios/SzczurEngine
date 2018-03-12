@@ -7,6 +7,8 @@
 
 #include <vector>
 
+#include <SFML/System/Vector2.hpp>
+
 #include "Szczur/Utility/Module.hpp"
 #include "Szczur/Debug/Logger.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
@@ -22,6 +24,12 @@ namespace rat {
 class World : public Module<Window, Assets>
 {
     using Module::Module;
+
+
+	
+	/* Types */
+public:
+	using Vecotr_t = sf::Vector2f;
 
 
 	
@@ -41,11 +49,11 @@ public:
 	World(ModulesTuple&& tuple);
 	~World();
 
-	// Disable copy operators
+	// Disable coping
 	World(const World&) = delete;
 	World& operator = (const World&) = delete;
 
-	// Disable move operators
+	// Disable moving
 	World(World&&) = delete;
 	World& operator = (World&&) = delete;
 
@@ -53,7 +61,7 @@ public:
 
 	/* Methods */
 public:
-    /// Module system
+    // Module system
 	void init();
 	void update(float deltaTime);
 	void render();
@@ -66,11 +74,10 @@ public:
 
 // Module constructor/destructor
 template <typename ModulesTuple>
-World::World(ModulesTuple&& tuple) :
-	Module(tuple)
+inline World::World(ModulesTuple&& tuple) : Module(tuple)
 {
 	LOG_INFO("[World] Module initializing"); 
-	init();
+	this->init();
 	LOG_INFO("[World] Module initialized!"); 
 }
 inline World::~World()
