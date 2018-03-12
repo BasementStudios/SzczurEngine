@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat
 {
@@ -13,8 +13,7 @@ public:
 
 	using Window_t = sf::RenderWindow;
 
-	template <typename Tuple>
-	Window(Tuple&& tuple);
+	Window();
 
 	~Window();
 
@@ -38,12 +37,5 @@ private:
 	Window_t _window;
 
 };
-
-template <typename Tuple>
-Window::Window(Tuple&& tuple) :
-	Module(tuple), _window(sf::VideoMode(1280, 720), "SzczurEngine very Alpha", sf::Style::Close)
-{
-	LOG_CONSTRUCTOR();
-}
 
 }

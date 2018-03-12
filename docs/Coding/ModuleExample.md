@@ -3,7 +3,6 @@ Przykład modułu
 ---------------
 
 
-
 ### Plik główny modułu
 
 Każdy moduł powinien mieć swój główny plik z główną klasą modułu, np. `YourModule.hpp`, w odpowiednim dla modułu katalogu, czyli `src/Szczur/Modules/` i folder o nazwie jak moduł: `YourModule`.
@@ -16,20 +15,11 @@ namespace rat
 
 class YourModule : public Module<Dependencies...>
 {
-public:
-
-    template <typename Tuple>
-    YourModule(Tuple&& tuple, /* your ctor args */);
-
+    // code
 };
 
-template <typename Tuple>
-YourModule::YourModule(Tuple&& tuple, /* your ctor args */) :
-    Module(tuple), /* your ctor initializer list */
-{
-
 }
-
+```
 
 
 ### Lista modułów
@@ -54,16 +44,20 @@ private:
 ```
 
 
-
 ### Użycie
 
 ```cpp
-_modules.getModule<ModuleName>() // w klasie Apllication
+_modules.initModule<ModuleName>(/* your ctor args */) // tworzenie modułu
+```
+```cpp
+_modules.getModule<ModuleName>() // w klasie Application
 ```
 ```cpp
 getModule<ModuleName>() // w środku innego modułu
 ```
-
+```cpp
+modulePtr_v<ModuleName> // tylko w celach TESTÓW!
+```
 
 
 ### Uwagi

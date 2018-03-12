@@ -5,7 +5,7 @@ namespace rat
 
 struct Scroll
 {
-	enum Code
+	enum Code_e
 	{
 		Down  = 0,
 		Right = 1,
