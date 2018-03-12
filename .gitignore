@@ -6,7 +6,6 @@ out/
 settings.mk
 
 # Projects and sessions
-StritchMake
 .clang_complete
 .vscode/
 *.npp

@@ -4,9 +4,9 @@
 
 #include <boost/container/flat_map.hpp>
 
-#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Json.hpp"
-#include "Szczur/Utility/Hash.hpp"
+#include "Szczur/Utility/Convert/Hash.hpp"
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 
@@ -25,7 +25,7 @@ namespace rat {
 
         ~Dialog();
 
-        void update(float deltaTime);
+        void update(float deltaTime=1.f/60.f);
 
         DialogManager* load(const std::string& path);
 

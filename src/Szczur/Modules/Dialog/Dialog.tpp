@@ -1,5 +1,4 @@
 
-#include "Szczur/Debug/Logger.hpp"
 
 #include <iostream>
 namespace rat {

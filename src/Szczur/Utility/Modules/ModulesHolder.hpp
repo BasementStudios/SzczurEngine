@@ -2,7 +2,9 @@
 
 #include <tuple>
 
+#include "Module.hpp"
 #include "LazyInitializer.hpp"
+#include "Szczur/CompilerPortability.hpp"
 
 namespace rat
 {
@@ -16,12 +18,7 @@ public:
 	using Held_t   = LazyInitializer<U>;
 	using Holder_t = std::tuple<Held_t<Ts>...>;
 
-	template <typename...>
-	struct Dummy {};
-
-	static constexpr size_t modulesCount();
-
-	ModulesHolder() = default;
+	ModulesHolder();
 
 	ModulesHolder(const ModulesHolder&) = delete;
 

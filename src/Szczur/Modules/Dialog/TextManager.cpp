@@ -3,7 +3,6 @@
 #include <iostream>
 #include <regex>
 #include <memory>
-#include "Szczur/Debug/Logger.hpp"
 
 namespace rat {
     TextManager::TextManager() :

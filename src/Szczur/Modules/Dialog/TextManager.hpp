@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/Hash.hpp"
+#include "Szczur/Utility/Convert/Hash.hpp"
 
 #include "TextStruct.hpp"
 
