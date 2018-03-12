@@ -5,8 +5,9 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Shader.hpp>
-#include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
+
+#include "Szczur/Utility/Audio/RatMusic.hpp"
 
 #include "Szczur/Debug/Logger.hpp"
 
@@ -62,15 +63,15 @@ struct AssetTraits<sf::Shader>
 };
 
 template <>
-struct AssetTraits<sf::Music>
+struct AssetTraits<RatMusic>
 {
-	static sf::Music* create();
+	static RatMusic* create();
 
-	static sf::Music* createFallback();
+	static RatMusic* createFallback();
 
-	static bool load(sf::Music& music, const std::string& path);
+	static bool load(RatMusic& music, const std::string& path);
 
-	static void unload(sf::Music& music);
+	static void unload(RatMusic& music);
 
 	static const char* getName();
 

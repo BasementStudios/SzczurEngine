@@ -121,33 +121,33 @@ const char* AssetTraits<sf::Shader>::getName()
 	return "sf::Shader";
 }
 
-sf::Music* AssetTraits<sf::Music>::create()
+RatMusic* AssetTraits<RatMusic>::create()
 {
-	return new sf::Music;
+	return new RatMusic;
 }
 
-sf::Music* AssetTraits<sf::Music>::createFallback()
+RatMusic* AssetTraits<RatMusic>::createFallback()
 {
-	sf::Music* tmp = new sf::Music;
+	RatMusic* tmp = new RatMusic;
 	tmp->openFromMemory(musicData, sizeof(musicData));
 	tmp->setLoop(true);
 	tmp->setVolume(50.0f);
 	return tmp;
 }
 
-bool AssetTraits<sf::Music>::load(sf::Music& music, const std::string& path)
+bool AssetTraits<RatMusic>::load(RatMusic& music, const std::string& path)
 {
 	return music.openFromFile(path);
 }
 
-void AssetTraits<sf::Music>::unload(sf::Music&)
+void AssetTraits<RatMusic>::unload(RatMusic&)
 {
 	// Nothing to do here, destructor will take care of freeing resource
 }
 
-const char* AssetTraits<sf::Music>::getName()
+const char* AssetTraits<RatMusic>::getName()
 {
-	return "sf::Music";
+	return "RatMusic";
 }
 
 sf::SoundBuffer* AssetTraits<sf::SoundBuffer>::create()

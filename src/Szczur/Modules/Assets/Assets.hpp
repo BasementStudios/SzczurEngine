@@ -10,7 +10,7 @@ class Assets : public Module<>
 {
 public:
 
-	using Manager_t = AssetsManager<sf::Font, sf::Texture, sf::Shader, sf::Music, sf::SoundBuffer>;
+	using Manager_t = AssetsManager<sf::Font, sf::Texture, sf::Shader, RatMusic, sf::SoundBuffer>;
 
 	template <typename Tuple>
 	Assets(Tuple&& tuple);
