@@ -1,7 +1,7 @@
 #include "Application.hpp"
-
+ 
 #include <SFML/Graphics.hpp>
-
+ 
 namespace rat
 {
 
@@ -9,6 +9,7 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	_modules.initModule<Script>();
 	_modules.initModule<GUI>();
 }
 
@@ -21,7 +22,7 @@ void Application::input()
 		_modules.getModule<Input>().getManager().processEvent(event);
 
 		if (event.type == sf::Event::Closed) {
-			getWindow().close();
+		  getWindow().close();
 		}
 	}
 }
@@ -37,8 +38,8 @@ void Application::render()
 	_modules.getModule<Window>().clear();
 	_modules.getModule<GUI>().render();
 	_modules.getModule<Window>().render();
-}
 
+}
 int Application::run()
 {
 	init();
@@ -51,15 +52,16 @@ int Application::run()
 
 	return 0;
 }
-
+ 
 sf::RenderWindow& Application::getWindow()
 {
 	return _modules.getModule<Window>().getWindow();
 }
-
+ 
 const sf::RenderWindow& Application::getWindow() const
 {
 	return _modules.getModule<Window>().getWindow();
 }
+ 
 
 }
