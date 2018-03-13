@@ -9,6 +9,13 @@ namespace rat
 
 	}
 
+	void Echo::initScript(Script& script)
+	{
+		auto object = script.newClass<Echo>("Echo", "Music");
+		SCRIPT_SET_CLASS(Echo, delay, lrDelay, damping, feedback, spread);
+		object.init();
+	} 
+
 	void Echo::delay(float delay)
 	{
 		setEffect(AL_ECHO_DELAY, delay);

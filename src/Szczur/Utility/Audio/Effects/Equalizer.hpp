@@ -2,6 +2,8 @@
 
 #include "MusicEffect.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat
 {
 	class Equalizer : public MusicEffect
@@ -10,6 +12,8 @@ namespace rat
 	public:
 
 		Equalizer(unsigned int& source);
+
+		static void initScript(Script& script);
 
 		//gain: [Range: 0.126 - 7.943] [Default: 1.0]
 		//cutoff: [Range: 50.0 - 800.0] [Default: 200.0]

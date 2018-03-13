@@ -2,6 +2,8 @@
 
 #include "MusicEffect.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat
 {
 	class Reverb : public MusicEffect
@@ -10,6 +12,8 @@ namespace rat
 	public:
 
 		Reverb(unsigned int& source);
+
+		static void initScript(Script& script);
 
 		//density: [Range: 0.0 - 1.0] [Default: 1.0]
 		void density(float density);

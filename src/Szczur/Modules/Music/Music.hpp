@@ -8,12 +8,14 @@
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Debug.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 #include "MusicAssets.hpp"
 #include "Playlist.hpp"
 
 namespace rat 
 {
-	class Music : public Module<>
+	class Music : public Module<Script>
 	{ 
 		using PlaylistContainer_t = boost::container::flat_map<Hash32_t, std::unique_ptr<Playlist>>;
 
@@ -31,6 +33,8 @@ namespace rat
 	public:
 
 		Music(const std::string& assetsPath);
+
+		void initScript();
 
 		void update(float deltaTime);
 

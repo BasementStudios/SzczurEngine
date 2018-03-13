@@ -2,6 +2,8 @@
 
 #include "MusicEffect.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat
 {
 	class Echo : public MusicEffect
@@ -10,6 +12,8 @@ namespace rat
 	public:
 
 		Echo(unsigned int& source);
+
+		static void initScript(Script& script);
 
 		//delay: [Range: 0.0 - 0.207] [Default: 0.1]
 		void delay(float delay);

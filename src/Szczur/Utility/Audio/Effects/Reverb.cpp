@@ -9,6 +9,14 @@ namespace rat
 
     }
 
+    void Reverb::initScript(Script& script)
+	{
+		auto object = script.newClass<Reverb>("Reverb", "Music");
+		SCRIPT_SET_CLASS(Reverb, density, diffusion, gain, gainHf, decayTime, decayHfRatio, reflectionsGain, reflectionsDelay,
+                        lateReverbGain, lateReverbDelay, airAbsorptionGainHf, roomRolloffFactor, decayHfLimit);
+		object.init();
+	} 
+
     void Reverb::density(float density)
     {
         setEffect(AL_REVERB_DENSITY, density);

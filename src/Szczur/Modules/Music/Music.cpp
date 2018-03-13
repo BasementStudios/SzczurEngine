@@ -8,6 +8,34 @@ namespace rat
 	{
 		LOG_INFO(this, " : Module Music constructed");
 	}
+
+	void Music::initScript() {
+		Script& script = getModule<Script>();
+		auto module = script.newModule("Music");
+		
+		SCRIPT_SET_MODULE(Music, addToPlaylist, removeFromPlaylist, play, pause, stop, includes, setPlayingMode, setVolume, getVolume);
+
+		module.set_function("addPlaylist",
+			[owner = this](const std::string& key, sol::variadic_args newPlaylist){
+				owner->_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>();
+				for (auto it : newPlaylist){
+					owner->addToPlaylist(key, it);
+				}
+			}
+		);
+
+		script.initClasses<Equalizer, Reverb, Echo>();
+
+		module.set_function("getEqualizer", &Music::getEffect<Equalizer>, this);
+		module.set_function("getReverb", &Music::getEffect<Reverb>, this);
+		module.set_function("getEcho", &Music::getEffect<Echo>, this);
+
+		module.set_function("cleanEqualizer", &Music::cleanEffect<Equalizer>, this);
+		module.set_function("cleanReverb", &Music::cleanEffect<Reverb>, this);
+		module.set_function("cleanEcho", &Music::cleanEffect<Echo>, this);
+
+	}
+
 	void Music::update(float deltaTime) 
 	{
 		if (_currentPlaylistKey != 0)

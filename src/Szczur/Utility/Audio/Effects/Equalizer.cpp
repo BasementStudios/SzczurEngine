@@ -9,6 +9,14 @@ namespace rat
 
     }
 
+    void Equalizer::initScript(Script& script)
+	{
+		auto object = script.newClass<Equalizer>("Equalizer", "Music");
+		SCRIPT_SET_CLASS(Equalizer, low, lowMid, highMid, high, lowCutoff, lowGain, lowMidCenter, lowMidWidth, lowMidGain, 
+                        highMidCenter, highMidWidth, highCutoff, highGain);
+		object.init();
+	} 
+
     void Equalizer::low(float gain, float cutoff)
     {
         if (cutoff != 0) lowCutoff(cutoff);
