@@ -22,9 +22,6 @@ public:
 
 	inline static Script* _this;
 
-	template <typename Tuple>
-	Script(Tuple&& tuple);
-
 	Script(const Script&) = delete;
 	Script& operator = (const Script&) = delete;
 	Script(Script&&) = delete;
@@ -34,6 +31,12 @@ public:
 		_lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::table);
 		initSFML();
 		initMainFunctions();
+	}
+	
+	void updateEditor();
+	
+	void update() {
+		updateEditor();
 	}
 	
 	void initMainFunctions() {
