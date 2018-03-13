@@ -29,6 +29,9 @@ namespace rat {
         void setVoiceEnd(size_t voiceEnd);
         size_t getVoiceEnd() const;
 
+        void setLabel(const std::string& label);
+        const std::string& getLabel() const;
+
         void interpretText(const std::string& text);
 
         void forEach(std::function<void(Texts_t::iterator)> func);
@@ -37,6 +40,7 @@ namespace rat {
         size_t _minorId;
         size_t _voiceStart;
         size_t _voiceEnd;
+        std::string _label;
         Texts_t _texts;
     };
 }

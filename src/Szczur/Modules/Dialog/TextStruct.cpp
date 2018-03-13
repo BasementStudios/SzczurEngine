@@ -68,4 +68,12 @@ namespace rat {
             std::invoke(func, it);
     }
 
+    void TextStruct::setLabel(const std::string& label) {
+        _label = label;
+    }
+
+    const std::string& TextStruct::getLabel() const {
+        return _label;
+    }
+
 }

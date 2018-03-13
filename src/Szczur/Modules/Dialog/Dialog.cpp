@@ -78,8 +78,7 @@ namespace rat {
         Script& script = getModule<Script>();
         auto module = script.newModule("Dialog");
 
-        SCRIPT_SET_MODULE(Dialog, load)
-        ;
+        SCRIPT_SET_MODULE(Dialog, load);
 
 
         script.initClasses<DialogManager, Options>();

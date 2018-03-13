@@ -17,12 +17,11 @@ namespace rat {
             "add",
             []() {},
             [](Options& owner, sol::table tab) {
-                if(tab["text"].valid() && tab["target"].valid()) {
+                if(tab["target"].valid()) {
                     auto condValid = tab["condition"].valid();
                     auto actiValid = tab["action"].valid();
                     if(condValid && actiValid) {
                         owner.addOption(
-                            tab["text"],
                             tab.get<sol::function>("condition"),
                             tab["target"],
                             tab.get<sol::function>("action")
@@ -30,7 +29,6 @@ namespace rat {
                     }
                     else if(condValid) {
                         owner.addOption(
-                            tab["text"],
                             tab.get<sol::function>("condition"),
                             tab["target"],
                             nullptr
@@ -38,7 +36,6 @@ namespace rat {
                     }
                     else if(actiValid) {
                         owner.addOption(
-                            tab["text"],
                             nullptr,
                             tab["target"],
                             tab.get<sol::function>("action")
@@ -46,7 +43,6 @@ namespace rat {
                     }
                     else {
                         owner.addOption(
-                            tab["text"],
                             nullptr,
                             tab["target"],
                             nullptr
@@ -60,8 +56,8 @@ namespace rat {
         object.init();
     }
 
-    void Options::addOption(const std::string& name, Condition_t condition, Key_t target, AfterAction_t afterAction) {
-        _options.push_back(new Option{name, condition, target, afterAction});
+    void Options::addOption(Condition_t condition, Key_t target, AfterAction_t afterAction) {
+        _options.push_back(new Option{condition, target, afterAction});
     }
 
     bool Options::checkIfRunsWith(Key_t id) const {

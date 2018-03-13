@@ -21,7 +21,6 @@ namespace rat {
         using Options_t = std::vector<Option*>;
 
         struct Option {
-            std::string name;
             Condition_t condition;
             Key_t target;
             AfterAction_t afterAction;
@@ -43,8 +42,7 @@ namespace rat {
             (_runners.insert(runners), ...);
         }
 
-        void addOption( 
-            const std::string& name, 
+        void addOption(
             Condition_t condition, 
             Key_t target, 
             AfterAction_t afterAction

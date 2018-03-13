@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <SFML/Graphics.hpp>
 
 #include "TextManager.hpp"
 
@@ -8,6 +8,8 @@
 
 #include "SoundManager.hpp"
 
+#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Convert/Hash.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -17,6 +19,8 @@ namespace rat {
     class DialogManager {
     public:
         using Options_t = std::vector<Options*>;
+
+        using CharactersBinds_t = boost::container::flat_map<Hash32_t, sf::Texture*>;
 
         DialogManager(const std::string& path, DialogGUI& dialogGUI);
 
@@ -35,6 +39,8 @@ namespace rat {
         void play(size_t id);
         void play();
 
+        void bindCharacter(const std::string& character, const std::string& path);
+
         template<typename... Ts>
         void addOptions(Ts*... options) {
             (_options.push_back(options), ...);
@@ -47,6 +53,8 @@ namespace rat {
         DialogGUI& _dialogGUI;
 
         Options_t _options;
+
+        CharactersBinds_t _charactersBinds;
 
         size_t _current;
 

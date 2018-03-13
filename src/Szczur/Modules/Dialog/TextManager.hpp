@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Debug.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 #include "TextStruct.hpp"
@@ -21,6 +22,8 @@ namespace rat {
         ~TextManager();
 
         void load(const std::string& path);
+
+        const std::string& getLabel(Key_t id) const;
 
         Type_t* add(const Key_t key1, const Key_t key2, Type_t* dialog);
         void set(const Key_t key);

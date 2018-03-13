@@ -26,8 +26,8 @@ namespace rat {
         std::ifstream file(path);
         std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         file.close();
-        //  \[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\{\n?([\d\D][^\}]+)
-        std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\{\n?([\d\D][^\}]+))"s);
+        //  \[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+)
+        std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
         for(auto it = std::sregex_iterator(str.begin(), str.end(), word_regex); it!=std::sregex_iterator(); ++it) {
             Type_t* obj = new Type_t;
             obj->setId( std::stoi(it->str(1u)) );
@@ -39,7 +39,9 @@ namespace rat {
             obj->setVoiceEnd( std::stoi(it->str(5u)) * 60 );
             obj->setVoiceEnd( std::stoi(it->str(6u)) + obj->getVoiceEnd() );
 
-            obj->interpretText(it->str(7u));
+            obj->setLabel(it->str(7u));
+
+            obj->interpretText(it->str(8u));
 
             add(obj->getId(), obj->getMinorId(), obj);
         }
@@ -96,5 +98,15 @@ namespace rat {
 
     bool TextManager::isMinorFinished() {
         return _finishedMinor;
+    }
+
+    const std::string& TextManager::getLabel(Key_t id) const {
+        if(auto it = _texts.find(id); it != _texts.end()) {
+            if(auto it2 = it->second.find(1); it2 != it->second.end()) {
+                return it2->second->getLabel();
+            }
+        }
+        LOG_ERROR("Given ID was NOT found")
+        return "Id not found";
     }
 }

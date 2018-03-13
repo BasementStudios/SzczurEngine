@@ -1,6 +1,7 @@
 #include "DialogManager.hpp"
 #include "TextStruct.hpp"
 #include <iostream>
+#include <sol.hpp>
 
 namespace rat {
     DialogManager::DialogManager(const std::string& path, DialogGUI& dialogGUI) :
@@ -20,6 +21,7 @@ namespace rat {
 
         object.set("startWith", &DialogManager::startWith);
         object.set("play", sol::resolve<void()>(&DialogManager::play));
+        object.set("bindCharacter", &DialogManager::bindCharacter);
         object.set(
             "newOptions", 
             [](DialogManager& owner, sol::variadic_args va) {
@@ -34,6 +36,21 @@ namespace rat {
 
         //
         object.init();
+    }
+
+    void DialogManager::bindCharacter(const std::string& character, const std::string& path) {
+        sf::Texture* texture = new sf::Texture;
+        if(texture->loadFromFile(path)) {
+            Hash32_t key = fnv1a_32(character.begin(), character.end());
+            if(auto it = _charactersBinds.find(key); it != _charactersBinds.end())
+                delete texture;
+            else
+                _charactersBinds[key] = texture;
+        }
+        else {
+            delete texture;
+            LOG_ERROR(this, " cannot load: ", path)
+        }
     }
 
     void DialogManager::skip() {
@@ -52,7 +69,7 @@ namespace rat {
                     _paused = true;
                     for(auto& it : _options) {
                         if(it->checkIfRunsWith(_current)) {
-                            _dialogGUI.interpretOptions(*it, [this](size_t id){
+                            _dialogGUI.interpretOptions(_textManager, *it, [this](size_t id){
                                 _current = id;
                                 return play();
                             });
@@ -108,6 +125,18 @@ namespace rat {
                 it->first,
                 [this, it](){
                     _dialogGUI.setText(it->second.second);
+                    _dialogGUI.setCharacter(it->second.first);
+                    if(
+                        auto result = _charactersBinds.find(
+                            fnv1a_32(
+                                it->second.first.begin(), 
+                                it->second.first.end()
+                            )
+                        );
+                        result != _charactersBinds.end()
+                    ) {
+                        _dialogGUI.setCharacterTexture( result->second );
+                    }
                 }
             );
         });
