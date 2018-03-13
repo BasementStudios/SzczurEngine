@@ -1,6 +1,5 @@
 #include "Music.hpp"
 
-
 namespace rat 
 {
 
@@ -15,17 +14,19 @@ namespace rat
 		_playlists.push_back(std::make_unique<Playlist>());
 
 		for (auto it : newPlaylist)
-			add(_playlists.size() - 1, it);
+			addToPlaylist(_playlists.size() - 1, it);
 	}
 
-	void Music::add(unsigned int id, const std::string& fileName)
+	void Music::addToPlaylist(unsigned int id, const std::string& fileName)
 	{
-		auto& source = getModule<Assets>().load<RatMusic>(getPath(fileName));
-		auto&& base = MusicBase(fileName, source);
+		_assets.load(fileName);
+		auto&& base = MusicBase(fileName, _assets.get(fileName));
 		_playlists[id]->add(std::move(base));
+
+		LOG_INFO("Added ", fileName, " to playlist nr:", id);
 	}
 
-	void Music::remove(unsigned int id, const std::string& fileName) 
+	void Music::removeFromPlaylist(unsigned int id, const std::string& fileName) 
 	{
 		if (id > _playlists.size()) return;
 
@@ -34,16 +35,18 @@ namespace rat
 				_currentPlaylistID = -1;
 
 			for (auto& it : _playlists[id]->getContainerRef())
-				unLoad(id, it->getName());
+				unLoad(it->getName());
 
 			_playlists.erase(_playlists.begin() + id);
 		}
 		else
-			unLoad(id, fileName);
+			unLoad(fileName);
 	}
 
 	void Music::play(unsigned int id, const std::string& fileName)
 	{
+		LOG_INFO("Play function started: ", fileName, " in playlist nr:", id);
+
 		if (_currentPlaylistID == -1) 
 			_playlists[id]->play(fileName);
 		else {
@@ -61,14 +64,14 @@ namespace rat
 		_currentPlaylistID = id;
 	}
 
-	void Music::pause(unsigned int id)
+	void Music::pause()
 	{
-		_playlists[id]->pause();
+		_playlists[_currentPlaylistID]->pause();
 	}
 
-	void Music::stop(unsigned int id)
+	void Music::stop()
 	{
-		_playlists[id]->stop();
+		_playlists[_currentPlaylistID]->stop();
 	}
 
 	bool Music::includes(unsigned int id, const std::string& fileName) const
@@ -86,32 +89,18 @@ namespace rat
 		_playlists[id]->setVolume(volume, fileName);
 	}
 
-	float Music::getVolume(unsigned int id, const std::string& fileName) const
+	float Music::getVolume(const std::string& fileName)
 	{
-		return _playlists[id]->getVolume(fileName);
+		return _assets.get(fileName).getVolume();
 	}
 
-	inline std::string Music::getPath(const std::string& fileName) const 
+	void Music::unLoad(const std::string& fileName)
 	{
-		return "res/Music/" + fileName + ".flac"; 
-	}
+		auto& music = _assets.get(fileName);
+		music.decrementCounter();
 
-	bool Music::usingByOtherPlaylist(unsigned int id, const std::string& fileName) const
-	{
-		for (unsigned int i = 0; i < _playlists.size(); ++i) {
-			if (i != id) {
-				if (_playlists[i]->includes(fileName))
-					return true;
-			}
-		}
-		
-		return false;
-	}
+		if (!music.getCounterValue())
+			_assets.unload(fileName);
+	}	
 
-	void Music::unLoad(unsigned int id, const std::string& fileName)
-	{
-		if (!usingByOtherPlaylist(id, fileName))
-			getModule<Assets>().unload<RatMusic>(getPath(fileName));
-	}
-	
 }

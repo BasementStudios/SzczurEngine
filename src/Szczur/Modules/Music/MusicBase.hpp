@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 
-#include "Szczur/Utility/Audio/RatMusic.hpp"
+#include "RatMusic.hpp"
 
 namespace rat 
 {
@@ -57,12 +57,6 @@ namespace rat
 		const std::string& getName() const;
 		
 		void reset();
-
-		template <typename T>
-		T& getEffect()
-		{
-			return _base.getEffect<T>();
-		}
 
 	private:
 

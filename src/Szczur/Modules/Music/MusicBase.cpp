@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <SFML/System.hpp>
+
 #include <Szczur/Json.hpp>
 
 namespace rat

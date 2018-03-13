@@ -139,11 +139,6 @@ namespace rat
 		}
 	}
 
-	float Playlist::getVolume(const std::string& fileName) const
-	{
-		return _playlist[getID(fileName)]->getVolume();
-	}
-
 	inline bool Playlist::includes(const std::string& fileName) const 
 	{
 		return (getID(fileName) != _playlist.size());

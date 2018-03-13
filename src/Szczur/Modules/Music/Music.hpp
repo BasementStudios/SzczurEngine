@@ -2,16 +2,17 @@
 
 #include <memory>
 
-#include "Szczur/Utility/Module.hpp"
-#include "Szczur/Modules/Assets/Assets.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Debug.hpp"
 
+#include "MusicAssets.hpp"
 #include "Playlist.hpp"
 
 namespace rat 
 {
-	class Music : public Module<Assets>
+	class Music : public Module<>
 	{ 
-		using Container_t = std::vector<std::unique_ptr<Playlist>>;
+		using PlaylistContainer_t = std::vector<std::unique_ptr<Playlist>>;
 
 	public:
 
@@ -19,58 +20,54 @@ namespace rat
 
 	private:
 
-		Container_t _playlists;
+		PlaylistContainer_t _playlists;
+		MusicAssets _assets;
 		
 		int _currentPlaylistID = -1;
 
 	public:
 
-		template <typename Tuple>
-    	Music(Tuple&& tuple);
-
 		void update(float deltaTime);
 
 		void addPlaylist(const std::vector<std::string>& newPlaylist);
 
-		void add(unsigned int id, const std::string& fileName);
-		void remove(unsigned int id, const std::string& fileName = "");
+		void addToPlaylist(unsigned int id, const std::string& fileName);
+		void removeFromPlaylist(unsigned int id, const std::string& fileName = "");
 
 		void play(unsigned int id, const std::string& fileName = "");
-		void pause(unsigned int id);
-		void stop(unsigned int id);
+		void pause();
+		void stop();
 
 		bool includes(unsigned int id, const std::string& fileName) const;
 
 		void setPlayingMode(unsigned int id, PlayingMode mode);
 
 		void setVolume(unsigned int id, float volume, const std::string& fileName = "");
-		float getVolume(unsigned int id, const std::string& fileName) const;
+		float getVolume(const std::string& fileName);
 
 		template <typename T>
-		T& getEffect(unsigned int id, const std::string& fileName);
+		T& getEffect(const std::string& fileName);
+
+		template <typename T>
+    	void cleanEffect(const std::string& fileName);
 
 	private:
 
-		std::string getPath(const std::string& fileName) const;
-
-		bool usingByOtherPlaylist(unsigned int id, const std::string& fileName) const;
-
-		void unLoad(unsigned int id, const std::string& fileName);
+		void unLoad(const std::string& fileName);
 
 	};
 
-	template <typename Tuple>
-    Music::Music(Tuple&& tuple)
-		: Module(tuple)
+	template <typename T>
+	T& Music::getEffect(const std::string& fileName)
 	{
-		LOG_CONSTRUCTOR();
+		return _assets.get(fileName).getEffect<T>();
 	}
 
-	template <typename T>
-	T& Music::getEffect(unsigned int id, const std::string& fileName)
-	{
-		return _playlists[id]->getEffect<T>(fileName);
-	}
+    template <typename T>
+    void Music::cleanEffect(const std::string& fileName)
+    {
+        _assets.get(fileName).cleanEffect<T>();
+    }
 
 }
 
