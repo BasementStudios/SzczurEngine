@@ -10,11 +10,7 @@ void Application::init()
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
-
-	// For testing `Script`
-	_modules.initModule<BattleField>();
-
-	std::cout.flush();
+	_modules.initModule<Music>();
 }
 
 void Application::input()
@@ -32,18 +28,17 @@ void Application::input()
 
 void Application::update()
 {
-	_modules.getModule<BattleField>().update();
+	auto deltaTime = _mainClock.restart().asSeconds();
+	_modules.getModule<Music>().update(deltaTime);
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-	// For testing `Script`
-	_modules.getModule<BattleField>().render();
 	_modules.getModule<Window>().render();
-
 }
+
 int Application::run()
 {
 	init();

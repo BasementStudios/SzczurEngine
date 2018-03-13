@@ -4,7 +4,6 @@
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/BattleField/BattleField.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Music/Music.hpp"
 
@@ -40,7 +39,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Music> _modules;
+	ModulesHolder<Window, Input, Script, Music> _modules;
 	Clock _mainClock;
 
 };
