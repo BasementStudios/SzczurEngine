@@ -22,7 +22,7 @@ namespace rat {
             });
             i++;
             check->move({0.f, 50.f * i});
-            add("check"+std::to_string(i), check);
+            add(check);
         }
 
 

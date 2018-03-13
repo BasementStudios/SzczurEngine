@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Debug.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 
@@ -23,13 +24,12 @@ namespace rat {
 
 		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
-		using Children_t = boost::container::flat_map<Hash32_t, Widget*>;
+		//using Children_t = boost::container::flat_map<Hash32_t, Widget*>;
+		using Children_t = std::vector<Widget*>;
 
 		void setParent(Widget* parent);
 
-		Widget* add(const std::string& key, Widget* object);
-
-		Widget* get(const std::string& key) const;
+		Widget* add(Widget* object);
 
 		Widget* setCallback(CallbackType key, Function_t value);
 

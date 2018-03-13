@@ -29,7 +29,7 @@ namespace rat {
         _text.setFillColor(newColor);
     }
 
-    void TextWidget::add(char letter) {
+    void TextWidget::addLetter(char letter) {
         _text.setString( _text.getString() + letter );
     }
 

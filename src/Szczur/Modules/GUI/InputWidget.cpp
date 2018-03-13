@@ -38,7 +38,7 @@ namespace rat {
                         removeLast();
                     else 
                         if(getLength() < _maxLength)
-                            add(static_cast<char>(event.text.unicode));
+                            addLetter(static_cast<char>(event.text.unicode));
                     _aboutToRecalculate = true;
                 }
             }

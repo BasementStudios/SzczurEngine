@@ -57,7 +57,7 @@ namespace rat {
                 }
             }
         }
-        parent->add(name, widget);
+        parent->add(widget);
     }
 
     

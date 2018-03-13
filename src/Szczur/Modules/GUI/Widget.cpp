@@ -15,13 +15,13 @@ namespace rat {
     }
 
     Widget::~Widget() {
-        for(auto &it : _children)
-            delete it.second;
+        for(auto it : _children)
+            delete it;
     }
 
     void Widget::clear() {
-        for(auto &it : _children)
-            delete it.second;
+        for(auto it : _children)
+            delete it;
         _children.clear();
     }
 
@@ -40,23 +40,16 @@ namespace rat {
             std::invoke(std::get<1>(*it), this);
     }
 
-    Widget* Widget::add(const std::string& key, Widget* object) {
+    Widget* Widget::add(Widget* object) {
         if(object) {
-            auto k = fnv1a_32(key.begin(), key.end());
-            if(auto it = _children.find(k); it != _children.end())
-                delete it->second;
-            _children.insert_or_assign(k, object);
+            _children.push_back(object);
             object->setParent(this);
             _aboutToRecalculate = true;
-            
+        }
+        else {
+            LOG_ERROR("Widget given to Widget::add is nullptr")
         }
         return object;
-    }
-
-    Widget* Widget::get(const std::string& key) const {
-        if(auto it = _children.find(fnv1a_32(key.begin(), key.end())); it != _children.end())
-            return it->second;
-        return nullptr;
     }
 
     void Widget::input(const sf::Event& event) {
@@ -104,16 +97,16 @@ namespace rat {
 
                 default: break;
             }
-            for(auto& it : _children) {
+            for(auto it : _children) {
                 if(event.type == sf::Event::MouseMoved) {
-                    auto itPosition = it.second->getPosition();
+                    auto itPosition = it->getPosition();
                     sf::Event tempEvent(event);
                     tempEvent.mouseMove.x -= itPosition.x;
                     tempEvent.mouseMove.y -= itPosition.y;
-                    it.second->input(tempEvent);
+                    it->input(tempEvent);
                 }
                 else
-                    it.second->input(event);
+                    it->input(event);
             }
         }
     }
@@ -129,7 +122,7 @@ namespace rat {
                 callback(CallbackType::onHold);
 
             for(auto& it : _children)
-                it.second->update(deltaTime);
+                it->update(deltaTime);
         }
 
         if(_aboutToRecalculate)
@@ -139,27 +132,29 @@ namespace rat {
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         if(isVisible()) {
+            states.transform *= getTransform();
+
+            /*//  Uncomment to get into debug mode :D
             sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
             shape.setFillColor(sf::Color(0,0,255,70));
 
-
-            states.transform *= getTransform();
+            
 
             //target.draw(shape, states);
-
+            */
             _draw(target, states);
-            for(auto& it : _children)
-                target.draw(*(it.second), states);
+            for(auto it : _children)
+                target.draw(*it, states);
         }
     }
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
         _size = {0u,0u};
-        for(auto& it : _children) {
-            auto itSize = it.second->getSize();
-            auto itPosition = static_cast<sf::Vector2i>(it.second->getPosition());
+        for(auto it : _children) {
+            auto itSize = it->getSize();
+            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
             if(itPosition.x + itSize.x > _size.x)
                 _size.x = itPosition.x + itSize.x;
             if(itPosition.y + itSize.y > _size.y)

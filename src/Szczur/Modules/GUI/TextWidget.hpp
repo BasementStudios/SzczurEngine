@@ -19,7 +19,7 @@ namespace rat {
 
         size_t getLength();
 
-        void add(char letter);
+        void addLetter(char letter);
 
         const std::string& getString() const;
         void setString(const std::string& str);

@@ -8,6 +8,16 @@ namespace rat {
         //a->setAmount(7u);
         auto& window = getModule<Window>().getWindow();
         _canvas.create(window.getSize().x, window.getSize().y);
+
+
+        addAsset<sf::Texture>("data/dial_back.png");
+        ImageWidget* a = new ImageWidget(getAsset<sf::Texture>("data/dial_back.png"));
+        auto* i = addInterface();
+        i->add(a);
+
+        a = new ImageWidget(getAsset<sf::Texture>("data/dial_back.png"));
+        a->move({0.f, 200.f});
+        i->add(a);
     }
 
 
