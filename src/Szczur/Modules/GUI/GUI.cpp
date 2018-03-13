@@ -5,7 +5,7 @@ namespace rat {
         LOG_INFO(this, "Module GUI constructed")
         //_initAssets();
         //auto* a = reinterpret_cast<CircleChooseWidget*>(addInterface("data/json.json")->get("_root")->get("test")); 
-        //a->setAmount(7u); 
+        //a->setAmount(7u);
         auto& window = getModule<Window>().getWindow();
         _canvas.create(window.getSize().x, window.getSize().y);
     }
