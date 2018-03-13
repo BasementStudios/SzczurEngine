@@ -5,7 +5,6 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/BattleField/BattleField.hpp"
  
 namespace rat
 {
@@ -39,7 +38,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, BattleField> _modules;
+	ModulesHolder<Window, Input, Script> _modules;
 	Clock _mainClock;
 
 };

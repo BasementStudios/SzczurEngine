@@ -11,9 +11,6 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
 
-	// For testing `Script`
-	_modules.initModule<BattleField>();
-
 	std::cout.flush();
 }
 
@@ -39,8 +36,6 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-	// For testing `Script`
-	_modules.getModule<BattleField>().render();
 	_modules.getModule<Window>().render();
 
 }
