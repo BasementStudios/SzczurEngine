@@ -1,0 +1,6 @@
+[color]
+	branch = true
+	diff = true
+	status = true
+	showbranch = true
+	ui = true

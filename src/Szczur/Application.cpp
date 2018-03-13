@@ -1,7 +1,7 @@
 #include "Application.hpp"
-
+ 
 #include <SFML/Graphics.hpp>
-
+ 
 namespace rat
 {
 
@@ -9,6 +9,12 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	_modules.initModule<Script>();
+
+	// For testing `Script`
+	_modules.initModule<BattleField>();
+
+	std::cout.flush();
 }
 
 void Application::input()
@@ -19,22 +25,25 @@ void Application::input()
 		_modules.getModule<Input>().getManager().processEvent(event);
 
 		if (event.type == sf::Event::Closed) {
-			getWindow().close();
+		  getWindow().close();
 		}
 	}
 }
 
 void Application::update()
 {
+	_modules.getModule<BattleField>().update();
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
+	// For testing `Script`
+	_modules.getModule<BattleField>().render();
 	_modules.getModule<Window>().render();
-}
 
+}
 int Application::run()
 {
 	init();
@@ -47,15 +56,16 @@ int Application::run()
 
 	return 0;
 }
-
+ 
 sf::RenderWindow& Application::getWindow()
 {
 	return _modules.getModule<Window>().getWindow();
 }
-
+ 
 const sf::RenderWindow& Application::getWindow() const
 {
 	return _modules.getModule<Window>().getWindow();
 }
+ 
 
 }
