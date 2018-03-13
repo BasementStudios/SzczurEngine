@@ -5,88 +5,88 @@ namespace rat
 
 	void Music::update(float deltaTime) 
 	{
-		if (_currentPlaylistID != -1)
-			_playlists[_currentPlaylistID]->update(deltaTime);
+		if (_currentPlaylistKey == 0)
+			_playlists[_currentPlaylistKey]->update(deltaTime);
 	}
 
-	void Music::addPlaylist(const std::vector<std::string>& newPlaylist) 
+	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist) 
 	{
-		_playlists.push_back(std::make_unique<Playlist>());
+		_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>();
 
 		for (auto it : newPlaylist)
-			addToPlaylist(_playlists.size() - 1, it);
+			addToPlaylist(key, it);
 	}
 
-	void Music::addToPlaylist(unsigned int id, const std::string& fileName)
+	void Music::addToPlaylist(const std::string& key, const std::string& fileName)
 	{
 		_assets.load(fileName);
 		auto&& base = MusicBase(fileName, _assets.get(fileName));
-		_playlists[id]->add(std::move(base));
+		_playlists[fnv1a_32(key.begin())]->add(std::move(base));
 
-		LOG_INFO("Added ", fileName, " to playlist nr:", id);
+		LOG_INFO("Added ", fileName, " to playlist ", key);
 	}
 
-	void Music::removeFromPlaylist(unsigned int id, const std::string& fileName) 
+	void Music::removeFromPlaylist(const std::string& key, const std::string& fileName) 
 	{
-		if (id > _playlists.size()) return;
+		auto hashKey = fnv1a_32(key.begin()); 
 
 		if (fileName.empty()) {
-			if (id == static_cast<unsigned>(_currentPlaylistID)) 
-				_currentPlaylistID = -1;
+			if (_currentPlaylistKey == hashKey) 
+				_currentPlaylistKey = 0;
 
-			for (auto& it : _playlists[id]->getContainerRef())
+			for (auto& it : _playlists[hashKey]->getContainerRef())
 				unLoad(it->getName());
 
-			_playlists.erase(_playlists.begin() + id);
+			_playlists.erase(_playlists.begin() + hashKey);
 		}
 		else
 			unLoad(fileName);
 	}
 
-	void Music::play(unsigned int id, const std::string& fileName)
+	void Music::play(const std::string& key, const std::string& fileName)
 	{
-		LOG_INFO("Play function started: ", fileName, " in playlist nr:", id);
+		auto hashKey = fnv1a_32(key.begin());
 
-		if (_currentPlaylistID == -1) 
-			_playlists[id]->play(fileName);
+		if (_currentPlaylistKey == 0)
+			_playlists[hashKey]->play(fileName);
 		else {
-			auto currentPlaying = _playlists[_currentPlaylistID]->getCurrentPlaying();
-			auto samePlaylist = (id == static_cast<unsigned>(_currentPlaylistID));
+			auto currentPlaying = _playlists[_currentPlaylistKey]->getCurrentPlaying();
+			auto samePlaylist = (_currentPlaylistKey == hashKey);
 
 			if (currentPlaying->getName() != fileName)
-				_playlists[id]->play(currentPlaying, fileName);
+				_playlists[hashKey]->play(currentPlaying, fileName);
 			else if (!samePlaylist)
-				_playlists[id]->play(_playlists[id]->getID(fileName), currentPlaying->getTimeLeft());
+				_playlists[hashKey]->play(_playlists[hashKey]->getID(fileName), currentPlaying->getTimeLeft());
 
 			if (!samePlaylist)
-				_playlists[_currentPlaylistID]->stopUpdates();
+				_playlists[_currentPlaylistKey]->stopUpdates();
 		}
-		_currentPlaylistID = id;
+		_currentPlaylistKey = hashKey;
 	}
 
 	void Music::pause()
 	{
-		_playlists[_currentPlaylistID]->pause();
+		_playlists[_currentPlaylistKey]->pause();
 	}
 
 	void Music::stop()
 	{
-		_playlists[_currentPlaylistID]->stop();
+		_playlists[_currentPlaylistKey]->stop();
 	}
 
-	bool Music::includes(unsigned int id, const std::string& fileName) const
+	bool Music::includes(const std::string& key, const std::string& fileName)
 	{
-		return _playlists[id]->includes(fileName);
+		return _playlists[fnv1a_32(key.begin())]->includes(fileName);
 	}
 
-	void Music::setPlayingMode(unsigned int id, PlayingMode mode)
+	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
 	{
-		_playlists[id]->setPlayingMode(mode);
+		_playlists[fnv1a_32(key.begin())]->setPlayingMode(mode);
 	}
 
-	void Music::setVolume(unsigned int id, float volume, const std::string& fileName)
+	void Music::setVolume(const std::string& key, float volume, const std::string& fileName)
 	{
-		_playlists[id]->setVolume(volume, fileName);
+		_playlists[fnv1a_32(key.begin())]->setVolume(volume, fileName);
 	}
 
 	float Music::getVolume(const std::string& fileName)

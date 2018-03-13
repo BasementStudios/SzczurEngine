@@ -2,6 +2,9 @@
 
 #include <memory>
 
+#include <boost/container/flat_map.hpp>
+#include "Szczur/Utility/Convert/Hash.hpp"
+
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Debug.hpp"
 
@@ -12,7 +15,7 @@ namespace rat
 {
 	class Music : public Module<>
 	{ 
-		using PlaylistContainer_t = std::vector<std::unique_ptr<Playlist>>;
+		using PlaylistContainer_t = boost::container::flat_map<Hash32_t, std::unique_ptr<Playlist>>;
 
 	public:
 
@@ -23,26 +26,26 @@ namespace rat
 		PlaylistContainer_t _playlists;
 		MusicAssets _assets;
 		
-		int _currentPlaylistID = -1;
+		Hash32_t _currentPlaylistKey = 0;
 
 	public:
 
 		void update(float deltaTime);
 
-		void addPlaylist(const std::vector<std::string>& newPlaylist);
+		void addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist);
 
-		void addToPlaylist(unsigned int id, const std::string& fileName);
-		void removeFromPlaylist(unsigned int id, const std::string& fileName = "");
+		void addToPlaylist(const std::string& key, const std::string& fileName);
+		void removeFromPlaylist(const std::string& key, const std::string& fileName = "");
 
-		void play(unsigned int id, const std::string& fileName = "");
+		void play(const std::string& key, const std::string& fileName = "");
 		void pause();
 		void stop();
 
-		bool includes(unsigned int id, const std::string& fileName) const;
+		bool includes(const std::string& key, const std::string& fileName);
 
-		void setPlayingMode(unsigned int id, PlayingMode mode);
+		void setPlayingMode(const std::string& key, PlayingMode mode);
 
-		void setVolume(unsigned int id, float volume, const std::string& fileName = "");
+		void setVolume(const std::string& key, float volume, const std::string& fileName = "");
 		float getVolume(const std::string& fileName);
 
 		template <typename T>
