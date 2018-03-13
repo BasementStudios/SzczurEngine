@@ -10,7 +10,7 @@ void Application::init()
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
-	_modules.initModule<Music>();
+	_modules.initModule<Music>("res/Music/");
 }
 
 void Application::input()
@@ -28,6 +28,7 @@ void Application::input()
 
 void Application::update()
 {
+
 	auto deltaTime = _mainClock.restart().asSeconds();
 	_modules.getModule<Music>().update(deltaTime);
 	_modules.getModule<Input>().getManager().finishLogic();

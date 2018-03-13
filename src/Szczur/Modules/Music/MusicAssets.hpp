@@ -17,9 +17,15 @@ namespace rat
 
         Container_t _musicHolder;
 
-        const std::string DEFAULT_PATH = "res/Music/";
+        const std::string DEFAULT_PATH;
 
     public:
+
+        MusicAssets(const std::string& path)
+            : DEFAULT_PATH(path)
+        {
+            LOG_INFO("MusicAssets class created. Default assets path: ", DEFAULT_PATH);
+        }
 
         void load(const std::string& name);
         void unload(const std::string& name);

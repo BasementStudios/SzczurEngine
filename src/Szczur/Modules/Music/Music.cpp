@@ -3,9 +3,14 @@
 namespace rat 
 {
 
+	Music::Music(const std::string& assetsPath)
+		: _assets(assetsPath)
+	{
+		LOG_INFO(this, " : Module Music constructed");
+	}
 	void Music::update(float deltaTime) 
 	{
-		if (_currentPlaylistKey == 0)
+		if (_currentPlaylistKey != 0)
 			_playlists[_currentPlaylistKey]->update(deltaTime);
 	}
 
@@ -81,6 +86,12 @@ namespace rat
 
 	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
 	{
+		switch(mode) {
+			case PlayingMode::Orderly: LOG_INFO("Playing Mode in playlist ", key, " changed to Orderly"); break;
+			case PlayingMode::Random: LOG_INFO("Playing Mode in playlist ", key, " changed to Random"); break;
+			case PlayingMode::Single: LOG_INFO("Playing Mode in playlist ", key, " changed to Single"); break;
+		}
+
 		_playlists[fnv1a_32(key.begin())]->setPlayingMode(mode);
 	}
 

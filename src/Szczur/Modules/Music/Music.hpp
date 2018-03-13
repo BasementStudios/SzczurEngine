@@ -30,6 +30,8 @@ namespace rat
 
 	public:
 
+		Music(const std::string& assetsPath);
+
 		void update(float deltaTime);
 
 		void addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist);

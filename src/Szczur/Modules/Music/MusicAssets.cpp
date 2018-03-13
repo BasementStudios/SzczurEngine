@@ -4,9 +4,13 @@ namespace rat
 {
     void MusicAssets::load(const std::string& fileName) 
 	{
-        if(!_musicHolder.count(fileName)) {
-            _musicHolder[fileName].openFromFile(getPath(fileName));
-             LOG_INFO("Music Assets: ", fileName, " loaded");
+        if (!_musicHolder.count(fileName)) {
+            if (_musicHolder[fileName].openFromFile(getPath(fileName))) {
+                LOG_INFO("Music Assets: ", fileName, " loaded");
+            }
+            else {
+                LOG_INFO("ERROR with loading asset:", getPath(fileName));
+            }
         }
         _musicHolder[fileName].incrementCounter();
 	}
