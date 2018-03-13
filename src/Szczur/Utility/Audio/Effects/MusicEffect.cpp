@@ -1,6 +1,6 @@
 #include "MusicEffect.hpp"
 
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 
 namespace rat
 {
@@ -9,6 +9,13 @@ namespace rat
         : _source(source), _effectType(effectType)
     {
 
+    }
+
+    void MusicEffect::cleanEffect()
+    {
+        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, NULL);
+        alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_NULL, 0);
+        alGetError();
     }
 
     void MusicEffect::init()
@@ -54,8 +61,7 @@ namespace rat
             return;
         }
         
-        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, NULL);
-        alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_NULL, 0);
+       cleanEffect();
     
         alGetError();
         alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_EFFECT, _effect);
@@ -67,7 +73,7 @@ namespace rat
         alGetError();
         alSource3i(_source, AL_AUXILIARY_SEND_FILTER, _effectSlot, 0, NULL);
 		if (alGetError() != AL_NO_ERROR){
-			LOG_INFO("OpenAL Error: Problem with loading Effect into Auxiliary Effect Slot");
+			LOG_INFO("OpenAL Error: Problem with loading uxiliary Effect Slot into Source");
             return;
         }
 

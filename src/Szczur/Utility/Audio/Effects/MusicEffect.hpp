@@ -20,6 +20,10 @@ namespace rat
         bool _created = false;
         bool _supported = false;
 
+    public:
+
+        void cleanEffect();
+
     protected:
 
         MusicEffect(unsigned int& source, int effectType);

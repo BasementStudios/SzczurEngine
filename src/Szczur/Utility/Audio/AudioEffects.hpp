@@ -23,5 +23,11 @@ namespace rat
             return std::get<T>(_effects);
         }
         
+        template <typename T>
+        void cleanEffect()
+        {
+            std::get<T>(_effects).cleanEffect();
+        }
+
     };
 }
