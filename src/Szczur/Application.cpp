@@ -9,13 +9,20 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	_modules.initModule<SFX>();
 
-	IF_EDITOR {
+	#ifdef EDITOR
+	{
 		ImGui::CreateContext();
 		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
 		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
 		ImGui::SFML::Init(getWindow());
+		gVar->create<bool>("isShaderWindow", false); // #Stritch
+		gVar->create<sf::Shader*>("test_shader", nullptr); // #Stritch
+		gVar->create<sf::Texture*>("back_tex", new sf::Texture); // #Stritch
+		gVar->get<sf::Texture*>("back_tex")->loadFromFile("Assets/Texture/forest.png"); // #Stritch
 	}
+	#endif
 }
 
 void Application::input()
@@ -25,48 +32,61 @@ void Application::input()
 	while (getWindow().pollEvent(event)) {
 		_modules.getModule<Input>().getManager().processEvent(event);
 
-		IF_EDITOR {
+		#ifdef EDITOR
+		{
 			ImGui::SFML::ProcessEvent(event);
 		}
+		#endif
 
 		if (event.type == sf::Event::Closed) {
 			getWindow().close();
 		}
 	}
 
-	IF_EDITOR {
+	#ifdef EDITOR
+	{
 		static Clock editorClock;
 		ImGui::SFML::Update(getWindow(), editorClock.restart().asSfTime());
 	}
+	#endif
 }
 
 void Application::update()
 {
-	IF_EDITOR {
+	// [[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+
+	#ifdef EDITOR
+	{
 		ImGui::ShowDemoWindow();
+		gVar->set("test_shader", _modules.getModule<SFX>().getManager().getPtr(fnv1a_32("test_shader"))); // #Stritch
+		gVar->get<sf::Shader*>("test_shader")->setUniform("phase", _mainClock.getElapsedTime().asFSeconds()); // #Stritch
 
-		detail::setVar("time", _mainClock.getElapsedTime().asFSeconds());
-
-		ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
-		ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
-		ImGui::Text("%.1f time", detail::getVar<float>("time"));
-		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-		// magic
+		if (ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
+			ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+			ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+			ImGui::Checkbox("Shader composer", &gVar->get<bool>("isShaderWindow")); // #Stritch
+		}
 		ImGui::End();
 	}
+	#endif
+
+	_modules.getModule<SFX>().update();
 
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()
 {
-	_modules.getModule<Window>().clear(sf::Color{ 64, 96, 64 });
+	_modules.getModule<Window>().clear();
 
-	IF_EDITOR {
-		getWindow().resetGLStates();
+	#ifdef EDITOR
+	{
+		static sf::Sprite back{ *gVar->get<sf::Texture*>("back_tex") }; // #Stritch
+		getWindow().draw(back, gVar->get<sf::Shader*>("test_shader")); // #Stritch
 		ImGui::SFML::Render(getWindow());
 	}
+	#endif
 
 	_modules.getModule<Window>().render();
 }
@@ -81,9 +101,12 @@ int Application::run()
 		render();
 	}
 
-	IF_EDITOR {
+	#ifdef EDITOR
+	{
+		delete gVar->get<sf::Texture*>("back_tex"); // #Stritch
 		ImGui::SFML::Shutdown();
 	}
+	#endif
 
 	return 0;
 }
