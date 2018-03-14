@@ -7,6 +7,7 @@ namespace rat
 		: _assets(assetsPath)
 	{
 		LOG_INFO(this, " : Module Music constructed");
+		initScript();
 	}
 
 	void Music::initScript() {
