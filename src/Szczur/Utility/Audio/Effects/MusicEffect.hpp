@@ -20,6 +20,10 @@ namespace rat
         bool _created = false;
         bool _supported = false;
 
+        int _sourceSlot;
+
+        inline static int _lastFreeSlot = 0; 
+
     public:
 
         void cleanEffect();
@@ -32,7 +36,6 @@ namespace rat
 
         void setEffect(int type, float value);
 
-        float checkRange(float value, float min, float max) const;
 
     };
 }

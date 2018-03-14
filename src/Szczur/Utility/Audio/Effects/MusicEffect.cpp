@@ -13,7 +13,7 @@ namespace rat
 
     void MusicEffect::cleanEffect()
     {
-        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, NULL);
+        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, _sourceSlot, NULL);
         alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_NULL, 0);
         alGetError();
     }
@@ -45,6 +45,8 @@ namespace rat
                 return; 
             }
             _supported = true;
+            _sourceSlot = _lastFreeSlot;
+            ++_lastFreeSlot;
             LOG_INFO("OpenAL: Effect correctly initialized");
         }   
     }
@@ -71,9 +73,9 @@ namespace rat
         }
 
         alGetError();
-        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, _effectSlot, 0, NULL);
+        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, _effectSlot, _sourceSlot, NULL);
 		if (alGetError() != AL_NO_ERROR){
-			LOG_INFO("OpenAL Error: Problem with loading uxiliary Effect Slot into Source");
+			LOG_INFO("OpenAL Error: Problem with loading Auxiliary Effect Slot into Source");
             return;
         }
 
