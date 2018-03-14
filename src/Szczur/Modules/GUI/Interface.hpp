@@ -4,6 +4,8 @@
 
 #include "Szczur/Json.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 #include "Widget.hpp"
 #include "GuiAssetsManager.hpp"
 #include "GuiJson.hpp"
@@ -12,7 +14,6 @@ namespace rat {
     class Interface : public sf::Drawable {
     public:
         Interface(BasicGuiAssetsManager* assets, sf::Vector2u windowSize);
-        Interface(BasicGuiAssetsManager* assets, sf::Vector2u windowSize, const std::string& jsonFile);
 
         Widget* add(Widget* widget);
 

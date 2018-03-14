@@ -1,6 +1,6 @@
 #include "TextAreaWidget.hpp"
 #include <iostream>
-
+#include "Test.hpp"
 namespace rat {
     TextAreaWidget::TextAreaWidget() :
     _size(0u, 0u),
@@ -20,6 +20,45 @@ namespace rat {
 
         _text.setFont(*font);
         _sprite.setTexture(_area.getTexture());
+    }
+
+    void TextAreaWidget::initScript(Script& script) {
+        auto object = script.newClass<TextAreaWidget>("TextAreaWidget", "GUI");
+        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
+        //Widget::basicScript<ImageWidget>(object);
+        basicScript(object);
+
+        object.setProperty(
+            "font",
+            [](TextAreaWidget& owner){owner._text.getFont();},
+            [](TextAreaWidget& owner, sf::Font* font){owner.setFont(font);}
+        );
+
+        object.setProperty(
+            "text",
+            [](TextAreaWidget& owner){return owner._text.getString();},
+            [](TextAreaWidget& owner, const std::string& text){owner.setString(text);}
+        );
+
+        object.setProperty(
+            "fontSize",
+            [](TextAreaWidget& owner){return owner._text.getCharacterSize();},
+            [](TextAreaWidget& owner, size_t size){owner.setCharacterSize(size);}
+        );
+
+        object.setProperty(
+            "color",
+            [](TextAreaWidget& owner){return owner._text.getFillColor();},
+            [](TextAreaWidget& owner, sol::table tab){ owner.setColor( sf::Color(tab[1], tab[2], tab[3]) ); }
+        );
+
+        object.setProperty(
+            "size",
+            [](TextAreaWidget& owner){return owner._size;},
+            [](TextAreaWidget& owner, sol::table tab){ owner.setSize(sf::Vector2u{tab[1], tab[2]}); }
+        );
+        
+        object.init();
     }
 
     void TextAreaWidget::setString(const std::string& text) {

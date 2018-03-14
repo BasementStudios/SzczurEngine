@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 #include <algorithm>
 
 #include "TextWidget.hpp"
@@ -11,6 +13,8 @@ namespace rat {
     public:
         TextAreaWidget();
         TextAreaWidget(sf::Vector2u size, sf::Font* font);
+
+        static void initScript(Script& script);
 
         void setString(const std::string& text);
 

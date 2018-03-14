@@ -3,7 +3,7 @@
 #include <string>
 
 #include <SFML/Graphics.hpp>
-
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
 #include "Widget.hpp"
@@ -15,6 +15,8 @@ namespace rat {
 
         TextWidget(const sf::Text& text, sf::Font* font);
 
+        static void initScript(Script& script);
+
         void setColor(const sf::Color& newColor);
 
         size_t getLength();
@@ -25,6 +27,8 @@ namespace rat {
         void setString(const std::string& str);
 
         void setFont(sf::Font* font);
+
+        const sf::Font* getFont() const;
 
         void setCharacterSize(unsigned int size);
 

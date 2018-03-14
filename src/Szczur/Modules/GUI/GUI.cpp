@@ -3,6 +3,7 @@
 namespace rat {
     GUI::GUI() {
         LOG_INFO(this, "Module GUI constructed")
+        initScript();
         //_initAssets();
         //auto* a = reinterpret_cast<CircleChooseWidget*>(addInterface("data/json.json")->get("_root")->get("test")); 
         //a->setAmount(7u);
@@ -10,14 +11,30 @@ namespace rat {
         _canvas.create(window.getSize().x, window.getSize().y);
 
 
-        addAsset<sf::Texture>("data/dial_back.png");
-        ImageWidget* a = new ImageWidget(getAsset<sf::Texture>("data/dial_back.png"));
+        //addAsset<sf::Texture>("data/dial_back.png");
+        //addAsset<sf::Font>("data/consolab.ttf");
+        /*ImageWidget* a = new ImageWidget(getAsset<sf::Texture>("data/dial_back.png"));
         auto* i = addInterface();
         i->add(a);
 
         a = new ImageWidget(getAsset<sf::Texture>("data/dial_back.png"));
         a->move({0.f, 200.f});
-        i->add(a);
+        i->add(a);*/
+    }
+
+    void GUI::initScript() {
+        Script& script = getModule<Script>();
+        auto module = script.newModule("GUI");
+        module.set_function("addInterface", &GUI::addInterface, this);
+        module.set_function("getTexture", &GUI::getAsset<sf::Texture>, this);
+        module.set_function("getFont", &GUI::getAsset<sf::Font>, this);
+
+        module.set_function("addTexture", &GUI::addAsset<sf::Texture>, this);
+        module.set_function("addFont", &GUI::addAsset<sf::Font>, this);
+
+
+
+        script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget>();
     }
 
 
@@ -38,16 +55,12 @@ namespace rat {
             delete it;
     }
 
-    Interface* GUI::addInterface(const std::string& jsonFile) {
-        Interface* interface = new Interface(&_assets, getModule<Window>().getWindow().getSize(), jsonFile);
-        _interfaces.push_back(interface);
-        return interface;
-    }
-
-    Interface* GUI::addInterface() {
+    Widget* GUI::addInterface() {
         Interface* interface = new Interface(&_assets, getModule<Window>().getWindow().getSize());
         _interfaces.push_back(interface);
-        return interface;
+        Widget* widget = new Widget;
+        interface->add(widget);
+        return widget;
     }
     
     void GUI::input(const sf::Event& event) {

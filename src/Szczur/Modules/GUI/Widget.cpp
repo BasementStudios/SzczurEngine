@@ -1,5 +1,8 @@
 #include "Widget.hpp"
-
+//#include "ImageWidget.hpp"
+#include "TextWidget.hpp"
+#include "TextAreaWidget.hpp"
+#include "Test.hpp"
 #include <iostream>
 
 namespace rat {
@@ -19,6 +22,14 @@ namespace rat {
             delete it;
     }
 
+    void Widget::initScript(Script& script) {
+        auto object = script.newClass<Widget>("Widget", "GUI");
+        basicScript(object);
+        object.init();
+    }
+
+    
+
     void Widget::clear() {
         for(auto it : _children)
             delete it;
@@ -36,8 +47,16 @@ namespace rat {
     }
 
     void Widget::callback(CallbackType type) {
-        if(auto it = _callback.find(type); it != _callback.end())
-            std::invoke(std::get<1>(*it), this);
+        if(auto it = _callback.find(type); it != _callback.end()) {
+            if(auto ptr = dynamic_cast<TextWidget*>(this))
+                std::invoke(std::get<1>(*it), ptr);
+            else if(auto ptr = dynamic_cast<TextAreaWidget*>(this))
+                std::invoke(std::get<1>(*it), ptr);
+            else if(auto ptr = dynamic_cast<ImageWidget*>(this))
+                std::invoke(std::get<1>(*it), ptr);
+            else
+                std::invoke(std::get<1>(*it), this);
+        }
     }
 
     Widget* Widget::add(Widget* object) {

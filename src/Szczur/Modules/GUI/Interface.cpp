@@ -6,11 +6,6 @@ namespace rat {
 
     }
 
-    Interface::Interface(BasicGuiAssetsManager* assets, sf::Vector2u windowSize, const std::string& jsonFile) :
-    _assets(assets) {
-        GuiJson guiJson;
-        guiJson.init(assets->get<Json>(jsonFile), assets, &_root, windowSize);
-    }
 
     Widget* Interface::add(Widget* widget) {
         if(widget)

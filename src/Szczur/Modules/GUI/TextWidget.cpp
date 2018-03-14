@@ -1,5 +1,5 @@
 #include "TextWidget.hpp"
-
+#include "Test.hpp"
 namespace rat {
     TextWidget::TextWidget() :
     Widget(),
@@ -11,6 +11,39 @@ namespace rat {
     Widget(),
     _text(text) {
         _text.setFont(*font);
+    }
+
+    void TextWidget::initScript(Script& script) {
+        auto object = script.newClass<TextWidget>("TextWidget", "GUI");
+        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
+        //Widget::basicScript<ImageWidget>(object);
+        basicScript(object);
+
+        object.setProperty(
+            "font",
+            [](TextWidget& owner){owner.getFont();},
+            [](TextWidget& owner, sf::Font* font){owner.setFont(font);}
+        );
+
+        object.setProperty(
+            "text",
+            [](TextWidget& owner){return owner._text.getString();},
+            [](TextWidget& owner, const std::string& text){owner.setString(text);}
+        );
+
+        object.setProperty(
+            "fontSize",
+            [](TextWidget& owner){return owner._text.getCharacterSize();},
+            [](TextWidget& owner, size_t size){owner.setCharacterSize(size);}
+        );
+
+        object.setProperty(
+            "color",
+            [](TextWidget& owner){return owner._text.getFillColor();},
+            [](TextWidget& owner, sol::table tab){ owner.setColor( sf::Color(tab[1], tab[2], tab[3]) ); }
+        );
+        
+        object.init();
     }
 
     sf::Vector2u TextWidget::_getSize() const {
@@ -51,12 +84,17 @@ namespace rat {
 
     void TextWidget::setString(const std::string& str) {
         //_text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
+        _aboutToRecalculate=true;
         _text.setString(getUnicodeString(str));
     }
 
     void TextWidget::setFont(sf::Font* font) {
         _text.setFont(*font);
 
+    }
+
+    const sf::Font* TextWidget::getFont() const {
+        return _text.getFont();
     }
 
     void TextWidget::setCharacterSize(unsigned int size) {

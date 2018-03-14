@@ -8,21 +8,32 @@
 #include <SFML/Graphics.hpp>
 
 #include "Szczur/Debug.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 
+
 namespace rat {
+	class ImageWidget;
+	class TextWidget;
+	class TextAreaWidget;
+
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
 		Widget();
 		Widget(const Widget&) = default;
 		~Widget();
+
+		static void initScript(Script& script);
+
+		
 	public:
 		enum class CallbackType {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
 		};
 
-		using Function_t = std::function<void(Widget*)>;
+		//using Function_t = std::function<void(Widget*)>;
+		using Function_t = sol::function;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 		//using Children_t = boost::container::flat_map<Hash32_t, Widget*>;
 		using Children_t = std::vector<Widget*>;
@@ -82,3 +93,4 @@ namespace rat {
 
 	};
 }
+//#include "Widget.tpp"
