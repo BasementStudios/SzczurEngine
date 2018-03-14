@@ -29,12 +29,12 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include "Szczur/Utility/Convert/Hash.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
+
 #include "Szczur/CompilerPortability.hpp"
 #include "Szczur/GlobalVarsHolder.hpp"
 #include "Szczur/ImGui.hpp"
-
-#include "Szczur/Utility/Convert/Hash.hpp"
-#include "Szczur/Utility/Convert/Unicode.hpp"
 
 namespace rat
 {
