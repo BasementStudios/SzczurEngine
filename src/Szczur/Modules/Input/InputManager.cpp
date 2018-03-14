@@ -5,7 +5,11 @@ namespace rat
 
 void InputManager::processEvent(const sf::Event& event)
 {
-    if (event.type == sf::Event::KeyPressed) {
+    if(event.type == sf::Event::MouseMoved) {
+        _mousePosition.x = event.mouseMove.x;
+        _mousePosition.y = event.mouseMove.y;
+    }
+    else if (event.type == sf::Event::KeyPressed) {
         _pressKey(event.key.code);
     }
     else if (event.type == sf::Event::KeyReleased) {
@@ -132,6 +136,11 @@ bool InputManager::isTextEntered() const
 unsigned InputManager::getEnteredCharacter() const
 {
     return _enteredCharacter;
+}
+
+sf::Vector2i InputManager::getMousePosition() const
+{
+    return _mousePosition;
 }
 
 void InputManager::_pressKey(int id)
