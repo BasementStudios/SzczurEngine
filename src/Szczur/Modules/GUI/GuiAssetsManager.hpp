@@ -34,7 +34,7 @@ namespace rat {
         Assets_t _assets;
     };
 
-    using BasicGuiAssetsManager = GuiAssetsManager<sf::Texture, sf::Font, Json>;
+    using BasicGuiAssetsManager = GuiAssetsManager<sf::Texture, sf::Font>;
 }
 
 #include "GuiAssetsManager.tpp"
