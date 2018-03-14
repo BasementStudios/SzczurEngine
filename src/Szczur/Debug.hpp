@@ -26,6 +26,7 @@
 #include <streambuf>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <boost/lexical_cast.hpp>
 
@@ -107,5 +108,6 @@ namespace detail
 #define LOG_WARN_IF_CX(condition, ...) { if constexpr (condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr (condition) LOG_ERROR(__VA_ARGS__) }
 #define EDITOR
+#define private public
 
 #endif
