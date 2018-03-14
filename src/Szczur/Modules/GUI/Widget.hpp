@@ -32,10 +32,10 @@ namespace rat {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
 		};
 
-		//using Function_t = std::function<void(Widget*)>;
-		using Function_t = sol::function;
+		using SolFunction_t = sol::function;
+		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
-		//using Children_t = boost::container::flat_map<Hash32_t, Widget*>;
+		using CallbacksLuaContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 		using Children_t = std::vector<Widget*>;
 
 		void setParent(Widget* parent);
@@ -43,6 +43,7 @@ namespace rat {
 		Widget* add(Widget* object);
 
 		Widget* setCallback(CallbackType key, Function_t value);
+		Widget* setLuaCallback(CallbackType key, SolFunction_t value);
 
 		void clear();
 
@@ -83,6 +84,7 @@ namespace rat {
 		Widget* _parent;
 
 		CallbacksContainer_t _callback;
+		CallbacksLuaContainer_t _luaCallback;
 		
 
 		sf::Vector2u _size;

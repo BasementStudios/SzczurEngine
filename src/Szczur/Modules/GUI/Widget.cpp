@@ -14,7 +14,7 @@ namespace rat {
     _isVisible(true),
     _aboutToRecalculate(false),
     _size(0u,0u) {
-        ;
+
     }
 
     Widget::~Widget() {
@@ -42,20 +42,27 @@ namespace rat {
 
     Widget* Widget::setCallback(CallbackType key, Function_t value) {
         _callback.insert_or_assign(key, value);
+        return this;
+    }
 
+    Widget* Widget::setLuaCallback(CallbackType key, SolFunction_t value) {
+        _luaCallback.insert_or_assign(key, value);
         return this;
     }
 
     void Widget::callback(CallbackType type) {
-        if(auto it = _callback.find(type); it != _callback.end()) {
+        if(auto it = _luaCallback.find(type); it != _luaCallback.end()) {
             if(auto ptr = dynamic_cast<TextWidget*>(this))
-                std::invoke(std::get<1>(*it), ptr);
+                std::invoke(it->second, ptr);
             else if(auto ptr = dynamic_cast<TextAreaWidget*>(this))
-                std::invoke(std::get<1>(*it), ptr);
+                std::invoke(it->second, ptr);
             else if(auto ptr = dynamic_cast<ImageWidget*>(this))
-                std::invoke(std::get<1>(*it), ptr);
+                std::invoke(it->second, ptr);
             else
-                std::invoke(std::get<1>(*it), this);
+                std::invoke(it->second, this);
+        }
+        if(auto it = _callback.find(type); it != _callback.end()) {
+            std::invoke(it->second, this);
         }
     }
 

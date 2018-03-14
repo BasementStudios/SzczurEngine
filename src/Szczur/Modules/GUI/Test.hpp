@@ -23,22 +23,22 @@ namespace rat {
                 widget->deactivate();
         }
         if(tab["onHover"].valid())
-            widget->setCallback(Widget::CallbackType::onHover, tab["onHover"]);
+            widget->setLuaCallback(Widget::CallbackType::onHover, tab["onHover"]);
 
         if(tab["onHoverIn"].valid())
-            widget->setCallback(Widget::CallbackType::onHoverIn, tab["onHoverIn"]);
+            widget->setLuaCallback(Widget::CallbackType::onHoverIn, tab["onHoverIn"]);
 
         if(tab["onHoverOut"].valid())
-            widget->setCallback(Widget::CallbackType::onHoverOut, tab["onHoverOut"]);
+            widget->setLuaCallback(Widget::CallbackType::onHoverOut, tab["onHoverOut"]);
 
         if(tab["onPress"].valid())
-            widget->setCallback(Widget::CallbackType::onPress, tab["onPress"]);
+            widget->setLuaCallback(Widget::CallbackType::onPress, tab["onPress"]);
 
         if(tab["onHold"].valid())
-            widget->setCallback(Widget::CallbackType::onHold, tab["onHold"]);
+            widget->setLuaCallback(Widget::CallbackType::onHold, tab["onHold"]);
 
         if(tab["onRelease"].valid())
-            widget->setCallback(Widget::CallbackType::onRelease, tab["onRelease"]);
+            widget->setLuaCallback(Widget::CallbackType::onRelease, tab["onRelease"]);
         };
 
         object.setProperty(
