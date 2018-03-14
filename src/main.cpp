@@ -5,7 +5,6 @@
 
 int main()
 {
-	sf::err().rdbuf(nullptr);
 	INIT_LOGGER();
 
 	rat::Application app;

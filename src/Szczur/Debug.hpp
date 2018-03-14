@@ -2,7 +2,7 @@
 
 #if defined(NDEBUG)
 
-#define INIT_LOGGER()
+#define INIT_LOGGER() sf::err().rdbuf(nullptr)
 #define LOG_INFO(...)
 #define LOG_WARN(...)
 #define LOG_ERROR(...)
@@ -16,14 +16,24 @@
 
 #else
 
+#include <any>
 #include <ctime>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <map>
+#include <regex>
+#include <streambuf>
+#include <string>
 #include <string_view>
+
+#include <boost/lexical_cast.hpp>
 
 #include "Szczur/CompilerPortability.hpp"
 #include "Szczur/ImGui.hpp"
+#include "Szczur/Utility/Convert/Hash.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
 
 namespace rat
 {
@@ -66,6 +76,32 @@ private:
 };
 
 inline DebugLogger* logger = nullptr;
+
+inline std::map<std::string, std::any> vars;
+
+template <typename T, typename K, typename... Ts>
+void createVar(K&& name, Ts&&... args)
+{
+	vars[std::forward<K>(name)].DEPENDENT_TEMPLATE_SCOPE emplace<T>(std::forward<Ts>(args)...);
+}
+
+template <typename K>
+void removeVar(K&& name)
+{
+    vars.erase(std::forward<K>(name));
+}
+
+template <typename T, typename K>
+void setVar(K&& name, T&& arg)
+{
+	vars[std::forward<K>(name)] = std::forward<T>(arg);
+}
+
+template <typename T, typename K>
+decltype(auto) getVar(K&& name)
+{
+	return std::any_cast<T&>(vars[std::forward<K>(name)]);
+}
 
 #include "NotoMono.ttf.bin"
 

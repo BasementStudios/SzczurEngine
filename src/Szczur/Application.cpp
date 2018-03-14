@@ -9,6 +9,13 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+
+	IF_EDITOR {
+		ImGui::CreateContext();
+		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
+		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
+		ImGui::SFML::Init(getWindow());
+	}
 }
 
 void Application::input()
@@ -18,20 +25,49 @@ void Application::input()
 	while (getWindow().pollEvent(event)) {
 		_modules.getModule<Input>().getManager().processEvent(event);
 
+		IF_EDITOR {
+			ImGui::SFML::ProcessEvent(event);
+		}
+
 		if (event.type == sf::Event::Closed) {
 			getWindow().close();
 		}
+	}
+
+	IF_EDITOR {
+		static Clock editorClock;
+		ImGui::SFML::Update(getWindow(), editorClock.restart().asSfTime());
 	}
 }
 
 void Application::update()
 {
+	IF_EDITOR {
+		ImGui::ShowDemoWindow();
+
+		detail::setVar("time", _mainClock.getElapsedTime().asFSeconds());
+
+		ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
+		ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+		ImGui::Text("%.1f time", detail::getVar<float>("time"));
+		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+		// magic
+		ImGui::End();
+	}
+
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()
 {
-	_modules.getModule<Window>().clear();
+	_modules.getModule<Window>().clear(sf::Color{ 64, 96, 64 });
+
+	IF_EDITOR {
+		getWindow().resetGLStates();
+		ImGui::SFML::Render(getWindow());
+	}
+
 	_modules.getModule<Window>().render();
 }
 
@@ -43,6 +79,10 @@ int Application::run()
 		input();
 		update();
 		render();
+	}
+
+	IF_EDITOR {
+		ImGui::SFML::Shutdown();
 	}
 
 	return 0;
