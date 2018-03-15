@@ -1,67 +1,59 @@
 #include "GUI.hpp"
 #include <iostream>
 namespace rat {
-    GUI::GUI() {
+    GUI::GUI() :
+    _root(new Widget) {
         LOG_INFO(this, "Module GUI constructed")
-        //_initAssets();
-        //auto* a = reinterpret_cast<CircleChooseWidget*>(addInterface("data/json.json")->get("_root")->get("test")); 
-        //a->setAmount(7u); 
+        initScript();
+
         auto& window = getModule<Window>().getWindow();
         _canvas.create(window.getSize().x, window.getSize().y);
     }
 
+    void GUI::initScript() {
+        Script& script = getModule<Script>();
+        auto module = script.newModule("GUI");
+        module.set_function("addInterface", &GUI::addInterface, this);
+        module.set_function("getTexture", &GUI::getAsset<sf::Texture>, this);
+        module.set_function("getFont", &GUI::getAsset<sf::Font>, this);
 
-    void GUI::_initAssets() {
-        /*addAsset<sf::Texture>("data/button.png");
-        addAsset<sf::Texture>("data/button-active.png");
-        addAsset<sf::Texture>("data/button-clicked.png");
-        addAsset<sf::Texture>("data/check.png");
-        addAsset<sf::Texture>("data/check-on.png");
-        addAsset<sf::Font>("data/consolab.ttf");
-        addAsset<sf::Texture>("data/button.png");
-        addAsset<Json>("data/json.json");*/
+        module.set_function("addTexture", &GUI::addAsset<sf::Texture>, this);
+        module.set_function("addFont", &GUI::addAsset<sf::Font>, this);
+
+
+
+        script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget>();
     }
 
     GUI::~GUI() {
         LOG_INFO(this, "Module GUI destructed")
-        for(auto it : _interfaces)
-            delete it;
+        delete _root;
     }
 
-    Interface* GUI::addInterface(const std::string& jsonFile) {
-        Interface* interface = new Interface(&_assets, getModule<Window>().getWindow().getSize(), jsonFile);
-        _interfaces.push_back(interface);
-        return interface;
-    }
-
-    Interface* GUI::addInterface() {
-        Interface* interface = new Interface(&_assets, getModule<Window>().getWindow().getSize());
-        _interfaces.push_back(interface);
-        return interface;
+    Widget* GUI::addInterface() {
+        Widget* widget = new Widget;
+        _root->add(widget);
+        return widget;
     }
     
     void GUI::input(const sf::Event& event) {
-        for(auto it : _interfaces)
-            it->input(event);
+        _root->input(event);
     }
 
     void GUI::update(float deltaTime) {
-        for(auto it : _interfaces)
-            it->update(deltaTime);
+        _root->update(deltaTime);
     }
 
     void GUI::render() {
         _canvas.clear(sf::Color::Transparent);
         
-        for(auto it : _interfaces)
-            _canvas.draw(*it);
+        _canvas.draw(*_root);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
     }
 
     void GUI::reload() {
-        for(auto it : _interfaces)
-            it->reload(getModule<Window>().getWindow().getSize());
+        //_root->reload(getModule<Window>().getWindow().getSize());
     }
 }

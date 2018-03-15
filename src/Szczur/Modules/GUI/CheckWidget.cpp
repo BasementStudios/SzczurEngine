@@ -8,17 +8,17 @@ namespace rat {
         on = new ImageWidget(text1);
         off = new ImageWidget(text2);
 
-        add("on", on);
-        add("off", off);
+        add(on);
+        add(off);
 
         on->invisible();
 
-        setCallback(CallbackType::onRelease, [this](Widget*){
+        /*setCallback(CallbackType::onRelease, [this](Widget*){
             if(_isTriggered)
                 disable();
             else
                 enable();
-        });
+        });*/
     }
 
     void CheckWidget::enable() {

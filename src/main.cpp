@@ -9,7 +9,7 @@
 int main()
 {
 	// TURN OFF too many logs
-    std::cerr.rdbuf(nullptr);
+    //std::cerr.rdbuf(nullptr);
 	
 	INIT_LOGGER();
 

@@ -1,15 +1,11 @@
 #include "Dialog.hpp"
 
 namespace rat {
-    Dialog::Dialog(const std::string& file) :
+    Dialog::Dialog() :
     _dialogGUI(getModule<GUI>()) {
         LOG_INFO(this, "Module Dialog constructed")
         auto& gui = getModule<GUI>();
-        gui.addAsset<Json>(file);
-        gui.addAsset<sf::Texture>("data/dial_back.png");
-        gui.addAsset<sf::Font>("data/consolab.ttf");
         
-        _dialogGUI.create();
         _initScript();
 
         
@@ -79,9 +75,10 @@ namespace rat {
         auto module = script.newModule("Dialog");
 
         SCRIPT_SET_MODULE(Dialog, load);
+        module.set("GUI", &_dialogGUI);
 
 
-        script.initClasses<DialogManager, Options>();
+        script.initClasses<DialogManager, Options, DialogGUI>();
     }
 
 

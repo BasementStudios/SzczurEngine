@@ -7,31 +7,43 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Debug.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 
+
 namespace rat {
+	class ImageWidget;
+	class TextWidget;
+	class TextAreaWidget;
+
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
 		Widget();
 		Widget(const Widget&) = default;
 		~Widget();
+
+		static void initScript(Script& script);
+
+		
 	public:
 		enum class CallbackType {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
 		};
 
+		using SolFunction_t = sol::function;
 		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
-		using Children_t = boost::container::flat_map<Hash32_t, Widget*>;
+		using CallbacksLuaContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
+		using Children_t = std::vector<Widget*>;
 
 		void setParent(Widget* parent);
 
-		Widget* add(const std::string& key, Widget* object);
-
-		Widget* get(const std::string& key) const;
+		Widget* add(Widget* object);
 
 		Widget* setCallback(CallbackType key, Function_t value);
+		Widget* setLuaCallback(CallbackType key, SolFunction_t value);
 
 		void clear();
 
@@ -66,19 +78,23 @@ namespace rat {
 		bool _isPressed;
 		bool _isActivated;
 		bool _isVisible;
+
+		CallbacksContainer_t _callbacks;
+		CallbacksLuaContainer_t _luaCallbacks;
 		
 	private:
 		Children_t _children;
 		Widget* _parent;
 
-		CallbacksContainer_t _callback;
+		
 		
 
 		sf::Vector2u _size;
 
-		void callback(CallbackType type);
+		virtual void _callback(CallbackType type);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	};
 }
+//#include "Widget.tpp"

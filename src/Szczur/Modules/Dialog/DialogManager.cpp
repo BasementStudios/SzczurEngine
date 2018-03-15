@@ -125,7 +125,7 @@ namespace rat {
                 it->first,
                 [this, it](){
                     _dialogGUI.setText(it->second.second);
-                    _dialogGUI.setCharacter(it->second.first);
+                    _dialogGUI.setCharacterName(it->second.first);
                     if(
                         auto result = _charactersBinds.find(
                             fnv1a_32(

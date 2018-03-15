@@ -9,12 +9,12 @@ namespace rat {
     _isFocused(false) {
         _background.setSize(sf::Vector2f{_maxLength*getCharacterSize()/1.5f, getCharacterSize()*1.2f});
 
-        setCallback(CallbackType::onHoverIn, [this](Widget* owner){
+        /*setCallback(CallbackType::onHoverIn, [this](Widget* owner){
             _isFocused = true;
         });
         setCallback(CallbackType::onHoverOut, [this](Widget* owner){
             _isFocused = false;
-        });
+        });*/
         _aboutToRecalculate = true;
     }
 
@@ -38,7 +38,7 @@ namespace rat {
                         removeLast();
                     else 
                         if(getLength() < _maxLength)
-                            add(static_cast<char>(event.text.unicode));
+                            addLetter(static_cast<char>(event.text.unicode));
                     _aboutToRecalculate = true;
                 }
             }

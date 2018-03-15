@@ -2,9 +2,10 @@
 
 namespace rat {
 
-    DialogGUI::DialogGUI(GUI& gui):
-    _gui(gui),
-    _characterTexture(nullptr) {
+    DialogGUI::DialogGUI(GUI& gui)
+    //_gui(gui),
+    //_characterTexture(nullptr) {
+        {
         
         
     }
@@ -13,35 +14,104 @@ namespace rat {
         //@TODO: remove _interface from _gui
     }
 
-    void DialogGUI::clear() {
-        _buttons->clear();
+    void DialogGUI::initScript(Script& script) {
+        auto object = script.newClass<DialogGUI>("DialogGUI", "Dialog");
+        object.setProperty(
+            "set",
+            [](){},
+            [](DialogGUI& owner, sol::table tab){
+                if(tab["area"].valid() && tab["container"].valid() && 
+                tab["character"].valid() && tab["name"].valid() &&
+                tab["creator"].valid()) {
+                    owner.setArea(tab["area"]);
+                    owner.setButtonsContainer(tab["container"]);
+                    owner.setCharacter(tab["character"]);
+                    owner.setName(tab["name"]);
+                    owner.setButtonsCreator(tab["creator"]);
+                }
+            }
+        );
+        object.init();
     }
 
-    void DialogGUI::create() {
-        _interface = _gui.addInterface("data/dialog.json");
-        
-        _area = reinterpret_cast<TextAreaWidget*>(
-            _interface->get("_root")->get("dialog")->get("background")->get("area")
-        );
+    void DialogGUI::clear() {
+        _buttonsContainer->clear();
+    }
 
-        _name = reinterpret_cast<TextWidget*>(
-            _interface->get("_root")->get("dialog")->get("name")
-        );
+    void DialogGUI::setText(const std::string& text) {
+        _area->setString(text);
+        _area->visible();
+    }
 
-        _characterTextureHolder = _interface->get("_root")->get("dialog")->get("aaaaaimageHolder");
+    void DialogGUI::setCharacterTexture(sf::Texture* texture) {
+        _character->setTexture(texture);
+    }
 
-        _buttons = _interface->get("_root")->get("dialog")->get("background")->get("buttons");
-        
+    void DialogGUI::setCharacterName(const std::string& name) {
+        _name->setString(name);
+    }
+
+
+    void DialogGUI::setName(TextWidget* name) {
+        _name = name;
+    }
+
+    TextWidget* DialogGUI::getName() const {
+        return _name;
+    }
+    
+    void DialogGUI::setCharacter(ImageWidget* image) {
+        _character = image;
+    }
+
+    ImageWidget* DialogGUI::getCharacter() const {
+        return _character;
+    }
+
+    void DialogGUI::setArea(TextAreaWidget* area) {
+        _area = area;
+    }
+
+    TextAreaWidget* DialogGUI::getArea() const {
+        return _area;
+    }   
+
+    void DialogGUI::setButtonsCreator(const sol::function& func) {
+        _buttonsCreator = func;
+    }
+
+    Widget* DialogGUI::getButtonsCreator() const {
+        return _buttonsContainer;
+    }
+
+    void DialogGUI::setButtonsContainer(Widget* container) {
+        _buttonsContainer = container;
+    }
+
+    const sol::function& DialogGUI::getButtonsContainer() const {
+        return _buttonsCreator;
     }
 
     void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t)> callback) {
-        int i = 0;
+        size_t i = 0u;
         _area->invisible();
         options.forEach([&i, this, callback, &textManager](Options::Option* option){
             if(option->condition == nullptr || std::invoke(option->condition)) {
                 TextWidget* button = new TextWidget;
-
-                button->move({0.f, 30.f*i});
+                button->setString(textManager.getLabel(option->target));
+                _buttonsCreator.call(
+                    i, 
+                    button
+                );
+                button->setString(textManager.getLabel(option->target));
+                button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
+                        if(option->afterAction)
+                            std::invoke(option->afterAction);
+                        std::invoke(callback, option->target);
+                });
+                _buttonsContainer->add(button);
+                ++i;
+                /*button->move({0.f, 30.f*i});
                 
                 button->setFont(_gui.getAsset<sf::Font>("data/consolab.ttf"));
                 button->setString(textManager.getLabel(option->target));
@@ -59,26 +129,9 @@ namespace rat {
                     button->setColor(sf::Color(200,180,200));
                 });
                 ++i;
-                _buttons->add("button"+std::to_string(i), button);
-                
+                _buttons->add(button);
+                */
             }
         });
-    }
-
-    void DialogGUI::setText(const std::string& text) {
-        _area->setString(text);
-        _area->visible();
-    }
-    void DialogGUI::setCharacter(const std::string& name) {
-        _name->setString(name);
-    }
-    void DialogGUI::setCharacterTexture(sf::Texture* texture) {
-        if(_characterTexture == nullptr) {
-            _characterTexture = new ImageWidget;
-            
-            _characterTextureHolder->add("image", _characterTexture);
-        }
-        _characterTexture->setScale({0.1, 0.1f});
-        _characterTexture->setTexture(texture);
     }
 }

@@ -13,16 +13,17 @@ namespace rat {
 
         size_t i = 0;
         for(CheckWidget* check : checks) {
+            /*
             check->setCallback(CallbackType::onRelease, [this, checks, check, i](Widget*){
                 for(CheckWidget* it : checks) {
                     it->disable();
                 }
                 check->enable();
                 _whichTriggered = i;
-            });
+            });*/
             i++;
             check->move({0.f, 50.f * i});
-            add("check"+std::to_string(i), check);
+            add(check);
         }
 
 

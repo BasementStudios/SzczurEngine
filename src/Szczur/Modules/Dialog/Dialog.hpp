@@ -22,7 +22,7 @@ namespace rat {
         using Key_t = Hash32_t;
         using Dialogs_t = boost::container::flat_map<Key_t, DialogManager*>;
 
-        Dialog(const std::string& file);
+        Dialog();
 
         ~Dialog();
 
@@ -36,8 +36,6 @@ namespace rat {
 
     private:
         DialogGUI _dialogGUI;
-        Interface* _interface;
-        TextAreaWidget* _area;
         Dialogs_t _dialogs;
 
         void _initScript();

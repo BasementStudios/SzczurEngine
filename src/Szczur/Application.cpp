@@ -10,11 +10,9 @@ void Application::init()
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
-	//_modules.initModule<BattleField>();
 	_modules.initModule<GUI>();
-	_modules.initModule<Dialog>("data/dialog.json");
-	
-	_modules.getModule<Script>().scriptFile("data/script.lua");
+	_modules.initModule<Dialog>();
+	_modules.getModule<Script>().scriptFile("data/script2.lua");
 }
 
 void Application::input()
@@ -31,7 +29,6 @@ void Application::input()
 
 void Application::update()
 {
-	//_modules.getModule<BattleField>().update();
 	_modules.getModule<Dialog>().update();
 	_modules.getModule<GUI>().update();
 	_modules.getModule<Input>().getManager().finishLogic();
@@ -40,7 +37,6 @@ void Application::update()
 void Application::render()
 {
 	_modules.getModule<Window>().clear();
-	//_modules.getModule<BattleField>().render();
 	_modules.getModule<GUI>().render();
 	_modules.getModule<Window>().render();
 

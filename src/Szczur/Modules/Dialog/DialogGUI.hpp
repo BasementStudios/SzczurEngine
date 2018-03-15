@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 #include "TextManager.hpp"
 
@@ -13,24 +14,37 @@ namespace rat {
 
         ~DialogGUI();
 
-        void create();
+        static void initScript(Script& script);
 
         void clear();
 
-        void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t)> callback);
-
         void setText(const std::string& text);
 
-        void setCharacter(const std::string& name);
+        void setCharacterName(const std::string& name);
 
         void setCharacterTexture(sf::Texture* texture);
+
+        void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t)> callback);
+
+        void setButtonsContainer(Widget* container);
+        const sol::function& getButtonsContainer() const;
+
+        void setButtonsCreator(const sol::function& func);
+        Widget* getButtonsCreator() const;
+
+        void setArea(TextAreaWidget* area);
+        TextAreaWidget* getArea() const;
+
+        void setCharacter(ImageWidget* image);
+        ImageWidget* getCharacter() const;
+
+        void setName(TextWidget* name);
+        TextWidget* getName() const;
     private:
-        GUI& _gui;
-        Interface* _interface;
+        sol::function _buttonsCreator;
+        Widget* _buttonsContainer;
         TextAreaWidget* _area;
+        ImageWidget* _character;
         TextWidget* _name;
-        ImageWidget* _characterTexture;
-        Widget* _characterTextureHolder;
-        Widget* _buttons;
     };
 }

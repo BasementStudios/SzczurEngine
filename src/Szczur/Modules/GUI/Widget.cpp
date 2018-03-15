@@ -1,5 +1,8 @@
 #include "Widget.hpp"
-
+//#include "ImageWidget.hpp"
+#include "TextWidget.hpp"
+#include "TextAreaWidget.hpp"
+#include "Test.hpp"
 #include <iostream>
 
 namespace rat {
@@ -11,17 +14,25 @@ namespace rat {
     _isVisible(true),
     _aboutToRecalculate(false),
     _size(0u,0u) {
-        ;
+
     }
 
     Widget::~Widget() {
-        for(auto &it : _children)
-            delete it.second;
+        for(auto it : _children)
+            delete it;
     }
 
+    void Widget::initScript(Script& script) {
+        auto object = script.newClass<Widget>("Widget", "GUI");
+        basicScript(object);
+        object.init();
+    }
+
+    
+
     void Widget::clear() {
-        for(auto &it : _children)
-            delete it.second;
+        for(auto it : _children)
+            delete it;
         _children.clear();
     }
 
@@ -30,33 +41,32 @@ namespace rat {
     }
 
     Widget* Widget::setCallback(CallbackType key, Function_t value) {
-        _callback.insert_or_assign(key, value);
-
+        _callbacks.insert_or_assign(key, value);
         return this;
     }
 
-    void Widget::callback(CallbackType type) {
-        if(auto it = _callback.find(type); it != _callback.end())
-            std::invoke(std::get<1>(*it), this);
+    Widget* Widget::setLuaCallback(CallbackType key, SolFunction_t value) {
+        _luaCallbacks.insert_or_assign(key, value);
+        return this;
     }
 
-    Widget* Widget::add(const std::string& key, Widget* object) {
+    void Widget::_callback(CallbackType type) {
+        if(auto it = _luaCallbacks.find(type); it != _luaCallbacks.end())
+            std::invoke(it->second, this);
+        if(auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
+    }
+
+    Widget* Widget::add(Widget* object) {
         if(object) {
-            auto k = fnv1a_32(key.begin(), key.end());
-            if(auto it = _children.find(k); it != _children.end())
-                delete it->second;
-            _children.insert_or_assign(k, object);
+            _children.push_back(object);
             object->setParent(this);
             _aboutToRecalculate = true;
-            
+        }
+        else {
+            LOG_ERROR("Widget given to Widget::add is nullptr")
         }
         return object;
-    }
-
-    Widget* Widget::get(const std::string& key) const {
-        if(auto it = _children.find(fnv1a_32(key.begin(), key.end())); it != _children.end())
-            return it->second;
-        return nullptr;
     }
 
     void Widget::input(const sf::Event& event) {
@@ -72,13 +82,13 @@ namespace rat {
                         event.mouseMove.y <= thisSize.y
                     ) {
                         if(!_isHovered) {
-                            callback(CallbackType::onHoverIn);
+                            _callback(CallbackType::onHoverIn);
                             _isHovered = true;
                         }
                     }
                     else {
                         if(_isHovered) {
-                            callback(CallbackType::onHoverOut);
+                            _callback(CallbackType::onHoverOut);
                             _isHovered = false;
                         }
                     }
@@ -87,7 +97,7 @@ namespace rat {
 
                 case sf::Event::MouseButtonPressed: {
                     if(_isHovered) {
-                        callback(CallbackType::onPress);
+                        _callback(CallbackType::onPress);
                         _isPressed = true;
                     }
                     break;
@@ -97,23 +107,23 @@ namespace rat {
                     if(_isPressed) {
                         _isPressed = false;
                         if(_isHovered)
-                            callback(CallbackType::onRelease);         
+                            _callback(CallbackType::onRelease);         
                     }
                     break;
                 }
 
                 default: break;
             }
-            for(auto& it : _children) {
+            for(auto it : _children) {
                 if(event.type == sf::Event::MouseMoved) {
-                    auto itPosition = it.second->getPosition();
+                    auto itPosition = it->getPosition();
                     sf::Event tempEvent(event);
                     tempEvent.mouseMove.x -= itPosition.x;
                     tempEvent.mouseMove.y -= itPosition.y;
-                    it.second->input(tempEvent);
+                    it->input(tempEvent);
                 }
                 else
-                    it.second->input(event);
+                    it->input(event);
             }
         }
     }
@@ -123,13 +133,13 @@ namespace rat {
             _update(deltaTime);
 
             if(_isHovered) 
-                callback(CallbackType::onHover);
+                _callback(CallbackType::onHover);
 
             if(_isPressed)
-                callback(CallbackType::onHold);
+                _callback(CallbackType::onHold);
 
             for(auto& it : _children)
-                it.second->update(deltaTime);
+                it->update(deltaTime);
         }
 
         if(_aboutToRecalculate)
@@ -139,27 +149,29 @@ namespace rat {
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         if(isVisible()) {
-            sf::RectangleShape shape;
-            shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            shape.setFillColor(sf::Color(0,0,255,70));
-
-
             states.transform *= getTransform();
 
-            //target.draw(shape, states);
-
+            /*//  Uncomment to get into debug mode :D
+            sf::RectangleShape shape;
+            shape.setSize(static_cast<sf::Vector2f>(getSize()));
+            //shape.setFillColor(sf::Color(0,0,255,70));
+            shape.setFillColor(sf::Color::Transparent);
+            shape.setOutlineColor(sf::Color::White);
+            shape.setOutlineThickness(1.f);
+            target.draw(shape, states);*/
+            
             _draw(target, states);
-            for(auto& it : _children)
-                target.draw(*(it.second), states);
+            for(auto it : _children)
+                target.draw(*it, states);
         }
     }
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
         _size = {0u,0u};
-        for(auto& it : _children) {
-            auto itSize = it.second->getSize();
-            auto itPosition = static_cast<sf::Vector2i>(it.second->getPosition());
+        for(auto it : _children) {
+            auto itSize = it->getSize();
+            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
             if(itPosition.x + itSize.x > _size.x)
                 _size.x = itPosition.x + itSize.x;
             if(itPosition.y + itSize.y > _size.y)

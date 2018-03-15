@@ -7,6 +7,7 @@
 #include <boost/container/flat_map.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Debug.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 namespace rat {
@@ -22,10 +23,6 @@ namespace rat {
         template<typename T>
         void loadFromFile(const std::string& path);
 
-        /*template<typename T>
-        void loadFromFile(const std::string& path, std::function<bool(T& obj, const std::string&)> loadFunc);
-*/
-
         template<typename T>
         T* get(const std::string& path) const;
 
@@ -33,7 +30,7 @@ namespace rat {
         Assets_t _assets;
     };
 
-    using BasicGuiAssetsManager = GuiAssetsManager<sf::Texture, sf::Font, Json>;
+    using BasicGuiAssetsManager = GuiAssetsManager<sf::Texture, sf::Font>;
 }
 
 #include "GuiAssetsManager.tpp"

@@ -3,17 +3,15 @@ I. Moduły
 1. Nowy moduł.
 
 ```cpp
-class NewModule : public Module<...> 
+class NewModule : public Module<..., Script> 
 {
 // ...
 public:
 
 // ...
-	template <typename Tuple>
-	NewModule(Tuple&& tuple) : Module(tuple) {
-		LOG_CONSTRUCTOR();
+	NewModule() {
+		LOG_INFO(this, "NewModule constructed");
 		initScript(); // <<<< inicjacja modułu do skryptu
-		init();
 	}
 	
 // ...	
@@ -22,14 +20,14 @@ public:
 	void initScript() {
 		using namespace new_module; // <<<< o ile takowy namespace istnieje
 		Script& script = getModule<Script>();
-		auto module = script.newModule("BattleField"); // <<<< Ta zmienna MUSI nazywać się "module"
+		auto module = script.newModule("NewModule"); // <<<< Ta zmienna MUSI nazywać się "module"
 		
 		/* Obszar dodawania funkcjonalności */
 		// np. (więcej o tym makro niżej)
 		SCRIPT_SET_MODULE(NewModule, getPos, setPos, getSize, setSize)
 		
 		// Inicjacja klas modułu (zawierających metodę statyczną "initScript")
-		script.initClasses<ClassA,  ClassB, ClassC>();
+		script.initClasses<ClassA, ClassB, ClassC>();
 	}
 };
 ```
@@ -93,10 +91,10 @@ public:
 	static void initScript(Script& script) {
 		// 1. Zmienna poniżej MUSI nazywać się "object"
 		// 2. Trzeci argument jest nieobowiązkowy (jest to ścieżka do pliku, który ma się wykonać podczas inicjalizacji klasy)
-		auto object = script.newClass<NewClass>("NewModule", "NewClass", "../file.lua");
+		auto object = script.newClass<NewClass>("NewClass", "NewModule", "../NewClass.lua");
 		
 		/* Obszar dodawania funkcjonalności */
-		SCRIPT_SET_CLASS(MyClass, field_1, setField_1, getField_1, setField_2, getField_2, getField_3) // Podobnie jak wcześniej
+		SCRIPT_SET_CLASS(NewClass, field_1, setField_1, getField_1, setField_2, getField_2, getField_3) // Podobnie jak wcześniej
 		
 		// Makery (nieobowiązkowe)
 		object.makeInstance();
@@ -110,32 +108,32 @@ public:
 
 2. Dostępne opcje dodawania funkcjonalności.
 
-a) Marko `SCRIPT_SET_CLASS`
+a) Makro `SCRIPT_SET_CLASS`
 ```cpp
 SCRIPT_SET_CLASS(MyClass, a, setA, getA, setB)
 SCRIPT_SET_CLASS(MyClass, getB, getC, ...)
 // gdzie:
 // a, setA, getA, setB, getB, getC, ... - składowe i metody MyClass (max 16 na makro)
 ```
-Tak naprawdę makro `SCRIPT_SET_CLASS(NewModule, a, b, c)`
+Tak naprawdę makro `SCRIPT_SET_CLASS(NewClass, a, b, c)`
 wywołuje takie instrukcje:
 ```cpp
-module.set("a", &NewClass::a);
-module.set("b", &NewClass::b);
-module.set("c", &NewClass::c);
+object.set("a", &NewClass::a);
+object.set("b", &NewClass::b);
+object.set("c", &NewClass::c);
 ```
 
 b) Metoda `set`
 Przykłady:
 ```cpp
 // A
-object.set("size", size); // size musi być publiczne
+object.set("size", &NewClass::size); // size musi być publiczne
 // B
 object.set("getSize", &NewClass::getSize); // nie ma znaczenia czy metoda coś zwraca
 // C
 object.set("createObject", &NewClass::createObject); // dla statycznych też działa
 // D
-object.set("hello", [](){std::cout<<"Hello world!";}, ); // lambdy nie straszne
+object.set("hello", [](){std::cout<<"Hello world!";}); // lambdy również nie straszne
 ```
 
 c) Metoda 'setProperty'
@@ -149,6 +147,10 @@ object.setProperty("size", &NewClass::getSize, &NewClass::setSize) // args: name
 object.setProperty("flag", [](NewClass &obj){return obj.flag;}, [](NewClass &obj, bool value){obj.setFlag(value);});
 // przykład użycia w skrypcie: 
 // obj.flag = true; print(obj.flag);
+// C
+object.setProperty("flag", [](){}, [](NewClass &obj, bool value){obj.setFlag(value);});
+// przykład użycia w skrypcie: 
+// obj.flag = true; // bez gettera
 ```
 
 d) Metoda 'setOverload'
@@ -169,7 +171,7 @@ Przykłady opracowane dla metod:
 ```cpp
 void M::setValue(int value);
 void M::setValue(const string &value);
-void M::setValueFromInt(int value));
+void M::setValueFromInt(int value);
 void M::setValueFromString(const string &value);
 ```
 
