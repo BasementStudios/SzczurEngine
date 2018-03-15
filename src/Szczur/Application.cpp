@@ -57,7 +57,7 @@ void Application::update()
 			ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
 			ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
 			ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-			ImGui::Checkbox("Shader composer", &_modules.getModule<Shader>()._isEditorOpen); // #Stritch
+			ImGui::Checkbox("Shader composer", &_modules.getModule<Shader>().isEditorOpen); // #Stritch
 		}
 		ImGui::End();
 	}

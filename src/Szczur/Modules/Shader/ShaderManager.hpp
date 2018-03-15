@@ -16,8 +16,16 @@ namespace rat
 #ifdef EDITOR
 struct ShaderInfo
 {
-	enum ShaderType_e { Vertex = 0, Geometry = 2, Fragment = 1 };
+	static inline constexpr size_t shadersCount = 3;
+
+	enum ShaderType_e { Vertex = 0, Geometry = 1, Fragment = 2 };
 	enum ShaderTypeBits_e { Vert = 1, Geom = 2, Frag = 4, VertFrag = Vert | Frag, VertGeomFrag = Vert | Geom | Frag };
+
+	ShaderInfo(ShaderTypeBits_e typeBits, sf::Shader* ptr, const std::string& name, const std::string vertFilePath, const std::string geomFilePath, const std::string fragFilePath) :
+		ptr{ ptr }, name{ name }, filePath{ vertFilePath, geomFilePath, fragFilePath }, _typeBits{ typeBits }
+	{
+		reload();
+	}
 
 	void loadShaders()
 	{
@@ -83,9 +91,8 @@ struct ShaderInfo
 
 	sf::Shader* ptr;
 	const std::string name;
-	const std::string filePath[3];
-	std::string content[3];
-	const bool has[3];
+	const std::string filePath[shadersCount];
+	std::string content[shadersCount];
 
 	unsigned _typeBits;
 

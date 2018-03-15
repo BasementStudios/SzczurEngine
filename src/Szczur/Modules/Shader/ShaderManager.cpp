@@ -16,7 +16,7 @@ bool ShaderManager::loadFromConfig(const std::string& filePath)
 		bool hasFrag = j.find("frag") != j.end();
 
 		if(hasVert && hasGeom && hasFrag) {
-			// _loadVertGeomFrag(j["name"], j["vert"], j["geom"], j["frag"]);
+			_loadVertGeomFrag(j["name"], j["vert"], j["geom"], j["frag"]);
 		}
 		else if(hasVert && hasFrag) {
 			_loadVertFrag(j["name"], j["vert"], j["frag"]);
@@ -25,7 +25,7 @@ bool ShaderManager::loadFromConfig(const std::string& filePath)
 			_loadVert(j["name"], j["vert"]);
 		}
 		else if(hasGeom) {
-			// _loadGeom(j["name"], j["geom"]);
+			_loadGeom(j["name"], j["geom"]);
 		}
 		else if(hasFrag) {
 			_loadFrag(j["name"], j["frag"]);
@@ -138,15 +138,21 @@ void ShaderManager::_loadVert(const std::string& name, const std::string& vertFi
 	if (ptr->loadFromFile(vertFilePath, sf::Shader::Vertex)) {
 		#ifdef EDITOR
 		{
-			std::ifstream vertIn{ vertFilePath };
-			_shaderInfo.emplace_back(ShaderInfo{
-				ptr.get(),
-				name,
-				{ vertFilePath, {} },
-				{ std::string{ std::istreambuf_iterator<char>{ vertIn }, std::istreambuf_iterator<char>{} }, {} },
-				{ true, false },
-				ShaderInfo::Vert
-			});
+			_shaderInfo.emplace_back(ShaderInfo::Vert, ptr.get(), name, vertFilePath, std::string{}, std::string{});
+		}
+		#endif
+		_holder.emplace(fnv1a_32(name.data()), std::move(ptr));
+	}
+}
+
+void ShaderManager::_loadGeom(const std::string& name, const std::string& geomFilePath)
+{
+	auto ptr = std::make_unique<sf::Shader>();
+
+	if (ptr->loadFromFile(geomFilePath, sf::Shader::Geometry)) {
+		#ifdef EDITOR
+		{
+			_shaderInfo.emplace_back(ShaderInfo::Geom, ptr.get(), name, std::string{}, geomFilePath, std::string{});
 		}
 		#endif
 		_holder.emplace(fnv1a_32(name.data()), std::move(ptr));
@@ -160,15 +166,7 @@ void ShaderManager::_loadFrag(const std::string& name, const std::string& fragFi
 	if (ptr->loadFromFile(fragFilePath, sf::Shader::Fragment)) {
 		#ifdef EDITOR
 		{
-			std::ifstream fragIn{ fragFilePath };
-			_shaderInfo.emplace_back(ShaderInfo{
-				ptr.get(),
-				name,
-				{ {}, fragFilePath },
-				{ {}, std::string{ std::istreambuf_iterator<char>{ fragIn }, std::istreambuf_iterator<char>{} } },
-				{ false, true },
-				ShaderInfo::Frag
-			});
+			_shaderInfo.emplace_back(ShaderInfo::Frag, ptr.get(), name, std::string{}, std::string{}, fragFilePath);
 		}
 		#endif
 		_holder.emplace(fnv1a_32(name.data()), std::move(ptr));
@@ -182,16 +180,21 @@ void ShaderManager::_loadVertFrag(const std::string& name, const std::string& ve
 	if (ptr->loadFromFile(vertFilePath, fragFilePath)) {
 		#ifdef EDITOR
 		{
-			std::ifstream vertIn{ vertFilePath };
-			std::ifstream fragIn{ fragFilePath };
-			_shaderInfo.emplace_back(ShaderInfo{
-				ptr.get(),
-				name,
-				{ vertFilePath, fragFilePath },
-				{ std::string{ std::istreambuf_iterator<char>{ vertIn }, std::istreambuf_iterator<char>{} }, std::string{ std::istreambuf_iterator<char>{ fragIn }, std::istreambuf_iterator<char>{} } },
-				{ true, true },
-				ShaderInfo::VertFrag
-			});
+			_shaderInfo.emplace_back(ShaderInfo::VertFrag, ptr.get(), name, vertFilePath, std::string{}, fragFilePath);
+		}
+		#endif
+		_holder.emplace(fnv1a_32(name.data()), std::move(ptr));
+	}
+}
+
+void ShaderManager::_loadVertGeomFrag(const std::string& name, const std::string& vertFilePath, const std::string& geomFilePath, const std::string& fragFilePath)
+{
+	auto ptr = std::make_unique<sf::Shader>();
+
+	if (ptr->loadFromFile(vertFilePath, geomFilePath, fragFilePath)) {
+		#ifdef EDITOR
+		{
+			_shaderInfo.emplace_back(ShaderInfo::VertGeomFrag, ptr.get(), name, vertFilePath, geomFilePath, fragFilePath);
 		}
 		#endif
 		_holder.emplace(fnv1a_32(name.data()), std::move(ptr));

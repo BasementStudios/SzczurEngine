@@ -30,8 +30,8 @@ public:
 	const ShaderManager& getManager() const;
 
 	#ifdef EDITOR
-	bool _isEditorOpen;
-	sf::RenderTexture _previewRTex;
+	bool isEditorOpen;
+	sf::RenderTexture previewRTex;
 	#endif
 
 private:
