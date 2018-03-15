@@ -78,18 +78,20 @@ namespace rat {
 		bool _isPressed;
 		bool _isActivated;
 		bool _isVisible;
+
+		CallbacksContainer_t _callbacks;
+		CallbacksLuaContainer_t _luaCallbacks;
 		
 	private:
 		Children_t _children;
 		Widget* _parent;
 
-		CallbacksContainer_t _callback;
-		CallbacksLuaContainer_t _luaCallback;
+		
 		
 
 		sf::Vector2u _size;
 
-		void callback(CallbackType type);
+		virtual void _callback(CallbackType type);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

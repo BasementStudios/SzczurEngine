@@ -137,4 +137,11 @@ namespace rat {
     sf::Vector2u TextAreaWidget::_getSize() const {
         return _area.getSize();
     }
+
+    void TextAreaWidget::_callback(CallbackType type) {
+        if(auto it = _luaCallbacks.find(type); it != _luaCallbacks.end())
+            std::invoke(it->second, this);
+        if(auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
+    }
 }

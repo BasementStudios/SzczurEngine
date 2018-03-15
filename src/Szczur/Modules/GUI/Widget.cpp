@@ -41,29 +41,20 @@ namespace rat {
     }
 
     Widget* Widget::setCallback(CallbackType key, Function_t value) {
-        _callback.insert_or_assign(key, value);
+        _callbacks.insert_or_assign(key, value);
         return this;
     }
 
     Widget* Widget::setLuaCallback(CallbackType key, SolFunction_t value) {
-        _luaCallback.insert_or_assign(key, value);
+        _luaCallbacks.insert_or_assign(key, value);
         return this;
     }
 
-    void Widget::callback(CallbackType type) {
-        if(auto it = _luaCallback.find(type); it != _luaCallback.end()) {
-            if(auto ptr = dynamic_cast<TextWidget*>(this))
-                std::invoke(it->second, ptr);
-            else if(auto ptr = dynamic_cast<TextAreaWidget*>(this))
-                std::invoke(it->second, ptr);
-            else if(auto ptr = dynamic_cast<ImageWidget*>(this))
-                std::invoke(it->second, ptr);
-            else
-                std::invoke(it->second, this);
-        }
-        if(auto it = _callback.find(type); it != _callback.end()) {
+    void Widget::_callback(CallbackType type) {
+        if(auto it = _luaCallbacks.find(type); it != _luaCallbacks.end())
             std::invoke(it->second, this);
-        }
+        if(auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
     }
 
     Widget* Widget::add(Widget* object) {
@@ -91,13 +82,13 @@ namespace rat {
                         event.mouseMove.y <= thisSize.y
                     ) {
                         if(!_isHovered) {
-                            callback(CallbackType::onHoverIn);
+                            _callback(CallbackType::onHoverIn);
                             _isHovered = true;
                         }
                     }
                     else {
                         if(_isHovered) {
-                            callback(CallbackType::onHoverOut);
+                            _callback(CallbackType::onHoverOut);
                             _isHovered = false;
                         }
                     }
@@ -106,7 +97,7 @@ namespace rat {
 
                 case sf::Event::MouseButtonPressed: {
                     if(_isHovered) {
-                        callback(CallbackType::onPress);
+                        _callback(CallbackType::onPress);
                         _isPressed = true;
                     }
                     break;
@@ -116,7 +107,7 @@ namespace rat {
                     if(_isPressed) {
                         _isPressed = false;
                         if(_isHovered)
-                            callback(CallbackType::onRelease);         
+                            _callback(CallbackType::onRelease);         
                     }
                     break;
                 }
@@ -142,10 +133,10 @@ namespace rat {
             _update(deltaTime);
 
             if(_isHovered) 
-                callback(CallbackType::onHover);
+                _callback(CallbackType::onHover);
 
             if(_isPressed)
-                callback(CallbackType::onHold);
+                _callback(CallbackType::onHold);
 
             for(auto& it : _children)
                 it->update(deltaTime);
@@ -163,12 +154,12 @@ namespace rat {
             /*//  Uncomment to get into debug mode :D
             sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            shape.setFillColor(sf::Color(0,0,255,70));
-
+            //shape.setFillColor(sf::Color(0,0,255,70));
+            shape.setFillColor(sf::Color::Transparent);
+            shape.setOutlineColor(sf::Color::White);
+            shape.setOutlineThickness(1.f);
+            target.draw(shape, states);*/
             
-
-            //target.draw(shape, states);
-            */
             _draw(target, states);
             for(auto it : _children)
                 target.draw(*it, states);

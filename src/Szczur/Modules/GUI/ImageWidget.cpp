@@ -44,4 +44,11 @@ namespace rat {
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
         target.draw(_sprite, states);
     }
+
+    void ImageWidget::_callback(CallbackType type) {
+        if(auto it = _luaCallbacks.find(type); it != _luaCallbacks.end())
+            std::invoke(it->second, this);
+        if(auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
+    }
 }

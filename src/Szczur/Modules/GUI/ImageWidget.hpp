@@ -24,6 +24,7 @@ namespace rat {
         virtual sf::Vector2u _getSize() const override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     private:
+        virtual void _callback(CallbackType type) override;
         sf::Sprite _sprite; 
     };
 }

@@ -44,5 +44,6 @@ namespace rat {
 
         void _redrawArea();
         void _wrapText();
+        virtual void _callback(CallbackType type) override;
     };
 }
