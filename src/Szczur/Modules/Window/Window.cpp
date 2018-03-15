@@ -10,8 +10,14 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/Vertex.hpp>
+#include <SFML/Graphics/Color.hpp>
 
-#include "Szczur/Debug/Logger.hpp"
+
+#include "Szczur/Debug.hpp"
 
 namespace rat
 {
@@ -57,6 +63,23 @@ const std::string& Window::getTitle() const
 void Window::setTitle(const std::string& title)
 {
     this->title = title;
+	this->getWindow().create(this->videoMode, this->title); // @warn is it proper way?
+}
+
+
+
+/* Operators */
+/// Constructors
+Window::Window()
+{
+	LOG_INFO(this, ": World module initializing");
+	this->init();
+	LOG_INFO(this, ": World module initialized");
+}
+/// Deconstructor
+Window::~Window()
+{
+	LOG_INFO(this, ": World module destructed");
 }
 
 

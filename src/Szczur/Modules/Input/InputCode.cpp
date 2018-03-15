@@ -9,20 +9,20 @@ InputCode::InputCode() :
 
 }
 
-InputCode::InputCode(Keyboard::Code code) :
-	_data(InputDevice_t::Keyboard | code)
+InputCode::InputCode(Keyboard::Code_e code) :
+	_data(InputDevice_e::Keyboard | code)
 {
 
 }
 
-InputCode::InputCode(Mouse::Code code) :
-	_data(InputDevice_t::Mouse | code)
+InputCode::InputCode(Mouse::Code_e code) :
+	_data(InputDevice_e::Mouse | code)
 {
 
 }
 
-InputCode::InputCode(Scroll::Code code) :
-	_data(InputDevice_t::Scroll | code)
+InputCode::InputCode(Scroll::Code_e code) :
+	_data(InputDevice_e::Scroll | code)
 {
 
 }
@@ -33,9 +33,9 @@ InputCode::InputCode(int data) :
 
 }
 
-InputDevice_t InputCode::getType() const
+InputDevice_e InputCode::getType() const
 {
-	return static_cast<InputDevice_t>(_data & 0xFF0000);
+	return static_cast<InputDevice_e>(_data & 0xFF0000);
 }
 
 int InputCode::getID() const

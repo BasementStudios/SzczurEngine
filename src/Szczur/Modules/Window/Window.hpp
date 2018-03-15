@@ -16,8 +16,8 @@
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/Graphics/Color.hpp>
 
-#include "Szczur/Utility/Module.hpp"
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Debug.hpp"
 
 namespace rat {
 
@@ -79,8 +79,7 @@ public:
 	/* Operators */
 public:
 	// Module constructor/destructor
-	template <typename ModulesTuple>
-	Window(ModulesTuple&& tuple);
+	Window();
 	~Window();
 
 	// Disable coping
@@ -107,20 +106,5 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 };
-
-
-
-// Module constructor/destructor
-template <typename ModulesTuple>
-inline Window::Window(ModulesTuple&& tuple) : Module(tuple)
-{
-	LOG_INFO("[Window] Module initializing");
-	this->init();
-	LOG_INFO("[Window] Module initialized");
-}
-inline Window::~Window()
-{
-	LOG_INFO("[Window] Module destructed");
-}
 
 }

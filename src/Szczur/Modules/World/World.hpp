@@ -9,10 +9,9 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include "Szczur/Utility/Module.hpp"
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Debug.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/Assets/Assets.hpp"
 #include "ObjectType.hpp"
 #include "Map.hpp"
 
@@ -21,7 +20,7 @@ namespace rat {
 /** @class World
  ** @description Manages objects in the game world through the maps system, including loading and saving, object types management and other.
  **/
-class World : public Module<Window, Assets>
+class World : public Module<Window>
 {
     using Module::Module;
 
@@ -39,8 +38,7 @@ private:
 	/* Operators */
 public:
 	// Module constructor/destructor
-	template <typename ModulesTuple>
-	World(ModulesTuple&& tuple);
+	World();
 	~World();
 
 	// Disable coping
@@ -63,20 +61,5 @@ public:
 	// @todo . load
 	// @todo . save
 };
-
-
-
-// Module constructor/destructor
-template <typename ModulesTuple>
-inline World::World(ModulesTuple&& tuple) : Module(tuple)
-{
-	LOG_INFO("[World] Module initializing"); 
-	this->init();
-	LOG_INFO("[World] Module initialized!"); 
-}
-inline World::~World()
-{
-    LOG_INFO("[World] Module destructed"); 
-}
 
 }

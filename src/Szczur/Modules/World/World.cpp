@@ -5,10 +5,26 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 
 namespace rat
 {
+
+/* Operators */
+/// Constructor
+World::World()
+{
+	LOG_INFO(this, ": World module initializing"); 
+	this->init();
+	LOG_INFO(this, ": World module initialized!"); 
+}
+/// Destructor
+World::~World()
+{
+    LOG_INFO(this, ": World module destructed"); 
+}
+
+
 
 /* Methods*/
 /// init

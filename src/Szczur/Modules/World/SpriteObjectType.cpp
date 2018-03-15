@@ -15,7 +15,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "Szczur/JSON.hpp"
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 #include "Szczur/Modules/World/Object.hpp"
 #include "Szczur/Modules/World/ObjectType.hpp"
 

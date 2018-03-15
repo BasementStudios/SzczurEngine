@@ -9,7 +9,6 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
-	_modules.initModule<Assets>();
 	_modules.initModule<World>();
 }
 
@@ -18,9 +17,9 @@ void Application::input()
 	sf::Event event;
 
 	while (getWindow().pollEvent(event)) {
-		_modules.getModule<Input>().processEvent(event);
+		_modules.getModule<Input>().getManager().processEvent(event);
 
-		if (event.type == sf::Event::Closed || _modules.getModule<Input>().isPressed(Keyboard::Escape)) { // @warn delete in final product
+		if (event.type == sf::Event::Closed) {
 			getWindow().close();
 		}
 	}
@@ -28,12 +27,7 @@ void Application::input()
 
 void Application::update()
 {
-	auto deltaTime = _mainClock.restart().asSeconds();
-
-	// @info Update all things here.
-	(void)deltaTime;
-
-	_modules.getModule<Input>().finish();
+	_modules.getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()

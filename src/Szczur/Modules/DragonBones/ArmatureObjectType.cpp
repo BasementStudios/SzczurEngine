@@ -12,7 +12,7 @@
 #include <fstream>
 
 #include "Szczur/JSON.hpp"
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat

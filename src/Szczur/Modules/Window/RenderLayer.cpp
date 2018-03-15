@@ -9,7 +9,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Debug.hpp"
 
 namespace rat
 {

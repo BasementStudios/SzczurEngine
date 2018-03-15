@@ -11,8 +11,8 @@
 #include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Modules/World/World.hpp"
-#include "Szczur/Utility/Module.hpp"
-#include "Szczur/Debug/Logger.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Debug.hpp"
 
 namespace rat 
 {
