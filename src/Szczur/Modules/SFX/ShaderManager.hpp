@@ -62,11 +62,36 @@ private:
 		sf::Shader* ptr;
 		const std::string name;
 		const std::string filePath[2];
-		const std::string content[2];
+		std::string content[2];
 		const bool has[2];
 	};
 
 	std::vector<ShaderDebugInfo> _shaderInfo;
+
+	void _reload(const std::string& name)
+	{
+		auto it = std::find_if(_shaderInfo.begin(), _shaderInfo.end(), [&](const auto& obj) {
+			return obj.name == name;
+		});
+
+		if (it->has[0] && it->has[1]) {
+			it->ptr->loadFromFile(it->filePath[0], it->filePath[1]);
+			std::ifstream vertIn{ it->filePath[0] };
+			it->content[0] = std::string{ std::istreambuf_iterator<char>{ vertIn }, std::istreambuf_iterator<char>{} };
+			std::ifstream fragIn{ it->filePath[1] };
+			it->content[1] = std::string{ std::istreambuf_iterator<char>{ fragIn }, std::istreambuf_iterator<char>{} };
+		}
+		else if (it->has[0]) {
+			it->ptr->loadFromFile(it->filePath[0], sf::Shader::Vertex);
+			std::ifstream vertIn{ it->filePath[0] };
+			it->content[0] = std::string{ std::istreambuf_iterator<char>{ vertIn }, std::istreambuf_iterator<char>{} };
+		}
+		else if (it->has[1]) {
+			it->ptr->loadFromFile(it->filePath[1], sf::Shader::Fragment);
+			std::ifstream fragIn{ it->filePath[1] };
+			it->content[1] = std::string{ std::istreambuf_iterator<char>{ fragIn }, std::istreambuf_iterator<char>{} };
+		}
+	}
 	#endif
 
 };

@@ -27,9 +27,12 @@ void SFX::update()
 				static char contentBuffer[2][1024 * 8] = {};
 				static std::vector<std::tuple<Hash32_t, std::string, std::any>> uniforms[2];
 				static std::regex mainRegex{ R"(uniform\s+(\w+)\s+(\w+)\s*\=\s*(.+)\s*\;)" };
+				static const char* shaderName = nullptr;
 
 				static auto onLoad = [&] {
-					for(int i = 0; i < 2; ++i) {
+					if (shaderName == nullptr) return;
+					_manager._reload(info[index].name);
+					for (int i = 0; i < 2; ++i) {
 						if (!info[index].has[i]) continue;
 						currentShaderType = i;
 						uniforms[i].clear();
@@ -73,11 +76,15 @@ void SFX::update()
 					}
 				};
 				static auto onSave = [&] {
-					// std::ofstream out{ filenameBuffer };
-					// out.write(contentBuffer, std::strlen(contentBuffer));
+					if (shaderName == nullptr) return;
+					for (int i = 0; i < 2; ++i) {
+						if (info[index].has[i]) {
+							std::ofstream out{ info[index].filePath[i] };
+							out.write(contentBuffer[i], std::strlen(contentBuffer[i]));
+						}
+					}
 				};
 
-				static const char* shaderName = nullptr;
 				if (ImGui::BeginCombo("Avaible shaders", shaderName)) {
 					for (size_t v = 0; v < info.size(); ++v) {
 						if (ImGui::Selectable(info[v].name.data(), index == static_cast<int>(v))) {
@@ -93,7 +100,7 @@ void SFX::update()
 				ImGui::SameLine();
 				if (ImGui::Button("Save")) onSave();
 				ImGui::SameLine();
-				if (ImGui::Button("Save and reload")) {
+				if (ImGui::Button("Save and load")) {
 					onSave(); onLoad();
 				}
 				ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
