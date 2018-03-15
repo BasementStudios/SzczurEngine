@@ -10,71 +10,15 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
+#include "ScriptableBase.hpp"
+#include "TestObject.hpp"
+
 namespace rat
 {
 
-struct ScriptableObject {
-	
-	sf::Vector2f size{100,100};
-	sf::Vector2f pos{200,200};
-	int color{0};
-	
-	std::string name{"no_name"};
-	std::string scriptPath = "";
-	
-	sol::table ref;
-	Script *script;
-	
-	sol::function initFunction;	
-	sol::function updateFunction;
-
-	void render(sf::RenderTexture &canvas) {
-		sf::RectangleShape shape;
-		shape.setSize(size);
-		shape.setPosition(pos);
-		shape.setOutlineThickness(-3);
-		shape.setOutlineColor({0,0,0,255});
-		if(color == 0) {
-			shape.setFillColor({200,70,70,255});
-		}
-		else if(color == 1) {
-			shape.setFillColor({70,70,200,255});
-		}
-		canvas.draw(shape);
-	}
-	void setScriptModule(Script& script) {
-		this->script = &script;
-	}
-	
-	void setColor(int value) {
-		color = value;
-	}
-	
-	void setName(const std::string& name) {
-		this->name = name;
-	}
-	
-	void update() {
-		if(updateFunction.valid()) updateFunction(this);
-	}
-	
-	void loadScript(const std::string& filepath);
-	
-	static initScript(Script& script) {
-		auto object = script.newClass<ScriptableObject>("ScriptableObject", "ScriptEditor");
-		object.set("_init", &ScriptableObject::initFunction);
-		object.set("_update", &ScriptableObject::updateFunction);
-		object.set("pos", &ScriptableObject::pos);
-		object.set("size", &ScriptableObject::size);
-		object.set("color", &ScriptableObject::color);
-		// object.setProperty("_init", [](){}, [](ScriptableObject &owner, sol::function init){owner.initFunction = init;});
-		object.init();
-	}		
-};
-
 class ScriptEditor : public Module<Window, Input, Script>
 {
-	std::vector<std::unique_ptr<ScriptableObject>> objects;
+	std::vector<std::unique_ptr<TestObject>> objects;
 	
 	sf::RenderTexture canvas;
 	
@@ -82,9 +26,10 @@ class ScriptEditor : public Module<Window, Input, Script>
 public:
 
 	void addObject() {
-		objects.emplace_back(new ScriptableObject);
+		objects.emplace_back(new TestObject);
 		objects.back()->setScriptModule(getModule<Script>());	
-		objects.back()->setName(std::string("Object_") + std::to_string(objects.size()));
+		objects.back()->getBase().setName(std::string("Object_") + std::to_string(objects.size()));
+		// objects.back()->init();
 		// objects.back()->loadScript("scripts/button.lua");
 	}
 
@@ -96,10 +41,10 @@ public:
 	
 	void initScript() {
 		auto module = getModule<Script>().newModule("ScriptEditor");
-		getModule<Script>().initClasses<ScriptableObject>();
+		getModule<Script>().initClasses<ScriptableBase, TestObject>();
 	}
 	
-	ScriptableObject* lastObject() {
+	TestObject* lastObject() {
 		return objects.back().get();
 	}
 	

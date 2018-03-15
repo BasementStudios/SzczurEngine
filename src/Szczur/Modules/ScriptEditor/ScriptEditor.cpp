@@ -7,20 +7,6 @@
 // #include <ShellApi.h>
 
 namespace rat {
-	void ScriptableObject::loadScript(const std::string &filepath) {
-		
-		auto& lua = script->get();
-		lua.set("THIS", this);
-		try {
-			lua.script_file(filepath);
-			ref = lua["THIS"];
-			if(initFunction.valid()) initFunction(this);
-			scriptPath = filepath;
-		}
-		catch(std::exception e) {
-			std::cout<<"[ERROR] Cannot load "<<filepath<<'\n';
-		}
-	}
 
 	void ScriptEditor::update() {
 		
@@ -41,15 +27,15 @@ namespace rat {
 			}
 			
 			if(selectedObject!=-1) {		
-				auto obj = objects[selectedObject].get();
+				auto& obj = objects[selectedObject]->getBase();
 				ImGui::Separator();
 				ImGui::Text("Script path:");
 				
-				if(obj->scriptPath=="") {
+				if(obj.scriptPath=="") {
 					ImGui::Text("[no script]");
 				}
 				else {
-					ImGui::Text(obj->scriptPath.c_str());
+					ImGui::Text(obj.scriptPath.c_str());
 				}
 				if(ImGui::Button("LOAD SCRIPT")) {
 					ImGui::OpenPopup("Loading script");
@@ -64,7 +50,8 @@ namespace rat {
 					ImGui::Separator();
 
 					if(ImGui::Button("Load new script", ImVec2(120,0))) { 
-						obj->loadScript(std::string(buffer));
+						objects[selectedObject]->loadScript(std::string(buffer));
+						objects[selectedObject]->init();
 						ImGui::CloseCurrentPopup(); 
 					}
 					ImGui::SetItemDefaultFocus();
@@ -78,8 +65,8 @@ namespace rat {
 			
 			ImGui::Separator();
 			for (int i=0; i<objects.size(); ++i) {
-				auto obj = objects[i].get();
-                if (ImGui::Selectable(obj->name.c_str(), selectedObject == i)) {
+				auto obj = objects[i]->getBase();
+                if (ImGui::Selectable(obj.name.c_str(), selectedObject == i)) {
 					selectedObject = i;
                 }
             }
