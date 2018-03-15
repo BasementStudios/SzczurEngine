@@ -39,14 +39,14 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 }
 
 /// FrameRate
-unsigned int Window::getFrameRate() const
+unsigned int Window::getFramerateLimit() const
 {
-	return this->frameRate;
+	return this->framerateLimit;
 }
-void Window::setFrameRate(const unsigned int limit)
+void Window::setFramerateLimit(const unsigned int limit)
 {
-	this->frameRate = mode;
-	this->getWindow().setFrameRate(this->frameRate);
+	this->framerateLimit = limit;
+	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
 /// Title
@@ -67,7 +67,7 @@ void Window::init()
 {
 	// Create 
     this->setVideoMode(this->videoMode);
-	this->getWindow().setFrameRate(this->frameRate);
+	this->getWindow().setFramerateLimit(this->framerateLimit);
 	// @todo load from settings
 }
 
