@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.1.1 ])
+$(info [ PsychoX' Makefile - version 2.2.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -127,9 +127,9 @@ CXXFLAGS_DYNAMIC :=
 # Cleaning
 ifeq ($(MAKECMDGOALS),clean)
     CLEAN_FILES_CMD := rm 
-    CLEAN_FILES := "./obj/*/*.o" "./out/$(OUT_NAME)$(OUT_EXT)"
+    CLEAN_FILES := "./$(OBJ_DIR)/*/*$(OBJ_EXT)" "./out/$(OUT_NAME)$(OUT_EXT)"
     CLEAN_DIRS_CMD := rm -dr 
-    CLEAN_DIRS  := "./obj/*"
+    CLEAN_DIRS  := "./$(OBJ_DIR)/*"
 endif
 
 # Other tools
@@ -174,7 +174,7 @@ MARKERS := @todo @warn @err @debug
 # Dependencies finding
 DEPFLAGS := -MT $$@ -MMD -MP -MF 
 DEP_EXT := .d
-DEP_TMP := .tmp
+DEP_TMP_UPDATE_SUFFIX := .tmp
 
 
 
@@ -191,6 +191,17 @@ endef
 ifneq ("$(wildcard $(SETTINGS_FILE))","")
     include $(SETTINGS_FILE)
 endif
+
+
+
+#
+# Configuration normalization
+#
+
+# Normalize sources, includes and templates paths
+SRC_DIRS := $(shell realpath $(SRC_DIRS))
+INC_DIRS := $(shell realpath $(INC_DIRS))
+TEP_DIRS := $(shell realpath $(TEP_DIRS))
 
 
 
@@ -309,7 +320,7 @@ endef
 $(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
 
 # MXE uses pkg-config
-ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),1),1)
+ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),$(LIB_LIST),1),1)
     CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
     LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
 endif
@@ -455,8 +466,8 @@ $(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
 $(OBJECT): $(SOURCE) $(DEPENDENT)
 	$(inform_object) $$@
 	$(V)$(MKDIR) `dirname $$@`
-	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP)
-	$(V)mv -f $(DEPENDENT)$(DEP_TMP) $(DEPENDENT) && touch $$@
+	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP_UPDATE_SUFFIX)
+	$(V)mv -f $(DEPENDENT)$(DEP_TMP_UPDATE_SUFFIX) $(DEPENDENT) && touch $$@
 	$(V)$(LS) $$@
 endef
 $(foreach _, $(OBJECTS), $(eval $(call recipe,$(_))))
