@@ -13,6 +13,85 @@
 namespace rat
 {
 
+#ifdef EDITOR
+struct ShaderInfo
+{
+	enum ShaderType_e { Vertex = 0, Geometry = 2, Fragment = 1 };
+	enum ShaderTypeBits_e { Vert = 1, Geom = 2, Frag = 4, VertFrag = Vert | Frag, VertGeomFrag = Vert | Geom | Frag };
+
+	void loadShaders()
+	{
+		switch (getBits()) {
+			case Vert: ptr->loadFromFile(filePath[Vertex], sf::Shader::Vertex); break;
+			case Geom: ptr->loadFromFile(filePath[Geometry], sf::Shader::Geometry); break;
+			case Frag: ptr->loadFromFile(filePath[Fragment], sf::Shader::Fragment); break;
+			case VertFrag: ptr->loadFromFile(filePath[Vertex], filePath[Fragment]); break;
+			case VertGeomFrag: ptr->loadFromFile(filePath[Vertex], filePath[Geometry], filePath[Fragment]); break;
+		}
+	}
+
+	void loadContent()
+	{
+		std::fstream in;
+		if (hasBits(Vert)) {
+			in.open(filePath[Vertex]);
+			content[Vertex] = std::string{ std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{} };
+			in.close();
+		}
+		if (hasBits(Geom)) {
+			in.open(filePath[Geometry]);
+			content[Geometry] = std::string{ std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{} };
+			in.close();
+		}
+		if (hasBits(Frag)) {
+			in.open(filePath[Fragment]);
+			content[Fragment] = std::string{ std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{} };
+			in.close();
+		}
+	}
+
+	void reload()
+	{
+		loadShaders();
+		loadContent();
+	}
+
+	bool hasType(ShaderType_e code) const
+	{
+		switch (code) {
+			case Vertex: return hasBits(Vert);
+			case Geometry: return hasBits(Geom);
+			case Fragment: return hasBits(Frag);
+		}
+		return false;
+	}
+
+	unsigned getBits() const
+	{
+		return _typeBits;
+	}
+
+	bool hasBits(ShaderTypeBits_e code) const
+	{
+		return getBits() & code;
+	}
+
+	bool matchBits(ShaderTypeBits_e code) const
+	{
+		return getBits() == code;
+	}
+
+	sf::Shader* ptr;
+	const std::string name;
+	const std::string filePath[3];
+	std::string content[3];
+	const bool has[3];
+
+	unsigned _typeBits;
+
+};
+#endif
+
 class ShaderManager
 {
 public:
@@ -47,50 +126,7 @@ public:
 	ConstReference_t getRef(const Key_t& key) const;
 
 	#ifdef EDITOR
-	struct ShaderInfo
-	{
-		static inline constexpr size_t shaderTypesCount = 3;
-
-		enum ShaderType_e { Vertex = 0, Geometry = 1, Fragment = 2 };
-		enum ShaderTypeBits_e { Vert = 1, Geom = 2, Frag = 4, VertFrag = Vert | Frag, VertGeomFrag = Vert | Geom | Frag };
-
-		bool hasType(ShaderType_e code) const { return typeBits & code; }
-		bool matchType(ShaderTypeBits_e code) const { return typeBits == code; }
-
-		sf::Shader* ptr;
-		const std::string name;
-		const std::string filePath[shaderTypesCount];
-		std::string content[shaderTypesCount];
-		const bool has[shaderTypesCount];
-
-		int typeBits;
-
-	};
-
 	std::vector<ShaderInfo> _shaderInfo;
-
-	void _reload(const std::string& name)
-	{
-		auto& info = getShaderInfo(name);
-
-		if (info.has[0] && info.has[1]) {
-			info.ptr->loadFromFile(info.filePath[0], info.filePath[1]);
-			std::ifstream vertIn{ info.filePath[0] };
-			info.content[0] = std::string{ std::istreambuf_iterator<char>{ vertIn }, std::istreambuf_iterator<char>{} };
-			std::ifstream fragIn{ info.filePath[1] };
-			info.content[1] = std::string{ std::istreambuf_iterator<char>{ fragIn }, std::istreambuf_iterator<char>{} };
-		}
-		else if (info.has[0]) {
-			info.ptr->loadFromFile(info.filePath[0], sf::Shader::Vertex);
-			std::ifstream vertIn{ info.filePath[0] };
-			info.content[0] = std::string{ std::istreambuf_iterator<char>{ vertIn }, std::istreambuf_iterator<char>{} };
-		}
-		else if (info.has[1]) {
-			info.ptr->loadFromFile(info.filePath[1], sf::Shader::Fragment);
-			std::ifstream fragIn{ info.filePath[1] };
-			info.content[1] = std::string{ std::istreambuf_iterator<char>{ fragIn }, std::istreambuf_iterator<char>{} };
-		}
-	}
 
 	Pointer_t getPtr(const std::string& name);
 	ConstPointer_t getPtr(const std::string& name) const;
@@ -110,11 +146,15 @@ public:
 
 private:
 
-	void _loadVertFrag(const std::string& name, const std::string& vertexFilePath, const std::string& fragFilePath);
+	void _loadVert(const std::string& name, const std::string& vertFilePath);
 
-	void _loadVert(const std::string& name, const std::string& vertexFilePath);
+	void _loadGeom(const std::string& name, const std::string& geomFilePath);
 
 	void _loadFrag(const std::string& name, const std::string& fragFilePath);
+
+	void _loadVertFrag(const std::string& name, const std::string& vertFilePath, const std::string& fragFilePath);
+
+	void _loadVertGeomFrag(const std::string& name, const std::string& vertFilePath, const std::string& geomFilePath, const std::string& fragFilePath);
 
 	Holder_t _holder;
 

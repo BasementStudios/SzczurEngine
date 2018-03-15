@@ -10,7 +10,7 @@ Shader::Shader()
 	#ifdef EDITOR
 	{
 		gVar->create<sf::Texture*>("templates", new sf::Texture);
-		sf::Image img; img.loadFromFile("Assets/Texture/forest.png"); img.flipVertically();
+		sf::Image img; img.loadFromFile("Assets/Texture/templates.png"); img.flipVertically();
 		auto p = gVar->get<sf::Texture*>("templates");
 		p->loadFromImage(img);
 		_previewRTex.create(p->getSize().x, p->getSize().y);
@@ -42,9 +42,9 @@ void Shader::update()
 
 				static auto onLoad = [&] {
 					if (shaderName == nullptr) return;
-					_manager._reload(info[index].name);
+					info[index].reload();
 					for (int i = 0; i < 2; ++i) {
-						if (!info[index].has[i]) continue;
+						if (!info[index].hasType(static_cast<ShaderInfo::ShaderType_e>(i))) continue;
 						currentShaderType = i;
 						uniforms[i].clear();
 						std::fill(contentBuffer[i], contentBuffer[i] + sizeof(contentBuffer[i]), '\0');
@@ -89,7 +89,7 @@ void Shader::update()
 				static auto onSave = [&] {
 					if (shaderName == nullptr) return;
 					for (int i = 0; i < 2; ++i) {
-						if (info[index].has[i]) {
+						if (info[index].hasType(static_cast<ShaderInfo::ShaderType_e>(i))) {
 							std::ofstream out{ info[index].filePath[i] };
 							out.write(contentBuffer[i], std::strlen(contentBuffer[i]));
 						}
