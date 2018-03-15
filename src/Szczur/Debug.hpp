@@ -108,6 +108,5 @@ namespace detail
 #define LOG_WARN_IF_CX(condition, ...) { if constexpr (condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr (condition) LOG_ERROR(__VA_ARGS__) }
 #define EDITOR
-#define private public
 
 #endif

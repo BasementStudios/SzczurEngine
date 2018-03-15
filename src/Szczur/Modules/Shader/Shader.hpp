@@ -8,35 +8,35 @@
 namespace rat
 {
 
-class SPFX : public Module<>
+class Shader : public Module<>
 {
 public:
 
-	SPFX();
+	Shader();
 
-	~SPFX();
+	Shader(const Shader&) = delete;
 
-	SPFX(const SPFX&) = delete;
+	Shader& operator = (const Shader&) = delete;
 
-	SPFX& operator = (const SPFX&) = delete;
+	Shader(Shader&&) = delete;
 
-	SPFX(SPFX&&) = delete;
+	Shader& operator = (Shader&&) = delete;
 
-	SPFX& operator = (SPFX&&) = delete;
+	~Shader();
 
 	void update();
 
 	ShaderManager& getManager();
 	const ShaderManager& getManager() const;
 
-private:
-
-	ShaderManager _manager;
-
 	#ifdef EDITOR
 	bool _isEditorOpen;
 	sf::RenderTexture _previewRTex;
 	#endif
+
+private:
+
+	ShaderManager _manager;
 
 };
 

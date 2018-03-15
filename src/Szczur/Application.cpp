@@ -1,7 +1,5 @@
 #include "Application.hpp"
 
-#include <SFML/Graphics.hpp>
-
 namespace rat
 {
 
@@ -9,7 +7,7 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
-	_modules.initModule<SPFX>();
+	_modules.initModule<Shader>();
 
 	#ifdef EDITOR
 	{
@@ -17,7 +15,6 @@ void Application::init()
 		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
 		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
 		ImGui::SFML::Init(getWindow());
-		gVar->create<sf::Shader*>("test_shader", nullptr); // #Stritch
 	}
 	#endif
 }
@@ -50,7 +47,7 @@ void Application::input()
 
 void Application::update()
 {
-	// [[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 
 	#ifdef EDITOR
 	{
@@ -60,13 +57,13 @@ void Application::update()
 			ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
 			ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
 			ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-			ImGui::Checkbox("Shader composer", &_modules.getModule<SPFX>()._isEditorOpen); // #Stritch
+			ImGui::Checkbox("Shader composer", &_modules.getModule<Shader>()._isEditorOpen); // #Stritch
 		}
 		ImGui::End();
 	}
 	#endif
 
-	_modules.getModule<SPFX>().update();
+	_modules.getModule<Shader>().update();
 
 	_modules.getModule<Input>().getManager().finishLogic();
 }

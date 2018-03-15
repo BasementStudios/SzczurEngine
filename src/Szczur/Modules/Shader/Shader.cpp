@@ -1,38 +1,39 @@
-#include "SPFX.hpp"
+#include "Shader.hpp"
 
 namespace rat
 {
 
-SPFX::SPFX()
+Shader::Shader()
 {
 	_manager.loadFromConfig("Assets/Shader/shader.json");
 
 	#ifdef EDITOR
 	{
 		gVar->create<sf::Texture*>("templates", new sf::Texture);
-		sf::Image img; img.loadFromFile("Assets/Texture/templates.png"); img.flipVertically();
+		sf::Image img; img.loadFromFile("Assets/Texture/forest.png"); img.flipVertically();
 		auto p = gVar->get<sf::Texture*>("templates");
 		p->loadFromImage(img);
 		_previewRTex.create(p->getSize().x, p->getSize().y);
 	}
 	#endif
 
-	LOG_INFO(this, " : Module SPFX constructed");
+	LOG_INFO(this, " : Module Shader constructed");
 }
 
-SPFX::~SPFX()
+Shader::~Shader()
 {
-	LOG_INFO(this, " : Module SPFX destructed");
+	LOG_INFO(this, " : Module Shader destructed");
 }
 
-void SPFX::update()
+void Shader::update()
 {
 	#ifdef EDITOR
 	{
 		if (_isEditorOpen) {
+			auto& info = _manager._shaderInfo;
+			static int index = 0;
+			static bool showPreview = false;
 			if (ImGui::Begin("Shader composer", &_isEditorOpen)) {
-				auto& info = _manager._shaderInfo;
-				static int index = 0;
 				static int currentShaderType = 0;
 				static char contentBuffer[2][1024 * 8] = {};
 				static std::vector<std::tuple<Hash32_t, std::string, std::any>> uniforms[2];
@@ -98,7 +99,6 @@ void SPFX::update()
 				if (ImGui::BeginCombo("Avaible shaders", shaderName)) {
 					for (size_t v = 0; v < info.size(); ++v) {
 						if (ImGui::Selectable(info[v].name.data(), index == static_cast<int>(v))) {
-							gVar->set("test_shader", info[v].ptr);
 							shaderName = info[v].name.data();
 							index = v;
 							onLoad();
@@ -114,6 +114,8 @@ void SPFX::update()
 				if (ImGui::Button("Save and load")) {
 					onSave(); onLoad();
 				}
+				ImGui::SameLine();
+				ImGui::Checkbox("Show preview", &showPreview);
 				ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 				if (info[index].has[0] && info[index].has[1]) {
 					ImGui::RadioButton("vertex", &currentShaderType, 0);
@@ -178,25 +180,32 @@ void SPFX::update()
 			}
 			ImGui::End();
 
-			if (ImGui::Begin("Shader preview", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-				sf::Sprite spr{ *gVar->get<sf::Texture*>("templates") };
-				_previewRTex.clear();
-				_previewRTex.draw(spr, gVar->get<sf::Shader*>("test_shader"));
-				_previewRTex.display();
-				ImGui::Image(_previewRTex.getTexture(), sf::Color::White, sf::Color::Magenta);
+			if (showPreview) {
+				if (ImGui::Begin("Shader preview", &showPreview, ImGuiWindowFlags_HorizontalScrollbar)) {
+					static bool showShader = true;
+					static float previewScale = 1.0f;
+					ImGui::Checkbox("Show shader", &showShader);
+					ImGui::SliderFloat("Scale", &previewScale, 0.1f, 5.0f);
+					sf::Sprite spr{ *gVar->get<sf::Texture*>("templates") };
+					_previewRTex.clear();
+					_previewRTex.draw(spr, showShader ? info[index].ptr : nullptr);
+					_previewRTex.display();
+					sf::Vector2f scale{ _previewRTex.getTexture().getSize().x * previewScale, _previewRTex.getTexture().getSize().y * previewScale };
+					ImGui::Image(_previewRTex.getTexture(), scale, sf::Color::White, sf::Color::Magenta);
+				}
+				ImGui::End();
 			}
-			ImGui::End();
 		}
 	}
 	#endif
 }
 
-ShaderManager& SPFX::getManager()
+ShaderManager& Shader::getManager()
 {
 	return _manager;
 }
 
-const ShaderManager& SPFX::getManager() const
+const ShaderManager& Shader::getManager() const
 {
 	return _manager;
 }
