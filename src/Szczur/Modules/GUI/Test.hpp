@@ -8,37 +8,37 @@ namespace rat {
     template<typename... Ts>
     void basicScript(ScriptClass<Ts...>& object) {
         auto basicValues = [](Widget* widget, sol::table tab){
-        if(tab["position"].valid()) {
-            widget->setPosition(
-                tab["position"][1],
-                tab["position"][2]
-            );
-        }
-        if(tab["visible"].valid()) {
-            if(!tab["visible"])
-                widget->invisible();
-        }
-        if(tab["active"].valid()) {
-            if(!tab["active"])
-                widget->deactivate();
-        }
-        if(tab["onHover"].valid())
-            widget->setLuaCallback(Widget::CallbackType::onHover, tab["onHover"]);
+            if(tab["position"].valid()) {
+                widget->setPosition(
+                    tab["position"][1],
+                    tab["position"][2]
+                );
+            }
+            if(tab["visible"].valid()) {
+                if(!tab["visible"])
+                    widget->invisible();
+            }
+            if(tab["active"].valid()) {
+                if(!tab["active"])
+                    widget->deactivate();
+            }
+            if(tab["onHover"].valid())
+                widget->setLuaCallback(Widget::CallbackType::onHover, tab["onHover"]);
 
-        if(tab["onHoverIn"].valid())
-            widget->setLuaCallback(Widget::CallbackType::onHoverIn, tab["onHoverIn"]);
+            if(tab["onHoverIn"].valid())
+                widget->setLuaCallback(Widget::CallbackType::onHoverIn, tab["onHoverIn"]);
 
-        if(tab["onHoverOut"].valid())
-            widget->setLuaCallback(Widget::CallbackType::onHoverOut, tab["onHoverOut"]);
+            if(tab["onHoverOut"].valid())
+                widget->setLuaCallback(Widget::CallbackType::onHoverOut, tab["onHoverOut"]);
 
-        if(tab["onPress"].valid())
-            widget->setLuaCallback(Widget::CallbackType::onPress, tab["onPress"]);
+            if(tab["onPress"].valid())
+                widget->setLuaCallback(Widget::CallbackType::onPress, tab["onPress"]);
 
-        if(tab["onHold"].valid())
-            widget->setLuaCallback(Widget::CallbackType::onHold, tab["onHold"]);
+            if(tab["onHold"].valid())
+                widget->setLuaCallback(Widget::CallbackType::onHold, tab["onHold"]);
 
-        if(tab["onRelease"].valid())
-            widget->setLuaCallback(Widget::CallbackType::onRelease, tab["onRelease"]);
+            if(tab["onRelease"].valid())
+                widget->setLuaCallback(Widget::CallbackType::onRelease, tab["onRelease"]);
         };
 
         object.setProperty(
@@ -58,6 +58,52 @@ namespace rat {
             [](Widget& owner){ return owner.getPosition(); },
             [](Widget& owner, sol::table tab){ owner.setPosition( tab[1], tab[2] ); }
         );
+
+
+        object.setProperty(
+            "onHover",
+            [](){},
+            [](Widget& owner, sol::function func){
+                owner.setLuaCallback(Widget::CallbackType::onHover, func);
+            }
+        );
+        object.setProperty(
+            "onHoverIn",
+            [](){},
+            [](Widget& owner, sol::function func){
+                owner.setLuaCallback(Widget::CallbackType::onHoverIn, func);
+            }
+        );
+        object.setProperty(
+            "onHoverOut",
+            [](){},
+            [](Widget& owner, sol::function func){
+                owner.setLuaCallback(Widget::CallbackType::onHoverOut, func);
+            }
+        );
+        object.setProperty(
+            "onPress",
+            [](){},
+            [](Widget& owner, sol::function func){
+                owner.setLuaCallback(Widget::CallbackType::onPress, func);
+            }
+        );
+        object.setProperty(
+            "onHold",
+            [](){},
+            [](Widget& owner, sol::function func){
+                owner.setLuaCallback(Widget::CallbackType::onHold, func);
+            }
+        );
+        object.setProperty(
+            "onRelease",
+            [](){},
+            [](Widget& owner, sol::function func){
+                owner.setLuaCallback(Widget::CallbackType::onRelease, func);
+            }
+        );
+
+
 
         
 

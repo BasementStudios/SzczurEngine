@@ -35,8 +35,8 @@ namespace rat {
         void setArea(TextAreaWidget* area);
         TextAreaWidget* getArea() const;
 
-        void setCharacter(ImageWidget* image);
-        ImageWidget* getCharacter() const;
+        void setCharacterHolder(Widget* holder);
+        Widget* getCharacterHolder() const;
 
         void setName(TextWidget* name);
         TextWidget* getName() const;
@@ -44,6 +44,7 @@ namespace rat {
         sol::function _buttonsCreator;
         Widget* _buttonsContainer;
         TextAreaWidget* _area;
+        Widget* _characterHolder;
         ImageWidget* _character;
         TextWidget* _name;
     };

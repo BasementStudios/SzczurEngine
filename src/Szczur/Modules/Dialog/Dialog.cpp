@@ -7,60 +7,7 @@ namespace rat {
         auto& gui = getModule<GUI>();
         
         _initScript();
-
-        
-
-/*        Options* opt1 = new Options;
-        opt1->setRunners(1u);
-        opt1->addOption(
-            "Nie powinno cie tu byc",
-            nullptr,
-            2u,
-            nullptr
-        );
-        opt1->addOption(
-            "Znasz ich?",
-            nullptr,
-            3u,
-            nullptr
-        );
-
-        Options* opt2 = new Options;
-        opt2->setRunners(2u);
-        opt2->addOption(
-            "Widok ze zbocza",
-            nullptr,
-            1u,
-            nullptr
-        );
-        opt2->addOption(
-            "Znasz ich?",
-            nullptr,
-            3u,
-            nullptr
-        );
-
-        Options* opt3 = new Options;
-        opt3->setRunners(3u);
-        opt3->addOption(
-            "Widok ze zbocza",
-            nullptr,
-            1u,
-            nullptr
-        );
-        opt3->addOption(
-            "Nie powinno cie tu byc",
-            nullptr,
-            2u,
-            nullptr
-        );
-
-
-        auto* mngr = load("data/dialog2");
-        mngr->addOptions(opt1, opt2, opt3);
-        mngr->startWith(1u);
-        mngr->play();
-        */
+        getModule<Script>().scriptFile("data/_dialog.lua");
     }
 
 
