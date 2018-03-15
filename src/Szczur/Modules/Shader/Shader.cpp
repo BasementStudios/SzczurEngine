@@ -104,8 +104,8 @@ void Shader::update()
 							onLoad();
 						}
 					}
-			        ImGui::EndCombo();
-			    }
+					ImGui::EndCombo();
+				}
 
 				if (ImGui::Button("Load")) onLoad();
 				ImGui::SameLine();

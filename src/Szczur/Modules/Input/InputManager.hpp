@@ -80,7 +80,7 @@ private:
 
 	unsigned _enteredCharacter;
 
-    sf::Vector2i _mousePosition;
+	sf::Vector2i _mousePosition;
 
 };
 

@@ -46,15 +46,15 @@ public:
 
 	DebugLogger() = default;
 
-    ~DebugLogger() = default;
+	~DebugLogger() = default;
 
-    DebugLogger(const DebugLogger&) = delete;
+	DebugLogger(const DebugLogger&) = delete;
 
-    DebugLogger& operator = (const DebugLogger&) = delete;
+	DebugLogger& operator = (const DebugLogger&) = delete;
 
-    DebugLogger(DebugLogger&&) = delete;
+	DebugLogger(DebugLogger&&) = delete;
 
-    DebugLogger& operator = (DebugLogger&&) = delete;
+	DebugLogger& operator = (DebugLogger&&) = delete;
 
 	template <typename... Ts>
 	void log(const char* file, int line, Ts&&... args)
