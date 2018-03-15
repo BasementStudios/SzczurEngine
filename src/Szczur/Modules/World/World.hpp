@@ -27,12 +27,6 @@ class World : public Module<Window, Assets>
 
 
 	
-	/* Types */
-public:
-	using Vecotr_t = sf::Vector2f;
-
-
-	
     /* Variables */
 private:
     std::vector<ObjectType*> types; // @todo , Use some better container; (std::list?)

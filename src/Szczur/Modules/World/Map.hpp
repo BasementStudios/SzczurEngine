@@ -24,7 +24,7 @@ class Map : public sf::Drawable
 	/* Variables */
 private:
 	std::vector<Object*>	sceneObjects;
-	sf::RenderStates		sceneRenderStates	= sf::RenderStates::Default;
+	sf::RenderStates		sceneRenderStates	{sf::RenderStates::Default};
 
 
 

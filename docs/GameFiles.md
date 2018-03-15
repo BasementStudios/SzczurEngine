@@ -15,7 +15,7 @@ Foldery
 Scripts/			; Inne skrypty.
 Actions/			; Współdzielone, typowe zdarzenia, w tym akcje ciągłe.
 Objects/			; Typy obiektów świata gry, np. dźwignia, drzewo - zestawy grafik, animacji.
-Actors/				; Typy aktorów - bardziej stworzenia, np. postacie, potwory - zestawy -||-.
+Actors/		????	; Typy aktorów - bardziej stworzenia, np. postacie, potwory - zestawy -||-.
 Maps/				; Mapy, w tym listy obiektów, wyzwalaczy i zdarzeń map, konfiguracja.
 Sounds/				; Jednorazowe dźwięki, dość uniwersalne - odtwarzane z naciskiem na buforowanie.
 Musics/				; Powtarzające się lub ciągłe muzyka, podkład - odtwarzane strumieniowo.
@@ -69,7 +69,7 @@ Objects/*
 		texture.png				; ! Tekstura z klatkami dla poszczególnych stanów
 		object.json				; ! Plik z informacjami o obiekcie
 			- states {}			; ! Tablica opisująca klatki dla poszczególnych stanów
-				- Up {}			; ! Każdy stan ma swoją nazwę tekstową.
+				- Up {}			; ! Każdy stan ma swoją nazwę tekstową i szczegóły (obiekt).
 								;	Musi istnieć conajmniej jeden stan dla każdego obiektu.
 					- oX		; Punkt pochodzenia - wskzany punkt jest miejscem względem 
 					- oY		;   klatki, od którego jest uznawany środek obiektu dla dla gry.
@@ -87,41 +87,11 @@ Objects/*
 		; todo ;f
 
 	Guard01/					; Przykład obiektu typu Armature (animacja szkieletowa).
-		skeleton.json			; Informacje o animacji szkieletowej.
-		texture.json			; Informacje o teksturach dla animacji (szkieletowej wg. schematu z DB lub dla sprite:
-			- states {} 		; ! Tablica stanów, klucze np. `moving_left`, `idle`...
-				- frames		; ! Liczba klatek dla animacji
-				- timestamps []	; Różnice w czasie dla kolejnych klatek, lub jedna wartość
-								; 	jak wspólna różnica w czasie dla kolejnych klatek.
-				- mode			; ? Tryb animowania: 
-								;	0, 'static' lub brak - klatka odrazu jest nakładana, 
-								; 	1, 'linear' - przenikanie, liniowe zmienianie przeźroczystości,
-								;	2, 'ease-all' - przenikanie stępione, wolny start, koniec,
-								;	3, 'ease-in' - przenikanie stępione z początku, wolny start,
-								;	4, 'ease-out' - przenikanie stępione z końca, wolny koniec,
-								;   lub tablica - wartości przeźroczystości dla przejścia Beziera.
-		texture.png				; Tekstury (szkieletowa), klatki aniamcji (sprite) lub tekstura (statyczna).
-								; Jeśli brak, obiekt nie ma reprezentacji wizualnej.
-		object.json				;
-			- lx				; ? Długości w odpowiednich osiach obiektu - wymusza odpowiednie rozmiary.
-			- ly				; ? -||-
-			- ox				; Punkt/pozycja pochodzenia - Wskzany punkt jest miejscem względem 
-			- oy				;   animacji, od którego jest uznawany środek obiektu dla dla gry.
-								;	Jesli nie określone oXYZ - używane są środkowe z wymiarów  elementu.
-			- cx				; Szerokość kolizji. Jeśli tryb koła - promień koła od środka.
-			- cy				; Wysokość kolizji. Jeśli zero lub nieokreślony - tryb koła.
-
-Actors/*						; Każdy `Actor` to także `Object`, więc elementy dziedziczone.
-	Guard03/
-		config.json				; ! Informacje o postaci.
-			- name				; ! Nazwa własna, wyświetlana.
-			; informacje zależne od mechanik - @todo do ustalenia itd., btw czy to wgle tutaj czy tylko w Maps?
-			- tags				; Lista tagów postaci, np. `good,old,mage`.
-			- description		; Opis postaci w dzienniku.
-			- health
-			- mana
-			- attack
-			; i inne informacje...
+		object.json				; ! Plik z informacjami o obiekcie
+			- poses {}			; ! Każda poza ma swoją nazwę.
+				- 90			; 
+		skeleton_90.json		; ! Informacje o animacji szkieletowej dla danej pozy (np. 90* czy 30*).
+		texatlas_90.json		; ! Informacje o teksturach dla danej pozy.
 
 Maps/
 	South Castle Tower Floor 1/

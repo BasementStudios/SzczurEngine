@@ -1,17 +1,17 @@
 #pragma once
 
 /** @file SpriteObjectType.hpp
- ** @description Header file with SpriteObjectType class as shared game sprite object type information.
+ ** @description Header file with Sprite Object Type class as shared game sprite object type information.
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
+#include <string>
 #include <array>
 #include <vector>
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 
-#include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/World/Object.hpp"
 #include "Szczur/Modules/World/ObjectType.hpp"
 
@@ -21,20 +21,26 @@ namespace rat
 class SpriteObjectType : public ObjectType
 {
 	/* Types */
+public:
+	using StateID_t = std::size_t;
 protected:
 	struct StateDetails
 	{
-		World::Vector_t 			origin		{0, 0};
+		std::string 				name;
+		Object::Vector_t 			origin;
 		std::array<sf::Vertex, 4>	vertices;
 	};
-
+	
 	
 	
 	/* Constants */
+public:
+	constexpr static StateID_t  defaultStateID 		{0};
+	constexpr static auto       defaultStateString  {"default"};
 protected:
 	constexpr static auto	assetsPath		= "Assets/Objects/";
-	constexpr static auto 	textureFileName	= "texture.png";
 	constexpr static auto	configFileName	= "object.json";
+	constexpr static auto 	textureFileName	= "texture.png";
 	
 
 	
@@ -53,19 +59,26 @@ public:
 	 **/
 	const sf::Texture& getTexture() const;
 
+	/** @property State
+	 ** @description State string/ID used to identify states of Sprite.
+	 ** @acess const get
+	 **/
+	SpriteObjectType::StateID_t getStateID(const std::string& stateString) const;
+	const std::string& getStateString(SpriteObjectType::StateID_t stateID) const;
+
 	/** @property Origin
 	 ** @description Origin on texture for the object center.
 	 ** @access const get
 	 ** @argument stateID - since returns for specific state
 	 **/
-	const World::Vector_t getOrigin(ObjectType::StateID_t stateID) const;
+	const Object::Vector_t getOrigin(SpriteObjectType::StateID_t stateID) const;
 
 	/** @property Vertices
 	 ** @description Vertices used to render the texture as the object.
 	 ** @access const get
 	 ** @argument stateID - since returns for specific state
 	 **/
-	const std::array<sf::Vertex, 4> getVertices(ObjectType::StateID_t stateID) const;
+	const std::array<sf::Vertex, 4> getVertices(SpriteObjectType::StateID_t stateID) const;
 
 	
 

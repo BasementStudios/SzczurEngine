@@ -1,4 +1,4 @@
-#pragma once
+#include "ArmatureObject.hpp"
 
 /** @file ArmatureObject.cpp
  ** @description Implementation file with armature object class.
@@ -7,7 +7,8 @@
  **/
 
 #include "Szczur/Modules/World/ObjectType.hpp"
-#include "Szczur/Modules/World/ArmatureObjectType.hpp"
+#include "Szczur/Modules/World/Object.hpp"
+#include "ArmatureObjectType.hpp"
 
 namespace rat
 {
@@ -18,6 +19,13 @@ namespace rat
 
 
 /* Operators */
-ArmatureObject(const ArmatureObjectType* type, const std::string& name, ObjectType::StateID_t stateID = ObjectType::defaultStateID, World::Vector_t position = {0.f, 0.f}, World::Vector_t speed = {0.f, 0.f});
+ArmatureObject(
+	const ArmatureObjectType* 	type, 
+	const std::string& 			name, 
+	Object::Vector_t 			position 	= {0.f, 0.f}, 
+	Object::Vector_t 			speed 		= {0.f, 0.f}
+) {
+	;
+}
 
 }

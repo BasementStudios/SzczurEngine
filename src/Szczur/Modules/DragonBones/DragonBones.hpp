@@ -28,6 +28,7 @@ public:
 	
 	/* Fields */
 private:
+	// @info Factory use statics inside.
 	Factory_t factory;
 
 
@@ -39,7 +40,7 @@ public:
 	 ** @access referecne get
 	 **/
 	Factory_t& getFactory();
-	const Factory_t& getFactory() const
+	const Factory_t& getFactory() const;
 
 
 
@@ -51,12 +52,12 @@ public:
 	~DragonBones();
 
 	// Disable coping
-	Window(const Window&) = delete;
-	Window& operator = (const Window&) = delete;
+	DragonBones(const DragonBones&) = delete;
+	DragonBones& operator = (const DragonBones&) = delete;
 
 	// Disable moving
-	Window(Window&&) = delete;
-	Window& operator = (Window&&) = delete;
+	DragonBones(DragonBones&&) = delete;
+	DragonBones& operator = (DragonBones&&) = delete;
 
 
 
@@ -77,7 +78,7 @@ inline DragonBones::DragonBones(ModulesTuple&& tuple) : Module(tuple)
 	this->init();
 	LOG_INFO("[DragonBones] Module initialized");
 }
-inline Window::~Window()
+inline DragonBones::~DragonBones()
 {
 	LOG_INFO("[DragonBones] Module destructed");
 }

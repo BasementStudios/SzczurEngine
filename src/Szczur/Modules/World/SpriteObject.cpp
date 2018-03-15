@@ -13,39 +13,70 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 
-#include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/World/Object.hpp"
 #include "Szczur/Modules/World/ObjectType.hpp"
-#include "Szczur/Modules/World/SpriteObjectType.hpp"
+#include "SpriteObjectType.hpp"
 
 namespace rat
 {
 
 /* Properties */
+/// SpriteType
+const SpriteObjectType* SpriteObject::getSpriteType() const
+{
+	return reinterpret_cast<const SpriteObjectType*>(this->getType());
+}
+
 /// Texture
 const sf::Texture& SpriteObject::getTexture() const
 {
-	return reinterpret_cast<const SpriteObjectType*>(this->getType())->getTexture();//kurwa.
+	return this->getSpriteType()->getTexture();//kurwa.
 }
 
 /// Origin
-const World::Vector_t SpriteObject::getOrigin() const
+const Object::Vector_t SpriteObject::getOrigin() const
 {
-	return reinterpret_cast<const SpriteObjectType*>(this->getType())->getOrigin(this->getState());
+	return this->getSpriteType()->getOrigin(this->getState());
 }
 
 /// Veritces
 const std::array<sf::Vertex, 4> SpriteObject::getVertices() const
 {
-	return reinterpret_cast<const SpriteObjectType*>(this->getType())->getVertices(this->getState());
+	return this->getSpriteType()->getVertices(this->getState());
+}
+
+/// State
+const SpriteObjectType::StateID_t SpriteObject::getState() const
+{
+    return this->stateID;
+}
+void SpriteObject::setState(const SpriteObjectType::StateID_t& stateID)
+{
+    this->stateID = stateID;
+}
+const std::string& SpriteObject::getStateString() const
+{
+    return this->getSpriteType()->getStateString(this->getState());
+}
+void SpriteObject::setState(const std::string& stateString)
+{
+    this->setState(this->getSpriteType()->getStateID(stateString));
 }
 
 
 
 /* Operators */
-SpriteObject::SpriteObject(const SpriteObjectType* type, const std::string& name, ObjectType::StateID_t stateID, World::Vector_t position, World::Vector_t speed)
-	: Object::Object((ObjectType*)type, name, stateID, position, speed)
-{}
+SpriteObject::SpriteObject(
+	const SpriteObjectType* 			type, 
+	const std::string& 					name, 
+	const Object::Vector_t& 			position, 
+	const Object::Vector_t& 			speed, 
+	const SpriteObjectType::StateID_t&	stateID
+)
+	: Object::Object((ObjectType*)type, name, position, speed)
+{
+	this->setState(stateID);
+}
 
 
 

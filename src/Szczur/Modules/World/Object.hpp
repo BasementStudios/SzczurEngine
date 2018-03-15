@@ -23,15 +23,20 @@ namespace rat
  **/
 class Object : public sf::Drawable
 {   
-	/* Variables */
+	/* Types */
 public:
-	std::string	name;
-protected:
-	ObjectType*	type;
-	ObjectType::StateID_t   stateID		{ObjectType::defaultStateID};
+	using Vector_t = sf::Vector2f;
 
-	World::Vector_t	        position	{0.f, 0.f};
-	World::Vector_t	        speed		{0.f, 0.f};
+
+
+    /* Variables */
+public:
+	const std::string           name;
+protected:
+	const ObjectType*	        type;
+
+	Object::Vector_t	        position	{0.f, 0.f};
+	Object::Vector_t	        speed		{0.f, 0.f};
 
 
 
@@ -39,35 +44,24 @@ protected:
 public:
     /** @property Type
      ** @description Class/type of the object.
-	 ** @access get & string get
+	 ** @access const get & string
 	 **/
     const ObjectType* 	getType() const;
 	const std::string& 	getTypeString() const;
-    
-    /** @property State
-     ** @description The in-game object state (ID).
-     ** @access get set & string get/set
-     ** @virtual set    
-     ** @info virtual setter for detecting updates
-     **/
-    const ObjectType::StateID_t getState() const;
-    virtual void    setState(const ObjectType::StateID_t stateID);
-    const std::string& getStateString() const;
-    void               setState(const std::string& stateString);
     
     /** @property Position
      ** @description Position on the level/map.
      ** @access get set
      **/
-    Vector_t getPosition() const;
-    void     setPosition(const Vector_t& position);
+    Object::Vector_t getPosition() const;
+    void            setPosition(const Object::Vector_t& position);
     
     /** @property Speed
      ** @description Current speed of the object, as delta per second.
      ** @access get set
      **/
-    Vector_t getSpeed() const;
-    void     setSpeed(const Vector_t& speed);
+    Object::Vector_t getSpeed() const;
+    void            setSpeed(const Object::Vector_t& speed);
 
 
 
@@ -76,7 +70,12 @@ protected:
 	/** @constructor Full
 	 ** @note Non-public to avoid use of base class.
 	 **/
-    Object(ObjectType* type, const std::string& name, StateID_t stateID = ObjectType::defaultStateID, Vector_t position = {0.f, 0.f}, Vector_t speed = {0.f, 0.f});
+    Object(
+        const ObjectType*       type, 
+        const std::string&      name, 
+        const Object::Vector_t& position    = {0.f, 0.f}, 
+        const Object::Vector_t& speed       = {0.f, 0.f}
+    );
 
 
 

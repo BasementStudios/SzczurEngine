@@ -1,14 +1,13 @@
 #include "SpriteObjectType.hpp"
 
 /** @file SpriteObjectType.cpp
- ** @description Implementaion file with sprite object type class.
+ ** @description Implementaion with Sprite Object Type class as shared game sprite object type information.
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
 #include <array>
 #include <vector>
 #include <fstream>
-#include <exception>
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Vertex.hpp>
@@ -17,8 +16,8 @@
 
 #include "Szczur/JSON.hpp"
 #include "Szczur/Debug/Logger.hpp"
-#include "Object.hpp"
-#include "ObjectType.hpp"
+#include "Szczur/Modules/World/Object.hpp"
+#include "Szczur/Modules/World/ObjectType.hpp"
 
 namespace rat
 {
@@ -30,48 +29,70 @@ const sf::Texture& SpriteObjectType::getTexture() const
 	return this->texture;
 }
 
+/// States
+const std::string& SpriteObjectType::getStateString(SpriteObjectType::StateID_t stateID) const
+{
+	if (this->statesDetails.size() > stateID) {
+		return this->statesDetails[stateID].name;
+	}
+	LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
+		"State ID `", stateID, "` was not found; using default.");
+	return this->statesDetails[SpriteObjectType::defaultStateID].name;
+}
+SpriteObjectType::StateID_t SpriteObjectType::getStateID(const std::string& stateString) const
+{
+    for (std::vector<int>::size_type i = 0, I = this->statesDetails.size(); i != I; i++) {
+        if (this->statesDetails[i].name == stateString) {
+            return i;
+        }
+    }
+    LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
+		"State ID for string `", stateString, "` was not found; using default.");
+	return SpriteObjectType::defaultStateID;
+}
+
 /// Origin
-const Object::Vector_t SpriteObjectType::getOrigin(Object::StateID_t stateID) const
+const Object::Vector_t SpriteObjectType::getOrigin(SpriteObjectType::StateID_t stateID) const
 {
 	if (this->statesDetails.size() < stateID) {
 		return this->statesDetails[stateID].origin;
 	}
 	// Fallback
-	LOG_WARN("[World][ObjectType{*", this, ";\"", this->name, "}] ",
-		"Origin for Sprite display for ID `", stateID, "` was not found; using default.")
-	return this->statesDetails[ObjectType::defaultStateID].origin;
+	LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
+		"Origin for state ID`", stateID, "` was not found; using default.")
+	return this->statesDetails[SpriteObjectType::defaultStateID].origin;
 }
 
 /// Vertices
-const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(ObjectType::StateID_t stateID) const
+const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(SpriteObjectType::StateID_t stateID) const
 {
 	if (this->statesDetails.size() < stateID) {
 		return this->statesDetails[stateID].vertices;
 	}
 	// Fallback
-	LOG_WARN("[World][ObjectType{*", this, ";\"", this->name, "}] ",
-		"Vertices for Sprite display for ID `", stateID, "` was not found; using default.")
-	return this->statesDetails[ObjectType::defaultStateID].vertices;
+	LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
+		"Vertices for state ID `", stateID, "` was not found; using default.")
+	return this->statesDetails[SpriteObjectType::defaultStateID].vertices;
 }
 
 
 
 /* Operators */
 /// Constructor 
-SpriteObjectType::SpriteObjectType(const std::string& name)
+SpriteObjectType::SpriteObjectType(const std::string& typeName)
 {
 	// Load texture file
-	if (!texture.loadFromFile(SpriteObjectType::assetsPath + name + '/' + SpriteObjectType::textureFileName)) {
-		LOG_ERROR("[World][ObjectType{*", this, ";\"", this->name, "}] ",
-			"Cannot load texture file for this Sprite object type!");
+	if (!this->texture.loadFromFile(SpriteObjectType::assetsPath + typeName + '/' + SpriteObjectType::textureFileName)) {
+		LOG_ERROR("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ", 
+			"Cannot load texture file!");
 		return; // @todo exception?
 	}
 	
 	// Open config file
-	std::ifstream file(SpriteObjectType::assetsPath + name + '/' + SpriteObjectType::configFileName);
+	std::ifstream file(SpriteObjectType::assetsPath + typeName + '/' + SpriteObjectType::configFileName);
 	if (!file.is_open()) {
-		LOG_ERROR("[World][ObjectType{*", this, ";\"", this->name, "}] ",
-			"Cannot load config file for this Sprite object type!");
+		LOG_ERROR("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ", 
+			"Cannot load config file!");
 		return; // @todo exception?
 	}
 	
@@ -83,12 +104,11 @@ SpriteObjectType::SpriteObjectType(const std::string& name)
 		auto& statesJSON = configJSON["states"];
 		this->statesDetails.reserve(statesJSON.size());
 
+		// Counting states to dive texture to sprite frames
 		std::size_t statesCount = 0;
 
-		for (json::iterator statesIt = statesJSON.begin(); statesIt != statesJSON.end(); ++statesIt) {
-			// Load state name
-			this->statesStrings.push_back(statesIt.key());
-
+		// Load states
+		for (auto statesIt = statesJSON.begin(); statesIt != statesJSON.end(); ++statesIt) {
 			auto& detailsJSON = statesIt.value();
 			
 			// Load origin
@@ -120,21 +140,22 @@ SpriteObjectType::SpriteObjectType(const std::string& name)
 
 			++statesCount;
 
+			// Push back states details
 			this->statesDetails.push_back({
+				statesIt.key(), // State name
 				origin, 
 				this->calculateVertices(rect)
 			});
 		}
 	} 
 	catch(std::exception& e) {
-		LOG_ERROR("[World][ObjectType{*", this, ";\"", this->name, "}] ",
-			"Error while parsing configuration file for this Sprite object type!\n",
-			" Exception message: ", e.what());
+		LOG_ERROR("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ", 
+			"Error while parsing configuration file! Exception message: ", e.what());
 		return; // @todo exception?
 	}
 	
-	LOG_INFO("[World][ObjectType{*", this, ";\"", this->name, "}] ",
-		"Sprite object type loaded with ", statesDetails.size(), " states.");
+	LOG_INFO("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ", 
+		"Loaded with ", statesDetails.size(), " states.");
 }
 
 

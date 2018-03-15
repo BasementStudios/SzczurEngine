@@ -29,24 +29,6 @@ const std::string& Object::getTypeString() const
     return string;
 }
 
-/// State
-const ObjectType::StateID_t Object::getState() const
-{
-    return this->stateID;
-}
-void Object::setState(const ObjectType::StateID_t stateID)
-{
-    this->stateID = stateID;
-}
-const std::string& Object::getStateString() const
-{
-    return this->getType()->getStateString(this->getState());
-}
-void Object::setState(const std::string& stateString)
-{
-    this->setState(this->getType()->getStateID(stateString));
-}
-
 /// Position
 Object::Vector_t Object::getPosition() const 
 {
@@ -71,11 +53,14 @@ void Object::setSpeed(const Object::Vector_t& speed)
 
 /* Operators */
 /// Constructors/destructor
-Object::Object(ObjectType* type, const std::string& name, ObjectType::StateID_t state, Object::Vector_t position, Object::Vector_t speed)
+Object::Object(
+    const ObjectType*           type, 
+    const std::string&          name, 
+    const Object::Vector_t&     position, 
+    const Object::Vector_t&     speed
+)
+    : name(name), type(type)
 {
-    this->type = type;
-    this->name = name;
-    this->setState(state);
     this->setPosition(position);
     this->setSpeed(speed);
 }
