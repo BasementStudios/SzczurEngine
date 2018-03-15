@@ -1,26 +1,36 @@
-#include "SFX.hpp"
+#include "SPFX.hpp"
 
 namespace rat
 {
 
-SFX::SFX()
+SPFX::SPFX()
 {
 	_manager.loadFromConfig("Assets/Shader/shader.json");
 
-	LOG_INFO(this, " : Module SFX constructed");
+	#ifdef EDITOR
+	{
+		gVar->create<sf::Texture*>("templates", new sf::Texture);
+		sf::Image img; img.loadFromFile("Assets/Texture/templates.png"); img.flipVertically();
+		auto p = gVar->get<sf::Texture*>("templates");
+		p->loadFromImage(img);
+		_previewRTex.create(p->getSize().x, p->getSize().y);
+	}
+	#endif
+
+	LOG_INFO(this, " : Module SPFX constructed");
 }
 
-SFX::~SFX()
+SPFX::~SPFX()
 {
-	LOG_INFO(this, " : Module SFX destructed");
+	LOG_INFO(this, " : Module SPFX destructed");
 }
 
-void SFX::update()
+void SPFX::update()
 {
 	#ifdef EDITOR
 	{
-		if (gVar->get<bool>("isShaderWindow")) {
-			if (ImGui::Begin("Shader composer", &gVar->get<bool>("isShaderWindow"))) {
+		if (_isEditorOpen) {
+			if (ImGui::Begin("Shader composer", &_isEditorOpen)) {
 				auto& info = _manager._shaderInfo;
 				static int index = 0;
 				static int currentShaderType = 0;
@@ -88,6 +98,7 @@ void SFX::update()
 				if (ImGui::BeginCombo("Avaible shaders", shaderName)) {
 					for (size_t v = 0; v < info.size(); ++v) {
 						if (ImGui::Selectable(info[v].name.data(), index == static_cast<int>(v))) {
+							gVar->set("test_shader", info[v].ptr);
 							shaderName = info[v].name.data();
 							index = v;
 							onLoad();
@@ -166,17 +177,26 @@ void SFX::update()
 				ImGui::Columns();
 			}
 			ImGui::End();
+
+			if (ImGui::Begin("Shader preview", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+				sf::Sprite spr{ *gVar->get<sf::Texture*>("templates") };
+				_previewRTex.clear();
+				_previewRTex.draw(spr, gVar->get<sf::Shader*>("test_shader"));
+				_previewRTex.display();
+				ImGui::Image(_previewRTex.getTexture(), sf::Color::White, sf::Color::Magenta);
+			}
+			ImGui::End();
 		}
 	}
 	#endif
 }
 
-ShaderManager& SFX::getManager()
+ShaderManager& SPFX::getManager()
 {
 	return _manager;
 }
 
-const ShaderManager& SFX::getManager() const
+const ShaderManager& SPFX::getManager() const
 {
 	return _manager;
 }

@@ -4,7 +4,7 @@
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
-#include "Szczur/Modules/SFX/SFX.hpp"
+#include "Szczur/Modules/SPFX/SPFX.hpp"
 
 namespace rat
 {
@@ -38,7 +38,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, SFX> _modules;
+	ModulesHolder<Window, Input, SPFX> _modules;
 	Clock _mainClock;
 
 };

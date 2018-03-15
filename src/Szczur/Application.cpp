@@ -9,7 +9,7 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
-	_modules.initModule<SFX>();
+	_modules.initModule<SPFX>();
 
 	#ifdef EDITOR
 	{
@@ -17,10 +17,7 @@ void Application::init()
 		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
 		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
 		ImGui::SFML::Init(getWindow());
-		gVar->create<bool>("isShaderWindow", false); // #Stritch
 		gVar->create<sf::Shader*>("test_shader", nullptr); // #Stritch
-		gVar->create<sf::Texture*>("back_tex", new sf::Texture); // #Stritch
-		gVar->get<sf::Texture*>("back_tex")->loadFromFile("Assets/Texture/forest.png"); // #Stritch
 	}
 	#endif
 }
@@ -58,20 +55,18 @@ void Application::update()
 	#ifdef EDITOR
 	{
 		ImGui::ShowDemoWindow();
-		gVar->set("test_shader", _modules.getModule<SFX>().getManager().getPtr(fnv1a_32("test_shader"))); // #Stritch
-		gVar->get<sf::Shader*>("test_shader")->setUniform("phase", _mainClock.getElapsedTime().asFSeconds()); // #Stritch
 
 		if (ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
 			ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
 			ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
 			ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-			ImGui::Checkbox("Shader composer", &gVar->get<bool>("isShaderWindow")); // #Stritch
+			ImGui::Checkbox("Shader composer", &_modules.getModule<SPFX>()._isEditorOpen); // #Stritch
 		}
 		ImGui::End();
 	}
 	#endif
 
-	_modules.getModule<SFX>().update();
+	_modules.getModule<SPFX>().update();
 
 	_modules.getModule<Input>().getManager().finishLogic();
 }
@@ -82,8 +77,6 @@ void Application::render()
 
 	#ifdef EDITOR
 	{
-		static sf::Sprite back{ *gVar->get<sf::Texture*>("back_tex") }; // #Stritch
-		getWindow().draw(back, gVar->get<sf::Shader*>("test_shader")); // #Stritch
 		ImGui::SFML::Render(getWindow());
 	}
 	#endif
@@ -103,7 +96,6 @@ int Application::run()
 
 	#ifdef EDITOR
 	{
-		delete gVar->get<sf::Texture*>("back_tex"); // #Stritch
 		ImGui::SFML::Shutdown();
 	}
 	#endif
