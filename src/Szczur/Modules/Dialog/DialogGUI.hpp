@@ -14,6 +14,10 @@ namespace rat {
 
         ~DialogGUI();
 
+        void hide();
+
+        void show();
+
         static void initScript(Script& script);
 
         void clear();
@@ -25,6 +29,12 @@ namespace rat {
         void setCharacterTexture(sf::Texture* texture);
 
         void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t)> callback);
+
+        void setKillerCallback(const std::function<void()>& killerCallback);
+        const std::function<void()>& getKillerCallback() const;
+
+        void setInterface(Widget* interface);
+        Widget* getInterface() const;
 
         void setButtonsContainer(Widget* container);
         const sol::function& getButtonsContainer() const;
@@ -41,11 +51,13 @@ namespace rat {
         void setName(TextWidget* name);
         TextWidget* getName() const;
     private:
+        Widget* _interface;
         sol::function _buttonsCreator;
         Widget* _buttonsContainer;
         TextAreaWidget* _area;
         Widget* _characterHolder;
         ImageWidget* _character;
         TextWidget* _name;
+        std::function<void()> _killerCallback;
     };
 }

@@ -20,7 +20,7 @@ namespace rat {
     class Dialog : public Module<GUI, Script, Input> {
     public:
         using Key_t = Hash32_t;
-        using Dialogs_t = boost::container::flat_map<Key_t, DialogManager*>;
+        //using Dialogs_t = boost::container::flat_map<Key_t, DialogManager*>;
 
         Dialog();
 
@@ -32,11 +32,11 @@ namespace rat {
 
         DialogManager* load(const std::string& path);
 
-        bool unload(const std::string& path);
+        void unload();
 
     private:
         DialogGUI _dialogGUI;
-        Dialogs_t _dialogs;
+        DialogManager* _dialogManager;
 
         void _initScript();
     };

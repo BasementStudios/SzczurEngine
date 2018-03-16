@@ -12,6 +12,16 @@ namespace rat {
         //@TODO: remove _interface from _gui
     }
 
+    void DialogGUI::hide() {
+        _interface->deactivate();
+        _interface->invisible();
+    }
+
+    void DialogGUI::show() {
+        _interface->activate();
+        _interface->visible();
+    }
+
     void DialogGUI::initScript(Script& script) {
         auto object = script.newClass<DialogGUI>("DialogGUI", "Dialog");
         object.setProperty(
@@ -20,12 +30,13 @@ namespace rat {
             [](DialogGUI& owner, sol::table tab){
                 if(tab["area"].valid() && tab["container"].valid() && 
                 tab["character"].valid() && tab["name"].valid() &&
-                tab["creator"].valid()) {
+                tab["creator"].valid() && tab["interface"]) {
                     owner.setArea(tab["area"]);
                     owner.setButtonsContainer(tab["container"]);
                     owner.setCharacterHolder(tab["character"]);
                     owner.setName(tab["name"]);
                     owner.setButtonsCreator(tab["creator"]);
+                    owner.setInterface(tab["interface"]);
                 }
             }
         );
@@ -62,6 +73,14 @@ namespace rat {
     TextWidget* DialogGUI::getName() const {
         return _name;
     }
+
+    void DialogGUI::setInterface(Widget* interface) {
+        _interface = interface;
+    }
+
+    Widget* DialogGUI::getInterface() const                   {
+        return _interface;
+    }
     
     void DialogGUI::setCharacterHolder(Widget* holder) {
         _characterHolder = holder;
@@ -95,6 +114,15 @@ namespace rat {
         return _buttonsCreator;
     }
 
+    
+    void DialogGUI::setKillerCallback(const std::function<void()>& killerCallback) {
+        _killerCallback = killerCallback;
+    }
+
+    const std::function<void()>& DialogGUI::getKillerCallback() const {
+        return _killerCallback;
+    }
+
     void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t)> callback) {
         size_t i = 0u;
         _area->invisible();
@@ -107,33 +135,23 @@ namespace rat {
                     button
                 );
                 button->setString(textManager.getLabel(option->target));
-                button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
+                if(option->finishing) {
+                    button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
                         if(option->afterAction)
                             std::invoke(option->afterAction);
-                        std::invoke(callback, option->target);
-                });
+                        std::invoke(_killerCallback);
+                    });
+                }
+                else {
+                    button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
+                            if(option->afterAction)
+                                std::invoke(option->afterAction);
+                            std::invoke(callback, option->target);
+                    });
+                }
+                
                 _buttonsContainer->add(button);
                 ++i;
-                /*button->move({0.f, 30.f*i});
-                
-                button->setFont(_gui.getAsset<sf::Font>("data/consolab.ttf"));
-                button->setString(textManager.getLabel(option->target));
-                button->setCharacterSize(20u);
-                button->setColor(sf::Color(200,180,200));
-                button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
-                        if(option->afterAction)
-                            std::invoke(option->afterAction);
-                        std::invoke(callback, option->target);
-                });
-                button->setCallback(Widget::CallbackType::onHoverIn, [button](Widget*){
-                    button->setColor(sf::Color(200,100,200));
-                });
-                button->setCallback(Widget::CallbackType::onHoverOut, [button](Widget*){
-                    button->setColor(sf::Color(200,180,200));
-                });
-                ++i;
-                _buttons->add(button);
-                */
             }
         });
     }

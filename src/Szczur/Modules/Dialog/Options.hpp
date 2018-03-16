@@ -24,6 +24,7 @@ namespace rat {
             Condition_t condition;
             Key_t target;
             AfterAction_t afterAction;
+            bool finishing;
         };
 
         Options();
@@ -45,7 +46,8 @@ namespace rat {
         void addOption(
             Condition_t condition, 
             Key_t target, 
-            AfterAction_t afterAction
+            AfterAction_t afterAction,
+            bool finishing
         );
 
         void forEach(std::function<void(Option*)> func);

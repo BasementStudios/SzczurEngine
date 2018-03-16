@@ -18,7 +18,14 @@ namespace rat {
             []() {},
             [](Options& owner, sol::table tab) {
                 if(tab["target"].valid()) {
-                    auto condValid = tab["condition"].valid();
+                    owner.addOption(
+                        (tab["condition"].valid()) ? tab["condition"] : nullptr,
+                        tab["target"],
+                        (tab["action"].valid()) ? tab["action"] : nullptr,
+                        (tab["finishing"].valid()) ? tab["finishing"] : false
+                    );
+
+                    /*auto condValid = tab["condition"].valid();
                     auto actiValid = tab["action"].valid();
                     if(condValid && actiValid) {
                         owner.addOption(
@@ -47,7 +54,7 @@ namespace rat {
                             tab["target"],
                             nullptr
                         );
-                    }
+                    }*/
                 }
             }
         );
@@ -56,8 +63,8 @@ namespace rat {
         object.init();
     }
 
-    void Options::addOption(Condition_t condition, Key_t target, AfterAction_t afterAction) {
-        _options.push_back(new Option{condition, target, afterAction});
+    void Options::addOption(Condition_t condition, Key_t target, AfterAction_t afterAction, bool finishing) {
+        _options.push_back(new Option{condition, target, afterAction, finishing});
     }
 
     bool Options::checkIfRunsWith(Key_t id) const {

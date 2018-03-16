@@ -57,7 +57,7 @@ namespace rat {
         _soundManager.skip();
     }
 
-    void DialogManager::update(float deltaTime) {
+    bool DialogManager::update(float deltaTime) {
         if(_clearButtons) {
             _clearButtons = false;
             _dialogGUI.clear();

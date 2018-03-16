@@ -28,7 +28,7 @@ namespace rat {
 
         static void initScript(Script& script);
 
-        void update(float deltaTime);
+        bool update(float deltaTime);
 
         void load(const std::string& path);
 
