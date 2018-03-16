@@ -1,5 +1,7 @@
 #pragma once
 
+#define EDITOR
+
 #if defined(NDEBUG)
 
 #define INIT_LOGGER()

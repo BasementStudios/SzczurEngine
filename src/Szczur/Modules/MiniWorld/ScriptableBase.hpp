@@ -23,7 +23,7 @@ struct ScriptableBase {
 	sol::table pack;
 	
 	// Set `script` and `pack`, return pack
-	sol::table prepare(Script& script);
+	sol::table& prepare(Script& script);
 	
 	
 	void setName(const std::string& name) {
@@ -51,6 +51,32 @@ struct ScriptableBase {
 		}
 		catch(sol::error e) {
 			std::cout<<"[ERROR] Cannot load "<<filepath<<'\n'<<std::flush;
+			std::cout<<e.what()<<'\n'<<std::flush;
+		}
+	}
+	
+	template <typename T> 
+	void runFileScript(T* owner, const std::string& filepath) {
+		auto& lua = script->get();
+		lua.set("THIS", owner);
+		try {
+			lua.script_file(filepath);
+		}
+		catch(sol::error e) {
+			std::cout<<"[ERROR] Cannot load "<<filepath<<'\n'<<std::flush;
+			std::cout<<e.what()<<'\n'<<std::flush;
+		}
+	}
+	
+	template <typename T> 
+	void runScript(T* owner, const std::string& code) {
+		auto& lua = script->get();
+		lua.set("THIS", owner);
+		try {
+			lua.script(code);
+		}
+		catch(sol::error e) {
+			std::cout<<"[ERROR] Cannot script\n"<<std::flush;
 			std::cout<<e.what()<<'\n'<<std::flush;
 		}
 	}

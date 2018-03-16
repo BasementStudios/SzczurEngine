@@ -29,9 +29,9 @@ void Application::init()
 		ImGui::SFML::Init(getWindow());
 	}
 	
-	_modules.initModule<ScriptEditor>();
+	_modules.initModule<MiniWorld>();
 	
-	_modules.getModule<ScriptEditor>().init();	
+	_modules.getModule<MiniWorld>().init();
 }
 
 void Application::input()
@@ -58,21 +58,22 @@ void Application::input()
 
 void Application::update()
 {
-	IF_EDITOR {
-		ImGui::ShowDemoWindow();
+	_modules.getModule<MiniWorld>().update();	
 
-		detail::setVar("time", _mainClock.getElapsedTime().asFSeconds());
+#ifdef EDITOR
+	ImGui::ShowDemoWindow();
 
-		ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-		ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
-		ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
-		ImGui::Text("%.1f time", detail::getVar<float>("time"));
-		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-		// magic
-		ImGui::End();
-	}
+	detail::setVar("time", _mainClock.getElapsedTime().asFSeconds());
 
-	_modules.getModule<ScriptEditor>().update();
+	ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
+	ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+	ImGui::Text("%.1f time", detail::getVar<float>("time"));
+	ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+	// magic
+	ImGui::End();
+#endif 
+	
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 
@@ -80,14 +81,14 @@ void Application::render()
 {
 	_modules.getModule<Window>().clear(sf::Color{ 64, 96, 64 });
 
-	IF_EDITOR {
-		getWindow().resetGLStates();
-		ImGui::SFML::Render(getWindow());
-	}
+	_modules.getModule<MiniWorld>().render();
+	
+#ifdef EDITOR
+	getWindow().resetGLStates();
+	ImGui::SFML::Render(getWindow());
+#endif 
 
-	_modules.getModule<ScriptEditor>().render();
 	_modules.getModule<Window>().render();
-
 }
 int Application::run()
 {
