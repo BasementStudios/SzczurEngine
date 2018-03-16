@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
 namespace rat
 {
 
@@ -9,6 +11,20 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	
+	/*auto files = FileDialog::getOpenFileNames("Wybierz pliki");
+
+	for (auto& file : files)
+	{
+		LOG_INFO("File: ", file);
+	}*/
+
+	auto file = FileDialog::getOpenFileName("Wybierz plik: ", "D:\\", "Images (*.png, *.jpg)|*.png;*.jpg|Music (*.mp3)|*.mp3");
+
+	if (!file.empty())
+	{
+		LOG_INFO("File: ", file);
+	}
 }
 
 void Application::input()

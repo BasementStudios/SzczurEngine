@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{B4D49BC5-71B0-41CA-B28C-8F18369A2D7E}</ProjectGuid>
+    <RootNamespace>Engine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\obj\$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\obj\$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\obj\$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\.;..\vendor\SFML\include;..\vendor\boost;..\vendor\lua\src;..\vendor\sol;..\vendor\rapidjson;..\vendor\dragonBones;..\vendor\dragonBonesSFML;..\vendor\json;..\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\vendor\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;winmm.lib;gdi32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\.;..\vendor\SFML\include;..\vendor\boost;..\vendor\lua\src;..\vendor\sol;..\vendor\rapidjson;..\vendor\dragonBones;..\vendor\dragonBonesSFML;..\vendor\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\vendor\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;winmm.lib;gdi32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\.;..\vendor\SFML\include;..\vendor\boost;..\vendor\lua\src;..\vendor\sol;..\vendor\rapidjson;..\vendor\dragonBones;..\vendor\dragonBonesSFML;..\vendor\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\vendor\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;winmm.lib;gdi32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\src;..\vendor\SFML\include;..\vendor\boost;..\vendor\lua\src;..\vendor\sol;..\vendor\rapidjson;..\vendor\dragonBones;..\vendor\dragonBonesSFML;..\vendor\json;..\vendor\imgui;..\git\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\vendor\SFML\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;jpeg.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;winmm.lib;gdi32.lib;openal32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vendor\dragonBonesSFML\dragonBonesSFML.vcxproj">
+      <Project>{c1478a35-294a-473f-a1c7-198261021f13}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\vendor\dragonBones\dragonBones.vcxproj">
+      <Project>{e2f4a8c3-3010-4bae-9bbd-3456f8a8ecd6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\vendor\imgui\imgui.vcxproj">
+      <Project>{14753b1b-3f25-458b-a409-033abed3a423}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\vendor\lua\lua.vcxproj">
+      <Project>{0518a65f-f1cf-e7ac-5ad7-c00846ae829d}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Szczur\Application.cpp" />
+    <ClCompile Include="src\Szczur\Modules\FileSystem\FileDialog.cpp" />
+    <ClCompile Include="src\Szczur\Modules\FileSystem\FileSystem.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Input\Input.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Input\InputCode.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Input\InputManager.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Shader\Shader.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Shader\ShaderManager.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Window\Window.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Convert\Unicode.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Time\Clock.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Time\Time.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Time\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Szczur\Application.hpp" />
+    <ClInclude Include="src\Szczur\CompilerPortability.hpp" />
+    <ClInclude Include="src\Szczur\Debug.hpp" />
+    <ClInclude Include="src\Szczur\GlobalVarsHolder.hpp" />
+    <ClInclude Include="src\Szczur\ImGui.hpp" />
+    <ClInclude Include="src\Szczur\Json.hpp" />
+    <ClInclude Include="src\Szczur\Lua.hpp" />
+    <ClInclude Include="src\Szczur\Modules\FileSystem\FileDialog.hpp" />
+    <ClInclude Include="src\Szczur\Modules\FileSystem\FileSystem.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Input.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\InputCode.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\InputManager.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Keyboard.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Mouse.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Scroll.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\EditorObject.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniBackgroundObject.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniMap.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniPathObject.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniWorld.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\ScriptableBase.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Script\Script.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Script\ScriptClass.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Shader\Shader.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Shader\ShaderManager.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Window\Window.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Convert\Hash.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Convert\Unicode.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Modules\LazyInitializer.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Modules\Module.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Modules\ModulesHolder.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Time\Clock.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Time\Time.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Time\Timer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Szczur\NotoMono.ttf.bin" />
+    <None Include="src\Szczur\Utility\Convert\Hash.tpp" />
+    <None Include="src\Szczur\Utility\Convert\Unicode.tpp" />
+    <None Include="src\Szczur\Utility\Modules\LazyInitializer.tpp" />
+    <None Include="src\Szczur\Utility\Modules\Module.tpp" />
+    <None Include="src\Szczur\Utility\Modules\ModulesHolder.tpp" />
+    <None Include="src\Szczur\Utility\Time\Time.tpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

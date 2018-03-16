@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Szczur\Modules\Input\Input.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Input\InputCode.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Input\InputManager.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Shader\Shader.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Shader\ShaderManager.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Window\Window.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Convert\Unicode.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Time\Clock.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Time\Time.cpp" />
+    <ClCompile Include="src\Szczur\Utility\Time\Timer.cpp" />
+    <ClCompile Include="src\Szczur\Application.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Szczur\Modules\FileSystem\FileSystem.cpp" />
+    <ClCompile Include="src\Szczur\Modules\FileSystem\FileDialog.cpp" />
+    <ClCompile Include="src\Szczur\Modules\MiniWorld\EditorThings.cpp" />
+    <ClCompile Include="src\Szczur\Modules\MiniWorld\MiniBackgroundObject.cpp" />
+    <ClCompile Include="src\Szczur\Modules\MiniWorld\MiniMap.cpp" />
+    <ClCompile Include="src\Szczur\Modules\MiniWorld\MiniPathObject.cpp" />
+    <ClCompile Include="src\Szczur\Modules\MiniWorld\MiniWorld.cpp" />
+    <ClCompile Include="src\Szczur\Modules\MiniWorld\ScriptableBase.cpp" />
+    <ClCompile Include="src\Szczur\Modules\Script\Script.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Szczur\Modules\Input\Input.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\InputCode.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\InputManager.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Keyboard.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Mouse.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Input\Scroll.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Shader\Shader.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Shader\ShaderManager.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Window\Window.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Convert\Hash.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Convert\Unicode.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Modules\LazyInitializer.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Modules\Module.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Modules\ModulesHolder.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Time\Clock.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Time\Time.hpp" />
+    <ClInclude Include="src\Szczur\Utility\Time\Timer.hpp" />
+    <ClInclude Include="src\Szczur\Application.hpp" />
+    <ClInclude Include="src\Szczur\CompilerPortability.hpp" />
+    <ClInclude Include="src\Szczur\Debug.hpp" />
+    <ClInclude Include="src\Szczur\GlobalVarsHolder.hpp" />
+    <ClInclude Include="src\Szczur\ImGui.hpp" />
+    <ClInclude Include="src\Szczur\Json.hpp" />
+    <ClInclude Include="src\Szczur\Lua.hpp" />
+    <ClInclude Include="src\Szczur\Modules\FileSystem\FileSystem.hpp" />
+    <ClInclude Include="src\Szczur\Modules\FileSystem\FileDialog.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\EditorObject.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniBackgroundObject.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniMap.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniPathObject.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\MiniWorld.hpp" />
+    <ClInclude Include="src\Szczur\Modules\MiniWorld\ScriptableBase.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Script\Script.hpp" />
+    <ClInclude Include="src\Szczur\Modules\Script\ScriptClass.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Szczur\NotoMono.ttf.bin" />
+    <None Include="src\Szczur\Utility\Time\Time.tpp" />
+    <None Include="src\Szczur\Utility\Modules\LazyInitializer.tpp" />
+    <None Include="src\Szczur\Utility\Modules\Module.tpp" />
+    <None Include="src\Szczur\Utility\Modules\ModulesHolder.tpp" />
+    <None Include="src\Szczur\Utility\Convert\Unicode.tpp" />
+    <None Include="src\Szczur\Utility\Convert\Hash.tpp" />
+  </ItemGroup>
+</Project>
