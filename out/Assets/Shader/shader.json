@@ -1,0 +1,23 @@
+[
+    {
+        "name": "test_shader",
+        "vert": "Assets/Shader/wave.vert",
+        "frag": "Assets/Shader/color_correction.frag"
+    },
+    {
+        "name": "color_correction",
+        "frag": "Assets/Shader/color_correction.frag"
+    },
+    {
+        "name": "pixelate",
+        "frag": "Assets/Shader/pixelate.frag"
+    },
+    {
+        "name": "vignetting",
+        "frag": "Assets/Shader/vignetting.frag"
+    },
+    {
+        "name": "wave",
+        "vert": "Assets/Shader/wave.vert"
+    }
+]
