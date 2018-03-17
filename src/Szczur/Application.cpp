@@ -21,20 +21,6 @@ void Application::init()
 		ImGui::SFML::Init(getWindow());
 	}
 	#endif
-	
-	/*auto files = FileDialog::getOpenFileNames("Wybierz pliki");
-
-	for (auto& file : files)
-	{
-		LOG_INFO("File: ", file);
-	}*/
-
-	auto file = FileDialog::getOpenFileName("Wybierz plik: ", "D:\\", "Images (*.png, *.jpg)|*.png;*.jpg|Music (*.mp3)|*.mp3");
-
-	if (!file.empty())
-	{
-		LOG_INFO("File: ", file);
-	}
 }
 
 void Application::input()
@@ -59,6 +45,23 @@ void Application::input()
 	{
 		static Clock editorClock;
 		ImGui::SFML::Update(getWindow(), editorClock.restart().asSfTime());
+
+		auto& window = _modules.getModule<Window>();
+
+		if (window.areFilesDropped())
+		{
+			auto files = window.getDroppedFiles();
+
+			auto pos = window.getLastDropPos();
+			LOG_INFO("Mouse pos: ", pos.x, " ", pos.y);
+
+			window.clearDroppedFiles();
+
+			for (auto& file : files)
+			{
+				LOG_INFO("File: ", file);
+			}
+		}
 	}
 	#endif
 }
