@@ -36,36 +36,37 @@ const sf::Texture& SpriteObject::getTexture() const
 /// Origin
 const Object::Vector_t SpriteObject::getOrigin() const
 {
-	return this->getSpriteType()->getOrigin(this->getState());
+	return this->getSpriteType()->getOrigin(this->getCurrentState());
 }
 
 /// Veritces
 const std::array<sf::Vertex, 4> SpriteObject::getVertices() const
 {
-	return this->getSpriteType()->getVertices(this->getState());
+	return this->getSpriteType()->getVertices(this->getCurrentState());
 }
 
 /// State
-const SpriteObjectType::StateID_t SpriteObject::getState() const
+const SpriteObjectType::StateID_t SpriteObject::getCurrentState() const
 {
-    return this->stateID;
+    return this->currentStateID;
 }
-void SpriteObject::setState(const SpriteObjectType::StateID_t& stateID)
+void SpriteObject::setCurrentState(const SpriteObjectType::StateID_t& stateID)
 {
-    this->stateID = stateID;
+    this->currentStateID = stateID;
 }
-const std::string& SpriteObject::getStateString() const
+void SpriteObject::setCurrentState(const std::string& stateString)
 {
-    return this->getSpriteType()->getStateString(this->getState());
+    this->currentStateID = this->getSpriteType()->getStateID(stateString);
 }
-void SpriteObject::setState(const std::string& stateString)
+const std::string& SpriteObject::getCurrentStateString() const
 {
-    this->setState(this->getSpriteType()->getStateID(stateString));
+    return this->getSpriteType()->getStateString(this->currentStateID);
 }
 
 
 
 /* Operators */
+/// Full constructor
 SpriteObject::SpriteObject(
 	const SpriteObjectType* 			type, 
 	const std::string& 					name, 
@@ -75,12 +76,25 @@ SpriteObject::SpriteObject(
 )
 	: Object::Object((ObjectType*)type, name, position, speed)
 {
-	this->setState(stateID);
+	this->setCurrentState(stateID);
+}
+/// Standard constructor
+SpriteObject::SpriteObject(
+	const SpriteObjectType* 			type, 
+	const std::string& 					name, 
+	const Object::Vector_t& 			position, 
+	const std::string&					stateString,
+	const Object::Vector_t& 			speed
+)
+	: Object::Object((ObjectType*)type, name, position, speed)
+{
+	this->setCurrentState(stateString);
 }
 
 
 
 /* Methods */
+/// draw
 void SpriteObject::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform

@@ -47,8 +47,7 @@ public:
 	/* Operators */
 public:
 	// Module constructor/destructor
-	template <typename ModulesTuple>
-	DragonBones(ModulesTuple&& tuple);
+	DragonBones();
 	~DragonBones();
 
 	// Disable coping
@@ -71,16 +70,15 @@ public:
 
 
 // Module constructor/destructor
-template <typename ModulesTuple>
-inline DragonBones::DragonBones(ModulesTuple&& tuple) : Module(tuple)
+inline DragonBones::DragonBones()
 {
-	LOG_INFO("[DragonBones] Module initializing");
+	LOG_INFO(this, ": DragonBones module initializing");
 	this->init();
-	LOG_INFO("[DragonBones] Module initialized");
+	LOG_INFO(this, ": DragonBones module initialized");
 }
 inline DragonBones::~DragonBones()
 {
-	LOG_INFO("[DragonBones] Module destructed");
+	LOG_INFO(this, ": DragonBones module destructed");
 }
 
 }

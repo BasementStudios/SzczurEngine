@@ -8,8 +8,6 @@
 
 #include <vector>
 
-#include <dragonBones/armature/IArmatureProxy.h>
-
 #include "Szczur/Modules/World/Object.hpp"
 #include "Szczur/Modules/World/ObjectType.hpp"
 #include "ArmatureObjectType.hpp"
@@ -22,48 +20,55 @@ namespace rat
  **/
 class ArmatureObject : public Object
 {
-	/* Types */
-public:
-	using Pose_t 			= dragonBones::Armature*;
-	
-	using PoseID_t 			= std::size_t;
-	
-	template <typename... Ts>
-	using PoseContainer_t 	= std::vector<Ts...>;
-	
-	
-
 	/* Fields */
 protected: 
-	PoseContainer_t<Pose_t>	poses; // @note trzymac wszstkie vs current only
+	ArmatureObjectType::PosesContainer_t<ArmatureObjectType::Pose_t*> poses;
+	ArmatureObjectType::PoseID_t currentPoseID {ArmatureObjectType::defaultPoseID};
 	
-
 	
 	
 	/* Properties */
 public:
-	/** @property 
-	 ** @description
-	 ** @access get 
+	/** @property ArmatureType
+     ** @description Class/type of the object.
+	 ** @access const get
 	 **/
-	
+	const ArmatureObjectType* getArmatureType() const;
+
+	/** @property CurrentPose
+	 ** @description Current displayed pose.
+	 ** @access get set & get set string
+	 **/
+	ArmatureObjectType::Pose_t* getCurrentPose();
+	const ArmatureObjectType::Pose_t* getCurrentPose() const;
+	void setCurrentPose(ArmatureObjectType::PoseID_t poseID);
+	void setCurrentPose(const std::string& poseString);
+	const std::string& getCurrentPoseString() const;
 
 
 
 	/* Operators */
 public:
 	ArmatureObject(
-		const ArmatureObjectType*	type, 
-		const std::string& 			name, 
-		Object::Vector_t 			position 	= {0.f, 0.f}, 
-		Object::Vector_t 			speed 		= {0.f, 0.f}
-		// @todo . starting pose, animation
+		const ArmatureObjectType* 			type, 
+		const std::string& 					name, 
+		const Object::Vector_t&				position	= {},
+		const Object::Vector_t&				speed 		= {},
+		const ArmatureObjectType::PoseID_t&	poseID		= ArmatureObjectType::defaultPoseID
+	);
+	/// Standard constructor
+	ArmatureObject(
+		const ArmatureObjectType* 		type, 
+		const std::string& 				name, 
+		const Object::Vector_t& 		position,
+		const std::string&				poseString,
+		const Object::Vector_t&			speed 		= {}
 	);
 
 
 
 	/* Methods */
-public:
+protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
 };
 

@@ -27,7 +27,7 @@ class SpriteObject : public Object
 {
 	/* Fields */
 protected:
-	SpriteObjectType::StateID_t stateID {SpriteObjectType::defaultStateID};
+	SpriteObjectType::StateID_t currentStateID {SpriteObjectType::defaultStateID};
 
 
 
@@ -39,16 +39,14 @@ public:
 	 **/
     const SpriteObjectType* getSpriteType() const;
 
-public:
 	/** @property State
      ** @description The in-game object state (ID).
-     ** @access get set & string get/set
-     ** @virtual set    
+     ** @access get set & string get set
      **/
-    const SpriteObjectType::StateID_t getState() const;
-    void setState(const SpriteObjectType::StateID_t& stateID);
-    const std::string& getStateString() const;
-    void setState(const std::string& stateString);
+    const SpriteObjectType::StateID_t getCurrentState() const;
+    void setCurrentState(const SpriteObjectType::StateID_t& stateID);
+    void setCurrentState(const std::string& stateString);
+    const std::string& getCurrentStateString() const;
 
 protected:
 	/** @property Texture
@@ -73,18 +71,27 @@ protected:
 
 	/* Operators */
 public:
+	/// Full constructor
 	SpriteObject(
 		const SpriteObjectType* 			type, 
 		const std::string& 					name, 
-		const Object::Vector_t& 			position 	= {0.f, 0.f}, 
-		const Object::Vector_t& 			speed 		= {0.f, 0.f},
+		const Object::Vector_t& 			position 	= {}, 
+		const Object::Vector_t& 			speed 		= {},
 		const SpriteObjectType::StateID_t& 	stateID 	= SpriteObjectType::defaultStateID
+	);
+	/// Standard constructor
+	SpriteObject(
+		const SpriteObjectType* 			type, 
+		const std::string& 					name, 
+		const Object::Vector_t& 			position,
+		const std::string& 					stateString,
+		const Object::Vector_t& 			speed			= {}
 	);
 
 
 
 	/* Methods */
-public:
+protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const override;
 };
 

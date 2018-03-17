@@ -35,8 +35,8 @@ public:
 protected:
 	const ObjectType*	        type;
 
-	Object::Vector_t	        position	{0.f, 0.f};
-	Object::Vector_t	        speed		{0.f, 0.f};
+	Object::Vector_t	        position	{};
+	Object::Vector_t	        speed		{};
 
 
 
@@ -73,8 +73,8 @@ protected:
     Object(
         const ObjectType*       type, 
         const std::string&      name, 
-        const Object::Vector_t& position    = {0.f, 0.f}, 
-        const Object::Vector_t& speed       = {0.f, 0.f}
+        const Object::Vector_t& position    = {}, 
+        const Object::Vector_t& speed       = {}
     );
 
 

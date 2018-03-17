@@ -63,7 +63,7 @@ const std::string& Window::getTitle() const
 void Window::setTitle(const std::string& title)
 {
     this->title = title;
-	this->getWindow().create(this->videoMode, this->title); // @warn is it proper way?
+	this->getWindow().create(this->videoMode, this->title);
 }
 
 

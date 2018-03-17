@@ -7,8 +7,10 @@
  **/
 
 #include <string>
+#include <exception>
+#include <stdexcept>
+#include <array>
 #include <vector>
-
 #include <fstream>
 
 #include "Szczur/JSON.hpp"
@@ -18,78 +20,109 @@
 namespace rat
 {
 
+/* Properties */ 
+const std::string& ArmatureObjectType::getPoseString(ArmatureObjectType::PoseID_t poseID) const
+{
+	const auto& names = this->getPosesNames();
+	if (names.size() > poseID) {
+		return names[poseID];
+	}
+	LOG_WARN("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ",
+		"Pose of ID `", poseID, "` was not found; using default.");
+	return names[ArmatureObjectType::defaultPoseID];
+}
+ArmatureObjectType::PoseID_t ArmatureObjectType::getPoseID(const std::string& poseString) const
+{
+	const auto& names = this->getPosesNames();
+	for (std::vector<std::string>::size_type i = 0, I = names.size(); i < I; i++) {
+        if (names[i] == poseString) {
+            return i;
+        }
+    }
+    LOG_WARN("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ",
+		"Pose of ID for name `", poseString, "` was not found; using default.");
+	return ArmatureObjectType::defaultPoseID;
+}
+
+const std::vector<std::string>& ArmatureObjectType::getPosesNames() const
+{
+	return this->skeletonData->armatureNames;
+}
+
+
+
 /* Operators */
 /// Constructor
 ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonBones::Factory_t& factory)
 	: factory(factory)
 {
-	// Open config file
-	std::ifstream file(ArmatureObjectType::assetsPath + typeName + '/' + ArmatureObjectType::configFileName);
-	if (!file.is_open()) {
-		LOG_ERROR("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-			"Cannot load config file!");
-		return; // @todo exception?
-	}
-
 	try {
-		// Load JSON 
-		json configJSON;
-		file >> configJSON;
+		// Load skeleton data
+		this->skeletonData = this->factory.loadDragonBonesData(ArmatureObjectType::armaturesAssetsPath + typeName + ArmatureObjectType::skeletonDataPath);
 
-		auto& posesJSON = configJSON["poses"];
-		auto posesJSONIt = posesJSON.begin(); 
-		this->posesDetails.resize(posesJSON.size());
-		auto posesDetailsIt = this->posesDetails.begin();
+		if (this->skeletonData == nullptr) {
+			throw std::runtime_error("Could not load armature skeleton data.");
+		}
 
-		// Load poses
-		while (posesJSONIt != posesJSON.end()) {
-			std::string poseName = posesJSONIt.key();
-
-			// Load texture file for the pose
-			if (!(posesDetailsIt->texture.loadFromFile(ArmatureObjectType::assetsPath + typeName + '/' + ArmatureObjectType::textureFileNamePrefix + poseName +  ArmatureObjectType::textureFileNameSuffix))) {
-				LOG_ERROR("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-					"Cannot load texture file for ", poseName, " pose!");
-				return; // @todo exception?
+		// Load textures data
+		for(auto& armatures : this->skeletonData->armatures) {
+			for (auto& skins : armatures.second->skins) {
+				for (auto& displays : skins.second->displays) {
+					for (auto display : displays.second) {
+						// Load the information
+						auto textureData = new dragonBones::SFMLTextureData();
+						this->texturesData.push_back(textureData);
+						textureData->rotated = false; 
+						textureData->name = display->name;
+						
+						// Load the texture
+						auto& texture = this->textures.emplace_back();
+						if (!texture.loadFromFile(ArmatureObjectType::armaturesAssetsPath + typeName + ArmatureObjectType::texturesPathPrefix + display->path + ArmatureObjectType::texturesPathSuffix)) {
+							throw std::runtime_error("Could not load armature texture: `" + display->path + "`.");
+						}
+						textureData->setTexture(&texture);	
+					}
+				}
 			}
+		}
 
-			// Load texture atlas
-			if (!(posesDetailsIt->atlasData = this->factory.loadTextureAtlasData(ArmatureObjectType::assetsPath + typeName + '/' + ArmatureObjectType::textureAtlasDataFileNamePrefix + poseName + ArmatureObjectType::textureAtlasDataFileNameSuffix, &(posesDetailsIt->texture)))) {
-				LOG_ERROR("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-					"Cannot load texture atlas for ", poseName, " pose!");
-				return; // @todo exception?
-			}
-
-			// Load skeleton
-			if (!(posesDetailsIt->skeletonData = this->factory.loadDragonBonesData(ArmatureObjectType::assetsPath + typeName + '/' + ArmatureObjectType::dragonBonesDataFileNamePrefix + poseName + ArmatureObjectType::dragonBonesDataFileNameSuffix))) {
-				LOG_ERROR("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-					"Cannot load skeleton data for ", poseName, " pose!");
-				return; // @todo exception?
-			}
-
-			// @todo , togglable states? (grouped textures and visibility switching)?
-			//auto& detailsJSON = posesJSONIt.value();
-
-			// Next pose config
-			++posesJSONIt;
-			++posesDetailsIt;
+		// Setup atlas data
+		this->atlasData->name = this->skeletonData->name;
+		for (auto& textureData : this->texturesData) {
+			textureData->parent = this->atlasData;
+			this->atlasData->addTexture(textureData);
 		}
 	}
-	catch(std::exception& e) {
-		LOG_ERROR("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-			"Error while parsing configuration file! Exception message: ", e.what());
-		return; // @todo exception?
+	catch (...) {
+		std::throw_with_nested(std::runtime_error("Could not load armature object type: `" + typeName + "`."));
 	}
 	
+	// @todo , togglable states? (grouped textures and visibility switching)?
+	
 	LOG_INFO("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-		"Loaded with ", posesDetails.size(), " states.");
+		"Loaded ", this->getPosesNames().size(), " armature poses and ", this->textures.size(), "textures.");
 }
 
 ArmatureObjectType::~ArmatureObjectType()
 {
-	for (auto& pose : this->posesDetails) {
-		this->factory.removeTextureAtlasData(pose.atlasData->name);
-		this->factory.removeDragonBonesData(pose.skeletonData->name);
+	this->factory.removeDragonBonesData(this->skeletonData->name);
+	this->factory.removeTextureAtlasData(this->atlasData->name);
+}
+
+
+
+/* Methods */
+/// createPose
+ArmatureObjectType::PosesContainer_t<ArmatureObjectType::Pose_t*> ArmatureObjectType::createPoses() const
+{
+	ArmatureObjectType::PosesContainer_t<ArmatureObjectType::Pose_t*> poses;
+	poses.reserve(this->getPosesNames().size());
+	
+	for (const auto& name : this->getPosesNames()) {
+		poses.push_back(this->factory.buildArmatureDisplay(name));
 	}
+	
+	return poses;
 }
 
 }

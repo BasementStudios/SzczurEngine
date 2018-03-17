@@ -7,6 +7,11 @@
  **/
 
 #include <vector>
+#include <string>
+
+#include <dragonBones/SFMLArmatureDisplay.h>
+#include <dragonBones/model/DragonBonesData.h>
+#include <dragonBones/model/TextureAtlasData.h>
 
 #include <SFML/Graphics/Texture.hpp>
 
@@ -21,43 +26,46 @@ class ArmatureObjectType : public ObjectType
 {
 	/* Types */
 public:
-	template <typename... Ts>
-	using PoseDetailsContainer_t = std::vector<Ts...>;
+	using Pose_t 			= dragonBones::SFMLArmatureDisplay;
+	template <typename T>
+	using PosesContainer_t 	= std::vector<T>;
 
-	struct PoseDetails
-	{
-		dragonBones::DragonBonesData* 	skeletonData = nullptr;
-		sf::Texture 					texture; // @todo ? elements from separated files? (due to universal models concept)
-		dragonBones::TextureAtlasData* 	atlasData = nullptr;
-		// @todo , togglable states? (grouped textures and visibility switching)?
-	};
+	using PoseID_t 			= PosesContainer_t<Pose_t>::size_type;
 
 
 	
 	/* Constants */
+public:
+	constexpr static PoseID_t defaultPoseID = 0;
+
 protected:
-	constexpr static auto	assetsPath		= "Assets/Objects/";
-	constexpr static auto	configFileName	= "object.json";
-	constexpr static auto 	textureFileNamePrefix			= "texture_";
-	constexpr static auto 	textureFileNameSuffix			= ".png";
-	constexpr static auto	dragonBonesDataFileNamePrefix	= "skeleton_";
-	constexpr static auto	dragonBonesDataFileNameSuffix	= ".json";
-	constexpr static auto	textureAtlasDataFileNamePrefix	= "texatlas_";
-	constexpr static auto	textureAtlasDataFileNameSuffix	= ".json";
+	constexpr static auto	armaturesAssetsPath	= "Assets/Objects/";
+	constexpr static auto	skeletonDataPath	= "/skeleton.json";
+	constexpr static auto 	texturesPathPrefix	= "/texture_";
+	constexpr static auto 	texturesPathSuffix	= ".png";
 	
 	
 	
 	/* Fields */
 protected:
-	rat::DragonBones::Factory_t&		factory;
-	PoseDetailsContainer_t<PoseDetails>	posesDetails;
+	rat::DragonBones::Factory_t&				factory;
+	dragonBones::DragonBonesData*				skeletonData;
+	std::vector<sf::Texture>					textures; // @todo . dynarray instead of vector
+	std::vector<dragonBones::SFMLTextureData*>	texturesData; // @todo . dynarray instead of vector
+	dragonBones::TextureAtlasData*				atlasData;
 
 
 
 	/* Properties */
 public:
-	// @info There is no properties since Armature uses DragonBones to almost whole rendering process.
-	// @todo ! getPoseXYZ via name/id
+	/** @property Pose string/ID
+	 ** @description Pose string/ID used to identify poses.
+	 ** @acess const get
+	 **/
+	const std::string& getPoseString(ArmatureObjectType::PoseID_t poseID) const;
+	ArmatureObjectType::PoseID_t getPoseID(const std::string& poseString) const;
+
+	const std::vector<std::string>& getPosesNames() const;
 
 
 
@@ -73,6 +81,21 @@ public:
 	 ** @description Unloads data used by armature object poses.
 	 **/
 	~ArmatureObjectType();
+
+	// Disable coping
+	ArmatureObjectType(const ArmatureObjectType&) = delete;
+	ArmatureObjectType& operator = (const ArmatureObjectType&) = delete;
+
+	// Disable moving
+	ArmatureObjectType(ArmatureObjectType&&) = delete;
+	ArmatureObjectType& operator = (ArmatureObjectType&&) = delete;
+	
+
+
+	/* Methods */
+public:
+	/// Creates new poses of this type
+	PosesContainer_t<Pose_t*> createPoses() const;
 };
 
 }

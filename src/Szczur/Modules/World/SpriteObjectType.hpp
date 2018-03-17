@@ -21,8 +21,6 @@ namespace rat
 class SpriteObjectType : public ObjectType
 {
 	/* Types */
-public:
-	using StateID_t = std::size_t;
 protected:
 	struct StateDetails
 	{
@@ -30,6 +28,13 @@ protected:
 		Object::Vector_t 			origin;
 		std::array<sf::Vertex, 4>	vertices;
 	};
+
+	using StateDetails_t 			= StateDetails;
+	template <typename T>
+	using StatesDetailsContainer_t 	= std::vector<T>;
+
+public:
+	using StateID_t = StatesDetailsContainer_t<StateDetails_t>::size_type;
 	
 	
 	
@@ -38,16 +43,16 @@ public:
 	constexpr static StateID_t  defaultStateID 		{0};
 	constexpr static auto       defaultStateString  {"default"};
 protected:
-	constexpr static auto	assetsPath		= "Assets/Objects/";
-	constexpr static auto	configFileName	= "object.json";
-	constexpr static auto 	textureFileName	= "texture.png";
+	constexpr static auto	spritesAssetsPath	= "Assets/Objects/";
+	constexpr static auto	configFilePath		= "/sprite.json";
+	constexpr static auto 	textureFilePath		= "/texture.png";
 	
 
 	
 	/* Fields */
 protected:
-	sf::Texture 				texture;
-	std::vector<StateDetails> 	statesDetails;
+	sf::Texture 								texture;
+	StatesDetailsContainer_t<StateDetails_t>	statesDetails;
 
 
 
@@ -63,22 +68,22 @@ public:
 	 ** @description State string/ID used to identify states of Sprite.
 	 ** @acess const get
 	 **/
-	SpriteObjectType::StateID_t getStateID(const std::string& stateString) const;
-	const std::string& getStateString(SpriteObjectType::StateID_t stateID) const;
+	const std::string& getStateString(const StateID_t& stateID) const;
+	StateID_t getStateID(const std::string& stateString) const;
 
 	/** @property Origin
 	 ** @description Origin on texture for the object center.
 	 ** @access const get
 	 ** @argument stateID - since returns for specific state
 	 **/
-	const Object::Vector_t getOrigin(SpriteObjectType::StateID_t stateID) const;
+	const Object::Vector_t getOrigin(const StateID_t& stateID) const;
 
 	/** @property Vertices
 	 ** @description Vertices used to render the texture as the object.
 	 ** @access const get
 	 ** @argument stateID - since returns for specific state
 	 **/
-	const std::array<sf::Vertex, 4> getVertices(SpriteObjectType::StateID_t stateID) const;
+	const std::array<sf::Vertex, 4> getVertices(const StateID_t& stateID) const;
 
 	
 
@@ -89,6 +94,15 @@ public:
 	 ** @argument name - name of the sprite object type to load.
 	 **/
 	SpriteObjectType(const std::string& name);
+
+	// Disable coping
+	SpriteObjectType(const SpriteObjectType&) = delete;
+	SpriteObjectType& operator = (const SpriteObjectType&) = delete;
+
+	// Disable moving
+	SpriteObjectType(SpriteObjectType&&) = delete;
+	SpriteObjectType& operator = (SpriteObjectType&&) = delete;
+	
 
 
 
