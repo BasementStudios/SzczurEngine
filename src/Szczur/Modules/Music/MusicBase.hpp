@@ -55,6 +55,8 @@ namespace rat
 		void setTimeLeft(float timeLeft);
 
 		const std::string& getName() const;
+
+		RatMusic& getSource() const;
 		
 		void reset();
 

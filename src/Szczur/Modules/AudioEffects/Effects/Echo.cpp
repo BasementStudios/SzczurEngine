@@ -4,14 +4,14 @@ namespace rat
 {
 
 	Echo::Echo(unsigned int& source)
-		: MusicEffect(source, AL_EFFECT_ECHO)
+		: EffectBase(source, AL_EFFECT_ECHO, 1)
 	{
 
 	}
 
 	void Echo::initScript(Script& script)
 	{
-		auto object = script.newClass<Echo>("Echo", "Music");
+		auto object = script.newClass<Echo>("Echo", "AudioEffects");
 		SCRIPT_SET_CLASS(Echo, delay, lrDelay, damping, feedback, spread);
 		object.init();
 	} 

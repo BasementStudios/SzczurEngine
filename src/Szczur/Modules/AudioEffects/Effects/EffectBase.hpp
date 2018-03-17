@@ -5,7 +5,7 @@
 
 namespace rat
 {
-    class MusicEffect
+    class EffectBase
     {
 
     private:
@@ -22,20 +22,23 @@ namespace rat
 
         int _sourceSlot;
 
-        inline static int _lastFreeSlot = 0; 
-
     public:
 
         void cleanEffect();
 
+        void setAuxiliaryEffect(unsigned int aux);
+
+        unsigned int getAuxiliaryEffect() const;
+
+        bool created() const;
+
     protected:
 
-        MusicEffect(unsigned int& source, int effectType);
+        EffectBase(unsigned int& source, int effectType, int sourceSlot);
 
         void init();
 
         void setEffect(int type, float value);
-
 
     };
 }

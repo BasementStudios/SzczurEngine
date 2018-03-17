@@ -4,6 +4,8 @@
 #include <string>
 #include <memory>
 
+#include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
+
 #include "MusicBase.hpp"
 #include "MusicAssets.hpp"
 
@@ -42,10 +44,16 @@ namespace rat
 		PlayingMode _playingMode = PlayingMode::Random;
 		Status _status = Status::Stopped;
 
+		AudioEffects& _effects;
+
 		inline static float _globalVolume = 100;
 
 	public:
-	
+
+		Playlist(AudioEffects& effects)
+			: _effects(effects)
+		{}
+
 		void clear();
 
 		void update(float deltaTime);
@@ -73,7 +81,9 @@ namespace rat
 		unsigned int getID(const std::string& fileName) const;
 
 		const Container_t& getContainerRef() const;
-	
+
+		void setGlobalEffects();
+
 	private:
 
 		void play(unsigned int id);

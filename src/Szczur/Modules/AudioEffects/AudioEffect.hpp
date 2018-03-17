@@ -7,13 +7,13 @@
 
 namespace rat
 {
-    class AudioEffects
+    class AudioEffect
     {
         std::tuple<Equalizer, Echo, Reverb> _effects;
 
     public:
 
-        AudioEffects(unsigned int& source)
+        AudioEffect(unsigned int& source)
             : _effects(source, source, source)
         {}
 
@@ -21,6 +21,12 @@ namespace rat
         T& getEffect()
         {
             return std::get<T>(_effects);
+        }
+
+        template <typename T>
+        void setEffect(unsigned int aux)
+        {
+            std::get<T>(_effects).setAuxiliaryEffect(aux);
         }
         
         template <typename T>
@@ -30,4 +36,4 @@ namespace rat
         }
 
     };
-}
+}       

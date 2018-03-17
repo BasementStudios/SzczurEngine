@@ -2,13 +2,13 @@
 
 #include "SFML/Audio/Music.hpp"
 
-#include "Szczur/Utility/Audio/AudioEffects.hpp"
+#include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
 
 #include "Szczur/Debug.hpp"
 
 namespace rat
 {
-	class RatMusic : public sf::Music, public AudioEffects
+	class RatMusic : public sf::Music, public AudioEffect
 	{
 
 	private:

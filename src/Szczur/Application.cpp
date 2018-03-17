@@ -11,6 +11,7 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
 	_modules.initModule<Music>("res/Music/");
+	_modules.initModule<AudioEffects>();
 }
 
 void Application::input()

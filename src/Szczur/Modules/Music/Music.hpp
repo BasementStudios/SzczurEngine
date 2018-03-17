@@ -15,7 +15,7 @@
 
 namespace rat 
 {
-	class Music : public Module<Script>
+	class Music : public Module<Script, AudioEffects>
 	{ 
 		using PlaylistContainer_t = boost::container::flat_map<Hash32_t, std::unique_ptr<Playlist>>;
 
@@ -47,6 +47,9 @@ namespace rat
 		void pause();
 		void stop();
 
+		RatMusic& getCurrentPlaying();
+		RatMusic& get(const std::string& fileName);
+
 		bool includes(const std::string& key, const std::string& fileName);
 
 		void setPlayingMode(const std::string& key, PlayingMode mode);
@@ -59,6 +62,9 @@ namespace rat
 
 		template <typename T>
     	void cleanEffect(const std::string& fileName);
+		void cleanEffects();
+
+		void setGlobalEffects();
 
 	private:
 

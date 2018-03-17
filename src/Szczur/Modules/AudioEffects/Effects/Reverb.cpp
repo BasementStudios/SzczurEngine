@@ -4,14 +4,14 @@ namespace rat
 {
 
     Reverb::Reverb(unsigned int& source)
-        : MusicEffect(source, AL_EFFECT_REVERB)
+        : EffectBase(source, AL_EFFECT_REVERB, 2)
     {
 
     }
 
     void Reverb::initScript(Script& script)
 	{
-		auto object = script.newClass<Reverb>("Reverb", "Music");
+		auto object = script.newClass<Reverb>("Reverb", "AudioEffects");
 		SCRIPT_SET_CLASS(Reverb, density, diffusion, gain, gainHf, decayTime, decayHfRatio, reflectionsGain, reflectionsDelay,
                         lateReverbGain, lateReverbDelay, airAbsorptionGainHf, roomRolloffFactor, decayHfLimit);
 		object.init();

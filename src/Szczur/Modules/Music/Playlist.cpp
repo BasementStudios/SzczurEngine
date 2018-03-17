@@ -4,7 +4,6 @@
 #include <chrono>
 #include <algorithm>
 
-
 namespace rat 
 {
 
@@ -200,7 +199,15 @@ namespace rat
 		_currentID = id;
 		if (!hasBeenEverPlayed)
 			hasBeenEverPlayed = true;
+		setGlobalEffects();
 		_status = Status::Playing;
 	}
 
+	void Playlist::setGlobalEffects()
+	{
+		if (_effects.globalEffects()) {
+			_effects.getGlobalEffects().template sendAuxiliaryEffectsTo<RatMusic>(_playlist[_currentID]->getSource());
+		}
+	}
+		
 }

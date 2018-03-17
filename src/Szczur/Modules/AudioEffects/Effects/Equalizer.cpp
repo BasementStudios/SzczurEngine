@@ -4,14 +4,14 @@ namespace rat
 {
 
     Equalizer::Equalizer(unsigned int& source)
-        : MusicEffect(source, AL_EFFECT_EQUALIZER)
+        : EffectBase(source, AL_EFFECT_EQUALIZER, 0)
     {
 
     }
 
     void Equalizer::initScript(Script& script)
 	{
-		auto object = script.newClass<Equalizer>("Equalizer", "Music");
+		auto object = script.newClass<Equalizer>("Equalizer", "AudioEffects");
 		SCRIPT_SET_CLASS(Equalizer, low, lowMid, highMid, high, lowCutoff, lowGain, lowMidCenter, lowMidWidth, lowMidGain, 
                         highMidCenter, highMidWidth, highCutoff, highGain);
 		object.init();

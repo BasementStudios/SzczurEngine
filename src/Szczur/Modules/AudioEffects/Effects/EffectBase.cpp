@@ -1,24 +1,30 @@
-#include "MusicEffect.hpp"
+#include "EffectBase.hpp"
 
 #include "Szczur/Debug.hpp"
 
 namespace rat
 {
 
-    MusicEffect::MusicEffect(unsigned int& source, int effectType)
-        : _source(source), _effectType(effectType)
+    EffectBase::EffectBase(unsigned int& source, int effectType, int sourceSlot)
+        : _source(source), _effectType(effectType), _sourceSlot(sourceSlot)
     {
 
     }
 
-    void MusicEffect::cleanEffect()
+    void EffectBase::cleanEffect()
     {
         alSource3i(_source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, _sourceSlot, NULL);
         alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_NULL, 0);
         alGetError();
+
+        _effectSlot = NULL;
+        _effect = NULL;
+
+        LOG_INFO("OpenAL: Effect cleaned");
+        _created = false;
     }
 
-    void MusicEffect::init()
+    void EffectBase::init()
     {
         if (_created) return;
         else _created = true;
@@ -45,15 +51,13 @@ namespace rat
                 return; 
             }
             _supported = true;
-            _sourceSlot = _lastFreeSlot;
-            ++_lastFreeSlot;
             LOG_INFO("OpenAL: Effect correctly initialized");
         }   
     }
 
-    void MusicEffect::setEffect(int type, float value)
+    void EffectBase::setEffect(int type, float value)
     {
-        init();
+        if (!_created) init();
 
         if (_supported) {
             alEffectf(_effect, type, value);
@@ -63,7 +67,9 @@ namespace rat
             return;
         }
         
-       cleanEffect();
+        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, _sourceSlot, NULL);
+        alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_NULL, 0);
+        alGetError();
     
         alGetError();
         alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_EFFECT, _effect);
@@ -80,6 +86,28 @@ namespace rat
         }
 
         LOG_INFO("OpenAL: Audio effect correctly loaded");
+    }
+
+    void EffectBase::setAuxiliaryEffect(unsigned int aux)
+    {
+        _effectSlot = aux;
+
+        alGetError();
+        alSource3i(_source, AL_AUXILIARY_SEND_FILTER, _effectSlot, _sourceSlot, NULL);
+		if (alGetError() != AL_NO_ERROR){
+			LOG_INFO("OpenAL Error: Problem with loading Auxiliary Effect Slot into Source");
+            return;
+        }
+    }
+
+    unsigned int EffectBase::getAuxiliaryEffect() const
+    {
+        return _effectSlot;
+    }
+
+    bool EffectBase::created() const
+    {
+        return _created;
     }
 
 }

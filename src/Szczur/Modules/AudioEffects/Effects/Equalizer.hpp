@@ -1,12 +1,12 @@
 #pragma once
 
-#include "MusicEffect.hpp"
+#include "EffectBase.hpp"
 
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
-	class Equalizer : public MusicEffect
+	class Equalizer : public EffectBase
 	{
 
 	public:

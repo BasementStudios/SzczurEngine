@@ -6,6 +6,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Music/Music.hpp"
+#include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 
 namespace rat
 {
@@ -41,6 +42,8 @@ private:
 
 	ModulesHolder<Window, Input, Script, Music> _modules;
 	Clock _mainClock;
+	ModulesHolder<Window, Input, Script, Music, AudioEffects> _modules;
+	sf::Clock _mainClock;
 
 };
 

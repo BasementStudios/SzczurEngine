@@ -4,7 +4,7 @@ namespace rat
 {
 
 	RatMusic::RatMusic()
-		: AudioEffects(m_source)
+		: AudioEffect(m_source)
 	{
 		LOG_INFO("RatMusic created");
 	}

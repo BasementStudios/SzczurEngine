@@ -6,26 +6,26 @@ namespace rat
 	Music::Music(const std::string& assetsPath)
 		: _assets(assetsPath)
 	{
-		LOG_INFO(this, " : Module Music constructed");
 		initScript();
+		LOG_INFO(this, " : Module Music constructed");
 	}
 
 	void Music::initScript() {
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
-		
-		SCRIPT_SET_MODULE(Music, addToPlaylist, removeFromPlaylist, play, pause, stop, includes, setPlayingMode, setVolume, getVolume);
+
+		SCRIPT_SET_MODULE(Music, addToPlaylist, removeFromPlaylist, play, pause, stop, includes, cleanEffects) 
+		SCRIPT_SET_MODULE(Music, setPlayingMode, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects);
+
 
 		module.set_function("addPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args newPlaylist){
-				owner->_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>();
+				owner->_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
 				for (auto it : newPlaylist){
 					owner->addToPlaylist(key, it);
 				}
 			}
 		);
-
-		script.initClasses<Equalizer, Reverb, Echo>();
 
 		module.set_function("getEqualizer", &Music::getEffect<Equalizer>, this);
 		module.set_function("getReverb", &Music::getEffect<Reverb>, this);
@@ -34,7 +34,6 @@ namespace rat
 		module.set_function("cleanEqualizer", &Music::cleanEffect<Equalizer>, this);
 		module.set_function("cleanReverb", &Music::cleanEffect<Reverb>, this);
 		module.set_function("cleanEcho", &Music::cleanEffect<Echo>, this);
-
 	}
 
 	void Music::update(float deltaTime) 
@@ -45,7 +44,7 @@ namespace rat
 
 	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist) 
 	{
-		_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>();
+		_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>(getModule<AudioEffects>());
 
 		for (auto it : newPlaylist)
 			addToPlaylist(key, it);
@@ -94,6 +93,7 @@ namespace rat
 
 			if (!samePlaylist)
 				_playlists[_currentPlaylistKey]->stopUpdates();
+	
 		}
 		_currentPlaylistKey = hashKey;
 	}
@@ -106,6 +106,16 @@ namespace rat
 	void Music::stop()
 	{
 		_playlists[_currentPlaylistKey]->stop();
+	}
+
+	RatMusic& Music::getCurrentPlaying()
+	{
+		return _playlists[_currentPlaylistKey]->getCurrentPlaying()->getSource();
+	}
+
+	RatMusic& Music::get(const std::string& fileName) 
+	{
+		return _assets.get(fileName);
 	}
 
 	bool Music::includes(const std::string& key, const std::string& fileName)
@@ -141,6 +151,23 @@ namespace rat
 
 		if (!music.getCounterValue())
 			_assets.unload(fileName);
-	}	
+	}
+
+	void Music::setGlobalEffects()
+	{
+		if(_currentPlaylistKey)
+			_playlists[_currentPlaylistKey]->setGlobalEffects();
+	}
+
+	void Music::cleanEffects()
+	{
+		if(_currentPlaylistKey) {
+			auto& currentName = _playlists[_currentPlaylistKey]->getCurrentPlaying()->getName();
+			
+			cleanEffect<Equalizer>(currentName);
+			cleanEffect<Echo>(currentName);
+			cleanEffect<Reverb>(currentName);
+		}
+	}
 
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "MusicEffect.hpp"
+#include "EffectBase.hpp"
 
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
-	class Echo : public MusicEffect
+	class Echo : public EffectBase
 	{
 
 	public:

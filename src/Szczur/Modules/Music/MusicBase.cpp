@@ -159,4 +159,9 @@ namespace rat
 		return _name;
 	}
 
+	RatMusic& MusicBase::getSource() const
+	{
+		return _base;
+	}
+
 }
