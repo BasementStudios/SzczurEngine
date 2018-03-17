@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 
+#include "Szczur/Portability.hpp"
+
 namespace rat
 {
 

@@ -33,7 +33,6 @@
 #include "Szczur/Utility/Convert/Hash.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
-#include "Szczur/CompilerPortability.hpp"
 #include "Szczur/GlobalVarsHolder.hpp"
 #include "Szczur/ImGui.hpp"
 
@@ -107,6 +106,9 @@ namespace detail
 #define LOG_INFO_IF_CX(condition, ...) { if constexpr (condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARN_IF_CX(condition, ...) { if constexpr (condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr (condition) LOG_ERROR(__VA_ARGS__) }
-#define EDITOR
+
+#if defined(OS_WINDOWS)
+#	define EDITOR
+#endif
 
 #endif

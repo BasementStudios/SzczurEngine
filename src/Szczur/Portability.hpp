@@ -1,5 +1,13 @@
 #pragma once
 
+#if defined(_WIN32)
+#   define OS_WINDOWS
+#elif defined(__linux__)
+#   define OS_LINUX
+#else
+#   error Platform not supported!
+#endif
+
 #if defined(__GNUG__)
 #	define COMPILER_GCC
 #elif defined(__clang__)
