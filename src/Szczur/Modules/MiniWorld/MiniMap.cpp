@@ -4,6 +4,13 @@ namespace rat {
 
 	MiniMap::MiniMap(Script& script) :
 		script(script) {
+		
+// TEMP
+		objects.emplace_back(new MiniObject(script));
+		objects.back()->addComponent("Base");
+		objects.back()->addComponent("Color");
+		objects.back()->runScript("THIS.Base.size.x = 400");
+		objects.back()->runScript("THIS.Color.color = 2");
 	}
 	
 	MiniBackgroundObject* MiniMap::newBackgroundObject() {
@@ -42,12 +49,20 @@ namespace rat {
 			if(objectType == 1) drawObjectFrame(obj.get());
 #endif
 		}
+		
+		for(auto& obj : objects) {
+			obj->render(canvas);
+		}		
 	}
 	
 	void MiniMap::update() {		
 		for(auto& obj : pathObjects) {
 			obj->update();
 		}
+		
+		for(auto& obj : objects) {
+			obj->update();
+		}	
 	}
 	
 

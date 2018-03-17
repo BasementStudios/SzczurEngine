@@ -16,12 +16,16 @@
 #include "Szczur/Modules/MiniWorld/MiniBackgroundObject.hpp"
 #include "Szczur/Modules/MiniWorld/MiniPathObject.hpp"
 
+#include "Szczur/Modules/MiniWorld/MiniObject.hpp"
+
 namespace rat {
 
 struct MiniMap
 {
 	std::vector<std::unique_ptr<MiniBackgroundObject>> backgroundObjects;
 	std::vector<std::unique_ptr<MiniPathObject>> pathObjects;
+	
+	std::vector<std::unique_ptr<MiniObject>> objects;
 	
 	Script& script;
 	

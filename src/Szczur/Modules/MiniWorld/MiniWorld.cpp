@@ -1,5 +1,8 @@
 #include "MiniWorld.hpp"
 
+#include "Szczur/Modules/MiniWorld/Components/ComponentColor.hpp"
+#include "Szczur/Modules/MiniWorld/MiniObject.hpp"
+
 namespace rat {
 	
 	MiniWorld::MiniWorld()
@@ -49,7 +52,7 @@ namespace rat {
 	void MiniWorld::initScript() {
 		auto module = getModule<Script>().newModule("MiniWorld");
 		
-		getModule<Script>().initClasses<MiniBackgroundObject, MiniPathObject>();
+		getModule<Script>().initClasses<MiniBackgroundObject, MiniPathObject, MiniObject>();
 	}
 	
 //////////////////////////////////////// EDITOR ////////////////////////////////////////
