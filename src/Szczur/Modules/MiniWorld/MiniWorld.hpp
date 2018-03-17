@@ -10,8 +10,6 @@
 #include "Szczur/Modules/Window/Window.hpp"
 
 #include "Szczur/Modules/MiniWorld/MiniMap.hpp"
-#include "Szczur/Modules/MiniWorld/MiniBackgroundObject.hpp"
-#include "Szczur/Modules/MiniWorld/MiniPathObject.hpp"
 
 namespace rat {
 

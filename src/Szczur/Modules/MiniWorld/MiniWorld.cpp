@@ -45,14 +45,13 @@ namespace rat {
 	void MiniWorld::init() {
 		newMap();
 		map = latestMap();
-		map->newBackgroundObject();
-		map->newPathObject();
+		map->newObject();
 	}	
 	
 	void MiniWorld::initScript() {
 		auto module = getModule<Script>().newModule("MiniWorld");
 		
-		getModule<Script>().initClasses<MiniBackgroundObject, MiniPathObject, MiniObject>();
+		getModule<Script>().initClasses<MiniObject>();
 	}
 	
 //////////////////////////////////////// EDITOR ////////////////////////////////////////
@@ -116,7 +115,8 @@ namespace rat {
 		map->editorDragAndDrop(getModule<Window>(), getModule<Input>());
 		
 		ET_outside();
-	}
+	}	
+	
 //////////////////////////////////////// CONSOLE ////////////////////////////////////////
 	void MiniWorld::editorConsoleForLua(Input& input) {
 	
@@ -204,7 +204,7 @@ namespace rat {
 				}
 			}
 			ImGui::End();
-		}    
+		}  
 	}
 #endif
 }

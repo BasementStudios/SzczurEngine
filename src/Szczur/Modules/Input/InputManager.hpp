@@ -7,6 +7,8 @@
 namespace rat
 {
 
+struct Script;
+
 enum InputStatus_e { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
 
 class InputManager
@@ -77,7 +79,6 @@ private:
 	InputCode _recentlyReleased;
 
 	unsigned _enteredCharacter;
-
 };
 
 }

@@ -5,8 +5,8 @@
 namespace rat {
 
 	ComponentColor::ComponentColor(MiniObject* target) 
-		: target(target) {		
-	}	
+		: target(target) {
+	}
 	
 	const std::string& ComponentColor::getComponentName() {
 		return componentName;		
@@ -17,8 +17,15 @@ namespace rat {
 	
 	void ComponentColor::editor() {
 		ImGui::Separator();
-		ImGui::Text("Color");
-		ImGui::DragInt("Color", &color, 0, 2);
+		if(!ImGui::TreeNode("Color")) return;
+		ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+		ImGui::PushItemWidth(ImGui::GetWindowWidth()*0.5-30);
+		
+		ImGui::SliderInt("Color", &color, 0, 2);
+	
+		ImGui::PopItemWidth();
+		ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+		ImGui::TreePop();
 	}
 	
 	void ComponentColor::render(sf::RenderTexture& canvas) {

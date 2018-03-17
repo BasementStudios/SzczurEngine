@@ -7,14 +7,7 @@
 
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
-
-#ifdef EDITOR
 #include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/MiniWorld/EditorObject.hpp"
-#endif
-
-#include "Szczur/Modules/MiniWorld/MiniBackgroundObject.hpp"
-#include "Szczur/Modules/MiniWorld/MiniPathObject.hpp"
 
 #include "Szczur/Modules/MiniWorld/MiniObject.hpp"
 
@@ -22,18 +15,21 @@ namespace rat {
 
 struct MiniMap
 {
-	std::vector<std::unique_ptr<MiniBackgroundObject>> backgroundObjects;
-	std::vector<std::unique_ptr<MiniPathObject>> pathObjects;
+	// std::vector<std::unique_ptr<MiniBackgroundObject>> backgroundObjects;
+	// std::vector<std::unique_ptr<MiniPathObject>> pathObjects;
 	
 	std::vector<std::unique_ptr<MiniObject>> objects;
+	
 	
 	Script& script;
 	
 	MiniMap(Script& script);
 	
-	MiniBackgroundObject* newBackgroundObject();
+	// MiniBackgroundObject* newBackgroundObject();
 	
-	MiniPathObject* newPathObject();
+	// MiniPathObject* newPathObject();
+	
+	MiniObject* newObject();
 	
 	// template <typename T>
 	// T* newObject() {		
@@ -51,21 +47,23 @@ struct MiniMap
 	int objectType = 0;
 	int selectedObjectId = -1;
 	bool objectEditorIsOpen = true;	
-	EditorObject* draggedObject;
-	EditorObject* hoveredObject;
-	EditorObject* selectedObject;
+	MiniObject* draggedObject;
+	MiniObject* hoveredObject;
+	MiniObject* selectedObject;
 	
 	void editorObjectsList();
 	void editorObjectEditor();
 	void editorDragAndDrop(Window& window, Input& input);
+	void editorComponentsChanger();
+	void editorDrawObjectFrame(sf::RenderTexture &canvas, MiniObject* object, int state);
 	
 	//////////////////// EDITOR THINGS ////////////////////	
 	void ET_mapPanel();
-	void ET_popupOnList(EditorObject* object);
+	void ET_popupOnList(MiniObject* object);
 	//////////////////// ---EDITOR THINGS--- ////////////////////
 	
 #endif
-	
+
 };
 
 }

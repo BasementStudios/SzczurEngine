@@ -16,6 +16,26 @@ namespace rat {
 	}
 	
 	void ComponentBase::editor() {
+		ImGui::Separator();
+		if(!ImGui::TreeNode("Base")) return;
+		ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
+		ImGui::PushItemWidth(ImGui::GetWindowWidth()*0.5-30);
+		
+		ImGui::DragFloat("##PosX", &pos->x);
+		ImGui::SameLine(); 
+		ImGui::DragFloat("##PosY", &pos->y);
+		ImGui::SameLine(); 
+		ImGui::Text("Pos");
+		
+		ImGui::DragFloat("##SizeX", &size->x); 
+		ImGui::SameLine(); 
+		ImGui::DragFloat("##SizeY", &size->y); 
+		ImGui::SameLine(); 
+		ImGui::Text("Size");
+		
+		ImGui::PopItemWidth();
+		ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
+		ImGui::TreePop();
 	}
 	
 	void ComponentBase::render(sf::RenderTexture& canvas) {

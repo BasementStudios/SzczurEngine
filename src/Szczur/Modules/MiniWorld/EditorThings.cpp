@@ -2,19 +2,16 @@
 
 #include "MiniWorld.hpp"
 #include "MiniMap.hpp"
-#include "MiniBackgroundObject.hpp"
-#include "MiniPathObject.hpp"
+
+// Components
+#include "Components/ComponentBase.hpp"
+#include "Components/ComponentColor.hpp"
 
 
 /*
 	Plan of this file:
 	/////////////////////////////////////////// EDITOR ///////////////////////////////////////////
-	
-	// ==================== INITIALIZING MEMBERS FOR SCRIPT ====================
-	// -------- Background object --------
-	
-	// -------- Path object --------
-	
+
 	// ==================== MAIN EDITOR ====================
 	// -------- Menu bar --------
 	For example: 
@@ -31,20 +28,7 @@
 	For example: List with objects on map
 	
 	// -------- Popup after RMB on object in list --------
-	
-	// ==================== OBJECT EDITOR ====================
-	// -------- Properties panel for background object --------
-	For example:
-	a) Base (with pos and size)
-	b) Visual (with sprite/armature)
-	c) Script (with .lua file)
-
-	// -------- Properties panel for path object --------
-	For example:
-	a) Base (with pos and size)
-	b) Visual (with sprite/armature)
-	c) Script (with .lua file)
-	
+		
 	// ==================== OUTSIDE ====================
 	For example: Console
 */
@@ -54,23 +38,23 @@ namespace rat {
 
 /////////////////////////////////////////// EDITOR ///////////////////////////////////////////
 
-// ==================== INITIALIZING MEMBERS FOR SCRIPT ====================
-// -------- Background object --------
-	void MiniBackgroundObject::ET_initializeScript(ScriptClass<rat::MiniBackgroundObject>& object) {
-		/*
-			At first you need to add new member in special area for EDITOR THINGS (in MiniBackgroundObject.hpp)
-		*/
-		
-		// e.g. object.set("color", &MiniBackgroundObject::color);
+// ==================== COMPONENTS ====================
+	std::vector<std::string> MiniObject::availableComponents;
+	void MiniObject::initComponents(Script &script) {
+		//@todo Initializer list
+		availableComponents.emplace_back("Base");
+		availableComponents.emplace_back("Color");
+		script.initClasses<
+			ComponentColor, ComponentBase
+		>();
 	}
 	
-// -------- Path object --------
-	void MiniPathObject::ET_initializeScript(ScriptClass<rat::MiniPathObject>& object) {
-		/*
-			At first you need to add new member in special area for EDITOR THINGS (in MiniPathObject.hpp)
-		*/
-		
-		// e.g. object.set("color", &MiniPathObject::color);
+	void MiniObject::addComponent(const std::string& componentName) {
+		auto result = std::find_if(components.begin(), components.end(), [&](auto& obj) { return obj->getComponentName()==componentName; });
+		if(result == components.end()) {
+			if(componentName == "Base")  addComponent<ComponentBase>();
+			else if(componentName == "Color") addComponent<ComponentColor>();
+		}
 	}
 
 // ==================== MAIN EDITOR ====================
@@ -112,11 +96,10 @@ namespace rat {
 	}
 
 // -------- Popup after RMB on object in list --------
-	void MiniMap::ET_popupOnList(EditorObject* object) {
+	void MiniMap::ET_popupOnList(MiniObject* object) {
 		
 		/*
-			When `objectType` == 0 => dynamic_cast<MiniBackgroundObject*>(object)
-			When `objectType` == 1 => dynamic_cast<MiniPathObject*>(object)
+			auto comp = object.findComponent("Color"); //return nullptr when component isn't inside
 		*/
 		
 		/*
@@ -124,33 +107,6 @@ namespace rat {
 			if(ImGui::Selectable("Dance!")) {
 				
 			}
-		*/
-	}
-
-// ==================== OBJECT EDITOR ====================
-// -------- Properties panel for background object --------
-	void MiniBackgroundObject::ET_propertiesPanel() {
-		ImGui::Separator();
-		ImGui::Text("I'm new properties group :D");	
-		/*
-			e.g.			
-			ImGui::DragFloat("##SizeX", &colliderSize.x); //<--- `##` makes name invisible in gui
-			ImGui::SameLine();
-			ImGui::DragFloat("##SizeY", &colliderSize.y);
-			ImGui::SameLine();	
-		*/
-	}
-	
-// -------- Properties panel for path object --------
-	void MiniPathObject::ET_propertiesPanel() {		
-		ImGui::Separator();
-		ImGui::Text("I'm new properties group :D");
-		/*
-			e.g.			
-			ImGui::DragFloat("##ColliderSizeX", &colliderSize.x); //<--- `##` makes name invisible in gui
-			ImGui::SameLine();
-			ImGui::DragFloat("##ColliderSizeY", &colliderSize.y);
-			ImGui::SameLine();	
 		*/
 	}
 
