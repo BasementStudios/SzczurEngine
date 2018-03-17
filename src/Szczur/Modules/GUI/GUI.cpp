@@ -5,7 +5,6 @@ namespace rat {
     _root(new Widget) {
         LOG_INFO(this, "Module GUI constructed")
         initScript();
-
         auto& window = getModule<Window>().getWindow();
         _canvas.create(window.getSize().x, window.getSize().y);
     }
@@ -22,7 +21,8 @@ namespace rat {
 
 
 
-        script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget>();
+        script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
+        script.scriptFile("data/_GUI.lua");
     }
 
     GUI::~GUI() {

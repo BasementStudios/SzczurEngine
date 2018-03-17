@@ -50,7 +50,7 @@ namespace rat {
 		void input(const sf::Event& event);
 		void update(float deltaTime);
 
-		void calculateSize();
+		virtual void calculateSize();
 		sf::Vector2u getSize() const;
 
 		void move(const sf::Vector2f& offset);
@@ -79,18 +79,15 @@ namespace rat {
 		bool _isActivated;
 		bool _isVisible;
 
+		sf::Vector2u _size;
+
+		Widget* _parent;
+
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
 		
-	private:
 		Children_t _children;
-		Widget* _parent;
-
-		
-		
-
-		sf::Vector2u _size;
-
+	private:
 		virtual void _callback(CallbackType type);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
