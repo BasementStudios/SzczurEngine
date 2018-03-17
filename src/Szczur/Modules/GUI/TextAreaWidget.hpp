@@ -29,20 +29,13 @@ namespace rat {
     protected:
         virtual void _update(float deltaTime) override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-        virtual void _input(const sf::Event& event) override;
         virtual sf::Vector2u _getSize() const override;
     private:
-        bool _toCreate;
-        bool _toUpdate;
         bool _toWrap;
 
         sf::Text _text;
-        sf::RenderTexture _area;
-        sf::Sprite _sprite;
         sf::Vector2u _size;
-        sf::View _view;
 
-        void _redrawArea();
         void _wrapText();
         virtual void _callback(CallbackType type) override;
     };
