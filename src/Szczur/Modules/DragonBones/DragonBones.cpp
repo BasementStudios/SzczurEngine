@@ -51,6 +51,7 @@ void DragonBones::update(float deltaTime)
 /// createArmature
 UglyArmature* DragonBones::createArmature(const std::string& name)
 {
+	LOG_INFO("skeleData : Assets/Objects/" + name + "/skeleton.json");
 	auto skeletonData = this->factory.loadDragonBonesData("Assets/Objects/" + name + "/skeleton.json");
 
 	if (!skeletonData) {
@@ -58,6 +59,7 @@ UglyArmature* DragonBones::createArmature(const std::string& name)
 		return nullptr;
 	}
 
+	LOG_INFO("texFolder : Assets/Objects/" + name + "/textures");
 	auto texturesData = this->factory.getTexturesData(skeletonData, "Assets/Objects/" + name + "/textures");
 
 	for (auto& textureData : texturesData) {
