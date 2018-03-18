@@ -1,7 +1,8 @@
 # Compiling results
 obj/
-out/*.*
-out/Logs/
+out/*
+!out/Assets
+!out/Assets/*
 
 # Configurations
 settings.mk
