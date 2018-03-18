@@ -1,5 +1,7 @@
 #include "Application.hpp"
 
+#include <SFML/Graphics.hpp>
+
 namespace rat
 {
 
@@ -7,6 +9,7 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	_modules.initModule<Script>();
 	_modules.initModule<Shader>();
 
 	#ifdef EDITOR
@@ -33,7 +36,7 @@ void Application::input()
 		#endif
 
 		if (event.type == sf::Event::Closed) {
-			getWindow().close();
+		  getWindow().close();
 		}
 	}
 
@@ -79,8 +82,8 @@ void Application::render()
 	#endif
 
 	_modules.getModule<Window>().render();
-}
 
+}
 int Application::run()
 {
 	init();
@@ -99,15 +102,16 @@ int Application::run()
 
 	return 0;
 }
-
+ 
 sf::RenderWindow& Application::getWindow()
 {
 	return _modules.getModule<Window>().getWindow();
 }
-
+ 
 const sf::RenderWindow& Application::getWindow() const
 {
 	return _modules.getModule<Window>().getWindow();
 }
+ 
 
 }
