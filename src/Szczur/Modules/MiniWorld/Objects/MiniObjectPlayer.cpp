@@ -3,32 +3,23 @@
 namespace rat {
 
 	MiniObjectPlayer::MiniObjectPlayer(Script &script, Input& input) 
-		: MiniObject(script), input(input) {
+		: MiniObjectScene(script), input(input) {
 		name = "Player";
-		tex.loadFromFile("assets/characters/char_1.png");
-		spr.setTexture(tex);
-		
-		collider.setFillColor({180,120,180,120});
-		collider.setOutlineColor({200,140,200,200});
-		collider.setOutlineThickness(-1);
-		collider.setPosition(colliderPos);
-		collider.setSize(colliderSize);
+		loadTexture("assets/player.png");
+		setScale(0.2,0.2);
 	}	
 	
 /////////////////////////// METHODS ///////////////////////////
 
-	bool MiniObjectPlayer::isCollision(const sf::Vector2f& bpos, const sf::Vector2f& bSize, const sf::Vector2f& bOffset) {
-		sf::Vector2f aPos = pos + colliderPos - colliderSize/2.f;
-		// aPos.x -= colliderSize.x/2.f;
-		// aPos.y -= colliderSize.y/2.f;
-		sf::Vector2f aSize = colliderSize;		
-		sf::Vector2f bPos(bpos-bOffset);
-		
-		return (aPos.x < bPos.x + bSize.x && aPos.x + aSize.x > bPos.x &&
-				aPos.y < bPos.y + bSize.y && aSize.y + aPos.y > bPos.y);
-	}
-
 /////////////////////////// MAIN METHODS ///////////////////////////
+		
+	void MiniObjectPlayer::render(sf::RenderTexture &canvas) {
+		// sprite.setTexture(texture);
+		sprite.setPosition(pos);
+		sprite.setOrigin(sprite.getLocalBounds().width/2.f, sprite.getLocalBounds().height/2.f);
+		sprite.setScale(scale.x*dir, scale.y);
+		canvas.draw(sprite);
+	}
 	
 	void MiniObjectPlayer::update(float deltaTime) {
 		if(input.getManager().isKept(Keyboard::Left)) {
@@ -45,45 +36,20 @@ namespace rat {
 		if(input.getManager().isKept(Keyboard::Down)) {
 			pos.y += speed*deltaTime*60.f;
 		}
-	}
-	
-	void MiniObjectPlayer::renderCollider(sf::RenderTexture& canvas) {
-		collider.setOrigin(colliderSize.x/2.f, colliderSize.y/2.f);
-		collider.setPosition(pos + colliderPos);
-		collider.setSize(colliderSize);
-		canvas.draw(collider);
-	}
-	
-	void MiniObjectPlayer::render(sf::RenderTexture &canvas) {
-		spr.setPosition(pos);
-		spr.setOrigin(spr.getLocalBounds().width/2.f, spr.getLocalBounds().height/2.f);
-		spr.setScale({0.2f * dir, 0.2f});
-		canvas.draw(spr);
+		if(funcUpdate.valid()) funcUpdate(this);
 	}
 	
 	void MiniObjectPlayer::editor() {
-		ImGui::Text("Player properties");
-		ImGui::Separator();
+		MiniObjectScene::editor();
 		
-// ================== Base ==================
+// ================== Player ==================
 
-		ImGui::Text("Base");
-		ImGui::PushItemWidth(ImGui::GetWindowSize().x*0.3);
-		ImGui::DragFloat("##PosX", &pos.x);
-		ImGui::SameLine();
-		ImGui::DragFloat("Pos##Y", &pos.y);
-		ImGui::PopItemWidth();
-		ImGui::Separator();
-		
-		ImGui::Text("Collider");
-		ImGui::PushItemWidth(ImGui::GetWindowSize().x*0.3);
-		ImGui::DragFloat("##PosColliderX", &colliderPos.x);
-		ImGui::SameLine();
-		ImGui::DragFloat("Pos##ColliderY", &colliderPos.y);
-		ImGui::DragFloat("##SizeColliderX", &colliderSize.x);
-		ImGui::SameLine();
-		ImGui::DragFloat("Size##ColliderY", &colliderSize.y);
+		ImGui::Text("Player");
+		ImGui::PushItemWidth(ImGui::GetWindowSize().x*0.7);
+		ImGui::SliderFloat("Speed##Player", &speed, 0, 12);
 		ImGui::PopItemWidth();
 		ImGui::Separator();
 	}
+	
+/////////////////////////// SCRIPT ///////////////////////////
 }

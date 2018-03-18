@@ -30,8 +30,8 @@ struct MiniObject {
 	virtual void render(sf::RenderTexture &canvas) = 0;
 	
 /////////////////////////// SCRIPT ///////////////////////////
-	// void runFileScript(const std::string& filepath);		
-	// void runScript(const std::string& code);	
+	virtual void runFileScript(const std::string& filepath) = 0;		
+	virtual void runScript(const std::string& code) = 0;
 	// static void initScript(Script &script);			
 };
 	

@@ -1,5 +1,7 @@
 #include "MiniObjectScene.hpp"
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
 namespace rat {
 
 	MiniObjectScene::MiniObjectScene(Script &script) 
@@ -18,10 +20,14 @@ namespace rat {
 		// aPos.x -= colliderSize.x/2.f;
 		// aPos.y -= colliderSize.y/2.f;
 		sf::Vector2f aSize = colliderSize;		
-		sf::Vector2f bPos(bpos-bOffset);
+		sf::Vector2f bPos(bpos+bOffset);
 		
 		return (aPos.x < bPos.x + bSize.x && aPos.x + aSize.x > bPos.x &&
 				aPos.y < bPos.y + bSize.y && aSize.y + aPos.y > bPos.y);
+	}
+	
+	void MiniObjectScene::action() {
+		if(funcOnAction.valid()) funcOnAction(this);
 	}
 	
 /////////////////////////// MAIN METHODS ///////////////////////////
@@ -42,6 +48,7 @@ namespace rat {
 	}
 	
 	void MiniObjectScene::update(float deltaTime) {
+		if(funcUpdate.valid()) funcUpdate(this);
 	}
 	
 	void MiniObjectScene::renderCollider(sf::RenderTexture& canvas) {
@@ -112,8 +119,10 @@ namespace rat {
 				loadTexture(texturePathBuffer);
 				changeTexturePath = false;
 			}
-			if(ImGui::Button("Load texture", {100, 0})) {
-				loadTexture(texturePathBuffer);
+			if(ImGui::Button("Load texture...", {120, 0})) {
+				
+				std::string foundedPath = FileDialog::getOpenFileName("Texture", ".");
+				loadTexture(foundedPath);
 				changeTexturePath = false;
 			}
 		}
@@ -129,6 +138,8 @@ namespace rat {
 		ImGui::PopItemWidth();
 		ImGui::Separator();
 		
+// ================== Collider ==================
+		
 		ImGui::Text("Collider");
 		ImGui::PushItemWidth(ImGui::GetWindowSize().x*0.3);
 		ImGui::DragFloat("##PosColliderX", &colliderPos.x);
@@ -139,5 +150,30 @@ namespace rat {
 		ImGui::DragFloat("Size##ColliderY", &colliderSize.y);
 		ImGui::PopItemWidth();
 		ImGui::Separator();
+	}
+	
+/////////////////////////// SCRIPT ///////////////////////////
+
+	void MiniObjectScene::runFileScript(const std::string& filepath) {
+		auto& lua = script.get();
+		lua.set("THIS", this);
+		try {
+			lua.script_file(filepath);
+		}
+		catch(sol::error e) {
+			std::cout<<"[ERROR] Cannot load "<<filepath<<'\n'<<std::flush;
+			std::cout<<e.what()<<'\n'<<std::flush;
+		}
+	}
+	void MiniObjectScene::runScript(const std::string& code) {
+		auto& lua = script.get();
+		lua.set("THIS", this);
+		try {
+			lua.script(code);
+		}
+		catch(sol::error e) {
+			std::cout<<"[ERROR] Cannot run script \n"<<std::flush;
+			std::cout<<e.what()<<'\n'<<std::flush;
+		}
 	}
 }

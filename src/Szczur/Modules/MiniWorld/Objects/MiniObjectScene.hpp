@@ -19,6 +19,9 @@ struct MiniObjectScene : public MiniObject {
 	sf::Vector2f colliderPos{0,0};
 	sf::Vector2f colliderSize{100,100};
 	
+	sol::function funcOnAction;
+	sol::function funcUpdate;
+	
 	void loadTexture(const std::string& path);
 	void setScale(float x, float y);
 	
@@ -26,12 +29,17 @@ struct MiniObjectScene : public MiniObject {
 	
 /////////////////////////// METHODS ///////////////////////////
 	bool isCollision(const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Vector2f& offset);
+	void action();
+	void renderCollider(sf::RenderTexture& canvas);
 	
 /////////////////////////// MAIN METHODS ///////////////////////////
-	void update(float deltaTime);
-	void editor();
-	void render(sf::RenderTexture &canvas);
-	void renderCollider(sf::RenderTexture& canvas);
+	virtual void update(float deltaTime);
+	virtual void editor();
+	virtual void render(sf::RenderTexture &canvas);
+	
+/////////////////////////// SCRIPT ///////////////////////////
+	void runFileScript(const std::string& filepath);		
+	void runScript(const std::string& code);
 };
 	
 }

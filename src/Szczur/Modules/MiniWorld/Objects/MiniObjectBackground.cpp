@@ -1,5 +1,7 @@
 #include "MiniObjectBackground.hpp"
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
 namespace rat {
 
 	MiniObjectBackground::MiniObjectBackground(Script &script) 
@@ -83,8 +85,10 @@ namespace rat {
 				loadTexture(texturePathBuffer);
 				changeTexturePath = false;
 			}
-			if(ImGui::Button("Load texture", {100, 0})) {
-				loadTexture(texturePathBuffer);
+			if(ImGui::Button("Load texture...", {120, 0})) {
+				
+				std::string foundedPath = FileDialog::getOpenFileName("Texture", ".");
+				loadTexture(foundedPath);
 				changeTexturePath = false;
 			}
 		}

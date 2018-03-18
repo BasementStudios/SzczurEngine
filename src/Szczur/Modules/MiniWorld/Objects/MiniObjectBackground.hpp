@@ -26,6 +26,10 @@ struct MiniObjectBackground : public MiniObject {
 	void update(float deltaTime);
 	void editor();
 	void render(sf::RenderTexture &canvas);		
+	
+/////////////////////////// SCRIPT ///////////////////////////
+	void runFileScript(const std::string& filepath){}		
+	void runScript(const std::string& code){}
 };
 	
 }
