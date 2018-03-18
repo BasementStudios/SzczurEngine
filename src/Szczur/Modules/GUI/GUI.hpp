@@ -14,6 +14,7 @@
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "GuiAssetsManager.hpp"
+#include "ScrollAreaWidget.hpp"
 
  
 namespace rat {

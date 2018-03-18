@@ -106,8 +106,7 @@ namespace rat {
                 case sf::Event::MouseButtonReleased: {
                     if(_isPressed) {
                         _isPressed = false;
-                        if(_isHovered)
-                            _callback(CallbackType::onRelease);         
+                        _callback(CallbackType::onRelease);         
                     }
                     break;
                 }

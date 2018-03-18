@@ -2,6 +2,7 @@
 #include "ImageWidget.hpp"
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
+#include "ScrollAreaWidget.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
@@ -121,6 +122,23 @@ namespace rat {
             "addWidget",
             [basicValues](Widget& owner, sol::table tab){
                 Widget* widget = new Widget;
+                basicValues(widget, tab);
+                owner.add(widget);
+                return widget;
+            }
+        );
+
+        object.set(
+            "addArea",
+            [basicValues](Widget& owner, sol::table tab){
+                ScrollAreaWidget* widget = new ScrollAreaWidget;
+
+                if(tab["size"].valid()) {
+                    widget->setSize(tab["size"][1], tab["size"][2]);
+                    if(tab["scrollSpeed"].valid())
+                        widget->setScrollSpeed(tab["scrollSpeed"]);
+                }
+
                 basicValues(widget, tab);
                 owner.add(widget);
                 return widget;
