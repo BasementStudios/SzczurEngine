@@ -9,7 +9,6 @@
 #include "Szczur/Modules/Shader/Shader.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Dialog/Dialog.hpp"
-
 #include "Szczur/Modules/MiniWorld/MiniWorld.hpp"
  
 namespace rat

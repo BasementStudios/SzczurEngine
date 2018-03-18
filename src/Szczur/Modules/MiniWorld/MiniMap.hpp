@@ -40,6 +40,9 @@ struct MiniMap
 	MiniObjectScene* getScene(const std::string& name);
 	MiniObjectBackground* getBackground(const std::string& name);
 	
+	void runScript(const std::string& code);
+	void runFileScript(const std::string& filepath);
+	
 	sol::object lua_getSHD(MiniObject*);
 	sol::object lua_getSelected();
 	sol::object lua_getHovered();

@@ -1,5 +1,13 @@
 #include "Application.hpp"
 
+#include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Shader/Shader.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
+#include "Szczur/Modules/MiniWorld/MiniWorld.hpp"
+
 namespace rat
 {
 

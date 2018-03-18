@@ -106,6 +106,30 @@ namespace rat {
 
 /////////////////////////////////////////// SCRIPT ///////////////////////////////////////////
 	
+	void MiniMap::runScript(const std::string& code) {	
+		auto& lua = script.get();
+		lua.set("THIS", this);
+		try {
+			lua.script(code);
+		}
+		catch(sol::error e) {
+			std::cout<<"[ERROR] Cannot run script \n"<<std::flush;
+			std::cout<<e.what()<<'\n'<<std::flush;
+		}
+	}
+	
+	void MiniMap::runFileScript(const std::string& filepath) {	
+		auto& lua = script.get();
+		lua.set("THIS", this);
+		try {
+			lua.script_file(filepath);
+		}
+		catch(sol::error e) {
+			std::cout<<"[ERROR] Cannot load "<<filepath<<'\n'<<std::flush;
+			std::cout<<e.what()<<'\n'<<std::flush;
+		}
+	}
+	
 	void MiniMap::initScript(Script& script) {
 		auto object = script.newClass<MiniMap>("MiniMap", "MiniWorld");
 		object.set("getSelectedObject", &MiniMap::lua_getSelected);

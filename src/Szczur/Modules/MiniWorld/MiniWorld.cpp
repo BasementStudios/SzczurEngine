@@ -2,6 +2,8 @@
 
 #include "Szczur/Modules/MiniWorld/MiniObject.hpp"
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
 namespace rat {
 	
 	MiniWorld::MiniWorld()
@@ -111,15 +113,14 @@ namespace rat {
 	void MiniWorld::editorToolConsole() {
 	
 		auto& io = ImGui::GetIO();
-		ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, 5.0f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
-		ImGui::SetNextWindowBgAlpha(0.5f);  
+		// ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, 5.0f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
+		// ImGui::SetNextWindowBgAlpha(0.5f);  
 
-		ImGui::Begin("Script console", nullptr, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_AlwaysAutoResize|ImGuiWindowFlags_NoMove|ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_NoFocusOnAppearing|ImGuiWindowFlags_NoNav);
+		ImGui::Begin("Script console", nullptr, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_AlwaysAutoResize);
 		
 		static int scriptTarget = 0;
 		static int scriptType = 0;
 		static std::vector<std::string> consoleStory;
-		int currConsoleStory = -1;
 		
 		ImGui::Text("Write lua script here");
 		
@@ -142,27 +143,22 @@ namespace rat {
 		
 		// a) One-liner
 		if(scriptType == 0) {
-			ImGui::BeginChild("Console story", ImVec2(ImGui::GetWindowContentRegionWidth(), 128), false);
+			ImGui::BeginChild("Console story", ImVec2(ImGui::GetWindowContentRegionWidth(), 96), false);
 			for(int i = 0; i<consoleStory.size(); ++i) {
-				if(i != currConsoleStory) {
-					ImGui::Text(consoleStory[i].c_str());
-				}
-				else {					
-					ImGui::TextColored(ImVec4(1.0f,0.0f,1.0f,1.0f), consoleStory[i].c_str());
-				}
+				ImGui::Text(consoleStory[i].c_str());
 			}
 			ImGui::EndChild();
 			ImGui::Separator();
 			
-			static char buffer[120];			
-			if(ImGui::InputText("Input", buffer, 120, ImGuiInputTextFlags_EnterReturnsTrue) && std::string(buffer)!="") {
-				if(scriptTarget == 0) {
-					
+			static char buffer[180];			
+			if(ImGui::InputText("Input", buffer, 180, ImGuiInputTextFlags_EnterReturnsTrue) && std::string(buffer)!="") {
+				if(scriptTarget == 0) {								
+					map->runScript(std::string(buffer));
+					consoleStory.emplace_back(buffer);
 				}
 				else if(scriptTarget == 1 && map->selectedObject) {						
 					map->selectedObject->runScript(std::string(buffer));
 					consoleStory.emplace_back(buffer);
-					currConsoleStory = consoleStory.size();
 				}
 			}
 			
@@ -175,8 +171,8 @@ namespace rat {
 			static char buffer[1024*16];
 			ImGui::InputTextMultiline("##ScriptArea", buffer, 1024*16, ImVec2(0.0f, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_AllowTabInput);
 			if(ImGui::Button("Run script")) {					
-				if(scriptTarget == 0) {
-					
+				if(scriptTarget == 0) {								
+					map->runScript(std::string(buffer));
 				}
 				else if(scriptTarget == 1 && map->selectedObject) {						
 					map->selectedObject->runScript(std::string(buffer));
@@ -187,12 +183,15 @@ namespace rat {
 		else if(scriptType == 2) {
 			static char buffer[120];	
 			ImGui::Text("Path to file with script:");
-			if(ImGui::InputText("Input##Filepath", buffer, 120, ImGuiInputTextFlags_EnterReturnsTrue)) {				
-				if(scriptTarget == 0) {
-					
-				}
-				else if(scriptTarget == 1 && map->selectedObject) {						
-					map->selectedObject->runFileScript(std::string(buffer));
+			if(ImGui::Button("Load script...", {180, 0})) {
+				std::string foundedPath = FileDialog::getOpenFileName("Script", ".");
+				if(foundedPath != "") {
+					if(scriptTarget == 0) {
+						map->runFileScript(foundedPath);
+					}
+					else if(scriptTarget == 1 && map->selectedObject) {
+						map->selectedObject->runFileScript(foundedPath);
+					}
 				}
 			}
 		}

@@ -9,15 +9,11 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
-#include "Widget.hpp"
-#include "ImageWidget.hpp"
-#include "TextWidget.hpp"
-#include "TextAreaWidget.hpp"
 #include "GuiAssetsManager.hpp"
-#include "ScrollAreaWidget.hpp"
-
  
 namespace rat {
+	class Widget;
+
     class GUI : public Module<Input, Window, Script> { 
     public:
         GUI();

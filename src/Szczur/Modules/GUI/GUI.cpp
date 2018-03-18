@@ -1,5 +1,12 @@
 #include "GUI.hpp"
 #include <iostream>
+
+#include "Widget.hpp"
+#include "ImageWidget.hpp"
+#include "TextWidget.hpp"
+#include "TextAreaWidget.hpp"
+#include "ScrollAreaWidget.hpp"
+
 namespace rat {
     GUI::GUI() :
     _root(new Widget) {

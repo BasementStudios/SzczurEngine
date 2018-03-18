@@ -1,10 +1,15 @@
 #include "DialogGUI.hpp"
 
+#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/TextWidget.hpp"
+#include "Szczur/Modules/GUI/TextAreaWidget.hpp"
+#include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+
 namespace rat {
 
     DialogGUI::DialogGUI(GUI& gui) :
-    _character(nullptr) {
-        
+    _character(nullptr) {        
         
     }
 
