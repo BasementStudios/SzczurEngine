@@ -1,9 +1,11 @@
 #include "Application.hpp"
 
-#include <SFML/Graphics.hpp>
+#include "Szczur/Modules/DragonBones/UglyArmature.hpp"
 
 namespace rat
 {
+
+static UglyArmature* dragon;
 
 void Application::init()
 {
@@ -11,6 +13,7 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
 	_modules.initModule<Shader>();
+	_modules.initModule<DragonBones>();
 
 	#ifdef EDITOR
 	{
@@ -20,6 +23,13 @@ void Application::init()
 		ImGui::SFML::Init(getWindow());
 	}
 	#endif
+
+
+	dragon = _modules.getModule<DragonBones>().createArmature("Dragon");
+	dragon->setPosition({400, 400});
+	dragon->playAnimation("walk");
+
+
 }
 
 void Application::input()
@@ -66,6 +76,8 @@ void Application::update()
 	}
 	#endif
 
+	_modules.getModule<DragonBones>().update(deltaTime);
+
 	_modules.getModule<Shader>().update();
 
 	_modules.getModule<Input>().getManager().finishLogic();
@@ -80,6 +92,10 @@ void Application::render()
 		ImGui::SFML::Render(getWindow());
 	}
 	#endif
+
+	getWindow().draw(*dragon);
+
+
 
 	_modules.getModule<Window>().render();
 

@@ -6,6 +6,8 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Shader/Shader.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
+
 namespace rat
 {
 
@@ -38,7 +40,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, Shader> _modules;
+	ModulesHolder<Window, Input, Script, Shader, DragonBones> _modules;
 	Clock _mainClock;
 
 };
