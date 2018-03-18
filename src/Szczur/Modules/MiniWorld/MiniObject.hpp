@@ -25,7 +25,7 @@ struct MiniObject {
 	MiniFrame& getFrame();
 	
 /////////////////////////// MAIN METHODS ///////////////////////////
-	virtual void update() = 0;
+	virtual void update(float deltaTime) = 0;
 	virtual void editor() = 0;
 	virtual void render(sf::RenderTexture &canvas) = 0;
 	

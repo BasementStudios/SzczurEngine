@@ -31,7 +31,7 @@ public:
 
 	void input();
 
-	void update();
+	void update(float deltaTime);
 
 	void render();
 

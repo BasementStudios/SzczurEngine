@@ -11,6 +11,7 @@
 
 #include "Szczur/Modules/MiniWorld/MiniObject.hpp"
 #include "Szczur/Modules/MiniWorld/Objects/MiniObjectPlayer.hpp"
+#include "Szczur/Modules/MiniWorld/Objects/MiniObjectScene.hpp"
 #include "Szczur/Modules/MiniWorld/Objects/MiniObjectBackground.hpp"
 
 namespace rat {
@@ -21,18 +22,21 @@ struct MiniMap
 	// std::vector<std::unique_ptr<MiniPathObject>> pathObjects;
 	
 	std::unique_ptr<MiniObjectPlayer> player = nullptr;		
+	std::vector<std::unique_ptr<MiniObjectScene>> scene;
 	std::vector<std::unique_ptr<MiniObjectBackground>> background;
 	
 	Script& script;
 	Window& window;
 	Input& input;
+	float time = 0;
 	
 	MiniMap(Script& script, Window& window, Input& input);
 	
+	MiniObjectScene* newScene();
 	MiniObjectBackground* newBackground();
 	
 	void init();
-	void update();
+	void update(float deltaTime);
 	void render(sf::RenderTexture &canvas);	
 		
 #ifdef EDITOR

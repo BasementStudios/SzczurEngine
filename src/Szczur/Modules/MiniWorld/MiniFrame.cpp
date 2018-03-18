@@ -36,7 +36,7 @@ namespace rat {
 		
 		if(state == 0) { 
 			shape.setOutlineThickness(1); 
-			shape.setOutlineColor({70,70,70,255}); 
+			shape.setOutlineColor({90,70,50,255}); 
 			return shape;
 		} 
 		else if(state == 1) { 

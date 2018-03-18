@@ -56,9 +56,9 @@ void Application::input()
 	}
 }
 
-void Application::update()
+void Application::update(float deltaTime)
 {
-	_modules.getModule<MiniWorld>().update();
+	_modules.getModule<MiniWorld>().update(deltaTime);
 
 #ifdef EDITOR
 	ImGui::ShowDemoWindow();
@@ -94,9 +94,13 @@ int Application::run()
 {
 	init();
 
+	sf::Clock clock;	
+	float deltaTime;
+	
 	while (getWindow().isOpen()) {
 		input();
-		update();
+		deltaTime = clock.restart().asSeconds();
+		update(deltaTime);
 		render();
 	}
 

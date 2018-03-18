@@ -33,7 +33,7 @@ struct MiniWorld : public Module<Window, Input, Script>
 	
 	void newMap();
 	
-	void update();
+	void update(float deltaTime);
 	
 	void render();
 	

@@ -9,7 +9,7 @@ namespace rat {
 struct MiniFrame {
 
 	sf::Vector2f *pos = nullptr;
-	sf::Vector2f size{20,20};
+	sf::Vector2f size{40,40};
 	sf::RectangleShape shape;
 	bool clickable = true;
 	

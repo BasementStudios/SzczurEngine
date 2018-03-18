@@ -25,8 +25,8 @@ namespace rat {
 		maps.emplace_back(new MiniMap(getModule<Script>(), getModule<Window>(), getModule<Input>()));
 	}
 	
-	void MiniWorld::update() {
-		map->update();
+	void MiniWorld::update(float deltaTime) {
+		map->update(deltaTime);
 		
 #ifdef EDITOR
 		editor();

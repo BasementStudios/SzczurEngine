@@ -15,23 +15,25 @@ namespace rat {
 		texturePath = path;
 		texture.loadFromFile(path);
 		sprite.setTexture(texture, true);
-		frame.size.x = sprite.getLocalBounds().width*scale.x;
-		frame.size.y = sprite.getLocalBounds().height*scale.y;
+		frame.size.x = sprite.getLocalBounds().width*scale.x*0.4f;
+		frame.size.y = sprite.getLocalBounds().height*scale.y*0.4f;
 	}
 	
 	void MiniObjectBackground::setScale(float x, float y) {
 		scale = sf::Vector2f(x,y);
 		sprite.setScale(scale);
-		frame.size.x = sprite.getLocalBounds().width*scale.x;
-		frame.size.y = sprite.getLocalBounds().height*scale.y;
+		frame.size.x = sprite.getLocalBounds().width*scale.x*0.4f;
+		frame.size.y = sprite.getLocalBounds().height*scale.y*0.4f;
 	}
 	
-	void MiniObjectBackground::update() {
+	void MiniObjectBackground::update(float deltaTime) {
 	}
 	
 	void MiniObjectBackground::editor() {
-		ImGui::Text("Scene object properties");
+		ImGui::Text("Background object properties");
 		
+// ================== Name ==================
+
 		static bool changeName = false;
 		static char nameBuffer[50];
 		if(!changeName) {
@@ -44,13 +46,25 @@ namespace rat {
 			ImGui::Text(name.c_str());
 		}
 		else {
-			if(ImGui::InputText("New name##Input", nameBuffer, 50, ImGuiInputTextFlags_EnterReturnsTrue)) {
+			if(ImGui::InputText("New path##Input", nameBuffer, 50, ImGuiInputTextFlags_EnterReturnsTrue)) {
 				setName(nameBuffer);
 				changeName = false;
 			}
 		}		
 		ImGui::Separator();
 		
+// ================== Base ==================
+
+		ImGui::Text("Base");
+		ImGui::PushItemWidth(ImGui::GetWindowSize().x*0.3);
+		ImGui::DragFloat("##PosX", &pos.x);
+		ImGui::SameLine();
+		ImGui::DragFloat("Pos##Y", &pos.y);
+		ImGui::PopItemWidth();
+		ImGui::Separator();
+		
+// ================== Texture ==================
+
 		static bool changeTexturePath = false;
 		static char texturePathBuffer[100] = "assets/props/prop_1.png";
 		ImGui::Text("Texture");		
@@ -84,6 +98,7 @@ namespace rat {
 			setScale(scale.x, scale.y);
 		}
 		ImGui::PopItemWidth();
+		ImGui::Separator();
 	}
 	
 	void MiniObjectBackground::render(sf::RenderTexture &canvas) {
