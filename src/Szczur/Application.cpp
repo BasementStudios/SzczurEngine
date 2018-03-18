@@ -58,7 +58,7 @@ void Application::input()
 
 void Application::update()
 {
-	_modules.getModule<MiniWorld>().update();	
+	_modules.getModule<MiniWorld>().update();
 
 #ifdef EDITOR
 	ImGui::ShowDemoWindow();
@@ -79,7 +79,7 @@ void Application::update()
 
 void Application::render()
 {
-	_modules.getModule<Window>().clear(sf::Color{ 64, 96, 64 });
+	_modules.getModule<Window>().clear(sf::Color{ 64, 64, 96 });
 
 	_modules.getModule<MiniWorld>().render();
 	
@@ -87,7 +87,7 @@ void Application::render()
 	getWindow().resetGLStates();
 	ImGui::SFML::Render(getWindow());
 #endif 
-
+	
 	_modules.getModule<Window>().render();
 }
 int Application::run()

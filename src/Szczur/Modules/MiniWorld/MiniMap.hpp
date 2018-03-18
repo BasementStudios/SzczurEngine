@@ -10,6 +10,8 @@
 #include "Szczur/Modules/Window/Window.hpp"
 
 #include "Szczur/Modules/MiniWorld/MiniObject.hpp"
+#include "Szczur/Modules/MiniWorld/Objects/MiniObjectPlayer.hpp"
+#include "Szczur/Modules/MiniWorld/Objects/MiniObjectBackground.hpp"
 
 namespace rat {
 
@@ -18,49 +20,34 @@ struct MiniMap
 	// std::vector<std::unique_ptr<MiniBackgroundObject>> backgroundObjects;
 	// std::vector<std::unique_ptr<MiniPathObject>> pathObjects;
 	
-	std::vector<std::unique_ptr<MiniObject>> objects;
-	
+	std::unique_ptr<MiniObjectPlayer> player = nullptr;		
+	std::vector<std::unique_ptr<MiniObjectBackground>> background;
 	
 	Script& script;
+	Window& window;
+	Input& input;
 	
-	MiniMap(Script& script);
+	MiniMap(Script& script, Window& window, Input& input);
 	
-	// MiniBackgroundObject* newBackgroundObject();
+	MiniObjectBackground* newBackground();
 	
-	// MiniPathObject* newPathObject();
-	
-	MiniObject* newObject();
-	
-	// template <typename T>
-	// T* newObject() {		
-		// pathObjects.emplace_back(new MiniPathObject);
-		// pathObjects.back()->prepare(script);
-		// pathObjects.back()->loadScript("scripts/obj_1.lua");
-		// return pathObjects.back().get();
-	// }
-	
-	void render(sf::RenderTexture &canvas);
-	
+	void init();
 	void update();
+	void render(sf::RenderTexture &canvas);	
 		
 #ifdef EDITOR
-	int objectType = 0;
-	int selectedObjectId = -1;
-	bool objectEditorIsOpen = true;	
-	MiniObject* draggedObject;
-	MiniObject* hoveredObject;
-	MiniObject* selectedObject;
+	// int objectType;
+	MiniObject* selectedObject = nullptr;
+	MiniObject* hoveredObject = nullptr;
+	MiniObject* draggedObject = nullptr;
 	
-	void editorObjectsList();
-	void editorObjectEditor();
-	void editorDragAndDrop(Window& window, Input& input);
-	void editorComponentsChanger();
-	void editorDrawObjectFrame(sf::RenderTexture &canvas, MiniObject* object, int state);
+	int element = -1;
+	int group = -1; //0:Single, 1:Scene, 2:Background
 	
-	//////////////////// EDITOR THINGS ////////////////////	
-	void ET_mapPanel();
-	void ET_popupOnList(MiniObject* object);
-	//////////////////// ---EDITOR THINGS--- ////////////////////
+	void editor();
+	void editorRender(sf::RenderTexture& canvas);
+	void editorHoveredUpdate(const sf::Vector2f& point);
+	void editorDragAndDrop();
 	
 #endif
 
