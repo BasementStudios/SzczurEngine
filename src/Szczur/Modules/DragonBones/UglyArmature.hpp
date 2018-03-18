@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+#include <dragonBones/animation/Animation.h>
 #include <dragonBones/SFMLArmatureDisplay.h>
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -49,6 +50,9 @@ public:
 		{ this->display->getArmature()->setFlipY(value); }
 	bool getFlipY() const 
 		{ return this->display->getArmature()->getFlipY(); }
+
+	dragonBones::Animation* getAnimation()
+		{ return this->display->getAnimation(); }
 
 
 

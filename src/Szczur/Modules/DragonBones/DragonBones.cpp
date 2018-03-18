@@ -51,43 +51,27 @@ void DragonBones::update(float deltaTime)
 /// createArmature
 UglyArmature* DragonBones::createArmature(const std::string& name)
 {
-	LOG_INFO("skeleData : Assets/Objects/" + name + "/skeleton.json");
-	auto skeletonData = this->factory.loadDragonBonesData("Assets/Objects/" + name + "/skeleton.json");
+    LOG_INFO("Assets/Objects/" + name + "/skeleton.json");
+	auto skeletonData = factory.loadDragonBonesData("Assets/Objects/" + name + "/skeleton.json");
 
-	if (!skeletonData) {
-		LOG_ERROR("skeletdat fail");
-		return nullptr;
-	}
+    LOG_INFO("Assets/Objects/" + name + "/texture.png");
+	auto tex1 = new sf::Texture();
+    if (!tex1->loadFromFile("Assets/Objects/" + name + "/texture.png"))
+    {
+        LOG_ERROR("CAnnot!");
+    }
 
-	LOG_INFO("texFolder : Assets/Objects/" + name + "/textures");
-	auto texturesData = this->factory.getTexturesData(skeletonData, "Assets/Objects/" + name + "/textures");
+	LOG_INFO("Assets/Objects/" + name + "/atlas.json");
+    auto tex = factory.loadTextureAtlasData("Assets/Objects/" + name + "/atlas.json", tex1);
 
-	for (auto& textureData : texturesData) {
-		auto tex = new sf::Texture();
-		if (!tex->loadFromFile(textureData->path)) {
-			LOG_ERROR("brak tex ", textureData->path);
-			return nullptr;
-		}
-		textureData->setTexture(tex);
-	}
+    if (!tex)
+        LOG_INFO("Err");
 
-	auto textureAtlasData = this->factory.createTextureAtlasData(texturesData, skeletonData);
+    auto armatureDisplay = factory.buildArmatureDisplay(name);
 
-	if (textureAtlasData == nullptr) {
-		LOG_ERROR("texatlasdat fail");
-		return nullptr;
-	}
+    LOG_INFO("Loaded!");
 
-	auto sfmldisplay = this->factory.buildArmatureDisplay(name);
-
-	if (!sfmldisplay) {
-		LOG_ERROR("sfmldisp fail");
-		return nullptr;
-	}
-
-	auto arm = new UglyArmature(sfmldisplay);
-
-	return arm;
+    return new UglyArmature(armatureDisplay);
 }
 
 }

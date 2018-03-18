@@ -6,7 +6,6 @@ namespace rat
 {
 
 static UglyArmature* dragon1;
-static UglyArmature* dragon2;
 static UglyArmature* cedmin;
 static UglyArmature* guard;
 
@@ -29,24 +28,18 @@ void Application::init()
 
 
 	dragon1 = _modules.getModule<DragonBones>().createArmature("Dragon");
-	dragon1->setPosition({400, 400});
+	dragon1->setPosition({400, 300});
 	dragon1->playAnimation("walk"); // fall, jump, stand, walk
-
-	//dragon2 = _modules.getModule<DragonBones>().createArmature("Dragon"); // just realized, ze tekstury sie jednak klonują tez dla każdego ;_;
-	//dragon2->setPosition({1000, 400});
-	//dragon2->playAnimation("stand"); // fall, jump, stand, walk
-	//dragon2->setFlipX(true);
+	dragon1->setFlipX(true);
 
 	guard = _modules.getModule<DragonBones>().createArmature("Guard");
-	guard->setPosition({700, 600});
+	guard->setPosition({1100, 500});
 	guard->playAnimation("oddech"); // obrot, oddech
 
 	cedmin = _modules.getModule<DragonBones>().createArmature("Cedmin");
-	LOG_INFO("co")
-	cedmin->setPosition({500, 600});
-	LOG_INFO("jest")
+	cedmin->setPosition({500, 500});
 	cedmin->playAnimation("Cedmin_Idle_008"); 
-	LOG_INFO("zle")
+	cedmin->setScale({0.34f, 0.34f});
 
 	// Cedmin_Attack_Ending, Cedmin_Attack_Ending_Fast, Cedmin_Attack_Ending_Slow, Cedmin_Attack_Ending_Slow_Frag,
 	// Cedmin_Attack_Full_003, Cedmin_Attack_Hit_023, Cedmin_Dab_On_Them, Cedmin_Dodge_3,
@@ -116,8 +109,7 @@ void Application::render()
 	}
 	#endif
 
-	getWindow().draw(*dragon1);
-	//getWindow().draw(*dragon2);
+	//getWindow().draw(*dragon1);
 	getWindow().draw(*guard);
 	getWindow().draw(*cedmin);
 
