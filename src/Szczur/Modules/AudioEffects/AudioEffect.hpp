@@ -35,5 +35,12 @@ namespace rat
             std::get<T>(_effects).cleanEffect();
         }
 
+        void cleanAllEffects()
+        {
+            cleanEffect<Equalizer>();
+            cleanEffect<Reverb>();
+            cleanEffect<Echo>();
+        }
+
     };
 }       

@@ -161,13 +161,8 @@ namespace rat
 
 	void Music::cleanEffects()
 	{
-		if(_currentPlaylistKey) {
-			auto& currentName = _playlists[_currentPlaylistKey]->getCurrentPlaying()->getName();
-			
-			cleanEffect<Equalizer>(currentName);
-			cleanEffect<Echo>(currentName);
-			cleanEffect<Reverb>(currentName);
-		}
+		if(_currentPlaylistKey)
+			_playlists[_currentPlaylistKey]->getCurrentPlaying()->getSource().cleanAllEffects();
 	}
 
 }

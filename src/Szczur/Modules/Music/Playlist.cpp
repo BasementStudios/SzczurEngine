@@ -21,8 +21,10 @@ namespace rat
 
 		if (_isFileEnding) {
 			_playlist[_currentID]->start(deltaTime, _endingFile->getFadeTime());
-			if (_endingFile->finish(deltaTime))
+			if (_endingFile->finish(deltaTime)) {
+				_endingFile->getSource().cleanAllEffects();
 				_isFileEnding = false;
+			}
 		}
 		else
 			_playlist[_currentID]->update(deltaTime);
