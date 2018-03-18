@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.1.1 ])
+$(info [ PsychoX' Makefile - version 2.2.1 ])
 
 # Special variables
 .SUFFIXES:
@@ -127,9 +127,9 @@ CXXFLAGS_DYNAMIC :=
 # Cleaning
 ifeq ($(MAKECMDGOALS),clean)
     CLEAN_FILES_CMD := rm 
-    CLEAN_FILES := "./obj/*/*.o" "./out/$(OUT_NAME)$(OUT_EXT)"
+    CLEAN_FILES := "./$(OBJ_DIR)/*/*$(OBJ_EXT)" "./out/$(OUT_NAME)$(OUT_EXT)"
     CLEAN_DIRS_CMD := rm -dr 
-    CLEAN_DIRS  := "./obj/*"
+    CLEAN_DIRS  := "./$(OBJ_DIR)/*"
 endif
 
 # Other tools
@@ -137,7 +137,7 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := SFML BOOST LUA
+LIB_LIST := SFML BOOST LUA IMGUI
 #   SFML
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
   LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
@@ -150,12 +150,17 @@ CXXFLAGS_DYNAMIC_SFML   :=
 CXXFLAGS_DYNAMIC_BOOST  :=
  LDFLAGS_DYNAMIC_BOOST  := -lboost_container-mt
  MXE_PACKAGENAME_BOOST  := boost
-#  Lua
+#   Lua
  CXXFLAGS_STATIC_LUA    :=
   LDFLAGS_STATIC_LUA    := -llua
 CXXFLAGS_DYNAMIC_LUA    :=
  LDFLAGS_DYNAMIC_LUA    := -llua
  MXE_PACKAGENAME_LUA    := lua
+#   ImGUI
+ CXXFLAGS_STATIC_IMGUI  :=
+  LDFLAGS_STATIC_IMGUI  := -limgui
+CXXFLAGS_DYNAMIC_IMGUI  :=
+ LDFLAGS_DYNAMIC_IMGUI  := -limgui
 
 # Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
 FILES_DYNAMIC_SFML := openal32.dll sfml*
@@ -174,7 +179,7 @@ MARKERS := @todo @warn @err @debug
 # Dependencies finding
 DEPFLAGS := -MT $$@ -MMD -MP -MF 
 DEP_EXT := .d
-DEP_TMP := .tmp
+DEP_TMP_UPDATE_SUFFIX := .tmp
 
 
 
@@ -191,6 +196,17 @@ endef
 ifneq ("$(wildcard $(SETTINGS_FILE))","")
     include $(SETTINGS_FILE)
 endif
+
+
+
+#
+# Configuration normalization
+#
+
+# Normalize sources, includes and templates paths
+SRC_DIRS := $(shell realpath $(SRC_DIRS))
+INC_DIRS := $(shell realpath $(INC_DIRS))
+TEP_DIRS := $(shell realpath $(TEP_DIRS))
 
 
 
@@ -294,9 +310,6 @@ define add_lib
         # Use MXE packages
         MXE_PKGS += $(MXE_PACKAGENAME_$(1))
     else
-        # Add linking dependent flags
-        CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1))
-        LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1))
         # Add includes/libraries object directories
         ifneq ($(INC_DIR_$(1)_$(ARCH)),)
             CXXFLAGS += -I$(INC_DIR_$(1)_$(ARCH))
@@ -304,12 +317,15 @@ define add_lib
         ifneq ($(LIB_DIR_$(1)_$(ARCH)),)
             LDFLAGS  += -L$(LIB_DIR_$(1)_$(ARCH))
         endif
+        # Add linking dependent flags
+        CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1))
+        LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1))
     endif
 endef
 $(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
 
 # MXE uses pkg-config
-ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),1),1)
+ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),$(LIB_LIST),1),1)
     CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
     LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
 endif
@@ -455,8 +471,8 @@ $(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
 $(OBJECT): $(SOURCE) $(DEPENDENT)
 	$(inform_object) $$@
 	$(V)$(MKDIR) `dirname $$@`
-	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP)
-	$(V)mv -f $(DEPENDENT)$(DEP_TMP) $(DEPENDENT) && touch $$@
+	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP_UPDATE_SUFFIX)
+	$(V)mv -f $(DEPENDENT)$(DEP_TMP_UPDATE_SUFFIX) $(DEPENDENT) && touch $$@
 	$(V)$(LS) $$@
 endef
 $(foreach _, $(OBJECTS), $(eval $(call recipe,$(_))))
