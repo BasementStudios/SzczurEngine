@@ -4,6 +4,8 @@
 
 #include "Szczur/Modules/MiniWorld/Objects/MiniObjectScene.hpp"
 
+#include "Szczur/Modules/DragonBones/UglyArmature.hpp"
+
 namespace rat {
 
 struct MiniObjectPlayer : public MiniObjectScene {
@@ -12,11 +14,19 @@ struct MiniObjectPlayer : public MiniObjectScene {
 	
 	float speed = 3;
 	short int dir = 1;	
-
+	bool isRunning = false;
+	bool isAttack = false;
+	
+	int currId = -1;
+	
+	UglyArmature* armature;
+	
 	MiniObjectPlayer(Script &script, Input& input);
 	
 /////////////////////////// METHODS ///////////////////////////
 
+	void playAnimation(int id);
+	bool isMoving();
 	
 /////////////////////////// MAIN METHODS ///////////////////////////
 	void update(float deltaTime);

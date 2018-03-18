@@ -13,6 +13,7 @@
 #include "Szczur/Modules/MiniWorld/Objects/MiniObjectPlayer.hpp"
 #include "Szczur/Modules/MiniWorld/Objects/MiniObjectScene.hpp"
 #include "Szczur/Modules/MiniWorld/Objects/MiniObjectBackground.hpp"
+#include "Szczur/Modules/MiniWorld/Objects/MiniObjectCamera.hpp"
 
 namespace rat {
 
@@ -22,6 +23,7 @@ struct MiniMap
 	// std::vector<std::unique_ptr<MiniPathObject>> pathObjects;
 	
 	std::unique_ptr<MiniObjectPlayer> player = nullptr;		
+	std::unique_ptr<MiniObjectCamera> camera = nullptr;		
 	std::vector<std::unique_ptr<MiniObjectScene>> scene;
 	std::vector<std::unique_ptr<MiniObjectBackground>> background;
 	
@@ -36,6 +38,7 @@ struct MiniMap
 	MiniObjectScene* newScene();
 	MiniObjectBackground* newBackground();
 	
+	MiniObjectCamera* getCamera();
 	MiniObjectPlayer* getPlayer();
 	MiniObjectScene* getScene(const std::string& name);
 	MiniObjectBackground* getBackground(const std::string& name);

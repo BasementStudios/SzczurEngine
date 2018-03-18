@@ -7,6 +7,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Shader/Shader.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Dialog/Dialog.hpp"
 #include "Szczur/Modules/MiniWorld/MiniWorld.hpp"
@@ -43,7 +44,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, Shader, GUI, Dialog, MiniWorld> _modules;
+	ModulesHolder<Window, Input, Script, Shader, DragonBones, GUI, Dialog, MiniWorld> _modules;
 	Clock _mainClock;
 
 };

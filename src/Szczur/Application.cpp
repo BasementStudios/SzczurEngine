@@ -1,13 +1,5 @@
 #include "Application.hpp"
 
-#include "Szczur/Modules/Input/Input.hpp"
-#include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/Shader/Shader.hpp"
-#include "Szczur/Modules/GUI/GUI.hpp"
-#include "Szczur/Modules/Dialog/Dialog.hpp"
-#include "Szczur/Modules/MiniWorld/MiniWorld.hpp"
-
 namespace rat
 {
 
@@ -17,6 +9,7 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
 	_modules.initModule<Shader>();
+	_modules.initModule<DragonBones>();
 	_modules.initModule<GUI>();
 	_modules.initModule<Dialog>();
 
@@ -66,18 +59,19 @@ void Application::update()
 	_modules.getModule<MiniWorld>().update(deltaTime);
 	_modules.getModule<GUI>().update();
 	_modules.getModule<Dialog>().update();
+	_modules.getModule<DragonBones>().update(deltaTime);	
 	
 	#ifdef EDITOR
 	{
-		ImGui::ShowDemoWindow();
+		// ImGui::ShowDemoWindow();
 
-		if (ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
-			ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
-			ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-			ImGui::Checkbox("Shader composer", &_modules.getModule<Shader>().isEditorOpen); // #Stritch
-		}
-		ImGui::End();
+		// if (ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			// ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
+			// ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+			// ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+			// ImGui::Checkbox("Shader composer", &_modules.getModule<Shader>().isEditorOpen); // #Stritch
+		// }
+		// ImGui::End();
 	}
 	#endif
 

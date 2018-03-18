@@ -157,7 +157,6 @@ namespace rat {
 		static bool changeScriptPath = false;
 		ImGui::Text("Script");
 		
-		
 		if(scriptPath == "") {
 			ImGui::Text("< NO_SCRIPT >");
 			if(ImGui::Button("Add script", {120, 0})) {
@@ -171,23 +170,26 @@ namespace rat {
 				scriptPath = FileDialog::getOpenFileName("Script", ".");
 				if(scriptPath != "") runFileScript(scriptPath);
 			}
-			ImGui::SameLine();			
-			if(ImGui::Button("Remove", {120, 0})) {
-				funcOnAction = sol::function();
-				funcOnUpdate = sol::function();	
-				scriptPath = "";		
-			}
+			ImGui::SameLine();	
+		}		
+		if(ImGui::Button("Reset", {120, 0})) {
+			removeScript();
+			scriptPath = "";		
 		}
 	}
 	
 /////////////////////////// SCRIPT ///////////////////////////
+	
+	void MiniObjectScene::removeScript() {		
+		funcOnAction = sol::function();
+		funcOnUpdate = sol::function();
+	}
 
 	void MiniObjectScene::runFileScript(const std::string& filepath) {
 		auto& lua = script.get();
 		lua.set("THIS", this);
 		try {
-			funcOnAction = sol::function();
-			funcOnUpdate = sol::function();
+			removeScript();
 			lua.script_file(filepath);
 		}
 		catch(sol::error e) {
@@ -199,8 +201,7 @@ namespace rat {
 		auto& lua = script.get();
 		lua.set("THIS", this);
 		try {
-			funcOnAction = sol::function();
-			funcOnUpdate = sol::function();
+			removeScript();
 			lua.script(code);
 		}
 		catch(sol::error e) {

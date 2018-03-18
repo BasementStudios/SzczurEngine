@@ -1,5 +1,3 @@
-print("ASD")
-
 local dialog = Dialog.load("dialogs/dialog_1/dialog")
 
 -- Options 1
@@ -44,5 +42,3 @@ options.add = {
 
 dialog:startWith(1);
 dialog:play();
-
-

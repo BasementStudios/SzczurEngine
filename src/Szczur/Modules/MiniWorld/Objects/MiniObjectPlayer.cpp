@@ -1,5 +1,7 @@
 #include "MiniObjectPlayer.hpp"
 
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
+
 namespace rat {
 
 	MiniObjectPlayer::MiniObjectPlayer(Script &script, Input& input) 
@@ -7,36 +9,71 @@ namespace rat {
 		type = Types::Player;
 		
 		name = "Player";
-		loadTexture("assets/textures/player.png");
-		setScale(0.2,0.2);
+		// loadTexture("assets/textures/player.png");
+		setScale(0.1,0.1);
+		armature = modulePtr_v<DragonBones>->createArmature("Cedmin");
+		armature->playAnimation("Cedmin_Run_051");
 	}	
 	
 /////////////////////////// METHODS ///////////////////////////
 
 /////////////////////////// MAIN METHODS ///////////////////////////
 		
+	void MiniObjectPlayer::playAnimation(int id) {
+	
+	// void fadeInAnimation(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1, int layer = 0, 
+		// const std::string& group = "", dragonBones::AnimationFadeOutMode fadeOutMode = dragonBones::AnimationFadeOutMode::SameLayerAndGroup) 
+	
+		if(id == 0 && id != currId) {
+			armature->fadeInAnimation("Cedmin_Idle_008", 0.1f);
+			currId = id;
+		}
+		else if(id == 1 && id != currId) {
+			armature->fadeInAnimation("Cedmin_Run_051", 0.1f);		
+			currId = id;		
+		}
+	}
+		
 	void MiniObjectPlayer::render(sf::RenderTexture &canvas) {
 		// sprite.setTexture(texture);
-		sprite.setPosition(pos);
-		sprite.setOrigin(sprite.getLocalBounds().width/2.f, sprite.getLocalBounds().height/2.f);
-		sprite.setScale(scale.x*dir, scale.y);
-		canvas.draw(sprite);
+		// sprite.setPosition(pos);
+		// sprite.setOrigin(sprite.getLocalBounds().width/2.f, sprite.getLocalBounds().height/2.f);
+		// sprite.setScale(scale.x*dir, scale.y);
+		// canvas.draw(sprite);
+		
+		armature->setPosition(pos);
+		armature->setScale(scale);
+		
+		if(isRunning) {
+			playAnimation(1);
+		}
+		else {
+			playAnimation(0);
+		}		
+		
+		armature->setFlipX(dir==-1);
+		canvas.draw(*armature);
 	}
 	
 	void MiniObjectPlayer::update(float deltaTime) {
+		isRunning = false;
 		if(input.getManager().isKept(Keyboard::Left)) {
 			pos.x -= speed*deltaTime*60.f;
 			dir = -1;
+			isRunning = true;
 		}
 		if(input.getManager().isKept(Keyboard::Right)) {
 			pos.x += speed*deltaTime*60.f;
 			dir = 1;
+			isRunning = true;
 		}
 		if(input.getManager().isKept(Keyboard::Up)) {
 			pos.y -= speed*deltaTime*60.f;
+			isRunning = true;
 		}
 		if(input.getManager().isKept(Keyboard::Down)) {
 			pos.y += speed*deltaTime*60.f;
+			isRunning = true;
 		}
 		if(funcOnUpdate.valid()) funcOnUpdate(this);
 	}
@@ -55,12 +92,16 @@ namespace rat {
 	
 /////////////////////////// SCRIPT ///////////////////////////
 
+	
+	bool MiniObjectPlayer::isMoving() {
+		return isRunning;
+	}
+
 	void MiniObjectPlayer::runFileScript(const std::string& filepath) {
 		auto& lua = script.get();
 		lua.set("THIS", this);
 		try {
-			funcOnAction = sol::function();
-			funcOnUpdate = sol::function();
+			removeScript();
 			lua.script_file(filepath);
 		}
 		catch(sol::error e) {
@@ -73,8 +114,7 @@ namespace rat {
 		auto& lua = script.get();
 		lua.set("THIS", this);
 		try {
-			funcOnAction = sol::function();
-			funcOnUpdate = sol::function();
+			removeScript();
 			lua.script(code);
 		}
 		catch(sol::error e) {
@@ -99,7 +139,9 @@ namespace rat {
 		object.set("_onAction", &MiniObjectScene::funcOnAction);
 		object.set("_onUpdate", &MiniObjectScene::funcOnUpdate);
 		
-		// Scene		
+		// Player		
+		object.set("playAnimation", &MiniObjectPlayer::playAnimation);
+		object.set("isMoving", &MiniObjectPlayer::isMoving);
 		object.set("speed", &MiniObjectPlayer::speed);
 		
 		object.init();

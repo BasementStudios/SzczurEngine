@@ -11,6 +11,7 @@ namespace rat {
 		LOG_INFO(this, " : Module MiniWorld constructed");
 		auto& window = getModule<Window>().getWindow();
 		canvas.create(window.getSize().x, window.getSize().y);
+		editorCanvas.create(window.getSize().x, window.getSize().y);
 		initScript();
 	}
 	
@@ -47,13 +48,18 @@ namespace rat {
 	void MiniWorld::render() {
 		canvas.clear(sf::Color::Transparent);
 		map->render(canvas);
+		canvas.display();
+		getModule<Window>().getWindow().draw(sf::Sprite(canvas.getTexture()), gVar->get<sf::Shader*>("test_shader"));
 		
 #ifdef EDITOR
-		if(drawMapEditor) map->editorRender(canvas);
+		if(drawMapEditor) { 
+			editorCanvas.clear(sf::Color::Transparent);
+			map->editorRender(editorCanvas);	
+			editorCanvas.display();
+			getModule<Window>().getWindow().draw(sf::Sprite(editorCanvas.getTexture()));	
+		}
 #endif
 		
-		canvas.display();
-		getModule<Window>().getWindow().draw(sf::Sprite(canvas.getTexture()));
 	}
 	
 	void MiniWorld::init() {
@@ -103,10 +109,12 @@ namespace rat {
 		}
 		ImGui::Checkbox("Map editor", &drawMapEditor);
 		
+		ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
+		ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+		
 		ImGui::End();
 		
-		getModule<Shader>().isEditorOpen = toolShaders;
-		
+		getModule<Shader>().isEditorOpen = toolShaders;		
 		if(toolConsole) editorToolConsole();
 	}
 	
@@ -116,7 +124,7 @@ namespace rat {
 		// ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, 5.0f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
 		// ImGui::SetNextWindowBgAlpha(0.5f);  
 
-		ImGui::Begin("Script console", nullptr, ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Begin("Script console", nullptr, ImGuiWindowFlags_NoTitleBar);
 		
 		static int scriptTarget = 0;
 		static int scriptType = 0;
@@ -185,6 +193,7 @@ namespace rat {
 			ImGui::Text("Path to file with script:");
 			if(ImGui::Button("Load script...", {180, 0})) {
 				std::string foundedPath = FileDialog::getOpenFileName("Script", ".");
+				std::cout<<foundedPath<<std::endl;
 				if(foundedPath != "") {
 					if(scriptTarget == 0) {
 						map->runFileScript(foundedPath);

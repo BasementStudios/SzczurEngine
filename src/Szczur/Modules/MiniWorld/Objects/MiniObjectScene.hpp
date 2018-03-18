@@ -33,6 +33,7 @@ struct MiniObjectScene : public MiniObject {
 	bool isCollision(const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Vector2f& offset);
 	void action();
 	void renderCollider(sf::RenderTexture& canvas);
+	void removeScript();
 	
 /////////////////////////// MAIN METHODS ///////////////////////////
 	virtual void update(float deltaTime);

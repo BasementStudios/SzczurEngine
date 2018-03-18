@@ -14,6 +14,7 @@ Shader::Shader()
 		auto p = gVar->get<sf::Texture*>("templates");
 		p->loadFromImage(img);
 		previewRTex.create(p->getSize().x, p->getSize().y);
+		gVar->create<sf::Shader*>("test_shader", nullptr);
 	}
 	#endif
 
@@ -106,6 +107,7 @@ void Shader::update()
 							shaderName = info[v].name.data();
 							shaderIndex = v;
 							onLoad();
+							gVar->set("test_shader", info[v].ptr);
 						}
 					}
 					ImGui::EndCombo();
@@ -174,7 +176,6 @@ void Shader::update()
 						}
 						break;
 					}
-
 				}
 				ImGui::Columns();
 			}

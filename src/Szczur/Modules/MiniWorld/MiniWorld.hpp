@@ -26,6 +26,7 @@ struct MiniWorld : public Module<Window, Input, Script, Shader>
 	MiniMap* map = nullptr; // <<< current map
 	
 	sf::RenderTexture canvas;
+	sf::RenderTexture editorCanvas;
 	
 	MiniWorld();
 	
@@ -51,7 +52,7 @@ struct MiniWorld : public Module<Window, Input, Script, Shader>
 	bool toolConsole = false;	
 	void editorToolConsole();
 	
-	bool drawMapEditor = true;
+	bool drawMapEditor = false;
 	void editor();
 #endif
 };

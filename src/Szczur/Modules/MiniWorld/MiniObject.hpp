@@ -11,7 +11,7 @@ namespace rat {
 struct MiniObject {
 
 	enum Types {
-		Null, Scene, Background, Player
+		Null, Scene, Background, Player, Camera
 	};
 	
 	Types type{Types::Null};

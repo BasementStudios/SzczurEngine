@@ -11,6 +11,8 @@ namespace rat {
 	
 	void MiniMap::init() {
 		player.reset(new MiniObjectPlayer(script, input));
+		camera.reset(new MiniObjectCamera(script, input));
+		camera->setTarget(player->pos);
 	}
 	
 	MiniObjectScene* MiniMap::newScene() {
@@ -25,6 +27,10 @@ namespace rat {
 	
 	MiniObjectPlayer* MiniMap::getPlayer() {		
 		return player.get();
+	}
+	
+	MiniObjectCamera* MiniMap::getCamera() {		
+		return camera.get();
 	}
 	
 	MiniObjectScene* MiniMap::getScene(const std::string& name) {
@@ -67,6 +73,7 @@ namespace rat {
 	}	
 	
 	void MiniMap::update(float deltaTime) {
+		if(pause) return;
 		time += deltaTime;
 		player->update(deltaTime);
 		bool waitForAction = true;
@@ -100,8 +107,9 @@ namespace rat {
 		}
 		for(auto& obj : scene) {
 			obj->render(canvas);
-		}		
+		}
 		player->render(canvas);
+		camera->render(canvas);
 	}
 
 /////////////////////////////////////////// SCRIPT ///////////////////////////////////////////
@@ -163,6 +171,7 @@ namespace rat {
 		}
 		drawFrame(player.get());
 		player->renderCollider(canvas);
+		camera->editorRender(canvas);
 	}	
 
 	void MiniMap::editor() {		
@@ -171,11 +180,11 @@ namespace rat {
 		
 		// Adding objects
 		ImGui::Text("Add new object:");
-		if(ImGui::Button("Scene##Button", {80, 0})) {
+		if(ImGui::Button("Scene##Button", {90, 0})) {
 			newScene();
 		}
 		ImGui::SameLine();
-		if(ImGui::Button("Background##Button", {80, 0})) {
+		if(ImGui::Button("Background##Button", {90, 0})) {
 			newBackground();
 		}		
 
@@ -204,6 +213,7 @@ namespace rat {
 
 		if(ImGui::TreeNode("Single")) {
 			makeTreeSection(player.get(), 0, 0);
+			makeTreeSection(camera.get(), 0, 1);
 			
 			ImGui::TreePop();
 		}
