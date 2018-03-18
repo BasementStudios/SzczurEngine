@@ -72,14 +72,14 @@ void Window::setTitle(const std::string& title)
 /// Constructors
 Window::Window()
 {
-	LOG_INFO(this, ": World module initializing");
+	LOG_INFO(this, ": Window module initializing");
 	this->init();
-	LOG_INFO(this, ": World module initialized");
+	LOG_INFO(this, ": Window module initialized");
 }
 /// Deconstructor
 Window::~Window()
 {
-	LOG_INFO(this, ": World module destructed");
+	LOG_INFO(this, ": Window module destructed");
 }
 
 

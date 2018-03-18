@@ -9,9 +9,10 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "ObjectType.hpp"
 #include "Map.hpp"
 
@@ -20,19 +21,21 @@ namespace rat {
 /** @class World
  ** @description Manages objects in the game world through the maps system, including loading and saving, object types management and other.
  **/
-class World : public Module<Window>
+class World : public Module<Window, DragonBones>
 {
     using Module::Module;
 
 
 	
     /* Variables */
-private:
-    std::vector<ObjectType*> types; // @todo , Use some better container; (std::list?)
+public: // @warn priv&prop
+    std::vector<ObjectType*> types;
 	
 	std::vector<Map>	maps;
-	Map* 				currentMap;
+	Map* 				currentMap = nullptr;
 	
+	Object*				playerObject = nullptr;
+
 
 
 	/* Operators */

@@ -12,6 +12,7 @@
 #define LOG_INFO_IF_CX(...)
 #define LOG_WARN_IF_CX(...)
 #define LOG_ERROR_IF_CX(...)
+#define LOG_EXCEPTION(...)
 #define IF_EDITOR if constexpr(false)
 
 #else
@@ -21,6 +22,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string_view>
+#include <exception>
+#include <stdexcept>
 
 #include "Szczur/CompilerPortability.hpp"
 #include "Szczur/ImGui.hpp"
@@ -36,19 +39,39 @@ class DebugLogger
 public:
 
 	template <typename... Ts>
-	void log(const char* file, int line, Ts&&... args)
+	void log(const char* filePath, int line, Ts&&... args)
 	{
 		_formatTime("%H:%M:%S");
 
-		std::string_view view = file;
-		view = view.substr(view.find_last_of(DIRECTORY_SEPARATOR_CHAR) + 1);
+		std::string_view filePathView = filePath;
+		
+		// Remove local path to make relative
+		static const char* localPath = __FILE__;
+		std::string_view localPathView = localPath; 
+		filePathView = filePathView.substr(localPathView.length() - 9);
 
 		_logFile.open(_logFilePath, std::ios::app);
-		_logFile << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;
+		_logFile << '[' << _buffer << ']' << ' ' << '[' << filePathView << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;
 		_logFile.close();
 
-		std::cerr << '[' << _buffer << ']' << ' ' << '[' << view << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n' << std::flush;
+		std::cerr << '[' << _buffer << ']' << ' ' << '[' << filePathView << ':' << line << ']' << ' '; (std::cerr << ... << std::forward<Ts>(args)); std::cerr << '\n' << std::flush;
 	}
+
+	void log_exception(const std::exception& e, unsigned int level =  0)
+	{
+		if (level == 0) {
+			log("", 0, "[EXCEPTION]");
+		}
+		log("", 0, std::string(level * 2, ' '), e.what());
+		try {
+			std::rethrow_if_nested(e);
+		} 
+		catch(const std::exception& E) {
+			log_exception(E, level + 1);
+		} 
+		catch(...) {}
+	}
+
 
 private:
 
@@ -77,6 +100,7 @@ inline DebugLogger* logger = nullptr;
 #define LOG_INFO(...) { rat::detail::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
 #define LOG_WARN(...) { rat::detail::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
 #define LOG_ERROR(...) { rat::detail::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
+#define LOG_EXCEPTION(e) { rat::detail::logger->log_exception(e); }
 #define LOG_INFO_IF(condition, ...) { if (condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARN_IF(condition, ...) { if (condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF(condition, ...) { if (condition) LOG_ERROR(__VA_ARGS__) }

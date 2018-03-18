@@ -11,9 +11,9 @@
 
 #include <dragonBones/SFMLArmatureDisplay.h>
 #include <dragonBones/model/DragonBonesData.h>
-#include <dragonBones/model/TextureAtlasData.h>
-
 #include <SFML/Graphics/Texture.hpp>
+#include <dragonBones/SFMLTextureData.h>
+#include <dragonBones/SFMLTextureAtlasData.h>
 
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/Object.hpp"
@@ -41,7 +41,7 @@ public:
 protected:
 	constexpr static auto	armaturesAssetsPath	= "Assets/Objects/";
 	constexpr static auto	skeletonDataPath	= "/skeleton.json";
-	constexpr static auto 	texturesPathPrefix	= "/texture_";
+	constexpr static auto 	texturesPathPrefix	= "/textures/";
 	constexpr static auto 	texturesPathSuffix	= ".png";
 	
 	
@@ -52,7 +52,7 @@ protected:
 	dragonBones::DragonBonesData*				skeletonData;
 	std::vector<sf::Texture>					textures; // @todo . dynarray instead of vector
 	std::vector<dragonBones::SFMLTextureData*>	texturesData; // @todo . dynarray instead of vector
-	dragonBones::TextureAtlasData*				atlasData;
+	dragonBones::SFMLTextureAtlasData*			atlasData;
 
 
 

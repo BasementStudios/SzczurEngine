@@ -10,7 +10,6 @@
 
 #include <dragonBones/SFMLFactory.h>
 
-#include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Debug.hpp"
 
@@ -20,7 +19,7 @@ namespace rat
 /** @class DragonBones
  ** @description Provide access to DragonBones armature animation engine.
  **/
-class DragonBones : public Module<World>
+class DragonBones : public Module<>
 { 
 	/* Types */
 public:

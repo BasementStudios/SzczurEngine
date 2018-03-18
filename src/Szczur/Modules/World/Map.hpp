@@ -22,7 +22,7 @@ namespace rat {
 class Map : public sf::Drawable
 {
 	/* Variables */
-private:
+public: // @warn priv&prop
 	std::vector<Object*>	sceneObjects;
 	sf::RenderStates		sceneRenderStates	{sf::RenderStates::Default};
 

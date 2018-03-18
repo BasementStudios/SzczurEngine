@@ -59,7 +59,7 @@ SpriteObjectType::StateID_t SpriteObjectType::getStateID(const std::string& stat
 /// Origin
 const Object::Vector_t SpriteObjectType::getOrigin(const SpriteObjectType::StateID_t& stateID) const
 {
-	if (this->statesDetails.size() < stateID) {
+	if (this->statesDetails.size() > stateID) {
 		return this->statesDetails[stateID].origin;
 	}
 	// Fallback
@@ -71,7 +71,7 @@ const Object::Vector_t SpriteObjectType::getOrigin(const SpriteObjectType::State
 /// Vertices
 const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(const SpriteObjectType::StateID_t& stateID) const
 {
-	if (this->statesDetails.size() < stateID) {
+	if (this->statesDetails.size() > stateID) {
 		return this->statesDetails[stateID].vertices;
 	}
 	// Fallback
@@ -86,14 +86,16 @@ const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(const SpriteObject
 /// Constructor 
 SpriteObjectType::SpriteObjectType(const std::string& typeName)
 {
+	this->name = typeName;
+
 	try {
 		// Load texture file
-		if (!this->texture.loadFromFile(SpriteObjectType::spritesAssetsPath + typeName + SpriteObjectType::textureFilePath)) {
+		if (!this->texture.loadFromFile(SpriteObjectType::spritesAssetsPath + this->name + SpriteObjectType::textureFilePath)) {
 			throw std::runtime_error("Cannot load texture file.");
 		}
 		
 		// Open config file
-		std::ifstream configFile(SpriteObjectType::spritesAssetsPath + typeName + SpriteObjectType::configFilePath);
+		std::ifstream configFile(SpriteObjectType::spritesAssetsPath + this->name + SpriteObjectType::configFilePath);
 		json configJSON;
 		configFile >> configJSON;
 
@@ -113,16 +115,21 @@ SpriteObjectType::SpriteObjectType(const std::string& typeName)
 				origin.x = it.value();
 			}
 			if (auto it = detailsJSON.find("oY"); it != detailsJSON.end()) {
-				origin.x = it.value();
+				origin.y = it.value();
 			}
 
 			// Load texture rect
 			sf::IntRect rect {0, 0, 0, 0};
 			if (auto it = detailsJSON.find("lX"); it != detailsJSON.end()) {
 				rect.width = it.value();
+			} else {
+				rect.width = texture.getSize().x;
 			}
 			if (auto it = detailsJSON.find("lY"); it != detailsJSON.end()) {
 				rect.height = it.value();
+			} else {
+				// For default, assume there are equal state frames spanning height...
+				rect.top =  texture.getSize().y / statesJSON.size();
 			}
 			if (auto it = detailsJSON.find("pX"); it != detailsJSON.end()) {
 				rect.left = it.value();
@@ -130,7 +137,7 @@ SpriteObjectType::SpriteObjectType(const std::string& typeName)
 			if (auto it = detailsJSON.find("pY"); it != detailsJSON.end()) {
 				rect.top = it.value();
 			} else {
-				// For default, assume there are equal state frames spanning height.
+				// ...and use equal interval
 				rect.top =  statesCount * (texture.getSize().y / statesJSON.size());
 			}
 
@@ -145,7 +152,7 @@ SpriteObjectType::SpriteObjectType(const std::string& typeName)
 		}
 	}
 	catch (...) {
-		std::throw_with_nested(std::runtime_error("Could not load sprite object type: `" + typeName + "`."));
+		std::throw_with_nested(std::runtime_error("Could not load sprite object type: `" + this->name + "`."));
 	}
 	
 	LOG_INFO("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ", 

@@ -9,6 +9,7 @@ void Application::init()
 {
 	_modules.initModule<Window>();
 	_modules.initModule<Input>();
+	_modules.initModule<DragonBones>();
 	_modules.initModule<World>();
 }
 
@@ -25,8 +26,10 @@ void Application::input()
 	}
 }
 
-void Application::update()
+void Application::update(float deltaTime)
 {
+	_modules.getModule<DragonBones>().update(deltaTime);
+	
 	_modules.getModule<Input>().getManager().finishLogic();
 }
 
@@ -42,12 +45,22 @@ void Application::render()
 
 int Application::run()
 {
-	init();
+	try {
+		// Initialize modules
+		init();
+		sf::Clock sclock;
+		float deltaTime;
 
-	while (getWindow().isOpen()) {
-		input();
-		update();
-		render();
+		// Main game loop
+		while (getWindow().isOpen()) {
+			deltaTime = sclock.restart().asSeconds();
+			input();
+			update(deltaTime);
+			render();
+		}
+	}
+	catch (const std::exception& exception) {
+		LOG_EXCEPTION(exception);
 	}
 
 	return 0;

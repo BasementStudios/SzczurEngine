@@ -70,6 +70,7 @@ ArmatureObject::ArmatureObject(
 	: Object::Object((ObjectType*)type, name, position, speed)
 {
 	this->poses = this->getArmatureType()->createPoses();
+	this->getCurrentPose()->getAnimation()->play("walk");
 }
 
 

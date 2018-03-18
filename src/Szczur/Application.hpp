@@ -32,7 +32,7 @@ public:
 
 	void input();
 
-	void update();
+	void update(float deltaTime);
 
 	void render();
 
@@ -42,7 +42,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, World> _modules;
+	ModulesHolder<Window, Input, DragonBones, World> _modules;
 	Clock _mainClock;
 
 };

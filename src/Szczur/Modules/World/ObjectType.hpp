@@ -20,7 +20,7 @@ public:
 
 	/* Fields */
 public:
-	const std::string name;
+	std::string name;
 };
 
 }

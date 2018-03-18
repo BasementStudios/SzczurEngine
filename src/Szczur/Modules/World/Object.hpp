@@ -22,7 +22,7 @@ namespace rat
  ** @description Base class for in-game objects.
  **/
 class Object : public sf::Drawable
-{   
+{
 	/* Types */
 public:
 	using Vector_t = sf::Vector2f;
@@ -66,7 +66,7 @@ public:
 
 
     /* Operators */
-protected:
+public:
 	/** @constructor Full
 	 ** @note Non-public to avoid use of base class.
 	 **/

@@ -23,7 +23,6 @@ const DragonBones::Factory_t& DragonBones::getFactory() const
 }
 
 
-
 /* Methods */
 /// init
 void DragonBones::init()

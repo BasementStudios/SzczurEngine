@@ -13,6 +13,9 @@
 #include <vector>
 #include <fstream>
 
+#include <dragonBones/SFMLTextureData.h>
+#include <dragonBones/SFMLTextureAtlasData.h>
+
 #include "Szczur/JSON.hpp"
 #include "Szczur/Debug.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
@@ -56,28 +59,34 @@ const std::vector<std::string>& ArmatureObjectType::getPosesNames() const
 ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonBones::Factory_t& factory)
 	: factory(factory)
 {
+	this->name = typeName;
+	
 	try {
-		// Load skeleton data
-		this->skeletonData = this->factory.loadDragonBonesData(ArmatureObjectType::armaturesAssetsPath + typeName + ArmatureObjectType::skeletonDataPath);
+		// @todo multi-atlas 
 
+		// Load skeleton data
+		this->skeletonData = this->factory.loadDragonBonesData(ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::skeletonDataPath, this->name);
+		
 		if (this->skeletonData == nullptr) {
 			throw std::runtime_error("Could not load armature skeleton data.");
 		}
 
 		// Load textures data
+		this->textures.reserve(99);
 		for(auto& armatures : this->skeletonData->armatures) {
 			for (auto& skins : armatures.second->skins) {
 				for (auto& displays : skins.second->displays) {
 					for (auto display : displays.second) {
 						// Load the information
-						auto textureData = new dragonBones::SFMLTextureData();
+						auto textureData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureData>();
 						this->texturesData.push_back(textureData);
 						textureData->rotated = false; 
 						textureData->name = display->name;
 						
 						// Load the texture
 						auto& texture = this->textures.emplace_back();
-						if (!texture.loadFromFile(ArmatureObjectType::armaturesAssetsPath + typeName + ArmatureObjectType::texturesPathPrefix + display->path + ArmatureObjectType::texturesPathSuffix)) {
+						LOG_INFO(ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::texturesPathPrefix + display->path + ArmatureObjectType::texturesPathSuffix);
+						if (!texture.loadFromFile(ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::texturesPathPrefix + display->path + ArmatureObjectType::texturesPathSuffix)) {
 							throw std::runtime_error("Could not load armature texture: `" + display->path + "`.");
 						}
 						textureData->setTexture(&texture);	
@@ -85,28 +94,34 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 				}
 			}
 		}
-
+		
 		// Setup atlas data
+		this->atlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
 		this->atlasData->name = this->skeletonData->name;
 		for (auto& textureData : this->texturesData) {
 			textureData->parent = this->atlasData;
 			this->atlasData->addTexture(textureData);
 		}
+		this->factory.addTextureAtlasData(this->atlasData, this->name);
 	}
 	catch (...) {
-		std::throw_with_nested(std::runtime_error("Could not load armature object type: `" + typeName + "`."));
+		std::throw_with_nested(std::runtime_error("Could not load armature object type: `" + this->name + "`."));
 	}
 	
 	// @todo , togglable states? (grouped textures and visibility switching)?
 	
 	LOG_INFO("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", 
-		"Loaded ", this->getPosesNames().size(), " armature poses and ", this->textures.size(), "textures.");
+		"Loaded ", this->getPosesNames().size(), " armature poses and ", this->textures.size(), " textures.");
+	//LOG_INFO(this->skeletonData->armatureNames.back());
 }
 
 ArmatureObjectType::~ArmatureObjectType()
 {
 	this->factory.removeDragonBonesData(this->skeletonData->name);
 	this->factory.removeTextureAtlasData(this->atlasData->name);
+	for (auto& textureData : this->texturesData) {
+		textureData->returnToPool();
+	}
 }
 
 
