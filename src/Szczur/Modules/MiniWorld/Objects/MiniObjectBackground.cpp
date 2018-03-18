@@ -6,6 +6,7 @@ namespace rat {
 
 	MiniObjectBackground::MiniObjectBackground(Script &script) 
 		: MiniObject(script) {
+		type = Types::Background;
 		// loadTexture("assets/characters/char_1.png"
 		// texture.loadFromFile("assets/characters/char_1.png");
 		// spr.setTexture(tex);
@@ -103,6 +104,14 @@ namespace rat {
 		}
 		ImGui::PopItemWidth();
 		ImGui::Separator();
+		
+	// Parallax effect
+	
+		ImGui::Text("Parallax effect");		
+		ImGui::PushItemWidth(ImGui::GetWindowSize().x*0.3);
+		ImGui::DragFloat("Distance", &dis, 0.1, -100, 100);
+		ImGui::PopItemWidth();
+		ImGui::Separator();
 	}
 	
 	void MiniObjectBackground::render(sf::RenderTexture &canvas) {
@@ -110,5 +119,34 @@ namespace rat {
 		sprite.setPosition(pos);
 		sprite.setOrigin(sprite.getLocalBounds().width/2.f, sprite.getLocalBounds().height/2.f);
 		canvas.draw(sprite);
+	}
+	
+	void MiniObjectBackground::render(sf::RenderTexture &canvas, const sf::Vector2f& target) {		
+		sprite.setPosition(pos);
+		sprite.setOrigin(sprite.getLocalBounds().width/2.f, sprite.getLocalBounds().height/2.f);		
+		sf::Vector2f delta = (pos - target)*dis/100.f;
+		sprite.move(delta.x, 0);
+		
+		canvas.draw(sprite);
+	}
+
+	
+/////////////////////////// SCRIPT ///////////////////////////
+	
+	void MiniObjectBackground::initScript(Script& script) {
+		auto object = script.newClass<MiniObjectBackground>("MiniObjectBackground", "MiniWorld");
+		
+		// Base
+		object.set("pos", &MiniObject::pos);
+		object.set("getName", &MiniObject::getName);
+		object.set("setName", &MiniObject::setName);
+		
+		// Background
+		object.set("loadTexture", &MiniObjectBackground::loadTexture);
+		object.set("setScale", &MiniObjectBackground::setScale);
+		object.set("runFileScript", &MiniObjectBackground::runFileScript);
+		object.set("runScript", &MiniObjectBackground::runScript);
+		
+		object.init();
 	}
 }

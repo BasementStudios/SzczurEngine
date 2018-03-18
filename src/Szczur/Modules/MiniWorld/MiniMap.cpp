@@ -4,8 +4,8 @@
 
 namespace rat {
 
-	MiniMap::MiniMap(Script& script, Window& window, Input& input) :
-		script(script), window(window), input(input) {
+	MiniMap::MiniMap(Script& script, Window& window, Input& input, bool& pause) :
+		script(script), window(window), input(input), pause(pause) {
 		init();
 	}
 	
@@ -23,33 +23,100 @@ namespace rat {
 		return background.back().get();
 	}	
 	
-	// MiniObject* MiniMap::newObject() {	
-		// objects.emplace_back(new MiniObject(script));
-		// return objects.back().get();
-	// }
+	MiniObjectPlayer* MiniMap::getPlayer() {		
+		return player.get();
+	}
+	
+	MiniObjectScene* MiniMap::getScene(const std::string& name) {
+		for(auto& obj : scene) {
+			if(obj->getName() == name) return obj.get();
+		}
+		return nullptr;
+	}
+	
+	MiniObjectBackground* MiniMap::getBackground(const std::string& name) {
+		for(auto& obj : background) {
+			if(obj->getName() == name) return obj.get();
+		}
+		return nullptr;
+	}
+	
+	sol::object MiniMap::lua_getSHD(MiniObject* object) {
+		if(object == nullptr) return sol::make_object(script.get().lua_state(), sol::nil);
+		if(object->type == MiniObject::Player) {
+			return sol::make_object(script.get().lua_state(), player.get());
+		}
+		else if(object->type == MiniObject::Scene) {
+			return sol::make_object(script.get().lua_state(), 
+				dynamic_cast<MiniObjectScene*>(object));
+		}
+		else if(object->type == MiniObject::Background) {
+			return sol::make_object(script.get().lua_state(), 
+				dynamic_cast<MiniObjectBackground*>(object));
+		}
+		return sol::make_object(script.get().lua_state(), sol::nil);
+	}
+	sol::object MiniMap::lua_getSelected() {
+		return lua_getSHD(selectedObject);
+	}
+	sol::object MiniMap::lua_getHovered() {
+		return lua_getSHD(hoveredObject);		
+	}
+	sol::object MiniMap::lua_getDragged() {
+		return lua_getSHD(draggedObject);		
+	}	
 	
 	void MiniMap::update(float deltaTime) {
 		time += deltaTime;
 		player->update(deltaTime);
+		bool waitForAction = true;
 		for(auto& obj : scene) {
 			obj->update(deltaTime);
 			// sf::Vector2f tempSize(player->colliderSize.x/2.f, player->colliderSize.y/2.f);
-			if(obj->isCollision(player->pos - player->colliderSize/2.f, player->colliderSize, player->colliderPos)) {
-				ImGui::Begin("Collision!", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-				ImGui::Text("Yup! That's collision.");
-				ImGui::End();
+			if(input.getManager().isPressed(Keyboard::Space)) {
+				if(waitForAction && obj->isCollision(player->pos - player->colliderSize/2.f, player->colliderSize, player->colliderPos)) {
+					if(obj->funcOnAction.valid()) {
+						obj->action();
+						waitForAction = false;
+					}
+				}
+				// ImGui::Begin("Collision!", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+				// ImGui::Text("Yup! That's collision.");
+				// ImGui::End();
 			}
 		}
 	}
 	
 	void MiniMap::render(sf::RenderTexture &canvas) {
-		for(auto& obj : background) {
-			obj->render(canvas);
+		if(pause) {
+			for(auto& obj : background) {
+				obj->render(canvas);
+			}
+		}
+		else {
+			for(auto& obj : background) {
+				obj->render(canvas, player->pos);
+			}		
 		}
 		for(auto& obj : scene) {
 			obj->render(canvas);
 		}		
 		player->render(canvas);
+	}
+
+/////////////////////////////////////////// SCRIPT ///////////////////////////////////////////
+	
+	void MiniMap::initScript(Script& script) {
+		auto object = script.newClass<MiniMap>("MiniMap", "MiniWorld");
+		object.set("getSelectedObject", &MiniMap::lua_getSelected);
+		object.set("getHoveredObject", &MiniMap::lua_getHovered);
+		object.set("getDraggedObject", &MiniMap::lua_getDragged);
+		object.set("newBackground", &MiniMap::newBackground);
+		object.set("newScene", &MiniMap::newScene);
+		object.set("getPlayer", &MiniMap::getPlayer);
+		object.set("getScene", &MiniMap::getScene);
+		object.set("getBackground", &MiniMap::getBackground);
+		object.init();
 	}
 
 /////////////////////////////////////////// EDITOR ///////////////////////////////////////////

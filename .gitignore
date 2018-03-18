@@ -1,6 +1,6 @@
 # Compiling results
 obj/
-out/
+*.exe
 
 # Configurations
 settings.mk

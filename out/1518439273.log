@@ -1,0 +1,24 @@
+[13:41:15] [Window.hpp:46] [CLASS] 0x22f788 : Object of class rat::Window constructed
+[13:41:15] [Canvas.hpp:71] [CLASS] 0x22f770 : Object of class rat::Canvas constructed
+[13:41:15] [Input.hpp:89] [CLASS] 0x22f998 : Object of class rat::Input constructed
+[13:41:15] [FallbackAsset.tpp:8] [INFO] 0x22fb80 : Created fallback asset of type sf::SoundBuffer
+[13:41:15] [FallbackAsset.tpp:8] [INFO] 0x22fba0 : Created fallback asset of type sf::Music
+[13:41:15] [FallbackAsset.tpp:8] [INFO] 0x22fbc0 : Created fallback asset of type sf::Shader
+[13:41:15] [FallbackAsset.tpp:8] [INFO] 0x22fbe0 : Created fallback asset of type sf::Texture
+[13:41:15] [FallbackAsset.tpp:8] [INFO] 0x22fc00 : Created fallback asset of type sf::Font
+[13:41:15] [Assets.hpp:57] [CLASS] 0x22fb60 : Object of class rat::Assets constructed
+[13:41:15] [Asset.tpp:8] [INFO] 0xa8f2d8 : Created asset of type sf::Texture
+[13:41:15] [AssetsManager.tpp:12] [WARN] Cannot load sf::Texture from path "null", fallback reference returned
+[13:41:15] [Asset.tpp:114] [INFO] 0xa8f2d8 : Destroyed asset of type sf::Texture
+[13:41:15] [Asset.tpp:8] [INFO] 0xa8f2f8 : Created asset of type sf::Music
+[13:41:15] [AssetsManager.tpp:12] [WARN] Cannot load sf::Music from path "null", fallback reference returned
+[13:41:15] [Asset.tpp:114] [INFO] 0xa8f2f8 : Destroyed asset of type sf::Music
+[13:41:17] [Assets.cpp:8] [CLASS] 0x22fb60 : Object of class rat::Assets destructed
+[13:41:17] [FallbackAsset.tpp:80] [INFO] 0x22fc00 : Destroyed fallback asset of type sf::Font
+[13:41:17] [FallbackAsset.tpp:80] [INFO] 0x22fbe0 : Destroyed fallback asset of type sf::Texture
+[13:41:17] [FallbackAsset.tpp:80] [INFO] 0x22fbc0 : Destroyed fallback asset of type sf::Shader
+[13:41:17] [FallbackAsset.tpp:80] [INFO] 0x22fba0 : Destroyed fallback asset of type sf::Music
+[13:41:17] [FallbackAsset.tpp:80] [INFO] 0x22fb80 : Destroyed fallback asset of type sf::SoundBuffer
+[13:41:17] [Input.cpp:8] [CLASS] 0x22f998 : Object of class rat::Input destructed
+[13:41:17] [Window.cpp:8] [CLASS] 0x22f788 : Object of class rat::Window destructed
+[13:41:17] [Canvas.cpp:8] [CLASS] 0x22f770 : Object of class rat::Canvas destructed

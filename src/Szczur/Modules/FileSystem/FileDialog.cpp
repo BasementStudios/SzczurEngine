@@ -11,7 +11,7 @@
 #include <Windows.h>
 #endif
 
-#include "Szczur/CompilerPortability.hpp"
+#include "Szczur/Portability.hpp"
 
 namespace rat
 {

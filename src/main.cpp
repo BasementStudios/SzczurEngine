@@ -11,7 +11,7 @@ int main()
 	// TURN OFF too many logs
     std::cerr.rdbuf(nullptr);
 	
-	INIT_LOGGER();
+	INIT_DEBUG();
 
 	rat::Application app;
 	return app.run();

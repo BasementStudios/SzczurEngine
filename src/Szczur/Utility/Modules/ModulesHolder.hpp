@@ -4,7 +4,7 @@
 
 #include "Module.hpp"
 #include "LazyInitializer.hpp"
-#include "Szczur/CompilerPortability.hpp"
+#include "Szczur/Portability.hpp"
 
 namespace rat
 {

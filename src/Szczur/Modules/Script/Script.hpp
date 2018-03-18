@@ -16,7 +16,7 @@ class Script : public Module<>
 {
 private:	
 	
-	sol::state _lua;	
+	sol::state _lua;
 
 public:
 
@@ -28,7 +28,7 @@ public:
 	Script& operator = (Script&&) = delete;
 
 	void init() {
-		_lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::table);
+		_lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::table, sol::lib::math);
 		initSFML();
 		initMainFunctions();
 	}
@@ -41,7 +41,8 @@ public:
 	
 	void initMainFunctions() {
 		auto script = _lua.create_table("Script");
-		script.set_function("scriptFile", &Script::scriptFile);
+		script.set_function("scriptFile", &Script::scriptFile, this);
+		script.set_function("script", &Script::script, this);
 	}
 	
 	void initSFML() {

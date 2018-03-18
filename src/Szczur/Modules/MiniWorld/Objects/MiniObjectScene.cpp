@@ -6,6 +6,7 @@ namespace rat {
 
 	MiniObjectScene::MiniObjectScene(Script &script) 
 		: MiniObject(script) {
+		type = Types::Scene;
 		
 		collider.setFillColor({180,120,180,120});
 		collider.setOutlineColor({200,140,200,200});
@@ -48,7 +49,7 @@ namespace rat {
 	}
 	
 	void MiniObjectScene::update(float deltaTime) {
-		if(funcUpdate.valid()) funcUpdate(this);
+		if(funcOnUpdate.valid()) funcOnUpdate(this, deltaTime);
 	}
 	
 	void MiniObjectScene::renderCollider(sf::RenderTexture& canvas) {
@@ -150,6 +151,33 @@ namespace rat {
 		ImGui::DragFloat("Size##ColliderY", &colliderSize.y);
 		ImGui::PopItemWidth();
 		ImGui::Separator();
+		
+// ================== Script ==================
+		
+		static bool changeScriptPath = false;
+		ImGui::Text("Script");
+		
+		
+		if(scriptPath == "") {
+			ImGui::Text("< NO_SCRIPT >");
+			if(ImGui::Button("Add script", {120, 0})) {
+				scriptPath = FileDialog::getOpenFileName("Script", ".");
+				if(scriptPath != "") runFileScript(scriptPath);
+			}
+		}
+		else {
+			ImGui::Text(scriptPath.c_str());
+			if(ImGui::Button("Change", {120, 0})) {
+				scriptPath = FileDialog::getOpenFileName("Script", ".");
+				if(scriptPath != "") runFileScript(scriptPath);
+			}
+			ImGui::SameLine();			
+			if(ImGui::Button("Remove", {120, 0})) {
+				funcOnAction = sol::function();
+				funcOnUpdate = sol::function();	
+				scriptPath = "";		
+			}
+		}
 	}
 	
 /////////////////////////// SCRIPT ///////////////////////////
@@ -158,6 +186,8 @@ namespace rat {
 		auto& lua = script.get();
 		lua.set("THIS", this);
 		try {
+			funcOnAction = sol::function();
+			funcOnUpdate = sol::function();
 			lua.script_file(filepath);
 		}
 		catch(sol::error e) {
@@ -169,6 +199,8 @@ namespace rat {
 		auto& lua = script.get();
 		lua.set("THIS", this);
 		try {
+			funcOnAction = sol::function();
+			funcOnUpdate = sol::function();
 			lua.script(code);
 		}
 		catch(sol::error e) {
@@ -176,4 +208,24 @@ namespace rat {
 			std::cout<<e.what()<<'\n'<<std::flush;
 		}
 	}
+
+	void MiniObjectScene::initScript(Script& script) {
+		auto object = script.newClass<MiniObjectScene>("MiniObjectScene", "MiniWorld");
+		
+		// Base
+		object.set("pos", &MiniObject::pos);
+		object.set("getName", &MiniObject::getName);
+		object.set("setName", &MiniObject::setName);
+		
+		// Scene
+		object.set("loadTexture", &MiniObjectScene::loadTexture);
+		object.set("setScale", &MiniObjectScene::setScale);
+		object.set("runFileScript", &MiniObjectScene::runFileScript);
+		object.set("runScript", &MiniObjectScene::runScript);
+		object.set("_onAction", &MiniObjectScene::funcOnAction);
+		object.set("_onUpdate", &MiniObjectScene::funcOnUpdate);
+		
+		object.init();
+	}
+	
 }

@@ -10,6 +10,12 @@ namespace rat {
 
 struct MiniObject {
 
+	enum Types {
+		Null, Scene, Background, Player
+	};
+	
+	Types type{Types::Null};
+	
 	std::string name = "no_name";		
 	sf::Vector2f pos{300,200};
 	Script &script;

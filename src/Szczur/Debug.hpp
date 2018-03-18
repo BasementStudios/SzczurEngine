@@ -1,10 +1,10 @@
 #pragma once
 
-#define EDITOR
-
 #if defined(NDEBUG)
 
-#define INIT_LOGGER()
+#include <SFML/System/Err.hpp>
+
+#define INIT_DEBUG() sf::err().rdbuf(nullptr)
 #define LOG_INFO(...)
 #define LOG_WARN(...)
 #define LOG_ERROR(...)
@@ -14,33 +14,46 @@
 #define LOG_INFO_IF_CX(...)
 #define LOG_WARN_IF_CX(...)
 #define LOG_ERROR_IF_CX(...)
-#define IF_EDITOR if constexpr(false)
 
 #else
 
-#include <any>
 #include <ctime>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-#include <map>
+#include <regex>
 #include <streambuf>
 #include <string>
 #include <string_view>
+#include <vector>
 
-#include "Szczur/CompilerPortability.hpp"
+#include <boost/lexical_cast.hpp>
+
+#include "Szczur/Utility/Convert/Hash.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
+
+#include "Szczur/GlobalVarsHolder.hpp"
 #include "Szczur/ImGui.hpp"
 
 namespace rat
 {
 
-namespace detail
-{
-
 class DebugLogger
 {
 public:
+
+	DebugLogger() = default;
+
+	~DebugLogger() = default;
+
+	DebugLogger(const DebugLogger&) = delete;
+
+	DebugLogger& operator = (const DebugLogger&) = delete;
+
+	DebugLogger(DebugLogger&&) = delete;
+
+	DebugLogger& operator = (DebugLogger&&) = delete;
 
 	template <typename... Ts>
 	void log(const char* file, int line, Ts&&... args)
@@ -74,25 +87,8 @@ private:
 
 inline DebugLogger* logger = nullptr;
 
-inline std::map<std::string, std::any> vars;
-
-template <typename T, typename K, typename... Ts>
-void createVar(K&& name, Ts&&... args)
+namespace detail
 {
-	vars[std::forward<K>(name)].DEPENDENT_TEMPLATE_SCOPE emplace<T>(std::forward<Ts>(args)...);
-}
-
-template <typename T, typename K>
-void setVar(K&& name, T&& arg)
-{
-	vars[std::forward<K>(name)] = std::forward<T>(arg);
-}
-
-template <typename T, typename K>
-decltype(auto) getVar(K&& name)
-{
-	return std::any_cast<T&>(vars[std::forward<K>(name)]);
-}
 
 #include "NotoMono.ttf.bin"
 
@@ -100,16 +96,19 @@ decltype(auto) getVar(K&& name)
 
 }
 
-#define INIT_LOGGER() rat::detail::DebugLogger ratDebugLogger; rat::detail::logger = &ratDebugLogger
-#define LOG_INFO(...) { rat::detail::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
-#define LOG_WARN(...) { rat::detail::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
-#define LOG_ERROR(...) { rat::detail::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
+#define INIT_DEBUG() rat::DebugLogger ratDebugLogger; rat::logger = &ratDebugLogger; rat::GlobalVarsHolder ratGlobalVarsHolder; rat::gVar = &ratGlobalVarsHolder
+#define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "[INFO] ", __VA_ARGS__); }
+#define LOG_WARN(...) { rat::logger->log(__FILE__, __LINE__, "[WARN] ", __VA_ARGS__); }
+#define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "[ERROR] ", __VA_ARGS__); }
 #define LOG_INFO_IF(condition, ...) { if (condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARN_IF(condition, ...) { if (condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF(condition, ...) { if (condition) LOG_ERROR(__VA_ARGS__) }
 #define LOG_INFO_IF_CX(condition, ...) { if constexpr (condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARN_IF_CX(condition, ...) { if constexpr (condition) LOG_WARN(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr (condition) LOG_ERROR(__VA_ARGS__) }
-#define IF_EDITOR if constexpr(true)
+
+#if defined(OS_WINDOWS)
+#	define EDITOR
+#endif
 
 #endif

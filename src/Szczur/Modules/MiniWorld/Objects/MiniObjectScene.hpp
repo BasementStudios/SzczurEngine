@@ -12,15 +12,17 @@ struct MiniObjectScene : public MiniObject {
 	sf::Texture texture;
 	sf::Sprite sprite;
 	
-	float dis = 0;
 	sf::Vector2f scale{1,1};
 	
 	sf::RectangleShape collider;
 	sf::Vector2f colliderPos{0,0};
 	sf::Vector2f colliderSize{100,100};
 	
+	std::string scriptPath;
+	bool scriptPathFlag;
+	
 	sol::function funcOnAction;
-	sol::function funcUpdate;
+	sol::function funcOnUpdate;
 	
 	void loadTexture(const std::string& path);
 	void setScale(float x, float y);
@@ -38,8 +40,9 @@ struct MiniObjectScene : public MiniObject {
 	virtual void render(sf::RenderTexture &canvas);
 	
 /////////////////////////// SCRIPT ///////////////////////////
-	void runFileScript(const std::string& filepath);		
-	void runScript(const std::string& code);
+	virtual void runFileScript(const std::string& filepath);		
+	virtual void runScript(const std::string& code);
+	static void initScript(Script& script);
 };
 	
 }

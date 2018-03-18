@@ -24,6 +24,9 @@ struct MiniObjectPlayer : public MiniObjectScene {
 	void render(sf::RenderTexture &canvas);
 	
 /////////////////////////// SCRIPT ///////////////////////////
+	void runFileScript(const std::string& filepath);		
+	void runScript(const std::string& code);
+	static void initScript(Script& script);
 };
 	
 }

@@ -29,18 +29,30 @@ struct MiniMap
 	Window& window;
 	Input& input;
 	float time = 0;
+	bool& pause;
 	
-	MiniMap(Script& script, Window& window, Input& input);
+	MiniMap(Script& script, Window& window, Input& input, bool& pause);
 	
 	MiniObjectScene* newScene();
 	MiniObjectBackground* newBackground();
 	
+	MiniObjectPlayer* getPlayer();
+	MiniObjectScene* getScene(const std::string& name);
+	MiniObjectBackground* getBackground(const std::string& name);
+	
+	sol::object lua_getSHD(MiniObject*);
+	sol::object lua_getSelected();
+	sol::object lua_getHovered();
+	sol::object lua_getDragged();
+	
 	void init();
 	void update(float deltaTime);
-	void render(sf::RenderTexture &canvas);	
+	void render(sf::RenderTexture &canvas);
+	static void initScript(Script& script);
 		
 #ifdef EDITOR
 	// int objectType;
+	
 	MiniObject* selectedObject = nullptr;
 	MiniObject* hoveredObject = nullptr;
 	MiniObject* draggedObject = nullptr;

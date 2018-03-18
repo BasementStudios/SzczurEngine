@@ -25,11 +25,15 @@ struct MiniObjectBackground : public MiniObject {
 /////////////////////////// MAIN METHODS ///////////////////////////
 	void update(float deltaTime);
 	void editor();
-	void render(sf::RenderTexture &canvas);		
+	void render(sf::RenderTexture &canvas);
+	
+	// Parallax effect
+	void render(sf::RenderTexture &canvas, const sf::Vector2f& target);
 	
 /////////////////////////// SCRIPT ///////////////////////////
 	void runFileScript(const std::string& filepath){}		
 	void runScript(const std::string& code){}
+	static void initScript(Script& script);
 };
 	
 }
