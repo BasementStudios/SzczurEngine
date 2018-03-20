@@ -2,13 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Script/Script.hpp"
-
-#include <algorithm>
-
-#include "TextWidget.hpp"
+#include "Widget.hpp"
 
 namespace rat {
+    class Script;
     class TextAreaWidget : public Widget {
     public:
         TextAreaWidget();

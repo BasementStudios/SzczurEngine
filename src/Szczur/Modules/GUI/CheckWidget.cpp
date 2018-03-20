@@ -1,5 +1,8 @@
 #include "CheckWidget.hpp"
 
+#include <string>
+#include "ImageWidget.hpp"
+
 namespace rat {
     CheckWidget::CheckWidget(sf::Texture* text1, sf::Texture* text2) :
     Widget(),

@@ -1,7 +1,4 @@
 #pragma once
-
-#include <vector>
-
 #include <SFML/Graphics.hpp>
 
 #include "Szczur/Utility/Modules/Module.hpp"
@@ -10,11 +7,9 @@
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "Widget.hpp"
-#include "ImageWidget.hpp"
-#include "TextWidget.hpp"
-#include "TextAreaWidget.hpp"
+
 #include "GuiAssetsManager.hpp"
-#include "ScrollAreaWidget.hpp"
+
 
  
 namespace rat {
@@ -29,7 +24,6 @@ namespace rat {
         void input(const sf::Event& event);
         void update(float deltaTime=1.f/60.f);
         void render();
-        void reload();
 
         Widget* addInterface();
 
@@ -40,7 +34,7 @@ namespace rat {
         void addAsset(const std::string& path);
     private:
         //std::vector<Interface*> _interfaces;
-        Widget* _root;
+        Widget _root;
         //Widget _root;
         //GuiJson _guiJson;
         BasicGuiAssetsManager _assets;

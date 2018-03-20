@@ -20,7 +20,6 @@ namespace rat {
             _assets.insert_or_assign(fnv1a_32(path.begin(), path.end()), var);
         }
         else {
-            //std::cout << "ASDASDASDASDASD\n";
             LOG_ERROR("Cannot load file: \"", path, "\"")
         }
     }

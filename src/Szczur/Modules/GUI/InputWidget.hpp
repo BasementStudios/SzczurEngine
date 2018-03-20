@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Widget.hpp"
 #include "TextWidget.hpp"
 
 namespace rat {

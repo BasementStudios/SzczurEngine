@@ -1,5 +1,9 @@
 #include "TextWidget.hpp"
 #include "Test.hpp"
+
+#include <string>
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
 namespace rat {
     TextWidget::TextWidget() :
     Widget(),
@@ -78,8 +82,8 @@ namespace rat {
         return _text.getString().getSize();
     }
 
-    const std::string& TextWidget::getString() const {
-        return _text.getString();
+    std::string TextWidget::getString() const {
+        return _text.getString().toAnsiString();
     }
 
     void TextWidget::setString(const std::string& str) {

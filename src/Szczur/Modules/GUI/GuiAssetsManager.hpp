@@ -1,9 +1,7 @@
 #pragma once
 
 #include <variant>
-#include <functional>
 #include <fstream>
-
 #include <boost/container/flat_map.hpp>
 #include <SFML/Graphics.hpp>
 

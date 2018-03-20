@@ -1,6 +1,8 @@
 #include "ScrollAreaWidget.hpp"
 #include <iostream>
+
 #include "Test.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :

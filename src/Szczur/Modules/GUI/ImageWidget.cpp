@@ -1,7 +1,9 @@
 #include "ImageWidget.hpp"
 
+#include <string>
 #include <iostream>
 #include "Test.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
     ImageWidget::ImageWidget() :

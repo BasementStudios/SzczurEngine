@@ -1,13 +1,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-
-#include <string>
-
 #include "Widget.hpp"
-#include "ImageWidget.hpp"
+
 
 namespace rat {
+    class ImageWidget;
     class CheckWidget : public Widget {
     public:
         CheckWidget(sf::Texture* text1, sf::Texture* text2);

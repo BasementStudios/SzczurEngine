@@ -7,17 +7,12 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Debug.hpp"
+
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Utility/Convert/Hash.hpp"
 
 
 
 namespace rat {
-	class ImageWidget;
-	class TextWidget;
-	class TextAreaWidget;
-
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
 		Widget();

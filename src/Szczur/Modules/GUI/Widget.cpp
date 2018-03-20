@@ -5,6 +5,8 @@
 #include "Test.hpp"
 #include <iostream>
 
+#include "Szczur/Debug.hpp"
+
 namespace rat {
     Widget::Widget() :
     _parent(nullptr),

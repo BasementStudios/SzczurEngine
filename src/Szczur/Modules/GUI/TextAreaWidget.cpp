@@ -1,6 +1,11 @@
 #include "TextAreaWidget.hpp"
+
 #include <iostream>
+#include <algorithm>
+
 #include "Test.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat {
     TextAreaWidget::TextAreaWidget() :
     _size(0u, 0u),
@@ -16,8 +21,6 @@ namespace rat {
 
     void TextAreaWidget::initScript(Script& script) {
         auto object = script.newClass<TextAreaWidget>("TextAreaWidget", "GUI");
-        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //Widget::basicScript<ImageWidget>(object);
         basicScript(object);
 
         object.setProperty(

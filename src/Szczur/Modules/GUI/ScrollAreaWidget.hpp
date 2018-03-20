@@ -2,11 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Script/Script.hpp"
-
 #include "Widget.hpp"
 
 namespace rat {
+    class Script;
     class ScrollAreaWidget : public Widget {
     public:
         ScrollAreaWidget();
