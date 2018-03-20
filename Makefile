@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.2.0 ])
+$(info [ PsychoX' Makefile - version 2.3.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -124,6 +124,9 @@ CXXFLAGS_DYNAMIC :=
  LDFLAGS_STATIC  := -static
  LDFLAGS_DYNAMIC :=
 
+# Debbuging
+DEBUGER := none
+
 # Cleaning
 ifeq ($(MAKECMDGOALS),clean)
     CLEAN_FILES_CMD := rm 
@@ -240,53 +243,65 @@ override LINKING := $(shell echo $(LINKING) | tr a-z A-Z)
 CXXFLAGS += $(CXXFLAGS_$(LINKING))
 LDFLAGS  += $( LDFLAGS_$(LINKING))
 
-# Architecture 
-CROSS := $(ARCH_$(ARCH))
+# Default cross compiler
 ifeq ($(CROSS),)
-    $(error "Target architecture not selected propertly... ARCH=$(ARCH)")
+    CROSS := yes
 endif
-CXXFLAGS += -m$(ARCH)
-LDFLAGS  += -m$(ARCH)
-
-# Platform
-# -> Windows...
-ifeq ($(PLATFORM),win)
-    # Select MINGW-W64
-    CROSS := $(CROSS)-w64-mingw32
-    # MXE support
-    ifeq ($(MXE),yes)
-        # Add MXE as cross-target compiling env
-        MXE_BIN_DIR := $(MXE_DIR)/usr/bin
-        PATH := $(PATH):$(MXE_BIN_DIR)
-        # Make shell use the specified in the makefile path
-        SHELL = env PATH='$(PATH)' /bin/bash
-        # Select static/shared compilator.
-        ifeq ($(LINKING),STATIC)
-            CROSS := $(CROSS).static
-        else
-            CROSS := $(CROSS).shared
-        endif
+ifeq ($(CROSS),yes)
+    # Architecture 
+    CROSS := $(ARCH_$(ARCH))
+    ifeq ($(CROSS),)
+        $(error "Target architecture not selected propertly... ARCH=$(ARCH)")
     endif
-# -> Linux...
-else ifeq ($(PLATFORM),lin)
-    # Select Linux GNU
-    CROSS := $(CROSS)-linux-gnu
-# -> Invaild platform
-else
-    $(error "Target platform not selected propertly... PLATFORM=$(PLATFORM)")
-endif
-CROSS := $(CROSS)-
 
-# If true 32 bit compiler not present, use universal
-ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
-    CROSS := $(subst i686,x86_64,$(CROSS))
-    $(warning "Using universal compiler... CROSS=$(CROSS)")
+    # Platform
+    # -> Windows...
+    ifeq ($(PLATFORM),win)
+        # Select MINGW-W64
+        CROSS := $(CROSS)-w64-mingw32
+        # MXE support
+        ifeq ($(MXE),yes)
+            # Add MXE as cross-target compiling env
+            MXE_BIN_DIR := $(MXE_DIR)/usr/bin
+            PATH := $(PATH):$(MXE_BIN_DIR)
+            # Make shell use the specified in the makefile path
+            SHELL = env PATH='$(PATH)' /bin/bash
+            # Select static/shared compilator.
+            ifeq ($(LINKING),STATIC)
+                CROSS := $(CROSS).static
+            else
+                CROSS := $(CROSS).shared
+            endif
+        endif
+    # -> Linux...
+    else ifeq ($(PLATFORM),lin)
+        # Select Linux GNU
+        CROSS := $(CROSS)-linux-gnu
+    # -> Invaild platform
+    else
+        $(error "Target platform not selected propertly... PLATFORM=$(PLATFORM)")
+    endif
+    CROSS := $(CROSS)-
+
+    # If true 32 bit compiler not present, use universal
+    ifeq ($(shell bash -c "command -v $(CROSS)$(CXX)"),)
+        CROSS := $(subst i686,x86_64,$(CROSS))
+        $(warning "Using universal compiler... CROSS=$(CROSS)")
+    endif
+    
+    # If no selective compiler, just try use 'g++'...
+    ifeq ($(shell bash -c "command -v $(CROSS)$(CXX)"),)
+        CROSS :=
+        $(warning "Using standard system compiler... (i.e. g++)")
+    endif
 endif
 
-# If no selective compiler, just try use 'g++'...
-ifeq ($(shell bash -c "command -v $(CROSS)g++"),)
+# Use default system compiler
+ifeq ($(CROSS),no)
     CROSS :=
-    $(warning "Using standard system compiler... (i.e. g++)")
+endif
+ifeq ($(CROSS),none)
+    CROSS :=
 endif
 
 # Finally select compiler and linker
@@ -337,6 +352,10 @@ $(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_
 # Colon replacement
 COLON_REPLACEMENT := _c0loN
 
+# Selecting target machine architecture
+CXXFLAGS += -m$(ARCH)
+LDFLAGS  += -m$(ARCH)
+
 # Adding headers and templates directories to search paths
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
 CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
@@ -345,6 +364,11 @@ CXXFLAGS += -I$(subst $(SPACE), -I,$(TEP_DIRS))
 ifeq ($(OPTIMALIZE),yes)
     CXXFLAGS += $(CXXFLAGS_OPTIMALIZATION)
      LDFLAGS +=  $(LDFLAGS_OPTIMALIZATION)
+endif
+
+ifeq (DEBUGER,ggdb)
+    CXXFLAGS += -ggdb
+     LDFLAGS += -ggdb
 endif
 
 
@@ -410,6 +434,11 @@ else
     ifndef inform_cleaning
         inform_cleaning     := @printf "[Cleaning] \n"
     endif
+endif
+
+ifeq ($(COLORS),yes)
+    CXXFLAGS += -fdiagnostics-color=always
+     LDFLAGS += -fdiagnostics-color=always
 endif
 
 

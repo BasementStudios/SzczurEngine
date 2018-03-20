@@ -3,6 +3,10 @@
 # Settings
 #
 
+# Compiler
+#CROSS := no # Uncomment 
+#CXX := clang
+
 # Fancy
 COLORS = yes
 
