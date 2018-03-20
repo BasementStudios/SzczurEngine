@@ -6,6 +6,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Inventory/Inventory.hpp"
 namespace rat
 {
 
@@ -38,7 +39,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI> _modules;
+	ModulesHolder<Window, Input, Script, GUI, Inventory> _modules;
 	Clock _mainClock;
 };
 

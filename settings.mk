@@ -5,6 +5,8 @@
 MXE=no
 MXE_DIR=/mnt/e/Libraries/MXE/mxe
 SLIENT=yes
+
+COLORS := yes
  
 CXXFLAGS := -static -std=c++17 -O2 -Ic:/Biblioteki/imgui-1.60/include
  

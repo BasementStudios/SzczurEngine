@@ -11,6 +11,7 @@ void Application::init()
 	_modules.initModule<Input>();
 	_modules.initModule<Script>();
 	_modules.initModule<GUI>();
+	_modules.initModule<Inventory>();
 }
 
 void Application::input()
