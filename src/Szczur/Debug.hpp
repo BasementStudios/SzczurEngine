@@ -48,7 +48,7 @@ public:
 		// Remove local path to make relative
 		static const char* localPath = __FILE__;
 		std::string_view localPathView = localPath; 
-		filePathView = filePathView.substr(localPathView.length() - 9);
+		filePathView = filePathView.substr(localPathView.length() - 9 - 1 - 6 - 1 - 3);
 
 		_logFile.open(_logFilePath, std::ios::app);
 		_logFile << '[' << _buffer << ']' << ' ' << '[' << filePathView << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;

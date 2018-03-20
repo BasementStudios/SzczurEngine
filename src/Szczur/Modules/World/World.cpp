@@ -37,23 +37,22 @@ void World::init()
 	this->currentMap = &(this->maps.emplace_back());
 
 	// @info Testing propouses
-	//auto cedmin = new ArmatureObjectType("Cedmin", getModule<DragonBones>().getFactory());
-	//this->types.push_back(cedmin);
-	auto dragonType = new ArmatureObjectType("Dragon", getModule<DragonBones>().getFactory());
-	this->types.push_back(dragonType);
-	auto stoneType = new SpriteObjectType("Stone");
-	this->types.push_back(stoneType);
+	auto cedmin = new ArmatureObjectType("Cedmin", getModule<DragonBones>().getFactory());
+	this->types.push_back(cedmin);
+	//auto dragonType = new ArmatureObjectType("Dragon", getModule<DragonBones>().getFactory());
+	//this->types.push_back(dragonType);
+	//auto stoneType = new SpriteObjectType("Stone");
+	//this->types.push_back(stoneType);
 
+	this->currentMap->sceneObjects.push_back(
+		new ArmatureObject(cedmin, "Player", {800.f, 600.f}, "Cedmin_Idle_008")
+	);
 	//this->currentMap->sceneObjects.push_back(
-	//	new ArmatureObject(cedmin, "Player", {0.f, 0.f}, "Cedmin_Idle_008")
+	//	new ArmatureObject(dragonType, "Smok", {100.f, 400.f}, "Dragon")
 	//);
-	
-	this->currentMap->sceneObjects.push_back(
-		this->playerObject = new ArmatureObject(dragonType, "Smok", {100.f, 400.f}, "Dragon")
-	);
-	this->currentMap->sceneObjects.push_back(
-		new SpriteObject(stoneType, "MyStone", {400.f, 300.f})
-	);
+	//this->currentMap->sceneObjects.push_back(
+	//	new SpriteObject(stoneType, "MyStone", {400.f, 300.f})
+	//);
 }
 
 /// update
