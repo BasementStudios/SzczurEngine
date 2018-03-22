@@ -5,6 +5,7 @@
 
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
 
 namespace rat {
     TextAreaWidget::TextAreaWidget() :
@@ -57,7 +58,8 @@ namespace rat {
     }
 
     void TextAreaWidget::setString(const std::string& text) {
-        _text.setString(text);
+        _text.setString(getUnicodeString(std::string{ "ŻÓŁĆ" }));
+        //_text.setString(text);
         _toWrap = true;
     }
 
