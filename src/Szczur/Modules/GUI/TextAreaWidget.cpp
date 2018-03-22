@@ -58,7 +58,7 @@ namespace rat {
     }
 
     void TextAreaWidget::setString(const std::string& text) {
-        _text.setString(getUnicodeString(std::string{ "ŻÓŁĆ" }));
+        _text.setString(getUnicodeString(text));
         //_text.setString(text);
         _toWrap = true;
     }
@@ -86,12 +86,15 @@ namespace rat {
     }
 
     void TextAreaWidget::_wrapText() {
-        std::string temp = _text.getString().toAnsiString();
-        temp.erase(std::remove_if(temp.begin(), temp.end(), [](auto& it){return it=='\n';}), temp.end());
-        for(auto i = _size.x; i<temp.size(); i+=_size.x) {
-            int x = i;
-            while(temp[x]!=' ') {
-                if(--x == 0) {
+        sf::String temp = _text.getString();
+        for(size_t i = 0; i<temp.getSize(); ++i)
+            if(temp[i] == '\n')
+                temp.erase(i--);
+
+        for(size_t i = _size.x; i<temp.getSize(); i+=_size.x) {
+            auto x = i;
+            while(temp[x] != ' ') {
+                if(--x == 0u) {
                     x=i;
                     break;
                 }
@@ -99,7 +102,7 @@ namespace rat {
             if(temp[x] == ' ')
                 temp[x] = '\n';
             else
-                temp.insert(x, 1, '\n');
+                temp.insert(x, "\n");
         }
         _text.setString(temp);
     }
