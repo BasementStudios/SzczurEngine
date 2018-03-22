@@ -152,16 +152,16 @@ namespace rat {
                     TextAreaWidget* widget = new TextAreaWidget;
                     widget->setFont(tab["font"]);
 
-                    if(tab["text"].valid())
-                        widget->setString(tab["text"]);
-                    
-                    if(tab["fontSize"].valid())
-                        widget->setCharacterSize(tab["fontSize"]);
-
                     auto size = tab["size"];
                     if(size.valid())
                         widget->setSize( sf::Vector2u{ size[1], size[2] } );
-                    
+
+                    if(tab["fontSize"].valid())
+                        widget->setCharacterSize(tab["fontSize"]);
+
+                    if(tab["text"].valid())
+                        widget->setString(tab["text"]);
+
                     auto color = tab["color"];
                     if(color.valid())
                         widget->setColor(sf::Color( color[1], color[2], color[3] ));

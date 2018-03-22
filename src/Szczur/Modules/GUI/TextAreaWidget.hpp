@@ -33,7 +33,7 @@ namespace rat {
         sf::Text _text;
         sf::Vector2u _size;
 
-        void _wrapText();
+        sf::String& _wrapText(sf::String& temp);
         virtual void _callback(CallbackType type) override;
     };
 }

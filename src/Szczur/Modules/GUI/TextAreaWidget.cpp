@@ -58,14 +58,15 @@ namespace rat {
     }
 
     void TextAreaWidget::setString(const std::string& text) {
-        _text.setString(getUnicodeString(text));
-        //_text.setString(text);
-        _toWrap = true;
+        sf::String sfstr = getUnicodeString(text);
+        _text.setString(_wrapText(sfstr));
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setSize(sf::Vector2u size) {
         _size = size;
         _toWrap = true;
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setFont(sf::Font* font) {
@@ -75,6 +76,7 @@ namespace rat {
     void TextAreaWidget::setCharacterSize(size_t size) {
         _text.setCharacterSize(size);
         _toWrap = true;
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setColor(const sf::Color& color) {
@@ -85,12 +87,11 @@ namespace rat {
         target.draw(_text, states);
     }
 
-    void TextAreaWidget::_wrapText() {
-        sf::String temp = _text.getString();
+    sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
+        _toWrap = false;
         for(size_t i = 0; i<temp.getSize(); ++i)
             if(temp[i] == '\n')
-                temp.erase(i--);
-
+                temp[i] = ' ';
         for(size_t i = _size.x; i<temp.getSize(); i+=_size.x) {
             auto x = i;
             while(temp[x] != ' ') {
@@ -104,13 +105,13 @@ namespace rat {
             else
                 temp.insert(x, "\n");
         }
-        _text.setString(temp);
+        return temp;
     }
 
     void TextAreaWidget::_update(float deltaTime) {
         if(_toWrap) {
-            _toWrap = false;
-            _wrapText();
+            sf::String sfstr = _text.getString();
+            _text.setString(_wrapText(sfstr));
         }
         
     }

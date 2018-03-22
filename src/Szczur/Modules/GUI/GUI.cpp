@@ -24,6 +24,7 @@ namespace rat {
 
 
 
+
         script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
         script.scriptFile("data/_GUI.lua");
     }
