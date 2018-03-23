@@ -20,8 +20,8 @@ namespace rat
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
-		SCRIPT_SET_MODULE(Music, addToPlaylist, removeFromPlaylist, play, pause, stop, includes, cleanEffects) 
-		SCRIPT_SET_MODULE(Music, setPlayingMode, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects);
+		SCRIPT_SET_MODULE(Music, play, pause, stop, includes, cleanEffects, setPlayingMode) 
+		SCRIPT_SET_MODULE(Music, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects);
 
 
 		module.set_function("addPlaylist",
@@ -29,6 +29,22 @@ namespace rat
 				owner->_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
 				for (auto it : newPlaylist){
 					owner->addToPlaylist(key, it);
+				}
+			}
+		);
+
+		module.set_function("addToPlaylist",
+			[owner = this](const std::string& key, sol::variadic_args musics){
+				for (auto it : musics){
+					owner->addToPlaylist(key, it);
+				}
+			}
+		);
+
+		module.set_function("removeFromPlaylist",
+			[owner = this](const std::string& key, sol::variadic_args musics){
+				for (auto it : musics){
+					owner->removeFromPlaylist(key, it);
 				}
 			}
 		);
