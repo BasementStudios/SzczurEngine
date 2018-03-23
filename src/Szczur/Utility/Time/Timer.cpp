@@ -8,8 +8,9 @@ Timer::TimePoint_t Timer::now()
 	return Clock_t::now();
 }
 
-Timer::Timer() :
-	_refPoint(now()), _pausePoint(now())
+Timer::Timer()
+	: _refPoint{ now() }
+	, _pausePoint{ now() }
 {
 
 }
@@ -22,7 +23,7 @@ Time Timer::getElapsedTime() const
 void Timer::start()
 {
 	_refPoint += now() - _pausePoint;
-	_pausePoint = TimePoint_t(Duration_t::zero());
+	_pausePoint = TimePoint_t{ Duration_t::zero() };
 }
 
 void Timer::pause()
@@ -41,7 +42,7 @@ void Timer::toggle()
 Time Timer::restart()
 {
 	Time Ret = getElapsedTime();
-	_pausePoint = TimePoint_t(Duration_t::zero());
+	_pausePoint = TimePoint_t{ Duration_t::zero() };
 	_refPoint = now();
 	return Ret;
 }

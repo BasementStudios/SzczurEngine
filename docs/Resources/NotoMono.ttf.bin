@@ -1,6 +1,13 @@
 // Downloaded from https://www.google.com/get/noto/#mono-mono
 // Converted by bin2cc from https://github.com/jtilander/bin2cc
-inline const size_t builtinFontSize = 89388;
+// Adjusted for https://github.com/BasementStudios/SzczurEngine
+namespace rat
+{
+
+namespace detail
+{
+
+inline constexpr size_t builtinFontSize = 89388;
 inline const uint32_t builtinFontData[] =
 {
     0x0000bc57, 0x00000000, 0x48a50100, 0x00000400, 0x00010037, 0x000e0000, 0x00030080, 0x2f534f60, 0xab819d32, 0x010000c5, 0x3c158268, 0x616d6360,
@@ -1867,3 +1874,7 @@ inline const uint32_t builtinFontData[] =
     0x2293822e, 0x826c0069, 0x826f2007, 0x00672c5f, 0x004f002f, 0x004c0046, 0x82030000, 0x21028203, 0xff8266ff, 0x01000022, 0x028f0a82, 0x05000228,
     0xffff0200, 0xfa050300, 0xe537c1e1,
 };
+
+}
+
+}

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Szczur/Utility/Time/Clock.hpp"
-#include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Utility/Modules/ModulesHolder.hpp"
 
 namespace rat
 {
@@ -32,14 +32,21 @@ public:
 
 	void render();
 
-	sf::RenderWindow& getWindow();
-	const sf::RenderWindow& getWindow() const;
+	template <typename U, typename... Us>
+	void initModule(Us&&... args);
+
+	template <typename U>
+	U& getModule();
+	template <typename U>
+	const U& getModule() const;
 
 private:
 
-	ModulesHolder<Window, Input> _modules;
 	Clock _mainClock;
+	ModulesHolder<Window, Input> _modules;
 
 };
 
 }
+
+#include "Application.tpp"
