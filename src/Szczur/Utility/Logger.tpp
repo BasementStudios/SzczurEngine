@@ -10,13 +10,13 @@ void Logger::log(const char* file, int line, const char* levelName, Us&&... args
 
 	_logFile.open(_logPath, std::ios::app);
 	_logFile << _buffer;
-	if constexpr (sizeof...(Us)) (_logFile << ... << std::forward<Us>(args));
+	if constexpr (sizeof...(Us) != 0) (_logFile << ... << std::forward<Us>(args));
 	_logFile << std::endl;
 	_logFile.close();
 
 	#ifdef DEBUG
 	std::cerr << _buffer;
-	if constexpr (sizeof...(Us)) (std::cerr << ... << std::forward<Us>(args));
+	if constexpr (sizeof...(Us) != 0) (std::cerr << ... << std::forward<Us>(args));
 	std::cerr << std::endl;
 	#endif
 }
