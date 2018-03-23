@@ -9,7 +9,6 @@ namespace rat
 
 Logger::Logger()
 {
-	_buffer[0] = '[';
 	std::snprintf(_logPath, sizeof(_logPath), "Logs/%lld.log", static_cast<long long>(std::time(nullptr)));
 }
 
@@ -18,11 +17,26 @@ Logger::~Logger()
 	LOG_INFO("End of the application");
 }
 
+void Logger::logException(const char* file, int line, const std::exception& exception, int level)
+{
+	log(file, line, "EXCEPTION", level, ' ', exception.what());
+
+	try {
+		std::rethrow_if_nested(exception);
+	}
+	catch (const std::exception& e) {
+		logException(file, line, e, level + 1);
+	}
+	catch (...) {
+		log(file, line, "EXCEPTION", level, ' ', "Unknown exception");
+	}
+}
+
 void Logger::_formatTime(const char* format)
 {
 	const std::time_t tm = std::time(nullptr);
 
-	std::strftime(_buffer + 1, sizeof(_buffer) - 1, format, std::localtime(&tm));
+	std::strftime(_timeBuffer, sizeof(_timeBuffer), format, std::localtime(&tm));
 }
 
 }
