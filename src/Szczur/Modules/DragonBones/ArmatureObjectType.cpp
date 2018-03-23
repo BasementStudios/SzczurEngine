@@ -13,18 +13,42 @@
 #include <vector>
 #include <fstream>
 
-#include <dragonBones/SFMLTextureData.h>
-#include <dragonBones/SFMLTextureAtlasData.h>
+#include <dragonBones/SFMLArmatureDisplay.h>
+#include <dragonBones/model/DragonBonesData.h>
+#include <SFML/Graphics/Texture.hpp>
+#include <dragonBones/model/TextureAtlasData.h>
 
 #include "Szczur/JSON.hpp"
 #include "Szczur/Debug.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
-#define LOG_INFO_HERE(...) LOG_INFO("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", __VA_ARGS__)
-#define LOG_WARN_HERE(...) LOG_WARN("[World][ArmatureObjectType{*", this, ";\"", this->name, "}] ", __VA_ARGS__)
+#define LOG_INFO_HERE(...) LOG_INFO("{", this, "} ", __VA_ARGS__)
+#define LOG_WARN_HERE(...) LOG_WARN("{", this, "} ", __VA_ARGS__)
 
 namespace rat
 {
+
+/* Local inline function */
+namespace local {
+
+inline std::string stringReplaced(const std::string& in, const std::string& from, const std::string& to)
+{
+	std::string string = in;
+	
+	for (
+		std::size_t i = string.find(from); 
+		i != std::string::npos; 
+		i = string.find(from, i)
+	) {
+		string.replace(i, from.length(), to);
+	}
+
+	return string;
+}
+
+}
+
+
 
 /* Properties */ 
 const std::string& ArmatureObjectType::getPoseString(ArmatureObjectType::PoseID_t poseID) const
@@ -64,61 +88,84 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 	this->name = typeName;
 	
 	try {
-		// @todo multi-atlas 
-
 		// Load skeleton data
 		try {
-			this->skeletonData = this->factory.loadDragonBonesData(ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::skeletonDataPath, this->name);
+			// Find file
+			std::string skeletonDataPath = local::stringReplaced(ArmatureObjectType::skeletonDataPathTemplate, ":", this->name);
+
+			if (!std::filesystem::exists(skeletonDataPath)) {
+				throw std::runtime_error("Armature skeleton data file doesn't exist.");
+			}
+
+			// Load the skeleton data
+			LOG_INFO_HERE("Loading skeleton data from `" + skeletonDataPath + "`.");
+			this->skeletonData = this->factory.loadDragonBonesData(skeletonDataPath);
 			
 			if (this->skeletonData == nullptr) {
 				throw std::runtime_error("Armature skeleton data is invaild.");
 			}
 		}
-		catch(...) {
-			std::throw_with_nested(std::runtime_error(std::string("Could not load armature skeleton data from ") + ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::skeletonDataPath));
+		catch (...) {
+			std::throw_with_nested(std::runtime_error("Could not load armature skeleton data."));
 		}
 
-		this->textures.reserve(99); // @todo =,=
-
-		// Load textures data
-		LOG_INFO_HERE("Loading textures from files from ", (ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::texturesPathPrefix + "X" + ArmatureObjectType::texturesPathSuffix));
-		for (auto& armatures : this->skeletonData->armatures) {
-			auto& armature = armatures.second;
+		// Load textures and atlas 
+		try {
+			// Resolve common parts of path
+			std::string atlasTexturePathCommon = local::stringReplaced(ArmatureObjectType::atlasTexturePathTemplate, ":", this->name);
+			std::string atlasDataPathCommon = local::stringReplaced(ArmatureObjectType::atlasDataPathTemplate, ":", this->name);
 			
-			// Collect armature names
-			//this->skeletonData->armatureNames.push_back(armature->name);
-
-			for (auto& skins : armature->skins) {
-				for (auto& displays : skins.second->displays) {
-					for (auto display : displays.second) {
-						LOG_INFO_HERE("Loading texture from the file ", ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::texturesPathPrefix + display->path + ArmatureObjectType::texturesPathSuffix);
-						
-						// Load the information
-						auto textureData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureData>();
-						this->texturesData.push_back(textureData);
-						textureData->rotated = false; 
-						textureData->name = display->name;
-						
-						// Load the texture
-						auto& texture = this->textures.emplace_back();
-						if (!texture.loadFromFile(ArmatureObjectType::armaturesAssetsPath + this->name + ArmatureObjectType::texturesPathPrefix + display->path + ArmatureObjectType::texturesPathSuffix)) {
-							throw std::runtime_error("Could not load armature texture: `" + display->path + "`.");
-						}
-						textureData->setTexture(&texture);	
-					}
+			// Count atlases
+			std::size_t atlasCount = 0;
+			while (true) {
+				// Find next atlas path
+				std::string atlasDataPath = local::stringReplaced(atlasDataPathCommon, "?", std::to_string(atlasCount));
+				
+				if (!std::filesystem::exists(atlasDataPath)) {
+					break;
 				}
+
+				atlasCount += 1;
+			}
+
+			// Check is there at least on texture
+			LOG_INFO_HERE("Found " + std::to_string(atlasCount) + " atlas data files.");
+			if (atlasCount < 1) {
+				throw std::runtime_error("Armature atlas number 0 doesn't exist.");
+			}
+
+			// Allocate atlas textures and atlas data containers
+			this->atlasesData.reserve(atlasCount);
+			this->textures.reserve(atlasCount);
+			
+			// Load atlases textures and data
+			for (std::size_t atlasNumber = 0; atlasNumber < atlasCount; ++atlasNumber) {
+				// Find atlas texture
+				std::string atlasTexturePath = local::stringReplaced(atlasTexturePathCommon, "?", std::to_string(atlasNumber));
+
+				if (!std::filesystem::exists(atlasTexturePath)) {
+					throw std::runtime_error("Armature atlas texture file number " + std::to_string(atlasNumber) + " doesn't exist.");
+				}
+
+				// Find atlas data
+				std::string atlasDataPath = local::stringReplaced(atlasDataPathCommon, "?", std::to_string(atlasNumber));
+
+				// Load atlas texture
+				LOG_INFO_HERE("Loading atlas texture: `" + atlasTexturePath + "`.");
+				auto& texture = this->textures.emplace_back();
+				if (!texture.loadFromFile(atlasTexturePath)) {
+					throw std::runtime_error("Could not load texture: `" + atlasTexturePath + "`.");
+				}
+
+				// Load atlas data
+				LOG_INFO_HERE("Loading atlas data: `" + atlasDataPath + "`.");
+				auto* data = this->factory.loadTextureAtlasData(atlasDataPath, &texture);
+				this->atlasesData.push_back(data);
 			}
 		}
-		
-		// Setup atlas data
-		LOG_INFO_HERE("Creating texture atlas for loaded textures files.");
-		this->atlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
-		this->atlasData->name = this->skeletonData->name;
-		for (auto& textureData : this->texturesData) {
-			textureData->parent = this->atlasData;
-			this->atlasData->addTexture(textureData);
+		catch(...) {
+			std::throw_with_nested(std::runtime_error("Could not load textures."));
 		}
-		this->factory.addTextureAtlasData(this->atlasData, this->name);
 	}
 	catch (...) {
 		std::throw_with_nested(std::runtime_error("Could not load armature object type: `" + this->name + "`."));
@@ -126,15 +173,14 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 	
 	// @todo , togglable states? (grouped textures and visibility switching)?
 	
-	LOG_INFO_HERE("Loaded ", this->getPosesNames().size(), " armature poses and ", this->textures.size(), " textures.");
+	LOG_INFO_HERE("Loaded " + std::to_string(this->getPosesNames().size()) + " armature poses and " + std::to_string(this->textures.size()) + " textures with atlases.");
 }
 
 ArmatureObjectType::~ArmatureObjectType()
 {
 	this->factory.removeDragonBonesData(this->skeletonData->name);
-	this->factory.removeTextureAtlasData(this->atlasData->name);
-	for (auto& textureData : this->texturesData) {
-		textureData->returnToPool();
+	for (auto& atlasData : this->atlasesData) {
+		this->factory.removeTextureAtlasData(atlasData->name);
 	}
 }
 

@@ -9,3 +9,8 @@
 #else
 #	error No <json.hpp> header is avaible
 #endif
+
+#include <boost/filesystem.hpp>
+namespace std {
+namespace filesystem = boost::filesystem;
+}

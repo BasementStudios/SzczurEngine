@@ -59,7 +59,7 @@ int Application::run()
 			render();
 		}
 	}
-	catch (const std::exception& exception) {
+	catch (std::exception& exception) {
 		LOG_EXCEPTION(exception);
 	}
 

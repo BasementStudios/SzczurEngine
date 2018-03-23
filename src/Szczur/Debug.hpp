@@ -46,9 +46,10 @@ public:
 		std::string_view filePathView = filePath;
 		
 		// Remove local path to make relative
-		static const char* localPath = __FILE__;
-		std::string_view localPathView = localPath; 
-		filePathView = filePathView.substr(localPathView.length() - 9 - 1 - 6 - 1 - 3);
+		std::size_t srcIndex = filePathView.find("src");
+		if (srcIndex != std::string::npos) {
+			filePathView = filePathView.substr(srcIndex);
+		}
 
 		_logFile.open(_logFilePath, std::ios::app);
 		_logFile << '[' << _buffer << ']' << ' ' << '[' << filePathView << ':' << line << ']' << ' '; (_logFile << ... << std::forward<Ts>(args)); _logFile << '\n' << std::flush;
@@ -68,8 +69,10 @@ public:
 		} 
 		catch(const std::exception& E) {
 			log_exception(E, level + 1);
-		} 
-		catch(...) {}
+		}
+		catch(...) {
+			log("", 0, "Unknown exception");
+		}
 	}
 
 

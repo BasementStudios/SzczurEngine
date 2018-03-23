@@ -44,6 +44,12 @@ const std::string& ArmatureObject::getCurrentPoseString() const
 	return this->getArmatureType()->getPoseString(this->currentPoseID);
 }
 
+/// Animation
+dragonBones::Animation* ArmatureObject::getAnimation()
+{
+	return this->getCurrentPose()->getAnimation();
+}
+
 
 
 /* Operators */
@@ -58,6 +64,7 @@ ArmatureObject::ArmatureObject(
 	: Object::Object((ObjectType*)type, name, position, speed)
 {
 	this->poses = this->getArmatureType()->createPoses();
+	this->setCurrentPose(poseID);
 }
 /// Standard constructor
 ArmatureObject::ArmatureObject(
@@ -65,12 +72,14 @@ ArmatureObject::ArmatureObject(
 	const std::string& 				name, 
 	const Object::Vector_t& 		position,
 	const std::string&				poseString,
+	const std::string&				animation,
 	const Object::Vector_t&			speed
 )
 	: Object::Object((ObjectType*)type, name, position, speed)
 {
 	this->poses = this->getArmatureType()->createPoses();
-	this->getCurrentPose()->getAnimation()->play("walk");
+	this->setCurrentPose(poseString);
+	// @todo . start animation
 }
 
 

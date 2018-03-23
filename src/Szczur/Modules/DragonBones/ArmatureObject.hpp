@@ -37,13 +37,19 @@ public:
 
 	/** @property CurrentPose
 	 ** @description Current displayed pose.
-	 ** @access get set & get set string
+	 ** @access pointer get, string get set
 	 **/
 	ArmatureObjectType::Pose_t* getCurrentPose();
 	const ArmatureObjectType::Pose_t* getCurrentPose() const;
 	void setCurrentPose(ArmatureObjectType::PoseID_t poseID);
 	void setCurrentPose(const std::string& poseString);
 	const std::string& getCurrentPoseString() const;
+
+	/** @property Animation 
+	 ** @description Provides access to DragonBones Animation object of current pose.
+	 ** @access pointer get
+	 **/
+	dragonBones::Animation* getAnimation();
 
 
 
@@ -62,6 +68,7 @@ public:
 		const std::string& 				name, 
 		const Object::Vector_t& 		position,
 		const std::string&				poseString,
+		const std::string&				animation 	= "default",
 		const Object::Vector_t&			speed 		= {}
 	);
 

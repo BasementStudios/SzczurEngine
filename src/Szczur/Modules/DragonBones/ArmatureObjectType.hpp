@@ -12,8 +12,7 @@
 #include <dragonBones/SFMLArmatureDisplay.h>
 #include <dragonBones/model/DragonBonesData.h>
 #include <SFML/Graphics/Texture.hpp>
-#include <dragonBones/SFMLTextureData.h>
-#include <dragonBones/SFMLTextureAtlasData.h>
+#include <dragonBones/model/TextureAtlasData.h>
 
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/Object.hpp"
@@ -22,6 +21,10 @@
 namespace rat
 {
 
+/** @class ArmatureObjectType
+ ** @inherit ObjectType
+ ** @description Load and contains shared data used to render Armature Objects.
+ **/
 class ArmatureObjectType : public ObjectType
 {
 	/* Types */
@@ -32,6 +35,10 @@ public:
 
 	using PoseID_t 			= PosesContainer_t<Pose_t>::size_type;
 
+	using SkeletonData_t 	= dragonBones::DragonBonesData;
+	using Texture_t    		= sf::Texture;
+	using AtlasData_t		= dragonBones::TextureAtlasData;
+
 
 	
 	/* Constants */
@@ -39,20 +46,25 @@ public:
 	constexpr static PoseID_t defaultPoseID = 0;
 
 protected:
-	constexpr static auto	armaturesAssetsPath	= "Assets/Objects/";
-	constexpr static auto	skeletonDataPath	= "/skeleton.json";
-	constexpr static auto 	texturesPathPrefix	= "/textures/";
-	constexpr static auto 	texturesPathSuffix	= ".png";
-	
+	// @info Data paths
+	// 	Colon (`:`) stands for armature type name and question mark (`?`) for next numbers,
+	//	starting from 0, since it's common that there can be more than one atlas and texture.
+	// 	At least one texture with its atlas must be loaded for the armature, the number 0.
+	constexpr static auto	skeletonDataPathTemplate = "Assets/Objects/:/:_ske.json";
+	constexpr static auto	atlasTexturePathTemplate = "Assets/Objects/:/:_tex_?.png";
+	constexpr static auto	atlasDataPathTemplate    = "Assets/Objects/:/:_tex_?.json";
+	//constexpr static auto	skeletonDataPathTemplate = "Assets/Objects/:/skeleton.json";
+	//constexpr static auto	atlasTexturePathTemplate = "Assets/Objects/:/texture_?.png";
+	//constexpr static auto	atlasDataPathTemplate    = "Assets/Objects/:/atlas_?.json";
+
 	
 	
 	/* Fields */
 protected:
-	rat::DragonBones::Factory_t&				factory;
-	dragonBones::DragonBonesData*				skeletonData;
-	std::vector<sf::Texture>					textures; // @todo . dynarray instead of vector
-	std::vector<dragonBones::SFMLTextureData*>	texturesData; // @todo . dynarray instead of vector
-	dragonBones::SFMLTextureAtlasData*			atlasData;
+	rat::DragonBones::Factory_t&	factory;
+	SkeletonData_t*					skeletonData;
+	std::vector<Texture_t>			textures;
+	std::vector<AtlasData_t*>		atlasesData;
 
 
 
