@@ -50,9 +50,7 @@ namespace rat
 
 	public:
 
-		Playlist(AudioEffects& effects)
-			: _effects(effects)
-		{}
+		Playlist(AudioEffects& effects);
 
 		void clear();
 

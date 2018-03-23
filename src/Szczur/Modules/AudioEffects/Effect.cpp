@@ -11,6 +11,15 @@ namespace rat
 
     }
 
+    bool Effect::exist() 
+    {
+        return ( 
+            get<Equalizer>().created() ||
+            get<Reverb>().created()    ||
+            get<Echo>().created()
+        );
+    }
+
     void Effect::initScript(Script& script)
     {
         auto object = script.newClass<Effect>("Effect", "AudioEffects");

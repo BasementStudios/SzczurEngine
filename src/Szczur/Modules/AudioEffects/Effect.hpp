@@ -13,30 +13,22 @@ namespace rat
 
         Effect();
 
+        bool exist();
+
         static void initScript(Script& script);
 
         template <typename T>
-        unsigned int getAuxiliaryEffect()
-        {
-            return getEffect<T>().getAuxiliaryEffect();
-        }
+        unsigned int getAuxiliaryEffect();
 
         template <typename T>
-        void sendAuxiliaryEffectsTo(T& ratAudio)
-        {
-            sendAuxIfCreated<Equalizer, T>(ratAudio);
-            sendAuxIfCreated<Echo, T>(ratAudio);
-            sendAuxIfCreated<Reverb, T>(ratAudio);
-        }
+        void sendAuxiliaryEffectsTo(T& ratAudio);
 
     private:
 
         template <typename Effect_t, typename RatAudio_t>
-        void sendAuxIfCreated(RatAudio_t& ratAudio)
-        {
-            if (getEffect<Effect_t>().created())
-                ratAudio.template setEffect<Effect_t>(getAuxiliaryEffect<Effect_t>());
-        }
+        void sendAuxIfCreated(RatAudio_t& ratAudio);
 
     };
 }
+
+#include "Effect.tpp"

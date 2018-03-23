@@ -2,7 +2,6 @@
 
 #include <unordered_map>
 
-#include "Szczur/Utility/Convert/Hash.hpp"
 #include "RatMusic.hpp"
 
 namespace rat
@@ -21,11 +20,7 @@ namespace rat
 
     public:
 
-        MusicAssets(const std::string& path)
-            : DEFAULT_PATH(path)
-        {
-            LOG_INFO("MusicAssets class created. Default assets path: ", DEFAULT_PATH);
-        }
+        MusicAssets(const std::string& path);
 
         void load(const std::string& name);
         void unload(const std::string& name);

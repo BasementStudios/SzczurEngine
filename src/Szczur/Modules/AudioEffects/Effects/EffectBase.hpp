@@ -20,7 +20,7 @@ namespace rat
         bool _created = false;
         bool _supported = false;
 
-        int _sourceSlot;
+        unsigned int _sourceSlot;
 
     public:
 
@@ -32,11 +32,13 @@ namespace rat
 
         bool created() const;
 
+        unsigned int getSlot() const;
+
+        void init(unsigned int slot);
+
     protected:
 
-        EffectBase(unsigned int& source, int effectType, int sourceSlot);
-
-        void init();
+        EffectBase(unsigned int& source, int effectType);
 
         void setEffect(int type, float value);
 

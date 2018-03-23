@@ -4,7 +4,7 @@ namespace rat
 {
 
 	Echo::Echo(unsigned int& source)
-		: EffectBase(source, AL_EFFECT_ECHO, 1)
+		: EffectBase(source, AL_EFFECT_ECHO)
 	{
 
 	}

@@ -6,7 +6,6 @@
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 #include "Szczur/Utility/Modules/Module.hpp"
-#include "Szczur/Debug.hpp"
 
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -33,6 +32,7 @@ namespace rat
 	public:
 
 		Music(const std::string& assetsPath);
+		~Music();
 
 		void initScript();
 

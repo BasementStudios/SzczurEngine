@@ -1,9 +1,6 @@
 #pragma once
 
-#include <memory>
-
 #include "Szczur/Utility/Modules/Module.hpp"
-#include "Szczur/Debug.hpp"
 
 #include "Effect.hpp"
 
@@ -17,6 +14,7 @@ namespace rat
     public:
 
         AudioEffects();
+        ~AudioEffects();
 
         void initScript();
 

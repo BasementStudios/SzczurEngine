@@ -5,42 +5,41 @@
 #include "Effects/Reverb.hpp"
 #include <tuple>
 
+#define MAX_AUX_FOR_SOURCE 2
+
 namespace rat
 {
     class AudioEffect
     {
+        std::array<bool, MAX_AUX_FOR_SOURCE> _freeSlots { false }; 
+
         std::tuple<Equalizer, Echo, Reverb> _effects;
 
     public:
 
-        AudioEffect(unsigned int& source)
-            : _effects(source, source, source)
-        {}
+        AudioEffect(unsigned int& source);
 
         template <typename T>
-        T& getEffect()
-        {
-            return std::get<T>(_effects);
-        }
+        T& getEffect();
 
         template <typename T>
-        void setEffect(unsigned int aux)
-        {
-            std::get<T>(_effects).setAuxiliaryEffect(aux);
-        }
+        void setEffect(unsigned int aux);
         
         template <typename T>
-        void cleanEffect()
-        {
-            std::get<T>(_effects).cleanEffect();
-        }
+        void cleanEffect();
 
-        void cleanAllEffects()
-        {
-            cleanEffect<Equalizer>();
-            cleanEffect<Reverb>();
-            cleanEffect<Echo>();
-        }
+        void cleanAllEffects();
+
+    protected:
+
+        template <typename T>
+        T& get();
+
+    private:
+
+        unsigned int getLastFreeSlot();
 
     };
-}       
+}     
+
+#include "AudioEffect.tpp"  

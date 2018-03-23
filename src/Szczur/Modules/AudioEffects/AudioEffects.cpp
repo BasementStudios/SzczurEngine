@@ -8,6 +8,11 @@ namespace rat
         LOG_INFO(this, " : Module AudioEffects constructed");
     }
 
+    AudioEffects::~AudioEffects()
+    {
+        LOG_INFO(this, " : Module AudioEffects destructed");
+    }
+
     void AudioEffects::initScript()
     {
         Script& script = getModule<Script>();
@@ -20,13 +25,13 @@ namespace rat
 
     bool AudioEffects::globalEffects()
     {
-        return (_globalEffects != nullptr);
+        return (_globalEffects != nullptr && _globalEffects->exist());
     }
 
     Effect& AudioEffects::getGlobalEffects()
     {
-        if(!_globalEffects)
-             _globalEffects = std::make_unique<Effect>();
+        if (!_globalEffects)
+            _globalEffects = std::make_unique<Effect>();
         return *(_globalEffects.get());
     }
     

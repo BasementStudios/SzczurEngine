@@ -7,6 +7,12 @@
 namespace rat 
 {
 
+	Playlist::Playlist(AudioEffects& effects)
+		: _effects(effects)
+	{
+
+	}
+
 	void Playlist::update(float deltaTime) 
 	{
 		if (!hasBeenEverPlayed || _status == Status::Stopped) 
@@ -208,6 +214,7 @@ namespace rat
 	void Playlist::setGlobalEffects()
 	{
 		if (_effects.globalEffects()) {
+			LOG_INFO("Global effects are loading into ", _playlist[_currentID]->getName());
 			_effects.getGlobalEffects().template sendAuxiliaryEffectsTo<RatMusic>(_playlist[_currentID]->getSource());
 		}
 	}

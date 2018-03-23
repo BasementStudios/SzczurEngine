@@ -4,7 +4,7 @@ namespace rat
 {
 
     Reverb::Reverb(unsigned int& source)
-        : EffectBase(source, AL_EFFECT_REVERB, 2)
+        : EffectBase(source, AL_EFFECT_REVERB)
     {
 
     }

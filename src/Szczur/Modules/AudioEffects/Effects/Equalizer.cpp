@@ -4,7 +4,7 @@ namespace rat
 {
 
     Equalizer::Equalizer(unsigned int& source)
-        : EffectBase(source, AL_EFFECT_EQUALIZER, 0)
+        : EffectBase(source, AL_EFFECT_EQUALIZER)
     {
 
     }

@@ -10,7 +10,13 @@ namespace rat
 		LOG_INFO(this, " : Module Music constructed");
 	}
 
-	void Music::initScript() {
+	Music::~Music()
+	{
+		LOG_INFO(this, " : Module Music destructed");
+	}
+
+	void Music::initScript() 
+	{
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
@@ -63,17 +69,20 @@ namespace rat
 	{
 		auto hashKey = fnv1a_32(key.begin()); 
 
+		if (_currentPlaylistKey == hashKey) 
+			_currentPlaylistKey = 0;
+
 		if (fileName.empty()) {
-			if (_currentPlaylistKey == hashKey) 
-				_currentPlaylistKey = 0;
 
 			for (auto& it : _playlists[hashKey]->getContainerRef())
 				unLoad(it->getName());
 
-			_playlists.erase(_playlists.begin() + hashKey);
+			_playlists.erase(hashKey);
 		}
-		else
+		else {
+			_playlists[hashKey]->remove(fileName);
 			unLoad(fileName);
+		}
 	}
 
 	void Music::play(const std::string& key, const std::string& fileName)
@@ -84,7 +93,7 @@ namespace rat
 			_playlists[hashKey]->play(fileName);
 		else {
 			auto currentPlaying = _playlists[_currentPlaylistKey]->getCurrentPlaying();
-			auto samePlaylist = (_currentPlaylistKey == hashKey);
+			auto samePlaylist   = (_currentPlaylistKey == hashKey);
 
 			if (currentPlaying->getName() != fileName)
 				_playlists[hashKey]->play(currentPlaying, fileName);
@@ -93,7 +102,6 @@ namespace rat
 
 			if (!samePlaylist)
 				_playlists[_currentPlaylistKey]->stopUpdates();
-	
 		}
 		_currentPlaylistKey = hashKey;
 	}
@@ -155,14 +163,14 @@ namespace rat
 
 	void Music::setGlobalEffects()
 	{
-		if(_currentPlaylistKey)
+		if (_currentPlaylistKey != 0)
 			_playlists[_currentPlaylistKey]->setGlobalEffects();
 	}
 
 	void Music::cleanEffects()
 	{
-		if(_currentPlaylistKey)
-			_playlists[_currentPlaylistKey]->getCurrentPlaying()->getSource().cleanAllEffects();
+		if (_currentPlaylistKey != 0)
+			getCurrentPlaying().cleanAllEffects();
 	}
 
 }
