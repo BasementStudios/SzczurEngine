@@ -6,6 +6,8 @@ namespace rat
 Window::Window()
 	: _window{ sf::VideoMode(1280, 720), "Core", sf::Style::Close }
 {
+	_window.setFramerateLimit(60);
+
 	LOG_INFO(this, " : Module Window constructed");
 }
 

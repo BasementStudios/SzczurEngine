@@ -1,5 +1,8 @@
 #include "Application.hpp"
 
+
+#include "NodeEditor.h"
+
 namespace rat
 {
 
@@ -11,6 +14,7 @@ void Application::init()
 {
 	initModule<Window>();
 	initModule<Input>();
+	initModule<DialogEditor>();
 
 	#ifdef EDITOR
 	{

@@ -4,6 +4,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
+#include "Szczur/Modules/DIalogEditor/DialogEditor.hpp"
 
 namespace rat
 {
@@ -43,7 +44,7 @@ public:
 private:
 
 	Clock _mainClock;
-	ModulesHolder<Window, Input> _modules;
+	ModulesHolder<Window, Input, DialogEditor> _modules;
 
 };
 
