@@ -18,11 +18,9 @@ public:
 	~Window();
 
 	Window(const Window&) = delete;
-
 	Window& operator = (const Window&) = delete;
 
 	Window(Window&&) = delete;
-
 	Window& operator = (Window&&) = delete;
 
 	void clear(const sf::Color& color = sf::Color::Transparent);

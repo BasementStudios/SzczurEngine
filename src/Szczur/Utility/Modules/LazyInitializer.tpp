@@ -2,27 +2,29 @@ namespace rat
 {
 
 template <typename T>
-LazyInitializer<T>::LazyInitializer(const LazyInitializer& rhs)
+LazyInitializer<T>::LazyInitializer(const LazyInitializer<T>& rhs)
 {
 	init(rhs);
 }
 
 template <typename T>
-LazyInitializer& LazyInitializer<T>::operator = (const LazyInitializer& rhs)
+LazyInitializer<T>& LazyInitializer<T>::operator = (const LazyInitializer<T>& rhs)
 {
 	getRef() = rhs.getRef();
+	return *this;
 }
 
 template <typename T>
-LazyInitializer<T>::LazyInitializer(LazyInitializer&& rhs)
+LazyInitializer<T>::LazyInitializer(LazyInitializer<T>&& rhs)
 {
 	init(std::move(rhs));
 }
 
 template <typename T>
-LazyInitializer& LazyInitializer<T>::operator = (LazyInitializer&& rhs)
+LazyInitializer<T>& LazyInitializer<T>::operator = (LazyInitializer<T>&& rhs)
 {
 	getRef() = std::move(rhs.getRef());
+	return *this;
 }
 
 template <typename T>
@@ -39,49 +41,49 @@ void LazyInitializer<T>::init(Us&&... args)
 }
 
 template <typename T>
-Pointer_t LazyInitializer<T>::getPtr()
+typename LazyInitializer<T>::Pointer_t LazyInitializer<T>::getPtr()
 {
 	return reinterpret_cast<Pointer_t>(_getBufferPtr());
 }
 
 template <typename T>
-ConstPointer_t LazyInitializer<T>::getPtr() const
+typename LazyInitializer<T>::ConstPointer_t LazyInitializer<T>::getPtr() const
 {
 	return reinterpret_cast<ConstPointer_t>(_getBufferPtr());
 }
 
 template <typename T>
-Pointer_t LazyInitializer<T>::operator -> ()
+typename LazyInitializer<T>::Pointer_t LazyInitializer<T>::operator -> ()
 {
 	return getPtr();
 }
 
 template <typename T>
-ConstPointer_t LazyInitializer<T>::operator -> () const
+typename LazyInitializer<T>::ConstPointer_t LazyInitializer<T>::operator -> () const
 {
 	return getPtr();
 }
 
 template <typename T>
-Reference_t LazyInitializer<T>::getRef()
+typename LazyInitializer<T>::Reference_t LazyInitializer<T>::getRef()
 {
 	return *getPtr();
 }
 
 template <typename T>
-ConstReference_t LazyInitializer<T>::getRef() const
+typename LazyInitializer<T>::ConstReference_t LazyInitializer<T>::getRef() const
 {
 	return *getPtr();
 }
 
 template <typename T>
-Reference_t LazyInitializer<T>::operator * ()
+typename LazyInitializer<T>::Reference_t LazyInitializer<T>::operator * ()
 {
 	return getRef();
 }
 
 template <typename T>
-ConstReference_t LazyInitializer<T>::operator * () const
+typename LazyInitializer<T>::ConstReference_t LazyInitializer<T>::operator * () const
 {
 	return getRef();
 }
@@ -89,13 +91,13 @@ ConstReference_t LazyInitializer<T>::operator * () const
 template <typename T>
 void* LazyInitializer<T>::_getBufferPtr()
 {
-	return &_buffer;
+	return std::addressof(_buffer);
 }
 
 template <typename T>
 const void* LazyInitializer<T>::_getBufferPtr() const
 {
-	return &_buffer;
+	return std::addressof(_buffer);
 }
 
 }
