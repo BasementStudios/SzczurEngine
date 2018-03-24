@@ -63,3 +63,5 @@ inline Logger* logger = nullptr;
 #define LOG_WARNING_IF_CX(condition, ...) { if constexpr (condition) LOG_WARNING(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr (condition) LOG_ERROR(__VA_ARGS__) }
 #define LOG_EXCEPTION(exception) { rat::logger->logException(__FILENAME__, __LINE__, exception); }
+
+#undef __FILENAME__
