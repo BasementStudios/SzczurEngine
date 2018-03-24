@@ -10,6 +10,8 @@ class DialogEditor : public Module<>
 public:
 	DialogEditor();
 	~DialogEditor();
+
+	void update();
 };
 
 }

@@ -15,4 +15,8 @@ DialogEditor::~DialogEditor()
 	LOG_INFO(this, " : Module DialogEditor destructed");
 }
 
+void DialogEditor::update()
+{
+}
+
 }

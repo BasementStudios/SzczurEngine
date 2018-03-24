@@ -54,6 +54,7 @@ void Application::update()
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
 
+		getModule<DialogEditor>().update();
 		/*
 			Put main editor window here
 		*/
