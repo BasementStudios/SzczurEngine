@@ -1,8 +1,5 @@
 #include "Application.hpp"
 
-
-#include "NodeEditor.h"
-
 namespace rat
 {
 

@@ -4,10 +4,12 @@
 
 namespace rat
 {
+
 class DialogEditor : public Module<>
 {
 public:
 	DialogEditor();
 	~DialogEditor();
 };
+
 }
