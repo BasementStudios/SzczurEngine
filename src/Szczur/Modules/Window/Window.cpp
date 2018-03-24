@@ -16,8 +16,7 @@
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/Graphics/Color.hpp>
 
-
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {

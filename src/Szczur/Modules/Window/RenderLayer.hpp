@@ -23,8 +23,8 @@ class RenderLayer
 public:
 	/* Fields */
 protected:
-	sf::RenderTexture _texture;
-	sf::RenderStates _states;
+	sf::RenderTexture texture;
+	sf::RenderStates states;
 
 
 
@@ -70,7 +70,7 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	
 	/// Draws primitive verticles on the layer
-	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
+	void draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 
 	/// Displays on the RenderTarget
 	void display(sf::RenderTarget& target);
