@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.3.0 ])
+$(info [ PsychoX' Makefile - version 2.4.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -21,6 +21,22 @@ NEWLINE := ${\n}
 # More settings file
 SETTINGS_FILE := ./settings.mk
 
+# Platform detection
+PLATFORM_DETECT := $(shell uname -o | tr A-Z a-z)
+ifeq ($(findstring linux,$(PLATFORM_DETECT)),)
+    PLATFORM := win
+else
+    PLATFORM := lin
+endif
+
+# Architecture detection
+ARCH_DETECT := $(shell uname -m)
+ifeq ($(findstring 64,$(ARCH_DETECT)),)
+    ARCH := 32
+else
+    ARCH := 64
+endif
+
 
 
 #
@@ -31,43 +47,27 @@ SETTINGS_FILE := ./settings.mk
 define normalize_target
     # There MUST be so many 'eval's, because Makefile interpreter will try "optimalize" uses of variables...
     $(eval override TARGET := $(shell echo $(TARGET) | tr A-Z a-z))
-    $(eval override PLATFORM := $(findstring win,$(TARGET))$(findstring lin,$(TARGET)))
-    $(eval override ARCH     := $(findstring 32,$(TARGET))$(findstring 64,$(TARGET)))
-    $(eval override TARGET:=$(PLATFORM)$(ARCH))
+    $(eval override TARGET_PLATFORM := $(findstring win,$(TARGET))$(findstring lin,$(TARGET)))
+    $(eval override TARGET_ARCH     := $(findstring 32,$(TARGET))$(findstring 64,$(TARGET)))
+    $(eval override TARGET:=$(TARGET_PLATFORM)$(TARGET_ARCH))
 endef
 
 # Try to get target from settings file if no selected
 ifndef TARGET
     ifneq ("$(wildcard $(SETTINGS_FILE))","")
-        override TARGET := $(shell grep -Po '^(?:TARGET[ ]*[:]?=[ ]*)\K.*$$' $(SETTINGS_FILE))
+        TARGET := $(shell grep -Po '^(?:TARGET[ ]*[:]?=[ ]*)\K.*$$' $(SETTINGS_FILE))
     endif
+endif
+
+# Try to use system platfrom and arch if no selected
+ifndef TARGET
+    TARGET:=$(PLATFORM)$(ARCH)
 endif
 
 # Target normalization
 ifdef TARGET
     $(eval $(call normalize_target))
 endif
-
-# Try to detect platform or arch by system if no selected
-ifeq ($(PLATFORM),)
-    # Platform detection
-    PLATFORM_DETECT := $(shell uname -o | tr A-Z a-z)
-    ifeq ($(findstring linux,$(PLATFORM_DETECT)),)
-        PLATFORM := win
-    else
-        PLATFORM := lin
-    endif
-endif
-ifeq ($(ARCH),)
-    # Architecture detection
-    ARCH_DETECT := $(shell uname -m)
-    ifeq ($(findstring 64,$(ARCH_DETECT)),)
-        ARCH := 32
-    else
-        ARCH := 64
-    endif
-endif
-override TARGET:=$(PLATFORM)$(ARCH)
 
 
 
@@ -104,11 +104,6 @@ CXXFLAGS := -std=c++17 -Wall
 LD       := g++
 LDFLAGS  :=
 
-# Optimalization
-OPTIMALIZE := no
-CXXFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
- LDFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
-
 # Using MXE? and its options
 MXE := no
 MXE_DIR := /usr/lib/mxe
@@ -124,8 +119,13 @@ CXXFLAGS_DYNAMIC :=
  LDFLAGS_STATIC  := -static
  LDFLAGS_DYNAMIC :=
 
+# Optimalization
+OPTIMALIZE := no
+CXXFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
+ LDFLAGS_OPTIMALIZATION := -flto -ffat-lto-objects -O3
+
 # Debbuging
-DEBUGER := none
+DEBUGGER := none
 
 # Cleaning
 ifeq ($(MAKECMDGOALS),clean)
@@ -140,7 +140,7 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := SFML BOOST LUA
+LIB_LIST := IMGUI SFML BOOST LUA
 #   SFML
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
   LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
@@ -159,6 +159,11 @@ CXXFLAGS_DYNAMIC_BOOST  :=
 CXXFLAGS_DYNAMIC_LUA    :=
  LDFLAGS_DYNAMIC_LUA    := -llua
  MXE_PACKAGENAME_LUA    := lua
+#   ImGUI 
+ CXXFLAGS_STATIC_IMGUI  := 
+  LDFLAGS_STATIC_IMGUI  := -limgui 
+CXXFLAGS_DYNAMIC_IMGUI  := 
+ LDFLAGS_DYNAMIC_IMGUI  := -limgui 
 
 # Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
 FILES_DYNAMIC_SFML := openal32.dll sfml*
@@ -238,14 +243,14 @@ ifeq ($(CROSS),)
 endif
 ifeq ($(CROSS),yes)
     # Architecture 
-    CROSS := $(ARCH_$(ARCH))
+    CROSS := $(ARCH_$(TARGET_ARCH))
     ifeq ($(CROSS),)
-        $(error "Target architecture not selected propertly... ARCH=$(ARCH)")
+        $(error "Target architecture not selected propertly... TARGET_ARCH=$(TARGET_ARCH)")
     endif
 
     # Platform
     # -> Windows...
-    ifeq ($(PLATFORM),win)
+    ifeq ($(TARGET_PLATFORM),win)
         # Select MINGW-W64
         CROSS := $(CROSS)-w64-mingw32
         # MXE support
@@ -263,12 +268,12 @@ ifeq ($(CROSS),yes)
             endif
         endif
     # -> Linux...
-    else ifeq ($(PLATFORM),lin)
+    else ifeq ($(TARGET_PLATFORM),lin)
         # Select Linux GNU
         CROSS := $(CROSS)-linux-gnu
     # -> Invaild platform
     else
-        $(error "Target platform not selected propertly... PLATFORM=$(PLATFORM)")
+        $(error "Target platform not selected propertly... TARGET_PLATFORM=$(TARGET_PLATFORM)")
     endif
     CROSS := $(CROSS)-
 
@@ -305,7 +310,7 @@ LD  := $(CROSS)$(LD)
 
 # Compiled libs
 define add_lib
-    ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),$(MXE_PACKAGENAME_$(1)),1),1)
+    ifeq ($(and $(findstring $(TARGET_PLATFORM),win),$(findstring $(MXE),yes),$(MXE_PACKAGENAME_$(1)),1),1)
         # Use MXE packages
         MXE_PKGS += $(MXE_PACKAGENAME_$(1))
     else
@@ -313,18 +318,18 @@ define add_lib
         CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1))
         LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1))
         # Add includes/libraries object directories
-        ifneq ($(INC_DIR_$(1)_$(ARCH)),)
-            CXXFLAGS += -I$(INC_DIR_$(1)_$(ARCH))
+        ifneq ($(INC_DIR_$(1)_$(TARGET_ARCH)),)
+            CXXFLAGS += -I$(INC_DIR_$(1)_$(TARGET_ARCH))
         endif
-        ifneq ($(LIB_DIR_$(1)_$(ARCH)),)
-            LDFLAGS  += -L$(LIB_DIR_$(1)_$(ARCH))
+        ifneq ($(LIB_DIR_$(1)_$(TARGET_ARCH)),)
+            LDFLAGS  += -L$(LIB_DIR_$(1)_$(TARGET_ARCH))
         endif
     endif
 endef
 $(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
 
 # MXE uses pkg-config
-ifeq ($(and $(findstring $(PLATFORM),win),$(findstring $(MXE),yes),1),1)
+ifeq ($(and $(findstring $(TARGET_PLATFORM),win),$(findstring $(MXE),yes),$(LIB_LIST),1),1)
     CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
     LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
 endif
@@ -342,8 +347,8 @@ $(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_
 COLON_REPLACEMENT := _c0loN
 
 # Selecting target machine architecture
-CXXFLAGS += -m$(ARCH)
-LDFLAGS  += -m$(ARCH)
+CXXFLAGS += -m$(TARGET_ARCH)
+LDFLAGS  += -m$(TARGET_ARCH)
 
 # Adding headers and templates directories to search paths
 CXXFLAGS += -I$(subst $(SPACE), -I,$(INC_DIRS))
@@ -355,9 +360,21 @@ ifeq ($(OPTIMALIZE),yes)
      LDFLAGS +=  $(LDFLAGS_OPTIMALIZATION)
 endif
 
-ifeq (DEBUGER,ggdb)
+# Adding debugger flags
+ifeq (DEBUGGER,ggdb)
     CXXFLAGS += -ggdb
      LDFLAGS += -ggdb
+endif
+
+# Normalize paths 
+ifeq ($(PLATFORM),win)
+    SRC_DIRS := $(shell echo $(SRC_DIRS) | grep -v '\.\.') $(shell echo $(SRC_DIRS) | grep '\.\.' | xargs -r -L1 realpath | sed -e 's/./:\//3' -e 's/^.//') 
+    INC_DIRS := $(shell echo $(INC_DIRS) | grep -v '\.\.') $(shell echo $(INC_DIRS) | grep '\.\.' | xargs -r -L1 realpath | sed -e 's/./:\//3' -e 's/^.//')
+    TEP_DIRS := $(shell echo $(TEP_DIRS) | grep -v '\.\.') $(shell echo $(TEP_DIRS) | grep '\.\.' | xargs -r -L1 realpath | sed -e 's/./:\//3' -e 's/^.//')
+else
+    SRC_DIRS := $(shell echo $(SRC_DIRS) | grep -v '\.\.') $(shell echo $(SRC_DIRS) | grep '\.\.' | xargs -r -L1 realpath) 
+    INC_DIRS := $(shell echo $(INC_DIRS) | grep -v '\.\.') $(shell echo $(INC_DIRS) | grep '\.\.' | xargs -r -L1 realpath)
+    TEP_DIRS := $(shell echo $(TEP_DIRS) | grep -v '\.\.') $(shell echo $(TEP_DIRS) | grep '\.\.' | xargs -r -L1 realpath)
 endif
 
 
@@ -562,7 +579,7 @@ run: all
 info: echo 
 echo:
 	@echo ""
-	@echo "TARGET=$(TARGET) -> PLATFORM=$(PLATFORM), ARCH=$(ARCH), MXE=$(MXE)"
+	@echo "PLATFORM=$(PLATFORM), ARCH=$(ARCH), TARGET=$(TARGET), MXE=$(MXE)"
 	@echo ""
 	@echo "PATH=$(PATH)"
 	@echo ""
