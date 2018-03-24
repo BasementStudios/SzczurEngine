@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Szczur/Config.hpp"
+
 #include <fstream>
 #ifdef DEBUG
 #	include <iostream>
@@ -44,13 +46,20 @@ inline Logger* logger = nullptr;
 
 #include "Logger.tpp"
 
-#define LOG_INFO(...) { rat::logger->log(__FILE__, __LINE__, "INFO", __VA_ARGS__); }
-#define LOG_WARNING(...) { rat::logger->log(__FILE__, __LINE__, "WARNING", __VA_ARGS__); }
-#define LOG_ERROR(...) { rat::logger->log(__FILE__, __LINE__, "ERROR", __VA_ARGS__); }
+#if defined(COMPILER_MSVC)
+#    include <cstring>
+#    define __FILENAME__ (std::strrchr(__FILE__, DIRECTORY_SEPARATOR_CHAR) ? std::strrchr(__FILE__, DIRECTORY_SEPARATOR_CHAR) + 1 : __FILE__)
+#else
+#    define __FILENAME__ __FILE__
+#endif
+
+#define LOG_INFO(...) { rat::logger->log(__FILENAME__, __LINE__, "INFO", __VA_ARGS__); }
+#define LOG_WARNING(...) { rat::logger->log(__FILENAME__, __LINE__, "WARNING", __VA_ARGS__); }
+#define LOG_ERROR(...) { rat::logger->log(__FILENAME__, __LINE__, "ERROR", __VA_ARGS__); }
 #define LOG_INFO_IF(condition, ...) { if (condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARNING_IF(condition, ...) { if (condition) LOG_WARNING(__VA_ARGS__) }
 #define LOG_ERROR_IF(condition, ...) { if (condition) LOG_ERROR(__VA_ARGS__) }
 #define LOG_INFO_IF_CX(condition, ...) { if constexpr (condition) LOG_INFO(__VA_ARGS__) }
 #define LOG_WARNING_IF_CX(condition, ...) { if constexpr (condition) LOG_WARNING(__VA_ARGS__) }
 #define LOG_ERROR_IF_CX(condition, ...) { if constexpr (condition) LOG_ERROR(__VA_ARGS__) }
-#define LOG_EXCEPTION(exception) { rat::logger->logException(__FILE__, __LINE__, exception); }
+#define LOG_EXCEPTION(exception) { rat::logger->logException(__FILENAME__, __LINE__, exception); }

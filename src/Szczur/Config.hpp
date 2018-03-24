@@ -40,13 +40,10 @@
 #if defined(DEBUG) || defined(OS_WINDOWS)
 #	define EDITOR
 #	include <boost/lexical_cast.hpp>
-#	include <imgui.h>
-#	include <imgui-SFML.h>
+#	include <ImGui/imgui.h>
+#	include <ImGui/imgui-SFML.h>
 #	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
 #endif
-
-// Logger, isn't it obvious?
-#include "Utility/Logger.hpp"
 
 // Global helper for modules system
 namespace rat::detail { template <typename T> inline T* globalPtr_v = nullptr; }
