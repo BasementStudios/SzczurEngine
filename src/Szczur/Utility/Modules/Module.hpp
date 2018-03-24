@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-#include "Szczur/Config.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {

@@ -45,8 +45,5 @@
 #	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
 #endif
 
-// Logger, isn't it obvious?
-#include "Utility/Logger.hpp"
-
 // Global helper for modules system
 namespace rat::detail { template <typename T> inline T* globalPtr_v = nullptr; }
