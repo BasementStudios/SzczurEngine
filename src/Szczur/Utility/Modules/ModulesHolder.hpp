@@ -2,9 +2,8 @@
 
 #include <tuple>
 
-#include "Module.hpp"
+#include "Szczur/Utility/Logger.hpp"
 #include "LazyInitializer.hpp"
-#include "Szczur/CompilerPortability.hpp"
 
 namespace rat
 {
@@ -21,11 +20,9 @@ public:
 	ModulesHolder();
 
 	ModulesHolder(const ModulesHolder&) = delete;
-
 	ModulesHolder& operator = (const ModulesHolder&) = delete;
 
 	ModulesHolder(ModulesHolder&&) = delete;
-
 	ModulesHolder& operator = (ModulesHolder&&) = delete;
 
 	template <typename U, typename... Us>

@@ -5,7 +5,7 @@ namespace rat
 
 sf::String getUnicodeString(const std::string& src)
 {
-	std::basic_string<unsigned> str;
+	std::basic_string<uint32_t> str;
 
 	str.reserve(detail::getUnicodeBytesCount(src.begin(), src.end()));
 

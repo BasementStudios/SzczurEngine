@@ -5,7 +5,7 @@
 #include "Test.hpp"
 #include <iostream>
 
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat {
     Widget::Widget() :

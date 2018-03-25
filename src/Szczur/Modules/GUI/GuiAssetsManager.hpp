@@ -5,7 +5,7 @@
 #include <boost/container/flat_map.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 namespace rat {

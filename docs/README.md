@@ -6,7 +6,7 @@ Dokumentacje, specyfikacje, informacje
 
 ### Informacje poza GitHubem
 
-Informacje programistów są także przechowywane w przypiętych kartach na Discordzie projektu oraz na tablicy Trello projektu - link do niej na Discordzie ;) 
+Informacje programistów są także przechowywane na tablicy Trello projektu - link do niej na Discordzie ;)
 
 
 
@@ -18,11 +18,9 @@ Informacje programistów są także przechowywane w przypiętych kartach na Disc
 #### Programowanie
 
 * [Poradnik wprowadzający](Coding/IntegrationTutorial.md)
-* [Styl kodu](Coding/StyleGuide.md)
 * [Przykład modułu](Coding/ModuleExample.md)
+* [Styl kodu](Coding/StyleGuide.md)
 
 #### Animacje
 
 * [Animacje szkieletowe](Animations/SkeletonAnimations.md)
-
-

@@ -7,7 +7,7 @@ SzczurEngine
 SzczurEngine
 ------------
 
-Omówiony niżej Projekt Szczur ma korzystać z własnego silnika: SzczurEngine pisanego w C++ (standardy C++14, C++17) z biblioteką SFML (2.4.2) dla wersji Windows i Linux, 32 bitowej i 64 bitowej. Naszym zadaniem jest zaprojektowanie, zaprogramowanie i przetestowanie kolejnych elementów silnika i gry.
+Omówiony niżej Projekt Szczur ma korzystać z własnego silnika: SzczurEngine pisanego w C++ (standardy C++14/17) z biblioteką SFML (2.4.2) dla wersji Windows i Linux, 32 bitowej i 64 bitowej. Naszym zadaniem jest zaprojektowanie, zaprogramowanie i przetestowanie kolejnych elementów silnika oraz gry.
 
 
 
@@ -15,7 +15,7 @@ Omówiony niżej Projekt Szczur ma korzystać z własnego silnika: SzczurEngine 
 SzczurProjekt
 -------------
 
-Projekt Szczur jest inicjatywą podjętą przez Gimpera i społeczność Hajsowników (internetową widownię, skupisko fanów twórczości Gimpera). Polega ona na stworzeniu własnej gry z wykorzystaniem talentów, dostarczenie nowych doświadczeń i rozwijanie obecnych umiejętności wsród społeczności. A przede wszystkim - wspólna zabawa i praca :)
+Projekt Szczur jest inicjatywą podjętą przez Gimpera i społeczność Hajsowników (internetową widownię, skupisko fanów twórczości Gimpera). Polega ona na stworzeniu własnej gry z wykorzystaniem talentów, dostarczenie nowych doświadczeń oraz rozwijanie obecnych umiejętności wsród społeczności. A przede wszystkim - wspólna zabawa i praca :)
 
 Społeczniościówki:
 
@@ -29,6 +29,7 @@ Społeczniościówki:
 Dział programistów
 ------------------
 
+* Jan (Janix4000) Izydorczyk
 * Kuba (Mapet)
 * Kuba (MetRiko)
 * Mateusz (Zetiar)
@@ -36,6 +37,13 @@ Dział programistów
 * Patryk (PsychoX) Ludwikowski
 * Piotr (H4RRY)
 * Tomasz (Knayder)
+
+
+
+Dawny skład
+-----------
+
+* Kamil (MrRain)
 
 
 
