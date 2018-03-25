@@ -1,7 +1,7 @@
 #pragma once
 
 /** @file Window.hpp
- ** @description Header file with main class of the Window module. 
+ ** @description Header file with main class of the Window module.
  ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
@@ -21,17 +21,16 @@
 namespace rat {
 
 /** @class Window
- ** @description Manages application window. 
+ ** @description Manages application window.
  **/
 class Window : public Module<>
 {
-    using Module::Module;
-    
+
 
 
     /* Types */
     using Window_t = sf::RenderWindow;
-    
+
 
 
     /* Variables */
@@ -41,8 +40,8 @@ private:
     std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
 
-    
-    
+
+
     /* Properties */
 public:
     /** @property Window
@@ -51,7 +50,7 @@ public:
      **/
     Window_t& getWindow();
     const Window_t& getWindow() const;
-    
+
     /** @property VideoMode
 	 ** @description Defines a video mode.
 	 ** @access get set
@@ -95,7 +94,6 @@ public:
 public:
     // Module system
 	void init();
-	void input(const sf::Event& event);
 	void render();
 
 	/// Cleaning
