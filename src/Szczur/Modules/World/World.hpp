@@ -9,7 +9,6 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include "Szczur/Debug.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
@@ -23,10 +22,6 @@ namespace rat {
  **/
 class World : public Module<Window, DragonBones>
 {
-    using Module::Module;
-
-
-	
     /* Variables */
 public: // @warn priv&prop
     std::vector<ObjectType*> types;

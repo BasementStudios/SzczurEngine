@@ -6,9 +6,9 @@ ModulesHolder<Ts...>::ModulesHolder()
 {
 #if defined(COMPILER_MSVC)
 	using Swallow_t = int[];
-	Swallow_t{ ((modulePtr_v<Ts> = std::get<Held_t<Ts>>(_modules).getPtr()), 0)... };
+	Swallow_t{ ((detail::globalPtr_v<Ts> = std::get<Held_t<Ts>>(_modules).getPtr()), 0)... };
 #else
-	((modulePtr_v<Ts> = std::get<Held_t<Ts>>(_modules).getPtr()), ...);
+	((detail::globalPtr_v<Ts> = std::get<Held_t<Ts>>(_modules).getPtr()), ...);
 #endif
 }
 

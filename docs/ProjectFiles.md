@@ -4,31 +4,24 @@ Struktura plików projektu
 
 
 
-
-
 Foldery
 -------
 
 ### Główne podfoldery
 
 ```
-demo/				; Pliki do testowego, przykładowe uruchamiania silnika.
-	*/*
-docs/				; Dokumentacje, specyfikacje, schematy, informacje.
+docs/
 	*/*.md
 	*/*.png
-src/				; Źródła, w tym nagłówki.
+src/
 	*/*.h		
-	*/*.cpp	
-obj/				; * Skompilowane obiekty, elementy do linkownia w aplikacje.
+	*/*.cpp
+obj/
 	*/*.o
 out/
-	$(ARCH)/*[.exe]	; * Wynikowe pliki wykonywalne dla konkretnych platform.
-
-* - wyłączone z Gita - wpisane tutaj przez wzgląd na `Makefile`.
+	Logs/*.log
+	*.exe
 ```
-
-
 
 
 
@@ -42,7 +35,3 @@ Makefile			; Sprypt `Makefile` do łatwej kompilacji i testowania silnika.
 settings.mk			; Ustawienia do skryptu `Makefile`.
 .gitignore			; Lista plików/katalogów do zignorowania dla Gita.
 ```
-
-
-
-

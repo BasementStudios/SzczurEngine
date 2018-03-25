@@ -68,7 +68,7 @@ public:
 		const std::string& 				name, 
 		const Object::Vector_t& 		position,
 		const std::string&				poseString,
-		const std::string&				animation 	= "default",
+		const std::string&				animation 	= "",
 		const Object::Vector_t&			speed 		= {}
 	);
 

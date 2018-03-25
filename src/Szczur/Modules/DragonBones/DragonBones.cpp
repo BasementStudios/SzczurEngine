@@ -8,6 +8,8 @@
 
 #include <dragonBones/SFMLFactory.h>
 
+#include "Szczur/Utility/Logger.hpp"
+
 namespace rat 
 {
 
@@ -21,6 +23,22 @@ const DragonBones::Factory_t& DragonBones::getFactory() const
 {
 	return this->factory;
 }
+
+
+
+/* Operators */
+// Module constructor/destructor
+DragonBones::DragonBones()
+{
+	LOG_INFO(this, ": DragonBones module initializing");
+	this->init();
+	LOG_INFO(this, ": DragonBones module initialized");
+}
+DragonBones::~DragonBones()
+{
+	LOG_INFO(this, ": DragonBones module destructed");
+}
+
 
 
 /* Methods */

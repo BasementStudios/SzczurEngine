@@ -12,18 +12,16 @@
 #include <array>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 
 #include <dragonBones/SFMLArmatureDisplay.h>
 #include <dragonBones/model/DragonBonesData.h>
 #include <SFML/Graphics/Texture.hpp>
 #include <dragonBones/model/TextureAtlasData.h>
+#include "json.hpp"
 
-#include "Szczur/JSON.hpp"
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
-
-#define LOG_INFO_HERE(...) LOG_INFO("{", this, "} ", __VA_ARGS__)
-#define LOG_WARN_HERE(...) LOG_WARN("{", this, "} ", __VA_ARGS__)
 
 namespace rat
 {
@@ -57,7 +55,7 @@ const std::string& ArmatureObjectType::getPoseString(ArmatureObjectType::PoseID_
 	if (names.size() > poseID) {
 		return names[poseID];
 	}
-	LOG_WARN_HERE("Pose of ID `", poseID, "` was not found; using default.");
+	LOG_WARNING("{*", this, "\"", this->name, "} ", "Pose of ID `", poseID, "` was not found; using default.");
 	return names[ArmatureObjectType::defaultPoseID];
 }
 ArmatureObjectType::PoseID_t ArmatureObjectType::getPoseID(const std::string& poseString) const
@@ -68,7 +66,7 @@ ArmatureObjectType::PoseID_t ArmatureObjectType::getPoseID(const std::string& po
             return i;
         }
     }
-    LOG_WARN_HERE("Pose of ID for name `", poseString, "` was not found; using default.");
+    LOG_WARNING("{*", this, "\"", this->name, "} ", "Pose of ID for name `", poseString, "` was not found; using default.");
 	return ArmatureObjectType::defaultPoseID;
 }
 
@@ -84,8 +82,8 @@ const std::vector<std::string>& ArmatureObjectType::getPosesNames() const
 ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonBones::Factory_t& factory)
 	: factory(factory)
 {
-	LOG_INFO_HERE("Loading `", typeName, "` armature object type.");
 	this->name = typeName;
+	LOG_INFO("{*", this, "\"", this->name, "} ", "Loading `", typeName, "` armature object type.");
 	
 	try {
 		// Load skeleton data
@@ -98,7 +96,7 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 			}
 
 			// Load the skeleton data
-			LOG_INFO_HERE("Loading skeleton data from `" + skeletonDataPath + "`.");
+			LOG_INFO("{*", this, "\"", this->name, "} ", "Loading skeleton data from `" + skeletonDataPath + "`.");
 			this->skeletonData = this->factory.loadDragonBonesData(skeletonDataPath);
 			
 			if (this->skeletonData == nullptr) {
@@ -129,7 +127,7 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 			}
 
 			// Check is there at least on texture
-			LOG_INFO_HERE("Found " + std::to_string(atlasCount) + " atlas data files.");
+			LOG_INFO("{*", this, "\"", this->name, "} ", "Found " + std::to_string(atlasCount) + " atlas data files.");
 			if (atlasCount < 1) {
 				throw std::runtime_error("Armature atlas number 0 doesn't exist.");
 			}
@@ -151,14 +149,14 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 				std::string atlasDataPath = local::stringReplaced(atlasDataPathCommon, "?", std::to_string(atlasNumber));
 
 				// Load atlas texture
-				LOG_INFO_HERE("Loading atlas texture: `" + atlasTexturePath + "`.");
+				LOG_INFO("{*", this, "\"", this->name, "} ",	"Loading atlas texture: `" + atlasTexturePath + "`.");
 				auto& texture = this->textures.emplace_back();
 				if (!texture.loadFromFile(atlasTexturePath)) {
 					throw std::runtime_error("Could not load texture: `" + atlasTexturePath + "`.");
 				}
 
 				// Load atlas data
-				LOG_INFO_HERE("Loading atlas data: `" + atlasDataPath + "`.");
+				LOG_INFO("{*", this, "\"", this->name, "} ", "Loading atlas data: `" + atlasDataPath + "`.");
 				auto* data = this->factory.loadTextureAtlasData(atlasDataPath, &texture);
 				this->atlasesData.push_back(data);
 			}
@@ -173,7 +171,7 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 	
 	// @todo , togglable states? (grouped textures and visibility switching)?
 	
-	LOG_INFO_HERE("Loaded " + std::to_string(this->getPosesNames().size()) + " armature poses and " + std::to_string(this->textures.size()) + " textures with atlases.");
+	LOG_INFO("{*", this, "\"", this->name, "} ", "Loaded " + std::to_string(this->getPosesNames().size()) + " armature poses and " + std::to_string(this->textures.size()) + " textures with atlases.");
 }
 
 ArmatureObjectType::~ArmatureObjectType()

@@ -4,8 +4,6 @@ Struktura plików gry
 
 
 
-
-
 Foldery
 -------
 
@@ -36,14 +34,12 @@ W folderach niemających zdefiniowanej dalszej struktury - np. `Sounds`, ale te�
 
 
 
-
-
 Pliki
 -----
 
 ### Nazwenictwo plików
 
-* W strukturze plików poniżej są zawarte także rozszerzenia - to tylko dla rozróżnienia typu danych (czy dźwiękowy, graficzny czy czystej informacji). 
+* W strukturze plików poniżej są zawarte także rozszerzenia - to tylko dla rozróżnienia typu danych (czy dźwiękowy, graficzny czy czystej informacji).
 
 * Dany plik/zasób może być przekierowaniem do innego zasobu - wtedy jako rozszerzenie powinnien użyć `lnk` oraz w treści powinien mieć jedynie nazwę/id/ścieżkę zasobu na jaki wskazuje.
 
@@ -106,7 +102,7 @@ Maps/
 				- state			; Początkowy stan animacji
 				- time			; Początkowy czas animacji
 				- action		; Przypisana akcja, typowe zachowanie.
-		objects.json			; Definiuje pozycje, typ obiektu/aktora na mapie. 
+		objects.json			; Definiuje pozycje, typ obiektu/aktora na mapie.
 								;	Może zawierać inne informacje do nadpisania (np. HP).
 			- objects [{}]
 				- id			; Nazwa/ID, używane do połączenia danego obiektu z wyzwalaczami i zdarzeniami.
@@ -129,17 +125,17 @@ Maps/
 
 Sounds/							; Jednorazowe dźwięki, dość uniwersalne - odtwarzane z naciskiem na buforowanie.
 	Some Sound Name.ogg			; @todo Struktura do omówienia.
-	
+
 Musics/							; Powtarzające się lub ciągłe muzyka, podkład - odtwarzane strumieniowo.
 	Example Background.ogg		; Pliki nie muszą, ale oczywiście mogą być w folderach.
-	
+
 Dubbing/						; Dubbing dialogów - osobno, bo być tak powinno. ;) PS: bez "dubbingu" obiektów, np. drzew :P
 	Act 1/						; 	Dubbing będzie podzielony na: Akty, Zadania, Lokacja, Sceny (plik), Kwestie (po offsetach).
 		Anvil Delivery/			; 	Poza Aktami będą także: `Common` - wspólne dla postaci, grup, odgłosów ludzkich z dialogami,
 			Saint Egg Villge/	; 	`Actors` - dla specyficznych postaci (z podziałem na pliki kwestii) i `Other` - dla innych.
 				FirstMeeting.ogg	; ! Plik dźwiękowy z kolejnymi nagraniami, kwestiami w miare unikatowymi dla tego dialogu.
 				FirstMeeting.json	; ! Plik z ustawieniami, offsetami tych kwestii i inne.
-	
+
 Fonts/
 	Consolas.ftf
 
@@ -158,8 +154,8 @@ Items/							; @todo do przemyślenia
 			- name				; ! Nazwa wyświetlana
 			; informacje zależne od mechanik... @todo
 			- tags				; Lista tagów przedmiotu, np. `warrior,sword,short,wooden`.
-			- description		; Opis przedmiotu w menu. 
-			- durability		; Liczba pozostałych użyć. 
+			- description		; Opis przedmiotu w menu.
+			- durability		; Liczba pozostałych użyć.
 			- health			; Odnawiane punkty życia.
 			- mana				; Odnawiane punkty many.
 			- attack			; Zadawane obrażenia.
@@ -167,11 +163,7 @@ Items/							; @todo do przemyślenia
 
 Other/
 	Logo: SzczurEngine.png
-	Logo: Hajsownicy.f3.r1.png  ; Animacje także tutaj możliwe. 
+	Logo: Hajsownicy.f3.r1.png  ; Animacje także tutaj możliwe.
 	Logo: Gimper.png
 	HUD.png
 ```
-
-
-
-

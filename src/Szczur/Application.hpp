@@ -6,6 +6,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/World/World.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat
 {
@@ -32,19 +33,25 @@ public:
 
 	void input();
 
-	void update(float deltaTime);
+	void update();
 
 	void render();
 
-	/// Functions to access application Window
-	sf::RenderWindow& getWindow();
-	const sf::RenderWindow& getWindow() const;
+	template <typename U, typename... Us>
+	void initModule(Us&&... args);
+
+	template <typename U>
+	U& getModule();
+	template <typename U>
+	const U& getModule() const;
 
 private:
 
-	ModulesHolder<Window, Input, DragonBones, World> _modules;
 	Clock _mainClock;
+	ModulesHolder<Window, Input, DragonBones, World> _modules;
 
 };
 
 }
+
+#include "Application.tpp"

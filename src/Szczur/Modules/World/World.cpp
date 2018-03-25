@@ -5,7 +5,7 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Modules/DragonBones/ArmatureObject.hpp"
 #include "Szczur/Modules/DragonBones/ArmatureObjectType.hpp"
 #include "Szczur/Modules/World/SpriteObject.hpp"
@@ -45,7 +45,7 @@ void World::init()
 	//this->types.push_back(stoneType);
 
 	this->currentMap->sceneObjects.push_back(
-		new ArmatureObject(cedmin, "Player", {800.f, 600.f}, "Cedmin_Idle_008")
+		new ArmatureObject(cedmin, "Player", {800.f, 600.f})
 	);
 	//this->currentMap->sceneObjects.push_back(
 	//	new ArmatureObject(dragonType, "Smok", {100.f, 400.f}, "Dragon")

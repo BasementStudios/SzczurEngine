@@ -32,7 +32,7 @@ public:
 	using Pose_t 			= dragonBones::SFMLArmatureDisplay;
 	template <typename T>
 	using PosesContainer_t 	= std::vector<T>;
-
+	
 	using PoseID_t 			= PosesContainer_t<Pose_t>::size_type;
 
 	using SkeletonData_t 	= dragonBones::DragonBonesData;

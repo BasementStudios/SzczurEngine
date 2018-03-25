@@ -11,7 +11,6 @@
 #include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Utility/Modules/Module.hpp"
-#include "Szczur/Debug.hpp"
 
 namespace rat 
 {
@@ -65,19 +64,5 @@ public:
 	void init();
 	void update(float deltaTime);
 };
-
-
-
-// Module constructor/destructor
-inline DragonBones::DragonBones()
-{
-	LOG_INFO(this, ": DragonBones module initializing");
-	this->init();
-	LOG_INFO(this, ": DragonBones module initialized");
-}
-inline DragonBones::~DragonBones()
-{
-	LOG_INFO(this, ": DragonBones module destructed");
-}
 
 }

@@ -22,11 +22,9 @@ public:
 	Time(const std::chrono::duration<Rep, Period>& duration);
 
 	Time(const Time&) = default;
-
 	Time& operator = (const Time&) = default;
 
 	Time(Time&&) = default;
-
 	Time& operator = (Time&&) = default;
 
 	Duration_t getDuration() const;

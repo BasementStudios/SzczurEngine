@@ -16,8 +16,7 @@
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/Graphics/Color.hpp>
 
-
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
@@ -94,12 +93,6 @@ void Window::init()
 	// @todo load from settings
 }
 
-/// input
-void Window::input(const sf::Event& event)
-{
-	;
-}
-
 /// render
 void Window::render()
 {
@@ -119,7 +112,7 @@ void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 
 void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
-	this->getWindow().draw(vertices, vertexCount, type, states); 
+	this->getWindow().draw(vertices, vertexCount, type, states);
 }
 
 }

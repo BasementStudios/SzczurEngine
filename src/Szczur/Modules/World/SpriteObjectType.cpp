@@ -16,9 +16,10 @@
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
+#include "json.hpp"
+using json = nlohmann::json;
 
-#include "Szczur/JSON.hpp"
-#include "Szczur/Debug.hpp"
+#include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Modules/World/Object.hpp"
 #include "Szczur/Modules/World/ObjectType.hpp"
 
@@ -39,8 +40,7 @@ const std::string& SpriteObjectType::getStateString(const SpriteObjectType::Stat
 		return this->statesDetails[stateID].name;
 	}
 	// Fallback
-	LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
-		"State of ID `", stateID, "` was not found; using default.");
+	LOG_WARNING("{*", this, "\"", this->name, "} ", "State of ID `", stateID, "` was not found; using default.");
 	return this->statesDetails[SpriteObjectType::defaultStateID].name;
 }
 SpriteObjectType::StateID_t SpriteObjectType::getStateID(const std::string& stateString) const
@@ -51,8 +51,7 @@ SpriteObjectType::StateID_t SpriteObjectType::getStateID(const std::string& stat
         }
     }
 	// Fallback
-    LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
-		"State of ID for name `", stateString, "` was not found; using default.");
+    LOG_WARNING("{*", this, "\"", this->name, "} ", "State of ID for name `", stateString, "` was not found; using default.");
 	return SpriteObjectType::defaultStateID;
 }
 
@@ -63,8 +62,7 @@ const Object::Vector_t SpriteObjectType::getOrigin(const SpriteObjectType::State
 		return this->statesDetails[stateID].origin;
 	}
 	// Fallback
-	LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
-		"Origin for state ID `", stateID, "` was not found; using default.")
+	LOG_WARNING("{*", this, "\"", this->name, "} ", "Origin for state ID `", stateID, "` was not found; using default.")
 	return this->statesDetails[SpriteObjectType::defaultStateID].origin;
 }
 
@@ -75,8 +73,7 @@ const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(const SpriteObject
 		return this->statesDetails[stateID].vertices;
 	}
 	// Fallback
-	LOG_WARN("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ",
-		"Vertices for state ID `", stateID, "` was not found; using default.")
+	LOG_WARNING("{*", this, "\"", this->name, "} ", "Vertices for state ID `", stateID, "` was not found; using default.")
 	return this->statesDetails[SpriteObjectType::defaultStateID].vertices;
 }
 
@@ -85,8 +82,9 @@ const std::array<sf::Vertex, 4> SpriteObjectType::getVertices(const SpriteObject
 /* Operators */
 /// Constructor 
 SpriteObjectType::SpriteObjectType(const std::string& typeName)
-{
+{	
 	this->name = typeName;
+	LOG_INFO("{*", this, "\"", this->name, "} ", "Loading `", typeName, "` sprite object type.");
 
 	try {
 		// Load texture file
@@ -155,8 +153,7 @@ SpriteObjectType::SpriteObjectType(const std::string& typeName)
 		std::throw_with_nested(std::runtime_error("Could not load sprite object type: `" + this->name + "`."));
 	}
 	
-	LOG_INFO("[World][SpriteObjectType{*", this, ";\"", this->name, "}] ", 
-		"Loaded with ", this->statesDetails.size(), " states.");
+	LOG_WARNING("{*", this, "\"", this->name, "} ", "Loaded with ", this->statesDetails.size(), " states.");
 }
 
 
