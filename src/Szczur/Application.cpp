@@ -11,6 +11,7 @@ void Application::init()
 {
 	initModule<Window>();
 	initModule<Input>();
+	initModule<PrepScreen>();
 
 	#ifdef EDITOR
 	{
