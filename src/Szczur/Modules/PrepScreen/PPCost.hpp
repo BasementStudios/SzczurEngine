@@ -43,6 +43,7 @@ public:
                 source.remove(payment);
                 paymentCont.add(payment);
             }
+            assert(price == 0);
         }
     }
 
