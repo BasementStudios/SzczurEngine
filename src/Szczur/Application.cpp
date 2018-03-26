@@ -11,8 +11,8 @@ void Application::init()
 {
 	initModule<Window>();
 	initModule<Input>();
-	_modules.initModule<Script>();
-	_modules.initModule<GUI>();
+	initModule<Script>();
+	initModule<GUI>();
 	#ifdef EDITOR
 	{
 		ImGui::CreateContext();
@@ -30,7 +30,7 @@ void Application::input()
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
 		getModule<Input>().getManager().processEvent(event);
-		_modules.getModule<GUI>().input(event);
+		getModule<GUI>().input(event);
 
 		#ifdef EDITOR
 		{
@@ -47,7 +47,7 @@ void Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-	_modules.getModule<GUI>().update(deltaTime);
+	getModule<GUI>().update(deltaTime);
 	/*
 		Put other updates here
 	*/
@@ -69,7 +69,7 @@ void Application::update()
 void Application::render()
 {
 	getModule<Window>().clear();
-	_modules.getModule<GUI>().render();
+	getModule<GUI>().render();
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());

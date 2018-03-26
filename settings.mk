@@ -82,7 +82,7 @@ INC_DIR_BOOST_32 :=
 LIB_DIR_BOOST_32 := 
 BIN_DIR_BOOST_32 := 
 # Boost 64bit
-INC_DIR_BOOST_64 := 
+INC_DIR_BOOST_64 := c:/Biblioteki/boost_1_65_1/include
 LIB_DIR_BOOST_64 := 
 BIN_DIR_BOOST_64 := 
 
