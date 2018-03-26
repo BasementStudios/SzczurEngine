@@ -3,7 +3,7 @@
 #include <set>
 #include <functional>
 
-#include "PPGroup.hpp"
+#include "Szczur/Modules/PrepScreen/PPGroup.hpp"
 
 namespace rat
 {
@@ -27,11 +27,25 @@ public:
         else ppCont.erase(found);
     }
 
-    size_t getAmount(const std::string type, size_t power)
+    size_t getAmount(const std::string& type, size_t power) const
     {
         auto found = ppCont.find(PPGroup(type, power));
         if(found == ppCont.end()) return 0u;
         return found->getAmount();
+    }
+
+    void moveAllTo(PPContainer& target)
+    {
+        while(ppCont.size() != 0)
+        {
+            auto& toRemove = *ppCont.begin();
+            target.add(toRemove);
+            remove(toRemove);
+        }
+    }
+
+    bool hasAnyPP()const{
+        return ppCont.size() > 0;
     }
 
 private:
