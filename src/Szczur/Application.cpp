@@ -11,7 +11,7 @@ void Application::init()
 {
 	initModule<Window>();
 	initModule<Input>();
-	initModule<DragonBones>();
+	//initModule<DragonBones>();
 	initModule<World>();
 
 	#ifdef EDITOR
@@ -47,7 +47,7 @@ void Application::update()
 {
 	float deltaTime = _mainClock.restart().asFSeconds();
 	
-	getModule<DragonBones>().update(deltaTime);
+	//getModule<DragonBones>().update(deltaTime);
 	
 	#ifdef EDITOR
 	{

@@ -169,9 +169,10 @@ CXXFLAGS_DYNAMIC_IMGUI  :=
 FILES_DYNAMIC_SFML := openal32.dll sfml*
 
 # Header-only libs
-HEADER_LIB_LIST := SOL2 JSON
+HEADER_LIB_LIST := SOL2 JSON GLM
 HEADER_INC_SOL2 := 3rd-party/sol2
 HEADER_INC_JSON := 3rd-party/json
+HEADER_INC_SOL2 := 3rd-party/glm
 
 # Print definitions
 COLORS := no

@@ -8,7 +8,6 @@
 #include <string>
 
 #include <SFML/Graphics/Drawable.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
