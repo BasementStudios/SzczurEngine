@@ -8,93 +8,98 @@
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include "Transform.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>	// translate, rotate, scale
 
-namespace rat
+namespace rat::sf3d
 {
 
-/* Properties */
-/// Position
-const Transformable::Vector_t& Transformable::getPosition() const
-{
-	return this->_position;
-}
-void Transformable::setPosition(const Transformable::Vector_t& value)
-{
-	this->_position = value;
-}
+	/* Properties */
+	/// Position
+	const Transformable::Vector_t& Transformable::getPosition() const
+	{
+		return this->_position;
+	}
+	void Transformable::setPosition(const Vector_t& value)
+	{
+		this->_position = value;
+	}
 
-/// Rotation
-const Transformable::Vector_t& Transformable::getRotation() const
-{
-	return this->_position;
-}
-void Transformable::setRotation(const Transformable::Vector_t& value)
-{
-	this->_position = value;
-}
+	/// Rotation
+	const Transformable::Vector_t& Transformable::getRotation() const
+	{
+		return this->_position;
+	}
+	void Transformable::setRotation(const Vector_t& value)
+	{
+		this->_position = value;
+	}
 
-/// Scale
-const Transformable::Vector_t& Transformable::getScale() const
-{
-	return this->_position;
-}
-void Transformable::setScale(const Transformable::Vector_t& value)
-{
-	this->_position = value;
-}
+	/// Scale
+	const Transformable::Vector_t& Transformable::getScale() const
+	{
+		return this->_position;
+	}
+	void Transformable::setScale(const Vector_t& value)
+	{
+		this->_position = value;
+	}
 
+	const Transformable::Vector_t& Transformable::getOrigin() const {
+		return _origin;
+	}
 
-
-/* Operators */
-/// Constructor
-Transformable::Transformable(
-	const Transformable::Vector_t& position,
-	const Transformable::Vector_t& rotation,
-	const Transformable::Vector_t& scale
-)
-	: _position(position), _rotation(rotation), _scale(scale)
-{
-	;
-}
+	void Transformable::setOrigin(const Vector_t& value) {
+		_origin = value;
+	}
 
 
 
-/* Methods */
-/// compute
-Transformable::Matrix_t Transformable::compute() const
-{
-	// Get identity matrix
-	glm::mat4 matrix(1.f);
-	
-	// Apply position translation
-	matrix = glm::translate(matrix, this->_position);
-	
-	// Apply rotation for each axis
-	matrix = glm::rotate(matrix, this->_rotation.x, glm::vec3(1.f, 0.f, 0.f));
-	matrix = glm::rotate(matrix, this->_rotation.y, glm::vec3(0.f, 1.f, 0.f));
-	matrix = glm::rotate(matrix, this->_rotation.z, glm::vec3(0.f, 0.f, 1.f));
-	
-	// Apply size scaling
-	matrix = glm::scale(matrix, this->_scale);
+	/* Operators */
+	/// Constructor
+	Transformable::Transformable(
+		const Vector_t& position		= {0.f, 0.f, 0.f},
+			const Vector_t& rotation	= {0.f, 0.f, 0.f},
+			const Vector_t& scale		= {1.f, 1.f, 1.f},
+			const Vector_t& origin		= {0.f, 0.f, 0.f}
+	)
+		: _position(position), _rotation(rotation), _scale(scale), _origin(origin)
+	{
+		;
+	}
 
-	return matrix;
-}
 
-/// translate
-void Transformable::translate(const Transformable::Vector_t& offset) {
-	this->_position += offset;
-}
 
-/// rotate
-void Transformable::rotate(const Transformable::Vector_t& offset) {
-	this->_rotation += offset;
-}
+	/* Methods */
+	/// compute
+	Transform Transformable::getTransform() const
+	{
+		Transform transform;
 
-/// scale
-void Transformable::scale(const Transformable::Vector_t& offset) {
-	this->_scale *= offset;
-}
+		transform.translate(-_origin);
+		transform.rotate(_rotation.x, {1.f, 0.f, 0.f});
+		transform.rotate(_rotation.y, {0.f, 1.f, 0.f});
+		transform.rotate(_rotation.z, {0.f, 0.f, 1.f});
+		transform.translate(_position);
+		transform.scale(_scale);
+
+		return transform;
+	}
+
+	/// translate
+	void Transformable::translate(const Transformable::Vector_t& offset) {
+		this->_position += offset;
+	}
+
+	/// rotate
+	void Transformable::rotate(const Transformable::Vector_t& offset) {
+		this->_rotation += offset;
+	}
+
+	/// scale
+	void Transformable::scale(const Transformable::Vector_t& offset) {
+		this->_scale *= offset;
+	}
 
 }
