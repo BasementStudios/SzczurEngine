@@ -1,6 +1,6 @@
 #pragma once
 
-#include <set>
+#include <map>
 #include <functional>
 #include <vector>
 #include <algorithm>
@@ -9,29 +9,42 @@
 
 namespace rat
 {
-class PPContainer
-{
-
-public:
-    void updateBySources(const std::vector<PPSource>& sources)
+    class PPContainer
     {
-        _amountOfPP = 0;
-        for(const PPSource& source : sources)
+        using amount_t = size_t;
+
+    public:
+        void add(PPSource& addon)
         {
-            const auto& sourceColor = source.getColoredPP();
-            auto found = _types.find(sourceColor);
-            if(found == _types.end()){
-                _types.insert(sourceColor);
+            assert(!addon.hasBeenAdded());
+            const auto& colPP = addon.getColoredPP();
+            auto found = _coloredPPs.find(colPP);
+            if(found == _coloredPPs.end()){
+                _coloredPPs.emplace(colPP, 1);
             }
-            else if(found->getPower < sourceColor.getPower()){
-                _types.erase(found);
-                _types.
+            else {
+                found->second++;
             }
-            _amountOfPP += source.getPPAmount();
+            _amountOfPP += addon.getPPAmount();
+            addon.makeAdded();
         }
-    }
-private:
-    std::set<ColoredPP, std::greater<ColoredPP>> _types;
-    size_t _amountOfPP{ 0u };
-};
+        void remove(PPSource& addon)
+        {
+            assert(addon.hasBeenAdded());
+            const auto& colPP = addon.getColoredPP();
+            auto found = _coloredPPs.find(colPP);
+            assert(found != _coloredPPs.end());
+            found->second--;
+            if(found->second == 0)
+            {
+                _coloredPPs.erase(colPP);
+            }
+            assert(_amountOfPP >= addon.getPPAmount());
+            _amountOfPP -= addon.getPPAmount();
+            addon.makeFree();
+        }
+    private:
+        std::map<ColoredPP, amount_t> _coloredPPs;
+        amount_t _amountOfPP{ 0u };
+    };
 }
