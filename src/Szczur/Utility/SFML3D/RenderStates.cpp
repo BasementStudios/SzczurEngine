@@ -8,47 +8,42 @@ namespace rat::sf3d {
         sf::BlendMode::One, sf::BlendMode::OneMinusSrcAlpha, sf::BlendMode::Add));
 
 
-    ////////////////////////////////////////////////////////////
     RenderStates::RenderStates() :
     blendMode(sf::BlendAlpha),
     transform(),
-    texture  (NULL),
-    shader   (NULL)
+    texture  (nullptr),
+    shader   (nullptr)
     {
     }
 
 
-    ////////////////////////////////////////////////////////////
     RenderStates::RenderStates(const Transform& theTransform) :
     blendMode(sf::BlendAlpha),
     transform(theTransform),
-    texture  (NULL),
-    shader   (NULL)
+    texture  (nullptr),
+    shader   (nullptr)
     {
     }
 
 
-    ////////////////////////////////////////////////////////////
     RenderStates::RenderStates(const sf::BlendMode& theBlendMode) :
     blendMode(theBlendMode),
     transform(),
-    texture  (NULL),
-    shader   (NULL)
+    texture  (nullptr),
+    shader   (nullptr)
     {
     }
 
 
-    ////////////////////////////////////////////////////////////
     RenderStates::RenderStates(const sf::Texture* theTexture) :
     blendMode(sf::BlendAlpha),
     transform(),
     texture  (theTexture),
-    shader   (NULL)
+    shader   (nullptr)
     {
     }
 
 
-    ////////////////////////////////////////////////////////////
     RenderStates::RenderStates(const sf::Shader* theShader) :
     blendMode(sf::BlendAlpha),
     transform(),
@@ -58,7 +53,6 @@ namespace rat::sf3d {
     }
 
 
-    ////////////////////////////////////////////////////////////
     RenderStates::RenderStates(const sf::BlendMode& theBlendMode, const Transform& theTransform,
                             const sf::Texture* theTexture, const sf::Shader* theShader) :
     blendMode(theBlendMode),
