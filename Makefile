@@ -130,9 +130,9 @@ DEBUGGER := none
 # Cleaning
 ifeq ($(MAKECMDGOALS),clean)
     CLEAN_FILES_CMD := rm 
-    CLEAN_FILES := "./obj/*/*.o" "./out/$(OUT_NAME)$(OUT_EXT)"
+    CLEAN_FILES := "./$(OBJ_DIR)/*/*$(OBJ_EXT)" "./$(OUT_DIR)/$(OUT_NAME)$(OUT_EXT)"
     CLEAN_DIRS_CMD := rm -dr 
-    CLEAN_DIRS  := "./obj/*"
+    CLEAN_DIRS  := "./$(OBJ_DIR)/*"
 endif
 
 # Other tools
@@ -169,9 +169,10 @@ CXXFLAGS_DYNAMIC_IMGUI  :=
 FILES_DYNAMIC_SFML := openal32.dll sfml*
 
 # Header-only libs
-HEADER_LIB_LIST := SOL2 JSON
+HEADER_LIB_LIST := SOL2 JSON GLM
 HEADER_INC_SOL2 := 3rd-party/sol2
 HEADER_INC_JSON := 3rd-party/json
+HEADER_INC_SOL2 := 3rd-party/glm
 
 # Print definitions
 COLORS := no
@@ -182,7 +183,7 @@ MARKERS := @todo @warn @err @debug
 # Dependencies finding
 DEPFLAGS := -MT $$@ -MMD -MP -MF 
 DEP_EXT := .d
-DEP_TMP := .tmp
+DEP_TMP_UPDATE_SUFFIX := .tmp
 
 
 
@@ -501,8 +502,8 @@ $(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
 $(OBJECT): $(SOURCE) $(DEPENDENT)
 	$(inform_object) $$@
 	$(V)$(MKDIR) `dirname $$@`
-	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP)
-	$(V)mv -f $(DEPENDENT)$(DEP_TMP) $(DEPENDENT) && touch $$@
+	$(V)$(CXX) -c $$< -o $$@ $(CXXFLAGS) $(DEPFLAGS) $(DEPENDENT)$(DEP_TMP_UPDATE_SUFFIX)
+	$(V)mv -f $(DEPENDENT)$(DEP_TMP_UPDATE_SUFFIX) $(DEPENDENT) && touch $$@
 	$(V)$(LS) $$@
 endef
 $(foreach _, $(OBJECTS), $(eval $(call recipe,$(_))))
