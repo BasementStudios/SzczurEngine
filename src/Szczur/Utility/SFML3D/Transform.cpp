@@ -21,4 +21,12 @@ namespace rat::sf3d {
     void Transform::combine(const Transform& transform) {
         _mat *= transform;
     }
+
+    Transform::operator glm::mat4()  {
+        return _mat;
+    }
+
+    void Transform::operator*=(const Transform& object) {
+        combine(object);
+    }
 }
