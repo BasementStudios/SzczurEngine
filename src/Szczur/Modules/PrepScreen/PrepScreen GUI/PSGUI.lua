@@ -24,19 +24,25 @@ local professionBar = PSInterface:addWidget({
 local meleIcon = professionBar:addImage({
 	position = {40, 0};
 	size = {120, 120};
+	texture = GUI.getTexture("out/assets/icons/meleIcon.png");
 	
 })
 local rangeIcon = professionBar:addImage({
 	position = {40, 120};
 	size = {120, 120};
+	texture = GUI.getTexture("out/assets/icons/meleIcon.png")	
 })
 local auraIcon = professionBar:addImage({
 	position = {40, 240};
 	size = {120, 120};
+	texture = GUI.getTexture("out/assets/icons/meleIcon.png");
+	
 })
 local innerFireIcon = professionBar:addImage({
 	position = {40, 360};
 	size = {120, 120};
+	texture = GUI.getTexture("out/assets/icons/meleIcon.png");
+	
 })
 
 local centerWindow = PSInterface:addWidget({

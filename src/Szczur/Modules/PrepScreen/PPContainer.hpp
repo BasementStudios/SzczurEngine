@@ -2,8 +2,10 @@
 
 #include <set>
 #include <functional>
+#include <vector>
+#include <algorithm>
 
-#include "Szczur/Modules/PrepScreen/PPGroup.hpp"
+#include "PPSource.hpp"
 
 namespace rat
 {
@@ -11,45 +13,25 @@ class PPContainer
 {
 
 public:
-
-    void add(const PPGroup& addon)
+    void updateBySources(const std::vector<PPSource>& sources)
     {
-        auto found = ppCont.find(addon);
-        if(found == ppCont.end()) ppCont.insert(addon);
-        else found->add(addon);
-    }
-
-    void remove(const PPGroup& sub)
-    {
-        assert(ppCont.count(sub) == 1);
-        auto found = ppCont.find(sub);
-        if(found->getAmount() > sub.getAmount()) found->remove(sub);
-        else ppCont.erase(found);
-    }
-
-    size_t getAmount(const std::string& type, size_t power) const
-    {
-        auto found = ppCont.find(PPGroup(type, power));
-        if(found == ppCont.end()) return 0u;
-        return found->getAmount();
-    }
-
-    void moveAllTo(PPContainer& target)
-    {
-        while(ppCont.size() != 0)
+        _amountOfPP = 0;
+        for(const PPSource& source : sources)
         {
-            auto& toRemove = *ppCont.begin();
-            target.add(toRemove);
-            remove(toRemove);
+            const auto& sourceColor = source.getColoredPP();
+            auto found = _types.find(sourceColor);
+            if(found == _types.end()){
+                _types.insert(sourceColor);
+            }
+            else if(found->getPower < sourceColor.getPower()){
+                _types.erase(found);
+                _types.
+            }
+            _amountOfPP += source.getPPAmount();
         }
     }
-
-    bool hasAnyPP()const{
-        return ppCont.size() > 0;
-    }
-
 private:
-    std::set<PPGroup, std::greater<PPGroup>> ppCont;
-
+    std::set<ColoredPP, std::greater<ColoredPP>> _types;
+    size_t _amountOfPP{ 0u };
 };
 }

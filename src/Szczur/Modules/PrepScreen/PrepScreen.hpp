@@ -20,9 +20,9 @@ public:
 
     PrepScreen()
     {
-        LOG_INFO(this, " : PrepScreen initing...");
+        LOG_INFO(this, " : Module PrepScreen initing...");
         init();
-        LOG_INFO(this, " : PrepScreen inited.");
+        LOG_INFO(this, " : Module PrepScreen inited.");
     }
 
 };
