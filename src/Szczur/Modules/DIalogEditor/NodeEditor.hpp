@@ -14,16 +14,19 @@ private:
 
 	std::unique_ptr<NodeManager> _nodeManager;
 
-
 	bool creatingNode = false;
 
 	NodePin* _newLinkPin = nullptr;
+
+	int _contextId = 0;
 
 public:
 	NodeEditor();
 	~NodeEditor();
 
 	void update();
+
+	void showPopups();
 
 	void drawIcon(bool filled);
 };

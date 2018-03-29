@@ -289,8 +289,87 @@ void NodeEditor::update()
 
 		ImGui::SetCursorScreenPos(cursorTopLeft);
 	}
-
 	ed::End();
+
+	if (ed::ShowNodeContextMenu(&_contextId))
+		ImGui::OpenPopup("Node Context Menu");
+	else if (ed::ShowLinkContextMenu(&_contextId))
+		ImGui::OpenPopup("Link Context Menu");
+	else if (ed::ShowBackgroundContextMenu())
+		ImGui::OpenPopup("Background Context Menu");
+
+	showPopups();
+}
+
+void NodeEditor::showPopups()
+{
+	if (ImGui::BeginPopup("Background Context Menu"))
+	{
+		if (ImGui::MenuItem("Create dialog"))
+		{
+			ImGui::EndPopup();
+			ImGui::CloseCurrentPopup();
+			ImGui::OpenPopup("Create Node Popup");
+		}
+		else
+			ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopup("Node Context Menu"))
+	{
+		auto node = _nodeManager->findLink(_contextId);
+
+		if (ImGui::MenuItem("Delete"))
+			ed::DeleteNode(_contextId);
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopup("Link Context Menu"))
+	{
+		auto link = _nodeManager->findLink(_contextId);
+
+		if (ImGui::MenuItem("Delete"))
+			ed::DeleteLink(_contextId);
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopupModal("Create Node Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		auto newNodePostion = ImGui::GetMousePosOnOpeningCurrentPopup();
+
+		ImGui::Text("Create new node");
+		ImGui::Separator();
+
+		static char buffer[256];
+
+		ImGui::InputText("Node name", buffer, 256);
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) 
+		{
+			auto node = _nodeManager->createNode(buffer);
+			node->createPin("Dialog in", ed::PinKind::Target);
+
+			ed::SetNodePosition(node->Id, newNodePostion);
+
+			ImGui::CloseCurrentPopup(); 
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) 
+		{ 
+			ImGui::CloseCurrentPopup(); 
+		}
+
+		ImGui::EndPopup();
+	}
+
+	if (ImGui::BeginPopupModal("New option", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+
+	}
 }
 
 }
