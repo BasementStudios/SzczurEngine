@@ -73,13 +73,19 @@ public:
 
 
 	Node* createNode(const std::string& name, Node::NodeType type = Node::Dialog);
+
+	Node* findNode(int nodeId);
+
 	void removeNode(int nodeId);
 
 	auto& getNodes() { return _nodes; }
 
+
 	NodeLink* createLink(int startPinId, int endPinId);
 
 	bool isPinLinked(int pinId);
+
+	NodeLink* findLink(int linkId);
 
 	void removeLink(int linkId);
 

@@ -13,12 +13,16 @@ NodePin* NodeManager::findPin(int pinId)
 	for (auto& node : _nodes)
 	{
 		for (auto& pin : node->Inputs)
+		{
 			if (pin->Id == pinId)
 				return pin.get();
+		}
 
 		for (auto& pin : node->Outputs)
+		{
 			if (pin->Id == pinId)
 				return pin.get();
+		}
 	}
 
 	return nullptr;
@@ -33,6 +37,17 @@ Node* NodeManager::createNode(const std::string& name, Node::NodeType type)
 	_nodes.push_back(std::move(node));
 
 	return ptr;
+}
+
+Node* NodeManager::findNode(int nodeId)
+{
+	for (auto& node : _nodes)
+	{
+		if (node->Id == nodeId)
+			return node.get();
+	}
+
+	return nullptr;
 }
 
 void NodeManager::removeNode(int nodeId)
@@ -63,10 +78,23 @@ bool NodeManager::isPinLinked(int pinId)
 		return false;
 
 	for (auto& link : _links)
+	{
 		if (link->StartPinId == pinId || link->EndPinId == pinId)
 			return true;
+	}
 
 	return false;
+}
+
+NodeLink* NodeManager::findLink(int linkId)
+{
+	for (auto& link : _links)
+	{
+		if (link->Id == linkId)
+			return link.get();
+	}
+
+	return nullptr;
 }
 
 void NodeManager::removeLink(int linkId)
@@ -78,6 +106,7 @@ void NodeManager::removeLink(int linkId)
 		_links.erase(id);
 	}
 }
+
 
 void Node::createPin(const std::string& name, ed::PinKind pinKind)
 {
