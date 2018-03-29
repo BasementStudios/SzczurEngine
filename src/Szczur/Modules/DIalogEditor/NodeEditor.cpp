@@ -18,7 +18,13 @@ NodeEditor::NodeEditor()
 
 	_nodeManager = std::make_unique<NodeManager>();
 
-	for (int i = 0; i < 20; i++)
+	auto start = _nodeManager->createNode("Start", Node::Start);
+	start->createPin("Start", ed::PinKind::Source);
+
+	auto end = _nodeManager->createNode("End", Node::End);
+	end->createPin("End", ed::PinKind::Target);
+
+	/*for (int i = 0; i < 20; i++)
 	{
 		auto node = _nodeManager->createNode("Pole wyboru");
 
@@ -26,7 +32,7 @@ NodeEditor::NodeEditor()
 		node->createPin("Option 1", ed::PinKind::Source);
 		node->createPin("Option 2", ed::PinKind::Source);
 		node->createPin("Option 3", ed::PinKind::Source);
-	}
+	}*/
 }
 
 NodeEditor::~NodeEditor()
@@ -109,8 +115,6 @@ void NodeEditor::update()
 {
 	ed::SetCurrentEditor(_context);
 
-	int uniqueId = 1;
-
 	ed::Begin("Node Editor");
 	{
 		auto cursorTopLeft = ImGui::GetCursorScreenPos();
@@ -122,13 +126,19 @@ void NodeEditor::update()
 			{
 				ImGui::Text(node->Name.c_str());
 
+				if (node->Type == Node::Dialog)
+				{
+					ImGui::SameLine();
+
+					ImGui::Button("Edit");
+				}
+
 				ImGui::BeginGroup();
 
 				for (auto& input : node->Inputs)
 				{
 					ed::PushStyleVar(ed::StyleVar_PivotAlignment, ImVec2(0, 0.5f));
 					ed::PushStyleVar(ed::StyleVar_PivotSize, ImVec2(0, 0));
-
 
 					ed::BeginPin(input->Id, ed::PinKind::Target);
 					
@@ -140,6 +150,7 @@ void NodeEditor::update()
 					ImGui::Text(input->Name.c_str());
 
 					ed::EndPin();
+
 					ed::PopStyleVar(2);
 				}
 
@@ -168,6 +179,14 @@ void NodeEditor::update()
 					ed::PopStyleVar(2);
 				}
 
+				if (node->Type == Node::Dialog)
+				{
+					if (ImGui::Button("Add option"))
+					{
+
+					}
+				}
+
 				ImGui::EndGroup();
 
 			}
@@ -191,7 +210,6 @@ void NodeEditor::update()
 				{
 					auto startPin = _nodeManager->findPin(startPinId);
 					auto endPin = _nodeManager->findPin(endPinId);
-
 
 					_newLinkPin = startPin ? startPin : endPin;
 
@@ -251,10 +269,19 @@ void NodeEditor::update()
 			int nodeId = 0;
 			while (ed::QueryDeletedNode(&nodeId))
 			{
-				if (ed::AcceptDeletedItem())
+				auto node = _nodeManager->findNode(nodeId);
+
+				if (node->Type == Node::Start || node->Type == Node::End)
+				{
+					std::cout << "Woww" << std::endl;
+
+					ed::RejectDeletedItem();
+				}
+				else if (ed::AcceptDeletedItem())
 				{
 					_nodeManager->removeNode(nodeId);
 				}
+
 			}
 
 			ed::EndDelete();

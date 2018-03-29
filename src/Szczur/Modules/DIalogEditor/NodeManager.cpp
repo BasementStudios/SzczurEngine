@@ -5,17 +5,6 @@
 namespace rat
 {
 
-Node* NodeManager::createNode(const std::string& name)
-{
-	auto node = std::make_unique<Node>(GetNewId(), name.c_str());
-
-	auto ptr = node.get();
-
-	_nodes.push_back(std::move(node));
-
-	return ptr;
-}
-
 NodePin* NodeManager::findPin(int pinId)
 {
 	if (pinId <= 0)
@@ -33,6 +22,17 @@ NodePin* NodeManager::findPin(int pinId)
 	}
 
 	return nullptr;
+}
+
+Node* NodeManager::createNode(const std::string& name, Node::NodeType type)
+{
+	auto node = std::make_unique<Node>(GetNewId(), name.c_str(), type);
+
+	auto ptr = node.get();
+
+	_nodes.push_back(std::move(node));
+
+	return ptr;
 }
 
 void NodeManager::removeNode(int nodeId)

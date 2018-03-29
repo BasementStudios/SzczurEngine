@@ -30,8 +30,15 @@ struct Node
 	std::vector<std::unique_ptr<NodePin>> Inputs;
 	std::vector<std::unique_ptr<NodePin>> Outputs;
 
-	Node(int id, const std::string& name) :
-		Id(id), Name(name) { }
+	enum NodeType
+	{
+		Start,
+		End,
+		Dialog
+	} Type = Dialog;
+
+	Node(int id, const std::string& name, NodeType nodeType) :
+		Id(id), Name(name), Type(nodeType) { }
 
 	void createPin(const std::string& name, ed::PinKind pinKind);
 };
@@ -64,8 +71,8 @@ public:
 
 	NodePin* findPin(int pinId);
 
-	Node* createNode(const std::string& name);
 
+	Node* createNode(const std::string& name, Node::NodeType type = Node::Dialog);
 	void removeNode(int nodeId);
 
 	auto& getNodes() { return _nodes; }
