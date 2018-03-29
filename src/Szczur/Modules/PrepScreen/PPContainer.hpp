@@ -12,6 +12,7 @@ namespace rat
     class PPContainer
     {
         using amount_t = size_t;
+        using power_t = size_t;
 
     public:
         void add(PPSource& addon)
@@ -42,6 +43,19 @@ namespace rat
             assert(_amountOfPP >= addon.getPPAmount());
             _amountOfPP -= addon.getPPAmount();
             addon.makeFree();
+        }
+
+        amount_t getPPAmount() const {
+            return _amountOfPP;
+        }
+        bool hasProperColoredPP(const ColoredPP& colPP)
+        {
+            for(auto i = colPP.power; i <= 2u; i++)
+            {
+                auto found = _coloredPPs.find( {colPP.type, i} );
+                if(found != _coloredPPs.end()) return true;
+            }
+            return false;
         }
     private:
         std::map<ColoredPP, amount_t> _coloredPPs;

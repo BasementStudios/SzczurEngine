@@ -1,17 +1,28 @@
 #pragma once
 
-#include <map>
+#include <set>
 #include <algorithm>
 #include <initializer_list>
 
-#include "Szczur/Modules/PrepScreen/PPContainer.hpp"
+#include "PPContainer.hpp"
 
 namespace rat
 {
+    class PPCost
+    {
+        using amount_t = size_t;
+       
+        public:
+            bool isBuyable(const PPContainer& source)
+            {
+                if(source.getPPAmount() < _ppCost) return false;
+                
+            }
+        
 
-class PPCost
-{
-
-};
-
+        private:
+            std::set<ColoredPP> _typesRequirement;
+            amount_t _ppCost;
+        
+    };
 }
