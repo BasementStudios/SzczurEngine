@@ -48,7 +48,7 @@ namespace rat
         amount_t getPPAmount() const {
             return _amountOfPP;
         }
-        bool hasProperColoredPP(const ColoredPP& colPP)
+        bool hasProperColoredPP(const ColoredPP& colPP) const
         {
             for(auto i = colPP.power; i <= 2u; i++)
             {

@@ -11,13 +11,40 @@ namespace rat
     class PPCost
     {
         using amount_t = size_t;
+        using power_t = size_t;
        
         public:
             bool isBuyable(const PPContainer& source)
             {
                 if(source.getPPAmount() < _ppCost) return false;
-                
+                for(const ColoredPP& requirement : _typesRequirement)
+                {
+                    if(!source.hasProperColoredPP( requirement )) return false;
+                }
+                return true;
             }
+            void setCost(amount_t newCost)
+            {
+                _ppCost = newCost;
+            }
+            void addColorRequirement(const ColoredPP& requirement)
+            {
+                addColorRequirement(requirement.type, requirement.power);
+
+            }
+            void addColorRequirement(const std::string color, power_t power)
+            {
+                for(size_t i = 1; i <= 2; i++)
+                {
+                    auto found = _typesRequirement.find({color, i});
+                    if(found == _typesRequirement.end()) continue;                    
+                    else if(found->power == power) return;
+                    else _typesRequirement.erase(found);
+                }
+                _typesRequirement.emplace(color, power);
+            }
+
+            
         
 
         private:
