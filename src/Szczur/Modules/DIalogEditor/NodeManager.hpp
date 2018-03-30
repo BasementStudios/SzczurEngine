@@ -41,6 +41,8 @@ struct Node
 		Id(id), Name(name), Type(nodeType) { }
 
 	void createPin(const std::string& name, ed::PinKind pinKind);
+
+	void removePin(NodePin *pin);
 };
 
 struct NodeLink

@@ -126,4 +126,26 @@ void Node::createPin(const std::string& name, ed::PinKind pinKind)
 	}
 }
 
+void Node::removePin(NodePin* pin)
+{
+	if (pin->Kind == ed::PinKind::Target)
+	{
+		auto id = std::find_if(Inputs.begin(), Inputs.end(), [pin] (auto& node) { return node->Id == pin->Id; });
+
+		if (id != Inputs.end())
+		{
+			Inputs.erase(id);
+		}
+	}
+	else if (pin->Kind == ed::PinKind::Source)
+	{
+		auto id = std::find_if(Outputs.begin(), Outputs.end(), [pin] (auto& node) { return node->Id == pin->Id; });
+
+		if (id != Outputs.end())
+		{
+			Outputs.erase(id);
+		}
+	}
+}
+
 }
