@@ -236,10 +236,10 @@ void NodeEditor::update()
 						{
 							ed::RejectNewItem(ImColor(255, 0, 0), 2.0f);
 						}
-						else if (endPin->Node == startPin->Node)
+						else if (startPin->Node->Type == Node::Start && endPin->Node->Type == Node::End)
 						{
-						    ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
-						}	
+							ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
+						}
 						else if (_nodeManager->isPinLinked(startPinId))
 						{
 							ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
