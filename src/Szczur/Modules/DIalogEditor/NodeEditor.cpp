@@ -108,14 +108,10 @@ void NodeEditor::drawIcon(bool filled)
 	}
 	else
 		drawList->PathFillConvex(color);
-
 }
 
 void NodeEditor::update()
 {
-	// ugly workaround ;/
-	static bool openNewOptionPopup = false;
-
 	ed::SetCurrentEditor(_context);
 
 	ed::Begin("Node Editor");
@@ -129,15 +125,9 @@ void NodeEditor::update()
 			{
 				ImGui::Text(node->Name.c_str());
 
-				if (node->Type == Node::Options)
-				{
-					ImGui::SameLine();
-
-					ImGui::Button("Edit");
-				}
-
 				ImGui::BeginGroup();
 
+				// draw inputs
 				for (auto& input : node->Inputs)
 				{
 					ed::PushStyleVar(ed::StyleVar_PivotAlignment, ImVec2(0, 0.5f));
@@ -167,12 +157,29 @@ void NodeEditor::update()
 
 				ImGui::BeginGroup();
 
+				// draw outputs
 				for (auto& output : node->Outputs)
 				{
 					ed::PushStyleVar(ed::StyleVar_PivotAlignment, ImVec2(1.0f, 0.5f));
 					ed::PushStyleVar(ed::StyleVar_PivotSize, ImVec2(0, 0));
 
 					ed::BeginPin(output->Id, ed::PinKind::Source);
+
+					if (node->Type == Node::Options)
+					{
+						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+
+						std::string label = (output->OptionTarget == -1 ? "SET" : std::to_string(output->OptionTarget)) + "##" + std::to_string(output->Id);
+
+						if (ImGui::Button(label.c_str()))
+						{
+							_currentOption = output.get();
+							_optionConfigWindow = true;
+						}
+
+						ImGui::PopStyleVar();
+						ImGui::SameLine();
+					}
 
 					ImGui::BeginGroup();
 					ImGui::Dummy(ImVec2(1.f, 0.f));
@@ -196,9 +203,7 @@ void NodeEditor::update()
 
 					if (ImGui::Button(label.c_str()))
 					{
-						_contextId = node->Id;
-
-						openNewOptionPopup = true;
+						auto pin = node->createPin("Option", ed::PinKind::Source);
 					}
 				}
 
@@ -303,12 +308,6 @@ void NodeEditor::update()
 	}
 	ed::End();
 
-	if (openNewOptionPopup)
-	{
-		ImGui::OpenPopup("Add Option Popup");
-		openNewOptionPopup = false;
-	}
-
 	if (ed::ShowNodeContextMenu(&_contextId))
 		ImGui::OpenPopup("Node Context Menu");
 	else if (ed::ShowLinkContextMenu(&_contextId))
@@ -319,6 +318,7 @@ void NodeEditor::update()
 		ImGui::OpenPopup("Background Context Menu");
 
 	showPopups();
+	showOptionConfig();
 }
 
 void NodeEditor::showPopups()
@@ -422,7 +422,7 @@ void NodeEditor::showPopups()
 		if (ImGui::Button("OK", ImVec2(120, 0))) 
 		{
 			auto node = _nodeManager->createNode(buffer);
-			node->createPin("Options in", ed::PinKind::Target);
+			node->createPin("Trigger", ed::PinKind::Target);
 
 			ed::SetNodePosition(node->Id, newNodePostion);
 
@@ -438,36 +438,34 @@ void NodeEditor::showPopups()
 
 		ImGui::EndPopup();
 	}
+}
 
-	if (ImGui::BeginPopupModal("Add Option Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+void NodeEditor::showOptionConfig()
+{
+	if (_optionConfigWindow)
 	{
-		static int target = 0;
-
-		ImGui::Text("Add option");
-		ImGui::Separator();
-
-		ImGui::InputInt("Options id", &target);
-
-		if (ImGui::Button("OK", ImVec2(120, 0)))
+		if (ImGui::Begin("Option config", &_optionConfigWindow, ImGuiWindowFlags_AlwaysAutoResize))
 		{
-			auto node = _nodeManager->findNode(_contextId);
+			if (_currentOption)
+			{
+				ImGui::Text("Node: %s", _currentOption->Node->Name.c_str());
 
-			node->createPin("Target " + std::to_string(target), ed::PinKind::Source);
+				static char buf[256] = { 0 };
 
-			_contextId = 0;
+				strcpy(buf, _currentOption->Name.c_str());
 
-			ImGui::CloseCurrentPopup();
+				if (ImGui::InputText("Name: ", buf, 256))
+				{
+					_currentOption->Name = buf;
+				}
+
+				ImGui::Separator();
+
+				ImGui::Text("Set target dialog: ");
+				ImGui::InputInt("Target dialog: ", &_currentOption->OptionTarget);
+			}
 		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Cancel", ImVec2(120, 0)))
-		{
-			_contextId = 0;
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::EndPopup();
+		ImGui::End();
 	}
 }
 

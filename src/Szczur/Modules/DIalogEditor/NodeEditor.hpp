@@ -20,6 +20,9 @@ private:
 
 	int _contextId = 0;
 
+	bool _optionConfigWindow = false;
+	NodePin* _currentOption = nullptr;
+
 public:
 	NodeEditor();
 	~NodeEditor();
@@ -27,6 +30,8 @@ public:
 	void update();
 
 	void showPopups();
+
+	void showOptionConfig();
 
 	void drawIcon(bool filled);
 };

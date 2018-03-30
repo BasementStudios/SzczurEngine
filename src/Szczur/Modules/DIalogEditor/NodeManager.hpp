@@ -19,6 +19,8 @@ struct NodePin
 	std::string Name;
 	ed::PinKind Kind;
 
+	int OptionTarget = -1;
+
 	NodePin(int id, const std::string& name, ed::PinKind kind) :
 		Id(id), Name(name), Kind(kind) { }
 };
