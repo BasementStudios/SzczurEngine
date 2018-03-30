@@ -113,6 +113,9 @@ void NodeEditor::drawIcon(bool filled)
 
 void NodeEditor::update()
 {
+	// ugly workaround ;/
+	static bool openNewOptionPopup = false;
+
 	ed::SetCurrentEditor(_context);
 
 	ed::Begin("Node Editor");
@@ -181,9 +184,13 @@ void NodeEditor::update()
 
 				if (node->Type == Node::Options)
 				{
-					if (ImGui::Button("Add option"))
-					{
+					std::string label = "Add option##" + std::to_string(node->Id);
 
+					if (ImGui::Button(label.c_str()))
+					{
+						_contextId = node->Id;
+
+						openNewOptionPopup = true;
 					}
 				}
 
@@ -288,10 +295,18 @@ void NodeEditor::update()
 	}
 	ed::End();
 
+	if (openNewOptionPopup)
+	{
+		ImGui::OpenPopup("Add Option Popup");
+		openNewOptionPopup = false;
+	}
+
 	if (ed::ShowNodeContextMenu(&_contextId))
 		ImGui::OpenPopup("Node Context Menu");
 	else if (ed::ShowLinkContextMenu(&_contextId))
 		ImGui::OpenPopup("Link Context Menu");
+	else if (ed::ShowPinContextMenu(&_contextId))
+		ImGui::OpenPopup("Pin Context Menu");
 	else if (ed::ShowBackgroundContextMenu())
 		ImGui::OpenPopup("Background Context Menu");
 
@@ -331,6 +346,55 @@ void NodeEditor::showPopups()
 		ImGui::EndPopup();
 	}
 
+	if (ImGui::BeginPopup("Pin Context Menu"))
+	{
+		auto pin = _nodeManager->findPin(_contextId);
+
+		if (ImGui::MenuItem("Disconnect"))
+		{
+			auto& links = _nodeManager->getLinks();
+
+			for (int i = 0; i < links.size(); i++)
+			{
+				auto& link = links[i];
+
+				if (link->StartPinId == pin->Id || link->EndPinId == pin->Id)
+				{
+					_nodeManager->removeLink(link->Id);
+
+					i--;
+				}
+			}
+		}
+
+		if (pin->Kind == ed::PinKind::Source && pin->Node->Type == Node::Options)
+		{
+			if (ImGui::MenuItem("Delete"))
+			{
+				if (pin->Kind == ed::PinKind::Source)
+				{
+					// remove links with this pin
+					auto& links = _nodeManager->getLinks();
+
+					for (int i = 0; i < links.size(); i++)
+					{
+						auto& link = links[i];
+
+						if (link->StartPinId == pin->Id)
+						{
+							_nodeManager->removeLink(link->Id);
+
+							i--;
+						}
+					}
+
+					pin->Node->removePin(pin);
+				}
+			}
+		}
+		ImGui::EndPopup();
+	}
+
 	if (ImGui::BeginPopupModal("Create Node Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		auto newNodePostion = ImGui::GetMousePosOnOpeningCurrentPopup();
@@ -362,9 +426,35 @@ void NodeEditor::showPopups()
 		ImGui::EndPopup();
 	}
 
-	if (ImGui::BeginPopupModal("New option", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Add Option Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
+		static int target = 0;
 
+		ImGui::Text("Add option");
+		ImGui::Separator();
+
+		ImGui::InputInt("Options id", &target);
+
+		if (ImGui::Button("OK", ImVec2(120, 0)))
+		{
+			auto node = _nodeManager->findNode(_contextId);
+
+			node->createPin("Target " + std::to_string(target), ed::PinKind::Source);
+
+			_contextId = 0;
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(120, 0)))
+		{
+			_contextId = 0;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
 	}
 }
 
