@@ -278,7 +278,7 @@ void NodeEditor::update()
 			{
 				auto node = _nodeManager->findNode(nodeId);
 
-				if (node->Type == Node::Options && ed::AcceptDeletedItem())
+				if ((node->Type == Node::Options || node->Type == Node::Connector) && ed::AcceptDeletedItem())
 				{
 					_nodeManager->removeNode(nodeId);
 				}
@@ -337,8 +337,6 @@ void NodeEditor::showPopups()
 
 	if (ImGui::BeginPopup("Node Context Menu"))
 	{
-		auto node = _nodeManager->findLink(_contextId);
-
 		if (ImGui::MenuItem("Delete"))
 			ed::DeleteNode(_contextId);
 
@@ -347,8 +345,6 @@ void NodeEditor::showPopups()
 
 	if (ImGui::BeginPopup("Link Context Menu"))
 	{
-		auto link = _nodeManager->findLink(_contextId);
-
 		if (ImGui::MenuItem("Delete"))
 			ed::DeleteLink(_contextId);
 
