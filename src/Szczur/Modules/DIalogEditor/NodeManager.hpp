@@ -10,7 +10,7 @@ namespace ed = ax::NodeEditor;
 
 namespace rat
 {
-struct Node;
+class Node;
 
 struct NodePin
 {
@@ -23,20 +23,28 @@ struct NodePin
 		Id(id), Name(name), Kind(kind) { }
 };
 
-struct Node
+class Node
 {
-	int Id;
-	std::string Name;
-	std::vector<std::unique_ptr<NodePin>> Inputs;
-	std::vector<std::unique_ptr<NodePin>> Outputs;
-
+public:
 	enum NodeType
 	{
 		Start,
 		End,
 		Dialog
-	} Type = Dialog;
+	};
 
+public:
+	int Id;
+	std::string Name;
+	std::vector<std::unique_ptr<NodePin>> Inputs;
+	std::vector<std::unique_ptr<NodePin>> Outputs;
+
+	NodeType Type = Dialog;
+
+private:
+	int _lastPinId = 0;
+
+public:
 	Node(int id, const std::string& name, NodeType nodeType) :
 		Id(id), Name(name), Type(nodeType) { }
 

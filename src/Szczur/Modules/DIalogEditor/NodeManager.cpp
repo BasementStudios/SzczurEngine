@@ -110,9 +110,9 @@ void NodeManager::removeLink(int linkId)
 
 void Node::createPin(const std::string& name, ed::PinKind pinKind)
 {
-	auto newId = (Inputs.size() + Outputs.size() + 1) + Id * 100;
+	auto newId = ++_lastPinId + Id * 100;;
 
-	auto pin = std::make_unique<NodePin>(static_cast<int>(newId), name, pinKind);
+	auto pin = std::make_unique<NodePin>(newId, name, pinKind);
 
 	pin->Node = this;
 
