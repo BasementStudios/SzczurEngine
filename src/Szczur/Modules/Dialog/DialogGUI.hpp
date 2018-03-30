@@ -3,11 +3,17 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
+
 #include "TextManager.hpp"
 
 #include "Options.hpp"
 
 namespace rat {
+    class TextAreaWidget;
+    class TextWidget;
+    class ImageWidget;
+    class Widget;
+    class ScrollAreaWidget;
     class DialogGUI {
     public:
         DialogGUI(GUI& gui);

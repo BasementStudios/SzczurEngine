@@ -1,8 +1,11 @@
 #include "GUI.hpp"
 #include <iostream>
+#include "ImageWidget.hpp"
+#include "TextWidget.hpp"
+#include "TextAreaWidget.hpp"
+#include "ScrollAreaWidget.hpp"
 namespace rat {
-    GUI::GUI() :
-    _root(new Widget) {
+    GUI::GUI() {
         LOG_INFO(this, "Module GUI constructed")
         initScript();
         auto& window = getModule<Window>().getWindow();
@@ -21,39 +24,35 @@ namespace rat {
 
 
 
+
         script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
         script.scriptFile("data/_GUI.lua");
     }
 
     GUI::~GUI() {
         LOG_INFO(this, "Module GUI destructed")
-        delete _root;
     }
 
     Widget* GUI::addInterface() {
         Widget* widget = new Widget;
-        _root->add(widget);
+        _root.add(widget);
         return widget;
     }
     
     void GUI::input(const sf::Event& event) {
-        _root->input(event);
+        _root.input(event);
     }
 
     void GUI::update(float deltaTime) {
-        _root->update(deltaTime);
+        _root.update(deltaTime);
     }
 
     void GUI::render() {
         _canvas.clear(sf::Color::Transparent);
         
-        _canvas.draw(*_root);
+        _canvas.draw(_root);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
-    }
-
-    void GUI::reload() {
-        //_root->reload(getModule<Window>().getWindow().getSize());
     }
 }

@@ -1,6 +1,12 @@
 #include "TextAreaWidget.hpp"
+
 #include <iostream>
+#include <algorithm>
+
 #include "Test.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Utility/Convert/Unicode.hpp"
+
 namespace rat {
     TextAreaWidget::TextAreaWidget() :
     _size(0u, 0u),
@@ -16,8 +22,6 @@ namespace rat {
 
     void TextAreaWidget::initScript(Script& script) {
         auto object = script.newClass<TextAreaWidget>("TextAreaWidget", "GUI");
-        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //Widget::basicScript<ImageWidget>(object);
         basicScript(object);
 
         object.setProperty(
@@ -54,13 +58,15 @@ namespace rat {
     }
 
     void TextAreaWidget::setString(const std::string& text) {
-        _text.setString(text);
-        _toWrap = true;
+        sf::String sfstr = getUnicodeString(text);
+        _text.setString(_wrapText(sfstr));
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setSize(sf::Vector2u size) {
         _size = size;
         _toWrap = true;
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setFont(sf::Font* font) {
@@ -70,6 +76,7 @@ namespace rat {
     void TextAreaWidget::setCharacterSize(size_t size) {
         _text.setCharacterSize(size);
         _toWrap = true;
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setColor(const sf::Color& color) {
@@ -80,13 +87,15 @@ namespace rat {
         target.draw(_text, states);
     }
 
-    void TextAreaWidget::_wrapText() {
-        std::string temp = _text.getString().toAnsiString();
-        temp.erase(std::remove_if(temp.begin(), temp.end(), [](auto& it){return it=='\n';}), temp.end());
-        for(auto i = _size.x; i<temp.size(); i+=_size.x) {
-            int x = i;
-            while(temp[x]!=' ') {
-                if(--x == 0) {
+    sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
+        _toWrap = false;
+        for(size_t i = 0; i<temp.getSize(); ++i)
+            if(temp[i] == '\n')
+                temp[i] = ' ';
+        for(size_t i = _size.x; i<temp.getSize(); i+=_size.x) {
+            auto x = i;
+            while(temp[x] != ' ') {
+                if(--x == 0u) {
                     x=i;
                     break;
                 }
@@ -94,15 +103,15 @@ namespace rat {
             if(temp[x] == ' ')
                 temp[x] = '\n';
             else
-                temp.insert(x, 1, '\n');
+                temp.insert(x, "\n");
         }
-        _text.setString(temp);
+        return temp;
     }
 
     void TextAreaWidget::_update(float deltaTime) {
         if(_toWrap) {
-            _toWrap = false;
-            _wrapText();
+            sf::String sfstr = _text.getString();
+            _text.setString(_wrapText(sfstr));
         }
         
     }

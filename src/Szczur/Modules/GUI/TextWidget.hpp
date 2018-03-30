@@ -1,14 +1,13 @@
 #pragma once 
 
-#include <string>
 
 #include <SFML/Graphics.hpp>
-#include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Utility/Convert/Unicode.hpp"
 
 #include "Widget.hpp"
 
 namespace rat {
+    class Script;
+
     class TextWidget : public Widget {
     public:
         TextWidget();
@@ -23,7 +22,7 @@ namespace rat {
 
         void addLetter(char letter);
 
-        const std::string& getString() const;
+        std::string getString() const;
         void setString(const std::string& str);
 
         void setFont(sf::Font* font);

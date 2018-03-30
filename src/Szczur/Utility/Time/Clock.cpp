@@ -8,8 +8,8 @@ Clock::TimePoint_t Clock::now()
 	return Clock_t::now();
 }
 
-Clock::Clock() :
-	_refPoint(now())
+Clock::Clock()
+	: _refPoint{ now() }
 {
 
 }
@@ -21,7 +21,7 @@ Time Clock::getElapsedTime() const
 
 Time Clock::restart()
 {
-	Time ret = getElapsedTime();
+	auto ret = getElapsedTime();
 	_refPoint = now();
 	return ret;
 }

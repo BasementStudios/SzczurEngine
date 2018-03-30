@@ -5,7 +5,6 @@ namespace rat {
     _dialogGUI(getModule<GUI>()) {
         LOG_INFO(this, "Module Dialog constructed")
         auto& gui = getModule<GUI>();
-        
         _initScript();
         _dialogGUI.setKillerCallback([this](){
             unload();

@@ -2,13 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Modules/Script/Script.hpp"
-
-#include <algorithm>
-
-#include "TextWidget.hpp"
+#include "Widget.hpp"
 
 namespace rat {
+    class Script;
     class TextAreaWidget : public Widget {
     public:
         TextAreaWidget();
@@ -36,7 +33,7 @@ namespace rat {
         sf::Text _text;
         sf::Vector2u _size;
 
-        void _wrapText();
+        sf::String& _wrapText(sf::String& temp);
         virtual void _callback(CallbackType type) override;
     };
 }

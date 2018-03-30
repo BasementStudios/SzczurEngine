@@ -79,9 +79,8 @@ namespace rat {
                 }
             }
         }
-        else {
 
-        }
+        return false;
     }
 
     void DialogManager::load(const std::string& path) {

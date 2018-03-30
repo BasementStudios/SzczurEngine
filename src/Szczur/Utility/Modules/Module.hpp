@@ -2,8 +2,7 @@
 
 #include <tuple>
 
-#include "Szczur/Debug.hpp"
-#include "LazyInitializer.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
@@ -18,12 +17,12 @@ public:
 	Module();
 
 	Module(const Module&) = default;
-
 	Module& operator = (const Module&) = default;
 
 	Module(Module&&) = default;
-
 	Module& operator = (Module&&) = default;
+
+	~Module() = default;
 
 	template <typename U>
 	U& getModule();
@@ -32,15 +31,9 @@ public:
 
 private:
 
-	template <typename U>
-	static constexpr bool _dependsOn();
-
 	Holder_t _modulesRefs;
 
 };
-
-template <typename T>
-inline T* modulePtr_v = nullptr;
 
 }
 

@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "Widget.hpp"
-#include "CheckWidget.hpp"
 
 namespace rat {
     class RadioWidget : public Widget {

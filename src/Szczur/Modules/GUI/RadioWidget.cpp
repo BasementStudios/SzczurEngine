@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "CheckWidget.hpp"
+
 namespace rat {
     RadioWidget::RadioWidget(size_t amount, sf::Texture* text1, sf::Texture* text2) :
     Widget(),

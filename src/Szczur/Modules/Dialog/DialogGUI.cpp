@@ -1,5 +1,11 @@
 #include "DialogGUI.hpp"
 
+#include "Szczur/Modules/GUI/TextAreaWidget.hpp"
+#include "Szczur/Modules/GUI/TextWidget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+#include "Szczur/Modules/GUI/Widget.hpp"
+
 namespace rat {
 
     DialogGUI::DialogGUI(GUI& gui) :
@@ -129,7 +135,7 @@ namespace rat {
         options.forEach([&i, this, callback, &textManager](Options::Option* option){
             if(option->condition == nullptr || std::invoke(option->condition)) {
                 TextWidget* button = new TextWidget;
-                button->setString(textManager.getLabel(option->target));
+                //button->setString(textManager.getLabel(option->target));
                 _buttonsCreator.call(
                     i, 
                     button
@@ -142,6 +148,7 @@ namespace rat {
                         std::invoke(_killerCallback);
                     });
                 }
+                
                 else {
                     button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
                             if(option->afterAction)

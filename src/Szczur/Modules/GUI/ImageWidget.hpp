@@ -1,14 +1,11 @@
 #pragma once
 
-#include <string>
-
-#include "Szczur/Modules/Script/Script.hpp"
-
 #include <SFML/Graphics.hpp>
 
 #include "Widget.hpp"
 
 namespace rat {
+    class Script;
     class ImageWidget : public Widget {
     public:
         ImageWidget();
