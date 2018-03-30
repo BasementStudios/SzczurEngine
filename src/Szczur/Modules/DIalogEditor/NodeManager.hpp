@@ -49,7 +49,7 @@ public:
 	Node(int id, const std::string& name, NodeType nodeType) :
 		Id(id), Name(name), Type(nodeType) { }
 
-	void createPin(const std::string& name, ed::PinKind pinKind);
+	NodePin* createPin(const std::string& name, ed::PinKind pinKind);
 
 	void removePin(NodePin *pin);
 };

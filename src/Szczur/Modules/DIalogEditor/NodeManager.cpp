@@ -108,13 +108,15 @@ void NodeManager::removeLink(int linkId)
 }
 
 
-void Node::createPin(const std::string& name, ed::PinKind pinKind)
+NodePin* Node::createPin(const std::string& name, ed::PinKind pinKind)
 {
 	auto newId = ++_lastPinId + Id * 100;;
 
 	auto pin = std::make_unique<NodePin>(newId, name, pinKind);
 
 	pin->Node = this;
+
+	auto ptr = pin.get();
 
 	if (pinKind == ed::PinKind::Target)
 	{
@@ -124,6 +126,8 @@ void Node::createPin(const std::string& name, ed::PinKind pinKind)
 	{
 		Outputs.push_back(std::move(pin));
 	}
+
+	return ptr;
 }
 
 void Node::removePin(NodePin* pin)
