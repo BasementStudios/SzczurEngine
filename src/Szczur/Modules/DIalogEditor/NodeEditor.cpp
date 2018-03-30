@@ -322,6 +322,15 @@ void NodeEditor::showPopups()
 			ImGui::EndPopup();
 			ImGui::OpenPopup("Create Node Popup");
 		}
+		else if (ImGui::MenuItem("Create connector"))
+		{
+			auto node = _nodeManager->createNode("Connector", Node::Connector);
+			node->createPin("In", ed::PinKind::Target);
+			node->createPin("Out", ed::PinKind::Source);
+
+			ed::SetNodePosition(node->Id, ImGui::GetMousePos());
+			ImGui::EndPopup();
+		}
 		else
 			ImGui::EndPopup();
 	}
