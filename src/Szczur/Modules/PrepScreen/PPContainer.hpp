@@ -15,7 +15,7 @@ namespace rat
         using power_t = size_t;
 
     public:
-        void add(PPSource& addon)
+        void addSource(PPSource& addon)
         {
             assert(!addon.hasBeenAdded());
             const auto& colPP = addon.getColoredPP();
@@ -29,10 +29,10 @@ namespace rat
             _amountOfPP += addon.getPPAmount();
             addon.makeAdded();
         }
-        void remove(PPSource& addon)
+        void removeSource(PPSource& sub)
         {
-            assert(addon.hasBeenAdded());
-            const auto& colPP = addon.getColoredPP();
+            assert(sub.hasBeenAdded());
+            const auto& colPP = sub.getColoredPP();
             auto found = _coloredPPs.find(colPP);
             assert(found != _coloredPPs.end());
             found->second--;
@@ -40,9 +40,9 @@ namespace rat
             {
                 _coloredPPs.erase(colPP);
             }
-            assert(_amountOfPP >= addon.getPPAmount());
-            _amountOfPP -= addon.getPPAmount();
-            addon.makeFree();
+            assert(_amountOfPP >= sub.getPPAmount());
+            _amountOfPP -= sub.getPPAmount();
+            sub.makeFree();
         }
 
         amount_t getPPAmount() const {
@@ -57,6 +57,17 @@ namespace rat
             }
             return false;
         }
+
+        void removePP(amount_t sub)
+        {
+             assert(_amountOfPP >= sub);
+             _amountOfPP -= sub;
+        }
+        void addPP(amount_t addon)
+        {
+            _amountOfPP += addon;
+        }
+
     private:
         std::map<ColoredPP, amount_t> _coloredPPs;
         amount_t _amountOfPP{ 0u };

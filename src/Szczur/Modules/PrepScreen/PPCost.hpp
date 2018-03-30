@@ -14,7 +14,7 @@ namespace rat
         using power_t = size_t;
        
         public:
-            bool isBuyable(const PPContainer& source)
+            bool canBeBoughtFrom(const PPContainer& source)
             {
                 if(source.getPPAmount() < _ppCost) return false;
                 for(const ColoredPP& requirement : _typesRequirement)
@@ -30,7 +30,6 @@ namespace rat
             void addColorRequirement(const ColoredPP& requirement)
             {
                 addColorRequirement(requirement.type, requirement.power);
-
             }
             void addColorRequirement(const std::string color, power_t power)
             {
@@ -44,12 +43,27 @@ namespace rat
                 _typesRequirement.emplace(color, power);
             }
 
-            
-        
+            void buyFrom(PPContainer& source)
+            {
+                assert(canBeBoughtFrom(source));
+                source.removePP(_ppCost);
+                _hasBeenBought = true;
+            }
+
+            void returnTo(PPContainer& source)
+            {
+                source.addPP(_ppCost);
+                _hasBeenBought = false;
+            }
+
+            bool isBought() const {
+                return _hasBeenBought;
+            }      
 
         private:
             std::set<ColoredPP> _typesRequirement;
             amount_t _ppCost;
+            bool _hasBeenBought{false};
         
     };
 }
