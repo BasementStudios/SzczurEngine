@@ -47,7 +47,7 @@ void NodeEditor::drawIcon(bool filled)
 	auto drawList = ImGui::GetWindowDrawList();
 
 	auto a = cursorPos;
-	auto b = a + ImVec2(16, 16);
+	auto b = a + ImVec2(24, 24);
 
 	auto rect = ax::rect(to_point(a), to_point(b));
 	const auto outline_scale = rect.w / 24.0f;
@@ -147,10 +147,14 @@ void NodeEditor::update()
 					
 					drawIcon(_nodeManager->isPinLinked(input->Id));
 
-					ImGui::Dummy(ImVec2(10, 16));
+					ImGui::Dummy(ImVec2(24, 24));
 					ImGui::SameLine();
 
+					ImGui::BeginGroup();
+					ImGui::Dummy(ImVec2(1.f, 0.f));
 					ImGui::Text(input->Name.c_str());
+					ImGui::EndGroup();
+
 
 					ed::EndPin();
 
@@ -170,12 +174,16 @@ void NodeEditor::update()
 
 					ed::BeginPin(output->Id, ed::PinKind::Source);
 
+					ImGui::BeginGroup();
+					ImGui::Dummy(ImVec2(1.f, 0.f));
 					ImGui::Text(output->Name.c_str());
+					ImGui::EndGroup();
+
 					ImGui::SameLine();
 
 					drawIcon(_nodeManager->isPinLinked(output->Id));
 
-					ImGui::Dummy(ImVec2(16, 16));
+					ImGui::Dummy(ImVec2(24, 24));
 
 					ed::EndPin();
 
