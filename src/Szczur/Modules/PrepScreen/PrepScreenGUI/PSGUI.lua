@@ -3,7 +3,7 @@ PSInterface = GUI.addInterface()
 
 local ppBar = PSInterface:addImage({
 	position = {0, 0};
-	texture = GUI.getTexture("D:/Sczur/SzczurEngine/out/assets/icons/meleIcon.png");
+	texture = GUI.getTexture("meleIcon.png");
 	size = {100, 120};
 })
 
