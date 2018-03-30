@@ -30,7 +30,8 @@ public:
 	{
 		Start,
 		End,
-		Dialog
+		Options,
+		Connector
 	};
 
 public:
@@ -39,7 +40,7 @@ public:
 	std::vector<std::unique_ptr<NodePin>> Inputs;
 	std::vector<std::unique_ptr<NodePin>> Outputs;
 
-	NodeType Type = Dialog;
+	NodeType Type = Options;
 
 private:
 	int _lastPinId = 0;
@@ -82,7 +83,7 @@ public:
 	NodePin* findPin(int pinId);
 
 
-	Node* createNode(const std::string& name, Node::NodeType type = Node::Dialog);
+	Node* createNode(const std::string& name, Node::NodeType type = Node::Options);
 
 	Node* findNode(int nodeId);
 

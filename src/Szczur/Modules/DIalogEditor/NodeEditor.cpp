@@ -28,7 +28,7 @@ NodeEditor::NodeEditor()
 	{
 		auto node = _nodeManager->createNode("Pole wyboru");
 
-		node->createPin("Dialog in", ed::PinKind::Target);
+		node->createPin("Options in", ed::PinKind::Target);
 		node->createPin("Option 1", ed::PinKind::Source);
 		node->createPin("Option 2", ed::PinKind::Source);
 		node->createPin("Option 3", ed::PinKind::Source);
@@ -126,7 +126,7 @@ void NodeEditor::update()
 			{
 				ImGui::Text(node->Name.c_str());
 
-				if (node->Type == Node::Dialog)
+				if (node->Type == Node::Options)
 				{
 					ImGui::SameLine();
 
@@ -179,7 +179,7 @@ void NodeEditor::update()
 					ed::PopStyleVar(2);
 				}
 
-				if (node->Type == Node::Dialog)
+				if (node->Type == Node::Options)
 				{
 					if (ImGui::Button("Add option"))
 					{
@@ -271,17 +271,14 @@ void NodeEditor::update()
 			{
 				auto node = _nodeManager->findNode(nodeId);
 
-				if (node->Type == Node::Start || node->Type == Node::End)
-				{
-					std::cout << "Woww" << std::endl;
-
-					ed::RejectDeletedItem();
-				}
-				else if (ed::AcceptDeletedItem())
+				if (node->Type == Node::Options && ed::AcceptDeletedItem())
 				{
 					_nodeManager->removeNode(nodeId);
 				}
-
+				else
+				{
+					ed::RejectDeletedItem();
+				}
 			}
 
 			ed::EndDelete();
@@ -305,10 +302,9 @@ void NodeEditor::showPopups()
 {
 	if (ImGui::BeginPopup("Background Context Menu"))
 	{
-		if (ImGui::MenuItem("Create dialog"))
+		if (ImGui::MenuItem("Create options"))
 		{
 			ImGui::EndPopup();
-			ImGui::CloseCurrentPopup();
 			ImGui::OpenPopup("Create Node Popup");
 		}
 		else
@@ -349,7 +345,7 @@ void NodeEditor::showPopups()
 		if (ImGui::Button("OK", ImVec2(120, 0))) 
 		{
 			auto node = _nodeManager->createNode(buffer);
-			node->createPin("Dialog in", ed::PinKind::Target);
+			node->createPin("Options in", ed::PinKind::Target);
 
 			ed::SetNodePosition(node->Id, newNodePostion);
 
