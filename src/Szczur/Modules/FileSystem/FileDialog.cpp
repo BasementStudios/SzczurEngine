@@ -38,7 +38,7 @@ std::vector<std::string> FileDialog::getFiles()
 	char* pResult = result;
 
 	std::string directory = pResult;
-	
+
 	pResult += directory.length() + 1;
 
 	while (*pResult)
@@ -49,7 +49,7 @@ std::vector<std::string> FileDialog::getFiles()
 
 		paths.push_back(directory + DIRECTORY_SEPARATOR_CHAR + file);
 	}
-	
+
 	return paths;
 }
 
@@ -63,7 +63,7 @@ std::string FileDialog::getOpenFileName(const std::string& caption, const std::s
 std::vector<std::string> FileDialog::getOpenFileNames(const std::string& caption, const std::string& directory, const std::string& filter)
 {
 	FileDialog fileDialog(Open, caption, directory, filter);
-	
+
 	return fileDialog.getFiles();
 }
 
@@ -86,7 +86,8 @@ bool FileDialog::show(char *result, bool multiselect)
 	ofn.nMaxFile = sizeof(filePath);
 
 	std::replace(_filter.begin(), _filter.end(), '|', '\0');
-	ofn.lpstrFilter = (_filter + '\0').c_str();
+	_filter += '\0';
+	ofn.lpstrFilter = _filter.c_str();
 
 	ofn.nFilterIndex = _filterIndex;
 	ofn.lpstrTitle = _caption.c_str();
