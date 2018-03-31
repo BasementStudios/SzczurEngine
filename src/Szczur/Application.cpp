@@ -42,9 +42,6 @@ void Application::input()
 
 	#ifdef EDITOR
 	{
-		static Clock editorClock;
-		ImGui::SFML::Update(getWindow(), editorClock.restart().asSfTime());
-
 		auto& window = _modules.getModule<Window>();
 
 		if (window.areFilesDropped())

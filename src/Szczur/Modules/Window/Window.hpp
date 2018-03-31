@@ -17,7 +17,10 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include "Szczur/Utility/Modules/Module.hpp"
-#include "Szczur/Debug.hpp"
+
+#ifdef EDITOR
+#include <Windows.h>
+#endif
 
 namespace rat {
 

@@ -98,10 +98,10 @@ void Window::init()
 	
 #ifdef EDITOR
 	// accept dropping files
-	DragAcceptFiles(_window.getSystemHandle(), true);
+	DragAcceptFiles(window.getSystemHandle(), true);
 
 	// hook wndproc
-	_callback = SetWindowLongPtrW(_window.getSystemHandle(), GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::WndProc));
+	_callback = SetWindowLongPtrW(window.getSystemHandle(), GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::WndProc));
 	
 	_this = this;
 #endif
@@ -124,11 +124,6 @@ void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 	this->getWindow().draw(drawable, states);
 }
 
-	this->getWindow().draw(vertices, vertexCount, type, states);
-}
-
-	return CallWindowProc(reinterpret_cast<WNDPROC>(_this->_callback), Handle, Message, WParam, LParam);
-}
 void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
 	this->getWindow().draw(vertices, vertexCount, type, states);

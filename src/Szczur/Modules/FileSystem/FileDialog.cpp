@@ -1,17 +1,13 @@
 #include "FileDialog.hpp"
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
-#define WINDOWS
-#endif
-
 #include <iostream>
 #include <algorithm>
 
-#ifdef WINDOWS
+#include "Szczur/Config.hpp"
+
+#ifdef EDITOR
 #include <Windows.h>
 #endif
-
-#include "Szczur/CompilerPortability.hpp"
 
 namespace rat
 {
@@ -80,7 +76,7 @@ std::string FileDialog::getSaveFileName(const std::string& caption, const std::s
 
 bool FileDialog::show(char *result, bool multiselect)
 {
-#ifdef WINDOWS
+#ifdef EDITOR
 	OPENFILENAME ofn = { 0 };
 	char filePath[1024] = { 0 };
 
