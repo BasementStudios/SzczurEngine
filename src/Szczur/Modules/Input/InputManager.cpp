@@ -5,7 +5,7 @@ namespace rat
 
 void InputManager::processEvent(const sf::Event& event)
 {
-	if(event.type == sf::Event::MouseMoved) {
+	if (event.type == sf::Event::MouseMoved) {
 		_mousePosition.x = event.mouseMove.x;
 		_mousePosition.y = event.mouseMove.y;
 	}
@@ -179,29 +179,29 @@ void InputManager::_moveWheel(int which, int delta)
 {
 	if (which == sf::Mouse::Wheel::VerticalWheel) {
 		if (delta < 0) {
-			_scroll[Scroll::Up]   = InputStatus_e::Released;
+			_scroll[Scroll::Up] = InputStatus_e::Released;
 			_scroll[Scroll::Down] = InputStatus_e::Pressed;
 			_recentlyPressed  = Scroll::Down;
 			_recentlyReleased = Scroll::Up;
 		}
 		else {
-			_scroll[Scroll::Up]   = InputStatus_e::Pressed;
+			_scroll[Scroll::Up] = InputStatus_e::Pressed;
 			_scroll[Scroll::Down] = InputStatus_e::Released;
-			_recentlyPressed  = Scroll::Up;
+			_recentlyPressed = Scroll::Up;
 			_recentlyReleased = Scroll::Down;
 		}
 	}
 	else if (which == sf::Mouse::Wheel::HorizontalWheel) {
 		if (delta < 0) {
-			_scroll[Scroll::Left]  = InputStatus_e::Released;
+			_scroll[Scroll::Left] = InputStatus_e::Released;
 			_scroll[Scroll::Right] = InputStatus_e::Pressed;
 			_recentlyPressed  = Scroll::Right;
 			_recentlyReleased = Scroll::Left;
 		}
 		else {
-			_scroll[Scroll::Left]  = InputStatus_e::Pressed;
+			_scroll[Scroll::Left] = InputStatus_e::Pressed;
 			_scroll[Scroll::Right] = InputStatus_e::Released;
-			_recentlyPressed  = Scroll::Left;
+			_recentlyPressed = Scroll::Left;
 			_recentlyReleased = Scroll::Right;
 		}
 	}

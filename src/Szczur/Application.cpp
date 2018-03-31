@@ -1,24 +1,23 @@
 #include "Application.hpp"
 
-#include <SFML/Graphics.hpp>
-
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
-
 namespace rat
 {
 
+#ifdef EDITOR
+#   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
+#endif
+
 void Application::init()
 {
-	_modules.initModule<Window>();
-	_modules.initModule<Input>();
-	_modules.initModule<Shader>();
+	initModule<Window>();
+	initModule<Input>();
 
 	#ifdef EDITOR
 	{
 		ImGui::CreateContext();
 		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
-		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(detail::builtinFontData, detail::builtinFontSize, 16.0f, nullptr, ranges);
-		ImGui::SFML::Init(getWindow());
+		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(builtinFontData, builtinFontSize, 16.0f, nullptr, ranges);
+		ImGui::SFML::Init(getModule<Window>().getWindow());
 	}
 	#endif
 }
@@ -27,8 +26,8 @@ void Application::input()
 {
 	sf::Event event;
 
-	while (getWindow().pollEvent(event)) {
-		_modules.getModule<Input>().getManager().processEvent(event);
+	while (getModule<Window>().getWindow().pollEvent(event)) {
+		getModule<Input>().getManager().processEvent(event);
 
 		#ifdef EDITOR
 		{
@@ -37,7 +36,7 @@ void Application::input()
 		#endif
 
 		if (event.type == sf::Event::Closed) {
-			getWindow().close();
+			getModule<Window>().getWindow().close();
 		}
 	}
 
@@ -70,46 +69,49 @@ void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 
+	/*
+		Put other updates here
+	*/
+
 	#ifdef EDITOR
 	{
-		ImGui::ShowDemoWindow();
+		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
 
-		if (ImGui::Begin("Toolbox", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-			ImGui::Text("%.1f ms", ImGui::GetIO().DeltaTime * 1000.0f);
-			ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
-			ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-			ImGui::Checkbox("Shader composer", &_modules.getModule<Shader>()._isEditorOpen); // #Stritch
-		}
-		ImGui::End();
+		/*
+			Put main editor window here
+		*/
 	}
 	#endif
 
-	_modules.getModule<Shader>().update();
-
-	_modules.getModule<Input>().getManager().finishLogic();
+	getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()
 {
-	_modules.getModule<Window>().clear();
+	getModule<Window>().clear();
 
 	#ifdef EDITOR
 	{
-		ImGui::SFML::Render(getWindow());
+		ImGui::SFML::Render(getModule<Window>().getWindow());
 	}
 	#endif
 
-	_modules.getModule<Window>().render();
+	getModule<Window>().render();
 }
 
 int Application::run()
 {
-	init();
+	try {
+		init();
 
-	while (getWindow().isOpen()) {
-		input();
-		update();
-		render();
+		while (getModule<Window>().getWindow().isOpen()) {
+			input();
+			update();
+			render();
+		}
+	}
+	catch (const std::exception& exception) {
+		LOG_EXCEPTION(exception);
 	}
 
 	#ifdef EDITOR
@@ -119,16 +121,6 @@ int Application::run()
 	#endif
 
 	return 0;
-}
-
-sf::RenderWindow& Application::getWindow()
-{
-	return _modules.getModule<Window>().getWindow();
-}
-
-const sf::RenderWindow& Application::getWindow() const
-{
-	return _modules.getModule<Window>().getWindow();
 }
 
 }

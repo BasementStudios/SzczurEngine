@@ -19,91 +19,40 @@ public:
 
 	LazyInitializer() = default;
 
-	LazyInitializer(const LazyInitializer& rhs)
-	{
-		init(rhs);
-	}
+	LazyInitializer(const LazyInitializer& rhs);
 
-	LazyInitializer& operator = (const LazyInitializer& rhs)
-	{
-		getRef() = rhs.getRef();
-	}
+	LazyInitializer& operator = (const LazyInitializer& rhs);
 
-	LazyInitializer(LazyInitializer&& rhs)
-	{
-		init(std::move(rhs));
-	}
+	LazyInitializer(LazyInitializer&& rhs);
 
-	LazyInitializer& operator = (LazyInitializer&& rhs)
-	{
-		getRef() = std::move(rhs.getRef());
-	}
+	LazyInitializer& operator = (LazyInitializer&& rhs);
 
-	~LazyInitializer()
-	{
-		getRef().~Held_t();
-	}
+	~LazyInitializer();
 
 	template <typename... Us>
-	void init(Us&&... args)
-	{
-		new (_getBufferPtr()) Held_t(std::forward<Us>(args)...);
-	}
+	void init(Us&&... args);
 
-	Pointer_t getPtr()
-	{
-		return reinterpret_cast<Pointer_t>(_getBufferPtr());
-	}
+	Pointer_t getPtr();
+	ConstPointer_t getPtr() const;
 
-	ConstPointer_t getPtr() const
-	{
-		return reinterpret_cast<ConstPointer_t>(_getBufferPtr());
-	}
+	Pointer_t operator -> ();
+	ConstPointer_t operator -> () const;
 
-	Pointer_t operator -> ()
-	{
-		return getPtr();
-	}
+	Reference_t getRef();
+	ConstReference_t getRef() const;
 
-	ConstPointer_t operator -> () const
-	{
-		return getPtr();
-	}
-
-	Reference_t getRef()
-	{
-		return *getPtr();
-	}
-
-	ConstReference_t getRef() const
-	{
-		return *getPtr();
-	}
-
-	Reference_t operator * ()
-	{
-		return getRef();
-	}
-
-	ConstReference_t operator * () const
-	{
-		return getRef();
-	}
+	Reference_t operator * ();
+	ConstReference_t operator * () const;
 
 private:
 
-	void* _getBufferPtr()
-	{
-		return &_buffer;
-	}
-
-	const void* _getBufferPtr() const
-	{
-		return &_buffer;
-	}
+	void* _getBufferPtr();
+	const void* _getBufferPtr() const;
 
 	Buffer_t _buffer;
 
 };
 
 }
+
+#include "LazyInitializer.tpp"

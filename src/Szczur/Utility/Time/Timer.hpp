@@ -19,11 +19,9 @@ public:
 	Timer();
 
 	Timer(const Timer&) = default;
-
 	Timer& operator = (const Timer&) = default;
 
 	Timer(Timer&&) = default;
-
 	Timer& operator = (Timer&&) = default;
 
 	Time getElapsedTime() const;

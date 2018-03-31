@@ -3,32 +3,26 @@
 namespace rat
 {
 
-InputCode::InputCode() :
-	_data(0)
+InputCode::InputCode(Keyboard::Code_e code)
+	: _data{ InputDevice_e::Keyboard | code }
 {
 
 }
 
-InputCode::InputCode(Keyboard::Code_e code) :
-	_data(InputDevice_e::Keyboard | code)
+InputCode::InputCode(Mouse::Code_e code)
+	: _data{ InputDevice_e::Mouse | code }
 {
 
 }
 
-InputCode::InputCode(Mouse::Code_e code) :
-	_data(InputDevice_e::Mouse | code)
+InputCode::InputCode(Scroll::Code_e code)
+	: _data{ InputDevice_e::Scroll | code }
 {
 
 }
 
-InputCode::InputCode(Scroll::Code_e code) :
-	_data(InputDevice_e::Scroll | code)
-{
-
-}
-
-InputCode::InputCode(int data) :
-	_data(data)
+InputCode::InputCode(int data)
+	: _data{ data }
 {
 
 }
