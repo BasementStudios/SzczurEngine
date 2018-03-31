@@ -34,6 +34,11 @@ public:
 	void showOptionConfig();
 
 	void drawIcon(bool filled);
+
+	void save(const std::string& fileName);
+
+private:
+	std::string generateCode();
 };
 
 }

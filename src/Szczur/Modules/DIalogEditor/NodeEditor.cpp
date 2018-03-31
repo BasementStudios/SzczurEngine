@@ -23,23 +23,12 @@ NodeEditor::NodeEditor()
 
 	auto end = _nodeManager->createNode("End", Node::End);
 	end->createPin("End", ed::PinKind::Target);
-
-	/*for (int i = 0; i < 20; i++)
-	{
-		auto node = _nodeManager->createNode("Pole wyboru");
-
-		node->createPin("Options in", ed::PinKind::Target);
-		node->createPin("Option 1", ed::PinKind::Source);
-		node->createPin("Option 2", ed::PinKind::Source);
-		node->createPin("Option 3", ed::PinKind::Source);
-	}*/
 }
 
 NodeEditor::~NodeEditor()
 {
 	ed::DestroyEditor(_context);
 }
-
 
 void NodeEditor::drawIcon(bool filled)
 {
@@ -110,6 +99,144 @@ void NodeEditor::drawIcon(bool filled)
 		drawList->PathFillConvex(color);
 }
 
+void NodeEditor::save(const std::string& fileName)
+{
+	auto code = generateCode();
+
+	LOG_INFO("Saving code to '", fileName, "'...");
+
+	std::ofstream file(fileName);
+
+	if (file.good())
+	{
+		file << code;
+		file.close();
+
+		LOG_INFO("Saved!");
+	}
+	else
+	{
+		LOG_ERROR("Cannot save code to file!");
+	}
+}
+
+std::string NodeEditor::generateCode()
+{
+	LOG_INFO("Generating code...");
+
+	std::vector<std::string> optionsCode;
+
+	for (int i = 2; i < _nodeManager->getNodes().size(); i++)
+	{
+		auto& node = _nodeManager->getNodes()[i];
+
+		if (node->Type == Node::Options)
+		{
+			LOG_INFO("Generating ", node->Name.c_str(), "...");
+
+			///// Runners
+			std::string code = "options = dialog:newOption(";
+
+			auto& in = node->Inputs.front();
+			bool first = true;
+
+			std::vector<int> runners;
+
+			for (auto& link : _nodeManager->getLinks())
+			{
+				if (link->EndPinId == in->Id)
+				{
+					auto pin = _nodeManager->findPin(link->StartPinId);
+
+					if (pin)
+					{
+						if (pin->OptionTarget < 1)
+							continue;
+
+						bool skip = false;
+
+						// check if runner is already in
+						for (auto runner : runners)
+						{
+							if (runner == pin->OptionTarget)
+							{
+								skip = true;
+								break;
+							}
+						}
+
+						if (skip)
+							continue;
+
+						if (first)
+							first = false;
+						else
+							code += ", ";
+
+						code += std::to_string(pin->OptionTarget);
+
+						runners.push_back(pin->OptionTarget);
+					}
+				}
+			}
+
+			code += ")\n";
+
+			////// Options
+			for (auto& out : node->Outputs)
+			{
+				code += "options.add = {\n";
+
+				// target
+				code += "target = " + std::to_string(out->OptionTarget) + ";\n";
+
+				// finishing
+				for (auto& link : _nodeManager->getLinks())
+				{
+					if (link->StartPinId == out->Id)
+					{
+						auto endPin = _nodeManager->findPin(link->EndPinId);
+
+						if (endPin && endPin->Node->Type == Node::End)
+						{
+							code += "finishing = true;\n";
+							break;
+						}
+					}
+				}
+
+				code += "}\n";
+			}
+
+			optionsCode.push_back(code);
+		}
+	}
+
+	auto& pinStartNode = _nodeManager->getNodes().front()->Outputs.front();
+
+	LOG_INFO("Finalizing generating code...");
+
+	// start with
+	for (auto& link : _nodeManager->getLinks())
+	{
+		if (link->StartPinId == pinStartNode->Id)
+		{
+			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget) + ")\n";
+
+			optionsCode.push_back(code);
+		}
+	}
+
+	std::string finalCode;
+
+	for (auto& code : optionsCode)
+	{
+		finalCode += code + "\n";
+	}
+
+	return finalCode;
+}
+
 void NodeEditor::update()
 {
 	ed::SetCurrentEditor(_context);
@@ -165,7 +292,7 @@ void NodeEditor::update()
 
 					ed::BeginPin(output->Id, ed::PinKind::Source);
 
-					if (node->Type == Node::Options)
+					if (node->Type == Node::Options || node->Type == Node::Start)
 					{
 						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
 
@@ -173,6 +300,8 @@ void NodeEditor::update()
 
 						if (ImGui::Button(label.c_str()))
 						{
+							ImGui::SetWindowFocus("Option config");
+
 							_currentOption = output.get();
 							_optionConfigWindow = true;
 						}
@@ -319,6 +448,16 @@ void NodeEditor::update()
 
 	showPopups();
 	showOptionConfig();
+
+	if (ImGui::Begin("Main window", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		if (ImGui::Button("Generate code"))
+		{
+			save("code.lua");
+		}
+	}
+
+	ImGui::End();
 }
 
 void NodeEditor::showPopups()
