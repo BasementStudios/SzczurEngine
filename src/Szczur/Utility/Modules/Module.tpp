@@ -26,11 +26,4 @@ const U& Module<Ts...>::getModule() const
 	return std::get<U&>(_modulesRefs);
 }
 
-template <typename... Ts>
-template <typename U>
-constexpr bool Module<Ts...>::_dependsOn()
-{
-	return (std::is_same_v<U, Ts> || ...);
-}
-
 }
