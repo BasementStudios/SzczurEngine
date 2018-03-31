@@ -80,11 +80,11 @@ namespace rat {
         return _name;
     }
 
-    void DialogGUI::setInterface(Widget* interface) {
-        _interface = interface;
+    void DialogGUI::setInterface(Widget* _interface) {
+        this->_interface = _interface;
     }
 
-    Widget* DialogGUI::getInterface() const                   {
+    Widget* DialogGUI::getInterface() const {
         return _interface;
     }
     
