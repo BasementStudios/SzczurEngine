@@ -31,9 +31,6 @@ public:
 
 private:
 
-	template <typename U>
-	constexpr bool _dependsOn();
-
 	Holder_t _modulesRefs;
 
 };

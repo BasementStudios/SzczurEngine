@@ -48,10 +48,6 @@ void Application::input()
 
 void Application::update()
 {
-
-    	getModule<DialogEditor>().update();
-
-}
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
