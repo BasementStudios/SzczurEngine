@@ -16,11 +16,11 @@ namespace rat {
                 );
             }
             if(tab["visible"].valid()) {
-                if(!tab["visible"])
+                if(tab["visible"] == false)
                     widget->invisible();
             }
             if(tab["active"].valid()) {
-                if(!tab["active"])
+                if(tab["active"] == false)
                     widget->deactivate();
             }
             if(tab["onHover"].valid())
