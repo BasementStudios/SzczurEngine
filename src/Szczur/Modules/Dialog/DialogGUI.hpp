@@ -39,7 +39,7 @@ namespace rat {
         void setKillerCallback(const std::function<void()>& killerCallback);
         const std::function<void()>& getKillerCallback() const;
 
-        void setInterface(Widget* interface);
+        void setInterface(Widget* _interface);
         Widget* getInterface() const;
 
         void setButtonsContainer(Widget* container);
