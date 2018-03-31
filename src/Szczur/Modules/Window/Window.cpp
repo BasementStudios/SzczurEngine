@@ -21,6 +21,10 @@
 namespace rat
 {
 
+#ifdef EDITOR
+Window* Window::_this;
+#endif
+
 /* Properties */
 /// Window
 Window::Window_t& Window::getWindow()
@@ -91,12 +95,16 @@ void Window::init()
     this->setVideoMode(this->videoMode);
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 	// @todo load from settings
-}
+	
+#ifdef EDITOR
+	// accept dropping files
+	DragAcceptFiles(window.getSystemHandle(), true);
 
-/// input
-void Window::input(const sf::Event& event)
-{
-	;
+	// hook wndproc
+	_callback = SetWindowLongPtrW(window.getSystemHandle(), GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::WndProc));
+	
+	_this = this;
+#endif
 }
 
 /// render
@@ -118,7 +126,46 @@ void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 
 void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
-	this->getWindow().draw(vertices, vertexCount, type, states); 
+	this->getWindow().draw(vertices, vertexCount, type, states);
 }
+
+#ifdef EDITOR
+LRESULT CALLBACK Window::WndProc(HWND Handle, UINT Message, WPARAM WParam, LPARAM LParam)
+{
+	switch (Message)
+	{
+		case WM_DROPFILES:
+		{
+			std::vector<std::string> files;
+
+			char fileName[1024] = { 0 };
+
+			HDROP hDrop = reinterpret_cast<HDROP>(WParam);
+
+			auto file = DragQueryFile(hDrop, 0xFFFFFFFF, nullptr, 0);
+
+			POINT pos;
+
+			DragQueryPoint(hDrop, &pos);
+
+			_this->_lastDropPos = { pos.x, pos.y };
+
+			for (int i = 0; i < file; i++)
+			{
+				fileName[0] = '\0';
+
+				if (DragQueryFile(hDrop, i, fileName, 1024))
+				{
+					_this->_droppedFiles.push_back(fileName);
+				}
+			}
+
+			DragFinish(hDrop);
+		} break;
+	}
+
+	return CallWindowProc(reinterpret_cast<WNDPROC>(_this->_callback), Handle, Message, WParam, LParam);
+}
+#endif
 
 }

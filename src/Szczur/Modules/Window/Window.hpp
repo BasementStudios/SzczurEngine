@@ -1,7 +1,7 @@
 #pragma once
 
 /** @file Window.hpp
- ** @description Header file with main class of the Window module. 
+ ** @description Header file with main class of the Window module.
  ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
@@ -18,20 +18,23 @@
 
 #include "Szczur/Utility/Modules/Module.hpp"
 
+#ifdef EDITOR
+#include <Windows.h>
+#endif
+
 namespace rat {
 
 /** @class Window
- ** @description Manages application window. 
+ ** @description Manages application window.
  **/
 class Window : public Module<>
 {
-    using Module::Module;
-    
+
 
 
     /* Types */
     using Window_t = sf::RenderWindow;
-    
+
 
 
     /* Variables */
@@ -41,8 +44,8 @@ private:
     std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
 
-    
-    
+
+
     /* Properties */
 public:
     /** @property Window
@@ -51,7 +54,7 @@ public:
      **/
     Window_t& getWindow();
     const Window_t& getWindow() const;
-    
+
     /** @property VideoMode
 	 ** @description Defines a video mode.
 	 ** @access get set
@@ -95,7 +98,6 @@ public:
 public:
     // Module system
 	void init();
-	void input(const sf::Event& event);
 	void render();
 
 	/// Cleaning
@@ -104,6 +106,32 @@ public:
 	/// Drawing
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
+	
+#ifdef EDITOR
+public:
+	// Check if are dropped files
+	bool areFilesDropped() { return !_droppedFiles.empty(); }
+
+	// gets list of dropped files
+	// remember to clear buffer with clearDroppedFiles() after get!
+	std::vector<std::string> getDroppedFiles() { return _droppedFiles; }
+
+	// clear buffer of dropped files
+	void clearDroppedFiles() { _droppedFiles.clear(); }
+
+	// get last position of dropped files
+	const sf::Vector2i& getLastDropPos() { return _lastDropPos; }
+
+private:
+	std::vector<std::string> _droppedFiles;
+
+	sf::Vector2i _lastDropPos;
+
+	uint64_t _callback;
+	static Window* _this;
+
+	static LRESULT CALLBACK WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+#endif
 };
 
 }
