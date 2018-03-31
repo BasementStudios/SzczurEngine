@@ -1,11 +1,13 @@
 #include "NodeEditor.hpp"
 
 #include <iostream>
-
-#include "Szczur/Config.hpp"
+#include <fstream>
 
 #include <Shared/Math2D.h>
 #include <Shared/Interop.h>
+
+#include "Szczur/Config.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
