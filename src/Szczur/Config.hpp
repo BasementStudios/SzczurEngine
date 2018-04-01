@@ -3,8 +3,10 @@
 // OS detection
 #if defined(_WIN32)
 #	define OS_WINDOWS
+#	define OS_NAME "Windows"
 #elif defined(__linux__)
 #	define OS_LINUX
+#	define OS_NAME "Linux"
 #else
 #	error Platform not supported!
 #endif
@@ -12,10 +14,13 @@
 // Compiler detection
 #if defined(__GNUG__)
 #	define COMPILER_GCC
+#	define COMPILER_NAME "GNU Compiler Collection"
 #elif defined(__clang__)
 #	define COMPILER_CLANG
+#	define COMPILER_NAME "LLVM/Clang"
 #elif defined(_MSC_VER)
 #	define COMPILER_MSVC
+#	define COMPILER_NAME "Microsoft Visual C++"
 #else
 #	error Compiler not supported!
 #endif
@@ -29,11 +34,13 @@
 #	define DIRECTORY_SEPARATOR_CHAR '/'
 #endif
 
-// Target detection
+// Mode detection
 #if defined(NDEBUG)
 #	define RELEASE
+#	define MODE_NAME "Release"
 #else
 #	define DEBUG
+#	define MODE_NAME "Debug"
 #endif
 
 // Editor specification

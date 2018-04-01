@@ -1,7 +1,7 @@
 #include "Window.hpp"
 
 /** @file Window.cpp
- ** @description Implementation file with main class of the Window module. 
+ ** @description Implementation file with main class of the Window module.
  ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
@@ -25,11 +25,11 @@ namespace rat
 /// Window
 Window::Window_t& Window::getWindow()
 {
-    return this->window;
+	return this->window;
 }
 const Window::Window_t& Window::getWindow() const
 {
-    return this->window;
+	return this->window;
 }
 
 /// VideoMode
@@ -57,11 +57,11 @@ void Window::setFramerateLimit(const unsigned int limit)
 /// Title
 const std::string& Window::getTitle() const
 {
-    return this->title;
+	return this->title;
 }
 void Window::setTitle(const std::string& title)
 {
-    this->title = title;
+	this->title = title;
 	this->getWindow().create(this->videoMode, this->title);
 }
 
@@ -71,14 +71,14 @@ void Window::setTitle(const std::string& title)
 /// Constructors
 Window::Window()
 {
-	LOG_INFO(this, ": Window module initializing");
+	LOG_INFO("Initializing Window module");
 	this->init();
-	LOG_INFO(this, ": Window module initialized");
+	LOG_INFO("Module Window initialized");
 }
-/// Deconstructor
+/// Destructor
 Window::~Window()
 {
-	LOG_INFO(this, ": Window module destructed");
+	LOG_INFO("Module Window destructed");
 }
 
 
@@ -87,8 +87,8 @@ Window::~Window()
 /// init
 void Window::init()
 {
-	// Create 
-    this->setVideoMode(this->videoMode);
+	// Create
+	this->setVideoMode(this->videoMode);
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 	// @todo load from settings
 }
@@ -102,7 +102,7 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-    this->getWindow().clear(color);
+	this->getWindow().clear(color);
 }
 
 void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)

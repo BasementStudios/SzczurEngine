@@ -28,30 +28,30 @@ class Window : public Module<>
 
 
 
-    /* Types */
-    using Window_t = sf::RenderWindow;
+	/* Types */
+	using Window_t = sf::RenderWindow;
 
 
 
-    /* Variables */
+	/* Variables */
 private:
-    Window_t        window;
-    sf::VideoMode   videoMode		{1280, 800};
-    std::string     title 			{"SzczurEngine"};
+	Window_t        window;
+	sf::VideoMode   videoMode		{1280, 800};
+	std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
 
 
 
-    /* Properties */
+	/* Properties */
 public:
-    /** @property Window
-     ** @description Provides access to application window.
-     ** @access reference get
-     **/
-    Window_t& getWindow();
-    const Window_t& getWindow() const;
+	/** @property Window
+	 ** @description Provides access to application window.
+	 ** @access reference get
+	 **/
+	Window_t& getWindow();
+	const Window_t& getWindow() const;
 
-    /** @property VideoMode
+	/** @property VideoMode
 	 ** @description Defines a video mode.
 	 ** @access get set
 	 **/
@@ -65,12 +65,12 @@ public:
 	unsigned int getFramerateLimit() const;
 	void setFramerateLimit(const unsigned int limit);
 
-    /** @property Title
-     ** @description Title of application window.
-     ** @access get set
-     **/
-    const std::string& getTitle() const;
-    void setTitle(const std::string& title);
+	/** @property Title
+	 ** @description Title of application window.
+	 ** @access get set
+	 **/
+	const std::string& getTitle() const;
+	void setTitle(const std::string& title);
 
 
 
@@ -92,7 +92,7 @@ public:
 
 	/* Methods */
 public:
-    // Module system
+	// Module system
 	void init();
 	void render();
 

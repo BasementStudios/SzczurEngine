@@ -31,14 +31,14 @@ protected:
 	/* Properties */
 public:
 	/** @property Size
-	 ** @desciption 
+	 ** @desciption
 	 ** @access get set
 	 **/
 	sf::Vector2u getSize() const;
 	void setSize(const sf::Vector2u& size);
 
 	/** @property RenderStates
-	 ** @description Defines the states used for drawing to a RenderTarget. 
+	 ** @description Defines the states used for drawing to a RenderTarget.
 	 ** @access get set
 	 **/
 	const sf::RenderStates getRenderStates() const;
@@ -49,13 +49,13 @@ public:
 	/* Operators */
 public:
 	RenderLayer();
-	
+
 	RenderLayer(const sf::Vector2u& size);
 
 	// Disable coping
 	RenderLayer(const RenderLayer&) = delete;
 	RenderLayer& operator = (const RenderLayer&) = delete;
-	
+
 	// Disable moving
 	RenderLayer(RenderLayer&&) = delete;
 	RenderLayer& operator = (RenderLayer&&) = delete;
@@ -68,7 +68,7 @@ public:
 
 	/// Draws any Drawable object
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
-	
+
 	/// Draws primitive verticles on the layer
 	void draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 

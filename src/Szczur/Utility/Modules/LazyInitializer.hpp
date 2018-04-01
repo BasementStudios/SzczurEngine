@@ -20,11 +20,9 @@ public:
 	LazyInitializer() = default;
 
 	LazyInitializer(const LazyInitializer& rhs);
-
 	LazyInitializer& operator = (const LazyInitializer& rhs);
 
 	LazyInitializer(LazyInitializer&& rhs);
-
 	LazyInitializer& operator = (LazyInitializer&& rhs);
 
 	~LazyInitializer();
