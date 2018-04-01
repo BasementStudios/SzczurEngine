@@ -16,11 +16,9 @@ public:
 	InputManager() = default;
 
 	InputManager(const InputManager&) = delete;
-
 	InputManager& operator = (const InputManager&) = delete;
 
 	InputManager(InputManager&&) = delete;
-
 	InputManager& operator = (InputManager&&) = delete;
 
 	~InputManager() = default;
@@ -57,6 +55,8 @@ public:
 
 	unsigned getEnteredCharacter() const;
 
+	sf::Vector2i getMousePosition() const;
+
 private:
 
 	void _pressKey(int id);
@@ -77,6 +77,8 @@ private:
 	InputCode _recentlyReleased;
 
 	unsigned _enteredCharacter;
+
+	sf::Vector2i _mousePosition;
 
 };
 

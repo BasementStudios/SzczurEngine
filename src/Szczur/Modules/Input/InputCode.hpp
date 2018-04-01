@@ -11,21 +11,17 @@ enum InputDevice_e { Keyboard = 0x10000, Mouse = 0x20000, Scroll = 0x30000 };
 
 class InputCode
 {
-private:
-
-	int _data;
-
 public:
 
-	InputCode();
+	InputCode() = default;
 
 	InputCode(const InputCode&) = default;
-
 	InputCode& operator = (const InputCode&) = default;
 
 	InputCode(InputCode&&) = default;
-
 	InputCode& operator = (InputCode&&) = default;
+
+	~InputCode() = default;
 
 	InputCode(Keyboard::Code_e code);
 
@@ -44,6 +40,10 @@ public:
 	int getData() const;
 
 	bool isValid() const;
+
+private:
+
+	int _data;
 
 };
 

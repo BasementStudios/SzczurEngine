@@ -19,11 +19,9 @@ public:
 	Clock();
 
 	Clock(const Clock&) = default;
-
 	Clock& operator = (const Clock&) = default;
 
 	Clock(Clock&&) = default;
-
 	Clock& operator = (Clock&&) = default;
 
 	Time getElapsedTime() const;

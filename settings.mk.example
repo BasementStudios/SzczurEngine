@@ -3,6 +3,11 @@
 # Settings
 #
 
+# Compiler
+#CROSS := no # Uncomment 
+#CXX := clang
+#LD := clang
+
 # Fancy
 COLORS = yes
 
@@ -16,6 +21,15 @@ BIN_DIR_SFML_32 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/bin
 INC_DIR_SFML_64 := e:/Libraries/SFML-2.4.2/include
 LIB_DIR_SFML_64 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/lib
 BIN_DIR_SFML_64 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/bin
+
+# ImGUI 32bit
+INC_DIR_IMGUI_32 := e:/Libraries/ImGui-1.60/include
+LIB_DIR_IMGUI_32 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
+BIN_DIR_IMGUI_32 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
+# ImGUI 64bit
+INC_DIR_IMGUI_64 := e:/Libraries/ImGui-1.60/include
+LIB_DIR_IMGUI_64 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
+BIN_DIR_IMGUI_64 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
 
 # Boost 32bit
 INC_DIR_BOOST_32 := e:/Libraries/Boost-1.65.1/boost
