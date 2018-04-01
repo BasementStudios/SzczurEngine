@@ -1,10 +1,10 @@
 #pragma once
 
 /** @file Window.hpp
- ** @description Header file with main class of the Window module.
- ** @author Patryk (Stritch)
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
+** @description Header file with main class of the Window module.
+** @author Patryk (Stritch)
+** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+**/
 
 #include <string>
 
@@ -18,63 +18,60 @@
 
 #include "Szczur/Utility/Modules/Module.hpp"
 
-#ifdef EDITOR
-#include <Windows.h>
-#endif
-
-namespace rat {
+namespace rat
+{
 
 /** @class Window
- ** @description Manages application window.
- **/
+** @description Manages application window.
+**/
 class Window : public Module<>
 {
 
 
 
-    /* Types */
-    using Window_t = sf::RenderWindow;
+	/* Types */
+	using Window_t = sf::RenderWindow;
 
 
 
-    /* Variables */
+	/* Variables */
 private:
-    Window_t        window;
-    sf::VideoMode   videoMode		{1280, 800};
-    std::string     title 			{"SzczurEngine"};
-	unsigned int	framerateLimit	{60};
+	Window_t        window;
+	sf::VideoMode   videoMode{ 1280, 800 };
+	std::string     title{ "SzczurEngine" };
+	unsigned int	framerateLimit{ 60 };
 
 
 
-    /* Properties */
+	/* Properties */
 public:
-    /** @property Window
-     ** @description Provides access to application window.
-     ** @access reference get
-     **/
-    Window_t& getWindow();
-    const Window_t& getWindow() const;
+	/** @property Window
+	** @description Provides access to application window.
+	** @access reference get
+	**/
+	Window_t& getWindow();
+	const Window_t& getWindow() const;
 
-    /** @property VideoMode
-	 ** @description Defines a video mode.
-	 ** @access get set
-	 **/
+	/** @property VideoMode
+	** @description Defines a video mode.
+	** @access get set
+	**/
 	sf::VideoMode getVideoMode() const;
 	void setVideoMode(const sf::VideoMode& mode);
 
 	/** @property FrameRate
-	 ** @description Limit of updated and rendered frames per second.
-	 ** @access get set
-	 **/
+	** @description Limit of updated and rendered frames per second.
+	** @access get set
+	**/
 	unsigned int getFramerateLimit() const;
 	void setFramerateLimit(const unsigned int limit);
 
-    /** @property Title
-     ** @description Title of application window.
-     ** @access get set
-     **/
-    const std::string& getTitle() const;
-    void setTitle(const std::string& title);
+	/** @property Title
+	** @description Title of application window.
+	** @access get set
+	**/
+	const std::string& getTitle() const;
+	void setTitle(const std::string& title);
 
 
 
@@ -96,7 +93,7 @@ public:
 
 	/* Methods */
 public:
-    // Module system
+	// Module system
 	void init();
 	void render();
 
@@ -106,32 +103,6 @@ public:
 	/// Drawing
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
-	
-#ifdef EDITOR
-public:
-	// Check if are dropped files
-	bool areFilesDropped() { return !_droppedFiles.empty(); }
-
-	// gets list of dropped files
-	// remember to clear buffer with clearDroppedFiles() after get!
-	std::vector<std::string> getDroppedFiles() { return _droppedFiles; }
-
-	// clear buffer of dropped files
-	void clearDroppedFiles() { _droppedFiles.clear(); }
-
-	// get last position of dropped files
-	const sf::Vector2i& getLastDropPos() { return _lastDropPos; }
-
-private:
-	std::vector<std::string> _droppedFiles;
-
-	sf::Vector2i _lastDropPos;
-
-	uint64_t _callback;
-	static Window* _this;
-
-	static LRESULT CALLBACK WndProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
-#endif
 };
 
 }

@@ -1,10 +1,10 @@
 #include "Window.hpp"
 
 /** @file Window.cpp
- ** @description Implementation file with main class of the Window module. 
- ** @author Patryk (Stritch)
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
+** @description Implementation file with main class of the Window module.
+** @author Patryk (Stritch)
+** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+**/
 
 #include <string>
 
@@ -21,19 +21,15 @@
 namespace rat
 {
 
-#ifdef EDITOR
-Window* Window::_this;
-#endif
-
 /* Properties */
 /// Window
 Window::Window_t& Window::getWindow()
 {
-    return this->window;
+	return this->window;
 }
 const Window::Window_t& Window::getWindow() const
 {
-    return this->window;
+	return this->window;
 }
 
 /// VideoMode
@@ -61,11 +57,11 @@ void Window::setFramerateLimit(const unsigned int limit)
 /// Title
 const std::string& Window::getTitle() const
 {
-    return this->title;
+	return this->title;
 }
 void Window::setTitle(const std::string& title)
 {
-    this->title = title;
+	this->title = title;
 	this->getWindow().create(this->videoMode, this->title);
 }
 
@@ -92,19 +88,9 @@ Window::~Window()
 void Window::init()
 {
 	// Create 
-    this->setVideoMode(this->videoMode);
+	this->setVideoMode(this->videoMode);
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 	// @todo load from settings
-	
-#ifdef EDITOR
-	// accept dropping files
-	DragAcceptFiles(window.getSystemHandle(), true);
-
-	// hook wndproc
-	_callback = SetWindowLongPtrW(window.getSystemHandle(), GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::WndProc));
-	
-	_this = this;
-#endif
 }
 
 /// render
@@ -116,7 +102,7 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-    this->getWindow().clear(color);
+	this->getWindow().clear(color);
 }
 
 void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
@@ -128,44 +114,5 @@ void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveT
 {
 	this->getWindow().draw(vertices, vertexCount, type, states);
 }
-
-#ifdef EDITOR
-LRESULT CALLBACK Window::WndProc(HWND Handle, UINT Message, WPARAM WParam, LPARAM LParam)
-{
-	switch (Message)
-	{
-		case WM_DROPFILES:
-		{
-			std::vector<std::string> files;
-
-			char fileName[1024] = { 0 };
-
-			HDROP hDrop = reinterpret_cast<HDROP>(WParam);
-
-			auto file = DragQueryFile(hDrop, 0xFFFFFFFF, nullptr, 0);
-
-			POINT pos;
-
-			DragQueryPoint(hDrop, &pos);
-
-			_this->_lastDropPos = { pos.x, pos.y };
-
-			for (int i = 0; i < file; i++)
-			{
-				fileName[0] = '\0';
-
-				if (DragQueryFile(hDrop, i, fileName, 1024))
-				{
-					_this->_droppedFiles.push_back(fileName);
-				}
-			}
-
-			DragFinish(hDrop);
-		} break;
-	}
-
-	return CallWindowProc(reinterpret_cast<WNDPROC>(_this->_callback), Handle, Message, WParam, LParam);
-}
-#endif
 
 }

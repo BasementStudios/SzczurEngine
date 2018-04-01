@@ -11,6 +11,7 @@ void Application::init()
 {
 	initModule<Window>();
 	initModule<Input>();
+	initModule<DragDrop>();
 
 	#ifdef EDITOR
 	{
@@ -42,16 +43,16 @@ void Application::input()
 
 	#ifdef EDITOR
 	{
-		auto& window = _modules.getModule<Window>();
+		auto& dragDrop = _modules.getModule<DragDrop>();
 
-		if (window.areFilesDropped())
+		if (dragDrop.areFilesDropped())
 		{
-			auto files = window.getDroppedFiles();
+			auto files = dragDrop.getDroppedFiles();
 
-			auto pos = window.getLastDropPos();
+			auto pos = dragDrop.getLastDropPos();
 			LOG_INFO("Mouse pos: ", pos.x, " ", pos.y);
-
-			window.clearDroppedFiles();
+			
+			dragDrop.clearDroppedFiles();
 
 			for (auto& file : files)
 			{
