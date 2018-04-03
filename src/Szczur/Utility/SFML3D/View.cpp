@@ -24,10 +24,10 @@ namespace sf3d {
 
 	Transform View::getTransform() const {
 		Transform transform;
-		transform.translate(-_center);
 		transform.rotate(glm::radians(_rotation.x), {1.f, 0.f, 0.f});
 		transform.rotate(glm::radians(_rotation.y), {0.f, 1.f, 0.f});
 		transform.rotate(glm::radians(_rotation.z), {0.f, 0.f, 1.f});
+		transform.translate(-_center);
 		return transform;
 
 	}

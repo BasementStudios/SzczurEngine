@@ -50,10 +50,11 @@ namespace sf3d {
 
 	Transform Transformable::getTransform() const {
 		Transform transform;
+		transform.translate(_position);
 		transform.rotate(glm::radians(_rotation.x), {1.f, 0.f, 0.f});
 		transform.rotate(glm::radians(_rotation.y), {0.f, 1.f, 0.f});
 		transform.rotate(glm::radians(_rotation.z), {0.f, 0.f, 1.f});
-		transform.translate(_position - _origin);
+		transform.translate(-(_origin*_scale));
 		transform.scale(_scale);
 
 		return transform;

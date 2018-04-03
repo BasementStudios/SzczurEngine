@@ -12,7 +12,7 @@ namespace sf3d {
 		RenderTarget(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV = 45.f);
 		~RenderTarget();
 
-		void clear(float r, float g, float b);
+		void clear(float r, float g, float b, GLbitfield flags);
 
 		void draw(Drawable& drawable, RenderStates states);
 		void draw(Drawable& drawable);

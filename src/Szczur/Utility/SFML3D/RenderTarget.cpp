@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 namespace sf3d {
 
 	RenderTarget::RenderTarget(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV) :
@@ -20,20 +21,17 @@ namespace sf3d {
 		}
 		_shader = new Shader(vertexPath, fragmentPath);
 		_states.shader = _shader;
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_DEPTH_TEST);
 	}
 
 	RenderTarget::~RenderTarget() {
 		delete _shader;
 	}
 
-	void RenderTarget::clear(float r, float g, float b) {
+	void RenderTarget::clear(float r, float g, float b, GLbitfield flags) {
+		;
 		if(_setActive()) {
 			glClearColor(r / 255.f, g / 255.f, b / 255.f, 1.f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(flags);
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 		}
 	}
