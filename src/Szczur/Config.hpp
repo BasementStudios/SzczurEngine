@@ -12,12 +12,12 @@
 #endif
 
 // Compiler detection
-#if defined(__GNUG__)
-#	define COMPILER_GCC
-#	define COMPILER_NAME "GNU Compiler Collection"
-#elif defined(__clang__)
+#if defined(__clang__)
 #	define COMPILER_CLANG
 #	define COMPILER_NAME "LLVM/Clang"
+#elif defined(__GNUG__)
+#	define COMPILER_GCC
+#	define COMPILER_NAME "GNU Compiler Collection"
 #elif defined(_MSC_VER)
 #	define COMPILER_MSVC
 #	define COMPILER_NAME "Microsoft Visual C++"
