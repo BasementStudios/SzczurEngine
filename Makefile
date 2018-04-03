@@ -163,7 +163,7 @@ CXXFLAGS_DYNAMIC_LUA    :=
  CXXFLAGS_STATIC_IMGUI  := 
   LDFLAGS_STATIC_IMGUI  := -limgui 
 CXXFLAGS_DYNAMIC_IMGUI  := 
- LDFLAGS_DYNAMIC_IMGUI  := -limgui 
+ LDFLAGS_DYNAMIC_IMGUI  := -limgui
 
 # Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
 FILES_DYNAMIC_SFML := openal32.dll sfml*

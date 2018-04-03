@@ -3,24 +3,28 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace rat::sf3d {
-    class Transform {
-    public:
-        Transform();
+namespace sf3d {
+	class Transform {
+	public:
+		Transform();
 
-        void translate(const glm::vec3& offset);
+		inline void translate(float x, float y, float z);
+		void translate(const glm::vec3& offset);
 
-        void rotate(float angle, const glm::vec3& direction);
+		inline void rotate(float angle, float x, float y, float z);
+		void rotate(float angle, const glm::vec3& direction);
 
-        void scale(const glm::vec3& offset);
+		inline void scale(float x, float y, float z);
+		void scale(const glm::vec3& value);
 
-        void combine(const Transform& transform);
+		void combine(const Transform& trans);
 
-        operator glm::mat4();
+		void operator*=(const Transform& trans);
 
-        void operator*=(const Transform& object);
+		void operator*=(const glm::vec3& value);
 
-    //private:
-        glm::mat4 _mat;
-    };
+		glm::mat4& getMatrix();
+	private:
+		glm::mat4 _mat;
+	};
 }
