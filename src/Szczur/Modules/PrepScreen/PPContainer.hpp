@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 #include <algorithm>
+#include <cassert>
 
 #include "PPSource.hpp"
 

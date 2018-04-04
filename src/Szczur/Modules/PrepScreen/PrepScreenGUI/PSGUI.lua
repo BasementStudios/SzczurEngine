@@ -3,68 +3,79 @@ PSInterface = GUI.addInterface()
 
 local ppBar = PSInterface:addImage({
 	position = {0, 0};
-	texture = GUI.getTexture("meleIcon.png");
-	size = {100, 120};
+	GUI.addTexture("assets/PrepScreen/ppBar.png");
+	texture = GUI.getTexture("assets/PrepScreen/ppBar.png");
 })
 
-
---[[
-coloredPPBar = PPbar:addWidget({
+local coloredPPBar = ppBar:addWidget({
 	position = {0, 0};
-	--size = {1280, 80};
 })
 
-colorlessPPBar = PPbar:addWidget({
+colorlessPPBar = ppBar:addWidget({
 	position = {0, 80};
-	--size = {1280, 40};
 })
 
-professionBar = PSInterface:addWidget({
+
+
+professionBar = PSInterface:addImage({
 	position = {0, 120};
+	GUI.addTexture("assets/PrepScreen/professionBar.png");	
+	texture = GUI.getTexture("assets/PrepScreen/professionBar.png");
 	--size = {200, 480};
 })
 
 meleIcon = professionBar:addImage({
 	position = {40, 0};
 	--size = {120, 120};
-	texture = GUI.getTexture("out/assets/icons/meleIcon.png");
-	
+	GUI.addTexture("assets/PrepScreen/meleIcon.png");
+	texture = GUI.getTexture("assets/PrepScreen/meleIcon.png");
 })
-rangeIcon = professionBar:addImage({
+-- --[[
+local rangeIcon = professionBar:addImage({
 	position = {40, 120};
 	--size = {120, 120};
-	texture = GUI.getTexture("out/assets/icons/meleIcon.png")	
-})
-auraIcon = professionBar:addImage({
-	position = {40, 240};
-	--size = {120, 120};
-	texture = GUI.getTexture("out/assets/icons/meleIcon.png");
-	
-})
-innerFireIcon = professionBar:addImage({
-	position = {40, 360};
-	--size = {120, 120};
-	texture = GUI.getTexture("out/assets/icons/meleIcon.png");
-	
+	GUI.addTexture("assets/PrepScreen/rangeIcon.png");	
+	texture = GUI.getTexture("assets/PrepScreen/rangeIcon.png");	
 })
 
-centerWindow = PSInterface:addWidget({
-	position = {200, 120};	
+local auraIcon = professionBar:addImage({
+	position = {40, 240};
+	--size = {120, 120};
+	GUI.addTexture("assets/PrepScreen/auraIcon.png");
+	texture = GUI.getTexture("assets/PrepScreen/auraIcon.png");
+})
+
+local innerFireIcon = professionBar:addImage({
+	position = {40, 360};
+	--size = {120, 120};
+	GUI.addTexture("assets/PrepScreen/inerFireIcon.png");
+	texture = GUI.getTexture("assets/PrepScreen/inerFireIcon.png");
+})
+
+
+local centerWindow = PSInterface:addImage({
+	position = {200, 120};
+	GUI.addTexture("assets/PrepScreen/centerWindow.png");
+	texture = GUI.getTexture("assets/PrepScreen/centerWindow.png");	
 	--size = { 760, 480 };
 })
 
-optionList = centerWindow:addScroll({
+
+local optionList = centerWindow:addArea({
 	position = {40, 40};
 	size = {240, 400};
-	scrollSpeed = 5;
+	scrollSpeed = 15;
 })
 
-skills = {}
+local skills = {}
 
-for i = 0, 6 do
-	skills[i] = optionList:addWidget({
-		position = {0, i * 100};
+GUI.addTexture("assets/PrepScreen/skillBar.png");
+
+for i = 0, 5 do
+	skills[i] = optionList:addImage({
+		position = {0, i * 70};
 		--size = { 240, 80 };
+		texture = GUI.getTexture("assets/PrepScreen/skillBar.png");	
 	})
 end
---]]
+-- --]]

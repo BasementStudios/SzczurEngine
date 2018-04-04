@@ -9,7 +9,7 @@ namespace rat
     {
         using power_t = size_t;
 
-        ColoredPP(const std::string& type, size_t power)
+        ColoredPP(const std::string& type, power_t power)
         :
         type(type),
         power(power)
