@@ -32,7 +32,7 @@ NodeEditor::~NodeEditor()
 	ed::DestroyEditor(_context);
 }
 
-void NodeEditor::drawIcon(bool filled)
+void NodeEditor::drawIcon(bool filled, ImColor&& color)
 {
 	auto cursorPos = ImGui::GetCursorScreenPos();
 	auto drawList = ImGui::GetWindowDrawList();
@@ -45,7 +45,6 @@ void NodeEditor::drawIcon(bool filled)
 	const auto extra_segments = roundi(2 * outline_scale); // for full circle
 
 	auto innerColor = ImColor(32, 32, 32, 255);
-	auto color = ImColor(255, 255, 255);
 
 	const auto origin_scale = rect.w / 24.0f;
 

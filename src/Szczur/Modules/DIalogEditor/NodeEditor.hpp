@@ -33,11 +33,11 @@ public:
 
 	void showOptionConfig();
 
-	void drawIcon(bool filled);
 
 	void save(const std::string& fileName);
 
 private:
+	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
 };
 
