@@ -506,6 +506,7 @@ void NodeEditor::showPopups()
 				{
 					_nodeManager->removeLink(link->Id);
 
+					ed::DeleteLink(link->Id);
 					i--;
 				}
 			}
