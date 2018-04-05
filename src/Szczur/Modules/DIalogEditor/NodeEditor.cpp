@@ -318,7 +318,10 @@ void NodeEditor::update()
 
 					ImGui::SameLine();
 
-					drawIcon(_nodeManager->isPinLinked(output->Id));
+					if (output->LinkToSameNode)
+						drawIcon(_nodeManager->isPinLinked(output->Id), ImColor(239, 83, 80));
+					else
+						drawIcon(_nodeManager->isPinLinked(output->Id));
 
 					ImGui::Dummy(ImVec2(24, 24));
 
@@ -346,7 +349,8 @@ void NodeEditor::update()
 		// draw links
 		for (auto& link : _nodeManager->getLinks())
 		{
-			ed::Link(link->Id, link->StartPinId, link->EndPinId, link->Color, 2.0f);
+			if (!link->SameNode)
+				ed::Link(link->Id, link->StartPinId, link->EndPinId, link->Color, 2.0f);
 		}
 
 		// create link
@@ -391,7 +395,18 @@ void NodeEditor::update()
 						{
 							if (ed::AcceptNewItem(ImColor(128, 255, 128), 4.0f))
 							{
-								_nodeManager->createLink(startPinId, endPinId);
+								auto link = _nodeManager->createLink(startPinId, endPinId);
+
+								if (startPin->Node == endPin->Node)
+								{
+									link->SameNode = true;
+									startPin->LinkToSameNode = true;
+								}
+								else
+								{
+									link->SameNode = false;
+									startPin->LinkToSameNode = false;
+								}
 							}
 						}
 					}
@@ -411,6 +426,18 @@ void NodeEditor::update()
 			{
 				if (ed::AcceptDeletedItem())
 				{
+					auto link = _nodeManager->findLink(linkId);
+
+					if (link)
+					{
+						auto startPin = _nodeManager->findPin(link->StartPinId);
+						
+						if (startPin)
+						{
+							startPin->LinkToSameNode = false;
+						}
+					}
+
 					_nodeManager->removeLink(linkId);
 				}
 			}
@@ -504,8 +531,14 @@ void NodeEditor::showPopups()
 
 				if (link->StartPinId == pin->Id || link->EndPinId == pin->Id)
 				{
-					_nodeManager->removeLink(link->Id);
+					auto startPin = _nodeManager->findPin(link->StartPinId);
 
+					if (startPin)
+					{
+						startPin->LinkToSameNode = false;
+					}
+
+					_nodeManager->removeLink(link->Id);
 					ed::DeleteLink(link->Id);
 					i--;
 				}

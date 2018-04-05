@@ -86,7 +86,8 @@ bool FileDialog::show(char *result, bool multiselect)
 	ofn.nMaxFile = sizeof(filePath);
 
 	std::replace(_filter.begin(), _filter.end(), '|', '\0');
-	ofn.lpstrFilter = (_filter + '\0').c_str();
+	_filter += '\0';
+	ofn.lpstrFilter = _filter.c_str();
 
 	ofn.nFilterIndex = _filterIndex;
 	ofn.lpstrTitle = _caption.c_str();

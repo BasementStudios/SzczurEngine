@@ -21,6 +21,8 @@ struct NodePin
 
 	int OptionTarget = -1;
 
+	bool LinkToSameNode = false;
+
 	NodePin(int id, const std::string& name, ed::PinKind kind) :
 		Id(id), Name(name), Kind(kind) { }
 };
@@ -61,6 +63,8 @@ struct NodeLink
 
 	int StartPinId;
 	int EndPinId;
+
+	bool SameNode = false;
 
 	ImColor Color = { 255, 255, 255 };
 
