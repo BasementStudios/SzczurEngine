@@ -32,8 +32,7 @@ public:
 	{
 		Start,
 		End,
-		Options,
-		Connector
+		Options
 	};
 
 public:

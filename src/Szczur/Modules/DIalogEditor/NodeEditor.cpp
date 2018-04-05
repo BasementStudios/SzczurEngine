@@ -422,7 +422,7 @@ void NodeEditor::update()
 			{
 				auto node = _nodeManager->findNode(nodeId);
 
-				if ((node->Type == Node::Options || node->Type == Node::Connector) && ed::AcceptDeletedItem())
+				if ((node->Type == Node::Options) && ed::AcceptDeletedItem())
 				{
 					_nodeManager->removeNode(nodeId);
 				}
@@ -470,15 +470,6 @@ void NodeEditor::showPopups()
 		{
 			ImGui::EndPopup();
 			ImGui::OpenPopup("Create Node Popup");
-		}
-		else if (ImGui::MenuItem("Create connector"))
-		{
-			auto node = _nodeManager->createNode("Connector", Node::Connector);
-			node->createPin("In", ed::PinKind::Target);
-			node->createPin("Out", ed::PinKind::Source);
-
-			ed::SetNodePosition(node->Id, ImGui::GetMousePos());
-			ImGui::EndPopup();
 		}
 		else
 			ImGui::EndPopup();
