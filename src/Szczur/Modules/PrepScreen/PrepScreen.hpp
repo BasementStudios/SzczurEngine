@@ -10,6 +10,7 @@
 //#include "Szczur/Modules/PrepScreen/PPContainer.hpp"
 #include "Szczur/Modules/PrepScreen/SkillCodex.hpp"
 #include "GUI/SkillBar.hpp"
+#include "GUI/ColoredPPBar.hpp"
 
 namespace rat
 {
@@ -22,17 +23,23 @@ public:
     {
         //Script& script = getModule<Script>();
         //script.scriptFile("D:/Sczur/SzczurEngine/src/Szczur/Modules/PrepScreen/PrepScreenGUI/PSGUI.lua");
+        initGUI();
     }
 
     void initScript();
     void initGUI();
 
     PrepScreen()
+    :
+    _coloredPPsBar(_source, _coloredPPBar)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();
-        initGUI();
         LOG_INFO(this, " : Module PrepScreen inited.");
+    }
+    ~PrepScreen()
+    {
+        LOG_INFO(this, " : Module PrepScreen destroyed.");
     }
 
     SkillCodex& getSkillCodex();
@@ -58,6 +65,9 @@ private:
 
     ImageWidget* _eq{nullptr};
     ImageWidget* _chosenSkillsBar{nullptr};
+
+
     std::vector<std::unique_ptr<SkillBar>> _skills;
+    ColoredPPBar _coloredPPsBar;
 };
 }

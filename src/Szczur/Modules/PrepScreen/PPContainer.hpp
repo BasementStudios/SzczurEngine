@@ -69,6 +69,17 @@ namespace rat
             _amountOfPP += addon;
         }
 
+        auto begin() const
+        {
+            return _coloredPPs.begin();
+        }
+
+        auto end() const
+        {
+            return _coloredPPs.end();
+        }
+
+
     private:
         std::map<ColoredPP, amount_t> _coloredPPs;
         amount_t _amountOfPP{ 0u };

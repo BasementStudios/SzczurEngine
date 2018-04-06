@@ -3,6 +3,8 @@
 
 #include "GUI/SkillBar.hpp"
 
+
+
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
@@ -123,6 +125,11 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
+        std::cout << "Before PPsBar\n";
+        _coloredPPsBar.initTexturesViaGui(gui);
+        std::cout << "After PPsBar\n";
+        
+
         auto test1 = std::make_unique<Skill>("testGreen");
         test1->setIcon(getTextureFrom("test1.png", gui));
         test1->setPPCost(3);
@@ -138,6 +145,16 @@ namespace rat
 
         testSkills.emplace_back(std::move(test1));
         testSkills.emplace_back(std::move(test2));
+
+        PPSource fireSource = {"Fire", 1};
+        PPSource waterSource = {"Water", 1};
+        _source.addSource(fireSource);
+        _source.addSource(waterSource);
+        std::cout << "Mandzio\n";
+        /*
+        _coloredPPsBar.recalculate();
+        _coloredPPsBar.setCenter(1280.f/2.f, 0.f);
+        */
     }
 
 }
