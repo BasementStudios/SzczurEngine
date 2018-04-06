@@ -14,17 +14,22 @@ namespace rat
 
 NodeEditor::NodeEditor()
 {
-	ed::Config config;
-	config.SettingsFile = "NodeEditor.json";
-	_context = ed::CreateEditor(&config);
+	_context = ed::CreateEditor(nullptr);
 
 	_nodeManager = std::make_unique<NodeManager>();
+
+	ed::SetCurrentEditor(_context);
 
 	auto start = _nodeManager->createNode("Start", Node::Start);
 	start->createPin("Start", ed::PinKind::Output);
 
 	auto end = _nodeManager->createNode("End", Node::End);
 	end->createPin("End", ed::PinKind::Input);
+
+	ed::SetNodePosition(start->Id, ImVec2(100.f, 100.f));
+	ed::SetNodePosition(end->Id, ImVec2(300, 100.f));
+
+	ed::NavigateToContent();
 }
 
 NodeEditor::~NodeEditor()
