@@ -21,10 +21,10 @@ NodeEditor::NodeEditor()
 	_nodeManager = std::make_unique<NodeManager>();
 
 	auto start = _nodeManager->createNode("Start", Node::Start);
-	start->createPin("Start", ed::PinKind::Source);
+	start->createPin("Start", ed::PinKind::Output);
 
 	auto end = _nodeManager->createNode("End", Node::End);
-	end->createPin("End", ed::PinKind::Target);
+	end->createPin("End", ed::PinKind::Input);
 }
 
 NodeEditor::~NodeEditor()
@@ -261,7 +261,7 @@ void NodeEditor::update()
 					ed::PushStyleVar(ed::StyleVar_PivotAlignment, ImVec2(0, 0.5f));
 					ed::PushStyleVar(ed::StyleVar_PivotSize, ImVec2(0, 0));
 
-					ed::BeginPin(input->Id, ed::PinKind::Target);
+					ed::BeginPin(input->Id, ed::PinKind::Input);
 					
 					drawIcon(_nodeManager->isPinLinked(input->Id));
 
@@ -291,7 +291,7 @@ void NodeEditor::update()
 					ed::PushStyleVar(ed::StyleVar_PivotAlignment, ImVec2(1.0f, 0.5f));
 					ed::PushStyleVar(ed::StyleVar_PivotSize, ImVec2(0, 0));
 
-					ed::BeginPin(output->Id, ed::PinKind::Source);
+					ed::BeginPin(output->Id, ed::PinKind::Output);
 
 					if (node->Type == Node::Options || node->Type == Node::Start)
 					{
@@ -336,7 +336,7 @@ void NodeEditor::update()
 
 					if (ImGui::Button(label.c_str()))
 					{
-						auto pin = node->createPin("Option", ed::PinKind::Source);
+						auto pin = node->createPin("Option", ed::PinKind::Output);
 					}
 				}
 
@@ -367,7 +367,7 @@ void NodeEditor::update()
 
 					_newLinkPin = startPin ? startPin : endPin;
 
-					if (startPin->Kind == ed::PinKind::Target)
+					if (startPin->Kind == ed::PinKind::Input)
 					{
 						std::swap(startPin, endPin);
 						std::swap(startPinId, endPinId);
@@ -545,11 +545,11 @@ void NodeEditor::showPopups()
 			}
 		}
 
-		if (pin->Kind == ed::PinKind::Source && pin->Node->Type == Node::Options)
+		if (pin->Kind == ed::PinKind::Output && pin->Node->Type == Node::Options)
 		{
 			if (ImGui::MenuItem("Delete"))
 			{
-				if (pin->Kind == ed::PinKind::Source)
+				if (pin->Kind == ed::PinKind::Output)
 				{
 					// remove links with this pin
 					auto& links = _nodeManager->getLinks();
@@ -587,7 +587,7 @@ void NodeEditor::showPopups()
 		if (ImGui::Button("OK", ImVec2(120, 0))) 
 		{
 			auto node = _nodeManager->createNode(buffer);
-			node->createPin("Trigger", ed::PinKind::Target);
+			node->createPin("Trigger", ed::PinKind::Input);
 
 			ed::SetNodePosition(node->Id, newNodePostion);
 

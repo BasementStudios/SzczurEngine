@@ -118,11 +118,11 @@ NodePin* Node::createPin(const std::string& name, ed::PinKind pinKind)
 
 	auto ptr = pin.get();
 
-	if (pinKind == ed::PinKind::Target)
+	if (pinKind == ed::PinKind::Input)
 	{
 		Inputs.push_back(std::move(pin));
 	}
-	else if (pinKind == ed::PinKind::Source)
+	else if (pinKind == ed::PinKind::Output)
 	{
 		Outputs.push_back(std::move(pin));
 	}
@@ -132,7 +132,7 @@ NodePin* Node::createPin(const std::string& name, ed::PinKind pinKind)
 
 void Node::removePin(NodePin* pin)
 {
-	if (pin->Kind == ed::PinKind::Target)
+	if (pin->Kind == ed::PinKind::Input)
 	{
 		auto id = std::find_if(Inputs.begin(), Inputs.end(), [pin] (auto& node) { return node->Id == pin->Id; });
 
@@ -141,7 +141,7 @@ void Node::removePin(NodePin* pin)
 			Inputs.erase(id);
 		}
 	}
-	else if (pin->Kind == ed::PinKind::Source)
+	else if (pin->Kind == ed::PinKind::Output)
 	{
 		auto id = std::find_if(Outputs.begin(), Outputs.end(), [pin] (auto& node) { return node->Id == pin->Id; });
 
