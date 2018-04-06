@@ -1,34 +1,41 @@
 #pragma once
 
-#include <NodeEditor.h>
 #include <memory>
 #include <vector>
 #include <iostream>
 #include <string>
 
+#include <NodeEditor.h>
+#include <nlohmann/json.hpp>
+
 namespace ed = ax::NodeEditor;
+using json = nlohmann::json;
 
 namespace rat
 {
 class Node;
+class NodeManager;
 
 struct NodePin
 {
-	int Id;
+	int Id = -1;
 	Node* Node = nullptr;
 	std::string Name;
-	ed::PinKind Kind;
+	ed::PinKind Kind = ed::PinKind::Input;
 
 	int OptionTarget = -1;
 
 	bool LinkToSameNode = false;
 
+	NodePin() { }
 	NodePin(int id, const std::string& name, ed::PinKind kind) :
 		Id(id), Name(name), Kind(kind) { }
 };
 
 class Node
 {
+	friend NodeManager;
+
 public:
 	enum NodeType
 	{
@@ -38,7 +45,7 @@ public:
 	};
 
 public:
-	int Id;
+	int Id = -1;
 	std::string Name;
 	std::vector<std::unique_ptr<NodePin>> Inputs;
 	std::vector<std::unique_ptr<NodePin>> Outputs;
@@ -49,6 +56,7 @@ private:
 	int _lastPinId = 0;
 
 public:
+	Node() { }
 	Node(int id, const std::string& name, NodeType nodeType) :
 		Id(id), Name(name), Type(nodeType) { }
 
@@ -59,15 +67,16 @@ public:
 
 struct NodeLink
 {
-	int Id;
+	int Id = -1;
 
-	int StartPinId;
-	int EndPinId;
+	int StartPinId = 1;
+	int EndPinId = -1;
 
 	bool SameNode = false;
 
 	ImColor Color = { 255, 255, 255 };
 
+	NodeLink() {}
 	NodeLink(int id, int startPinId, int endPinId) :
 		Id(id), StartPinId(startPinId), EndPinId(endPinId) { }
 };
@@ -84,6 +93,12 @@ private:
 public:
 	NodeManager() = default;
 	~NodeManager() = default;
+
+	void read(const json& j);
+	void write(json& j);
+
+	void reset();
+
 
 	NodePin* findPin(int pinId);
 

@@ -1,6 +1,14 @@
 #include "NodeManager.hpp"
 
 #include <algorithm>
+#include <fstream>
+
+#include <nlohmann/json.hpp>
+#include <NodeEditor.h>
+
+#include "Szczur/Utility/Logger.hpp"
+
+using json = nlohmann::json;
 
 namespace rat
 {
@@ -107,6 +115,159 @@ void NodeManager::removeLink(int linkId)
 	}
 }
 
+void NodeManager::read(const json& j)
+{
+	auto readPin = [] (json::reference j, NodePin* pin) 
+	{
+		pin->Id = j["id"];
+		pin->Name = j["name"].get<std::string>();
+		pin->OptionTarget = j["optionTarget"];
+		pin->LinkToSameNode = j["linkToSameNode"];
+	};
+
+	// Nodes
+	json::array_t jsonNodes = j["nodes"];
+
+	for (auto& jsonNode : jsonNodes)
+	{
+		auto node = std::make_unique<Node>();
+		node->Id = jsonNode["id"];
+		node->Name = jsonNode["name"].get<std::string>();
+		node->Type = jsonNode["type"];
+		node->_lastPinId = jsonNode["lastPinId"];
+
+		ImVec2 pos;
+		pos.x = jsonNode["position"][0];
+		pos.y = jsonNode["position"][1];
+		ed::SetNodePosition(node->Id, pos);
+
+		// Inputs
+		json::array_t jsonInputs = jsonNode["inputs"];
+
+		for (auto& jsonInput : jsonInputs)
+		{
+			auto input = std::make_unique<NodePin>();
+			readPin(jsonInput, input.get());
+			input->Node = node.get();
+			node->Inputs.push_back(std::move(input));
+		}
+
+		// Outputs
+		json::array_t jsonOutputs = jsonNode["outputs"];
+
+		for (auto& jsonOutputs : jsonOutputs)
+		{
+			auto output = std::make_unique<NodePin>();
+			readPin(jsonOutputs, output.get());
+			output->Node = node.get();
+			node->Outputs.push_back(std::move(output));
+		}
+
+		_nodes.push_back(std::move(node));
+	}
+
+	// Links
+	json::array_t jsonLinks = j["links"];
+
+	for (auto& jsonLink : jsonLinks)
+	{
+		auto link = std::make_unique<NodeLink>();
+
+		link->Id = jsonLink["id"];
+		link->StartPinId = jsonLink["startPinId"];
+		link->EndPinId = jsonLink["endPinId"];
+		link->SameNode = jsonLink["sameNode"];
+		link->Color = ImGui::ColorConvertU32ToFloat4(jsonLink["color"]);
+
+		_links.push_back(std::move(link));
+	}
+}
+
+void NodeManager::write(json& j)
+{
+	auto writePin = [] (json::object_t::mapped_type::reference j, NodePin* pin) {
+		j["id"] = pin->Id;
+		j["name"] = pin->Name;
+		j["optionTarget"] = pin->OptionTarget;
+		j["linkToSameNode"] = pin->LinkToSameNode;
+	};
+
+	// Nodes
+	auto jsonNodes = json::array();
+
+	for (auto& node : _nodes)
+	{
+		auto jsonNode = json::object();
+
+		jsonNode["id"] = node->Id;
+		jsonNode["name"] = node->Name;
+		jsonNode["type"] = node->Type;
+		jsonNode["lastPinId"] = node->_lastPinId;
+		
+		auto pos = ed::GetNodePosition(node->Id);
+		jsonNode["position"] = { pos.x, pos.y };
+
+
+		// Inputs
+		auto jsonInputs = json::array();
+
+		for (auto& input : node->Inputs)
+		{
+			auto jsonInput = json::object();
+
+			writePin(jsonInput, input.get());
+
+			jsonInputs.push_back(jsonInput);
+		}
+
+		jsonNode["inputs"] = jsonInputs;
+
+
+		// Outputs
+		auto jsonOutputs = json::array();
+
+		for (auto& output : node->Outputs)
+		{
+			auto jsonOutput = json::object();
+
+			writePin(jsonOutput, output.get());
+
+			jsonOutputs.push_back(jsonOutput);
+		}
+
+		jsonNode["outputs"] = jsonOutputs;
+
+
+		jsonNodes.push_back(jsonNode);
+	}
+
+	j["nodes"] = jsonNodes;
+
+	// Links
+	auto jsonLinks = json::array();
+
+	for (auto& link : _links)
+	{
+		auto jsonLink = json::object();
+		jsonLink["id"] = link->Id;
+		jsonLink["startPinId"] = link->StartPinId;
+		jsonLink["endPinId"] = link->EndPinId;
+		jsonLink["sameNode"] = link->SameNode;
+		jsonLink["color"] = ImGui::ColorConvertFloat4ToU32(link->Color.Value);
+
+		jsonLinks.push_back(jsonLink);
+	}
+
+	j["links"] = jsonLinks;
+}
+
+void NodeManager::reset()
+{
+	_nodes.clear();
+	_links.clear();
+
+	this->_lastId = 0;
+}
 
 NodePin* Node::createPin(const std::string& name, ed::PinKind pinKind)
 {

@@ -9,6 +9,13 @@ namespace rat
 {
 class NodeEditor
 {
+public:
+	enum FileFormat
+	{
+		Lua,
+		Json
+	};
+
 private:
 	ed::EditorContext* _context;
 
@@ -33,12 +40,13 @@ public:
 
 	void showOptionConfig();
 
-
-	void save(const std::string& fileName);
+	void save(const std::string& fileName, FileFormat saveFormat);
+	void load(const std::string& fileName, FileFormat loadFormat);
 
 private:
 	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
+	void createNew();
 };
 
 }

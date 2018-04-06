@@ -20,14 +20,7 @@ NodeEditor::NodeEditor()
 
 	ed::SetCurrentEditor(_context);
 
-	auto start = _nodeManager->createNode("Start", Node::Start);
-	start->createPin("Start", ed::PinKind::Output);
-
-	auto end = _nodeManager->createNode("End", Node::End);
-	end->createPin("End", ed::PinKind::Input);
-
-	ed::SetNodePosition(start->Id, ImVec2(100.f, 100.f));
-	ed::SetNodePosition(end->Id, ImVec2(300, 100.f));
+	createNew();
 
 	ed::NavigateToContent();
 }
@@ -37,92 +30,99 @@ NodeEditor::~NodeEditor()
 	ed::DestroyEditor(_context);
 }
 
-void NodeEditor::drawIcon(bool filled, ImColor&& color)
+void NodeEditor::createNew()
 {
-	auto cursorPos = ImGui::GetCursorScreenPos();
-	auto drawList = ImGui::GetWindowDrawList();
+	auto start = _nodeManager->createNode("Start", Node::Start);
+	start->createPin("Start", ed::PinKind::Output);
 
-	auto a = cursorPos;
-	auto b = a + ImVec2(24, 24);
+	auto end = _nodeManager->createNode("End", Node::End);
+	end->createPin("End", ed::PinKind::Input);
 
-	auto rect = ax::rect(to_point(a), to_point(b));
-	const auto outline_scale = rect.w / 24.0f;
-	const auto extra_segments = roundi(2 * outline_scale); // for full circle
-
-	auto innerColor = ImColor(32, 32, 32, 255);
-
-	const auto origin_scale = rect.w / 24.0f;
-
-	const auto offset_x = 1.0f * origin_scale;
-	const auto offset_y = 0.0f * origin_scale;
-	const auto margin = (filled ? 2.0f : 2.0f) * origin_scale;
-	const auto rounding = 0.1f * origin_scale;
-	const auto tip_round = 0.7f; // percentage of triangle edge (for tip)
-								 //const auto edge_round = 0.7f; // percentage of triangle edge (for corner)
-	const auto canvas = ax::rectf(
-		rect.x + margin + offset_x,
-		rect.y + margin + offset_y,
-		rect.w - margin * 2.0f,
-		rect.h - margin * 2.0f);
-
-	const auto left = canvas.x + canvas.w            * 0.5f * 0.3f;
-	const auto right = canvas.x + canvas.w - canvas.w * 0.5f * 0.3f;
-	const auto top = canvas.y + canvas.h            * 0.5f * 0.2f;
-	const auto bottom = canvas.y + canvas.h - canvas.h * 0.5f * 0.2f;
-	const auto center_y = (top + bottom) * 0.5f;
-	//const auto angle = AX_PI * 0.5f * 0.5f * 0.5f;
-
-	const auto tip_top = ImVec2(canvas.x + canvas.w * 0.5f, top);
-	const auto tip_right = ImVec2(right, center_y);
-	const auto tip_bottom = ImVec2(canvas.x + canvas.w * 0.5f, bottom);
-
-	drawList->PathLineTo(ImVec2(left, top) + ImVec2(0, rounding));
-	drawList->PathBezierCurveTo(
-		ImVec2(left, top),
-		ImVec2(left, top),
-		ImVec2(left, top) + ImVec2(rounding, 0));
-	drawList->PathLineTo(tip_top);
-	drawList->PathLineTo(tip_top + (tip_right - tip_top) * tip_round);
-	drawList->PathBezierCurveTo(
-		tip_right,
-		tip_right,
-		tip_bottom + (tip_right - tip_bottom) * tip_round);
-	drawList->PathLineTo(tip_bottom);
-	drawList->PathLineTo(ImVec2(left, bottom) + ImVec2(rounding, 0));
-	drawList->PathBezierCurveTo(
-		ImVec2(left, bottom),
-		ImVec2(left, bottom),
-		ImVec2(left, bottom) - ImVec2(0, rounding));
-
-	if (!filled)
-	{
-		if (innerColor & 0xFF000000)
-			drawList->AddConvexPolyFilled(drawList->_Path.Data, drawList->_Path.Size, innerColor);
-
-		drawList->PathStroke(color, true, 2.0f * outline_scale);
-	}
-	else
-		drawList->PathFillConvex(color);
+	ed::SetNodePosition(start->Id, ImVec2(100.f, 100.f));
+	ed::SetNodePosition(end->Id, ImVec2(300, 100.f));
 }
 
-void NodeEditor::save(const std::string& fileName)
+void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 {
-	auto code = generateCode();
-
-	LOG_INFO("Saving code to '", fileName, "'...");
-
-	std::ofstream file(fileName);
-
-	if (file.good())
+	if (saveFormat == FileFormat::Lua)
 	{
-		file << code;
-		file.close();
+		LOG_INFO("Save format: Lua");
 
-		LOG_INFO("Saved!");
+		auto code = generateCode();
+
+		LOG_INFO("Saving code to '", fileName, "'...");
+
+		std::ofstream file(fileName);
+
+		if (file.good())
+		{
+			file << code;
+			file.close();
+
+			LOG_INFO("Saved!");
+		}
+		else
+		{
+			LOG_ERROR("Cannot save code to file!");
+		}
 	}
-	else
+	else if (saveFormat == FileFormat::Json)
 	{
-		LOG_ERROR("Cannot save code to file!");
+		LOG_INFO("Save format: Json");
+		LOG_INFO("Saving to '", fileName, "'...");
+
+		std::ofstream file(fileName, std::ios_base::binary);
+
+		if (file.good())
+		{
+			json j;
+
+			_nodeManager->write(j);
+
+			file << j;
+
+			file.close();
+
+			LOG_INFO("Saved!");
+		}
+		else
+		{
+			LOG_ERROR("Cannot save to file!");
+		}
+	}
+}
+
+void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
+{
+	if (loadFormat == FileFormat::Lua)
+	{
+		// @todo
+	}
+	else if (loadFormat == FileFormat::Json)
+	{
+		LOG_INFO("Load format: Json");
+		LOG_INFO("Loading from '", fileName, "'...");
+
+		std::ifstream file(fileName, std::ios_base::binary);
+
+		if (file.good())
+		{
+			_nodeManager->reset();
+
+			json j;
+			j << file;
+			file.close();
+
+			_nodeManager->read(j);
+
+
+			LOG_INFO("Loaded!");
+		}
+		else
+		{
+			LOG_ERROR("Cannot open file!");
+		}
+
 	}
 }
 
@@ -245,8 +245,6 @@ std::string NodeEditor::generateCode()
 
 void NodeEditor::update()
 {
-	ed::SetCurrentEditor(_context);
-
 	ed::Begin("Node Editor");
 	{
 		auto cursorTopLeft = ImGui::GetCursorScreenPos();
@@ -484,9 +482,25 @@ void NodeEditor::update()
 
 	if (ImGui::Begin("Main window", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (ImGui::Button("Generate code"))
+		if (ImGui::Button("New"))
 		{
-			save("code.lua");
+			_nodeManager->reset();
+			createNew();
+		}
+
+		if (ImGui::Button("Generate lua"))
+		{
+			save("code.lua", FileFormat::Lua);
+		}
+
+		if (ImGui::Button("Save"))
+		{
+			save("structure.json", FileFormat::Json);
+		}
+
+		if (ImGui::Button("Load"))
+		{
+			load("structure.json", FileFormat::Json);
 		}
 	}
 
@@ -637,6 +651,74 @@ void NodeEditor::showOptionConfig()
 		}
 		ImGui::End();
 	}
+}
+
+void NodeEditor::drawIcon(bool filled, ImColor&& color)
+{
+	auto cursorPos = ImGui::GetCursorScreenPos();
+	auto drawList = ImGui::GetWindowDrawList();
+
+	auto a = cursorPos;
+	auto b = a + ImVec2(24, 24);
+
+	auto rect = ax::rect(to_point(a), to_point(b));
+	const auto outline_scale = rect.w / 24.0f;
+	const auto extra_segments = roundi(2 * outline_scale); // for full circle
+
+	auto innerColor = ImColor(32, 32, 32, 255);
+
+	const auto origin_scale = rect.w / 24.0f;
+
+	const auto offset_x = 1.0f * origin_scale;
+	const auto offset_y = 0.0f * origin_scale;
+	const auto margin = (filled ? 2.0f : 2.0f) * origin_scale;
+	const auto rounding = 0.1f * origin_scale;
+	const auto tip_round = 0.7f; // percentage of triangle edge (for tip)
+								 //const auto edge_round = 0.7f; // percentage of triangle edge (for corner)
+	const auto canvas = ax::rectf(
+		rect.x + margin + offset_x,
+		rect.y + margin + offset_y,
+		rect.w - margin * 2.0f,
+		rect.h - margin * 2.0f);
+
+	const auto left = canvas.x + canvas.w            * 0.5f * 0.3f;
+	const auto right = canvas.x + canvas.w - canvas.w * 0.5f * 0.3f;
+	const auto top = canvas.y + canvas.h            * 0.5f * 0.2f;
+	const auto bottom = canvas.y + canvas.h - canvas.h * 0.5f * 0.2f;
+	const auto center_y = (top + bottom) * 0.5f;
+	//const auto angle = AX_PI * 0.5f * 0.5f * 0.5f;
+
+	const auto tip_top = ImVec2(canvas.x + canvas.w * 0.5f, top);
+	const auto tip_right = ImVec2(right, center_y);
+	const auto tip_bottom = ImVec2(canvas.x + canvas.w * 0.5f, bottom);
+
+	drawList->PathLineTo(ImVec2(left, top) + ImVec2(0, rounding));
+	drawList->PathBezierCurveTo(
+		ImVec2(left, top),
+		ImVec2(left, top),
+		ImVec2(left, top) + ImVec2(rounding, 0));
+	drawList->PathLineTo(tip_top);
+	drawList->PathLineTo(tip_top + (tip_right - tip_top) * tip_round);
+	drawList->PathBezierCurveTo(
+		tip_right,
+		tip_right,
+		tip_bottom + (tip_right - tip_bottom) * tip_round);
+	drawList->PathLineTo(tip_bottom);
+	drawList->PathLineTo(ImVec2(left, bottom) + ImVec2(rounding, 0));
+	drawList->PathBezierCurveTo(
+		ImVec2(left, bottom),
+		ImVec2(left, bottom),
+		ImVec2(left, bottom) - ImVec2(0, rounding));
+
+	if (!filled)
+	{
+		if (innerColor & 0xFF000000)
+			drawList->AddConvexPolyFilled(drawList->_Path.Data, drawList->_Path.Size, innerColor);
+
+		drawList->PathStroke(color, true, 2.0f * outline_scale);
+	}
+	else
+		drawList->PathFillConvex(color);
 }
 
 }
