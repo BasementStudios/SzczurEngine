@@ -126,7 +126,9 @@ namespace rat
         auto& gui = getModule<GUI>();
 
         std::cout << "Before PPsBar\n";
+        _coloredPPsBar.setParent(_coloredPPBar);
         _coloredPPsBar.initTexturesViaGui(gui);
+        _coloredPPsBar.setCenter(1280.f/2.f, 0.f);
         std::cout << "After PPsBar\n";
         
 
@@ -148,13 +150,16 @@ namespace rat
 
         PPSource fireSource = {"Fire", 1};
         PPSource waterSource = {"Water", 1};
+        PPSource airSource = {"Air", 1};
         _source.addSource(fireSource);
         _source.addSource(waterSource);
-        std::cout << "Mandzio\n";
-        /*
+        
         _coloredPPsBar.recalculate();
-        _coloredPPsBar.setCenter(1280.f/2.f, 0.f);
-        */
+        
+        _source.addSource(airSource);
+        _source.removeSource(fireSource);
+        _coloredPPsBar.recalculate();
+        
     }
 
 }

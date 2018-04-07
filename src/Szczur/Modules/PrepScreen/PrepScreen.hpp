@@ -31,7 +31,7 @@ public:
 
     PrepScreen()
     :
-    _coloredPPsBar(_source, _coloredPPBar)
+    _coloredPPsBar(_source)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();

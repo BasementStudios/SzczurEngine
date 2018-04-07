@@ -9,12 +9,13 @@ namespace rat
     class ColoredPPBar
     {
     public:
-        ColoredPPBar(PPContainer& source, Widget* parent);
+        ColoredPPBar(PPContainer& source);
         void recalculate();
         void setCenter(float x, float y);
         void setCenter(const sf::Vector2f& center);
 
         void initTexturesViaGui(GUI& gui);
+        void setParent(Widget* parent);
        
 
     private:
