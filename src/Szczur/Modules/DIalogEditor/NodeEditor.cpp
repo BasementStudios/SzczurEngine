@@ -352,8 +352,7 @@ void NodeEditor::update()
 		// draw links
 		for (auto& link : _nodeManager->getLinks())
 		{
-			if (!link->SameNode)
-				ed::Link(link->Id, link->StartPinId, link->EndPinId, link->Color, 2.0f);
+			ed::Link(link->Id, link->StartPinId, link->EndPinId, link->Color, 2.f);
 		}
 
 		// create link
@@ -403,6 +402,7 @@ void NodeEditor::update()
 								if (startPin->Node == endPin->Node)
 								{
 									link->SameNode = true;
+									link->Color.Value.w = 0.f;
 									startPin->LinkToSameNode = true;
 								}
 								else
@@ -500,6 +500,7 @@ void NodeEditor::update()
 
 		if (ImGui::Button("Load"))
 		{
+			_currentOption = nullptr;
 			load("structure.json", FileFormat::Json);
 		}
 	}
@@ -557,9 +558,7 @@ void NodeEditor::showPopups()
 						startPin->LinkToSameNode = false;
 					}
 
-					_nodeManager->removeLink(link->Id);
 					ed::DeleteLink(link->Id);
-					i--;
 				}
 			}
 		}

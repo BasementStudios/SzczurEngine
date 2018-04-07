@@ -125,6 +125,8 @@ void NodeManager::read(const json& j)
 		pin->LinkToSameNode = j["linkToSameNode"];
 	};
 
+	_lastId = j["lastId"];
+
 	// Nodes
 	json::array_t jsonNodes = j["nodes"];
 
@@ -133,7 +135,8 @@ void NodeManager::read(const json& j)
 		auto node = std::make_unique<Node>();
 		node->Id = jsonNode["id"];
 		node->Name = jsonNode["name"].get<std::string>();
-		node->Type = jsonNode["type"];
+		node->Type = static_cast<Node::NodeType>(jsonNode["type"]);
+
 		node->_lastPinId = jsonNode["lastPinId"];
 
 		ImVec2 pos;
@@ -147,8 +150,12 @@ void NodeManager::read(const json& j)
 		for (auto& jsonInput : jsonInputs)
 		{
 			auto input = std::make_unique<NodePin>();
+
 			readPin(jsonInput, input.get());
+
 			input->Node = node.get();
+			input->Kind = ed::PinKind::Input;
+
 			node->Inputs.push_back(std::move(input));
 		}
 
@@ -158,8 +165,12 @@ void NodeManager::read(const json& j)
 		for (auto& jsonOutputs : jsonOutputs)
 		{
 			auto output = std::make_unique<NodePin>();
+
 			readPin(jsonOutputs, output.get());
+
 			output->Node = node.get();
+			output->Kind = ed::PinKind::Output;
+
 			node->Outputs.push_back(std::move(output));
 		}
 
@@ -191,6 +202,8 @@ void NodeManager::write(json& j)
 		j["optionTarget"] = pin->OptionTarget;
 		j["linkToSameNode"] = pin->LinkToSameNode;
 	};
+
+	j["lastId"] = _lastId;
 
 	// Nodes
 	auto jsonNodes = json::array();
