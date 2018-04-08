@@ -9,6 +9,8 @@
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
 namespace rat
 {
 
@@ -490,18 +492,29 @@ void NodeEditor::update()
 
 		if (ImGui::Button("Generate lua"))
 		{
-			save("code.lua", FileFormat::Lua);
+			auto filePath = FileDialog::getSaveFileName("Lua", "", "Lua (*.lua)|*.lua");
+			
+			if (!filePath.empty())
+				save(filePath, FileFormat::Lua);
 		}
 
 		if (ImGui::Button("Save"))
 		{
-			save("structure.json", FileFormat::Json);
+			auto filePath = FileDialog::getSaveFileName("Json", "", "Json (*.json)|*.json");
+
+			if (!filePath.empty())
+				save(filePath, FileFormat::Json);
 		}
 
 		if (ImGui::Button("Load"))
 		{
-			_currentOption = nullptr;
-			load("structure.json", FileFormat::Json);
+			auto filePath = FileDialog::getOpenFileName("Json", "", "Json (*.json)|*.json");
+
+			if (!filePath.empty())
+			{
+				_currentOption = nullptr;
+				load(filePath, FileFormat::Json);
+			}
 		}
 	}
 
