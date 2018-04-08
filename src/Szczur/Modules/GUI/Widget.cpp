@@ -153,13 +153,13 @@ namespace rat {
             states.transform *= getTransform();
 
             //  Uncomment to get into debug mode :D
-            sf::RectangleShape shape;
+            /*sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
             //shape.setFillColor(sf::Color(0,0,255,70));
             shape.setFillColor(sf::Color::Transparent);
             shape.setOutlineColor(sf::Color::White);
             shape.setOutlineThickness(1.f);
-            target.draw(shape, states);
+            target.draw(shape, states);*/
             
             _draw(target, states);
             for(auto it : _children)

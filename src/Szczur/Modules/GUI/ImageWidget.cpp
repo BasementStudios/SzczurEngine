@@ -31,6 +31,11 @@ namespace rat {
         object.init();
     }
 
+    void ImageWidget::setScale(const sf::Vector2f& scale) {
+        _sprite.setScale(scale);
+        calculateSize();
+    }
+
     void ImageWidget::setTexture(sf::Texture* texture) {
         _sprite.setTexture(*texture);
     }
@@ -40,7 +45,7 @@ namespace rat {
     }
 
     sf::Vector2u ImageWidget::_getSize() const {
-        return _sprite.getTexture()->getSize();
+        return {(size_t)_sprite.getGlobalBounds().width, (size_t)_sprite.getGlobalBounds().height};
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
