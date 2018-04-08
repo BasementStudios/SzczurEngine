@@ -94,7 +94,7 @@ public:
 	NodeManager() = default;
 	~NodeManager() = default;
 
-	void read(const json& j);
+	bool read(const json& j);
 	void write(json& j);
 
 	void reset();

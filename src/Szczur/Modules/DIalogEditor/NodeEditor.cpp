@@ -115,10 +115,14 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 			j << file;
 			file.close();
 
-			_nodeManager->read(j);
-
-
-			LOG_INFO("Loaded!");
+			if (_nodeManager->read(j))
+			{
+				LOG_INFO("Loaded!");
+			}
+			else
+			{
+				createNew();
+			}
 		}
 		else
 		{

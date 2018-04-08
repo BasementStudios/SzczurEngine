@@ -115,7 +115,7 @@ void NodeManager::removeLink(int linkId)
 	}
 }
 
-void NodeManager::read(const json& j)
+bool NodeManager::read(const json& j)
 {
 	auto readPin = [] (json::reference j, NodePin* pin) 
 	{
@@ -124,6 +124,13 @@ void NodeManager::read(const json& j)
 		pin->OptionTarget = j["optionTarget"];
 		pin->LinkToSameNode = j["linkToSameNode"];
 	};
+
+
+	if (j.find("lastId") == j.end() || j.find("nodes") == j.end() || j.find("links") == j.end())
+	{
+		LOG_INFO("Invalid file!");
+		return false;
+	}
 
 	_lastId = j["lastId"];
 
@@ -192,6 +199,8 @@ void NodeManager::read(const json& j)
 
 		_links.push_back(std::move(link));
 	}
+
+	return true;
 }
 
 void NodeManager::write(json& j)
