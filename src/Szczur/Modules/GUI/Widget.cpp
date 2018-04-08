@@ -173,10 +173,11 @@ namespace rat {
         for(auto it : _children) {
             auto itSize = it->getSize();
             auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
-            if(itPosition.x + itSize.x > _size.x)
-                _size.x = itPosition.x + itSize.x;
-            if(itPosition.y + itSize.y > _size.y)
-                _size.y = itPosition.y + itSize.y;
+            auto itOrigin = it->getOrigin();
+            if(itPosition.x + itSize.x - itOrigin.x > _size.x)
+                _size.x = itPosition.x + itSize.x - itOrigin.x;
+            if(itPosition.y + itSize.y - itOrigin.y > _size.y)
+                _size.y = itPosition.y + itSize.y - itOrigin.y;
         }
         auto ownSize = _getSize();
         if(ownSize.x > _size.x)
