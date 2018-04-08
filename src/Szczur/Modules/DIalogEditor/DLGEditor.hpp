@@ -5,7 +5,7 @@
 #include "DLGTextManager.hpp"
 #include <SFML/Audio.hpp>
 
-#include <imgui.h>
+#include "Szczur/Config.hpp"
 
 namespace rat
 {

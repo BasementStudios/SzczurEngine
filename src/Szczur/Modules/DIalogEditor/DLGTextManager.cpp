@@ -34,8 +34,8 @@ namespace rat
         std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
         for(auto it = std::sregex_iterator(str.begin(), str.end(), word_regex); it!=std::sregex_iterator(); ++it) {
             DialogData* obj = new DialogData {
-                std::stoi(it->str(1u)),
-                std::stoi(it->str(2u)),
+                static_cast<unsigned>(std::stoi(it->str(1u))),
+                static_cast<unsigned>(std::stoi(it->str(2u))),
                 it->str(3u) + ":" + it->str(4u),
                 it->str(5u) + ":" + it->str(6u),
                 (it->str(7u) == "-" ? "" : it->str(7u))

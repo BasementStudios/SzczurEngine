@@ -7,7 +7,6 @@
 #include <cmath>
 #include <stdlib.h>
 
-#include <imgui.h>
 
 namespace rat
 {
@@ -113,11 +112,19 @@ namespace rat
         if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
         if (ImGui::Button("-##DialogMajorPartSelector", ImVec2(30, 27))) {
             size_t major = (--_parts.end())->first;
-            if (major == _parts.begin()->first) { return; }
-            if (_currentMajor == major) { --_currentMajor; }
+
+            if (major == _parts.begin()->first) 
+				return;
+
+            if (_currentMajor == major) { 
+				--_currentMajor; 
+				_currentMinor = _parts[_currentMajor].begin()->first;
+			}
+
             for (auto it : _parts[major]) {
                 delete it.second;
             }
+
             _parts.erase(major);
         } 
         ImGui::SameLine();
@@ -187,8 +194,9 @@ namespace rat
     {
         std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
         size_t clipSize = clipText.length();
+        
         size_t size = _parts[_currentMajor][_currentMinor]->label.length() + clipSize + 30;
-        char newText[size];
+        char *newText = new char[size] {};
         strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), sizeof(newText));
 
         ImGui::InputText(" - Label##LabelNameInput", newText, size);
@@ -197,6 +205,8 @@ namespace rat
         for (auto it : major->second) { 
             it.second->label = newText;
         }
+
+		delete[] newText;
     }
 
     void DLGEditor::timeSelector()
@@ -256,7 +266,8 @@ namespace rat
             std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
             size_t clipSize = clipText.length();
             size_t size = _parts[_currentMajor][_currentMinor]->dialogs[i].length() + clipSize + 25;
-            char newText[size];
+			char *newText = new char[size] {};
+
             strncpy(newText, _parts[_currentMajor][_currentMinor]->dialogs[i].c_str(), sizeof(newText));
 
             ImGui::PushID(i);
@@ -295,6 +306,8 @@ namespace rat
 
             _parts[_currentMajor][_currentMinor]->dialogTime[i] = dialogTime;
             _parts[_currentMajor][_currentMinor]->dialogs[i] = newText;
+
+			delete[] newText;
         }
 
         if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
