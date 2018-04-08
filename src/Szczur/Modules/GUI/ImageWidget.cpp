@@ -38,6 +38,7 @@ namespace rat {
 
     void ImageWidget::setTexture(sf::Texture* texture) {
         _sprite.setTexture(*texture);
+        calculateSize();
     }
 
     const sf::Texture* ImageWidget::getTexture() const {

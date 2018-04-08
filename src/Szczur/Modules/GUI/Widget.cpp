@@ -63,7 +63,8 @@ namespace rat {
         if(object) {
             _children.push_back(object);
             object->setParent(this);
-            _aboutToRecalculate = true;
+            //_aboutToRecalculate = true;
+            calculateSize();
         }
         else {
             LOG_ERROR("Widget given to Widget::add is nullptr")
