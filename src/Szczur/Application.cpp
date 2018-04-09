@@ -1,5 +1,5 @@
 #include "Application.hpp"
-
+#include "Szczur/Utility/SFML3D/Test.hpp"
 namespace rat
 {
 
@@ -22,6 +22,7 @@ void Application::init()
 		ImGui::SFML::Init(getModule<Window>().getWindow());
 	}
 	#endif
+	test();
 }
 
 void Application::input()

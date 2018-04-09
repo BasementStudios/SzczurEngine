@@ -130,7 +130,7 @@ DEBUGGER := none
 # Cleaning
 ifeq ($(MAKECMDGOALS),clean)
     CLEAN_FILES_CMD := rm 
-    CLEAN_FILES := "./$(OBJ_DIR)/*/*$(OBJ_EXT)" "./out/$(OUT_NAME)$(OUT_EXT)"
+    CLEAN_FILES := "./$(OBJ_DIR)/*/*$(OBJ_EXT)" "./$(OUT_DIR)/$(OUT_NAME)$(OUT_EXT)"
     CLEAN_DIRS_CMD := rm -dr 
     CLEAN_DIRS  := "./$(OBJ_DIR)/*"
 endif
@@ -149,9 +149,9 @@ CXXFLAGS_DYNAMIC_SFML   :=
  MXE_PACKAGENAME_SFML   := sfml
 #   Boost
  CXXFLAGS_STATIC_BOOST  :=
-  LDFLAGS_STATIC_BOOST  := -lboost_container-mt-s
+  LDFLAGS_STATIC_BOOST  :=
 CXXFLAGS_DYNAMIC_BOOST  :=
- LDFLAGS_DYNAMIC_BOOST  := -lboost_container-mt
+ LDFLAGS_DYNAMIC_BOOST  :=
  MXE_PACKAGENAME_BOOST  := boost
 #  Lua
  CXXFLAGS_STATIC_LUA    :=
@@ -163,7 +163,7 @@ CXXFLAGS_DYNAMIC_LUA    :=
  CXXFLAGS_STATIC_IMGUI  := 
   LDFLAGS_STATIC_IMGUI  := -limgui 
 CXXFLAGS_DYNAMIC_IMGUI  := 
- LDFLAGS_DYNAMIC_IMGUI  := -limgui 
+ LDFLAGS_DYNAMIC_IMGUI  := -limgui
 
 # Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
 FILES_DYNAMIC_SFML := openal32.dll sfml*
