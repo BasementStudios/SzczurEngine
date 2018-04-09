@@ -197,7 +197,7 @@ namespace rat
         
         size_t size = _parts[_currentMajor][_currentMinor]->label.length() + clipSize + 30;
         char *newText = new char[size] {};
-        strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), sizeof(newText));
+        strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), size);
 
         ImGui::InputText(" - Label##LabelNameInput", newText, size);
        
@@ -268,7 +268,7 @@ namespace rat
             size_t size = _parts[_currentMajor][_currentMinor]->dialogs[i].length() + clipSize + 25;
 			char *newText = new char[size] {};
 
-            strncpy(newText, _parts[_currentMajor][_currentMinor]->dialogs[i].c_str(), sizeof(newText));
+            strncpy(newText, _parts[_currentMajor][_currentMinor]->dialogs[i].c_str(), size);
 
             ImGui::PushID(i);
                 if (ImGui::Button("##FromPlayerToDLGInput", ImVec2(20, 22))) {
