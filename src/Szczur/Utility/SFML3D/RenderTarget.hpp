@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderStates.hpp"
 #include "View.hpp"
+#include "Linear.hpp"
 
 namespace sf3d {
 	class Vertex;
@@ -14,8 +15,8 @@ namespace sf3d {
 
 		void clear(float r, float g, float b, GLbitfield flags);
 
-		void draw(Drawable& drawable, RenderStates states);
-		void draw(Drawable& drawable);
+		void draw(const Drawable& drawable, RenderStates states);
+		void draw(const Drawable& drawable);
 
 		void draw(const VertexArray& vertices, RenderStates states);
 		void draw(const VertexArray& vertices);
@@ -28,6 +29,8 @@ namespace sf3d {
 		const View& getView() const;
 		void setView(const View& view);
 
+		Linear getLinerByScreenPos(const glm::vec2& pos) const;
+
 		
 
 	private:
@@ -38,6 +41,10 @@ namespace sf3d {
 
 		glm::uvec2 _windowSize;
 
+		float _FOVy;
+		float _FOVx;
+		float _halfFOVxTan;
+		float _halfFOVyTan;
 		//glm::mat4 _view;
 		View _view;
 		View _defaultView;

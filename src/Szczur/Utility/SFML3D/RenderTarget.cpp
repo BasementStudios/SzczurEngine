@@ -4,11 +4,19 @@
 #include "Vertex.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
 
 
 namespace sf3d {
 
 	RenderTarget::RenderTarget(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV) :
+		_FOVy(FOV),
+		_FOVx(
+			glm::degrees(2 * glm::atan(glm::tan(glm::radians(FOV / 2.f)) * ((float)size.x / (float)size.y)))
+		),
+		_halfFOVxTan( glm::tan(glm::radians(_FOVx / 2.f)) ),
+		_halfFOVyTan( glm::tan(glm::radians(_FOVy / 2.f)) ),
 		_projection(1.f),
 		_windowSize(size),
 		_view(2.f / (float)size.y, {0.f, 0.f, 3 * (float)size.x / 2.f}),
@@ -36,11 +44,11 @@ namespace sf3d {
 		}
 	}
 
-	void RenderTarget::draw(Drawable & drawable, RenderStates states) {
+	void RenderTarget::draw(const Drawable & drawable, RenderStates states) {
 		drawable.draw(*this, states);
 	}
 
-	void RenderTarget::draw(Drawable & drawable) {
+	void RenderTarget::draw(const Drawable & drawable) {
 		draw(drawable, _states);
 	}
 
@@ -133,6 +141,34 @@ namespace sf3d {
 
 	void RenderTarget::setView(const View& view) {
 		_view = view;
+	}
+
+	Linear RenderTarget::getLinerByScreenPos(const glm::vec2 & pos) const {
+		float x = glm::atan(
+			( 2.f * (pos.x / (float)_windowSize.x) - 1.f) * _halfFOVxTan
+		);
+
+		float y = glm::atan(
+			(-2.f * (pos.y / (float)_windowSize.y) + 1.f) * _halfFOVyTan
+		);
+
+		float siny = glm::sin(y);
+		float cosy = glm::cos(y);
+		float sinx = glm::sin(x);
+		float cosx = glm::cos(x);
+
+		glm::vec3 rotation{
+			cosy * sinx, 
+			siny * cosx, 
+			-cosy * cosx
+		};
+		rotation = glm::rotateX(rotation, glm::radians(-_view.getRotation().x));
+		rotation = glm::rotateY(rotation, glm::radians(-_view.getRotation().y));
+		return Linear(_view.getCenter(), {
+			rotation.x,
+			rotation.y,
+			rotation.z
+		});
 	}
 
 	bool RenderTarget::_setActive(bool state) {
