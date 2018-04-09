@@ -618,7 +618,7 @@ void NodeEditor::showPopups()
 
 	if (ImGui::BeginPopupModal("Create Node Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		auto newNodePostion = ImGui::GetMousePosOnOpeningCurrentPopup();
+		auto newNodePostion = ed::ScreenToCanvas(ImGui::GetMousePosOnOpeningCurrentPopup());
 
 		ImGui::Text("Create new node");
 		ImGui::Separator();
