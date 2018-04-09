@@ -58,6 +58,8 @@ namespace sf3d {
 		if(vertices.getSize() > 0 && _setActive()) {
 			if(states.shader)
 				states.shader->use();
+			else
+				_states.shader->use();
 
 			for(int i = 0; i < 3; i++)
 				states.transform.getMatrix()[3][i] *= 2.f / (float)_windowSize.y;
