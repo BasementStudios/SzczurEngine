@@ -34,6 +34,14 @@ NodeEditor::~NodeEditor()
 
 void NodeEditor::createNew()
 {
+	ed::DestroyEditor(_context);
+
+	_context = ed::CreateEditor(nullptr);
+	ed::SetCurrentEditor(_context);
+
+	_currentOption = nullptr;
+	_nodeManager->reset();
+
 	auto start = _nodeManager->createNode("Start", Node::Start);
 	start->createPin("Start", ed::PinKind::Output);
 
