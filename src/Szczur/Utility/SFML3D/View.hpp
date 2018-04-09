@@ -12,8 +12,12 @@ namespace sf3d {
 		void move(const glm::vec3& offset);
 		void setCenter(const glm::vec3& offset);
 
+		const glm::vec3& getCenter() const;
+
 		void rotate(const glm::vec3& direction);
 		void setRotation(const glm::vec3& direction);
+
+		const glm::vec3& getRotation() const;
 
 		Transform getTransform() const;
 	private:

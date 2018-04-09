@@ -7,7 +7,7 @@ namespace sf3d {
 	}
 
 	void View::move(const glm::vec3 & offset) {
-		_center += offset * _factor;;
+		_center += offset;
 	}
 
 	void View::rotate(const glm::vec3 & direction) {
@@ -15,11 +15,19 @@ namespace sf3d {
 	}
 
 	void View::setCenter(const glm::vec3 & offset) {
-		_center = offset * _factor;;
+		_center = offset;
+	}
+
+	const glm::vec3 & View::getCenter() const {
+		return _center;
 	}
 
 	void View::setRotation(const glm::vec3 & direction) {
 		_rotation = direction;
+	}
+
+	const glm::vec3 & View::getRotation() const {
+		return _rotation;
 	}
 
 	Transform View::getTransform() const {
@@ -27,7 +35,7 @@ namespace sf3d {
 		transform.rotate(glm::radians(_rotation.x), {1.f, 0.f, 0.f});
 		transform.rotate(glm::radians(_rotation.y), {0.f, 1.f, 0.f});
 		transform.rotate(glm::radians(_rotation.z), {0.f, 0.f, 1.f});
-		transform.translate(-_center);
+		transform.translate(-(_center*_factor));
 		return transform;
 
 	}
