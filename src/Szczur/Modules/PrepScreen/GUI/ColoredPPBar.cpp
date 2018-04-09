@@ -11,25 +11,8 @@ namespace rat
 {
     ColoredPPBar::ColoredPPBar(PPContainer& source)
     :
-    _source(source)
+    PPBar(source)
     {
-        _background = new Widget;
-    }
-
-    void ColoredPPBar::setCenter(float x, float y)
-    {
-         _background->setPosition(x, y);
-    }
-
-    void ColoredPPBar::setCenter(const sf::Vector2f& center)
-    {
-        _background->setPosition(center);
-    }
-    void ColoredPPBar::recalcOrigin()
-    {
-        _background->calculateSize();
-        auto size = static_cast<sf::Vector2f>(_background->getSize());
-        _background->setOrigin(size.x * 0.5f, 0.f);
     }
 
     void ColoredPPBar::recalculate()
@@ -47,8 +30,7 @@ namespace rat
         for(auto& [coloredPP, amount] : _source)
         {
             const std::string& color = coloredPP.type;
-
-            LOG_INFO(this, " : PrepScreen : ColoredPPBar : " + color + " adding");
+            //LOG_INFO(this, " : PrepScreen : ColoredPPBar : " + color + " adding");
             ImageWidget* pp{nullptr};
 
             auto found = _pps.find(color);
@@ -56,6 +38,7 @@ namespace rat
             {
                 pp = new ImageWidget;
                 pp->setTexture(_textures[color]);
+                //pp->setScale({1.f, 1.f});
                 _background->add(pp);
                 _pps.emplace(color, pp);
             }
@@ -68,11 +51,11 @@ namespace rat
             pp->setPosition(newPos);
             i++;
 
-            LOG_INFO(this, " : PrepScreen : ColoredPPBar : " + color + " added");
-            LOG_INFO(this, " : at position x: " + std::to_string(newPos.x) + " y: " + std::to_string(newPos.y) + ".");
+            //LOG_INFO(this, " : PrepScreen : ColoredPPBar : " + color + " added");
+            //LOG_INFO(this, " : at position x: " + std::to_string(newPos.x) + " y: " + std::to_string(newPos.y) + ".");
         } 
         recalcOrigin();
-        LOG_INFO(this, " : PrepScreen : ColoredPPBar : recalculated");
+        //LOG_INFO(this, " : PrepScreen : ColoredPPBar : recalculated");
         
     }
     
@@ -85,11 +68,5 @@ namespace rat
             gui.addAsset<sf::Texture>(path);
             _textures.emplace(color, gui.getAsset<sf::Texture>(path));
         }
-    }
-
-    void ColoredPPBar::setParent(Widget* parent)
-    {
-        parent->add(_background);
-    }
-    
+    }  
 }

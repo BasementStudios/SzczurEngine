@@ -5,6 +5,7 @@
 #include <initializer_list>
 
 #include "PPContainer.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
@@ -47,12 +48,14 @@ namespace rat
             {
                 assert(canBeBoughtFrom(source));
                 source.removePP(_ppCost);
+                std::cout << "New Amount Of PP: " << source.getPPAmount() << "\n";
                 _hasBeenBought = true;
             }
 
             void returnTo(PPContainer& source)
             {
                 source.addPP(_ppCost);
+                std::cout << "New Amount Of PP: " << source.getPPAmount() << "\n";
                 _hasBeenBought = false;
             }
 

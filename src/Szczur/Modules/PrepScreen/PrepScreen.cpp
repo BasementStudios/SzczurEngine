@@ -45,7 +45,7 @@ namespace rat
 
         
         _coloredPPBar = new ImageWidget;
-        _grayPPBar = new ImageWidget;
+        _grayPPBar = new Widget;
         _skillsBar = new ScrollAreaWidget;
         _chosenSkillsBar = new ImageWidget;
         ImageWidget* _professionBar = new ImageWidget;
@@ -54,7 +54,7 @@ namespace rat
         _coloredPPBar->setTexture(getTextureFrom("coloredPPBar.png", gui));
 
         ppBar->add(_grayPPBar);
-        _grayPPBar->setTexture(getTextureFrom("grayPPBar.png", gui));
+        //_grayPPBar->setTexture(getTextureFrom("grayPPBar.png", gui));
         _grayPPBar->setPosition(0.f, 80.f);
 
         _base->add(_professionBar);
@@ -109,11 +109,15 @@ namespace rat
 
     void PrepScreen::addSkill(Skill* skill)
     {
-        auto newSkill = std::make_unique<SkillBar>(_source);
+        auto newSkill = std::make_unique<SkillBar>(_grayPPsBar);
+        std::cout << "SOme1" << std::endl;
+        
         newSkill->setSkill(skill);
+
         newSkill->setParent(_skillsBar);
         size_t n = _skills.size();
         newSkill->setPosition(0, float(n*80));
+
 
         auto& gui = getModule<GUI>();
         newSkill->setBarTexture(getTextureFrom("skillBar.png", gui), getTextureFrom("skillBarLocked.png", gui));
@@ -129,6 +133,10 @@ namespace rat
         _coloredPPsBar.setParent(_coloredPPBar);
         _coloredPPsBar.initTexturesViaGui(gui);
         _coloredPPsBar.setCenter(1280.f/2.f, 0.f);
+
+        _grayPPsBar.setParent(_grayPPBar);
+        _grayPPsBar.initTextureViaGui(gui);
+        _grayPPsBar.setCenter(1280.f/2.f, 0);
         std::cout << "After PPsBar\n";
         
 
@@ -142,23 +150,37 @@ namespace rat
         test2->setPPCost(5);
         test2->addRequirement("Fire");
 
+        std::cout <<"Test\n";
+        
         addSkill(test1.get());
+        std::cout <<"Test2\n";
+        
         addSkill(test2.get());
+
+        std::cout <<"Test3\n";
+        
 
         testSkills.emplace_back(std::move(test1));
         testSkills.emplace_back(std::move(test2));
 
-        PPSource fireSource = {"Fire", 1};
-        PPSource waterSource = {"Water", 1};
-        PPSource airSource = {"Air", 1};
+
+        PPSource fireSource = {"Physical", 1, 10};
+        //PPSource waterSource = {"Water", 1, 0};
+        //PPSource airSource = {"Air", 1, 0};
+        
         _source.addSource(fireSource);
-        _source.addSource(waterSource);
+        //_source.addSource(waterSource);
         
         _coloredPPsBar.recalculate();
+        _grayPPsBar.recalculate();
         
-        _source.addSource(airSource);
-        _source.removeSource(fireSource);
+        
+        //_source.addSource(airSource);
+        //_source.removeSource(fireSource);
+
         _coloredPPsBar.recalculate();
+        _grayPPsBar.recalculate();
+        
         
     }
 

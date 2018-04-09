@@ -9,10 +9,12 @@ namespace rat
     class TextWidget;
     class Widget;
 
+    class GrayPPBar;
+
     class SkillBar
     {
     public:
-        SkillBar(PPContainer& source);
+        SkillBar(GrayPPBar& source);
         void setSkill(Skill* skill);
         void setParent(Widget* parent);
         void setPosition(float x, float y);
@@ -25,7 +27,7 @@ namespace rat
 
     private:
         Skill* _skill{nullptr};
-        PPContainer& _source;
+        GrayPPBar& _sourceBar;
 
         bool _isBought{false};
         bool _isActive{true};

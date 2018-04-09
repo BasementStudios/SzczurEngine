@@ -40,6 +40,12 @@ namespace rat
             _cost.buyFrom(source);
         }
 
+        void returnCostsTo(PPContainer& source)
+        {
+            assert(_cost.isBought());
+            _cost.returnTo(source);
+        }
+
         bool canBeBoughtFrom(PPContainer& source)
         {
             _cost.canBeBoughtFrom(source);

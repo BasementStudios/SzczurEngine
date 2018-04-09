@@ -5,11 +5,13 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 
+#include "GrayPPBar.hpp"
+
 namespace rat
 {
-    SkillBar::SkillBar(PPContainer& source)
+    SkillBar::SkillBar(GrayPPBar& source)
     :
-    _source(source)
+    _sourceBar(source)
     {
         _bar = new ImageWidget;
         _icon = new ImageWidget;
@@ -19,13 +21,24 @@ namespace rat
         _bar->add(_nameText);
 
         auto click = [&](Widget* owner){
+            PPContainer& source = _sourceBar.getSource();
             if(!_isBought)
             {
-                _isBought = true;
+                if(_skill->canBeBoughtFrom(source))
+                {
+                    _skill->buyFrom(source);
+                    _sourceBar.recalculate();
+
+                    _isBought = true;
+                    _bar->setTexture(_textureLocked);
+                }
                 _bar->setTexture(_textureLocked);
             }
             else
             {
+                _skill->returnCostsTo(source);
+                _sourceBar.recalculate();
+
                 _isBought = false;
                 _bar->setTexture(_textureBar);
             }

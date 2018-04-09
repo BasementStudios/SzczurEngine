@@ -11,6 +11,7 @@
 #include "Szczur/Modules/PrepScreen/SkillCodex.hpp"
 #include "GUI/SkillBar.hpp"
 #include "GUI/ColoredPPBar.hpp"
+#include "GUI/GrayPPBar.hpp"
 
 namespace rat
 {
@@ -31,7 +32,8 @@ public:
 
     PrepScreen()
     :
-    _coloredPPsBar(_source)
+    _coloredPPsBar(_source),
+    _grayPPsBar(_source)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();
@@ -57,7 +59,7 @@ private:
 
     Widget* _base{nullptr};
     ImageWidget* _coloredPPBar{nullptr};
-    ImageWidget* _grayPPBar{nullptr};
+    Widget* _grayPPBar{nullptr};
 
     ImageWidget* _centerWindow{nullptr};
 
@@ -69,5 +71,6 @@ private:
 
     std::vector<std::unique_ptr<SkillBar>> _skills;
     ColoredPPBar _coloredPPsBar;
+    GrayPPBar _grayPPsBar;
 };
 }
