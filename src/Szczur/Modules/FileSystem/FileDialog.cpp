@@ -93,7 +93,8 @@ bool FileDialog::show(char *result, bool multiselect)
 	ofn.lpstrTitle = _caption.c_str();
 	ofn.lpstrInitialDir = _directory.c_str();
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | (multiselect ? OFN_ALLOWMULTISELECT | OFN_EXPLORER : 0x0);
-
+	ofn.lpstrDefExt = "rle";
+	
 	bool accepted = false;
 
 	if (_mode == Open)
