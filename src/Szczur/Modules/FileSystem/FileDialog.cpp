@@ -19,7 +19,7 @@ FileDialog::FileDialog(Mode mode, const std::string& caption, const std::string&
 
 std::string FileDialog::getFile()
 {
-	char result[1024];
+	char result[1024] = { 0 };
 
 	show(result, false);
 
