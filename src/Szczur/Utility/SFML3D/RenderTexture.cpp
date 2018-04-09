@@ -26,6 +26,13 @@ namespace sf3d {
 		glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 		//Framebuffer
 	}
+	RenderTexture::~RenderTexture() {
+		if(_FBO)
+			glDeleteFramebuffers(1, &_FBO);
+		if(_RBO)
+			glDeleteRenderbuffers(1, &_RBO);
+	}
+
 	Texture* RenderTexture::getTexture() {
 		return &_texture;
 	}

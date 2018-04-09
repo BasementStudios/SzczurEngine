@@ -8,7 +8,7 @@ namespace sf3d {
 	class RenderTexture : public RenderTarget {
 	public:
 		RenderTexture(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV = 45.f);
-
+		~RenderTexture();
 		Texture* getTexture();
 	private:
 		GLuint _FBO{0u};
