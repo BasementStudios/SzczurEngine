@@ -9,22 +9,24 @@
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "DialogEditor.hpp"
 
 namespace rat
 {
 
-NodeEditor::NodeEditor()
+NodeEditor::NodeEditor(DialogEditor* dialogEditor)
+	: _dialogEditor(dialogEditor)
 {
 	_context = ed::CreateEditor(nullptr);
+	ed::SetCurrentEditor(_context);
 
 	_nodeManager = std::make_unique<NodeManager>();
-
-	ed::SetCurrentEditor(_context);
 
 	createNew();
 
 	ed::NavigateToContent();
+
+	_parts = &_dialogEditor->_dlgEditor.getContainer();
 }
 
 NodeEditor::~NodeEditor()
@@ -125,6 +127,21 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 
 			if (_nodeManager->read(j))
 			{
+				auto& nodes = _nodeManager->getNodes();
+
+				for (auto& node : nodes)
+				{
+					for (auto& output : node->Outputs)
+					{
+						if (output->Kind == ed::PinKind::Output)
+						{
+							auto targetId = output->OptionTarget.id;
+
+							output->OptionTarget.ptr = _parts->at(targetId).begin()->second;
+						}
+					}
+				}
+
 				LOG_INFO("Loaded!");
 			}
 			else
@@ -170,7 +187,7 @@ std::string NodeEditor::generateCode()
 
 					if (pin)
 					{
-						if (pin->OptionTarget < 1)
+						if (pin->OptionTarget.ptr->id < 1)
 							continue;
 
 						bool skip = false;
@@ -178,7 +195,7 @@ std::string NodeEditor::generateCode()
 						// check if runner is already in
 						for (auto runner : runners)
 						{
-							if (runner == pin->OptionTarget)
+							if (runner == pin->OptionTarget.ptr->id)
 							{
 								skip = true;
 								break;
@@ -193,9 +210,9 @@ std::string NodeEditor::generateCode()
 						else
 							code += ", ";
 
-						code += std::to_string(pin->OptionTarget);
+						code += std::to_string(pin->OptionTarget.ptr->id);
 
-						runners.push_back(pin->OptionTarget);
+						runners.push_back(static_cast<int>(pin->OptionTarget.ptr->id));
 					}
 				}
 			}
@@ -208,7 +225,7 @@ std::string NodeEditor::generateCode()
 				code += "options.add = {\n";
 
 				// target
-				code += "target = " + std::to_string(out->OptionTarget) + ";\n";
+				code += "target = " + std::to_string(out->OptionTarget.ptr->id) + ";\n";
 
 				// finishing
 				for (auto& link : _nodeManager->getLinks())
@@ -241,11 +258,13 @@ std::string NodeEditor::generateCode()
 	{
 		if (link->StartPinId == pinStartNode->Id)
 		{
-			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget) + ")\n";
+			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.ptr->id) + ")\n";
 
 			optionsCode.push_back(code);
 		}
 	}
+
+	optionsCode.push_back("dialog:play()\n");
 
 	std::string finalCode;
 
@@ -287,7 +306,7 @@ void NodeEditor::update()
 
 					ImGui::BeginGroup();
 					ImGui::Dummy(ImVec2(1.f, 0.f));
-					ImGui::Text(input->Name.c_str());
+					ImGui::Text(input->Node->Type == Node::NodeType::Options ? "Trigger" : "End");
 					ImGui::EndGroup();
 
 
@@ -314,7 +333,20 @@ void NodeEditor::update()
 					{
 						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
 
-						std::string label = (output->OptionTarget == -1 ? "SET" : std::to_string(output->OptionTarget)) + "##" + std::to_string(output->Id);
+						auto& ptr = output->OptionTarget.ptr;
+						//auto& dialog = part.second.begin()->second;
+
+						if (_parts)
+						{
+							auto result = std::find_if(_parts->begin(), _parts->end(), [ptr] (auto& part) { return part.second.begin()->second == ptr; });
+
+							if (result == _parts->end())
+							{
+								ptr = nullptr;
+							}
+						}
+
+						std::string label = (output->OptionTarget.ptr == nullptr ? "SET" : std::to_string(output->OptionTarget.ptr->id)) + "##" + std::to_string(output->Id);
 
 						if (ImGui::Button(label.c_str()))
 						{
@@ -330,7 +362,7 @@ void NodeEditor::update()
 
 					ImGui::BeginGroup();
 					ImGui::Dummy(ImVec2(1.f, 0.f));
-					ImGui::Text(output->Name.c_str());
+					ImGui::Text(output->OptionTarget.ptr == nullptr ? "Not selected" : output->OptionTarget.ptr->label.c_str());
 					ImGui::EndGroup();
 
 					ImGui::SameLine();
@@ -465,7 +497,7 @@ void NodeEditor::update()
 			{
 				auto node = _nodeManager->findNode(nodeId);
 
-				if ((node->Type == Node::Options) && ed::AcceptDeletedItem())
+				if (node != nullptr && node->Type == Node::Options && ed::AcceptDeletedItem())
 				{
 					_nodeManager->removeNode(nodeId);
 				}
@@ -489,48 +521,15 @@ void NodeEditor::update()
 	else if (ed::ShowPinContextMenu(&_contextId))
 		ImGui::OpenPopup("Pin Context Menu");
 	else if (ed::ShowBackgroundContextMenu())
-		ImGui::OpenPopup("Background Context Menu");
-
-	showPopups();
-	showOptionConfig();
-
-	if (ImGui::Begin("Main window", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (ImGui::Button("New"))
+		if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows))
 		{
-			_nodeManager->reset();
-			createNew();
-		}
-
-		if (ImGui::Button("Generate lua"))
-		{
-			auto filePath = FileDialog::getSaveFileName("Lua", "", "Lua (*.lua)|*.lua");
-			
-			if (!filePath.empty())
-				save(filePath, FileFormat::Lua);
-		}
-
-		if (ImGui::Button("Save"))
-		{
-			auto filePath = FileDialog::getSaveFileName("Json", "", "Json (*.json)|*.json");
-
-			if (!filePath.empty())
-				save(filePath, FileFormat::Json);
-		}
-
-		if (ImGui::Button("Load"))
-		{
-			auto filePath = FileDialog::getOpenFileName("Json", "", "Json (*.json)|*.json");
-
-			if (!filePath.empty())
-			{
-				_currentOption = nullptr;
-				load(filePath, FileFormat::Json);
-			}
+			ImGui::OpenPopup("Background Context Menu");
 		}
 	}
 
-	ImGui::End();
+	showPopups();
+	showOptionConfig();
 }
 
 void NodeEditor::showPopups()
@@ -658,19 +657,51 @@ void NodeEditor::showOptionConfig()
 			{
 				ImGui::Text("Node: %s", _currentOption->Node->Name.c_str());
 
-				static char buf[256] = { 0 };
-
-				strcpy(buf, _currentOption->Name.c_str());
-
-				if (ImGui::InputText("Name: ", buf, 256))
-				{
-					_currentOption->Name = buf;
-				}
-
 				ImGui::Separator();
 
-				ImGui::Text("Set target dialog: ");
-				ImGui::InputInt("Target dialog: ", &_currentOption->OptionTarget);
+				ImGui::Text("Set target dialog");
+
+				std::string defaultLabel;
+
+				if (_currentOption->OptionTarget.ptr != nullptr)
+				{
+					auto dialog = _currentOption->OptionTarget.ptr;
+
+					defaultLabel = "[" + std::to_string(dialog->id) + "] " + dialog->label;
+				}
+
+				// edit
+				if (ImGui::Button("E"))
+				{
+					if (_currentOption->OptionTarget.ptr)
+					{
+						_dialogEditor->showDlgEditor = true;
+
+						_dialogEditor->_dlgEditor.setCurrentMajor(static_cast<int>(_currentOption->OptionTarget.ptr->id));
+
+						ImGui::SetWindowFocus("Dlg Files Editor");
+					}
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::BeginCombo("Target dialog", defaultLabel.c_str()))
+				{
+					for (auto part : *_parts)
+					{
+						auto& dialog = part.second.begin()->second;
+
+						bool isSelected = (_currentOption->OptionTarget.ptr == dialog);
+
+						std::string label = "[" + std::to_string(dialog->id) + "] " + dialog->label;
+
+						if (ImGui::Selectable(label.c_str(), isSelected))
+							_currentOption->OptionTarget.ptr = dialog;
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
 			}
 		}
 		ImGui::End();

@@ -8,6 +8,8 @@
 #include <NodeEditor.h>
 #include <nlohmann/json.hpp>
 
+#include "DialogData.hpp"
+
 namespace ed = ax::NodeEditor;
 using json = nlohmann::json;
 
@@ -22,7 +24,11 @@ struct NodePin
 	Node* Node = nullptr;
 	ed::PinKind Kind = ed::PinKind::Input;
 
-	int OptionTarget = -1;
+	union
+	{
+		DialogData* ptr = nullptr;
+		int id;
+	} OptionTarget;
 
 	bool LinkToSameNode = false;
 

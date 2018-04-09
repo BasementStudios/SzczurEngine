@@ -120,7 +120,7 @@ bool NodeManager::read(const json& j)
 	auto readPin = [] (json::reference j, NodePin* pin) 
 	{
 		pin->Id = j["id"];
-		pin->OptionTarget = j["optionTarget"];
+		pin->OptionTarget.id = j["optionTarget"];
 		pin->LinkToSameNode = j["linkToSameNode"];
 	};
 
@@ -206,7 +206,7 @@ void NodeManager::write(json& j)
 {
 	auto writePin = [] (json::object_t::mapped_type::reference j, NodePin* pin) {
 		j["id"] = pin->Id;
-		j["optionTarget"] = pin->OptionTarget;
+		j["optionTarget"] = pin->OptionTarget.ptr ? pin->OptionTarget.ptr->id : 0;
 		j["linkToSameNode"] = pin->LinkToSameNode;
 	};
 

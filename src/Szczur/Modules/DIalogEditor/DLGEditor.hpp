@@ -12,8 +12,10 @@ namespace rat
 
     class DLGEditor
     {
+	public:
         using TextContainer_t = boost::container::flat_map<size_t, boost::container::flat_map<size_t, DialogData*>>;
 
+	private:
         std::vector<std::string>& _characters;
         DLGTextManager _textManager;
         TextContainer_t& _parts;
@@ -50,6 +52,8 @@ namespace rat
         void update();
 
         TextContainer_t& getContainer();
+
+		void setCurrentMajor(int major) { _currentMajor = major; _currentMinor = _parts[_currentMajor].begin()->first; }
 
     private:
 

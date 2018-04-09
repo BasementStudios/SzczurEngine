@@ -1,12 +1,16 @@
 #pragma once
 
 #include <NodeEditor.h>
+
 #include "NodeManager.hpp"
+#include "DLGEditor.hpp"
 
 namespace ed = ax::NodeEditor;
 
 namespace rat
 {
+class DialogEditor;
+
 class NodeEditor
 {
 public:
@@ -21,6 +25,8 @@ private:
 
 	std::unique_ptr<NodeManager> _nodeManager;
 
+	DialogEditor* _dialogEditor = nullptr;
+
 	bool creatingNode = false;
 
 	NodePin* _newLinkPin = nullptr;
@@ -30,8 +36,10 @@ private:
 	bool _optionConfigWindow = false;
 	NodePin* _currentOption = nullptr;
 
+	DLGEditor::TextContainer_t* _parts;
+
 public:
-	NodeEditor();
+	NodeEditor(DialogEditor* dialogEditor);
 	~NodeEditor();
 
 	void update();
@@ -43,10 +51,13 @@ public:
 	void save(const std::string& fileName, FileFormat saveFormat);
 	void load(const std::string& fileName, FileFormat loadFormat);
 
+	void createNew();
+
+	void setTextContainer(DLGEditor::TextContainer_t* parts) { _parts = parts; }
+
 private:
 	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
-	void createNew();
 };
 
 }
