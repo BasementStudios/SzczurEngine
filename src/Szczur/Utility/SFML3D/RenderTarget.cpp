@@ -106,7 +106,8 @@ namespace sf3d {
 		if(vertices.getSize() > 0 && _setActive()) {
 			if(states.shader)
 				states.shader->use();
-
+			else
+				_states.shader->use();
 
 			if(states.texture)
 				states.texture->bind();
