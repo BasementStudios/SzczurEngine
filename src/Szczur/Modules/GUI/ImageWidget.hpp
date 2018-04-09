@@ -16,6 +16,8 @@ namespace rat {
         void setTexture(sf::Texture* texture);
 
         const sf::Texture* getTexture() const;
+
+        void setScale(const sf::Vector2f& scale);
     
     protected:
         virtual sf::Vector2u _getSize() const override;

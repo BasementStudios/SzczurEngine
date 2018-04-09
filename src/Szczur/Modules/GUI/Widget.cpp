@@ -63,7 +63,8 @@ namespace rat {
         if(object) {
             _children.push_back(object);
             object->setParent(this);
-            _aboutToRecalculate = true;
+            //_aboutToRecalculate = true;
+            calculateSize();
         }
         else {
             LOG_ERROR("Widget given to Widget::add is nullptr")
@@ -153,13 +154,13 @@ namespace rat {
             states.transform *= getTransform();
 
             //  Uncomment to get into debug mode :D
-            sf::RectangleShape shape;
+            /*sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
             //shape.setFillColor(sf::Color(0,0,255,70));
             shape.setFillColor(sf::Color::Transparent);
             shape.setOutlineColor(sf::Color::White);
             shape.setOutlineThickness(1.f);
-            target.draw(shape, states);
+            target.draw(shape, states);*/
             
             _draw(target, states);
             for(auto it : _children)
@@ -173,10 +174,11 @@ namespace rat {
         for(auto it : _children) {
             auto itSize = it->getSize();
             auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
-            if(itPosition.x + itSize.x > _size.x)
-                _size.x = itPosition.x + itSize.x;
-            if(itPosition.y + itSize.y > _size.y)
-                _size.y = itPosition.y + itSize.y;
+            auto itOrigin = it->getOrigin();
+            if(itPosition.x + itSize.x - itOrigin.x > _size.x)
+                _size.x = itPosition.x + itSize.x - itOrigin.x;
+            if(itPosition.y + itSize.y - itOrigin.y > _size.y)
+                _size.y = itPosition.y + itSize.y - itOrigin.y;
         }
         auto ownSize = _getSize();
         if(ownSize.x > _size.x)

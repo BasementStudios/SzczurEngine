@@ -152,7 +152,7 @@ namespace rat {
 
     void CircleChooseWidget::_input(const sf::Event& event) {
         if(event.type == sf::Event::MouseMoved && _isHovered) {
-            sf::Vector2f mouse = {event.mouseMove.x, event.mouseMove.y};
+            sf::Vector2f mouse = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
             for(auto it : _wedges) {
                 if(it->isColliding(mouse))
                     it->fadeOut(_extension);
