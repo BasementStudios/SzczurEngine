@@ -19,7 +19,7 @@ FileDialog::FileDialog(Mode mode, const std::string& caption, const std::string&
 
 std::string FileDialog::getFile()
 {
-	char result[1024];
+	char result[1024] = { 0 };
 
 	show(result, false);
 
@@ -38,7 +38,7 @@ std::vector<std::string> FileDialog::getFiles()
 	char* pResult = result;
 
 	std::string directory = pResult;
-	
+
 	pResult += directory.length() + 1;
 
 	while (*pResult)
@@ -49,7 +49,7 @@ std::vector<std::string> FileDialog::getFiles()
 
 		paths.push_back(directory + DIRECTORY_SEPARATOR_CHAR + file);
 	}
-	
+
 	return paths;
 }
 
@@ -63,7 +63,7 @@ std::string FileDialog::getOpenFileName(const std::string& caption, const std::s
 std::vector<std::string> FileDialog::getOpenFileNames(const std::string& caption, const std::string& directory, const std::string& filter)
 {
 	FileDialog fileDialog(Open, caption, directory, filter);
-	
+
 	return fileDialog.getFiles();
 }
 
@@ -93,7 +93,8 @@ bool FileDialog::show(char *result, bool multiselect)
 	ofn.lpstrTitle = _caption.c_str();
 	ofn.lpstrInitialDir = _directory.c_str();
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | (multiselect ? OFN_ALLOWMULTISELECT | OFN_EXPLORER : 0x0);
-
+	ofn.lpstrDefExt = "rle";
+	
 	bool accepted = false;
 
 	if (_mode == Open)
