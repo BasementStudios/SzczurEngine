@@ -20,7 +20,6 @@ struct NodePin
 {
 	int Id = -1;
 	Node* Node = nullptr;
-	std::string Name;
 	ed::PinKind Kind = ed::PinKind::Input;
 
 	int OptionTarget = -1;
@@ -28,8 +27,8 @@ struct NodePin
 	bool LinkToSameNode = false;
 
 	NodePin() { }
-	NodePin(int id, const std::string& name, ed::PinKind kind) :
-		Id(id), Name(name), Kind(kind) { }
+	NodePin(int id, ed::PinKind kind) :
+		Id(id), Kind(kind) { }
 };
 
 class Node
@@ -60,7 +59,7 @@ public:
 	Node(int id, const std::string& name, NodeType nodeType) :
 		Id(id), Name(name), Type(nodeType) { }
 
-	NodePin* createPin(const std::string& name, ed::PinKind pinKind);
+	NodePin* createPin(ed::PinKind pinKind);
 
 	void removePin(NodePin *pin);
 };

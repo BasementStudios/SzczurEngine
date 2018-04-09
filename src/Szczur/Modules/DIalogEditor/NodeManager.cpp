@@ -120,7 +120,6 @@ bool NodeManager::read(const json& j)
 	auto readPin = [] (json::reference j, NodePin* pin) 
 	{
 		pin->Id = j["id"];
-		pin->Name = j["name"].get<std::string>();
 		pin->OptionTarget = j["optionTarget"];
 		pin->LinkToSameNode = j["linkToSameNode"];
 	};
@@ -207,7 +206,6 @@ void NodeManager::write(json& j)
 {
 	auto writePin = [] (json::object_t::mapped_type::reference j, NodePin* pin) {
 		j["id"] = pin->Id;
-		j["name"] = pin->Name;
 		j["optionTarget"] = pin->OptionTarget;
 		j["linkToSameNode"] = pin->LinkToSameNode;
 	};
@@ -291,11 +289,11 @@ void NodeManager::reset()
 	this->_lastId = 0;
 }
 
-NodePin* Node::createPin(const std::string& name, ed::PinKind pinKind)
+NodePin* Node::createPin(ed::PinKind pinKind)
 {
-	auto newId = ++_lastPinId + Id * 100;;
+	auto newId = ++_lastPinId + Id * 100;
 
-	auto pin = std::make_unique<NodePin>(newId, name, pinKind);
+	auto pin = std::make_unique<NodePin>(newId, pinKind);
 
 	pin->Node = this;
 

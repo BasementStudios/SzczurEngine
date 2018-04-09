@@ -43,10 +43,10 @@ void NodeEditor::createNew()
 	_nodeManager->reset();
 
 	auto start = _nodeManager->createNode("Start", Node::Start);
-	start->createPin("Start", ed::PinKind::Output);
+	start->createPin(ed::PinKind::Output);
 
 	auto end = _nodeManager->createNode("End", Node::End);
-	end->createPin("End", ed::PinKind::Input);
+	end->createPin(ed::PinKind::Input);
 
 	ed::SetNodePosition(start->Id, ImVec2(100.f, 100.f));
 	ed::SetNodePosition(end->Id, ImVec2(300, 100.f));
@@ -353,7 +353,7 @@ void NodeEditor::update()
 
 					if (ImGui::Button(label.c_str()))
 					{
-						auto pin = node->createPin("Option", ed::PinKind::Output);
+						auto pin = node->createPin(ed::PinKind::Output);
 					}
 				}
 
@@ -630,7 +630,7 @@ void NodeEditor::showPopups()
 		if (ImGui::Button("OK", ImVec2(120, 0))) 
 		{
 			auto node = _nodeManager->createNode(buffer);
-			node->createPin("Trigger", ed::PinKind::Input);
+			node->createPin(ed::PinKind::Input);
 
 			ed::SetNodePosition(node->Id, newNodePostion);
 
