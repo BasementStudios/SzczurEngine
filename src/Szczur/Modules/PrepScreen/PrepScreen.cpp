@@ -3,7 +3,7 @@
 
 #include "GUI/SkillBar.hpp"
 
-
+#include "ProfessionTypes.hpp"
 
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
@@ -37,55 +37,35 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
+        gui.addAsset<sf::Texture>("assets/PrepScreen/MenuBar.png");
+        sf::Texture* menuBarTexture = gui.getAsset<sf::Texture>("assets/PrepScreen/MenuBar.png");
+
         _base = gui.addInterface();
 
         ImageWidget* ppBar = new ImageWidget;
         _base->add(ppBar);
-        ppBar->setTexture(getTextureFrom("ppBar.png", gui));
+        ppBar->setTexture(menuBarTexture);
+        _setWidgetSize(ppBar, 1280.f, 120.f);
 
+        _initProfessionBar(gui);
         
         _coloredPPBar = new ImageWidget;
         _grayPPBar = new Widget;
         _skillsBar = new ScrollAreaWidget;
         _chosenSkillsBar = new ImageWidget;
-        ImageWidget* _professionBar = new ImageWidget;
 
         ppBar->add(_coloredPPBar);
-        _coloredPPBar->setTexture(getTextureFrom("coloredPPBar.png", gui));
+        //_coloredPPBar->setTexture(getTextureFrom("coloredPPBar.png", gui));
 
         ppBar->add(_grayPPBar);
         //_grayPPBar->setTexture(getTextureFrom("grayPPBar.png", gui));
         _grayPPBar->setPosition(0.f, 80.f);
 
-        _base->add(_professionBar);
-        _professionBar->setTexture(getTextureFrom("professionBar.png", gui));
-        _professionBar->setPosition(0, 120);
-
-        ImageWidget* mele = new ImageWidget;
-        ImageWidget* range = new ImageWidget;
-        ImageWidget* aura = new ImageWidget;
-        ImageWidget* iner = new ImageWidget;
-
-        _professionBar->add(mele);
-        mele->setTexture(getTextureFrom("meleIcon.png", gui));
-        mele->setPosition(40, 0);
-
-        _professionBar->add(range);
-        range->setTexture(getTextureFrom("rangeIcon.png", gui));
-        range->setPosition(40, 120);
-
-        _professionBar->add(aura);
-        aura->setTexture(getTextureFrom("auraIcon.png", gui));
-        aura->setPosition(40, 240);
-
-        _professionBar->add(iner);
-        iner->setTexture(getTextureFrom("inerFireIcon.png", gui));
-        iner->setPosition(40, 360);
-
         _centerWindow = new ImageWidget;
         _base->add(_centerWindow);
-        _centerWindow->setTexture(getTextureFrom("centerWindow.png", gui));
+        _centerWindow->setTexture(menuBarTexture);
         _centerWindow->setPosition(200, 120);
+        _setWidgetSize(_centerWindow, 760.f, 480.f);
 
         _skillsBar = new ScrollAreaWidget;
         _centerWindow->add(_skillsBar);
@@ -95,35 +75,21 @@ namespace rat
 
         _eq = new ImageWidget;
         _base->add(_eq);
-        _eq->setTexture(getTextureFrom("eq.png", gui));
+        _eq->setTexture(menuBarTexture);
         _eq->setPosition(0, 600);
+        _setWidgetSize(_eq, 200.f, 120.f);
 
         _base->add(_chosenSkillsBar);
-        _chosenSkillsBar->setTexture(getTextureFrom("chosenSkills.png", gui));
+        _chosenSkillsBar->setTexture(menuBarTexture);
         _chosenSkillsBar->setPosition(200, 600);
+        _setWidgetSize(_chosenSkillsBar, 760.f, 120.f);
+        
         
         //mainWidget
 
         test();
     }
 
-    void PrepScreen::addSkill(Skill* skill)
-    {
-        auto newSkill = std::make_unique<SkillBar>(_grayPPsBar);
-        std::cout << "SOme1" << std::endl;
-        
-        newSkill->setSkill(skill);
-
-        newSkill->setParent(_skillsBar);
-        size_t n = _skills.size();
-        newSkill->setPosition(0, float(n*80));
-
-
-        auto& gui = getModule<GUI>();
-        newSkill->setBarTexture(getTextureFrom("skillBar.png", gui), getTextureFrom("skillBarLocked.png", gui));
-
-        _skills.emplace_back(std::move(newSkill));
-    }
 
     void PrepScreen::test()
     {
@@ -137,32 +103,6 @@ namespace rat
         _grayPPsBar.setParent(_grayPPBar);
         _grayPPsBar.initTextureViaGui(gui);
         _grayPPsBar.setCenter(1280.f/2.f, 0);
-        std::cout << "After PPsBar\n";
-        
-
-        auto test1 = std::make_unique<Skill>("testGreen");
-        test1->setIcon(getTextureFrom("test1.png", gui));
-        test1->setPPCost(3);
-        test1->addRequirement("Earth");
-
-        auto test2 = std::make_unique<Skill>("testRed");
-        test2->setIcon(getTextureFrom("test2.png", gui));
-        test2->setPPCost(5);
-        test2->addRequirement("Fire");
-
-        std::cout <<"Test\n";
-        
-        addSkill(test1.get());
-        std::cout <<"Test2\n";
-        
-        addSkill(test2.get());
-
-        std::cout <<"Test3\n";
-        
-
-        testSkills.emplace_back(std::move(test1));
-        testSkills.emplace_back(std::move(test2));
-
 
         PPSource fireSource = {"Physical", 1, 10};
         //PPSource waterSource = {"Water", 1, 0};
@@ -174,14 +114,47 @@ namespace rat
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
         
-        
         //_source.addSource(airSource);
         //_source.removeSource(fireSource);
 
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
-        
-        
+
+        _initSkillArea();
     }
+
+    void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)
+    {
+        auto baseSize = static_cast<sf::Vector2f>(widget->getTexture()->getSize());
+        widget->setScale({x/baseSize.x, y/baseSize.y}); 
+    }
+
+    void PrepScreen::_initProfessionBar(GUI& gui)
+    {
+        ImageWidget* _professionBar = new ImageWidget;
+        _base->add(_professionBar);
+        _professionBar->setTexture(gui.getAsset<sf::Texture>("assets/PrepScreen/MenuBar.png"));
+        _professionBar->setPosition(0, 120);
+        _setWidgetSize(_professionBar, 200.f, 480.f);
+
+        ProfessionTypes profTypes;
+        size_t i = 0;
+        for(auto& profession : profTypes)
+        {
+            ImageWidget* profBar = new ImageWidget;
+            _professionBar->add(profBar);
+            profBar->setTexture(getTextureFrom(profession + "Icon.png", gui));
+            profBar->setPosition(40.f, 120.f * i++);
+            _setWidgetSize(profBar, 120.f, 120.f);    
+        }
+    }
+
+    void PrepScreen::_initSkillArea()
+    {
+        _skillArea.setParent(_centerWindow);
+        _skillArea.initViaSkillCodex(_codex);
+        _skillArea.initAssetsViaGUI(getModule<GUI>());
+    }
+    
 
 }

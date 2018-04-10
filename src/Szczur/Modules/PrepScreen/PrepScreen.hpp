@@ -9,7 +9,7 @@
 
 //#include "Szczur/Modules/PrepScreen/PPContainer.hpp"
 #include "Szczur/Modules/PrepScreen/SkillCodex.hpp"
-#include "GUI/SkillBar.hpp"
+#include "GUI/SkillArea.hpp"
 #include "GUI/ColoredPPBar.hpp"
 #include "GUI/GrayPPBar.hpp"
 
@@ -33,7 +33,8 @@ public:
     PrepScreen()
     :
     _coloredPPsBar(_source),
-    _grayPPsBar(_source)
+    _grayPPsBar(_source),
+    _skillArea(_grayPPsBar)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();
@@ -68,9 +69,13 @@ private:
     ImageWidget* _eq{nullptr};
     ImageWidget* _chosenSkillsBar{nullptr};
 
-
-    std::vector<std::unique_ptr<SkillBar>> _skills;
     ColoredPPBar _coloredPPsBar;
     GrayPPBar _grayPPsBar;
+    SkillArea _skillArea;
+
+
+    void _setWidgetSize(ImageWidget* widget, float x, float y);
+    void _initProfessionBar(GUI& gui);
+    void _initSkillArea();
 };
 }

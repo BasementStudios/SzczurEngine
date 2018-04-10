@@ -1,5 +1,7 @@
 #pragma once
 
+#include <initializer_list>
+
 #include "PPcost.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -58,18 +60,52 @@ namespace rat
         void addRequirement(const std::string color, power_t power = 1)
         {
             _cost.addColorRequirement({color, power});
+            if(_cost.getNumberOfRequirements() == 1) 
+            {
+                _color = color;
+            }
+            else
+            {
+                _color = "Mixed";
+            }
         }
-        sf::Texture* getIcon() {
-            return _icon;
+
+        void setRequirements(std::initializer_list<std::pair<std::string, power_t>> requirements)
+        {
+            _cost.resetColorRequirements();
+            for(const auto& [color, power] : requirements)
+            {
+                addRequirement(color, power);
+            }
         }
-        void setIcon(sf::Texture* texture){
-            _icon = texture;
+
+        void setProfession(const std::string& profession)
+        {
+            _profession = profession;
         }
+        const std::string getProfession() const{
+            return _profession;
+        }
+
+        const std::string& getColor() const{
+            return _color;
+        }
+
+        void setTexturePath(const std::string& texturePath)
+        {
+            _texturePath = texturePath;
+        }
+        const std::string& getTexturePath() const{
+            return _texturePath;
+        }
+
 
         private:
         std::string _name;
+        std::string _profession{"Mele"};
+        std::string _color{"Mixed"};
         PPCost _cost;
         bool _unlocked{true};
-        sf::Texture* _icon{nullptr};
+        std::string _texturePath{""};
     };
 }

@@ -44,6 +44,11 @@ namespace rat
                 _typesRequirement.emplace(color, power);
             }
 
+            void resetColorRequirements()
+            {
+                _typesRequirement.clear();
+            }
+
             void buyFrom(PPContainer& source)
             {
                 assert(canBeBoughtFrom(source));
@@ -61,7 +66,11 @@ namespace rat
 
             bool isBought() const {
                 return _hasBeenBought;
-            }      
+            }    
+
+            amount_t getNumberOfRequirements() const{
+                return _typesRequirement.size();
+            } 
 
         private:
             std::set<ColoredPP> _typesRequirement;

@@ -16,9 +16,9 @@ namespace rat
         _bar = new ImageWidget;
         _icon = new ImageWidget;
         _bar->add(_icon);
-        _icon->setPosition(2, 2);
-        _nameText = new TextWidget;
-        _bar->add(_nameText);
+        _icon->setPosition(4.f, 4.f);
+        //_nameText = new TextWidget;
+        //_bar->add(_nameText);
 
         auto click = [&](Widget* owner){
             PPContainer& source = _sourceBar.getSource();
@@ -71,7 +71,27 @@ namespace rat
     void SkillBar::setSkill(Skill* skill)
     {
         _skill = skill;
-        _icon->setTexture(skill->getIcon());
+    }
+
+    const std::string& SkillBar::getIconPath() const
+    {
+        assert(_skill);
+        return _skill->getTexturePath();
+    }
+    void SkillBar::setIconTexture(sf::Texture* icon)
+    {
+        _icon->setTexture(icon);
+    }
+
+    void SkillBar::activate()
+    {
+        _bar->activate();
+        _icon->activate();
+    }
+    void SkillBar::deactivate()
+    {
+        _bar->deactivate();
+        _icon->activate();
     }
 
 

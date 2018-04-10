@@ -30,7 +30,6 @@ namespace rat
     {
         _background->calculateSize();
         auto size = static_cast<sf::Vector2f>(_background->getSize());
-        std::cout << "origin size x: " << size.x << " y: " << size.y << "\n";
         _background->setOrigin(size.x * 0.5f, 0.f);
     }
 

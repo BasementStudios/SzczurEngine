@@ -11,7 +11,9 @@ namespace rat
     class SkillCodex
     {
 
-        public:
+    public:
+        SkillCodex();
+
         Skill* getSkill(const std::string& name);
         Skill* addSkill(std::unique_ptr<Skill> skill);
         void renameSkill(const std::string& oldName, const std::string& newName);
@@ -24,7 +26,10 @@ namespace rat
         {
             return _skills.end();
         }
-        private:
+
+    private:
         std::unordered_map<std::string, std::unique_ptr<Skill>> _skills;
+
+        void _initSkills();
     };
 }

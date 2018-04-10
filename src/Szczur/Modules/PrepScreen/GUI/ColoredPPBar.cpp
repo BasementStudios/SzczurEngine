@@ -5,8 +5,6 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "../PPColors.hpp"
 
-#include "Szczur/Utility/Logger.hpp"
-
 namespace rat
 {
     ColoredPPBar::ColoredPPBar(PPContainer& source)
@@ -17,8 +15,6 @@ namespace rat
 
     void ColoredPPBar::recalculate()
     {     
-        LOG_INFO(this, " : PrepScreen : ColoredPPBar : recalculating...");
-
         for(auto& [color, widget] : _pps)
         {
             widget->setPosition(0.f, 0.f);
@@ -30,7 +26,6 @@ namespace rat
         for(auto& [coloredPP, amount] : _source)
         {
             const std::string& color = coloredPP.type;
-            //LOG_INFO(this, " : PrepScreen : ColoredPPBar : " + color + " adding");
             ImageWidget* pp{nullptr};
 
             auto found = _pps.find(color);
@@ -50,12 +45,8 @@ namespace rat
             sf::Vector2f newPos = {float(i) * size, 0.f};
             pp->setPosition(newPos);
             i++;
-
-            //LOG_INFO(this, " : PrepScreen : ColoredPPBar : " + color + " added");
-            //LOG_INFO(this, " : at position x: " + std::to_string(newPos.x) + " y: " + std::to_string(newPos.y) + ".");
         } 
         recalcOrigin();
-        //LOG_INFO(this, " : PrepScreen : ColoredPPBar : recalculated");
         
     }
     

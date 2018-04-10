@@ -19,7 +19,13 @@ namespace rat
         void setParent(Widget* parent);
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& pos);
-        void setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture); 
+        void setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture);
+        const std::string& getIconPath() const;
+        void setIconTexture(sf::Texture* icon); 
+
+        void activate();
+        void deactivate();
+
 
         bool isBought() const{
             return _isBought;
@@ -39,5 +45,8 @@ namespace rat
 
         sf::Texture* _textureBar{nullptr};
         sf::Texture* _textureLocked{nullptr};
+        sf::Texture* _textureIcon{nullptr};
+
+
     };
 }

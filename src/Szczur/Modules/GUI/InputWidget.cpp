@@ -50,6 +50,8 @@ namespace rat {
         return static_cast<sf::Vector2u>(_background.getSize());
     }
 
+    
+
     void InputWidget::setMaxLength(size_t newValue) {
         _maxLength = newValue;
         _background.setSize(sf::Vector2f{_maxLength*getCharacterSize()/1.5f, getCharacterSize()*1.2f});
