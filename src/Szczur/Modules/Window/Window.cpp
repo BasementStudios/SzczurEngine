@@ -8,14 +8,16 @@
 
 #include <string>
 
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Vertex.hpp>
-#include <SFML/Graphics/Color.hpp>
 
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/Vertex.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -39,7 +41,7 @@ sf::VideoMode Window::getVideoMode() const
 }
 void Window::setVideoMode(const sf::VideoMode& mode)
 {
-	this->videoMode = mode;
+	this->videoMode = mode; // @todo , log videoMode change
 	this->getWindow().create(this->videoMode, this->title);
 }
 
@@ -105,14 +107,42 @@ void Window::clear(const sf::Color& color)
     this->getWindow().clear(color);
 }
 
+/// GL states
+void Window::pushGlStates()
+{
+	this->getWindow().pushGlStates();
+}
+void Window::popGlStates()
+{
+	this->getWindow().popGlStates();
+}
+
+/// draw
+// 2D
 void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 {
 	this->getWindow().draw(drawable, states);
 }
-
-void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
+void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
 	this->getWindow().draw(vertices, vertexCount, type, states);
+}
+// 3D
+void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
+{
+	this->getWindow().draw(drawable, states);
+}
+void Window::draw(const sf3d::Drawable& drawable)
+{
+	this->getWindow().draw(drawable);
+}
+void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
+{
+	this->getWindow().draw(vertices, states);
+}
+void Window::draw(const sf3d::VertexArray& vertices)
+{
+	this->getWindow().draw(vertices);
 }
 
 }
