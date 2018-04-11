@@ -97,14 +97,18 @@ public:
 	void init();
 	void render();
 
-	/// Cleaning
+	// Cleaning
 	void clear(const sf::Color& color = sf::Color::Transparent);
 
-	/// Drawing
-	// 2D
+	// GL states
+	void pushGLStates();
+	void popGLStates();
+
+	// Drawing
+	// 	2D
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
-	// 3D
+	// 	3D
 	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states);
 	void draw(const sf3d::Drawable& drawable);
 	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states);

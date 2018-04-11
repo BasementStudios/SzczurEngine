@@ -72,9 +72,14 @@ void Window::setTitle(const std::string& title)
 /* Operators */
 /// Constructors
 Window::Window()
+	: window(
+		{1280, 800}, "Szczur3D", sf::Style::Default, sf::ContextSettings(), 
+		"Assets/Shaders/default/vertex.shader", 
+		"Assets/Shaders/default/fragment.shader"
+	) // @warn usunąc to i używać init
 {
 	LOG_INFO(this, ": Window module initializing");
-	this->init();
+	//this->init();
 	LOG_INFO(this, ": Window module initialized");
 }
 /// Deconstructor
@@ -108,13 +113,13 @@ void Window::clear(const sf::Color& color)
 }
 
 /// GL states
-void Window::pushGlStates()
+void Window::pushGLStates()
 {
-	this->getWindow().pushGlStates();
+	this->getWindow().pushGLStates();
 }
-void Window::popGlStates()
+void Window::popGLStates()
 {
-	this->getWindow().popGlStates();
+	this->getWindow().popGLStates();
 }
 
 /// draw
