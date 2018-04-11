@@ -20,12 +20,11 @@ namespace sf3d {
 			const char* fragmentPath = "data/fragment.shader"
 		);
 
-
-		//void clear(const sf::Color&) = delete;
 		//const sf::View& getView() const = delete;
 		//const sf::View& getDefaultView() const = delete;
 		//void setView(const sf::View&) = delete;
 
+		using sf::RenderTarget::clear;
 		using sf3d::RenderTarget::clear;
 		using sf3d::RenderTarget::draw;
 		using sf3d::RenderTarget::getView;

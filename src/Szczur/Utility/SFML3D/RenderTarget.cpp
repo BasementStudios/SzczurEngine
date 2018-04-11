@@ -1,26 +1,29 @@
 #include "RenderTarget.hpp"
-#include "VertexArray.hpp"
-#include "Drawable.hpp"
-#include "Vertex.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
+#include <SFML/Graphics/Color.hpp>
 
+#include "VertexArray.hpp"
+#include "Drawable.hpp"
+#include "Vertex.hpp"
 
 namespace sf3d {
 
 	RenderTarget::RenderTarget(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV) :
-		_FOVy(FOV),
+		_windowSize(size),
 		_FOVx(
 			glm::degrees(2 * glm::atan(glm::tan(glm::radians(FOV / 2.f)) * ((float)size.x / (float)size.y)))
 		),
+		_FOVy(FOV),
 		_halfFOVxTan( glm::tan(glm::radians(_FOVx / 2.f)) ),
 		_halfFOVyTan( glm::tan(glm::radians(_FOVy / 2.f)) ),
-		_projection(1.f),
-		_windowSize(size),
 		_view(2.f / (float)size.y, {0.f, 0.f, 3 * (float)size.x / 2.f}),
-		_defaultView(_view) {
+		_defaultView(_view),
+		_projection(1.f)
+	{
 		_projection = glm::perspective(glm::radians(FOV), (float)size.x / (float)size.y, 0.1f, 100.f);
 
 		if(!gladLoadGL()) {
