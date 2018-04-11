@@ -12,6 +12,7 @@
 #include "GUI/SkillArea.hpp"
 #include "GUI/ColoredPPBar.hpp"
 #include "GUI/GrayPPBar.hpp"
+#include "GUI/ProfessionArea.hpp"
 
 namespace rat
 {
@@ -34,7 +35,8 @@ public:
     :
     _coloredPPsBar(_source),
     _grayPPsBar(_source),
-    _skillArea(_grayPPsBar)
+    _skillArea(_grayPPsBar),
+    _profArea(_skillArea)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();
@@ -72,6 +74,7 @@ private:
     ColoredPPBar _coloredPPsBar;
     GrayPPBar _grayPPsBar;
     SkillArea _skillArea;
+    ProfessionArea _profArea;
 
 
     void _setWidgetSize(ImageWidget* widget, float x, float y);

@@ -24,7 +24,6 @@ namespace rat
 
 
         auto click = [&](Widget* owner){
-            std::cout << "g\n";
             _onClick();
         };
 
