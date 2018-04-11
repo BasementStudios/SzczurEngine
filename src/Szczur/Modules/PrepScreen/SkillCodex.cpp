@@ -28,12 +28,12 @@ namespace rat
 
     void SkillCodex::_initSkills()
     {
-        auto skill = std::make_unique<Skill>("Earth Strike");
+        auto skill = std::make_unique<Skill>("Fire Strike");
         skill->setProfession("Mele");
         skill->setTexturePath("assets/PrepScreen/test2.png");
         skill->setPPCost(5);
         skill->setRequirements({
-            {"Earth", 1}
+            {"Fire", 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -55,12 +55,21 @@ namespace rat
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
+        skill = std::make_unique<Skill>("Fire Shards");
+        skill->setProfession("Range");
+        skill->setTexturePath("assets/PrepScreen/test5.png");
+        skill->setPPCost(2);
+        skill->setRequirements({
+            {"Fire", 1}
+        });
+        _skills.emplace(skill->getName(), std::move(skill));
+
         skill = std::make_unique<Skill>("Shadow Fiend");
         skill->setProfession("InnerFire");
         skill->setTexturePath("assets/PrepScreen/test3.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Essence", 1}
+            {"Fire", 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
     }

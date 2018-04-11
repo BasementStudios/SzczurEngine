@@ -46,8 +46,6 @@ namespace rat
         _base->add(ppBar);
         ppBar->setTexture(menuBarTexture);
         _setWidgetSize(ppBar, 1280.f, 120.f);
-
-        _initProfessionBar(gui);
         
         _coloredPPBar = new ImageWidget;
         _grayPPBar = new Widget;
@@ -121,32 +119,13 @@ namespace rat
         _grayPPsBar.recalculate();
 
         _initSkillArea();
+        _initProfArea();
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)
     {
         auto baseSize = static_cast<sf::Vector2f>(widget->getTexture()->getSize());
         widget->setScale({x/baseSize.x, y/baseSize.y}); 
-    }
-
-    void PrepScreen::_initProfessionBar(GUI& gui)
-    {
-        ImageWidget* _professionBar = new ImageWidget;
-        _base->add(_professionBar);
-        _professionBar->setTexture(gui.getAsset<sf::Texture>("assets/PrepScreen/MenuBar.png"));
-        _professionBar->setPosition(0, 120);
-        _setWidgetSize(_professionBar, 200.f, 480.f);
-
-        ProfessionTypes profTypes;
-        size_t i = 0;
-        for(auto& profession : profTypes)
-        {
-            ImageWidget* profBar = new ImageWidget;
-            _professionBar->add(profBar);
-            profBar->setTexture(getTextureFrom(profession + "Icon.png", gui));
-            profBar->setPosition(40.f, 120.f * i++);
-            _setWidgetSize(profBar, 120.f, 120.f);    
-        }
     }
 
     void PrepScreen::_initSkillArea()
@@ -156,8 +135,16 @@ namespace rat
         _skillArea.initAssetsViaGUI(getModule<GUI>());
         //_skillArea.activate("InnerFire", "Essence");
         _skillArea.activate("Aura", "Fire");
-        _skillArea.activate("InnerFire", "Essence");
+        //_skillArea.activate("InnerFire", "Essence");
     }
+
+    void PrepScreen::_initProfArea()
+    {
+        _profArea.setParent(_base);
+        _profArea.setPosition(40.f, 120.f);
+        _profArea.initAssetsViaGUI(getModule<GUI>());
+    }
+    
     
 
 }

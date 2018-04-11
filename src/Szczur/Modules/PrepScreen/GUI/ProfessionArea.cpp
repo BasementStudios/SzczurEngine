@@ -36,7 +36,7 @@ namespace rat
         {
             auto profBar = std::make_unique<ProfessionBar>(skillArea);
             profBar->setParent(_base);
-            profBar->setPosition(profBar->dim * float(i++), 0.f);
+            profBar->setPosition(0.f, profBar->dim * float(i++));
             profBar->setProfession(prof);
 
             _profBars.emplace_back(std::move(profBar));

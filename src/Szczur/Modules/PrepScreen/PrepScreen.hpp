@@ -80,5 +80,6 @@ private:
     void _setWidgetSize(ImageWidget* widget, float x, float y);
     void _initProfessionBar(GUI& gui);
     void _initSkillArea();
+    void _initProfArea();
 };
 }
