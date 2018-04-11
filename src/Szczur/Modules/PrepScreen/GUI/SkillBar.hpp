@@ -38,6 +38,8 @@ namespace rat
         bool _isBought{false};
         bool _isActive{true};
 
+        void _onClick();
+
         //std::vector<ImageWidget*> _coloredPPs;
         ImageWidget* _bar{nullptr};
         ImageWidget* _icon{nullptr};

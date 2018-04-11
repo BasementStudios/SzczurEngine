@@ -104,7 +104,7 @@ namespace rat
         _grayPPsBar.initTextureViaGui(gui);
         _grayPPsBar.setCenter(1280.f/2.f, 0);
 
-        PPSource fireSource = {"Physical", 1, 10};
+        PPSource fireSource = {"Fire", 1, 10};
         //PPSource waterSource = {"Water", 1, 0};
         //PPSource airSource = {"Air", 1, 0};
         
@@ -154,6 +154,8 @@ namespace rat
         _skillArea.setParent(_centerWindow);
         _skillArea.initViaSkillCodex(_codex);
         _skillArea.initAssetsViaGUI(getModule<GUI>());
+        //_skillArea.activate("InnerFire", "Essence");
+        _skillArea.activate("Aura", "Fire");
     }
     
 

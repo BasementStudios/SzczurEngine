@@ -38,7 +38,7 @@ namespace rat
         }
         void buyFrom(PPContainer& source)
         {
-            assert(_unlocked);
+            //assert(_unlocked);
             _cost.buyFrom(source);
         }
 

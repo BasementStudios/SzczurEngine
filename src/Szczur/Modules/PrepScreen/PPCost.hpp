@@ -51,7 +51,7 @@ namespace rat
 
             void buyFrom(PPContainer& source)
             {
-                assert(canBeBoughtFrom(source));
+                //assert(canBeBoughtFrom(source));
                 source.removePP(_ppCost);
                 std::cout << "New Amount Of PP: " << source.getPPAmount() << "\n";
                 _hasBeenBought = true;

@@ -9,7 +9,9 @@ namespace rat
 {
     SkillArea::SkillArea(GrayPPBar& sourceBar)
     :
-    _sourceBar(sourceBar)
+    _sourceBar(sourceBar),
+    _curentColor("Fire"),
+    _curentProfession("Mele")
     {
         std::cout << "SkillArea initing...\n";
         ProfessionTypes professions;
@@ -65,9 +67,13 @@ namespace rat
     {
         const auto& color = skill->getColor();
         const auto& prof = skill->getProfession();
+
+        std::cout << skill->getName() << " : " << prof << " : " << color << "\n";
+
         SkillBar skillBar(_sourceBar);
         skillBar.setSkill(skill);
         skillBar.setParent(_base);
+        skillBar.deactivate();
 
         auto& suitableContainer = _skillBars[prof][color];
 
@@ -79,6 +85,48 @@ namespace rat
     void SkillArea::setParent(Widget* parent)
     {
         parent->add(_base);
+    }
+
+    void SkillArea::activate(const std::string& profession, const std::string& color)
+    {
+        setProfession(profession);
+        setColor(color);
+    }
+    void SkillArea::hideAll()
+    {
+        for(auto& profs : _skillBars)
+            for(auto& colors : profs.second)
+                for(auto& skillBar : colors.second)
+                {
+                    skillBar.deactivate();
+                }
+    }
+    void SkillArea::setColor(const std::string& color)
+    {
+        _hide(_curentProfession, _curentColor);
+        _curentColor = color;
+        _active(_curentProfession, _curentColor);
+    }
+    void SkillArea::setProfession(const std::string& profession)
+    {
+         _hide(_curentProfession, _curentColor);
+         _curentProfession = profession;
+         _active(_curentProfession, _curentColor);
+    }
+
+    void SkillArea::_hide(const std::string& profession, const std::string& color)
+    {
+        for(auto& skillBar : _skillBars[profession][color])
+        {
+            skillBar.deactivate();
+        }
+    }
+    void SkillArea::_active(const std::string& profession, const std::string& color)
+    {
+        for(auto& skillBar : _skillBars[profession][color])
+        {
+            skillBar.activate();
+        }
     }
     
     

@@ -50,7 +50,8 @@ namespace rat {
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        target.draw(_sprite, states);
+        if(_isActivated)
+            target.draw(_sprite, states);
     }
 
     void ImageWidget::_callback(CallbackType type) {

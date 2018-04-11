@@ -9,9 +9,9 @@
 
 namespace rat
 {
-    SkillBar::SkillBar(GrayPPBar& source)
+    SkillBar::SkillBar(GrayPPBar& sourceBar)
     :
-    _sourceBar(source)
+    _sourceBar(sourceBar)
     {
         _bar = new ImageWidget;
         _icon = new ImageWidget;
@@ -19,29 +19,12 @@ namespace rat
         _icon->setPosition(4.f, 4.f);
         //_nameText = new TextWidget;
         //_bar->add(_nameText);
+        _sourceBar.getSource();
+
 
         auto click = [&](Widget* owner){
-            PPContainer& source = _sourceBar.getSource();
-            if(!_isBought)
-            {
-                if(_skill->canBeBoughtFrom(source))
-                {
-                    _skill->buyFrom(source);
-                    _sourceBar.recalculate();
-
-                    _isBought = true;
-                    _bar->setTexture(_textureLocked);
-                }
-                _bar->setTexture(_textureLocked);
-            }
-            else
-            {
-                _skill->returnCostsTo(source);
-                _sourceBar.recalculate();
-
-                _isBought = false;
-                _bar->setTexture(_textureBar);
-            }
+            std::cout << "g\n";
+            _onClick();
         };
 
         _bar->setCallback(Widget::CallbackType::onPress, click);
@@ -91,8 +74,39 @@ namespace rat
     void SkillBar::deactivate()
     {
         _bar->deactivate();
-        _icon->activate();
+        _icon->deactivate();
+        std::cout << "Deactivating\n";
     }
+
+    void SkillBar::_onClick()
+    {
+        std::cout << "Buying process has started...\n";
+            //PPContainer& source = _sourceBar.getSource();
+            std::cout << "Heh\n";
+            _bar->setTexture(_textureLocked);
+            /*
+            if(!_isBought)
+            {
+                if(_skill->canBeBoughtFrom(source))
+                {
+                    //_skill->buyFrom(source);
+                    //_sourceBar.recalculate();
+                    _isBought = true;
+                    _bar->setTexture(_textureLocked);
+                }
+                //_bar->setTexture(_textureLocked);
+            }
+            else
+            {
+                //_skill->returnCostsTo(source);
+                //_sourceBar.recalculate();
+
+                _isBought = false;
+                _bar->setTexture(_textureBar);
+            }
+            */
+    }
+    
 
 
 }
