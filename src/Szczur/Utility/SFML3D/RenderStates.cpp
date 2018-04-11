@@ -2,9 +2,14 @@
 
 namespace sf3d {
 
-	RenderStates::RenderStates(Shader * shader, Transform transform, Texture * texture) :
-		shader(shader),
+	RenderStates::RenderStates(
+		Shader* 	shader, 
+		Transform 	transform,
+		Texture* 	texture
+	) :
 		transform(transform),
-		texture(texture) {}
+		shader(shader),
+		texture(texture)
+	{}
 
 }
