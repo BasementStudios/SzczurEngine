@@ -17,52 +17,31 @@ namespace sf3d {
 
 	glm::vec3 Shape::getPointPosition(size_t index) const {
 		switch(index) {
-			case 0:
-			return {0.f, 0.f, 0.f};
-			break;
-			case 1:
-			return {768.f, 0.f, 0.f};
-			break;
-			case 2:
-			return {768.f, -512.f, 0.f};
-			break;
-			case 3:
-			return {0.f, -512.f, 0.f};
-			break;
+			default:
+			case 0: return {0.f, 0.f, 0.f}; break;
+			case 1: return {768.f, 0.f, 0.f}; break;
+			case 2: return {768.f, -512.f, 0.f}; break;
+			case 3: return {0.f, -512.f, 0.f}; break;
 		}
 	}
 
 	glm::vec3 Shape::getPointColor(size_t index) const {
 		switch(index) {
-			case 0:
-			return {1.f, 0.f, 0.f};
-			break;
-			case 1:
-			return {0.f, 1.f, 0.f};
-			break;
-			case 2:
-			return {0.f, 0.f, 1.f};
-			break;
-			case 3:
-			return {1.f, 0.f, 1.f};
-			break;
+			default:
+			case 0: return {1.f, 0.f, 0.f}; break;
+			case 1: return {0.f, 1.f, 0.f}; break;
+			case 2: return {0.f, 0.f, 1.f}; break;
+			case 3: return {1.f, 0.f, 1.f}; break;
 		}
 	}
 
 	glm::vec2 Shape::getPointCoord(size_t index) const {
 		switch(index) {
-			case 0:
-			return {0.f, 0.f};
-			break;
-			case 1:
-			return {1.f, 0.f};
-			break;
-			case 2:
-			return {1.f, 1.f};
-			break;
-			case 3:
-			return {0.f, 1.f};
-			break;
+			default:
+			case 0: return {0.f, 0.f}; break;
+			case 1: return {1.f, 0.f}; break;
+			case 2: return {1.f, 1.f}; break;
+			case 3: return {0.f, 1.f}; break;
 		}
 	}
 }

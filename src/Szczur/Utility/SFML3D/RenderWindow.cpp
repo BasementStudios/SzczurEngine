@@ -9,8 +9,9 @@ namespace sf3d {
 		const char* vertexPath,
 		const char* fragmentPath
 	) :
-		sf3d::RenderTarget(vertexPath, fragmentPath, glm::vec2{mode.width, mode.height}, 45.f),
-		sf::RenderWindow(mode, title, style, settings) {
+		sf::RenderWindow(mode, title, style, settings),
+		sf3d::RenderTarget(vertexPath, fragmentPath, glm::vec2{mode.width, mode.height}, 45.f)
+	{
 		if(!gladLoadGL()) {
 			std::cout << "Failed to initialize GLAD\n";
 			while(true);

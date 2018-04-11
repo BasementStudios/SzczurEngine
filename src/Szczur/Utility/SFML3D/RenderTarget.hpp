@@ -1,4 +1,7 @@
 #pragma once
+
+#include <SFML/Graphics/Color.hpp>
+
 #include "RenderStates.hpp"
 #include "View.hpp"
 #include "Linear.hpp"
@@ -41,8 +44,8 @@ namespace sf3d {
 
 		glm::uvec2 _windowSize;
 
-		float _FOVy;
 		float _FOVx;
+		float _FOVy;
 		float _halfFOVxTan;
 		float _halfFOVyTan;
 		//glm::mat4 _view;
