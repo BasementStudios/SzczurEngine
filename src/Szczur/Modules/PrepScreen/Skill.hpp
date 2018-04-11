@@ -50,7 +50,7 @@ namespace rat
 
         bool canBeBoughtFrom(PPContainer& source)
         {
-            _cost.canBeBoughtFrom(source);
+            return _cost.canBeBoughtFrom(source);
         }
 
         void setPPCost(amount_t cost)

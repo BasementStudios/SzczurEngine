@@ -11,7 +11,8 @@ namespace rat
 {
     SkillBar::SkillBar(GrayPPBar& sourceBar)
     :
-    _sourceBar(sourceBar)
+    _sourceBar(sourceBar),
+    _isBought(false)
     {
         _bar = new ImageWidget;
         _icon = new ImageWidget;
@@ -80,31 +81,28 @@ namespace rat
 
     void SkillBar::_onClick()
     {
-        std::cout << "Buying process has started...\n";
-            //PPContainer& source = _sourceBar.getSource();
-            std::cout << "Heh\n";
-            _bar->setTexture(_textureLocked);
-            /*
-            if(!_isBought)
+        
+        auto& source = _sourceBar.getSource();
+        if(!_isBought)
+        {
+            if(_skill->canBeBoughtFrom(source))
             {
-                if(_skill->canBeBoughtFrom(source))
-                {
-                    //_skill->buyFrom(source);
-                    //_sourceBar.recalculate();
-                    _isBought = true;
-                    _bar->setTexture(_textureLocked);
-                }
-                //_bar->setTexture(_textureLocked);
+                _skill->buyFrom(source);
+                _sourceBar.recalculate();
+                _isBought = true;
+                _bar->setTexture(_textureLocked);
             }
-            else
-            {
-                //_skill->returnCostsTo(source);
-                //_sourceBar.recalculate();
+            //_bar->setTexture(_textureLocked);
+        }
+        else
+        {
+            _skill->returnCostsTo(source);
+            _sourceBar.recalculate();
 
-                _isBought = false;
-                _bar->setTexture(_textureBar);
-            }
-            */
+            _isBought = false;
+            _bar->setTexture(_textureBar);
+        }
+            
     }
     
 

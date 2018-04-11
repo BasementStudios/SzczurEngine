@@ -5,12 +5,13 @@
 
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 namespace rat
 {
     class GUI; class ScrollAreaWidget;
 
-    using SkillBars_t = std::vector<SkillBar>;
+    using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
     using SkillColors_t = std::unordered_map<std::string, SkillBars_t>;
     using SkillProfessions_t = std::unordered_map<std::string, SkillColors_t>;
 

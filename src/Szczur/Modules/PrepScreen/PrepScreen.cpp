@@ -156,6 +156,7 @@ namespace rat
         _skillArea.initAssetsViaGUI(getModule<GUI>());
         //_skillArea.activate("InnerFire", "Essence");
         _skillArea.activate("Aura", "Fire");
+        _skillArea.activate("InnerFire", "Essence");
     }
     
 

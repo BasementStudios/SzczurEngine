@@ -24,7 +24,7 @@ namespace rat
                 size_t amount = ppAmount - realAmount;
                 _addPPWidget(amount);
             }
-            _recalculatePPsFromTo(realAmount, ppAmount);
+            _recalculatePPsFromTo(_activePPsAmount, ppAmount);
         }
         else if(ppAmount < _activePPsAmount)
         {          

@@ -18,7 +18,7 @@ namespace rat
         PPColors ppColors;
 
         _base = new ScrollAreaWidget;
-        _base->setSize(500.f, 100.f);
+        _base->setSize(240.f, 400.f);
 
         for(auto& profession : professions)
         {
@@ -43,10 +43,10 @@ namespace rat
             for(auto& colors : profs.second)
                 for(auto& skillBar : colors.second)
                 {
-                    skillBar.setBarTexture(_textureBar, _textureLocked);
-                    const auto& iconPath = skillBar.getIconPath();
+                    skillBar->setBarTexture(_textureBar, _textureLocked);
+                    const auto& iconPath = skillBar->getIconPath();
                     gui.addAsset<sf::Texture>(iconPath);
-                    skillBar.setIconTexture(gui.getAsset<sf::Texture>(iconPath));
+                    skillBar->setIconTexture(gui.getAsset<sf::Texture>(iconPath));
                     
                 }
 
@@ -68,17 +68,17 @@ namespace rat
         const auto& color = skill->getColor();
         const auto& prof = skill->getProfession();
 
-        std::cout << skill->getName() << " : " << prof << " : " << color << "\n";
+        //std::cout << skill->getName() << " : " << prof << " : " << color << "\n";
 
-        SkillBar skillBar(_sourceBar);
-        skillBar.setSkill(skill);
-        skillBar.setParent(_base);
-        skillBar.deactivate();
+        auto skillBar = std::make_unique<SkillBar>(_sourceBar);
+        skillBar->setSkill(skill);
+        skillBar->setParent(_base);
+        skillBar->deactivate();
 
         auto& suitableContainer = _skillBars[prof][color];
 
         size_t i = suitableContainer.size();
-        skillBar.setPosition(0.f, float(i) * 80.f);
+        skillBar->setPosition(0.f, float(i) * 80.f);
         suitableContainer.emplace_back(std::move(skillBar));
     }
 
@@ -98,7 +98,7 @@ namespace rat
             for(auto& colors : profs.second)
                 for(auto& skillBar : colors.second)
                 {
-                    skillBar.deactivate();
+                    skillBar->deactivate();
                 }
     }
     void SkillArea::setColor(const std::string& color)
@@ -118,14 +118,14 @@ namespace rat
     {
         for(auto& skillBar : _skillBars[profession][color])
         {
-            skillBar.deactivate();
+            skillBar->deactivate();
         }
     }
     void SkillArea::_active(const std::string& profession, const std::string& color)
     {
         for(auto& skillBar : _skillBars[profession][color])
         {
-            skillBar.activate();
+            skillBar->activate();
         }
     }
     
