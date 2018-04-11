@@ -6,30 +6,55 @@
  **/
 
 #include <vector>
+#include <string>
 
-#include <SFML/System/Vector2.hpp>
-
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/DragonBones/DragonBones.hpp"
-#include "ObjectType.hpp"
-#include "Map.hpp"
+//#include "Szczur/Modules/DragonBones/DragonBones.hpp"
+
+#include "Szczur/Modules/World/Componable.hpp"
+#include "BaseObject.hpp"
+#include "DisplayData/SpriteDisplayData.hpp" /*
+#include "DisplayData/SpriteStatesDisplayData.hpp"
+#include "DisplayData/ArmatureDisplayData.hpp"
+#include "DisplayData/ArmaturePosesDisplayData.hpp" */
+#include "Components/SpriteComponent.hpp" /*
+#include "Components/SpriteStatesComponent.hpp"
+#include "Components/ArmatureComponent.hpp"
+#include "Components/ArmaturePosesComponent.hpp" */
 
 namespace rat {
 
 /** @class World
  ** @description Manages objects in the game world through the maps system, including loading and saving, object types management and other.
  **/
-class World : public Module<Window, DragonBones>
+class World : public Module<Window/*, DragonBones*/>
 {
-    /* Variables */
+    /* Types */
+protected:
+	using ObjectsHolder_t = Componable::ObjectsHolder<
+		// Base type of object
+		BaseObject,
+		// All variants // @todo . budowanie z listy typów komponentów;
+		Componable::Object<BaseObject, SpriteComponent> /*,
+		Componable::Object<BaseObject, SpriteStatesComponent>,
+		Componable::Object<BaseObject, ArmatureComponent>,
+		Componable::Object<BaseObject, ArmaturePosesComponent> */
+	>;
+
+
+
+	/* Fields */
 public: // @warn priv&prop
-    std::vector<ObjectType*> types;
-	
-	std::vector<Map>	maps;
-	Map* 				currentMap = nullptr;
-	
-	Object*				playerObject = nullptr;
+    std::vector<SpriteDisplayData> 			spriteDisplayData; /*
+	std::vector<SpriteStatesDisplayData>	spriteStatesDisplayData;
+	std::vector<ArmatureDisplayData> 		armatureDisplayData;
+	std::vector<ArmaturePosesDisplayData> 	armaturePosesDisplayDatas; */
+
+	ObjectsHolder_t	objects;
+
+	std::string currentMap {""};
 
 
 
