@@ -81,7 +81,7 @@ SpriteDisplayData::SpriteDisplayData(const std::string& name)
 		std::throw_with_nested(std::runtime_error("Could not load sprite display data: `" + this->name + "`."));
 	}
 	
-	LOG_WARNING("{*", this, "\"", this->name, "} ", "Sprite display data loaded.");
+	LOG_INFO("{*", this, "\"", this->name, "} ", "Sprite display data loaded.");
 }
 
 }

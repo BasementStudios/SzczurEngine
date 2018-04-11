@@ -59,12 +59,12 @@ public:
 	SpriteDisplayData(const std::string& name);
 
 	// Disable coping
-	SpriteDisplayData(const SpriteDisplayData&) = delete;
-	SpriteDisplayData& operator = (const SpriteDisplayData&) = delete;
+	//SpriteDisplayData(const SpriteDisplayData&) = delete; // @warn ?
+	//SpriteDisplayData& operator = (const SpriteDisplayData&) = delete;
 
 	// Disable moving
-	SpriteDisplayData(SpriteDisplayData&&) = delete;
-	SpriteDisplayData& operator = (SpriteDisplayData&&) = delete;
+	//SpriteDisplayData(SpriteDisplayData&&) = delete;
+	//SpriteDisplayData& operator = (SpriteDisplayData&&) = delete;
 };
 
 }

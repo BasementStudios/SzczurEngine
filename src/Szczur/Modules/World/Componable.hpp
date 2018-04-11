@@ -59,7 +59,7 @@ template <typename TObject, typename TComponent, typename... TComponents>
 struct HasComponents
 	: std::integral_constant<std::size_t, 
 		std::conjunction<
-			std::is_base_of<TObject, TComponent>, 
+			std::is_base_of<TComponent,TObject>, 
 			HasComponents<TObject, TComponents...>
 		>::value
 	>
@@ -67,7 +67,7 @@ struct HasComponents
 
 template <typename TObject, typename TComponent>
 struct HasComponents<TObject, TComponent> 
-	: std::integral_constant<std::size_t, std::is_base_of<TObject, TComponent>::value>
+	: std::integral_constant<std::size_t, std::is_base_of<TComponent, TObject>::value>
 {};
 
 

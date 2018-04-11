@@ -25,7 +25,7 @@ public:
 
 
     /* Operators */
-protected:
+public:
 	BaseObject();
 	BaseObject(const std::string&  name);
 };

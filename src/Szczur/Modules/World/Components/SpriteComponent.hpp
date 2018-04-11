@@ -19,7 +19,8 @@ namespace rat
 {
 
 /** @class SpriteComponent
- ** @implements Component<BaseObject>
+ ** @implements sf3d::Drawable
+ ** @inheirts Component<BaseObject>
  ** @description Simplest, sprite component for displaying object.
  **/
 class SpriteComponent : public Componable::Component<BaseObject>, public sf3d::Drawable

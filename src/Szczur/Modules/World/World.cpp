@@ -31,20 +31,31 @@ World::~World()
 /// init
 void World::init()
 {
-	
+	// @info For testing purposes
+	{
+		using stoneObject_t = Object<BaseObject, SpriteComponent>; // @todo deduction WIP :f
+		
+		auto& stoneDisplayData = this->spriteDisplayData.emplace_back("Stone");
+
+		auto& stoneObject = this->objects.emplace<stoneObject_t>(BaseObject{"kamyk"}, SpriteComponent{&stoneDisplayData});
+
+		//stoneObject.setPosition(1.11f, 11.1f, 111.f);
+	}
 }
 
 /// update
 void World::update(float deltaTime)
 {
-	
+	;
 }
 
 /// render
 void World::render()
 {
-	this->objects.forEach<sf3d::Drawable>([](auto&& drawable) {
-		drawable.draw();
+	auto& target = getModule<Window>().getWindow();
+	
+	this->objects.forEach<sf3d::Drawable>([&target](auto&& drawable) {
+		target.draw(drawable);
 	});
 }
 
