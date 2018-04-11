@@ -62,7 +62,7 @@ namespace sf3d {
 		return _texture;
 	}
 
-	glm::uvec2 Texture::getSize() const {
+	const glm::uvec2& Texture::getSize() const {
 		return _size;
 	}
 }
