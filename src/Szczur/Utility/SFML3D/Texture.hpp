@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
@@ -11,6 +13,7 @@ namespace sf3d {
 		~Texture();
 
 		bool loadFromFile(const char* path);
+		bool loadFromFile(const std::string& path);
 
 		void bind() const;
 		void unbind() const;

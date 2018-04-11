@@ -40,6 +40,11 @@ namespace sf3d {
 		return false;
 	}
 
+	bool Texture::loadFromFile(const std::string& path)
+	{
+		return this->loadFromFile(path.c_str());
+	}
+
 	void Texture::bind() const {
 		if(_texture)
 			glBindTexture(GL_TEXTURE_2D, _texture);
