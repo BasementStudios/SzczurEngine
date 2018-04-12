@@ -13,7 +13,7 @@ class DialogEditor : public Module<>
 	friend NodeEditor;
 
 protected:
-	std::string _path = "dialogs/dialog_1";
+	std::string _projectPath = "dialogs/dialog_1";
 
 	std::vector<std::string> _characters = { "Mroczny", "Locha" };
 
