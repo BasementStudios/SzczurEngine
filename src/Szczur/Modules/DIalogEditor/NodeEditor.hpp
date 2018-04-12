@@ -52,6 +52,7 @@ public:
 	void load(const std::string& fileName, FileFormat loadFormat);
 
 	void createNew();
+	void reset();
 
 	void setTextContainer(DLGEditor::TextContainer_t* parts) { _parts = parts; }
 

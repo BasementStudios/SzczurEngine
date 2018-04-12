@@ -36,13 +36,7 @@ NodeEditor::~NodeEditor()
 
 void NodeEditor::createNew()
 {
-	ed::DestroyEditor(_context);
-
-	_context = ed::CreateEditor(nullptr);
-	ed::SetCurrentEditor(_context);
-
-	_currentOption = nullptr;
-	_nodeManager->reset();
+	reset();
 
 	auto start = _nodeManager->createNode("Start", Node::Start);
 	start->createPin(ed::PinKind::Output);
@@ -52,6 +46,17 @@ void NodeEditor::createNew()
 
 	ed::SetNodePosition(start->Id, ImVec2(100.f, 100.f));
 	ed::SetNodePosition(end->Id, ImVec2(300, 100.f));
+}
+
+void NodeEditor::reset()
+{
+	ed::DestroyEditor(_context);
+
+	_context = ed::CreateEditor(nullptr);
+	ed::SetCurrentEditor(_context);
+
+	_currentOption = nullptr;
+	_nodeManager->reset();
 }
 
 void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
@@ -119,7 +124,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 
 		if (file.good())
 		{
-			_nodeManager->reset();
+			reset();
 
 			json j;
 			j << file;
@@ -258,13 +263,13 @@ std::string NodeEditor::generateCode()
 	{
 		if (link->StartPinId == pinStartNode->Id)
 		{
-			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.ptr->id) + ")\n";
+			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.ptr->id) + ")";
 
 			optionsCode.push_back(code);
 		}
 	}
 
-	optionsCode.push_back("dialog:play()\n");
+	optionsCode.push_back("dialog:play()");
 
 	std::string finalCode;
 
@@ -334,7 +339,6 @@ void NodeEditor::update()
 						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
 
 						auto& ptr = output->OptionTarget.ptr;
-						//auto& dialog = part.second.begin()->second;
 
 						if (_parts)
 						{
