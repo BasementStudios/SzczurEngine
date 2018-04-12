@@ -12,6 +12,12 @@ namespace sf3d {
 
 		~Texture();
 
+		Texture(Texture&& other);
+		Texture& operator = (Texture&& other);
+
+		Texture(const Texture&) = delete;
+		Texture& operator = (const Texture&) = delete;
+
 		bool loadFromFile(const char* path);
 		bool loadFromFile(const std::string& path);
 
@@ -25,7 +31,7 @@ namespace sf3d {
 		const glm::uvec2& getSize() const;
 
 	private:
-		GLuint _texture{0u};
+		GLuint _textureID{0u};
 		glm::uvec2 _size{0.f, 0.f};
 
 	};
