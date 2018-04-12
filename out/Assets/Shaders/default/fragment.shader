@@ -10,13 +10,12 @@ uniform bool isTextured;
 
 void main() 
 {
-	if(isTextured) {
-		vec4 color = texture(ourTexture, texCoord);
-		if(color.a < 0.1) 
-			discard;
-		FragColor = color;
-	}
-	else
-		FragColor = vec4(ourColor, 1.0);
+    if(isTextured) {
+        vec4 color = texture(ourTexture, texCoord) * vec4(1.0, 1.0, 0.0, 1.0);
+        if(color.a < 0.1)
+            discard;
+        FragColor = color;
+    }
+    else
+        FragColor = vec4(ourColor, 1.0);
 }
-

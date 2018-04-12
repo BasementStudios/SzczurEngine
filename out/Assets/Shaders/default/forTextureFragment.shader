@@ -1,39 +1,29 @@
 #version 330 core
 
+uniform sampler2D texture;
+
+uniform vec3 colorMod = vec3(0.7, 0.7, 0.75);
+uniform float contrast = 0.5;
+uniform float brightness = 0.5;
+uniform float gamma = 0.5;
+
 out vec4 FragColor;
 
 in vec2 texCoord;
 
-uniform sampler2D ourTexture;
-
-const float offset = 1.0 / 300.0;
-
 void main() {
-	vec2 offsets[9] = vec2[](
-		vec2(-offset, offset), // top-left
-		vec2(0.0f, offset), // top-center
-		vec2(offset, offset), // top-right
-		vec2(-offset, 0.0f),   // center-left
-		vec2(0.0f, 0.0f),   // center-center
-		vec2(offset, 0.0f),   // center-right
-		vec2(-offset, -offset), // bottom-left
-		vec2(0.0f, -offset), // bottom-center
-		vec2(offset, -offset)  // bottom-right    
-		);
+    vec4 pixel = texture2D(texture, texCoord);
 
-	float kernel[9] = float[](
-		-1, -1, -1,
-		-1, 9, -1,
-		-1, -1, -1
-		);
+    pixel.rgb *= colorMod;
 
-	vec3 sampleTex[9];
-	for(int i = 0; i < 9; i++) {
-		sampleTex[i] = vec3(texture(ourTexture, texCoord.st + offsets[i]));
-	}
-	vec3 col = vec3(0.0);
-	for(int i = 0; i < 9; i++)
-		col += sampleTex[i] * kernel[i];
+    pixel.rgb = (pixel.rgb - 0.5) * tan((contrast + 1.0) * 0.785398163397448) + 0.5;
 
-	FragColor = vec4(col, 1.0);
+    if(brightness < 0.0)
+        pixel.rgb *= 1.0 + brightness;
+    else
+        pixel.rgb += (1.0 - pixel.rgb) * brightness;
+
+    pixel.rgb = pow(pixel.rgb, vec3(1.0 / gamma));
+
+    FragColor = pixel;
 }

@@ -73,7 +73,7 @@ void Window::setTitle(const std::string& title)
 /// Constructors
 Window::Window()
 	: window(
-		{1280, 800}, "Szczur3D", sf::Style::Default, sf::ContextSettings(), 
+		{1280, 800}, "Szczur3D", sf::Style::Default, sf::ContextSettings(24u, 0u, 0u, 3u, 3u),
 		"Assets/Shaders/default/vertex.shader", 
 		"Assets/Shaders/default/fragment.shader"
 	) // @warn usunąc to i używać init

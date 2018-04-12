@@ -13,7 +13,7 @@ uniform float positionFactor;
 
 void main() 
 {
-	gl_Position = projection * view * model * vec4(aPos*positionFactor, 1.0);
-	texCoord = aTexCoord;
-	ourColor = aColor;
+    gl_Position = projection * view * model * vec4(aPos*positionFactor, 1.0);
+    texCoord = aTexCoord;
+    ourColor = aColor;
 }

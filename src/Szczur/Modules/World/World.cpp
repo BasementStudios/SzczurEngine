@@ -8,6 +8,9 @@
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 
+#include "Szczur/Utility/SFML3D/Sprite.hpp"
+#include "Szczur/Utility/SFML3D/Texture.hpp"
+
 namespace rat
 {
 
@@ -39,7 +42,8 @@ void World::init()
 
 		auto& stoneObject = this->objects.emplace<stoneObject_t>(BaseObject{"kamyk"}, SpriteComponent{&stoneDisplayData});
 
-		//stoneObject.setPosition(1.11f, 11.1f, 111.f);
+		stoneObject.move({0.f, 0.f, -3333.f});
+		//stoneObject.setPosition({1.11f, 11.1f, 111.f});
 	}
 }
 
@@ -52,7 +56,10 @@ void World::update(float deltaTime)
 /// render
 void World::render()
 {
-	auto& target = getModule<Window>().getWindow();
+	auto& target = getModule<Window>().getWindow(); // @todo . by render arg
+	
+	glEnable(GL_DEPTH_TEST);
+    target.clear(37, 37, 48, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	this->objects.forEach<sf3d::Drawable>([&target](auto&& drawable) {
 		target.draw(drawable);
