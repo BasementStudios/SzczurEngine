@@ -183,6 +183,8 @@ std::string NodeEditor::generateCode()
 			///// Runners
 			std::string code;
 			
+			code += "-- " + node->Name + "\n\n";
+
 			if (firstOptions)
 			{
 				code += "local ";
