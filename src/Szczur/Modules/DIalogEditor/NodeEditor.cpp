@@ -204,7 +204,7 @@ std::string NodeEditor::generateCode()
 				{
 					auto pin = _nodeManager->findPin(link->StartPinId);
 
-					if (pin)
+					if (pin && pin->OptionTarget.ptr)
 					{
 						if (pin->OptionTarget.ptr->id < 1)
 							continue;
@@ -236,7 +236,7 @@ std::string NodeEditor::generateCode()
 				}
 			}
 
-			code += ")\n";
+			code += ")\n\n";
 
 			////// Options
 			for (auto& out : node->Outputs)
@@ -244,7 +244,8 @@ std::string NodeEditor::generateCode()
 				code += "options.add = {\n";
 
 				// target
-				code += "target = " + std::to_string(out->OptionTarget.ptr->id) + ";\n";
+				if (out->OptionTarget.ptr)
+					code += "\ttarget = " + std::to_string(out->OptionTarget.ptr->id) + ";\n";
 
 				// condition
 				if (out->_conditionFunc)
@@ -281,7 +282,7 @@ std::string NodeEditor::generateCode()
 
 						if (endPin && endPin->Node->Type == Node::End)
 						{
-							code += "finishing = true;\n";
+							code += "\tfinishing = true;\n";
 							break;
 						}
 					}
@@ -301,7 +302,7 @@ std::string NodeEditor::generateCode()
 	// start with
 	for (auto& link : _nodeManager->getLinks())
 	{
-		if (link->StartPinId == pinStartNode->Id)
+		if (pinStartNode->OptionTarget.ptr && link->StartPinId == pinStartNode->Id)
 		{
 			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.ptr->id) + ")";
 
@@ -392,7 +393,7 @@ void NodeEditor::update()
 				{
 					ImGui::SameLine();
 
-					if (ImGui::Button("Rename"))
+					if (ImGui::Button(("Rename##" + std::to_string(node->Id)).c_str()))
 					{
 						strcpy(_renameBuffer, node->Name.c_str());
 						renamePopup = true;
