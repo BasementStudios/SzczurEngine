@@ -170,6 +170,8 @@ std::string NodeEditor::generateCode()
 
 	std::vector<std::string> optionsCode;
 
+	bool firstOptions = true;
+
 	for (int i = 2; i < _nodeManager->getNodes().size(); i++)
 	{
 		auto& node = _nodeManager->getNodes()[i];
@@ -179,7 +181,15 @@ std::string NodeEditor::generateCode()
 			LOG_INFO("Generating ", node->Name.c_str(), "...");
 
 			///// Runners
-			std::string code = "options = dialog:newOption(";
+			std::string code;
+			
+			if (firstOptions)
+			{
+				code += "local ";
+				firstOptions = false;
+			}
+
+			code += "options = dialog:newOptions(";
 
 			auto& in = node->Inputs.front();
 			bool first = true;
