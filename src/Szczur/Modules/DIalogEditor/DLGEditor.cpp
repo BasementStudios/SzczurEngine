@@ -43,6 +43,29 @@ namespace rat
         playAudio();
     }
 
+    void DLGEditor::save()
+    {
+        std::ofstream dlg;
+        dlg.open(_dialogPath + ".dlg", std::ios::trunc);
+        if (dlg.is_open()) {
+            for(auto major : _parts) {
+                for (auto it : major.second) {
+                    dlg << "[" << it.second->id << "][" << it.second->minorId << "]";
+                    dlg << "[" << it.second->audioStartTime << "-" << it.second->audioEndTime << "]";
+                    dlg << "[" << (it.second->label.empty() ? "-" : it.second->label) << "]";
+                    dlg << "{\n\0";
+                        for (unsigned int i = 0; i < it.second->dialogLines; ++i) {
+                            dlg << "\t[" << it.second->dialogTime[i] << "]";
+                            dlg << "[" << _characters[it.second->chosenCharacter[i]] << "]";
+                            dlg << (it.second->dialogs[i].empty() ? "_" : it.second->dialogs[i]) << "\n\0";
+                        } 
+                    dlg << "}\n\0\n\0";
+                }
+            }
+        }
+        dlg.close();
+    }
+
     DLGEditor::TextContainer_t& DLGEditor::getContainer()
     {
         return _parts;
@@ -56,8 +79,7 @@ namespace rat
             minorPartSelector();   ImGui::Separator();
             labelEditor();         ImGui::Separator();
             timeSelector();        ImGui::Separator();
-            mainEditor();          ImGui::Separator();
-            saveAndReloadButton();
+            mainEditor();
         ImGui::End();
     }
 
@@ -323,35 +345,6 @@ namespace rat
             _parts[_currentMajor][_currentMinor]->dialogs.push_back("");
             _parts[_currentMajor][_currentMinor]->dialogTime.push_back(dialogTime);
             _parts[_currentMajor][_currentMinor]->chosenCharacter.push_back(0);
-        }
-    }
-
-    void DLGEditor::saveAndReloadButton()
-    {
-        if (ImGui::Button("SAVE##DlgSaveButton", ImVec2(ImGui::GetWindowWidth() / 2 - 14, 50))) {
-            std::ofstream dlg;
-            dlg.open(_dialogPath + ".dlg", std::ios::trunc);
-            if (dlg.is_open()) {
-                for(auto major : _parts) {
-                    for (auto it : major.second) {
-                        dlg << "[" << it.second->id << "][" << it.second->minorId << "]";
-                        dlg << "[" << it.second->audioStartTime << "-" << it.second->audioEndTime << "]";
-                        dlg << "[" << (it.second->label.empty() ? "-" : it.second->label) << "]";
-                        dlg << "{\n\0";
-                            for (unsigned int i = 0; i < it.second->dialogLines; ++i) {
-                                dlg << "\t[" << it.second->dialogTime[i] << "]";
-                                dlg << "[" << _characters[it.second->chosenCharacter[i]] << "]";
-                                dlg << (it.second->dialogs[i].empty() ? "_" : it.second->dialogs[i]) << "\n\0";
-                            } 
-                        dlg << "}\n\0\n\0";
-                    }
-                }
-            }
-            dlg.close();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("RELOAD##DlgReloadButton", ImVec2(ImGui::GetWindowWidth() / 2 - 14, 50))) {
-            loadData();
         }
     }
  

@@ -51,6 +51,9 @@ namespace rat
 
         void update();
 
+        void loadData();
+        void save();
+
         TextContainer_t& getContainer();
 
 		void setCurrentMajor(int major) { _currentMajor = major; _currentMinor = _parts[_currentMajor].begin()->first; }
@@ -60,7 +63,6 @@ namespace rat
         void playAudio();
         void show();
 
-        void loadData();
 
         void player();
         void majorPartSelector();
@@ -68,7 +70,6 @@ namespace rat
         void timeSelector();
         void labelEditor();
         void mainEditor();
-        void saveAndReloadButton();
 
         std::string toTime(int secI);
         int toIntSeconds(const std::string& timeString);
