@@ -38,6 +38,8 @@ private:
 
 	DLGEditor::TextContainer_t* _parts;
 
+	char _renameBuffer[256];
+
 public:
 	NodeEditor(DialogEditor* dialogEditor);
 	~NodeEditor();

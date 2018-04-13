@@ -283,6 +283,8 @@ std::string NodeEditor::generateCode()
 
 void NodeEditor::update()
 {
+	bool renamePopup = false;
+
 	ed::Begin("Node Editor");
 	{
 		auto cursorTopLeft = ImGui::GetCursorScreenPos();
@@ -293,6 +295,17 @@ void NodeEditor::update()
 			ed::BeginNode(node->Id);
 			{
 				ImGui::Text(node->Name.c_str());
+				if (node->Type == Node::Options)
+				{
+					ImGui::SameLine();
+
+					if (ImGui::Button("Rename"))
+					{
+						strcpy(_renameBuffer, node->Name.c_str());
+						renamePopup = true;
+						_contextId = node->Id;
+					}
+				}
 
 				ImGui::BeginGroup();
 
@@ -372,7 +385,7 @@ void NodeEditor::update()
 					ImGui::SameLine();
 
 					if (output->LinkToSameNode)
-						drawIcon(_nodeManager->isPinLinked(output->Id), ImColor(239, 83, 80));
+						drawIcon(_nodeManager->isPinLinked(output->Id), ImColor(33, 150, 243));
 					else
 						drawIcon(_nodeManager->isPinLinked(output->Id));
 
@@ -532,6 +545,12 @@ void NodeEditor::update()
 		}
 	}
 
+	if (renamePopup)
+	{
+		renamePopup = false;
+		ImGui::OpenPopup("Rename Node Popup");
+	}
+
 	showPopups();
 	showOptionConfig();
 }
@@ -542,11 +561,14 @@ void NodeEditor::showPopups()
 	{
 		if (ImGui::MenuItem("Create options"))
 		{
-			ImGui::EndPopup();
-			ImGui::OpenPopup("Create Node Popup");
+			auto node = _nodeManager->createNode("Options ");
+			node->Name += std::to_string(node->Id);
+			node->createPin(ed::PinKind::Input);
+
+			ed::SetNodePosition(node->Id, ed::ScreenToCanvas(ImGui::GetMousePos()));
 		}
-		else
-			ImGui::EndPopup();
+		
+		ImGui::EndPopup();
 	}
 
 	if (ImGui::BeginPopup("Node Context Menu"))
@@ -619,23 +641,21 @@ void NodeEditor::showPopups()
 		ImGui::EndPopup();
 	}
 
-	if (ImGui::BeginPopupModal("Create Node Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Rename Node Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		auto newNodePostion = ed::ScreenToCanvas(ImGui::GetMousePosOnOpeningCurrentPopup());
+		if (_contextId < 1)
+			ImGui::CloseCurrentPopup();
 
-		ImGui::Text("Create new node");
+		ImGui::Text("Rename node");
 		ImGui::Separator();
 
-		static char buffer[256];
-
-		ImGui::InputText("Node name", buffer, 256);
+		ImGui::InputText("Node name", _renameBuffer, 256);
 
 		if (ImGui::Button("OK", ImVec2(120, 0))) 
 		{
-			auto node = _nodeManager->createNode(buffer);
-			node->createPin(ed::PinKind::Input);
+			auto node = _nodeManager->findNode(_contextId);
 
-			ed::SetNodePosition(node->Id, newNodePostion);
+			node->Name = _renameBuffer;
 
 			ImGui::CloseCurrentPopup(); 
 		}
