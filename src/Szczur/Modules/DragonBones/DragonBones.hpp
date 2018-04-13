@@ -27,7 +27,7 @@ public:
 	/* Fields */
 private:
 	// @info Factory use statics inside.
-	Factory_t factory;
+	Factory_t factory; // @todo ...
 
 
 

@@ -6,7 +6,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/World/World.hpp"
-//#include "Szczur/Modules/DragonBones/DragonBones.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat
 {
@@ -48,7 +48,7 @@ public:
 private:
 
 	Clock _mainClock;
-	ModulesHolder<Window, Input, /*DragonBones,*/ World> _modules;
+	ModulesHolder<Window, Input, DragonBones, World> _modules;
 
 };
 

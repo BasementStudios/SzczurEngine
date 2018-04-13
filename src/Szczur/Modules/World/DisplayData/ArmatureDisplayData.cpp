@@ -1,9 +1,9 @@
-#include "ArmatureObjectType.hpp"
+#include "ArmatureDisplayData.hpp"
 
-/** @file ArmatureObjectType.hpp
- ** @description Implementation file with Armature Object Type class as shared game armature object type information.
- ** @author Piotr (H4RRY) <piotrkrupa06@gmail.com>
+/** @file ArmatureDisplayData.cpp
+ ** @description Implementaion with armature display data class as shared game armature display data.
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ ** @author Tomasz (Knayder) Jatkowski
  **/
 
 #include <string>
@@ -12,79 +12,42 @@
 #include <array>
 #include <vector>
 #include <fstream>
-#include <filesystem>
 
 #include <dragonBones/SFMLArmatureDisplay.h>
 #include <dragonBones/model/DragonBonesData.h>
 #include <SFML/Graphics/Texture.hpp>
 #include <dragonBones/model/TextureAtlasData.h>
 #include "json.hpp"
+using json = nlohmann::json;
 
+#include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/Logger.hpp"
-#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat
 {
 
-/* Local inline function */
-namespace local {
-
-inline std::string stringReplaced(const std::string& in, const std::string& from, const std::string& to)
+/* Properties */
+/// Factory
+DragonBones::Factory_t& DragonBones::getFactory()
 {
-	std::string string = in;
-	
-	for (
-		std::size_t i = string.find(from); 
-		i != std::string::npos; 
-		i = string.find(from, i)
-	) {
-		string.replace(i, from.length(), to);
-	}
-
-	return string;
+	return this->factory;
 }
-
-}
-
-
-
-/* Properties */ 
-const std::string& ArmatureObjectType::getPoseString(ArmatureObjectType::PoseID_t poseID) const
+const DragonBones::Factory_t& DragonBones::getFactory() const
 {
-	const auto& names = this->getPosesNames();
-	if (names.size() > poseID) {
-		return names[poseID];
-	}
-	LOG_WARNING("{*", this, "\"", this->name, "} ", "Pose of ID `", poseID, "` was not found; using default.");
-	return names[ArmatureObjectType::defaultPoseID];
-}
-ArmatureObjectType::PoseID_t ArmatureObjectType::getPoseID(const std::string& poseString) const
-{
-	const auto& names = this->getPosesNames();
-	for (std::vector<std::string>::size_type i = 0, I = names.size(); i < I; i++) {
-        if (names[i] == poseString) {
-            return i;
-        }
-    }
-    LOG_WARNING("{*", this, "\"", this->name, "} ", "Pose of ID for name `", poseString, "` was not found; using default.");
-	return ArmatureObjectType::defaultPoseID;
-}
-
-const std::vector<std::string>& ArmatureObjectType::getPosesNames() const
-{
-	return this->skeletonData->armatureNames;
+	return this->factory;
 }
 
 
 
 /* Operators */
-/// Constructor
-ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonBones::Factory_t& factory)
-	: factory(factory)
+/// Constructor 
+ArmatureDisplayData::ArmatureDisplayData(const std::string& name, DragonBones::Factory_t& factory)
+:
+	factory(factory)
 {
-	this->name = typeName;
-	LOG_INFO("{*", this, "\"", this->name, "} ", "Loading `", typeName, "` armature object type.");
-	
+	this->name = name;
+	LOG_INFO("{*", this, "\"", this->name, "} ", "Loading `", this->name, "` armature display data.");
+
 	try {
 		// Load skeleton data
 		try {
@@ -166,36 +129,12 @@ ArmatureObjectType::ArmatureObjectType(const std::string& typeName, rat::DragonB
 		}
 	}
 	catch (...) {
-		std::throw_with_nested(std::runtime_error("Could not load armature object type: `" + this->name + "`."));
+		std::throw_with_nested(std::runtime_error("Could not load armature display data: `" + this->name + "`."));
 	}
 	
 	// @todo , togglable states? (grouped textures and visibility switching)?
 	
-	LOG_INFO("{*", this, "\"", this->name, "} ", "Loaded " + std::to_string(this->getPosesNames().size()) + " armature poses and " + std::to_string(this->textures.size()) + " textures with atlases.");
-}
-
-ArmatureObjectType::~ArmatureObjectType()
-{
-	this->factory.removeDragonBonesData(this->skeletonData->name);
-	for (auto& atlasData : this->atlasesData) {
-		this->factory.removeTextureAtlasData(atlasData->name);
-	}
-}
-
-
-
-/* Methods */
-/// createPose
-ArmatureObjectType::PosesContainer_t<ArmatureObjectType::Pose_t*> ArmatureObjectType::createPoses() const
-{
-	ArmatureObjectType::PosesContainer_t<ArmatureObjectType::Pose_t*> poses;
-	poses.reserve(this->getPosesNames().size());
-	
-	for (const auto& name : this->getPosesNames()) {
-		poses.push_back(this->factory.buildArmatureDisplay(name));
-	}
-	
-	return poses;
+	LOG_INFO("{*", this, "\"", this->name, "} ", "Loaded armature display data with " + std::to_string(this->textures.size()) + " textures and atlases.");
 }
 
 }
