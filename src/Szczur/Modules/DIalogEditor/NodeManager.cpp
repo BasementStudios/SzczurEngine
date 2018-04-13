@@ -122,6 +122,24 @@ bool NodeManager::read(const json& j)
 		pin->Id = j["id"];
 		pin->OptionTarget.id = j["optionTarget"];
 		pin->LinkToSameNode = j["linkToSameNode"];
+
+		if (j.find("condition") != j.end())
+		{
+			auto& condition = j["condition"];
+
+			pin->_conditionFunc = true;
+			pin->_conditionFuncName = condition["name"].get<std::string>();
+			pin->_conditionFuncCode = condition["code"].get<std::string>();
+		}
+
+		if (j.find("action") != j.end())
+		{
+			auto& action = j["action"];
+
+			pin->_actionFunc = true;
+			pin->_actionFuncName = action["name"].get<std::string>();
+			pin->_actionFuncCode = action["code"].get<std::string>();
+		}
 	};
 
 
@@ -208,6 +226,22 @@ void NodeManager::write(json& j)
 		j["id"] = pin->Id;
 		j["optionTarget"] = pin->OptionTarget.ptr ? pin->OptionTarget.ptr->id : 0;
 		j["linkToSameNode"] = pin->LinkToSameNode;
+
+		if (pin->_conditionFunc)
+		{
+			j["condition"] = {
+				{ "name", pin->_conditionFuncName },
+				{ "code", pin->_conditionFuncCode }
+			};
+		}
+
+		if (pin->_actionFunc)
+		{
+			j["action"] = {
+				{ "name", pin->_actionFuncName },
+				{ "code", pin->_actionFuncCode }
+			};
+		}
 	};
 
 	j["lastId"] = _lastId;

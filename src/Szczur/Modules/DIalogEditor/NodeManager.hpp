@@ -32,6 +32,14 @@ struct NodePin
 
 	bool LinkToSameNode = false;
 
+	bool _conditionFunc = false;
+	std::string _conditionFuncName;
+	std::string _conditionFuncCode;
+
+	bool _actionFunc = false;
+	std::string _actionFuncName;
+	std::string _actionFuncCode;
+
 	NodePin() { }
 	NodePin(int id, ed::PinKind kind) :
 		Id(id), Kind(kind) { }

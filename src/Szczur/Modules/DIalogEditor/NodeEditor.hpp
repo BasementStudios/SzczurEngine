@@ -61,6 +61,7 @@ public:
 private:
 	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
+	void backupLuaFunctions();
 };
 
 }

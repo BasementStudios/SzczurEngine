@@ -164,6 +164,8 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 
 std::string NodeEditor::generateCode()
 {
+	backupLuaFunctions();
+
 	LOG_INFO("Generating code...");
 
 	std::vector<std::string> optionsCode;
@@ -232,6 +234,32 @@ std::string NodeEditor::generateCode()
 				// target
 				code += "target = " + std::to_string(out->OptionTarget.ptr->id) + ";\n";
 
+				// condition
+				if (out->_conditionFunc)
+				{
+					code += "\n\t--b:c(" + std::to_string(out->Id) + "): " + out->_conditionFuncName + "\n";
+
+					if (out->_conditionFuncCode.empty())
+						code += "\tcondition = function()\n\n\t\tend;\n";
+					else
+						code += out->_conditionFuncCode;
+
+					code += "\t--e:c(" + std::to_string(out->Id) + ")\n\n";
+				}
+
+				// action
+				if (out->_actionFunc)
+				{
+					code += "\n\t--b:a(" + std::to_string(out->Id) + "): " + out->_actionFuncName + "\n";
+					
+					if (out->_actionFuncCode.empty())
+						code += "\taction = function()\n\n\t\tend;\n";
+					else
+						code += out->_actionFuncCode;
+
+					code += "\t--e:a(" + std::to_string(out->Id) + ")\n\n";
+				}
+
 				// finishing
 				for (auto& link : _nodeManager->getLinks())
 				{
@@ -279,6 +307,59 @@ std::string NodeEditor::generateCode()
 	}
 
 	return finalCode;
+}
+
+void NodeEditor::backupLuaFunctions()
+{
+	LOG_INFO("Backuping lua functions...");
+
+	std::ifstream file(_dialogEditor->_projectPath + "/dialog.lua");
+	std::string code((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	file.close();
+
+	int lastIndex = 0;
+
+	for (auto& node : _nodeManager->getNodes())
+	{
+		for (auto& out : node->Outputs)
+		{
+			// condition
+			if (out->_conditionFunc)
+			{
+				int start = code.find("--b:c(" + std::to_string(out->Id) + "):", lastIndex);
+
+				if (start > 0)
+				{
+					int codeStart = code.find("\n", start) + 1; // +1 - remove new line
+					int end = code.find("--e:c(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
+
+					std::string func = code.substr(codeStart, end - codeStart);
+					//LOG_INFO("(", start, ", ", end, "): Condition:\n", func);
+					out->_conditionFuncCode = func;
+
+					lastIndex = start;
+				}
+			}
+
+			// action
+			if (out->_actionFunc)
+			{
+				int start = code.find("--b:a(" + std::to_string(out->Id) + "):", lastIndex);
+
+				if (start > 0)
+				{
+					int codeStart = code.find("\n", start) + 1; // +1 - remove new line
+					int end = code.find("--e:a(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
+
+					std::string func = code.substr(codeStart, end - codeStart);
+					//LOG_INFO("(", start, ", ", end, "): Action:\n", func);
+					out->_actionFuncCode = func;
+
+					lastIndex = start;
+				}
+			}
+		}
+	}
 }
 
 void NodeEditor::update()
@@ -725,6 +806,41 @@ void NodeEditor::showOptionConfig()
 							ImGui::SetItemDefaultFocus();
 					}
 					ImGui::EndCombo();
+				}
+
+				if (_currentOption->Node->Type == Node::Options)
+				{
+					ImGui::Separator();
+
+					ImGui::Checkbox("Condition", &_currentOption->_conditionFunc);
+
+					if (_currentOption->_conditionFunc)
+					{
+						char buffer[128];
+
+						strcpy(buffer, _currentOption->_conditionFuncName.c_str());
+
+						if (ImGui::InputText("Condition name", buffer, 128))
+						{
+							_currentOption->_conditionFuncName = buffer;
+						}
+
+						ImGui::Separator();
+					}
+
+					ImGui::Checkbox("Action", &_currentOption->_actionFunc);
+
+					if (_currentOption->_actionFunc)
+					{
+						char buffer[128];
+
+						strcpy(buffer, _currentOption->_actionFuncName.c_str());
+
+						if (ImGui::InputText("Action name", buffer, 128))
+						{
+							_currentOption->_actionFuncName = buffer;
+						}
+					}
 				}
 			}
 		}
