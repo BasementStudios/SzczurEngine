@@ -40,6 +40,15 @@ void DialogEditor::update()
 
 		}
 
+		if (ImGui::Button("Show in explorer"))
+		{
+#ifdef OS_WINDOWS
+			auto path = std::experimental::filesystem::current_path().string() + "\\" + _projectPath;
+
+			ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+#endif
+		}
+
 		ImGui::Separator();
 
 		if (ImGui::Button("Create new project"))
@@ -80,7 +89,7 @@ void DialogEditor::update()
 			LOG_INFO("Generating lua...");
 
 			if (!_projectPath.empty())
-				_nodeEditor.save(_projectPath, NodeEditor::FileFormat::Lua);
+				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
 		}
 
 		ImGui::Separator();
