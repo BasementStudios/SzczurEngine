@@ -42,7 +42,6 @@ namespace rat {
 
     DialogManager* Dialog::load(const std::string& path) {
         _dialogManager = new DialogManager(path, _dialogGUI);
-        _dialogGUI.show();
         return _dialogManager;
     }
 

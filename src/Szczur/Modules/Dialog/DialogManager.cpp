@@ -101,6 +101,7 @@ namespace rat {
         _textManager.set(id);
         _changeStruct(_textManager.getStruct());
         _clearButtons = true;
+        _dialogGUI.show();
     }
 
 
