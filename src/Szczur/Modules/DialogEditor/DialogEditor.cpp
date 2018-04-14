@@ -122,9 +122,6 @@ void DialogEditor::update()
 		ImGui::Separator();
 
 		ImGui::Checkbox("Characters Manager", &showCharactersManager);
-
-		ImGui::Separator();
-
 		ImGui::Checkbox("Dlg Editor", &showDlgEditor);
 		ImGui::Checkbox("Node Editor", &showNodeEditor);
 	}

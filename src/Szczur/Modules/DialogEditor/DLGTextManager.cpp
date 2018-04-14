@@ -31,20 +31,46 @@ namespace rat
         std::ifstream file(path);
         std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         file.close();
-        std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
-        for(auto it = std::sregex_iterator(str.begin(), str.end(), word_regex); it!=std::sregex_iterator(); ++it) {
-            DialogData* obj = new DialogData {
-                static_cast<unsigned>(std::stoi(it->str(1u))),
-                static_cast<unsigned>(std::stoi(it->str(2u))),
-                it->str(3u) + ":" + it->str(4u),
-                it->str(5u) + ":" + it->str(6u),
-                (it->str(7u) == "-" ? "" : it->str(7u))
-            };
 
-            obj->interpretText(it->str(8u), _characters);
-            
-            add(obj->id, obj->minorId, obj);
+        if(str.empty()) {
+            /*std::ofstream dlg;
+            dlg.open(path);
+            if (dlg.is_open()) {
+                dlg << "[0][0][00:00-00:00][-]{\n\0" << "\t[00:00][_]_\n\0" << "}\n\0";
+            }
+            dlg.close();*/
+
+            DialogData* obj = new DialogData {
+                0,
+                0,
+                "00:00",
+                "00:00",
+                "",
+                {""},
+                {"00:00"},
+                {0},
+                1
+            };
+                
+            add(0, 0, obj);
         }
+        else {
+            std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
+            for(auto it = std::sregex_iterator(str.begin(), str.end(), word_regex); it!=std::sregex_iterator(); ++it) {
+                DialogData* obj = new DialogData {
+                    static_cast<unsigned>(std::stoi(it->str(1u))),
+                    static_cast<unsigned>(std::stoi(it->str(2u))),
+                    it->str(3u) + ":" + it->str(4u),
+                    it->str(5u) + ":" + it->str(6u),
+                    (it->str(7u) == "-" ? "" : it->str(7u))
+                };
+
+                obj->interpretText(it->str(8u), _characters);
+                
+                add(obj->id, obj->minorId, obj);
+            }
+        }
+
     }
 
     void DLGTextManager::add(const size_t key1, const size_t key2, DialogData* dialog) 
