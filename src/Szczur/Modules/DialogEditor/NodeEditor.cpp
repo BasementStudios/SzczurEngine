@@ -330,7 +330,7 @@ void NodeEditor::backupLuaFunctions()
 	std::string code((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 	file.close();
 
-	int lastIndex = 0;
+	size_t lastIndex = 0;
 
 	for (auto& node : _nodeManager->getNodes())
 	{
@@ -339,12 +339,12 @@ void NodeEditor::backupLuaFunctions()
 			// condition
 			if (out->ConditionFunc)
 			{
-				int start = code.find("--b:c(" + std::to_string(out->Id) + "):", lastIndex);
+				size_t start = code.find("--b:c(" + std::to_string(out->Id) + "):", lastIndex);
 
 				if (start > 0)
 				{
-					int codeStart = code.find("\n", start) + 1; // +1 - remove new line
-					int end = code.find("--e:c(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
+					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
+					size_t end = code.find("--e:c(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
 
 					std::string func = code.substr(codeStart, end - codeStart);
 					//LOG_INFO("(", start, ", ", end, "): Condition:\n", func);
@@ -357,12 +357,12 @@ void NodeEditor::backupLuaFunctions()
 			// action
 			if (out->ActionFunc)
 			{
-				int start = code.find("--b:a(" + std::to_string(out->Id) + "):", lastIndex);
+				size_t start = code.find("--b:a(" + std::to_string(out->Id) + "):", lastIndex);
 
 				if (start > 0)
 				{
-					int codeStart = code.find("\n", start) + 1; // +1 - remove new line
-					int end = code.find("--e:a(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
+					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
+					size_t end = code.find("--e:a(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
 
 					std::string func = code.substr(codeStart, end - codeStart);
 					//LOG_INFO("(", start, ", ", end, "): Action:\n", func);
