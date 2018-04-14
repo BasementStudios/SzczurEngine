@@ -16,7 +16,9 @@ class DialogEditor : public Module<Script, Dialog>
 	friend NodeEditor;
 
 protected:
-	std::string _projectPath = "dialogs/dialog_1";  // relative path to dialog files
+	std::string _projectPath;  // relative path to dialog files
+
+	bool _projectLoaded = false;
 
 	std::vector<std::string>& _charactersNames;
 	std::vector<std::string>& _charactersImagePaths;

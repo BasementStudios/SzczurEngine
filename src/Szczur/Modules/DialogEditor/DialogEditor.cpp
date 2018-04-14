@@ -13,9 +13,6 @@ DialogEditor::DialogEditor()
 	  _dlgEditor(_charactersNames), _nodeEditor(this)
 {
 	LOG_INFO("Initializing DialogEditor module");
-
-	_dlgEditor.load(_projectPath);
-
 	LOG_INFO("Module DialogEditor initialized");
 }
 
@@ -26,43 +23,55 @@ DialogEditor::~DialogEditor()
 
 void DialogEditor::update()
 {
-	if (showCharactersManager)
-		_CharactersManager.update();
+	if (_projectLoaded)
+	{
+		if (showCharactersManager)
+			_CharactersManager.update();
 
-	if (showDlgEditor)
-		_dlgEditor.update();
+		if (showDlgEditor)
+			_dlgEditor.update();
 
-	if (showNodeEditor)
-		_nodeEditor.update();
+		if (showNodeEditor)
+			_nodeEditor.update();
+	}
 
 	if (ImGui::Begin("Dialog Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Path: %s", _projectPath.c_str());
-
-		ImGui::Separator();
-
-		if (ImGui::Button("Test dialog"))
+		if (_projectLoaded)
 		{
-			getModule<Script>().scriptFile(_projectPath + "/dialog.lua");
-		}
 
-		ImGui::SameLine();
+			ImGui::Text("Path: %s", _projectPath.c_str());
 
-		if (ImGui::Button("Stop dialog"))
-		{
-			getModule<Dialog>().unload();
-		}
+			ImGui::Separator();
 
-		if (ImGui::Button("Show in explorer"))
-		{
+			if (ImGui::Button("Test dialog"))
+			{
+				getModule<Script>().scriptFile(_projectPath + "/dialog.lua");
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Stop dialog"))
+			{
+				getModule<Dialog>().unload();
+			}
+
+			if (ImGui::Button("Show in explorer"))
+			{
 #ifdef OS_WINDOWS
-			auto path = std::experimental::filesystem::current_path().string() + "\\" + _projectPath;
+				auto path = std::experimental::filesystem::current_path().string() + "\\" + _projectPath;
 
-			ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+				ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 #endif
-		}
+			}
 
-		ImGui::Separator();
+			ImGui::Separator();
+		}
+		else
+		{
+			ImGui::Text("First create or load project");
+			ImGui::Separator();
+		}
 
 		if (ImGui::Button("Create new project"))
 		{
@@ -71,9 +80,14 @@ void DialogEditor::update()
 			if (!directory.empty())
 			{
 				_projectPath = fixPathSlashes(makePathRelative(directory));
+
+				_dlgEditor.load(_projectPath);
+				_nodeEditor.createNew();
+
+				_projectLoaded = true;
 			}
 		}
-		
+
 		if (ImGui::Button("Open project..."))
 		{
 			auto currentPath = std::experimental::filesystem::current_path().string();
@@ -101,6 +115,8 @@ void DialogEditor::update()
 					_dlgEditor.load(_projectPath);
 					_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
 					_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
+
+					_projectLoaded = true;
 				}
 				else
 				{
@@ -108,29 +124,32 @@ void DialogEditor::update()
 				}
 			}
 		}
-		
-		if (ImGui::Button("Save"))
+
+		if (_projectLoaded)
 		{
-			if (!_projectPath.empty())
+			if (ImGui::Button("Save"))
 			{
-				_dlgEditor.save();
-				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+				if (!_projectPath.empty())
+				{
+					_dlgEditor.save();
+					_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+				}
 			}
+
+			if (ImGui::Button("Generate"))
+			{
+				LOG_INFO("Generating lua...");
+
+				if (!_projectPath.empty())
+					_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
+			}
+
+			ImGui::Separator();
+
+			ImGui::Checkbox("Characters Manager", &showCharactersManager);
+			ImGui::Checkbox("Dlg Editor", &showDlgEditor);
+			ImGui::Checkbox("Node Editor", &showNodeEditor);
 		}
-
-		if (ImGui::Button("Generate"))
-		{
-			LOG_INFO("Generating lua...");
-
-			if (!_projectPath.empty())
-				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
-		}
-
-		ImGui::Separator();
-
-		ImGui::Checkbox("Characters Manager", &showCharactersManager);
-		ImGui::Checkbox("Dlg Editor", &showDlgEditor);
-		ImGui::Checkbox("Node Editor", &showNodeEditor);
 	}
 	ImGui::End();
 }
