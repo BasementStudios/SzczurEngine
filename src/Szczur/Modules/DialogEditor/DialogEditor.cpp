@@ -11,14 +11,16 @@ namespace rat
 DialogEditor::DialogEditor()
 	: _dlgEditor(_characters), _nodeEditor(this)
 {
+	LOG_INFO("Initializing DialogEditor module");
+
 	_dlgEditor.load(_projectPath);
 
-	LOG_INFO(this, " : Module DialogEditor constructed");
+	LOG_INFO("Module DialogEditor initialized");
 }
 
 DialogEditor::~DialogEditor()
 {
-	LOG_INFO(this, " : Module DialogEditor destructed");
+	LOG_INFO("Module DialogEditor destructed");
 }
 
 void DialogEditor::update()
