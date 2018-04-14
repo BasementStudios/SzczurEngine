@@ -55,16 +55,42 @@ void DialogEditor::update()
 
 		if (ImGui::Button("Create new project"))
 		{
-			_nodeEditor.createNew();
+			auto directory = DirectoryDialog::getExistingDirectory("Select project directory", std::experimental::filesystem::current_path().string());
+
+			if (!directory.empty())
+			{
+				_projectPath = directory;
+			}
 		}
 		
 		if (ImGui::Button("Open project..."))
 		{
-			auto directory = DirectoryDialog::getExistingDirectory("Select project folder", std::experimental::filesystem::current_path().string());
+			auto directory = DirectoryDialog::getExistingDirectory("Select project directory", std::experimental::filesystem::current_path().string());
 
 			if (!directory.empty())
 			{
-				LOG_INFO("Wizard is opening your directory (*magic happening*)");
+				LOG_INFO("Opening ", directory, "...");
+
+				bool error = false;
+
+				if (!std::experimental::filesystem::exists(directory + "/dialog.dlg"))
+					error = true;
+
+				if (!std::experimental::filesystem::exists(directory + "/dialog.json"))
+					error = true;
+
+				if (error == false)
+				{
+					_projectPath = directory;
+
+					_dlgEditor.load(_projectPath);
+					_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
+					_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
+				}
+				else
+				{
+					LOG_INFO("Missing files!");
+				}
 			}
 		}
 		
@@ -72,17 +98,8 @@ void DialogEditor::update()
 		{
 			if (!_projectPath.empty())
 			{
-				LOG_INFO("Wizard is saving project (*magic happening*)");
-			}
-		}
-
-		if (ImGui::Button("Save as..."))
-		{
-			auto directory = DirectoryDialog::getExistingDirectory("Select project folder", std::experimental::filesystem::current_path().string() + _projectPath);
-
-			if (!directory.empty())
-			{
-				LOG_INFO("Wizard is saving project (*magic happening*)");
+				_dlgEditor.save();
+				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
 			}
 		}
 
@@ -97,22 +114,7 @@ void DialogEditor::update()
 		ImGui::Separator();
 
 		ImGui::Checkbox("Dlg Editor", &showDlgEditor);
-		if (ImGui::Button("Reload"))
-		{
-
-		}
-
-		ImGui::Separator();
-
 		ImGui::Checkbox("Node Editor", &showNodeEditor);
-		if (ImGui::Button("Reset"))
-		{
-			_nodeEditor.createNew();
-		}
-
-		if (ImGui::Button("Reset camera"))
-		{
-		}
 	}
 	ImGui::End();
 }
