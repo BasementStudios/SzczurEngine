@@ -16,11 +16,9 @@ namespace sf3d {
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*size, nullptr, storageUsage);
 
-		glBufferSubData(GL_ARRAY_BUFFER, 0 * sizeof(Vertex), sizeof(Vertex), &defaultVert);
+		for(int i = 0; i<size; i++)
+			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
 
-		glBufferSubData(GL_ARRAY_BUFFER, 1 * sizeof(Vertex), sizeof(Vertex), &defaultVert);
-
-		glBufferSubData(GL_ARRAY_BUFFER, 2 * sizeof(Vertex), sizeof(Vertex), &defaultVert);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 							  sizeof(Vertex),
@@ -49,6 +47,34 @@ namespace sf3d {
 	VertexArray::~VertexArray() {
 		glDeleteBuffers(1, &_VBO);
 		glDeleteVertexArrays(1, &_VAO);
+	}
+
+	void VertexArray::resize(size_t size) {
+		glBindVertexArray(_VAO);
+		GLuint temp;
+		glGenBuffers(1, &temp);
+		glBindBuffer(GL_ARRAY_BUFFER, temp);
+		glBufferData(GL_ARRAY_BUFFER, _size * sizeof(Vertex), nullptr, _storageUsage);
+
+		glBindBuffer(GL_COPY_READ_BUFFER, _VBO);
+		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, _size * sizeof(Vertex));
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+		glBindBuffer(GL_COPY_READ_BUFFER, temp);
+		glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vertex), nullptr, _storageUsage);
+
+		Vertex defaultVert{{0.f, 0.f, 0.f},{1.f, 1.f, 1.f},{0.f, 0.f}};
+		for(int i = 0; i < size; i++)
+			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
+		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, _size * sizeof(Vertex));
+
+		_size = size;
+
+		glBindBuffer(GL_ARRAY_BUFFER, NULL);
+		glBindBuffer(GL_COPY_READ_BUFFER, NULL);
+
+		glBindVertexArray(NULL); 
 	}
 
 	void VertexArray::setPosition(size_t index, const glm::vec3 & position) {
