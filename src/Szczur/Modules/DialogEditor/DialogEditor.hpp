@@ -15,7 +15,7 @@ class DialogEditor : public Module<Dialog>
 	friend NodeEditor;
 
 protected:
-	std::string _projectPath = "dialogs/dialog_1";
+	std::string _projectPath = "dialogs/dialog_1";  // relative path to dialog files
 
 	std::vector<std::string>& _charactersNames;
 	std::vector<std::string>& _charactersImagePaths;
@@ -33,6 +33,9 @@ public:
 	~DialogEditor();
 
 	void update();
+
+private:
+	std::string makePathRelative(const std::string& path);
 };
 
 }

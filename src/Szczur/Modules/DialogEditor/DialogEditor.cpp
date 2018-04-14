@@ -63,16 +63,20 @@ void DialogEditor::update()
 
 			if (!directory.empty())
 			{
-				_projectPath = directory;
+				_projectPath = makePathRelative(directory);
 			}
 		}
 		
 		if (ImGui::Button("Open project..."))
 		{
-			auto directory = DirectoryDialog::getExistingDirectory("Select project directory", std::experimental::filesystem::current_path().string());
+			auto currentPath = std::experimental::filesystem::current_path().string();
+
+			auto directory = DirectoryDialog::getExistingDirectory("Select project directory", currentPath);
 
 			if (!directory.empty())
 			{
+				directory = makePathRelative(directory);
+
 				LOG_INFO("Opening ", directory, "...");
 
 				bool error = false;
@@ -125,6 +129,20 @@ void DialogEditor::update()
 		ImGui::Checkbox("Node Editor", &showNodeEditor);
 	}
 	ImGui::End();
+}
+
+std::string DialogEditor::makePathRelative(const std::string& path)
+{
+	auto currentPath = std::experimental::filesystem::current_path().string();
+
+	size_t start = path.find(currentPath);
+
+	if (start != -1)
+	{
+		return path.substr(currentPath.length() + 1, path.length() - currentPath.length() - 1);
+	}
+
+	return path;
 }
 
 }
