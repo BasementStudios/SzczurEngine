@@ -43,7 +43,7 @@ void DialogEditor::update()
 
 		if (ImGui::Button("Test dialog"))
 		{
-			getModule<Dialog>().load(_projectPath + "/dialog");
+			getModule<Script>().scriptFile(_projectPath + "/dialog.lua");
 		}
 
 		if (ImGui::Button("Show in explorer"))
