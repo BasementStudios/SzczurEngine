@@ -160,7 +160,7 @@ namespace rat {
             shape.setFillColor(sf::Color::Transparent);
             shape.setOutlineColor(sf::Color::White);
             shape.setOutlineThickness(1.f);
-            target.draw(shape, states);
+            target.draw(shape, states);*/
             
             _draw(target, states);
             for(auto it : _children)
