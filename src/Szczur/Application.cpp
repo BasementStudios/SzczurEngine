@@ -13,7 +13,11 @@ void Application::init()
 
 	initModule<Window>();
 	initModule<Input>();
-
+	initModule<Script>();
+	initModule<GUI>();
+	initModule<Dialog>();
+	initModule<DialogEditor>();
+	
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR
