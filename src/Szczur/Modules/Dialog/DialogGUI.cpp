@@ -36,8 +36,8 @@ namespace rat {
             [](DialogGUI& owner, sol::table tab){
                 if(tab["area"].valid() && tab["container"].valid() && 
                 tab["character"].valid() && tab["name"].valid() &&
-                tab["creator"].valid() && tab["interface"] == true) {
-                    owner.setArea(tab["area"]);
+                tab["creator"].valid() && tab["interface"].valid()) {
+					owner.setArea(tab["area"]);
                     owner.setButtonsContainer(tab["container"]);
                     owner.setCharacterHolder(tab["character"]);
                     owner.setName(tab["name"]);

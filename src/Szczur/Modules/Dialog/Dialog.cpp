@@ -21,7 +21,7 @@ namespace rat {
         Script& script = getModule<Script>();
         auto module = script.newModule("Dialog");
 
-		module.set("Dialog", &Dialog::load);
+		module.set_function("load", &Dialog::load, this);
         module.set("GUI", &_dialogGUI);
 
 
