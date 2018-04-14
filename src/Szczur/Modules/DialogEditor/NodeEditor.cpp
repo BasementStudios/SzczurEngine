@@ -248,27 +248,27 @@ std::string NodeEditor::generateCode()
 					code += "\ttarget = " + std::to_string(out->OptionTarget.ptr->id) + ";\n";
 
 				// condition
-				if (out->_conditionFunc)
+				if (out->ConditionFunc)
 				{
-					code += "\n\t--b:c(" + std::to_string(out->Id) + "): " + out->_conditionFuncName + "\n";
+					code += "\n\t--b:c(" + std::to_string(out->Id) + "): " + out->ConditionFuncName + "\n";
 
-					if (out->_conditionFuncCode.empty())
+					if (out->ConditionFuncCode.empty())
 						code += "\tcondition = function()\n\n\t\tend;\n";
 					else
-						code += out->_conditionFuncCode;
+						code += out->ConditionFuncCode;
 
 					code += "\t--e:c(" + std::to_string(out->Id) + ")\n\n";
 				}
 
 				// action
-				if (out->_actionFunc)
+				if (out->ActionFunc)
 				{
-					code += "\n\t--b:a(" + std::to_string(out->Id) + "): " + out->_actionFuncName + "\n";
+					code += "\n\t--b:a(" + std::to_string(out->Id) + "): " + out->ActionFuncName + "\n";
 					
-					if (out->_actionFuncCode.empty())
+					if (out->ActionFuncCode.empty())
 						code += "\taction = function()\n\n\t\tend;\n";
 					else
-						code += out->_actionFuncCode;
+						code += out->ActionFuncCode;
 
 					code += "\t--e:a(" + std::to_string(out->Id) + ")\n\n";
 				}
@@ -337,7 +337,7 @@ void NodeEditor::backupLuaFunctions()
 		for (auto& out : node->Outputs)
 		{
 			// condition
-			if (out->_conditionFunc)
+			if (out->ConditionFunc)
 			{
 				int start = code.find("--b:c(" + std::to_string(out->Id) + "):", lastIndex);
 
@@ -348,14 +348,14 @@ void NodeEditor::backupLuaFunctions()
 
 					std::string func = code.substr(codeStart, end - codeStart);
 					//LOG_INFO("(", start, ", ", end, "): Condition:\n", func);
-					out->_conditionFuncCode = func;
+					out->ConditionFuncCode = func;
 
 					lastIndex = start;
 				}
 			}
 
 			// action
-			if (out->_actionFunc)
+			if (out->ActionFunc)
 			{
 				int start = code.find("--b:a(" + std::to_string(out->Id) + "):", lastIndex);
 
@@ -366,7 +366,7 @@ void NodeEditor::backupLuaFunctions()
 
 					std::string func = code.substr(codeStart, end - codeStart);
 					//LOG_INFO("(", start, ", ", end, "): Action:\n", func);
-					out->_actionFuncCode = func;
+					out->ActionFuncCode = func;
 
 					lastIndex = start;
 				}
@@ -825,33 +825,33 @@ void NodeEditor::showOptionConfig()
 				{
 					ImGui::Separator();
 
-					ImGui::Checkbox("Condition", &_currentOption->_conditionFunc);
+					ImGui::Checkbox("Condition", &_currentOption->ConditionFunc);
 
-					if (_currentOption->_conditionFunc)
+					if (_currentOption->ConditionFunc)
 					{
 						char buffer[128];
 
-						strcpy(buffer, _currentOption->_conditionFuncName.c_str());
+						strcpy(buffer, _currentOption->ConditionFuncName.c_str());
 
 						if (ImGui::InputText("Condition name", buffer, 128))
 						{
-							_currentOption->_conditionFuncName = buffer;
+							_currentOption->ConditionFuncName = buffer;
 						}
 
 						ImGui::Separator();
 					}
 
-					ImGui::Checkbox("Action", &_currentOption->_actionFunc);
+					ImGui::Checkbox("Action", &_currentOption->ActionFunc);
 
-					if (_currentOption->_actionFunc)
+					if (_currentOption->ActionFunc)
 					{
 						char buffer[128];
 
-						strcpy(buffer, _currentOption->_actionFuncName.c_str());
+						strcpy(buffer, _currentOption->ActionFuncName.c_str());
 
 						if (ImGui::InputText("Action name", buffer, 128))
 						{
-							_currentOption->_actionFuncName = buffer;
+							_currentOption->ActionFuncName = buffer;
 						}
 					}
 				}

@@ -127,18 +127,18 @@ bool NodeManager::read(const json& j)
 		{
 			auto& condition = j["condition"];
 
-			pin->_conditionFunc = true;
-			pin->_conditionFuncName = condition["name"].get<std::string>();
-			pin->_conditionFuncCode = condition["code"].get<std::string>();
+			pin->ConditionFunc = true;
+			pin->ConditionFuncName = condition["name"].get<std::string>();
+			pin->ConditionFuncCode = condition["code"].get<std::string>();
 		}
 
 		if (j.find("action") != j.end())
 		{
 			auto& action = j["action"];
 
-			pin->_actionFunc = true;
-			pin->_actionFuncName = action["name"].get<std::string>();
-			pin->_actionFuncCode = action["code"].get<std::string>();
+			pin->ActionFunc = true;
+			pin->ActionFuncName = action["name"].get<std::string>();
+			pin->ActionFuncCode = action["code"].get<std::string>();
 		}
 	};
 
@@ -227,19 +227,19 @@ void NodeManager::write(json& j)
 		j["optionTarget"] = pin->OptionTarget.ptr ? pin->OptionTarget.ptr->id : 0;
 		j["linkToSameNode"] = pin->LinkToSameNode;
 
-		if (pin->_conditionFunc)
+		if (pin->ConditionFunc)
 		{
 			j["condition"] = {
-				{ "name", pin->_conditionFuncName },
-				{ "code", pin->_conditionFuncCode }
+				{ "name", pin->ConditionFuncName },
+				{ "code", pin->ConditionFuncCode }
 			};
 		}
 
-		if (pin->_actionFunc)
+		if (pin->ActionFunc)
 		{
 			j["action"] = {
-				{ "name", pin->_actionFuncName },
-				{ "code", pin->_actionFuncCode }
+				{ "name", pin->ActionFuncName },
+				{ "code", pin->ActionFuncCode }
 			};
 		}
 	};
