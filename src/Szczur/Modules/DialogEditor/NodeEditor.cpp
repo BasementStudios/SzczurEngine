@@ -69,7 +69,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 
 		LOG_INFO("Saving code to '", fileName, "'...");
 
-		std::ofstream file(fileName);
+		std::ofstream file(fileName, std::ios::trunc);
 
 		if (file.good())
 		{
@@ -88,7 +88,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 		LOG_INFO("Save format: Json");
 		LOG_INFO("Saving to '", fileName, "'...");
 
-		std::ofstream file(fileName);
+		std::ofstream file(fileName, std::ios::trunc);
 
 		if (file.good())
 		{
