@@ -182,6 +182,8 @@ std::string NodeEditor::generateCode()
 
 			///// Runners
 			std::string code;
+
+			code = "local dialog = Dialog.load(\"" + _dialogEditor->_projectPath + "/dialog\")\n\n";
 			
 			code += "-- " + node->Name + "\n\n";
 
@@ -288,7 +290,7 @@ std::string NodeEditor::generateCode()
 					}
 				}
 
-				code += "}\n";
+				code += "}\n\n";
 			}
 
 			optionsCode.push_back(code);
