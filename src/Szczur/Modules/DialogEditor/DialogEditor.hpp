@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
 
 #include "NodeEditor.hpp"
 #include "DLGEditor.hpp"
@@ -9,7 +10,7 @@
 namespace rat
 {
 
-class DialogEditor : public Module<>
+class DialogEditor : public Module<Dialog>
 {
 	friend NodeEditor;
 
