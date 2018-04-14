@@ -36,6 +36,7 @@ public:
 
 private:
 	std::string makePathRelative(const std::string& path);
+	std::string fixPathSlashes(const std::string& path);
 };
 
 }

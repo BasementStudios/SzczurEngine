@@ -37,7 +37,7 @@ void DialogEditor::update()
 
 	if (ImGui::Begin("Dialog Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Dialog project: %s", "Test");
+		ImGui::Text("Path: %s", _projectPath.c_str());
 
 		ImGui::Separator();
 
@@ -63,7 +63,7 @@ void DialogEditor::update()
 
 			if (!directory.empty())
 			{
-				_projectPath = makePathRelative(directory);
+				_projectPath = fixPathSlashes(makePathRelative(directory));
 			}
 		}
 		
@@ -75,7 +75,7 @@ void DialogEditor::update()
 
 			if (!directory.empty())
 			{
-				directory = makePathRelative(directory);
+				directory = fixPathSlashes(makePathRelative(directory));
 
 				LOG_INFO("Opening ", directory, "...");
 
@@ -143,6 +143,15 @@ std::string DialogEditor::makePathRelative(const std::string& path)
 	}
 
 	return path;
+}
+
+std::string DialogEditor::fixPathSlashes(const std::string& path)
+{
+	std::string result = path;
+
+	std::replace(result.begin(), result.end(), '\\', '/');
+
+	return result;
 }
 
 }
