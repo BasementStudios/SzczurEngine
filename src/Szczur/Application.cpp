@@ -9,13 +9,13 @@ namespace rat
 
 void Application::init()
 {
+	LOG_INFO("Initializing modules");
+
 	initModule<Window>();
 	initModule<Input>();
-	initModule<Script>();
-	initModule<GUI>();
-	initModule<Dialog>();
-	initModule<DialogEditor>();
-	
+
+	LOG_INFO("Modules initialized");
+
 	#ifdef EDITOR
 	{
 		ImGui::CreateContext();
@@ -88,6 +88,8 @@ int Application::run()
 	try {
 		init();
 
+		LOG_INFO("Starting main loop of application");
+
 		while (getModule<Window>().getWindow().isOpen()) {
 			input();
 			update();
@@ -103,6 +105,8 @@ int Application::run()
 		ImGui::SFML::Shutdown();
 	}
 	#endif
+
+	LOG_INFO("Shutdowning application");
 
 	return 0;
 }

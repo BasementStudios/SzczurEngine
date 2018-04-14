@@ -37,7 +37,7 @@ void RenderLayer::setRenderStates(const sf::RenderStates& states)
 
 
 /* Operators */
-/// Constructor 
+/// Constructor
 RenderLayer::RenderLayer()
 {
 	;

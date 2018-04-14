@@ -1,10 +1,10 @@
 #include "Window.hpp"
 
 /** @file Window.cpp
-** @description Implementation file with main class of the Window module.
-** @author Patryk (Stritch)
-** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
-**/
+ ** @description Implementation file with main class of the Window module.
+ ** @author Patryk (Stritch)
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
 
 #include <string>
 
@@ -71,14 +71,14 @@ void Window::setTitle(const std::string& title)
 /// Constructors
 Window::Window()
 {
-	LOG_INFO(this, ": Window module initializing");
+	LOG_INFO("Initializing Window module");
 	this->init();
-	LOG_INFO(this, ": Window module initialized");
+	LOG_INFO("Module Window initialized");
 }
-/// Deconstructor
+/// Destructor
 Window::~Window()
 {
-	LOG_INFO(this, ": Window module destructed");
+	LOG_INFO("Module Window destructed");
 }
 
 
@@ -87,7 +87,7 @@ Window::~Window()
 /// init
 void Window::init()
 {
-	// Create 
+	// Create
 	this->setVideoMode(this->videoMode);
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 	// @todo load from settings

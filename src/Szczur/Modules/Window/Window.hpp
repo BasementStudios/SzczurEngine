@@ -37,25 +37,25 @@ class Window : public Module<>
 	/* Variables */
 private:
 	Window_t        window;
-	sf::VideoMode   videoMode{ 1280, 800 };
-	std::string     title{ "SzczurEngine" };
-	unsigned int	framerateLimit{ 60 };
+	sf::VideoMode   videoMode		{1280, 800};
+	std::string     title 			{"SzczurEngine"};
+	unsigned int	framerateLimit	{60};
 
 
 
 	/* Properties */
 public:
 	/** @property Window
-	** @description Provides access to application window.
-	** @access reference get
-	**/
+	 ** @description Provides access to application window.
+	 ** @access reference get
+	 **/
 	Window_t& getWindow();
 	const Window_t& getWindow() const;
 
 	/** @property VideoMode
-	** @description Defines a video mode.
-	** @access get set
-	**/
+	 ** @description Defines a video mode.
+	 ** @access get set
+	 **/
 	sf::VideoMode getVideoMode() const;
 	void setVideoMode(const sf::VideoMode& mode);
 
@@ -67,9 +67,9 @@ public:
 	void setFramerateLimit(const unsigned int limit);
 
 	/** @property Title
-	** @description Title of application window.
-	** @access get set
-	**/
+	 ** @description Title of application window.
+	 ** @access get set
+	 **/
 	const std::string& getTitle() const;
 	void setTitle(const std::string& title);
 
