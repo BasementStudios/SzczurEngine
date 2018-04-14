@@ -20,8 +20,8 @@ namespace rat
         DLGTextManager _textManager;
         TextContainer_t& _parts;
 
-        size_t _currentMajor;
-        size_t _currentMinor;
+        size_t _currentMajor = 1;
+        size_t _currentMinor = 1;
 
         std::string _dialogPath;
 

@@ -36,13 +36,13 @@ namespace rat
             std::ofstream dlg;
             dlg.open(path);
             if (dlg.is_open()) {
-                dlg << "[0][0][00:00-00:00][-]{\n\0" << "\t[00:00][_]_\n\0" << "}\n\0";
+                dlg << "[1][1][00:00-00:00][-]{\n\0" << "\t[00:00][_]_\n\0" << "}\n\0";
             }
             dlg.close();
 
             DialogData* obj = new DialogData {
-                0,
-                0,
+                1,
+                1,
                 "00:00",
                 "00:00",
                 "",
@@ -52,7 +52,7 @@ namespace rat
                 1
             };
                 
-            add(0, 0, obj);
+            add(1, 1, obj);
         }
         else {
             std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);

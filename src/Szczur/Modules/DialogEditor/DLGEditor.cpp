@@ -155,7 +155,7 @@ namespace rat
             ++major;
             DialogData* temp = new DialogData {
                 major,
-                0,
+                1,
                 "00:00",
                 "00:00",
                 "",
@@ -164,7 +164,7 @@ namespace rat
                 {0},
                 1
             };
-            _parts[major] = {std::make_pair(0, temp)};
+            _parts[major] = {std::make_pair(1, temp)};
         }
     }
 
