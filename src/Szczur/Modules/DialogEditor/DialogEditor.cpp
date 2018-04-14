@@ -46,6 +46,13 @@ void DialogEditor::update()
 			getModule<Script>().scriptFile(_projectPath + "/dialog.lua");
 		}
 
+		ImGui::SameLine();
+
+		if (ImGui::Button("Stop dialog"))
+		{
+			getModule<Dialog>().unload();
+		}
+
 		if (ImGui::Button("Show in explorer"))
 		{
 #ifdef OS_WINDOWS

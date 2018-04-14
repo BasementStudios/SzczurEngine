@@ -43,6 +43,8 @@ namespace rat {
                     owner.setName(tab["name"]);
                     owner.setButtonsCreator(tab["creator"]);
                     owner.setInterface(tab["interface"]);
+
+					owner.hide();
                 }
             }
         );
