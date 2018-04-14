@@ -33,12 +33,12 @@ namespace rat
         file.close();
 
         if(str.empty()) {
-            /*std::ofstream dlg;
+            std::ofstream dlg;
             dlg.open(path);
             if (dlg.is_open()) {
                 dlg << "[0][0][00:00-00:00][-]{\n\0" << "\t[00:00][_]_\n\0" << "}\n\0";
             }
-            dlg.close();*/
+            dlg.close();
 
             DialogData* obj = new DialogData {
                 0,
