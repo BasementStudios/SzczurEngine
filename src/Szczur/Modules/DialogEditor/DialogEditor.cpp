@@ -9,7 +9,8 @@ namespace rat
 {
 
 DialogEditor::DialogEditor()
-	: _dlgEditor(_characters), _nodeEditor(this)
+	: _charactersNames(_CharactersManager.getNamesContainer()), _charactersImagePaths(_CharactersManager.getImagePathsContainer()),
+	  _dlgEditor(_charactersNames), _nodeEditor(this)
 {
 	LOG_INFO("Initializing DialogEditor module");
 
@@ -25,6 +26,9 @@ DialogEditor::~DialogEditor()
 
 void DialogEditor::update()
 {
+	if (showCharactersManager)
+		_CharactersManager.update();
+
 	if (showDlgEditor)
 		_dlgEditor.update();
 
@@ -110,6 +114,10 @@ void DialogEditor::update()
 			if (!_projectPath.empty())
 				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
 		}
+
+		ImGui::Separator();
+
+		ImGui::Checkbox("Characters Manager", &showCharactersManager);
 
 		ImGui::Separator();
 

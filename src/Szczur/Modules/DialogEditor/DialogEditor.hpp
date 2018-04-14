@@ -4,6 +4,7 @@
 
 #include "NodeEditor.hpp"
 #include "DLGEditor.hpp"
+#include "CharactersManager.hpp"
 
 namespace rat
 {
@@ -15,11 +16,14 @@ class DialogEditor : public Module<>
 protected:
 	std::string _projectPath = "dialogs/dialog_1";
 
-	std::vector<std::string> _characters = { "Mroczny", "Locha" };
+	std::vector<std::string>& _charactersNames;
+	std::vector<std::string>& _charactersImagePaths;
 
 	DLGEditor _dlgEditor;
 	NodeEditor _nodeEditor;
+	CharactersManager _CharactersManager;
 
+	bool showCharactersManager = false;
 	bool showDlgEditor = false;
 	bool showNodeEditor = false;
 
