@@ -60,7 +60,8 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test5.png");
         skill->setPPCost(2);
         skill->setRequirements({
-            {"Fire", 1}
+            {"Fire", 1},
+            {"Earth", 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -70,6 +71,24 @@ namespace rat
         skill->setPPCost(3);
         skill->setRequirements({
             {"Fire", 1}
+        });
+        _skills.emplace(skill->getName(), std::move(skill));
+
+        skill = std::make_unique<Skill>("Earth Strike");
+        skill->setProfession("Mele");
+        skill->setTexturePath("assets/PrepScreen/test7.png");
+        skill->setPPCost(5);
+        skill->setRequirements({
+            {"Earth", 1}
+        });
+        _skills.emplace(skill->getName(), std::move(skill));
+
+        skill = std::make_unique<Skill>("Earth Elemental");
+        skill->setProfession("Aura");
+        skill->setTexturePath("assets/PrepScreen/test6.png");
+        skill->setPPCost(7);
+        skill->setRequirements({
+            {"Earth", 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
     }

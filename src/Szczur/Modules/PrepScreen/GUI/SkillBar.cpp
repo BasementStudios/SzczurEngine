@@ -1,5 +1,6 @@
 #include "SkillBar.hpp"
 
+#include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
@@ -7,8 +8,11 @@
 
 #include "GrayPPBar.hpp"
 
+
 namespace rat
 {
+     sf::Vector2f SkillBar::_size = {240.f, 72.f};
+
     SkillBar::SkillBar(GrayPPBar& sourceBar)
     :
     _sourceBar(sourceBar),
@@ -18,10 +22,21 @@ namespace rat
         _icon = new ImageWidget;
         _bar->add(_icon);
         _icon->setPosition(4.f, 4.f);
-        //_nameText = new TextWidget;
-        //_bar->add(_nameText);
-        _sourceBar.getSource();
 
+
+        _infoBar = new Widget;
+        _bar->add(_infoBar);
+        _infoBar->setPosition(64.f + 4.f + 4.f, 4.f + 4.f);
+
+        _nameText = new TextWidget;
+        _infoBar->add(_nameText);
+        _nameText->setPosition(0.f, 0.f);
+        _nameText->setCharacterSize(14);
+
+        _costBar.setParent(_infoBar);
+        _costBar.setPosition(0.f, _size.y - 16.f - _costBar.getPPSize().y);
+        _costBar.setGrayPPPosition(_size.x - 16.f - _costBar.getPPSize().x - 64.f, 0.f);
+        //_costBar.setGrayPPPosition(10.f, 0.f);
 
         auto click = [&](Widget* owner){
             _onClick();
@@ -42,6 +57,7 @@ namespace rat
     void SkillBar::setPosition(const sf::Vector2f& pos)
     {
         _bar->setPosition(pos);
+        
     }
 
     void SkillBar::setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture)
@@ -49,11 +65,15 @@ namespace rat
         _textureBar = mainTexture;
         _textureLocked = lockTexture;
         _bar->setTexture(_textureBar);
+        auto size = static_cast<sf::Vector2f>(mainTexture->getSize());
+        _bar->setScale({_size.x/size.x, _size.y/size.y});
     }
 
     void SkillBar::setSkill(Skill* skill)
     {
         _skill = skill;
+        _nameText->setString(skill->getName());
+        _costBar.setSkill(skill);
     }
 
     const std::string& SkillBar::getIconPath() const
@@ -65,17 +85,24 @@ namespace rat
     {
         _icon->setTexture(icon);
     }
+    void SkillBar::setFont(sf::Font* font)
+    {
+        _nameText->setFont(font);
+    }
 
     void SkillBar::activate()
     {
         _bar->activate();
+        _bar->visible();
         _icon->activate();
+        _icon->visible();
     }
     void SkillBar::deactivate()
     {
         _bar->deactivate();
+        _bar->invisible();
         _icon->deactivate();
-        std::cout << "Deactivating\n";
+        _icon->invisible();
     }
 
     void SkillBar::_onClick()
@@ -101,8 +128,13 @@ namespace rat
             _isBought = false;
             _bar->setTexture(_textureBar);
         }
-            
     }
+
+    void SkillBar::loadAssetsFromGUI(GUI& gui)
+    {
+        _costBar.loadAssetsFromGUI(gui);
+    }
+    
     
 
 

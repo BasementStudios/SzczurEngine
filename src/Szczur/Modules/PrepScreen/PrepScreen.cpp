@@ -10,6 +10,8 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 
+#include "Szczur/Utility/Logger.hpp" 
+
 namespace rat
 {
     void PrepScreen::initScript()
@@ -93,7 +95,6 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-        std::cout << "Before PPsBar\n";
         _coloredPPsBar.setParent(_coloredPPBar);
         _coloredPPsBar.initTexturesViaGui(gui);
         _coloredPPsBar.setCenter(1280.f/2.f, 0.f);
@@ -102,12 +103,12 @@ namespace rat
         _grayPPsBar.initTextureViaGui(gui);
         _grayPPsBar.setCenter(1280.f/2.f, 0);
 
-        PPSource fireSource = {"Fire", 1, 10};
-        //PPSource waterSource = {"Water", 1, 0};
+        PPSource fireSource = {"Fire", 1, 5};
+        PPSource earthSource = {"Earth", 1, 4};
         //PPSource airSource = {"Air", 1, 0};
         
         _source.addSource(fireSource);
-        //_source.addSource(waterSource);
+        _source.addSource(earthSource);
         
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
@@ -120,6 +121,7 @@ namespace rat
 
         _initSkillArea();
         _initProfArea();
+
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)
@@ -134,7 +136,7 @@ namespace rat
         _skillArea.initViaSkillCodex(_codex);
         _skillArea.initAssetsViaGUI(getModule<GUI>());
         //_skillArea.activate("InnerFire", "Essence");
-        _skillArea.activate("Aura", "Fire");
+        _skillArea.activate("Aura", "Mixed");
         //_skillArea.activate("InnerFire", "Essence");
     }
 

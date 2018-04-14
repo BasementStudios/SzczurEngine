@@ -28,6 +28,10 @@ namespace rat
             {
                 _ppCost = newCost;
             }
+            amount_t getCost() const 
+            {
+                return _ppCost;
+            }
             void addColorRequirement(const ColoredPP& requirement)
             {
                 addColorRequirement(requirement.type, requirement.power);
@@ -53,14 +57,12 @@ namespace rat
             {
                 //assert(canBeBoughtFrom(source));
                 source.removePP(_ppCost);
-                std::cout << "New Amount Of PP: " << source.getPPAmount() << "\n";
                 _hasBeenBought = true;
             }
 
             void returnTo(PPContainer& source)
             {
                 source.addPP(_ppCost);
-                std::cout << "New Amount Of PP: " << source.getPPAmount() << "\n";
                 _hasBeenBought = false;
             }
 
@@ -71,6 +73,13 @@ namespace rat
             amount_t getNumberOfRequirements() const{
                 return _typesRequirement.size();
             } 
+
+            auto begin() const {
+                return _typesRequirement.begin();
+            }
+            auto end() const {
+                return _typesRequirement.end();
+            }
 
         private:
             std::set<ColoredPP> _typesRequirement;

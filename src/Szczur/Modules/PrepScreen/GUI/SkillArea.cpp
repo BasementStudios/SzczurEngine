@@ -5,6 +5,8 @@
 #include "../PPColors.hpp"
 #include "../ProfessionTypes.hpp"
 
+#include "Szczur/Utility/Logger.hpp" 
+
 namespace rat
 {
     SkillArea::SkillArea(GrayPPBar& sourceBar)
@@ -13,7 +15,6 @@ namespace rat
     _curentColor("Fire"),
     _curentProfession("Mele")
     {
-        std::cout << "SkillArea initing...\n";
         ProfessionTypes professions;
         PPColors ppColors;
 
@@ -39,6 +40,9 @@ namespace rat
         gui.addAsset<sf::Texture>("assets/PrepScreen/skillBarLocked.png");
         _textureLocked = gui.getAsset<sf::Texture>("assets/PrepScreen/skillBarLocked.png");
 
+        gui.addAsset<sf::Font>("assets/fonts/NotoMono.ttf");
+        sf::Font* font = gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf");
+
         for(auto& profs : _skillBars)
             for(auto& colors : profs.second)
                 for(auto& skillBar : colors.second)
@@ -47,7 +51,9 @@ namespace rat
                     const auto& iconPath = skillBar->getIconPath();
                     gui.addAsset<sf::Texture>(iconPath);
                     skillBar->setIconTexture(gui.getAsset<sf::Texture>(iconPath));
+                    skillBar->setFont(font);
                     
+                    skillBar->loadAssetsFromGUI(gui);
                 }
 
     }
@@ -57,7 +63,6 @@ namespace rat
     {
         for(auto& [name, skill] : skillCodex)
         {
-            std::cout << name << "\n";
             _addSkillBar(skill.get());
         }
 
@@ -68,7 +73,6 @@ namespace rat
         const auto& color = skill->getColor();
         const auto& prof = skill->getProfession();
 
-        //std::cout << skill->getName() << " : " << prof << " : " << color << "\n";
 
         auto skillBar = std::make_unique<SkillBar>(_sourceBar);
         skillBar->setSkill(skill);
