@@ -3,8 +3,8 @@
 #include <iostream>
 
 namespace sf3d {
-	RenderTexture::RenderTexture(const char* vertexPath, const char* fragmentPath, const glm::uvec2 & size, float FOV) :
-	RenderTarget(vertexPath, fragmentPath, size, FOV) {
+	RenderTexture::RenderTexture(ShaderProgram* program, const glm::uvec2 & size, float FOV) :
+	RenderTarget(size, FOV, program) {
 		glGenFramebuffers(1, &_FBO);
 		glGenRenderbuffers(1, &_RBO);
 

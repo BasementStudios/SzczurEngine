@@ -7,7 +7,7 @@
 namespace sf3d {
 	class Shape : public Drawable, public Transformable {
 	public:
-		Shape(size_t vertexSize = 4u);
+		Shape(size_t vertexSize = 8u);
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
 

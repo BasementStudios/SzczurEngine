@@ -8,6 +8,7 @@ namespace sf3d {
 			_vertices.setColor(i, getPointColor(i));
 			_vertices.setTexCoord(i, getPointCoord(i));
 		}
+		_vertices.setPrimitveType(GL_TRIANGLE_FAN);
 	}
 
 	void Shape::draw(RenderTarget & target, RenderStates states) const {
@@ -16,32 +17,32 @@ namespace sf3d {
 	}
 
 	glm::vec3 Shape::getPointPosition(size_t index) const {
+		/*1.0, 1.0, 1.0,
+			0.0f, 1.0, 1.0,
+			1.0, 1.0, 0.0f,
+			0.0f, 1.0, 0.0f,
+			1.0, 0.0f, 1.0,
+			0.0f, 0.0f, 1.0,
+			0.0f, 0.0f, 0.0f,
+			1.0, 0.0f, 0.0f
+			*/
 		switch(index) {
-			default:
-			case 0: return {0.f, 0.f, 0.f}; break;
-			case 1: return {768.f, 0.f, 0.f}; break;
-			case 2: return {768.f, -512.f, 0.f}; break;
-			case 3: return {0.f, -512.f, 0.f}; break;
+			case 0: return {100.f, 100.f, 100.f};
+			case 1: return {0.f, 100.f, 100.f};
+			case 2: return {100.f, 100.f, 0.f};
+			case 3: return {0.f, 100.f, 0.f};
+			case 4: return {100.f, 0.f, 100.f};
+			case 5: return {0.f, 0.f, 100.f};
+			case 6: return {0.f, 0.f, 0.f};
+			case 7: return {100.f, 0.f, 0.f};		
 		}
 	}
 
 	glm::vec3 Shape::getPointColor(size_t index) const {
-		switch(index) {
-			default:
-			case 0: return {1.f, 0.f, 0.f}; break;
-			case 1: return {0.f, 1.f, 0.f}; break;
-			case 2: return {0.f, 0.f, 1.f}; break;
-			case 3: return {1.f, 0.f, 1.f}; break;
-		}
+		return {1.0, 0.0, 1.0};
 	}
 
 	glm::vec2 Shape::getPointCoord(size_t index) const {
-		switch(index) {
-			default:
-			case 0: return {0.f, 0.f}; break;
-			case 1: return {1.f, 0.f}; break;
-			case 2: return {1.f, 1.f}; break;
-			case 3: return {0.f, 1.f}; break;
-		}
+		return {0.0, 0.0};
 	}
 }

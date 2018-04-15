@@ -1,10 +1,8 @@
 #pragma once
-
-#include <SFML/Graphics/Color.hpp>
-
 #include "RenderStates.hpp"
 #include "View.hpp"
 #include "Linear.hpp"
+#include "ShaderProgram.hpp"
 
 namespace sf3d {
 	class Vertex;
@@ -13,10 +11,12 @@ namespace sf3d {
 
 	class RenderTarget {
 	public:
-		RenderTarget(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV = 45.f);
+		RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 		~RenderTarget();
 
-		void clear(float r, float g, float b, GLbitfield flags);
+		void setProgram(ShaderProgram* program);
+
+		void clear(float r, float g, float b, float a, GLbitfield flags);
 
 		void draw(const Drawable& drawable, RenderStates states);
 		void draw(const Drawable& drawable);
@@ -39,13 +39,12 @@ namespace sf3d {
 	private:
 		virtual bool _setActive(bool state = true);
 
-		Shader* _shader;
 		RenderStates _states;
 
 		glm::uvec2 _windowSize;
 
-		float _FOVx;
 		float _FOVy;
+		float _FOVx;
 		float _halfFOVxTan;
 		float _halfFOVyTan;
 		//glm::mat4 _view;

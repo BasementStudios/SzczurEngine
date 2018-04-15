@@ -1,27 +1,45 @@
 #pragma once
-
 #include <glad/glad.h>
-
-#include <iostream>
+#include <string>
 #include <fstream>
-#include <sstream>
-
+#include <iostream>
 namespace sf3d {
+
+template<GLenum T>
 	class Shader {
 	public:
-		unsigned int ID;
+		Shader(const std::string& path) {
+			std::ifstream file(path);
+			if(file.is_open()) {
+				std::string _code((std::istreambuf_iterator<char>(file)),
+								  std::istreambuf_iterator<char>());
+				const char* code = _code.c_str();
+				_shader = glCreateShader(T);
+				glShaderSource(_shader, 1, &code, NULL);
+				glCompileShader(_shader);
 
-		Shader(const char* vertexPath, const char* fragmentPath);
-
-		void use();
-
-		void setBool(const std::string &name, bool value) const;
-
-		void setInt(const std::string &name, int value) const;
-
-		void setFloat(const std::string &name, float value) const;
-
+				int  success;
+				char infoLog[512];
+				glGetShaderiv(_shader, GL_COMPILE_STATUS, &success);
+				if(!success) {
+					glGetShaderInfoLog(_shader, 512, NULL, infoLog);
+					std::cout << "Compilation error: " << path << '\n' << infoLog << '\n';
+					glDeleteShader(_shader);
+				}
+			}
+			else
+				std::cout << "Cannot open " << path << '\n';
+		}
+		~Shader() {
+			glDeleteShader(_shader);
+		}
+		operator GLuint() {
+			return _shader;
+		}
 	private:
-		void checkCompileErrors(unsigned int shader, std::string type);
+		GLuint _shader;
 	};
+
+	using VShader = Shader<GL_VERTEX_SHADER>;
+	using FShader = Shader<GL_FRAGMENT_SHADER>;
 }

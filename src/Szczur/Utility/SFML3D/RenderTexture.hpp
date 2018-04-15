@@ -3,11 +3,12 @@
 #include "RenderTarget.hpp"
 #include "Texture.hpp"
 #include <glm/glm.hpp>
+#include "ShaderProgram.hpp"
 
 namespace sf3d {
 	class RenderTexture : public RenderTarget {
 	public:
-		RenderTexture(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV = 45.f);
+		RenderTexture(ShaderProgram* program, const glm::uvec2& size, float FOV = 45.f);
 		~RenderTexture();
 		Texture* getTexture();
 	private:
