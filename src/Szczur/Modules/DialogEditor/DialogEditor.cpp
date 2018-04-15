@@ -83,6 +83,8 @@ void DialogEditor::update()
 
 				_dlgEditor.load(_projectPath);
 				_nodeEditor.createNew();
+				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+				_CharactersManager.save(_projectPath + "/characters.json");
 
 				_projectLoaded = true;
 			}
