@@ -1,18 +1,16 @@
 #include "CharactersManager.hpp"
 
+#include <fstream>
+
+#include <nlohmann/json.hpp>
+
 #include "Szczur/Config.hpp"
 
 namespace rat
 {
     CharactersManager::CharactersManager()
     {
-        //[WIP]
-        _charactersName.push_back("Mroczny");
-        _charactersImagePath.push_back("");
-        _charactersName.push_back("Locha");
-        _charactersImagePath.push_back("");
 
-        load();
     }
 
     void CharactersManager::update()
@@ -67,14 +65,39 @@ namespace rat
         return _charactersImagePath;
     }
 
-    void CharactersManager::load()
+    void CharactersManager::load(const std::string& path)
     {
-        //TODO: load from json
+        using Json = nlohmann::json;
+        Json json;
+
+        std::ifstream file(path);
+        if(file.is_open()) {
+            file >> json;
+        }
+        file.close();
+
+        for (auto it = json.begin(); it != json.end(); ++it)
+        {
+            _charactersName.push_back(it.key());
+            _charactersImagePath.push_back(it.value() == nullptr ? "" : it.value());
+        }
+
     }
 
-    void CharactersManager::save()
+    void CharactersManager::save(const std::string& path)
     {
-        //TODO: Save to json file
+        using Json = nlohmann::json;
+        Json json;
+
+        for(unsigned int i = 0; i < _charactersName.size(); ++i) {
+            json[_charactersName[i]] = _charactersImagePath[i];
+        }
+
+        std::ofstream file(path, std::ios::trunc);
+        if(file.is_open()) {
+            file << json;
+        }
+        file.close();
     }
     
 }

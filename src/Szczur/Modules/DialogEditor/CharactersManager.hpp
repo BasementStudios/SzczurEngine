@@ -17,15 +17,13 @@ namespace rat
 
         CharactersManager();
 
+        void load(const std::string& path);
+        void save(const std::string& path);
+
         void update();
 
         std::vector<std::string>& getNamesContainer();
         std::vector<std::string>& getImagePathsContainer();
-
-    private:
-
-        void load();
-        void save();
 
     };
 }

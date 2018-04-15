@@ -108,10 +108,14 @@ void DialogEditor::update()
 				if (!std::experimental::filesystem::exists(directory + "/dialog.json"))
 					error = true;
 
+				if (!std::experimental::filesystem::exists(directory + "/characters.json"))
+					error = true;
+
 				if (error == false)
 				{
 					_projectPath = directory;
 
+					_CharactersManager.load(_projectPath + "/characters.json");
 					_dlgEditor.load(_projectPath);
 					_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
 					_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
@@ -131,6 +135,7 @@ void DialogEditor::update()
 			{
 				if (!_projectPath.empty())
 				{
+					_CharactersManager.save(_projectPath + "/characters.json");
 					_dlgEditor.save();
 					_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
 				}
