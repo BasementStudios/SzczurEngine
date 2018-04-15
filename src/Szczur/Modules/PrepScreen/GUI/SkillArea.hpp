@@ -32,6 +32,8 @@ namespace rat
 
         GrayPPBar& getSourceBar();
 
+        void recalculate();
+        void recalculate(const std::string profession, const std::string color);        
     private:
         GrayPPBar& _sourceBar;
         SkillProfessions_t _skillBars;
@@ -44,9 +46,7 @@ namespace rat
         void _addSkillBar(Skill* skill);
         void _addSkillBarWithoutRecalculating(Skill* skill);
         void _hide(const std::string& profession, const std::string& color);
-        void _active(const std::string& profession, const std::string& color);
-        void _recalculate();
-        void _recalculate(const std::string profession, const std::string color);        
+        void _activate(const std::string& profession, const std::string& color);
 
         float _barHeight{80.f};
 

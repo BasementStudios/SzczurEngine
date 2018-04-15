@@ -67,7 +67,7 @@ namespace rat
         {
             _addSkillBarWithoutRecalculating(skill.get());
         }
-        _recalculate();
+        recalculate();
         hideAll();
     }
 
@@ -76,7 +76,7 @@ namespace rat
         const auto& color = skill->getColor();
         const auto& prof = skill->getProfession();
         _addSkillBarWithoutRecalculating(skill);
-        _recalculate(prof, color);
+        recalculate(prof, color);
     }
     void SkillArea::_addSkillBarWithoutRecalculating(Skill* skill)
     {
@@ -116,13 +116,13 @@ namespace rat
     {
         _hide(_curentProfession, _curentColor);
         _curentColor = color;
-        _active(_curentProfession, _curentColor);
+        _activate(_curentProfession, _curentColor);
     }
     void SkillArea::setProfession(const std::string& profession)
     {
          _hide(_curentProfession, _curentColor);
          _curentProfession = profession;
-         _active(_curentProfession, _curentColor);
+         _activate(_curentProfession, _curentColor);
     }
 
     void SkillArea::_hide(const std::string& profession, const std::string& color)
@@ -132,29 +132,12 @@ namespace rat
             skillBar->deactivate();
         }
     }
-    void SkillArea::_active(const std::string& profession, const std::string& color)
-    {
-        for(auto& skillBar : _skillBars[profession][color])
-        {
-            skillBar->activate();
-        }
-    }
-
-    GrayPPBar& SkillArea::getSourceBar()
-    {
-        return _sourceBar;
-    }
-    
-    void SkillArea::_recalculate(const std::string profession, const std::string color)
+    void SkillArea::_activate(const std::string& profession, const std::string& color)
     {
         auto& suitCont = _skillBars[profession][color];
-        std::sort(suitCont.begin(), suitCont.end(), [](auto& lhs, auto& rhs){
-            return (*lhs) < (*rhs);
-        });
         auto firstBought = std::find_if(suitCont.begin(), suitCont.end(), [](auto& skillBarPtr){
             return skillBarPtr->isBought();
         });
-
         size_t i = 0;
         for(auto skillBarItr = suitCont.begin(); skillBarItr < firstBought; ++skillBarItr)
         {
@@ -170,11 +153,41 @@ namespace rat
         }
     }
 
-    void SkillArea::_recalculate()
+    GrayPPBar& SkillArea::getSourceBar()
+    {
+        return _sourceBar;
+    }
+    
+    void SkillArea::recalculate(const std::string profession, const std::string color)
+    {
+        auto& suitCont = _skillBars[profession][color];
+        std::sort(suitCont.begin(), suitCont.end(), [](auto& lhs, auto& rhs){
+            return (*lhs) < (*rhs);
+        });
+        auto firstBought = std::find_if(suitCont.begin(), suitCont.end(), [](auto& skillBarPtr){
+            return skillBarPtr->isBought();
+        });
+
+        size_t i = 0;
+        for(auto skillBarItr = suitCont.begin(); skillBarItr < firstBought; ++skillBarItr)
+        {
+            auto& skillBar = *skillBarItr;
+            //skillBar->activate();
+            skillBar->setPosition(0.f, float(i++) * 80.f);
+        }
+        for(auto skillBarItr = firstBought; skillBarItr < suitCont.end(); ++skillBarItr)
+        {
+            auto& skillBar = *skillBarItr;
+            skillBar->deactivate();
+            skillBar->setPosition(0.f, 0.f);
+        }
+    }
+
+    void SkillArea::recalculate()
     {
         for(auto& [prof, colors] : _skillBars)
             for(auto& [color, skills] : colors)
-                _recalculate(prof, color);
+                recalculate(prof, color);
     }
     
     

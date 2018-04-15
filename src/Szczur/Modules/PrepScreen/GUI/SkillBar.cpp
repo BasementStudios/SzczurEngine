@@ -119,13 +119,13 @@ namespace rat
                 _sourceBar.recalculate();
                 _isBought = true;
                 _bar->setTexture(_textureLocked);
+                _parentArea.recalculate(_skill->getProfession(), _skill->getColor());
             }
         }
         else
         {
             _skill->returnCostsTo(source);
             _sourceBar.recalculate();
-
             _isBought = false;
             _bar->setTexture(_textureBar);
         }
@@ -142,6 +142,6 @@ namespace rat
         {
             return _skill->getName() < rhs._skill->getName();
         }
-        return _isBought;
+        return !_isBought;
     }
 }
