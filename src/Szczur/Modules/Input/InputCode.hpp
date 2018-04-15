@@ -16,11 +16,9 @@ public:
 	InputCode() = default;
 
 	InputCode(const InputCode&) = default;
-
 	InputCode& operator = (const InputCode&) = default;
 
 	InputCode(InputCode&&) = default;
-
 	InputCode& operator = (InputCode&&) = default;
 
 	~InputCode() = default;
