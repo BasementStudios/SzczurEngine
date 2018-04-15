@@ -21,6 +21,8 @@ namespace sf3d {
 
 		size_t getSize() const;
 
+		void resize(size_t size);
+
 		void bind() const;
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
