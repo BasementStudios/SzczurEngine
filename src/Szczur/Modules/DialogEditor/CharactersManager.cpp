@@ -1,9 +1,11 @@
 #include "CharactersManager.hpp"
 
 #include <fstream>
+#include <experimental/filesystem>
 
 #include <nlohmann/json.hpp>
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Config.hpp"
 
 namespace rat
@@ -37,7 +39,15 @@ namespace rat
 
                 ImGui::SameLine();
                 if (ImGui::Button("Load##Characters Manager")) {
-                    //TODO: loading image for character
+                    auto currentPath = std::experimental::filesystem::current_path().string();
+                    auto path = FileDialog::getOpenFileName("", currentPath, "Images (*.png, *.jpg)|*.png;*.jpg");
+                    size_t start = path.find(currentPath);
+                    if (start != -1) {
+                        *imagePath = path.substr(currentPath.length() + 1, path.length() - currentPath.length() - 1);
+                    } 
+                    else {
+                        *imagePath = path;
+                    }
                 }
 
                 ImGui::SameLine(); 
