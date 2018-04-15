@@ -67,7 +67,7 @@ namespace sf3d {
 		Vertex defaultVert{{0.f, 0.f, 0.f},{1.f, 1.f, 1.f},{0.f, 0.f}};
 		for(int i = 0; i < size; i++)
 			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
-		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, _size * sizeof(Vertex));
+		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, ((_size>size) ? size : _size) * sizeof(Vertex));
 
 		_size = size;
 
