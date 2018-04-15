@@ -795,7 +795,7 @@ void NodeEditor::showOptionConfig()
 				{
 					if (_currentOption->OptionTarget.ptr)
 					{
-						_dialogEditor->showDlgEditor = true;
+						_dialogEditor->_showDlgEditor = true;
 
 						_dialogEditor->_dlgEditor.setCurrentMajor(static_cast<int>(_currentOption->OptionTarget.ptr->id));
 

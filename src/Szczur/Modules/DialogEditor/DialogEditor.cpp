@@ -25,13 +25,13 @@ void DialogEditor::update()
 {
 	if (_projectLoaded)
 	{
-		if (showCharactersManager)
+		if (_showCharactersManager)
 			_CharactersManager.update();
 
-		if (showDlgEditor)
+		if (_showDlgEditor)
 			_dlgEditor.update();
 
-		if (showNodeEditor)
+		if (_showNodeEditor)
 			_nodeEditor.update();
 	}
 
@@ -48,7 +48,9 @@ void DialogEditor::update()
 				_dlgEditor.save();
 				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
 				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
-
+				_showCharactersManager = false;
+				_showDlgEditor = false;
+				_showNodeEditor = false;
 
 				getModule<Script>().scriptFile(_projectPath + "/dialog.lua");
 			}
@@ -157,9 +159,9 @@ void DialogEditor::update()
 
 			ImGui::Separator();
 
-			ImGui::Checkbox("Characters Manager", &showCharactersManager);
-			ImGui::Checkbox("Dlg Editor", &showDlgEditor);
-			ImGui::Checkbox("Node Editor", &showNodeEditor);
+			ImGui::Checkbox("Characters Manager", &_showCharactersManager);
+			ImGui::Checkbox("Dlg Editor", &_showDlgEditor);
+			ImGui::Checkbox("Node Editor", &_showNodeEditor);
 		}
 	}
 	ImGui::End();

@@ -27,9 +27,9 @@ protected:
 	NodeEditor _nodeEditor;
 	CharactersManager _CharactersManager;
 
-	bool showCharactersManager = false;
-	bool showDlgEditor = false;
-	bool showNodeEditor = false;
+	bool _showCharactersManager = false;
+	bool _showDlgEditor = false;
+	bool _showNodeEditor = false;
 
 public:
 	DialogEditor();
