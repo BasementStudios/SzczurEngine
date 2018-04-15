@@ -103,12 +103,23 @@ namespace rat
         _grayPPsBar.initTextureViaGui(gui);
         _grayPPsBar.setCenter(1280.f/2.f, 0);
 
-        PPSource fireSource = {"Fire", 1, 5};
-        PPSource earthSource = {"Earth", 1, 4};
-        //PPSource airSource = {"Air", 1, 0};
+        PPSource fireSource = {"Fire", 1, 2};
+        PPSource earthSource = {"Earth", 1, 3};
+        PPSource essenceSource = {"Essence", 1, 3};
+        PPSource physicalSource = {"Physical", 1, 2};
+        PPSource waterSource = {"Water", 1, 1};
+        PPSource spiritSource = {"Spirit", 1, 1};
+        PPSource airSource = {"Air", 1, 0};
         
         _source.addSource(fireSource);
         _source.addSource(earthSource);
+        _source.addSource(essenceSource);
+        /*
+        _source.addSource(physicalSource);
+        _source.addSource(waterSource);
+        _source.addSource(spiritSource);
+        _source.addSource(airSource);
+        */
         
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();

@@ -13,11 +13,12 @@ namespace rat
     class GUI;
 
     class GrayPPBar;
+    class SkillArea;
 
     class SkillBar
     {
     public:
-        SkillBar(GrayPPBar& source);
+        SkillBar(SkillArea& parentArea);
         void setSkill(Skill* skill);
         void setParent(Widget* parent);
         void setPosition(float x, float y);
@@ -38,6 +39,7 @@ namespace rat
         }
     private:
         Skill* _skill{nullptr};
+        SkillArea& _parentArea;
         GrayPPBar& _sourceBar;
 
         bool _isBought{false};

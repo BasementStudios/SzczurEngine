@@ -30,6 +30,8 @@ namespace rat
         void setColor(const std::string& color);
         void setProfession(const std::string& profession);
 
+        GrayPPBar& getSourceBar();
+
     private:
         GrayPPBar& _sourceBar;
         SkillProfessions_t _skillBars;

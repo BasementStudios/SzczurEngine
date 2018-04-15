@@ -7,15 +7,17 @@
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 
 #include "GrayPPBar.hpp"
+#include "SkillArea.hpp"
 
 
 namespace rat
 {
      sf::Vector2f SkillBar::_size = {240.f, 72.f};
 
-    SkillBar::SkillBar(GrayPPBar& sourceBar)
+    SkillBar::SkillBar(SkillArea& parentArea)
     :
-    _sourceBar(sourceBar),
+    _parentArea(parentArea),
+    _sourceBar(_parentArea.getSourceBar()),
     _isBought(false)
     {
         _bar = new ImageWidget;
@@ -118,7 +120,6 @@ namespace rat
                 _isBought = true;
                 _bar->setTexture(_textureLocked);
             }
-            //_bar->setTexture(_textureLocked);
         }
         else
         {

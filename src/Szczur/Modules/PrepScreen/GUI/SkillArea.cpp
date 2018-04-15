@@ -74,7 +74,7 @@ namespace rat
         const auto& prof = skill->getProfession();
 
 
-        auto skillBar = std::make_unique<SkillBar>(_sourceBar);
+        auto skillBar = std::make_unique<SkillBar>(*this);
         skillBar->setSkill(skill);
         skillBar->setParent(_base);
         skillBar->deactivate();
@@ -132,7 +132,9 @@ namespace rat
             skillBar->activate();
         }
     }
-    
-    
-    
+
+    GrayPPBar& SkillArea::getSourceBar()
+    {
+        return _sourceBar;
+    }
 }
