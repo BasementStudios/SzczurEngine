@@ -74,7 +74,8 @@ namespace sf3d {
 		glBindBuffer(GL_ARRAY_BUFFER, NULL);
 		glBindBuffer(GL_COPY_READ_BUFFER, NULL);
 
-		glBindVertexArray(NULL); 
+		glBindVertexArray(NULL);
+		glDeleteBuffers(1, &temp);
 	}
 
 	void VertexArray::setPosition(size_t index, const glm::vec3 & position) {
