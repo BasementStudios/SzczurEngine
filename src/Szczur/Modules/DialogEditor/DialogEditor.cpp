@@ -39,13 +39,17 @@ void DialogEditor::update()
 	{
 		if (_projectLoaded)
 		{
-
 			ImGui::Text("Path: %s", _projectPath.c_str());
 
 			ImGui::Separator();
 
 			if (ImGui::Button("Test dialog"))
 			{
+				_dlgEditor.save();
+				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
+
+
 				getModule<Script>().scriptFile(_projectPath + "/dialog.lua");
 			}
 
