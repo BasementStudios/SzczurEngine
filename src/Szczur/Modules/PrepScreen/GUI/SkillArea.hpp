@@ -42,8 +42,11 @@ namespace rat
         ScrollAreaWidget* _base{nullptr};
 
         void _addSkillBar(Skill* skill);
+        void _addSkillBarWithoutRecalculating(Skill* skill);
         void _hide(const std::string& profession, const std::string& color);
         void _active(const std::string& profession, const std::string& color);
+        void _recalculate();
+        void _recalculate(const std::string profession, const std::string color);        
 
         float _barHeight{80.f};
 

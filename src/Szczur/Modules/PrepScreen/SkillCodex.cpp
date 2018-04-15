@@ -65,6 +65,16 @@ namespace rat
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
+        skill = std::make_unique<Skill>("Zanger");
+        skill->setProfession("Range");
+        skill->setTexturePath("assets/PrepScreen/test8.png");
+        skill->setPPCost(5);
+        skill->setRequirements({
+            {"Fire", 1},
+            {"Essence", 1}
+        });
+        _skills.emplace(skill->getName(), std::move(skill));
+
         skill = std::make_unique<Skill>("Shadow Fiend");
         skill->setProfession("InnerFire");
         skill->setTexturePath("assets/PrepScreen/test3.png");

@@ -27,16 +27,16 @@ namespace rat
         const std::string& getIconPath() const;
         void setIconTexture(sf::Texture* icon); 
         void setFont(sf::Font* font);
-
         void loadAssetsFromGUI(GUI& gui);
 
         void activate();
         void deactivate();
-
-
         bool isBought() const{
             return _isBought;
         }
+
+        bool operator<(const SkillBar& rhs);
+
     private:
         Skill* _skill{nullptr};
         SkillArea& _parentArea;

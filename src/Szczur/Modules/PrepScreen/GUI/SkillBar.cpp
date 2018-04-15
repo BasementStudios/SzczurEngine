@@ -136,7 +136,12 @@ namespace rat
         _costBar.loadAssetsFromGUI(gui);
     }
     
-    
-
-
+    bool SkillBar::operator<(const SkillBar& rhs)
+    {
+        if(_isBought == rhs._isBought)
+        {
+            return _skill->getName() < rhs._skill->getName();
+        }
+        return _isBought;
+    }
 }

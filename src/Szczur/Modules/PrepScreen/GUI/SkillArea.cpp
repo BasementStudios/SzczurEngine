@@ -1,5 +1,7 @@
 #include "SkillArea.hpp"
 
+#include <algorithm>
+
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "../PPColors.hpp"
@@ -63,28 +65,33 @@ namespace rat
     {
         for(auto& [name, skill] : skillCodex)
         {
-            _addSkillBar(skill.get());
+            _addSkillBarWithoutRecalculating(skill.get());
         }
-
+        _recalculate();
+        hideAll();
     }
 
     void SkillArea::_addSkillBar(Skill* skill)
     {
         const auto& color = skill->getColor();
         const auto& prof = skill->getProfession();
-
+        _addSkillBarWithoutRecalculating(skill);
+        _recalculate(prof, color);
+    }
+    void SkillArea::_addSkillBarWithoutRecalculating(Skill* skill)
+    {
+        const auto& color = skill->getColor();
+        const auto& prof = skill->getProfession();
 
         auto skillBar = std::make_unique<SkillBar>(*this);
         skillBar->setSkill(skill);
         skillBar->setParent(_base);
-        skillBar->deactivate();
 
         auto& suitableContainer = _skillBars[prof][color];
 
-        size_t i = suitableContainer.size();
-        skillBar->setPosition(0.f, float(i) * 80.f);
         suitableContainer.emplace_back(std::move(skillBar));
     }
+    
 
     void SkillArea::setParent(Widget* parent)
     {
@@ -137,4 +144,38 @@ namespace rat
     {
         return _sourceBar;
     }
+    
+    void SkillArea::_recalculate(const std::string profession, const std::string color)
+    {
+        auto& suitCont = _skillBars[profession][color];
+        std::sort(suitCont.begin(), suitCont.end(), [](auto& lhs, auto& rhs){
+            return (*lhs) < (*rhs);
+        });
+        auto firstBought = std::find_if(suitCont.begin(), suitCont.end(), [](auto& skillBarPtr){
+            return skillBarPtr->isBought();
+        });
+
+        size_t i = 0;
+        for(auto skillBarItr = suitCont.begin(); skillBarItr < firstBought; ++skillBarItr)
+        {
+            auto& skillBar = *skillBarItr;
+            skillBar->activate();
+            skillBar->setPosition(0.f, float(i++) * 80.f);
+        }
+        for(auto skillBarItr = firstBought; skillBarItr < suitCont.end(); ++skillBarItr)
+        {
+            auto& skillBar = *skillBarItr;
+            skillBar->deactivate();
+            skillBar->setPosition(0.f, 0.f);
+        }
+    }
+
+    void SkillArea::_recalculate()
+    {
+        for(auto& [prof, colors] : _skillBars)
+            for(auto& [color, skills] : colors)
+                _recalculate(prof, color);
+    }
+    
+    
 }
