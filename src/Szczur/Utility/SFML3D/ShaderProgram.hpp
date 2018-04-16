@@ -6,7 +6,7 @@ namespace sf3d {
 	class ShaderProgram {
 	public:
 		ShaderProgram() = delete;
-		ShaderProgram(VShader vShader, FShader fShader);
+		ShaderProgram(GLuint vShader, GLuint fShader);
 		~ShaderProgram();
 
 		void use() const;

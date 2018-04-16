@@ -1,7 +1,7 @@
 #include "ShaderProgram.hpp"
 
 namespace sf3d {
-	ShaderProgram::ShaderProgram(VShader vShader, FShader fShader) {
+	ShaderProgram::ShaderProgram(GLuint vShader, GLuint fShader) {
 		_program = glCreateProgram();
 		glAttachShader(_program, vShader);
 		glAttachShader(_program, fShader);
