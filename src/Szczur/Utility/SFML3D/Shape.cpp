@@ -34,12 +34,12 @@ namespace sf3d {
 			case 4: return {100.f, 0.f, 100.f};
 			case 5: return {0.f, 0.f, 100.f};
 			case 6: return {0.f, 0.f, 0.f};
-			case 7: return {100.f, 0.f, 0.f};		
+			case 7: return {100.f, 0.f, 0.f};
 		}
 	}
 
-	glm::vec3 Shape::getPointColor(size_t index) const {
-		return {1.0, 0.0, 1.0};
+	glm::vec4 Shape::getPointColor(size_t index) const {
+		return {1.0, 0.0, 1.0, 1.0};
 	}
 
 	glm::vec2 Shape::getPointCoord(size_t index) const {

@@ -10,7 +10,7 @@ namespace sf3d {
 		~VertexArray();
 
 		void setPosition(size_t index, const glm::vec3& position);
-		void setColor(size_t index, const glm::vec3& color);
+		void setColor(size_t index, const glm::vec4& color);
 		void setTexCoord(size_t index, const glm::vec2& texCoord);
 		void set(size_t index, const Vertex& vertex);
 

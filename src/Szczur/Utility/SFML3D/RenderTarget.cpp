@@ -59,7 +59,7 @@ namespace sf3d {
 	void RenderTarget::draw(const VertexArray& vertices, RenderStates states) {
 		if(vertices.getSize() > 0 && _setActive()) {
 			ShaderProgram* shader;
-			if(states.shader) 
+			if(states.shader)
 				shader = states.shader;
 			else if(_states.shader)
 				shader = _states.shader;
@@ -168,8 +168,8 @@ namespace sf3d {
 		float cosx = glm::cos(x);
 
 		glm::vec3 rotation{
-			cosy * sinx, 
-			siny * cosx, 
+			cosy * sinx,
+			siny * cosx,
 			-cosy * cosx
 		};
 		rotation = glm::rotateX(rotation, glm::radians(-_view.getRotation().x));

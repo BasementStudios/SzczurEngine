@@ -9,25 +9,27 @@ namespace sf3d {
 		glGenBuffers(1, &_VBO);
 		glGenVertexArrays(1, &_VAO);
 
-		Vertex defaultVert{{0.f, 0.f, 0.f}, {1.f, 1.f, 1.f}, {0.f, 0.f}};
-
+		Vertex defaultVert;
 
 		glBindVertexArray(_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*size, nullptr, storageUsage);
 
-		for(int i = 0; i<size; i++)
+		for (size_t i = 0; i < size; ++i)
 			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
 
 
+		// position
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 							  sizeof(Vertex),
 							  (void*)(0)
 		);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+		// color
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
 							  sizeof(Vertex),
 							  (void*)(sizeof(Vertex::position))
 		);
+		// texCoord
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
 							  sizeof(Vertex),
 							  (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))
@@ -64,9 +66,11 @@ namespace sf3d {
 		glBindBuffer(GL_COPY_READ_BUFFER, temp);
 		glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vertex), nullptr, _storageUsage);
 
-		Vertex defaultVert{{0.f, 0.f, 0.f},{1.f, 1.f, 1.f},{0.f, 0.f}};
-		for(int i = 0; i < size; i++)
+		Vertex defaultVert;
+
+		for (size_t i = 0; i < size; ++i)
 			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
+
 		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, ((_size>size) ? size : _size) * sizeof(Vertex));
 
 		_size = size;
@@ -85,7 +89,7 @@ namespace sf3d {
 		}
 	}
 
-	void VertexArray::setColor(size_t index, const glm::vec3 & color) {
+	void VertexArray::setColor(size_t index, const glm::vec4 & color) {
 		if(index < _size) {
 			_startEdit(index)->color = color;
 			_endEdit();
