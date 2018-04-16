@@ -43,7 +43,9 @@ Shader::operator GLuint () const
 
 void Shader::_destroy()
 {
-	glDeleteShader(_program);
+	if (_program) {
+		glDeleteShader(_program);		
+	}
 }
 
 bool Shader::_compile(const std::string& filePath, ShaderType_e type)
@@ -60,20 +62,17 @@ bool Shader::_compile(const std::string& filePath, ShaderType_e type)
 	_destroy();
 
 	// Create new program
-	_program = glCreateShader(type);
 	const char* src = buffer.data();
-
+	_program = glCreateShader(type);
 	glShaderSource(_program, 1, &src, nullptr);
 	glCompileShader(_program);
 
 	// Handle compilation result
 	GLint success;
-	GLchar infoLog[512];
 	glGetShaderiv(_program, GL_COMPILE_STATUS, &success);
-
-	if(!success) {
+	if (success != GL_TRUE) {
+		GLchar infoLog[512];
 		glGetShaderInfoLog(_program, sizeof(infoLog) * sizeof(GLchar), nullptr, infoLog);
-
 		LOG_ERROR("Unable to compile shader ", std::quoted(filePath), '\n', infoLog);
 		_destroy();
 		return false;

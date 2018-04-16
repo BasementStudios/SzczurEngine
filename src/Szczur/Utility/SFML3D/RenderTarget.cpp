@@ -67,34 +67,41 @@ namespace sf3d {
 				std::cout << "NO SHADER AVAILABLE!!!!\n";
 				return;
 			}
+
+			for (int i = 0; i < 3; ++i)
+				states.transform.getMatrix()[3][i] *= 2.0f / static_cast<float>(_windowSize.y);
+
 			shader->use();
-			for(int i = 0; i < 3; i++)
-				states.transform.getMatrix()[3][i] *= 2.f / (float)_windowSize.y;
+			shader->setUniform("positionFactor", 2.0f / static_cast<float>(_windowSize.y));
+			shader->setUniform("model", states.transform.getMatrix());
+			shader->setUniform("view", _view.getTransform().getMatrix());
+			shader->setUniform("projection", _projection);
+			shader->setUniform("isTextured", states.texture != nullptr);
 
-			glUniform1f(
-				glGetUniformLocation(*shader, "positionFactor"),
-				2.f / (float)_windowSize.y
-			);
-
-			glUniformMatrix4fv(
-				glGetUniformLocation(*shader, "model"),
-				1, GL_FALSE, glm::value_ptr(states.transform.getMatrix())
-			);
-
-			glUniformMatrix4fv(
-				glGetUniformLocation(*shader, "view"),
-				1, GL_FALSE, glm::value_ptr(_view.getTransform().getMatrix())
-			);
-
-			glUniformMatrix4fv(
-				glGetUniformLocation(*shader, "projection"),
-				1, GL_FALSE, glm::value_ptr(_projection)
-			);
-
-			glUniform1i(
-				glGetUniformLocation(*shader, "isTextured"),
-				(states.texture) ? 1 : 0
-			);
+			// glUniform1f(
+			// 	glGetUniformLocation(*shader, "positionFactor"),
+			// 	2.f / (float)_windowSize.y
+			// );
+			//
+			// glUniformMatrix4fv(
+			// 	glGetUniformLocation(*shader, "model"),
+			// 	1, GL_FALSE, glm::value_ptr(states.transform.getMatrix())
+			// );
+			//
+			// glUniformMatrix4fv(
+			// 	glGetUniformLocation(*shader, "view"),
+			// 	1, GL_FALSE, glm::value_ptr(_view.getTransform().getMatrix())
+			// );
+			//
+			// glUniformMatrix4fv(
+			// 	glGetUniformLocation(*shader, "projection"),
+			// 	1, GL_FALSE, glm::value_ptr(_projection)
+			// );
+			//
+			// glUniform1i(
+			// 	glGetUniformLocation(*shader, "isTextured"),
+			// 	(states.texture) ? 1 : 0
+			// );
 
 			if(states.texture)
 				states.texture->bind();
