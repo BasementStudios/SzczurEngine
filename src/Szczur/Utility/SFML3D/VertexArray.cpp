@@ -1,8 +1,23 @@
 #include "VertexArray.hpp"
 
 #include <glad/glad.h>
+#include "Vertex.hpp"
 
 namespace sf3d {
+
+	VertexInterface::VertexInterface(GLuint VBO, size_t index) :
+	_VBO(VBO), _index(index) {
+
+	}
+
+	void VertexInterface::setPosition(const glm::vec3& position) {
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index;
+		vertex->position = position;
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
 	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
 		_storageUsage(storageUsage),
 		_size(size) {
@@ -150,6 +165,13 @@ namespace sf3d {
 	void VertexArray::_endEdit() {
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	VertexInterface VertexArray::operator[](size_t index) const {
+		if(index < _size)
+			return VertexInterface(_VBO, index);
+		else //@todo <- add log displaying while trying to access element out of array
+			return VertexInterface(0, 0); 
 	}
 
 }

@@ -3,6 +3,16 @@
 #include "Vertex.hpp"
 #include "Drawable.hpp"
 namespace sf3d {
+	class VertexInterface {
+	public:
+		VertexInterface(GLuint VBO, size_t index);
+
+		void setPosition(const glm::vec3& position);
+	private:
+		GLuint _VBO;
+		size_t _index;
+	};
+
 	class VertexArray : public Drawable {
 	public:
 		VertexArray() = delete;
@@ -27,6 +37,8 @@ namespace sf3d {
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
 		void draw();
+
+		VertexInterface operator[](size_t index) const;
 	private:
 		unsigned int _VAO;
 		unsigned int _VBO;

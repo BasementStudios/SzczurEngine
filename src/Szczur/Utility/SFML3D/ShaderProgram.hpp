@@ -47,6 +47,7 @@ public:
 		return true;
 	}
 
+
 	void use() const;
 
 	void setUniform(const char* name, bool x);
