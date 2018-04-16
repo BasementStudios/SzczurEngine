@@ -9,11 +9,8 @@
 #include <vector>
 
 #include <dragonBones/model/DragonBonesData.h>
-#include <SFML/Graphics/Texture.hpp>
-#include <dragonBones/model/TextureAtlasData.h>
-
 #include "Szczur/Utility/SFML3D/Texture.hpp"
-#include "Szczur/Utility/SFML3D/VertexArray.hpp"
+#include <dragonBones/model/TextureAtlasData.h>
 
 #include "Szczur/Modules/DragonBones/DragonBones.hpp" // Factory_t
 
@@ -25,7 +22,7 @@ class ArmatureDisplayData
 	/* Types */
 public:
 	using SkeletonData_t 	= dragonBones::DragonBonesData;
-	using Texture_t    		= sf::Texture;
+	using Texture_t    		= sf3d::Texture;
 	using AtlasData_t		= dragonBones::TextureAtlasData;
 	
 

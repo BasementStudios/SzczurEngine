@@ -13,13 +13,12 @@
 #include <vector>
 #include <fstream>
 
-#include <dragonBones/SFMLArmatureDisplay.h>
 #include <dragonBones/model/DragonBonesData.h>
-#include <SFML/Graphics/Texture.hpp>
+#include "Szczur/Utility/SFML3D/Texture.hpp"
 #include <dragonBones/model/TextureAtlasData.h>
-#include "json.hpp"
-using json = nlohmann::json;
 
+#include "Szczur/Modules/DragonBones/SF33ArmatureDisplay.hpp"
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
@@ -96,6 +95,7 @@ ArmatureDisplayData::ArmatureDisplayData(const std::string& name, DragonBones::F
 			}
 
 			// Allocate atlas textures and atlas data containers
+			// @info It's highly neccessary to preallocate for the textures
 			this->atlasesData.reserve(atlasCount);
 			this->textures.reserve(atlasCount);
 			

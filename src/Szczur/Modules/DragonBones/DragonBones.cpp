@@ -6,7 +6,7 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-#include <dragonBones/SFMLFactory.h>
+//#include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -15,14 +15,14 @@ namespace rat
 
 /* Properties */
 /// Factory
-DragonBones::Factory_t& DragonBones::getFactory()
-{
-	return this->factory;
-}
-const DragonBones::Factory_t& DragonBones::getFactory() const
-{
-	return this->factory;
-}
+// DragonBones::Factory_t& DragonBones::getFactory()
+// {
+// 	return this->factory;
+// }
+// const DragonBones::Factory_t& DragonBones::getFactory() const
+// {
+// 	return this->factory;
+// }
 
 
 
@@ -51,7 +51,7 @@ void DragonBones::init()
 /// update
 void DragonBones::update(float deltaTime)
 {
-	this->factory.update(deltaTime);
+	//this->factory.update(deltaTime);
 }
 
 }

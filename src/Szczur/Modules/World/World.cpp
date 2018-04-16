@@ -42,7 +42,7 @@ void World::init()
 
 		auto& stoneObject = this->objects.emplace<stoneObject_t>(BaseObject{"kamyk"}, SpriteComponent{&stoneDisplayData});
 
-		stoneObject.move({0.f, 0.f, -3333.f});
+		stoneObject.translate({0.f, 0.f, -3333.f});
 		//stoneObject.setPosition({1.11f, 11.1f, 111.f});
 	}
 }

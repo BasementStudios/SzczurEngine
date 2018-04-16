@@ -8,7 +8,7 @@
 
 #include <memory>
 
-#include <dragonBones/SFMLFactory.h>
+//#include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Utility/Modules/Module.hpp"
 
@@ -22,12 +22,12 @@ class DragonBones : public Module<>
 { 
 	/* Types */
 public:
-	using Factory_t = dragonBones::SFMLFactory;
+	//using Factory_t = dragonBones::SFMLFactory;
 	
 	/* Fields */
 private:
 	// @info Factory use statics inside.
-	Factory_t factory; // @todo ...
+	//Factory_t factory; // @todo ...
 
 
 
@@ -37,8 +37,8 @@ public:
 	 ** @description Provides access to armature factory.
 	 ** @access referecne get
 	 **/
-	Factory_t& getFactory();
-	const Factory_t& getFactory() const;
+	//Factory_t& getFactory();
+	//const Factory_t& getFactory() const;
 
 
 
