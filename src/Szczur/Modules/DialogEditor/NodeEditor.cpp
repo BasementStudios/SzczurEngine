@@ -168,7 +168,9 @@ std::string NodeEditor::generateCode()
 
 	LOG_INFO("Generating code...");
 
-	std::vector<std::string> optionsCode;
+	std::vector<std::string> codeSegment;
+
+	codeSegment.push_back("local dialog = Dialog.load(\"" + _dialogEditor->_projectPath + "/dialog\")\n\n");
 
 	bool firstOptions = true;
 
@@ -182,8 +184,6 @@ std::string NodeEditor::generateCode()
 
 			///// Runners
 			std::string code;
-
-			code = "local dialog = Dialog.load(\"" + _dialogEditor->_projectPath + "/dialog\")\n\n";
 			
 			code += "-- " + node->Name + "\n\n";
 
@@ -293,7 +293,7 @@ std::string NodeEditor::generateCode()
 				code += "}\n\n";
 			}
 
-			optionsCode.push_back(code);
+			codeSegment.push_back(code);
 		}
 	}
 
@@ -308,15 +308,15 @@ std::string NodeEditor::generateCode()
 		{
 			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.ptr->id) + ")";
 
-			optionsCode.push_back(code);
+			codeSegment.push_back(code);
 		}
 	}
 
-	optionsCode.push_back("dialog:play()");
+	codeSegment.push_back("dialog:play()");
 
 	std::string finalCode;
 
-	for (auto& code : optionsCode)
+	for (auto& code : codeSegment)
 	{
 		finalCode += code + "\n";
 	}
