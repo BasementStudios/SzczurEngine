@@ -55,7 +55,7 @@ namespace sf3d {
 
 
 	void RenderTarget::draw(const VertexArray& vertices, RenderStates states) {
-		if(vertices.getSize() > 0 && _setActive()) {
+		if(vertices.size() > 0 && _setActive()) {
 			ShaderProgram* shader;
 			if(states.shader)
 				shader = states.shader;
@@ -106,7 +106,7 @@ namespace sf3d {
 
 			vertices.bind();
 
-			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.size());
 			states.texture->unbind();
 			glBindVertexArray(0);
 
@@ -115,7 +115,7 @@ namespace sf3d {
 	}
 
 	void RenderTarget::simpleDraw(const VertexArray & vertices, RenderStates states) {
-		if(vertices.getSize() > 0 && _setActive()) {
+		if(vertices.size() > 0 && _setActive()) {
 			if(states.shader)
 				states.shader->use();
 			else
@@ -126,7 +126,7 @@ namespace sf3d {
 
 			vertices.bind();
 
-			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.size());
 
 			states.texture->unbind();
 			glBindVertexArray(0);

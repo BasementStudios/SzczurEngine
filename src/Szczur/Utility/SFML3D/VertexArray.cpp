@@ -137,7 +137,7 @@ namespace sf3d {
 		_primitveType = type;
 	}
 
-	size_t VertexArray::getSize() const {
+	size_t VertexArray::size() const {
 		return _size;
 	}
 

@@ -29,7 +29,7 @@ namespace sf3d {
 
 		void setPrimitveType(unsigned int type);
 
-		size_t getSize() const;
+		size_t size() const;
 
 		void resize(size_t size);
 
