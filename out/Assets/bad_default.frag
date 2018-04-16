@@ -18,6 +18,9 @@ void main()
     {
         vec4 pixel = texture(boundTexture, texCoord)
 
+        if (pixel.a == 0.0)
+            discard;
+
         FragColor = pixel * color;
     }
     else
