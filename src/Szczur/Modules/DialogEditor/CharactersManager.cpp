@@ -65,6 +65,12 @@ namespace rat
         ImGui::End();
     }
 
+    void CharactersManager::clear()
+    {
+        _charactersName.clear();
+        _charactersImagePath.clear();
+    }
+
     std::vector<std::string>& CharactersManager::getNamesContainer()
     {
         return _charactersName;
@@ -77,8 +83,10 @@ namespace rat
 
     void CharactersManager::load(const std::string& path)
     {
-        using Json = nlohmann::json;
-        Json json;
+        _charactersName.clear();
+        _charactersImagePath.clear();
+
+        nlohmann::json json;
 
         std::ifstream file(path);
         if(file.is_open()) {
@@ -96,8 +104,7 @@ namespace rat
 
     void CharactersManager::save(const std::string& path)
     {
-        using Json = nlohmann::json;
-        Json json;
+        nlohmann::json json;
 
         for(unsigned int i = 0; i < _charactersName.size(); ++i) {
             json[_charactersName[i]] = _charactersImagePath[i];

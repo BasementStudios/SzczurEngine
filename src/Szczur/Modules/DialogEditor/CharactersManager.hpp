@@ -20,6 +20,8 @@ namespace rat
         void load(const std::string& path);
         void save(const std::string& path);
 
+        void clear();
+
         void update();
 
         std::vector<std::string>& getNamesContainer();
