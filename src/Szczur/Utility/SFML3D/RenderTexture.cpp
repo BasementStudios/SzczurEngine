@@ -17,13 +17,13 @@ namespace sf3d {
 			//RenderBuffer
 			glBindRenderbuffer(GL_RENDERBUFFER, _RBO);
 				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
-			glBindRenderbuffer(GL_RENDERBUFFER, NULL);
+			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _RBO);
 
 			if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				std::cout << "FRAMEBUFFER CREATION ERROR\n";
 
-		glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//Framebuffer
 	}
 	RenderTexture::~RenderTexture() {
@@ -36,7 +36,7 @@ namespace sf3d {
 	Texture* RenderTexture::getTexture() {
 		return &_texture;
 	}
-	bool RenderTexture::_setActive(bool states) {
+	bool RenderTexture::_setActive(bool /*states*/) {
 		if(_FBO) {
 			glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 			return true;

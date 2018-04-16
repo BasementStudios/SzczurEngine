@@ -12,16 +12,14 @@
 namespace sf3d {
 
 	RenderTarget::RenderTarget(const glm::uvec2& size, float FOV, ShaderProgram* program) :
+	_windowSize(size),
 	_FOVy(FOV),
-	_FOVx(
-		glm::degrees(2 * glm::atan(glm::tan(glm::radians(FOV / 2.f)) * ((float)size.x / (float)size.y)))
-	),
+	_FOVx(glm::degrees(2 * glm::atan(glm::tan(glm::radians(FOV / 2.f)) * ((float)size.x / (float)size.y)))),
 	_halfFOVxTan( glm::tan(glm::radians(_FOVx / 2.f)) ),
 	_halfFOVyTan( glm::tan(glm::radians(_FOVy / 2.f)) ),
-	_projection(1.f),
-	_windowSize(size),
 	_view(2.f / (float)size.y, {0.f, 0.f, 3 * (float)size.x / 2.f}),
-	_defaultView(_view) {
+	_defaultView(_view),
+	_projection(1.f) {
 		_projection = glm::perspective(glm::radians(FOV), (float)size.x / (float)size.y, 0.1f, 100.f);
 		_states.shader = program;
 		/*if(!gladLoadGL()) {
@@ -42,7 +40,7 @@ namespace sf3d {
 		if(_setActive()) {
 			glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
 			glClear(flags);
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
 
@@ -110,9 +108,9 @@ namespace sf3d {
 
 			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 			states.texture->unbind();
-			glBindVertexArray(NULL);
+			glBindVertexArray(0);
 
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
 
@@ -131,8 +129,8 @@ namespace sf3d {
 			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 
 			states.texture->unbind();
-			glBindVertexArray(NULL);
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindVertexArray(0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
 
@@ -188,8 +186,8 @@ namespace sf3d {
 		});
 	}
 
-	bool RenderTarget::_setActive(bool state) {
-		glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+	bool RenderTarget::_setActive(bool /*state*/) {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return true;
 	}
 

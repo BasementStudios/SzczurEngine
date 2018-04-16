@@ -36,13 +36,15 @@ namespace sf3d {
 			case 6: return {0.f, 0.f, 0.f};
 			case 7: return {100.f, 0.f, 0.f};
 		}
+
+		return {};
 	}
 
-	glm::vec4 Shape::getPointColor(size_t index) const {
+	glm::vec4 Shape::getPointColor(size_t /*index*/) const {
 		return {1.0, 0.0, 1.0, 1.0};
 	}
 
-	glm::vec2 Shape::getPointCoord(size_t index) const {
+	glm::vec2 Shape::getPointCoord(size_t /*index*/) const {
 		return {0.0, 0.0};
 	}
 }

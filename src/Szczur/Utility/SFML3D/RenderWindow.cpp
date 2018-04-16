@@ -8,8 +8,8 @@ namespace sf3d {
 		UINT32 style,
 		const sf::ContextSettings & settings
 	) :
-	sf3d::RenderTarget(glm::vec2{mode.width, mode.height}, 45.f, program),
-	sf::RenderWindow(mode, title, style, settings) {
+	sf::RenderWindow(mode, title, style, settings),
+	sf3d::RenderTarget(glm::vec2{mode.width, mode.height}, 45.f, program) {
 		if(!gladLoadGL()) {
 			std::cout << "Failed to initialize GLAD\n";
 			while(true);

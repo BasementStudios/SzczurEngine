@@ -4,8 +4,8 @@
 
 namespace sf3d {
 	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
-		_size(size),
-		_storageUsage(storageUsage) {
+		_storageUsage(storageUsage),
+		_size(size) {
 		glGenBuffers(1, &_VBO);
 		glGenVertexArrays(1, &_VAO);
 
@@ -42,8 +42,8 @@ namespace sf3d {
 		glEnableVertexAttribArray(2);
 
 
-		glBindBuffer(GL_ARRAY_BUFFER, NULL);
-		glBindVertexArray(NULL);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 
 	VertexArray::~VertexArray() {
@@ -75,10 +75,10 @@ namespace sf3d {
 
 		_size = size;
 
-		glBindBuffer(GL_ARRAY_BUFFER, NULL);
-		glBindBuffer(GL_COPY_READ_BUFFER, NULL);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_COPY_READ_BUFFER, 0);
 
-		glBindVertexArray(NULL);
+		glBindVertexArray(0);
 		glDeleteBuffers(1, &temp);
 	}
 
@@ -126,9 +126,8 @@ namespace sf3d {
 		return _size;
 	}
 
-	void VertexArray::draw(RenderTarget& target, RenderStates states) const {
+	void VertexArray::draw(RenderTarget& /*target*/, RenderStates /*states*/) const {
 		//target.draw(this, states);
-
 	}
 
 	void VertexArray::draw() {
@@ -136,7 +135,7 @@ namespace sf3d {
 
 		glDrawArrays(GL_TRIANGLES, 0, _size);
 
-		glBindVertexArray(NULL);
+		glBindVertexArray(0);
 	}
 
 	void VertexArray::bind() const {
@@ -150,7 +149,7 @@ namespace sf3d {
 
 	void VertexArray::_endEdit() {
 		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, NULL);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 }

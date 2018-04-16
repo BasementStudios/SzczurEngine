@@ -5,7 +5,7 @@
 #include "ShaderProgram.hpp"
 
 namespace sf3d {
-	class Vertex;
+	struct Vertex;
 	class VertexArray;
 	class Drawable;
 
@@ -34,7 +34,7 @@ namespace sf3d {
 
 		Linear getLinerByScreenPos(const glm::vec2& pos) const;
 
-		
+
 
 	private:
 		virtual bool _setActive(bool state = true);
@@ -47,7 +47,6 @@ namespace sf3d {
 		float _FOVx;
 		float _halfFOVxTan;
 		float _halfFOVyTan;
-		//glm::mat4 _view;
 		View _view;
 		View _defaultView;
 		glm::mat4 _projection;

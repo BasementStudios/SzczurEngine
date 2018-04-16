@@ -34,7 +34,7 @@ namespace sf3d {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-			glBindTexture(GL_TEXTURE_2D, NULL);
+			glBindTexture(GL_TEXTURE_2D, 0);
 			return true;
 		}
 		return false;
@@ -46,12 +46,12 @@ namespace sf3d {
 	}
 
 	void Texture::unbind() const {
-		glBindTexture(GL_TEXTURE_2D, NULL);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Texture::create(const glm::vec2& size) {
 		bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		unbind();
