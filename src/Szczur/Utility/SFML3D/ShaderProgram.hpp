@@ -23,7 +23,29 @@ public:
 
 	~ShaderProgram();
 
-	bool linkShaders(const Shader& first, const Shader& second);
+	template<typename... Ts>
+	bool linkShaders(const Ts&... shaders) {
+		_program = glCreateProgram();
+
+		(glAttachShader(_program, shaders), ...);
+
+		glLinkProgram(_program);
+
+		(glDetachShader(_program, shaders), ...);
+
+		// Handle linking result
+		GLint success;
+		glGetProgramiv(_program, GL_LINK_STATUS, &success);
+		if (success != GL_TRUE) {
+			GLchar infoLog[512];
+			glGetProgramInfoLog(_program, sizeof(infoLog) * sizeof(GLchar), nullptr, infoLog);
+			LOG_ERROR("Unable to link shader program\n", infoLog);
+			_destroy();
+			return false;
+		}
+
+		return true;
+	}
 
 	void use() const;
 
