@@ -8,6 +8,8 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Config.hpp"
 
+#include "Szczur/Utility/Logger.hpp"
+
 namespace rat
 {
     CharactersManager::CharactersManager(DLGEditor::TextContainer_t& dialogParts)
@@ -46,10 +48,15 @@ namespace rat
                     else {
                         _characters[i].imagePath = path;
                     }
+                    std::replace(_characters[i].imagePath.begin(), _characters[i].imagePath.end(), '\\', '/');
+                    
+                    LOG_INFO("Image path loaded: ", _characters[i].imagePath);
+
                 }
 
                 ImGui::SameLine(); 
                 if (ImGui::Button("-##Characters Manager", ImVec2(30, 22))) {
+                    LOG_INFO("Character ", _characters[i].name, "has been removed");
                     _characters.erase(_characters.begin() + i);
 
                     for(auto& majors : _dialogParts) {
@@ -61,13 +68,14 @@ namespace rat
                             }
                         }
                     }
-                    
+
                 }
 
                 ImGui::PopID();
             }
             if (ImGui::Button("+##Characters Manager", ImVec2(30, 27))) {
                 _characters.push_back({"", ""});
+                LOG_INFO("New Character added");
             };
         ImGui::End();
     }
@@ -75,6 +83,7 @@ namespace rat
     void CharactersManager::clear()
     {
         _characters.clear();
+        LOG_INFO("Charactes cleared");
     }
 
     std::vector<CharacterData>& CharactersManager::getCharactersContainer()
@@ -99,6 +108,8 @@ namespace rat
             _characters.push_back({it.key(), it.value()});
         }
 
+        LOG_INFO("Charactes data loaded from: ", path);
+
     }
 
     void CharactersManager::save(const std::string& path)
@@ -114,6 +125,8 @@ namespace rat
             file << json;
         }
         file.close();
+
+        LOG_INFO("Charactes data saved into: ", path);
     }
     
 }

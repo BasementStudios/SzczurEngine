@@ -7,6 +7,7 @@
 #include <cmath>
 #include <stdlib.h>
 
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
@@ -64,6 +65,8 @@ namespace rat
             }
         }
         dlg.close();
+
+        LOG_INFO("Dlg saved into: ", _dialogPath + ".dlg");
     }
 
     DLGEditor::TextContainer_t& DLGEditor::getContainer()
@@ -148,6 +151,7 @@ namespace rat
             }
 
             _parts.erase(major);
+            LOG_INFO("Major part has been removed");
         } 
         ImGui::SameLine();
         if (ImGui::Button("+##DialogMajorPartSelector", ImVec2(30, 27))) {
@@ -165,6 +169,7 @@ namespace rat
                 1
             };
             _parts[major] = {std::make_pair(1, temp)};
+            LOG_INFO("New major part added");
         }
     }
 
@@ -192,6 +197,7 @@ namespace rat
             if (_currentMinor == minor) { --_currentMinor; }
             delete _parts[_currentMajor][minor];
             _parts[_currentMajor].erase(minor);
+            LOG_INFO("Minor part has been removed");
         } 
         ImGui::SameLine();
         if (ImGui::Button("+##DialogMinorPartSelector", ImVec2(30, 27))) {
@@ -209,6 +215,7 @@ namespace rat
                 1
             };
             _parts[_currentMajor].insert_or_assign(minor, temp);
+            LOG_INFO("New minor part added");
         }
     }
 
@@ -252,7 +259,7 @@ namespace rat
         ImGui::PushItemWidth(50);
             if (ImGui::InputText("##DialogTimeSelectorStart", tempStartTime, 6, 1)) {
                 _startTestPlayerOffset = toIntSeconds(tempStartTime);
-                if (_startTestPlayerOffset != 0) _parts[_currentMajor][_currentMinor]->audioStartTime = tempStartTime; 
+                if (_startTestPlayerOffset > 0) _parts[_currentMajor][_currentMinor]->audioStartTime = tempStartTime; 
                 else _parts[_currentMajor][_currentMinor]->audioStartTime = "00:00";
             } 
         ImGui::PopItemWidth();
@@ -262,7 +269,7 @@ namespace rat
         ImGui::PushItemWidth(50);
         if (ImGui::InputText("##DialogTimeSelectorEnd", tempEndTime, 6, 1)) {
             _endTestPlayerOffset = toIntSeconds(tempEndTime);
-            if (_endTestPlayerOffset != 0) _parts[_currentMajor][_currentMinor]->audioEndTime = tempEndTime; 
+            if (_endTestPlayerOffset > 0) _parts[_currentMajor][_currentMinor]->audioEndTime = tempEndTime; 
             else _parts[_currentMajor][_currentMinor]->audioEndTime = "00:00";
         }
         ImGui::PopItemWidth();
@@ -297,7 +304,13 @@ namespace rat
                     strcpy(dialogTime, _sliderTimeString.c_str());
                 }
                 ImGui::SameLine();
-                ImGui::PushItemWidth(50); ImGui::InputText("##DLGTimeInput", dialogTime, 6, 1); ImGui::PopItemWidth();
+                ImGui::PushItemWidth(50); 
+                if (ImGui::InputText("##DLGTimeInput", dialogTime, 6, 1)) {
+                    if(toIntSeconds(dialogTime) == -1) {
+                        strcpy(dialogTime, "00:00");
+                    }
+                }
+                ImGui::PopItemWidth();
                 ImGui::SameLine();
                 if (ImGui::GetWindowWidth() - 292 > 0) {
                     ImGui::PushItemWidth(ImGui::GetWindowWidth() - 292); 
@@ -338,6 +351,7 @@ namespace rat
             _parts[_currentMajor][_currentMinor]->dialogs.pop_back();
             _parts[_currentMajor][_currentMinor]->dialogTime.pop_back();
             _parts[_currentMajor][_currentMinor]->chosenCharacter.pop_back();
+            LOG_INFO("Dialog part has been removed");
         }
         ImGui::SameLine();
         if (ImGui::Button("+##AddDialog", ImVec2(30, 27))) {
@@ -345,6 +359,7 @@ namespace rat
             _parts[_currentMajor][_currentMinor]->dialogs.push_back("");
             _parts[_currentMajor][_currentMinor]->dialogTime.push_back(dialogTime);
             _parts[_currentMajor][_currentMinor]->chosenCharacter.push_back(0);
+            LOG_INFO("Added dialog part");
         }
     }
  
@@ -374,7 +389,7 @@ namespace rat
     int DLGEditor::toIntSeconds(const std::string& timeString)
     {
         auto semicolonPos = timeString.find(':');
-        if (semicolonPos == std::string::npos || semicolonPos != 2) return 0;
+        if (semicolonPos == std::string::npos || semicolonPos != 2 || timeString.length() != 5) return -1;
         return (atoi(&timeString[0]) * 60) + atoi(&timeString[3]);
     }
 

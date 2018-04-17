@@ -1,8 +1,11 @@
 #include "DLGTextManager.hpp"
+
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <memory>
+
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat 
 {
@@ -39,6 +42,7 @@ namespace rat
                 dlg << "[1][1][00:00-00:00][-]{\n\0" << "\t[00:00][_]_\n\0" << "}\n\0";
             }
             dlg.close();
+            LOG_INFO("Generated new dlg file: ", path);
 
             DialogData* obj = new DialogData {
                 1,
@@ -69,6 +73,7 @@ namespace rat
                 
                 add(obj->id, obj->minorId, obj);
             }
+            LOG_INFO("Dialog data loaded from: ", path);
         }
 
     }
