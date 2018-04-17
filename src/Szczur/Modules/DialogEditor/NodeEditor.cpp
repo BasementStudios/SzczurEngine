@@ -64,15 +64,13 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 	if (saveFormat == FileFormat::Lua)
 	{
 		LOG_INFO("Save format: Lua");
-
-		auto code = generateCode();
-
 		LOG_INFO("Saving code to '", fileName, "'...");
 
 		std::ofstream file(fileName, std::ios::trunc);
 
 		if (file.good())
 		{
+			auto code = generateCode();
 			file << code;
 			file.close();
 
@@ -142,7 +140,10 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 						{
 							auto targetId = output->OptionTarget.id;
 
-							output->OptionTarget.ptr = _parts->at(targetId).begin()->second;
+							if (targetId > 0)
+							{
+								output->OptionTarget.ptr = _parts->at(targetId).begin()->second;
+							}
 						}
 					}
 				}
