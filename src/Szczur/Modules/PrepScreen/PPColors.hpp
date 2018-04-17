@@ -1,5 +1,5 @@
 #pragma once
-#include <set>
+#include <array>
 #include <string>
 
 namespace rat
@@ -8,16 +8,15 @@ namespace rat
     {
     public:
     PPColors();
-    auto begin()
+    auto begin() const
     {
         return _colors.begin();
     }
-    auto end()
+    auto end() const
     {
         return _colors.end();
     }
     private:
-        static std::set<std::string> _staticColors;
-        std::set<std::string>& _colors;
+        const std::array<std::string, 7u> _colors;
     };
 }

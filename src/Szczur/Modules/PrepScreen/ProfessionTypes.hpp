@@ -1,6 +1,6 @@
 #pragma once 
 
-#include <vector>
+#include <array>
 #include <string>
 
 namespace rat
@@ -10,17 +10,16 @@ namespace rat
     public:
         ProfessionTypes();
 
-        auto begin()
+        auto begin() const
         {
             return _professionTypes.begin();
         }
         
-        auto end()
+        auto end() const
         {
             return _professionTypes.end();
         }
     private:
-        static std::vector<std::string> _professions;
-        std::vector<std::string>& _professionTypes;
+        const std::array<std::string, 4u> _professionTypes;
     };
 }
