@@ -10,7 +10,7 @@ namespace rat
 
 DialogEditor::DialogEditor()
 	: _charactersNames(_CharactersManager.getNamesContainer()), _charactersImagePaths(_CharactersManager.getImagePathsContainer()),
-	  _dlgEditor(_charactersNames), _nodeEditor(this)
+	  _CharactersManager(_dlgEditor.getContainer()), _dlgEditor(_charactersNames), _nodeEditor(this)
 {
 	LOG_INFO("Initializing DialogEditor module");
 	LOG_INFO("Module DialogEditor initialized");

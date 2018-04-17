@@ -10,7 +10,8 @@
 
 namespace rat
 {
-    CharactersManager::CharactersManager()
+    CharactersManager::CharactersManager(DLGEditor::TextContainer_t& dialogParts)
+        : _dialogParts(dialogParts)
     {
 
     }
@@ -51,9 +52,19 @@ namespace rat
                 }
 
                 ImGui::SameLine(); 
-                if (ImGui::Button("-##Characters Manager", ImVec2(30, 22))) { //TODO: repair bug in dlg editor
+                if (ImGui::Button("-##Characters Manager", ImVec2(30, 22))) {
                     _charactersName.erase(name);
                     _charactersImagePath.erase(imagePath);
+
+                    for(auto& majors : _dialogParts) {
+                        for(auto& minor : majors.second) {
+                            for (auto& it : minor.second->chosenCharacter) {
+                                if (i < static_cast<unsigned>(it)) {
+                                    --it;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 ImGui::PopID();

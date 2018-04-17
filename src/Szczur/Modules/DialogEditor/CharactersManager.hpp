@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "DLGEditor.hpp"
+
 namespace rat
 {
     class CharactersManager
@@ -13,9 +15,11 @@ namespace rat
         std::vector<std::string> _charactersName;
         std::vector<std::string> _charactersImagePath;
 
+        DLGEditor::TextContainer_t& _dialogParts;
+
     public:
 
-        CharactersManager();
+        CharactersManager(DLGEditor::TextContainer_t& dialogParts);
 
         void load(const std::string& path);
         void save(const std::string& path);
