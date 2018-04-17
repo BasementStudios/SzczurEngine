@@ -173,6 +173,16 @@ std::string NodeEditor::generateCode()
 
 	codeSegment.push_back("local dialog = Dialog.load(\"" + _dialogEditor->_projectPath + "/dialog\")\n\n");
 
+	for (auto& character : _dialogEditor->_characters)
+	{
+		if (!character.name.empty() && !character.imagePath.empty())
+		{
+			codeSegment.push_back("dialog:bindCharacter(\"" + character.name + "\", \"" + character.imagePath + "\")");
+		}
+	}
+
+	codeSegment.push_back(std::string());
+
 	bool firstOptions = true;
 
 	for (int i = 2; i < _nodeManager->getNodes().size(); i++)
