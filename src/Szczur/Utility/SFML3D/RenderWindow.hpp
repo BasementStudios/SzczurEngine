@@ -25,6 +25,7 @@ namespace sf3d {
 		//const sf::View& getDefaultView() const = delete;
 		//void setView(const sf::View&) = delete;
 
+		using sf::RenderTarget::clear;
 		using sf3d::RenderTarget::clear;
 		using sf3d::RenderTarget::draw;
 		using sf3d::RenderTarget::getView;

@@ -15,6 +15,6 @@ namespace sf3d {
 
 		ShaderProgram* shader;
 		Transform transform;
-		Texture* texture;
+		const Texture* texture;
 	};
 }
