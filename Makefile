@@ -102,7 +102,7 @@ RUN_EXT := .exe
 CXX      := g++ 
 CXXFLAGS := -std=c++17 -Wall
 LD       := g++
-LDFLAGS  :=
+LDFLAGS  := -lstdc++fs -lComdlg32
 
 # Using MXE? and its options
 MXE := no
