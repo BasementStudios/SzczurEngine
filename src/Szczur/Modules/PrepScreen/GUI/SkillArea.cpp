@@ -138,12 +138,10 @@ namespace rat
         auto firstBought = std::find_if(suitCont.begin(), suitCont.end(), [](auto& skillBarPtr){
             return skillBarPtr->isBought();
         });
-        size_t i = 0;
         for(auto skillBarItr = suitCont.begin(); skillBarItr < firstBought; ++skillBarItr)
         {
             auto& skillBar = *skillBarItr;
             skillBar->activate();
-            skillBar->setPosition(0.f, float(i++) * 80.f);
         }
         for(auto skillBarItr = firstBought; skillBarItr < suitCont.end(); ++skillBarItr)
         {
@@ -172,7 +170,6 @@ namespace rat
         for(auto skillBarItr = suitCont.begin(); skillBarItr < firstBought; ++skillBarItr)
         {
             auto& skillBar = *skillBarItr;
-            //skillBar->activate();
             skillBar->setPosition(0.f, float(i++) * 80.f);
         }
         for(auto skillBarItr = firstBought; skillBarItr < suitCont.end(); ++skillBarItr)

@@ -119,7 +119,7 @@ namespace rat
                 _sourceBar.recalculate();
                 _isBought = true;
                 _bar->setTexture(_textureLocked);
-                _parentArea.recalculate(_skill->getProfession(), _skill->getColor());
+                //_parentArea.recalculate(_skill->getProfession(), _skill->getColor());
             }
         }
         else
