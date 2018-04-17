@@ -74,6 +74,7 @@ void Window::setTitle(const std::string& title)
 Window::Window()
 	: window(
 		{1280, 800}, "Szczur3D"
+		// @todo ! tu brakuje tego ShaderProgram dla Window :|
 	) // @warn @todo . usunąc to i używać init
 {
 	LOG_INFO("Initializing Window module");
