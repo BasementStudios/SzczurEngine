@@ -6,6 +6,11 @@ namespace sf3d {
 
 	}
 
+	void View::create(float factor, const glm::vec3& center) {
+		_factor = factor;
+		_center = center*factor;
+	}
+
 	void View::move(const glm::vec3 & offset) {
 		_center += offset;
 	}

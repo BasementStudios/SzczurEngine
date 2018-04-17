@@ -11,8 +11,11 @@ namespace sf3d {
 
 	class RenderTarget {
 	public:
+		RenderTarget();
 		RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 		~RenderTarget();
+
+		void create(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 
 		void setProgram(ShaderProgram* program);
 
@@ -37,6 +40,7 @@ namespace sf3d {
 
 
 	private:
+		void _setBasicValues();
 		virtual bool _setActive(bool state = true);
 
 		RenderStates _states;
