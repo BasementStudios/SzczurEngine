@@ -7,7 +7,7 @@
 namespace rat 
 {
 
-    DLGTextManager::DLGTextManager(std::vector<std::string>& characters)
+    DLGTextManager::DLGTextManager(std::vector<CharacterData>& characters)
         : _characters(characters)
     {
 

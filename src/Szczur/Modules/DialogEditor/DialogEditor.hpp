@@ -20,16 +20,15 @@ protected:
 
 	bool _projectLoaded = false;
 
-	std::vector<std::string>& _charactersNames;
-	std::vector<std::string>& _charactersImagePaths;
+	std::vector<CharacterData>& _characters;
 
 	DLGEditor _dlgEditor;
 	NodeEditor _nodeEditor;
 	CharactersManager _CharactersManager;
 
-	bool _showCharactersManager = false;
 	bool _showDlgEditor = false;
 	bool _showNodeEditor = false;
+	bool _showCharactersManager = false;
 
 public:
 	DialogEditor();

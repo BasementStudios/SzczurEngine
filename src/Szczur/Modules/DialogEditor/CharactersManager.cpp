@@ -19,23 +19,20 @@ namespace rat
     void CharactersManager::update()
     {
         ImGui::Begin("Characters Manager");
-            for(unsigned int i = 0; i < _charactersName.size(); ++i) {
-                auto name =  _charactersName.begin() + i;
-                auto imagePath = _charactersImagePath.begin() + i;
-
+            for(unsigned int i = 0; i < _characters.size(); ++i) {
                 ImGui::PushID(i);
 
                 std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
                 size_t clipSize = clipText.length();  
-                size_t size = name->length() + clipSize + 30;
+                size_t size = _characters[i].name.length() + clipSize + 30;
                 char *newText = new char[size] {};
-                strncpy(newText, name->c_str(), size);
+                strncpy(newText, _characters[i].name.c_str(), size);
 
                 ImGui::PushItemWidth(ImGui::GetWindowWidth() - 100);
                 ImGui::InputText("##Characters Name Input", newText, size);
                 ImGui::PopItemWidth();
 
-                *name = newText;
+                _characters[i].name = newText;
                 delete[] newText;
 
                 ImGui::SameLine();
@@ -44,17 +41,16 @@ namespace rat
                     auto path = FileDialog::getOpenFileName("", currentPath, "Images (*.png, *.jpg)|*.png;*.jpg");
                     size_t start = path.find(currentPath);
                     if (start != -1) {
-                        *imagePath = path.substr(currentPath.length() + 1, path.length() - currentPath.length() - 1);
+                        _characters[i].imagePath = path.substr(currentPath.length() + 1, path.length() - currentPath.length() - 1);
                     } 
                     else {
-                        *imagePath = path;
+                        _characters[i].imagePath = path;
                     }
                 }
 
                 ImGui::SameLine(); 
                 if (ImGui::Button("-##Characters Manager", ImVec2(30, 22))) {
-                    _charactersName.erase(name);
-                    _charactersImagePath.erase(imagePath);
+                    _characters.erase(_characters.begin() + i);
 
                     for(auto& majors : _dialogParts) {
                         for(auto& minor : majors.second) {
@@ -65,37 +61,30 @@ namespace rat
                             }
                         }
                     }
+                    
                 }
 
                 ImGui::PopID();
             }
             if (ImGui::Button("+##Characters Manager", ImVec2(30, 27))) {
-                _charactersName.push_back("");
-                _charactersImagePath.push_back("");
+                _characters.push_back({"", ""});
             };
         ImGui::End();
     }
 
     void CharactersManager::clear()
     {
-        _charactersName.clear();
-        _charactersImagePath.clear();
+        _characters.clear();
     }
 
-    std::vector<std::string>& CharactersManager::getNamesContainer()
+    std::vector<CharacterData>& CharactersManager::getCharactersContainer()
     {
-        return _charactersName;
-    }
-
-    std::vector<std::string>& CharactersManager::getImagePathsContainer()
-    {
-        return _charactersImagePath;
+        return _characters;
     }
 
     void CharactersManager::load(const std::string& path)
     {
-        _charactersName.clear();
-        _charactersImagePath.clear();
+        clear();
 
         nlohmann::json json;
 
@@ -107,8 +96,7 @@ namespace rat
 
         for (auto it = json.begin(); it != json.end(); ++it)
         {
-            _charactersName.push_back(it.key());
-            _charactersImagePath.push_back(it.value() == nullptr ? "" : it.value());
+            _characters.push_back({it.key(), it.value()});
         }
 
     }
@@ -117,8 +105,8 @@ namespace rat
     {
         nlohmann::json json;
 
-        for(unsigned int i = 0; i < _charactersName.size(); ++i) {
-            json[_charactersName[i]] = _charactersImagePath[i];
+        for(auto it : _characters) {
+            json[it.name] = it.imagePath;
         }
 
         std::ofstream file(path, std::ios::trunc);

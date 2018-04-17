@@ -1,11 +1,14 @@
 #pragma once
 
 #include <boost/container/flat_map.hpp>
-#include <vector>
-#include "DLGTextManager.hpp"
 #include <SFML/Audio.hpp>
 
+#include <vector>
+
 #include "Szczur/Config.hpp"
+
+#include "DLGTextManager.hpp"
+#include "DialogData.hpp"
 
 namespace rat
 {
@@ -16,7 +19,7 @@ namespace rat
         using TextContainer_t = boost::container::flat_map<size_t, boost::container::flat_map<size_t, DialogData*>>;
 
 	private:
-        std::vector<std::string>& _characters;
+        std::vector<CharacterData>& _characters;
         DLGTextManager _textManager;
         TextContainer_t& _parts;
 
@@ -46,7 +49,7 @@ namespace rat
 
     public:
 
-        DLGEditor(std::vector<std::string>& characters);
+        DLGEditor(std::vector<CharacterData>& characters);
         void load(const std::string& path);
 
         void update();
@@ -74,7 +77,7 @@ namespace rat
         std::string toTime(int secI);
         int toIntSeconds(const std::string& timeString);
 
-        bool combo(const char* label, int* currentItem, const std::vector<std::string>& items, int itemsCount, int heightInItems = -1);
+        bool charactersCombo(int* currentItem);
 
     };
 }

@@ -5,6 +5,8 @@
 
 #include <boost/container/flat_map.hpp>
 
+#include "CharacterData.hpp"
+
 namespace rat 
 {
     struct DialogData
@@ -23,6 +25,6 @@ namespace rat
 
         unsigned int  dialogLines = 0;
 
-        void interpretText(const std::string& text, std::vector<std::string>& characters);
+        void interpretText(const std::string& text, std::vector<CharacterData>& characters);
     };
 }

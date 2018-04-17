@@ -5,7 +5,7 @@
 
 namespace rat 
 {
-    void DialogData::interpretText(const std::string& text, std::vector<std::string>& characters)
+    void DialogData::interpretText(const std::string& text, std::vector<CharacterData>& characters)
     {
         using namespace std::string_literals;
         std::stringstream stream;
@@ -15,7 +15,7 @@ namespace rat
         while(std::getline(stream, temp)) {
             for(auto it = std::sregex_iterator(temp.begin(), temp.end(), word_regex); it!=std::sregex_iterator(); ++it, ++dialogLines) {
                 dialogTime.push_back(it->str(1) + ":" + it->str(2));
-                if (auto charactersIT = std::find_if(characters.begin(), characters.end(), [&](const auto& i){ return i == it->str(3); }); charactersIT != characters.end()) {
+                if (auto charactersIT = std::find_if(characters.begin(), characters.end(), [&](const auto& i){ return i.name == it->str(3); }); charactersIT != characters.end()) {
                     chosenCharacter.push_back(std::distance(characters.begin(), charactersIT));
                 }
                 else {

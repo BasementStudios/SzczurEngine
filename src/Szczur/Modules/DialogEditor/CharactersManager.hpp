@@ -9,13 +9,11 @@ namespace rat
 {
     class CharactersManager
     {
-
     private:
 
-        std::vector<std::string> _charactersName;
-        std::vector<std::string> _charactersImagePath;
-
         DLGEditor::TextContainer_t& _dialogParts;
+
+        std::vector<CharacterData> _characters;
 
     public:
 
@@ -28,8 +26,7 @@ namespace rat
 
         void update();
 
-        std::vector<std::string>& getNamesContainer();
-        std::vector<std::string>& getImagePathsContainer();
+        std::vector<CharacterData>& getCharactersContainer();
 
     };
 }

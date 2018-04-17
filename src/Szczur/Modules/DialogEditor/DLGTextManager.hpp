@@ -14,11 +14,11 @@ namespace rat
 
         TextContainer_t _texts;
 
-        std::vector<std::string>& _characters;
+        std::vector<CharacterData>& _characters;
 
     public:
 
-        DLGTextManager(std::vector<std::string>& characters);
+        DLGTextManager(std::vector<CharacterData>& characters);
         ~DLGTextManager();
 
         void load(const std::string& path);

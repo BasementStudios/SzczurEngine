@@ -10,7 +10,7 @@
 
 namespace rat
 {
-    DLGEditor::DLGEditor(std::vector<std::string>& characters)
+    DLGEditor::DLGEditor(std::vector<CharacterData>& characters)
         : _characters(characters), _textManager(characters), _parts(_textManager.getContainer())
     {
         
@@ -56,7 +56,7 @@ namespace rat
                     dlg << "{\n\0";
                         for (unsigned int i = 0; i < it.second->dialogLines; ++i) {
                             dlg << "\t[" << it.second->dialogTime[i] << "]";
-                            dlg << "[" << _characters[it.second->chosenCharacter[i]] << "]";
+                            dlg << "[" << _characters[it.second->chosenCharacter[i]].name << "]";
                             dlg << (it.second->dialogs[i].empty() ? "_" : it.second->dialogs[i]) << "\n\0";
                         } 
                     dlg << "}\n\0\n\0";
@@ -308,7 +308,7 @@ namespace rat
                     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 6);
                 }
                 ImGui::PushItemWidth(150); 
-                combo("##CharacterCombo", &_parts[_currentMajor][_currentMinor]->chosenCharacter[i], _characters, _characters.size());
+                charactersCombo(&_parts[_currentMajor][_currentMinor]->chosenCharacter[i]);
                 ImGui::PopItemWidth();
                 ImGui::SameLine();
                 if (ImGui::Button("P##PlayTestOneLineOfDialog", ImVec2(20, 22))) {
@@ -375,19 +375,18 @@ namespace rat
     {
         auto semicolonPos = timeString.find(':');
         if (semicolonPos == std::string::npos || semicolonPos != 2) return 0;
-
         return (atoi(&timeString[0]) * 60) + atoi(&timeString[3]);
     }
 
-    bool DLGEditor::combo(const char* label, int* currentItem, const std::vector<std::string>& items, int itemsCount, int heightInItems)
+    bool DLGEditor::charactersCombo(int* currentItem)
     {
-        return ImGui::Combo(label, currentItem, [](void* vec, int idx, const char** outText) { 
-                auto& vector = *((std::vector<std::string>*)vec);
+        return ImGui::Combo("##CharacterCombo", currentItem, [](void* vec, int idx, const char** outText) { 
+                auto& vector = *((std::vector<CharacterData>*)vec);
                 if (idx < 0 || idx >= (int)(vector.size())) { 
                     return false; 
                 }
-                *outText = vector[idx].c_str();
+                *outText = vector[idx].name.c_str();
                 return true;
-            }, (void*)&items, itemsCount, heightInItems);
+            }, (void*)&_characters, _characters.size());
     }
 }
