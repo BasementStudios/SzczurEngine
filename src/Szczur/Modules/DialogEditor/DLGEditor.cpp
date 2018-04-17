@@ -56,7 +56,7 @@ namespace rat
                     dlg << "{\n\0";
                         for (unsigned int i = 0; i < it.second->dialogLines; ++i) {
                             dlg << "\t[" << it.second->dialogTime[i] << "]";
-                            dlg << "[" << _characters[it.second->chosenCharacter[i]].name << "]";
+                            dlg << "[" << (_characters.size() ? _characters[it.second->chosenCharacter[i]].name : "-") << "]";
                             dlg << (it.second->dialogs[i].empty() ? "_" : it.second->dialogs[i]) << "\n\0";
                         } 
                     dlg << "}\n\0\n\0";
