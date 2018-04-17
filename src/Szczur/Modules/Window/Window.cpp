@@ -122,7 +122,7 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-	//this->getWindow().clear(color.r, color.g, color.b, );
+	this->getWindow().clear((float)color.r, (float)color.g, (float)color.b , (float)color.a, GL_COLOR_BUFFER_BIT);
 	//@todo: Fix it.
 }
 
