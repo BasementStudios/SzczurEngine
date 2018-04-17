@@ -61,12 +61,33 @@ std::string DirectoryDialog::getExistingDirectory(const std::string& caption, co
 }
 
 #ifdef OS_WINDOWS
+static BOOL CALLBACK EnumCallback(HWND hWndChild, LPARAM lParam)
+{
+	char szClass[MAX_PATH];
+	HTREEITEM hNode;
+	if (GetClassName(hWndChild, szClass, sizeof(szClass)) && strcmp(szClass, "SysTreeView32") == 0)
+	{
+
+		hNode = TreeView_GetSelection(hWndChild);    // found the tree view window
+		TreeView_EnsureVisible(hWndChild, hNode);   // ensure its selection is visible
+		return false;
+	}
+	return true;
+}
+
 int DirectoryDialog::BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
-	if (uMsg == BFFM_INITIALIZED)
+	switch (uMsg)
 	{
-		SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
+		case BFFM_INITIALIZED:
+			SendMessage(hwnd, BFFM_SETEXPANDED, true, lpData);    // expand the tree view
+			SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
+			break;
+		case BFFM_SELCHANGED:
+			EnumChildWindows(hwnd, EnumCallback, 0);
+			break;
 	}
+
 	return 0;
 }
 #endif
