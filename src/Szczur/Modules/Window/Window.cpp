@@ -18,6 +18,8 @@
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/SFML3D/Vertex.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -93,6 +95,18 @@ Window::~Window()
 /// init
 void Window::init()
 {
+	// Shaders
+	sf3d::FShader frag;
+	frag.loadFromFile("Assets/Shaders/default.frag");
+
+	sf3d::VShader vert;
+	vert.loadFromFile("Assets/Shaders/default.vert");
+
+	sf3d::ShaderProgram* program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić.
+	program->linkShaders(frag, vert);
+
+	this->getWindow().setProgram(program);
+	
 	// Create
 	this->setVideoMode(this->videoMode);
 	this->getWindow().setFramerateLimit(this->framerateLimit);
