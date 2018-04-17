@@ -7,12 +7,12 @@
 namespace sf3d {
 	class Shape : public Drawable, public Transformable {
 	public:
-		Shape(size_t vertexSize = 4u);
+		Shape(size_t vertexSize = 8u);
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
 
 		virtual glm::vec3 getPointPosition(size_t index) const;
-		virtual glm::vec3 getPointColor(size_t index) const;
+		virtual glm::vec4 getPointColor(size_t index) const;
 		virtual glm::vec2 getPointCoord(size_t index) const;
 	private:
 		VertexArray _vertices;

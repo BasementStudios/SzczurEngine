@@ -3,6 +3,16 @@
 #include "Vertex.hpp"
 #include "Drawable.hpp"
 namespace sf3d {
+	class VertexInterface {
+	public:
+		VertexInterface(GLuint VBO, size_t index);
+
+		void setPosition(const glm::vec3& position);
+	private:
+		GLuint _VBO;
+		size_t _index;
+	};
+
 	class VertexArray : public Drawable {
 	public:
 		VertexArray() = delete;
@@ -10,7 +20,7 @@ namespace sf3d {
 		~VertexArray();
 
 		void setPosition(size_t index, const glm::vec3& position);
-		void setColor(size_t index, const glm::vec3& color);
+		void setColor(size_t index, const glm::vec4& color);
 		void setTexCoord(size_t index, const glm::vec2& texCoord);
 		void set(size_t index, const Vertex& vertex);
 
@@ -19,7 +29,7 @@ namespace sf3d {
 
 		void setPrimitveType(unsigned int type);
 
-		size_t getSize() const;
+		size_t size() const;
 
 		void resize(size_t size);
 
@@ -27,6 +37,8 @@ namespace sf3d {
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
 		void draw();
+
+		VertexInterface operator[](size_t index) const;
 	private:
 		unsigned int _VAO;
 		unsigned int _VBO;

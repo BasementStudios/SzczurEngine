@@ -3,7 +3,7 @@
 #include "RenderTarget.hpp"
 #include "RenderStates.hpp"
 #include <SFML/Graphics.hpp>
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 
 namespace sf3d {
 	class RenderWindow : public sf::RenderWindow, public RenderTarget {
@@ -14,12 +14,13 @@ namespace sf3d {
 		RenderWindow(
 			sf::VideoMode mode, 
 			const std::string& title, 
+			ShaderProgram* program = nullptr,
 			UINT32 style = sf::Style::Default, 
-			const sf::ContextSettings& settings = sf::ContextSettings(),
-			const char* vertexPath = "data/vertex.shader",
-			const char* fragmentPath = "data/fragment.shader"
+			const sf::ContextSettings& settings = sf::ContextSettings{24u, 0u, 0u, 3u, 3u}
 		);
 
+
+		//void clear(const sf::Color&) = delete;
 		//const sf::View& getView() const = delete;
 		//const sf::View& getDefaultView() const = delete;
 		//void setView(const sf::View&) = delete;

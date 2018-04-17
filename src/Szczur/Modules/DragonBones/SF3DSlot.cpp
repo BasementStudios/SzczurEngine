@@ -142,7 +142,7 @@ void SF3DSlot::_updateFrame()
 						const float tX = region.x + u * region.width;
 						const float tY = region.y + v * region.height;
 
-						vertices[vertexIndex] = {{x, y, 0.f}, {1.f, 1.f, 1.f}, {tX, tY}};
+						vertices[vertexIndex] = {{x, y, 0.f}, {1.f, 1.f, 1.f, 1.f}, {tX, tY}};
 					}
 				}
 
@@ -187,10 +187,10 @@ void SF3DSlot::_updateFrame()
 					float tsX = size.x * region.width;
 					float tsY = size.y * region.height;
 					
-					_renderDisplay->verticesDisplay.set(0u, {{0.f, 0.f, 0.f}, {1.f, 1.f, 1.f}, {region.x,     region.y}});
-					_renderDisplay->verticesDisplay.set(1u, {{0.f, tsY, 0.f}, {1.f, 1.f, 1.f}, {region.x,     region.height}});
-					_renderDisplay->verticesDisplay.set(2u, {{tsX, 0.f, 0.f}, {1.f, 1.f, 1.f}, {region.width, region.y}});
-					_renderDisplay->verticesDisplay.set(3u, {{tsX, tsY, 0.f}, {1.f, 1.f, 1.f}, {region.width, region.height}});
+					_renderDisplay->verticesDisplay.set(0u, {{0.f, 0.f, 0.f}, {1.f, 1.f, 1.f, 1.f}, {region.x,     region.y}});
+					_renderDisplay->verticesDisplay.set(1u, {{0.f, tsY, 0.f}, {1.f, 1.f, 1.f, 1.f}, {region.x,     region.height}});
+					_renderDisplay->verticesDisplay.set(2u, {{tsX, 0.f, 0.f}, {1.f, 1.f, 1.f, 1.f}, {region.width, region.y}});
+					_renderDisplay->verticesDisplay.set(3u, {{tsX, tsY, 0.f}, {1.f, 1.f, 1.f, 1.f}, {region.width, region.height}});
 				}
 			}
 

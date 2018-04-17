@@ -5,22 +5,22 @@ void sf3d::SimpleSprite::setTexture(Texture * texture) {
 		_texture = texture;
 		_vertices.set(0u, {
 			{-1.f, -1.f, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{0.f, 0.f}
 		});
 		_vertices.set(1u, {
 			{1.f, -1.f, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{1.f, 0.f}
 		});
 		_vertices.set(2u, {
 			{1.f, 1.f, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{1.f, 1.f}
 		});
 		_vertices.set(3u, {
 			{-1.f, 1.f, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{0.f, 1.f}
 		});
 	}
