@@ -8,17 +8,14 @@ namespace sf3d {
 	public:
 		Transform();
 
-		/// Position
 		void translate(const glm::vec3& offset);
 		void translate(const float& x, const float& y, const float& z);
 
-		/// Rotation
 		void rotate(const float& angle, const glm::vec3& direction);
 		void rotate(const float& angle, const float& x, const float& y, const float& z);
 		void rotate(const glm::vec3& rotation);
 		void rotate(const float& x, const float& y, const float& z);
 
-		/// Scale
 		void scale(const glm::vec3& value);
 		void scale(const float& x, const float& y, const float& z);
 

@@ -8,6 +8,11 @@ namespace sf3d {
 		VertexInterface(GLuint VBO, size_t index);
 
 		void setPosition(const glm::vec3& position);
+		void move(const glm::vec3& offset); 
+ 
+		void setColor(const glm::vec4& color); 
+
+		void setTexCoord(const glm::vec2& pos); 
 	private:
 		GLuint _VBO;
 		size_t _index;
@@ -29,7 +34,7 @@ namespace sf3d {
 
 		void setPrimitveType(unsigned int type);
 
-		size_t size() const;
+		size_t getSize() const;
 
 		void resize(size_t size);
 

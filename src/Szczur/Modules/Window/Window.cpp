@@ -122,7 +122,8 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color);
+	//this->getWindow().clear(color.r, color.g, color.b, );
+	//@todo: Fix it.
 }
 
 /// GL states

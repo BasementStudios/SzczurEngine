@@ -5,7 +5,6 @@ namespace sf3d {
 		_mat(1.f) 
 	{}
 
-	/// Position
 	void Transform::translate(const glm::vec3& offset) {
 		_mat = glm::translate(_mat, offset);
 	}
@@ -13,7 +12,6 @@ namespace sf3d {
 		translate({x, y, z});
 	}
 
-	/// Rotation
 	void Transform::rotate(const float& angle, const glm::vec3& direction) {
 		_mat = glm::rotate(_mat, angle, direction);
 	}
@@ -29,7 +27,7 @@ namespace sf3d {
 		rotate({x, y, z});
 	}
 
-	/// Scale
+
 	void Transform::scale(const glm::vec3& value) {
 		_mat = glm::scale(_mat, value);
 	}

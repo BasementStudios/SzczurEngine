@@ -18,6 +18,30 @@ namespace sf3d {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
+	void VertexInterface::move(const glm::vec3& offset) { 
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
+		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
+		vertex->position += offset; 
+		glUnmapBuffer(GL_ARRAY_BUFFER); 
+		glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	} 
+	
+	void VertexInterface::setColor(const glm::vec4& color) { 
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
+		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
+		vertex->color = color; 
+		glUnmapBuffer(GL_ARRAY_BUFFER); 
+		glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	} 
+	
+	void VertexInterface::setTexCoord(const glm::vec2& pos) { 
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
+		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
+		vertex->texCoord = pos; 
+		glUnmapBuffer(GL_ARRAY_BUFFER); 
+		glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	} 
+
 	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
 		_storageUsage(storageUsage),
 		_size(size) {
@@ -137,7 +161,7 @@ namespace sf3d {
 		_primitveType = type;
 	}
 
-	size_t VertexArray::size() const {
+	size_t VertexArray::getSize() const {
 		return _size;
 	}
 
