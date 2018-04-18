@@ -5,6 +5,8 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
+#include "Szczur/Utility/MsgBox.hpp"
+
 namespace rat
 {
 
@@ -134,6 +136,7 @@ void DialogEditor::update()
 				else
 				{
 					LOG_INFO("Missing files!");
+					MsgBox::show("Cannot open project because cannot find dialog.dlg, dialog.json or characters.json", "Missing files", MsgBox::Icon::Error);
 				}
 			}
 		}

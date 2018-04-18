@@ -8,6 +8,7 @@
 
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
+#include "Szczur/Utility/MsgBox.hpp"
 
 #include "DialogEditor.hpp"
 
@@ -79,6 +80,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 		else
 		{
 			LOG_ERROR("Cannot save code to file!");
+			MsgBox::show(strerror(errno), "Cannot save", MsgBox::Icon::Error);
 		}
 	}
 	else if (saveFormat == FileFormat::Json)
@@ -103,6 +105,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 		else
 		{
 			LOG_ERROR("Cannot save to file!");
+			MsgBox::show(strerror(errno), "Cannot save", MsgBox::Icon::Error);
 		}
 	}
 }
@@ -158,6 +161,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 		else
 		{
 			LOG_ERROR("Cannot open file!");
+			MsgBox::show(strerror(errno), "Cannot open file", MsgBox::Icon::Error);
 		}
 
 	}
