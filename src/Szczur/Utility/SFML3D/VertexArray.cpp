@@ -192,10 +192,9 @@ namespace sf3d {
 	}
 
 	VertexInterface VertexArray::operator[](size_t index) const {
-		if(index < _size)
-			return VertexInterface(_VBO, index);
-		else //@todo <- add log displaying while trying to access element out of array
-			return VertexInterface(0, 0); 
+		if(index >= _size)
+			throw std::out_of_range("Vertex array out of range");
+		return VertexInterface(_VBO, index);
 	}
 
 }
