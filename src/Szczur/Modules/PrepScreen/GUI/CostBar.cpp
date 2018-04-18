@@ -3,6 +3,7 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "../PPColors.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
 
@@ -11,8 +12,6 @@ namespace rat
 {
     CostBar::CostBar()
     {
-
-
         _base = new Widget;
 
         _costPP = new ImageWidget;
@@ -21,6 +20,14 @@ namespace rat
         _costAmount = new TextWidget;
         _base->add(_costAmount);
         setGrayPPPosition(0.f, 150.f);
+        PPColors colors;
+        for(auto& color : colors)
+        {
+           ImageWidget* reqWidget = new ImageWidget;
+           _base->add(reqWidget);
+           reqWidget->invisible();
+           _coloredPPs.emplace(color, reqWidget);
+        }
     }
 
     sf::Vector2f CostBar::getPPSize() const
@@ -48,15 +55,8 @@ namespace rat
 
         _coloredPPs.clear();
 
-        for(size_t i = 0; i < amountOfColPPs; i++)
-        {
-            ImageWidget* reqWidget = new ImageWidget;
-            _base->add(reqWidget);
-           reqWidget->setPosition(float(i) * (_dim + _padding), 0.f);
-           _coloredPPs.emplace_back(reqWidget);
-        }
-
         _recalculateCostAmount();
+        _recalculateColored();
     }
 
     void CostBar::setGrayPPPosition(float x, float y)
@@ -69,18 +69,14 @@ namespace rat
     void CostBar::loadAssetsFromGUI(GUI& gui)
     {
         size_t i = 0;
-        auto& ppCost = _skill->getCostInfo();
-        for(auto& req : ppCost)
+        for(auto& [color, widget] : _coloredPPs)
         {
-            const std::string path = "assets/PrepScreen/" + req.type + "PP.png";
+            const std::string path = "assets/PrepScreen/" + color + "PP.png";
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
-
-            ImageWidget* reqWidget = _coloredPPs[i++];
-            reqWidget->getSize();
-            reqWidget->setTexture(texture);
+            widget->setTexture(texture);
 
             auto size = static_cast<sf::Vector2f>(texture->getSize());
-            reqWidget->setScale({_dim/size.x, _dim/size.y});
+            widget->setScale({_dim/size.x, _dim/size.y});
         }        
         _costAmount->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
         _setIconTexture(gui.getAsset<sf::Texture>("assets/PrepScreen/PP.png"));
@@ -112,6 +108,29 @@ namespace rat
         auto newTextPos = ((ppSize - textSize)/2.f) + ppPos;
 
         _costAmount->setPosition(newTextPos);
+    }
+    
+    void CostBar::_recalculateColored()
+    {
+        auto& cost = _skill->getCostInfo();
+
+        size_t j = 0;
+        for(auto& [color, widget] : _coloredPPs)
+        {
+            widget->visible();
+            widget->setPosition(float(j++)*(_dim + _padding), 0.f);
+        }
+
+        size_t i = 0;
+        for(auto& [color, power] : cost)
+        {
+            std::cout << _skill->getName() << ": color: " << color <<"\n";
+            auto found = _coloredPPs.find(color);
+            auto* widget = found->second;
+            if(widget->isVisible()) std::cout << "Is visible\n";
+            widget->visible();
+            widget->setPosition(float(i++)*(_dim + _padding), 0.f);
+        }
     }
     
     

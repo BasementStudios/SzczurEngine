@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include <string>
+#include <map>
 
 #include "../Skill.hpp"
 
@@ -23,7 +24,7 @@ namespace rat
         Skill* _skill{nullptr};
 
         Widget* _base{nullptr};
-        std::vector<ImageWidget*> _coloredPPs{nullptr};
+        std::map<std::string, ImageWidget*> _coloredPPs;
         ImageWidget* _costPP{nullptr};
         TextWidget* _costAmount{nullptr};
 
@@ -32,5 +33,6 @@ namespace rat
 
         void _setIconTexture(sf::Texture* texture);
         void _recalculateCostAmount();
+        void _recalculateColored();
     };
 }

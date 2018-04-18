@@ -39,6 +39,8 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
+        _codex.initAssetsViaGUI(gui);
+
         gui.addAsset<sf::Texture>("assets/PrepScreen/MenuBar.png");
         sf::Texture* menuBarTexture = gui.getAsset<sf::Texture>("assets/PrepScreen/MenuBar.png");
 
@@ -83,8 +85,7 @@ namespace rat
         _chosenSkillsBar->setTexture(menuBarTexture);
         _chosenSkillsBar->setPosition(200, 600);
         _setWidgetSize(_chosenSkillsBar, 760.f, 120.f);
-        
-        
+             
         //mainWidget
 
         test();
@@ -124,8 +125,7 @@ namespace rat
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
         
-        //_source.addSource(airSource);
-        //_source.removeSource(fireSource);
+
 
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
@@ -144,11 +144,12 @@ namespace rat
     void PrepScreen::_initSkillArea()
     {
         _skillArea.setParent(_centerWindow);
+        std::cout << "Before\n";
         _skillArea.initViaSkillCodex(_codex);
+        std::cout << "Codex is good\n";
         _skillArea.initAssetsViaGUI(getModule<GUI>());
-        //_skillArea.activate("InnerFire", "Essence");
-        _skillArea.activate("Mele", "Fire");
-        //_skillArea.activate("InnerFire", "Essence");
+        std::cout << "Sfter\n";        
+        _skillArea.activate("Mele", {"Fire"});
     }
 
     void PrepScreen::_initProfArea()

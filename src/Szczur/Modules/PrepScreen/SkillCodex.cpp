@@ -1,5 +1,7 @@
 #include "SkillCodex.hpp"
 
+#include "Szczur/Modules/GUI/GUI.hpp"
+
 namespace rat
 {
 
@@ -76,11 +78,12 @@ namespace rat
         _skills.emplace(skill->getName(), std::move(skill));
 
         skill = std::make_unique<Skill>("Shadow Fiend");
-        skill->setProfession("InnerFire");
+        skill->setProfession("Range");
         skill->setTexturePath("assets/PrepScreen/test3.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Fire", 1}
+            {"Fire", 1},
+            {"Earth", 1}            
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -102,7 +105,14 @@ namespace rat
         });
         _skills.emplace(skill->getName(), std::move(skill));
     }
-    
-    
 
+    void SkillCodex::initAssetsViaGUI(GUI& gui)
+    {
+        for(auto& [name, skill] : _skills)
+        {
+            const auto& path = skill->getTexturePath();
+            gui.addAsset<sf::Texture>(path);
+            skill->setTexture(gui.getAsset<sf::Texture>(path));
+        }
+    }
 }

@@ -8,6 +8,8 @@
 
 namespace rat 
 {
+    class GUI;
+
     class SkillCodex
     {
 
@@ -17,6 +19,7 @@ namespace rat
         Skill* getSkill(const std::string& name);
         Skill* addSkill(std::unique_ptr<Skill> skill);
         void renameSkill(const std::string& oldName, const std::string& newName);
+        void initAssetsViaGUI(GUI& gui);
 
         auto begin()
         {

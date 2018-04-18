@@ -2,8 +2,10 @@
 
 #include "SkillBar.hpp"
 #include "../SkillCodex.hpp"
+#include "../SortedSkillsContainer.hpp"
 
 #include <unordered_map>
+#include <set>
 #include <vector>
 #include <memory>
 
@@ -11,12 +13,9 @@ namespace rat
 {
     class GUI; class ScrollAreaWidget;
 
-    using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
-    using SkillColors_t = std::unordered_map<std::string, SkillBars_t>;
-    using SkillProfessions_t = std::unordered_map<std::string, SkillColors_t>;
-
     class SkillArea
     {
+        using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
     public:
         SkillArea(GrayPPBar& sourceBar);
 
@@ -25,32 +24,34 @@ namespace rat
 
         void setParent(Widget* parent);
 
-        void activate(const std::string& profession, const std::string& color);
-        void hideAll();
-        void setColor(const std::string& color);
+        void activate();
+        void activate(const std::string& profession, const std::set<std::string>& colors);
+        void deactivate();
+        void setColors(const std::set<std::string>& colors);
+        void addColor(const std::string& color);
+        void removeColor(const std::string& color);
         void setProfession(const std::string& profession);
+        void recalculate();
 
         GrayPPBar& getSourceBar();
 
-        void recalculate();
-        void recalculate(const std::string profession, const std::string color);        
     private:
         GrayPPBar& _sourceBar;
-        SkillProfessions_t _skillBars;
-        
+        SortedSkillsContainer _skills;
+        SkillBars_t _skillBars;
+        size_t _activeBarsAmount{0};
+
         sf::Texture* _textureBar{nullptr};
         sf::Texture* _textureLocked{nullptr};
+        sf::Font* _font{nullptr};
 
         ScrollAreaWidget* _base{nullptr};
 
-        void _addSkillBar(Skill* skill);
-        void _addSkillBarWithoutRecalculating(Skill* skill);
-        void _hide(const std::string& profession, const std::string& color);
-        void _activate(const std::string& profession, const std::string& color);
+        void _initNewSkillBarsAmount(size_t newAmount);
 
         float _barHeight{80.f};
 
-        std::string _curentColor;
+        std::set<std::string> _chosenColors;
         std::string _curentProfession;
     };
 }

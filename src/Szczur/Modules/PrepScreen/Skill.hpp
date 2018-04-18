@@ -1,9 +1,10 @@
 #pragma once
 
 #include <initializer_list>
+#include <set>
 
 #include "PPcost.hpp"
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace rat
 {
@@ -87,8 +88,13 @@ namespace rat
             return _profession;
         }
 
-        const std::string& getColor() const{
-            return _color;
+        const std::set<std::string> getColors() const {
+            std::set<std::string> colors;
+            for(auto& [color, power] : _cost)
+            {
+                colors.emplace(color);
+            }
+            return colors;
         }
 
         void setTexturePath(const std::string& texturePath)
@@ -98,7 +104,13 @@ namespace rat
         const std::string& getTexturePath() const{
             return _texturePath;
         }
-
+        void setTexture(sf::Texture* texture){
+            assert(texture);
+            _iconTexture = texture;
+        }
+        sf::Texture* getTexture() const{
+            return _iconTexture;
+        }
 
         private:
         std::string _name;
@@ -107,5 +119,7 @@ namespace rat
         PPCost _cost;
         bool _unlocked{true};
         std::string _texturePath{""};
+
+        sf::Texture* _iconTexture{nullptr};
     };
 }

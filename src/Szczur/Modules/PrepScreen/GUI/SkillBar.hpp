@@ -23,6 +23,7 @@ namespace rat
         void setParent(Widget* parent);
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& pos);
+        void move(float x, float y);
         void setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture);
         const std::string& getIconPath() const;
         void setIconTexture(sf::Texture* icon); 
@@ -31,6 +32,7 @@ namespace rat
 
         void activate();
         void deactivate();
+        bool isActivate() const;
         bool isBought() const{
             return _isBought;
         }
@@ -43,7 +45,7 @@ namespace rat
         GrayPPBar& _sourceBar;
 
         bool _isBought{false};
-        bool _isActive{true};
+        bool _isActivate{true};
 
         void _onClick();
 

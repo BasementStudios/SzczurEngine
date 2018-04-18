@@ -9,6 +9,8 @@
 #include "GrayPPBar.hpp"
 #include "SkillArea.hpp"
 
+#include "Szczur/Utility/Logger.hpp"
+
 
 namespace rat
 {
@@ -59,8 +61,12 @@ namespace rat
     void SkillBar::setPosition(const sf::Vector2f& pos)
     {
         _bar->setPosition(pos);
-        
     }
+    void SkillBar::move(float x, float y)
+    {
+        _bar->move(x, y);
+    }
+    
 
     void SkillBar::setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture)
     {
@@ -73,19 +79,19 @@ namespace rat
 
     void SkillBar::setSkill(Skill* skill)
     {
+        std::cout << "SkillBar: ";
+        std::cout << skill->getName() << " initing...\n";
         _skill = skill;
         _nameText->setString(skill->getName());
         _costBar.setSkill(skill);
+        _icon->setTexture(skill->getTexture());
+        _isBought = _skill->isBought();
     }
 
     const std::string& SkillBar::getIconPath() const
     {
         assert(_skill);
         return _skill->getTexturePath();
-    }
-    void SkillBar::setIconTexture(sf::Texture* icon)
-    {
-        _icon->setTexture(icon);
     }
     void SkillBar::setFont(sf::Font* font)
     {
@@ -98,6 +104,8 @@ namespace rat
         _bar->visible();
         _icon->activate();
         _icon->visible();
+        if(!_bar->getTexture()) std::cout << "Texture is bad\n";
+        _isActivate = true;
     }
     void SkillBar::deactivate()
     {
@@ -105,6 +113,12 @@ namespace rat
         _bar->invisible();
         _icon->deactivate();
         _icon->invisible();
+        _isActivate = false;
+    }
+
+    bool SkillBar::isActivate() const
+    {
+        return _isActivate;
     }
 
     void SkillBar::_onClick()
@@ -119,7 +133,7 @@ namespace rat
                 _sourceBar.recalculate();
                 _isBought = true;
                 _bar->setTexture(_textureLocked);
-                //_parentArea.recalculate(_skill->getProfession(), _skill->getColor());
+                //_parentArea.recalculate();
             }
         }
         else

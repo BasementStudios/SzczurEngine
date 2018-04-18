@@ -65,7 +65,6 @@ namespace rat
             return _hasBeenAdded;
         }
         
-
     private:
         ColoredPP _coloredPP;
         amount_t _ppAmount;

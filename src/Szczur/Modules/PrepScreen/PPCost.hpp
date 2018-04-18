@@ -1,6 +1,6 @@
 #pragma once
 
-#include <set>
+#include <map>
 #include <algorithm>
 #include <initializer_list>
 
@@ -18,11 +18,16 @@ namespace rat
             bool canBeBoughtFrom(const PPContainer& source)
             {
                 if(source.getPPAmount() < _ppCost) return false;
-                for(const ColoredPP& requirement : _typesRequirement)
+                for(const auto[color, power] : _typesRequirement)
                 {
-                    if(!source.hasProperColoredPP( requirement )) return false;
+                    if(!source.hasProperColoredPP( {color, power} )) return false;
                 }
                 return true;
+            }
+            bool hasColorRequirement(const std::string& color) const
+            {
+                auto found = _typesRequirement.find(color);
+                return (found != _typesRequirement.end());                  
             }
             void setCost(amount_t newCost)
             {
@@ -38,14 +43,9 @@ namespace rat
             }
             void addColorRequirement(const std::string color, power_t power)
             {
-                for(size_t i = 1; i <= 2; i++)
-                {
-                    auto found = _typesRequirement.find({color, i});
-                    if(found == _typesRequirement.end()) continue;                    
-                    else if(found->power == power) return;
-                    else _typesRequirement.erase(found);
-                }
-                _typesRequirement.emplace(color, power);
+                auto found = _typesRequirement.find(color);
+                if(found == _typesRequirement.end()) _typesRequirement.emplace(color, power);             
+                else found->second = power;
             }
 
             void resetColorRequirements()
@@ -82,9 +82,8 @@ namespace rat
             }
 
         private:
-            std::set<ColoredPP> _typesRequirement;
+            std::map<std::string, size_t> _typesRequirement;
             amount_t _ppCost;
-            bool _hasBeenBought{false};
-        
+            bool _hasBeenBought{false};        
     };
 }
