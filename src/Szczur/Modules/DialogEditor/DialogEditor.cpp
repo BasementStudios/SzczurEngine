@@ -136,7 +136,7 @@ void DialogEditor::update()
 				else
 				{
 					LOG_INFO("Missing files!");
-					MsgBox::show("Cannot open project because cannot find dialog.dlg, dialog.json or characters.json", "Missing files", MsgBox::Icon::Error);
+					MsgBox::show("Cannot open project because cannot find dialog.dlg, dialog.json or characters.json", "Missing files", MsgBox::Icon::Warning);
 				}
 			}
 		}
