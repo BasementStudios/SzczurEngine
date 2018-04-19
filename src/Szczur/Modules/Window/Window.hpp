@@ -29,6 +29,7 @@ namespace rat {
 class Window : public Module<>
 {
 	/* Types */
+public:
 	using Window_t = sf3d::RenderWindow;
 
 
