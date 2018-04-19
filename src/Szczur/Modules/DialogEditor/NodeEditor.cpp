@@ -67,6 +67,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 		LOG_INFO("Save format: Lua");
 		LOG_INFO("Saving code to '", fileName, "'...");
 
+		backupLuaFunctions();
 		std::ofstream file(fileName, std::ios::trunc);
 
 		if (file.good())
@@ -169,8 +170,6 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 
 std::string NodeEditor::generateCode()
 {
-	backupLuaFunctions();
-
 	LOG_INFO("Generating code...");
 
 	std::vector<std::string> codeSegment;
@@ -341,10 +340,14 @@ std::string NodeEditor::generateCode()
 
 void NodeEditor::backupLuaFunctions()
 {
-	LOG_INFO("Backuping lua functions...");
+	LOG_INFO("Backuping lua functions from ", _dialogEditor->_projectPath + "/dialog.lua", "...");
 
 	std::ifstream file(_dialogEditor->_projectPath + "/dialog.lua");
-	std::string code((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	
+	if (file.bad())
+		return;
+
+	std::string code((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 	file.close();
 
 	size_t lastIndex = 0;
@@ -361,13 +364,13 @@ void NodeEditor::backupLuaFunctions()
 				if (start > 0)
 				{
 					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
-					size_t end = code.find("--e:c(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
+					size_t end = code.find("--e:c(" + std::to_string(out->Id) + ")", codeStart) - 1; // -1 - remove tab
 
 					std::string func = code.substr(codeStart, end - codeStart);
-					//LOG_INFO("(", start, ", ", end, "): Condition:\n", func);
+					//LOG_INFO("(", codeStart, ", ", end, "): Condition:\n", func);
 					out->ConditionFuncCode = func;
 
-					lastIndex = start;
+					lastIndex = end;
 				}
 			}
 
@@ -379,13 +382,13 @@ void NodeEditor::backupLuaFunctions()
 				if (start > 0)
 				{
 					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
-					size_t end = code.find("--e:a(" + std::to_string(out->Id) + ")", start) - 1; // -1 - remove tab
+					size_t end = code.find("--e:a(" + std::to_string(out->Id) + ")", codeStart) - 1; // -1 - remove tab
 
 					std::string func = code.substr(codeStart, end - codeStart);
-					//LOG_INFO("(", start, ", ", end, "): Action:\n", func);
+					//LOG_INFO("(", codeStart, ", ", end, "): Action:\n", func);
 					out->ActionFuncCode = func;
 
-					lastIndex = start;
+					lastIndex = end;
 				}
 			}
 		}
