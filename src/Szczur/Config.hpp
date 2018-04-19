@@ -44,7 +44,7 @@
 #endif
 
 // Editor specification
-#if defined(DEBUG) || defined(OS_WINDOWS)
+#if defined(DEBUG) && defined(OS_WINDOWS)
 #	define EDITOR
 #	include <boost/lexical_cast.hpp>
 #	include <ImGui/imgui.h>
