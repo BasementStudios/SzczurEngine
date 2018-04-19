@@ -19,6 +19,9 @@ namespace rat
         void setPosition(float x, float y);
         void setGrayPPPosition(float x, float y);
 
+        void activate();
+        void deactivate();
+
         sf::Vector2f getPPSize() const;
     private:
         Skill* _skill{nullptr};

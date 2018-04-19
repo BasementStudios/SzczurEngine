@@ -12,8 +12,7 @@ namespace rat
     class Widget;
     class GUI;
 
-    class GrayPPBar;
-    class SkillArea;
+    class SkillArea; class ChosenSkillArea; class GrayPPBar;
 
     class SkillBar
     {
@@ -34,17 +33,15 @@ namespace rat
         void deactivate();
         bool isActivate() const;
         bool isBought() const{
-            return _isBought;
+            return _skill->isBought();
         }
-
-        bool operator<(const SkillBar& rhs);
 
     private:
         Skill* _skill{nullptr};
         SkillArea& _parentArea;
+        ChosenSkillArea& _chosenArea;
         GrayPPBar& _sourceBar;
 
-        bool _isBought{false};
         bool _isActivate{true};
 
         void _onClick();

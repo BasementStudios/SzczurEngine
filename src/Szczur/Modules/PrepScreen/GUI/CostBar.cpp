@@ -109,6 +109,15 @@ namespace rat
 
         _costAmount->setPosition(newTextPos);
     }
+
+    void activate()
+    {
+
+    }
+    void deactivate()
+    {
+
+    }
     
     void CostBar::_recalculateColored()
     {
@@ -117,7 +126,7 @@ namespace rat
         size_t j = 0;
         for(auto& [color, widget] : _coloredPPs)
         {
-            widget->visible();
+            widget->invisible();
             widget->setPosition(float(j++)*(_dim + _padding), 0.f);
         }
 

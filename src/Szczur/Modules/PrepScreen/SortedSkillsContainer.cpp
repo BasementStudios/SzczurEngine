@@ -38,7 +38,7 @@ namespace rat
         _recalcMaxSkillsAmountProfession();
     }
 
-    std::vector<Skill*> SortedSkillsContainer::getSkills(const std::string profession, const Colors_t& colors) const
+    std::vector<Skill*> SortedSkillsContainer::getSkills(const std::string& profession, const Colors_t& colors) const
     {
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end()) return {};
@@ -78,4 +78,21 @@ namespace rat
     {
         return _maxSkillsAmountInProfession;
     }
+
+    std::vector<Skill*> SortedSkillsContainer::getWholeProfession(const std::string& profession) const
+    {
+        auto foundProf = _skills.find(profession);
+        if(foundProf == _skills.end()) return {};
+        Skills_t wholeProf;
+        for(auto& [key, colors] : foundProf->second)
+            for(Skill* skill : colors)
+            {
+                wholeProf.emplace_back(skill);
+            }
+        std::sort(wholeProf.begin(), wholeProf.end(), [](Skill* lhs, Skill* rhs){
+                    return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
+                });
+        return wholeProf;
+    }
+    
 }

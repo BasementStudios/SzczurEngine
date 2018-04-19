@@ -5,6 +5,8 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 
+#include "ChosenSkillArea.hpp"
+
 #include "Szczur/Utility/Logger.hpp" 
 
 namespace rat
@@ -44,8 +46,6 @@ namespace rat
         _skills.initViaSkillCodex(skillCodex);
         size_t maxSkillBars = _skills.getMaxAmountOfSkills();
 
-        std::cout << "Nmober of skillBars: " << maxSkillBars << "\n";
-
         _skillBars.clear();
         for(size_t i = 0; i < maxSkillBars; i++)
         {
@@ -78,20 +78,17 @@ namespace rat
     }
     void SkillArea::_initNewSkillBarsAmount(size_t newAmount)
     {
-        std::cout << "Amount: " << newAmount << "\n";
         for(size_t i = 0; i < newAmount; i++)
         {
             auto& skillBar = _skillBars[i];
             skillBar->activate();
             skillBar->setPosition(0.f, float(i) * 80.f);
-            std::cout << "SkillBar number " << i +1 << " inited\n";
         }
         for(size_t i = newAmount; i < _activeBarsAmount; i++)
         {
             auto& skillBar = _skillBars[i];
             skillBar->deactivate();
             skillBar->setPosition(0.f, 0.f);
-            std::cout << "SkillBar number " << i +1 << ". deactivated\n";            
         }
         _activeBarsAmount = newAmount;
         recalculate();
@@ -136,6 +133,18 @@ namespace rat
     {
         return _sourceBar;
     }
+
+    void SkillArea::initChosenSkillArea(ChosenSkillArea& chosenSkillArea)
+    {
+        _chosenSkillArea = &chosenSkillArea;
+    }
+    ChosenSkillArea& SkillArea::getChosenSkillArea() const
+    {
+        return *_chosenSkillArea;
+    }
+
+    
+    
     
     void SkillArea::recalculate()
     {
@@ -150,7 +159,6 @@ namespace rat
             {
                 moveDir--;
                 skillBar->deactivate();
-                std::cout << "Recals deactive, bitch\n";
             }
             else
             {

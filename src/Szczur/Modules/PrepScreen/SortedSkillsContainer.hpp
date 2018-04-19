@@ -16,7 +16,8 @@ namespace rat
         using SkillProfs_t = std::unordered_map<std::string, SkillColors_t>;
     public:
         void initViaSkillCodex(SkillCodex& skillCodex);
-        Skills_t getSkills(const std::string profession, const Colors_t& colors) const;
+        Skills_t getSkills(const std::string& profession, const Colors_t& colors) const;
+        Skills_t getWholeProfession(const std::string& profession) const;
         size_t getMaxAmountOfSkills() const;
 
     private:

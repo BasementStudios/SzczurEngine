@@ -8,6 +8,7 @@
 
 #include "GrayPPBar.hpp"
 #include "SkillArea.hpp"
+#include "ChosenSkillArea.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -19,12 +20,13 @@ namespace rat
     SkillBar::SkillBar(SkillArea& parentArea)
     :
     _parentArea(parentArea),
-    _sourceBar(_parentArea.getSourceBar()),
-    _isBought(false)
+    _chosenArea(_parentArea.getChosenSkillArea()),
+    _sourceBar(_parentArea.getSourceBar())
     {
         _bar = new ImageWidget;
         _icon = new ImageWidget;
         _bar->add(_icon);
+        _icon->setPosition(4.f, 4.f);
         _icon->setPosition(4.f, 4.f);
 
 
@@ -79,13 +81,10 @@ namespace rat
 
     void SkillBar::setSkill(Skill* skill)
     {
-        std::cout << "SkillBar: ";
-        std::cout << skill->getName() << " initing...\n";
         _skill = skill;
         _nameText->setString(skill->getName());
         _costBar.setSkill(skill);
         _icon->setTexture(skill->getTexture());
-        _isBought = _skill->isBought();
     }
 
     const std::string& SkillBar::getIconPath() const
@@ -122,40 +121,24 @@ namespace rat
     }
 
     void SkillBar::_onClick()
-    {
-        
+    {      
         auto& source = _sourceBar.getSource();
-        if(!_isBought)
+        if(!isBought())
         {
-            if(_skill->canBeBoughtFrom(source))
+            if(_skill->canBeBoughtFrom(source) && _chosenArea.hasFreeSpace())
             {
                 _skill->buyFrom(source);
+
+                _chosenArea.addSkill(_skill);
+
+                _parentArea.recalculate();
                 _sourceBar.recalculate();
-                _isBought = true;
-                _bar->setTexture(_textureLocked);
-                //_parentArea.recalculate();
             }
-        }
-        else
-        {
-            _skill->returnCostsTo(source);
-            _sourceBar.recalculate();
-            _isBought = false;
-            _bar->setTexture(_textureBar);
         }
     }
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
         _costBar.loadAssetsFromGUI(gui);
-    }
-    
-    bool SkillBar::operator<(const SkillBar& rhs)
-    {
-        if(_isBought == rhs._isBought)
-        {
-            return _skill->getName() < rhs._skill->getName();
-        }
-        return !_isBought;
     }
 }

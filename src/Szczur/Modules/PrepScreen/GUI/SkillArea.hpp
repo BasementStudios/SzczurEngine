@@ -12,6 +12,7 @@
 namespace rat
 {
     class GUI; class ScrollAreaWidget;
+    class ChosenSkillArea;
 
     class SkillArea
     {
@@ -31,12 +32,15 @@ namespace rat
         void addColor(const std::string& color);
         void removeColor(const std::string& color);
         void setProfession(const std::string& profession);
+        void initChosenSkillArea(ChosenSkillArea& chosenSkillArea);
+        ChosenSkillArea& getChosenSkillArea() const;
         void recalculate();
 
         GrayPPBar& getSourceBar();
 
     private:
         GrayPPBar& _sourceBar;
+        ChosenSkillArea* _chosenSkillArea{nullptr};
         SortedSkillsContainer _skills;
         SkillBars_t _skillBars;
         size_t _activeBarsAmount{0};

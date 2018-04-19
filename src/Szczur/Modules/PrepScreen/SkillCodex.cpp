@@ -33,7 +33,7 @@ namespace rat
         auto skill = std::make_unique<Skill>("Fire Strike");
         skill->setProfession("Mele");
         skill->setTexturePath("assets/PrepScreen/test2.png");
-        skill->setPPCost(5);
+        skill->setPPCost(3);
         skill->setRequirements({
             {"Fire", 1}
         });
@@ -42,7 +42,7 @@ namespace rat
         skill = std::make_unique<Skill>("Rain Of Fire");
         skill->setProfession("Aura");
         skill->setTexturePath("assets/PrepScreen/test1.png");
-        skill->setPPCost(7);
+        skill->setPPCost(2);
         skill->setRequirements({
             {"Fire", 1}
         });
@@ -51,7 +51,7 @@ namespace rat
         skill = std::make_unique<Skill>("Fire Bee");
         skill->setProfession("Aura");
         skill->setTexturePath("assets/PrepScreen/test4.png");
-        skill->setPPCost(4);
+        skill->setPPCost(3);
         skill->setRequirements({
             {"Fire", 1}
         });
@@ -99,7 +99,7 @@ namespace rat
         skill = std::make_unique<Skill>("Earth Elemental");
         skill->setProfession("Aura");
         skill->setTexturePath("assets/PrepScreen/test6.png");
-        skill->setPPCost(7);
+        skill->setPPCost(3);
         skill->setRequirements({
             {"Earth", 1}
         });
