@@ -24,13 +24,22 @@ namespace rat
             for(unsigned int i = 0; i < _characters.size(); ++i) {
                 ImGui::PushID(i);
 
+                auto isImageLoaded = !_characters[i].imagePath.empty();
+                ImGui::RadioButton("##Is Character Loaded", isImageLoaded);
+                if (ImGui::IsItemHovered()) {
+                    ImGui::BeginTooltip();
+                    ImGui::Text(isImageLoaded ? _characters[i].imagePath.c_str() : "The image hasn't been loaded yet.");
+                    ImGui::EndTooltip();
+                }
+
                 std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
                 size_t clipSize = clipText.length();  
                 size_t size = _characters[i].name.length() + clipSize + 30;
                 char *newText = new char[size] {};
                 strncpy(newText, _characters[i].name.c_str(), size);
 
-                ImGui::PushItemWidth(ImGui::GetWindowWidth() - 100);
+                ImGui::SameLine();
+                ImGui::PushItemWidth(ImGui::GetWindowWidth() - 130);
                 ImGui::InputText("##Characters Name Input", newText, size);
                 ImGui::PopItemWidth();
 
