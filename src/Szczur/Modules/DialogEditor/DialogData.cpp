@@ -19,7 +19,7 @@ namespace rat
                     chosenCharacter.push_back(std::distance(characters.begin(), charactersIT));
                 }
                 else {
-                    chosenCharacter.push_back(0);
+                    chosenCharacter.push_back(-1);
                 }
                 dialogs.push_back(it->str(4) == "_" ? "" : it->str(4));
             }
