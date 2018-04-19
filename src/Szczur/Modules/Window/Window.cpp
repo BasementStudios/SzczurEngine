@@ -65,8 +65,7 @@ const std::string& Window::getTitle() const
 }
 void Window::setTitle(const std::string& title)
 {
-	this->title = title;
-	this->getWindow().create(this->videoMode, this->title);
+	this->getWindow().setTitle(title);
 }
 
 
