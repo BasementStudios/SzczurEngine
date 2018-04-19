@@ -112,6 +112,15 @@ namespace rat
             return _iconTexture;
         }
 
+        bool hasColors(const std::set<std::string>& colors)
+        {
+            for(const auto& color : colors)
+            {
+                if(!_cost.hasColorRequirement(color)) return false;
+            }
+            return true;
+        }
+
         private:
         std::string _name;
         std::string _profession{"Mele"};

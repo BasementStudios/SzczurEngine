@@ -66,7 +66,7 @@ namespace rat
     {
         _curentProfession = profession;
         _chosenColors = colors;
-        auto skills = _skills.getSkills(profession, colors);
+        auto skills = _skills.getWholeColors(profession, colors);
         size_t newBarsAmount = skills.size();
         size_t i = 0;
         for(auto* skill : skills)

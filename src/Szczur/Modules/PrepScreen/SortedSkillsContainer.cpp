@@ -53,9 +53,7 @@ namespace rat
         for(auto& [prof, colors] : _skills)
             for(auto& [key, skills] : colors)
                 {
-                    std::sort(skills.begin(), skills.end(), [](Skill* lhs, Skill* rhs){
-                        return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
-                    });
+                    _sort(skills);
                 }
     }
 
@@ -89,10 +87,43 @@ namespace rat
             {
                 wholeProf.emplace_back(skill);
             }
-        std::sort(wholeProf.begin(), wholeProf.end(), [](Skill* lhs, Skill* rhs){
-                    return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
-                });
+        _sort(wholeProf);
         return wholeProf;
     }
+
+    std::vector<Skill*> SortedSkillsContainer::getWholeColors(const std::string& profession, const Colors_t& colors) const
+    {
+        auto foundProf = _skills.find(profession);
+        if(foundProf == _skills.end()) return {};
+        Skills_t wholeColors;
+        for(auto& [key, skills] : foundProf->second)
+        {
+            if(skills.size() == 0) continue;
+            if(skills.front()->hasColors(colors))
+            {
+                for(auto* skill : skills)
+                {
+                    wholeColors.emplace_back(skill);
+                }
+            }
+        }
+        _sort(wholeColors);
+        return wholeColors;
+    }
+
+    void SortedSkillsContainer::_sort(Skills_t& skills) const
+    {
+        std::sort(skills.begin(), skills.end(), [](Skill* lhs, Skill* rhs){
+                    return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
+                });
+    }
+    void SortedSkillsContainer::_sort(Skills_t& skills)
+    {
+        std::sort(skills.begin(), skills.end(), [](Skill* lhs, Skill* rhs){
+                    return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
+                });
+    }
+    
+    
     
 }

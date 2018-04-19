@@ -17,6 +17,7 @@ namespace rat
     public:
         void initViaSkillCodex(SkillCodex& skillCodex);
         Skills_t getSkills(const std::string& profession, const Colors_t& colors) const;
+        Skills_t getWholeColors(const std::string& profession, const Colors_t& colors) const;
         Skills_t getWholeProfession(const std::string& profession) const;
         size_t getMaxAmountOfSkills() const;
 
@@ -33,6 +34,8 @@ namespace rat
 
         void _resortSkills();
         void _recalcMaxSkillsAmountProfession();
+        void _sort(Skills_t& skills) const;
+        void _sort(Skills_t& skills);
     };
 
 

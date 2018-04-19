@@ -14,6 +14,7 @@
 #include "GUI/GrayPPBar.hpp"
 #include "GUI/ProfessionArea.hpp"
 #include "GUI/ChosenSkillArea.hpp"
+#include "GUI/ColorFilterArea.hpp"
 
 namespace rat
 {
@@ -38,7 +39,8 @@ namespace rat
         _grayPPsBar(_source),
         _skillArea(_grayPPsBar),
         _profArea(_skillArea),
-        _chosenSkillArea(_skillArea)
+        _chosenSkillArea(_skillArea),
+        _colorFilterArea(_skillArea)
         {
             LOG_INFO(this, " : Module PrepScreen initing...");
             init();
@@ -78,6 +80,7 @@ namespace rat
         SkillArea _skillArea;
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;
+        ColorFilterArea _colorFilterArea;
 
 
         void _setWidgetSize(ImageWidget* widget, float x, float y);
@@ -85,5 +88,6 @@ namespace rat
         void _initSkillArea();
         void _initProfArea();
         void _initChosenSkillArea();
+        void _initColorFilterArea();
     };
 }

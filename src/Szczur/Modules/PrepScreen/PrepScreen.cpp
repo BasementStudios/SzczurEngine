@@ -57,17 +57,17 @@ namespace rat
         _chosenSkillsBar = new ImageWidget;
 
         ppBar->add(_coloredPPBar);
-        _coloredPPBar->setTexture(getTextureFrom("coloredPPBar.png", gui));
+        //_coloredPPBar->setTexture(getTextureFrom("coloredPPBar.png", gui));
 
         ppBar->add(_grayPPBar);
-        _grayPPBar->setTexture(getTextureFrom("grayPPBar.png", gui));
+        //_grayPPBar->setTexture(getTextureFrom("grayPPBar.png", gui));
         _grayPPBar->setPosition(0.f, 80.f);
 
         _centerWindow = new ImageWidget;
         _base->add(_centerWindow);
-        //_centerWindow->setTexture(menuBarTexture);
+        _centerWindow->setTexture(menuBarTexture);
         _centerWindow->setPosition(200, 120);
-        //_setWidgetSize(_centerWindow, 760.f, 480.f);
+        _setWidgetSize(_centerWindow, 760.f, 480.f);
 
         _skillsBar = new ScrollAreaWidget;
         _centerWindow->add(_skillsBar);
@@ -130,10 +130,11 @@ namespace rat
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
 
+        std::cout << "Before initing Assets..\n";        
         _initSkillArea();
         _initChosenSkillArea();
         _initProfArea();
-
+        _initColorFilterArea();
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)
@@ -166,4 +167,12 @@ namespace rat
         _chosenSkillArea.setParent(_base);
         _chosenSkillArea.setPosition(200.f, 600.f);
     }
+    void PrepScreen::_initColorFilterArea()
+    {
+        _colorFilterArea.setParent(_base);
+        _colorFilterArea.setPosition(500.f, 200.f);
+        _colorFilterArea.initAssetsViaGUI(getModule<GUI>());
+        _colorFilterArea.setWidth(250.f);   
+    }
+    
 }

@@ -82,8 +82,7 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test3.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Fire", 1},
-            {"Earth", 1}            
+            {"Essence", 1}           
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
