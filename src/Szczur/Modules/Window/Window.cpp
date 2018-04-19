@@ -1,7 +1,7 @@
 #include "Window.hpp"
 
 /** @file Window.cpp
- ** @description Implementation file with main class of the Window module. 
+ ** @description Implementation file with main class of the Window module.
  ** @author Patryk (Stritch)
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
@@ -18,6 +18,8 @@
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/SFML3D/Vertex.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -27,11 +29,11 @@ namespace rat
 /// Window
 Window::Window_t& Window::getWindow()
 {
-    return this->window;
+	return this->window;
 }
 const Window::Window_t& Window::getWindow() const
 {
-    return this->window;
+	return this->window;
 }
 
 /// VideoMode
@@ -59,12 +61,11 @@ void Window::setFramerateLimit(const unsigned int limit)
 /// Title
 const std::string& Window::getTitle() const
 {
-    return this->title;
+	return this->title;
 }
 void Window::setTitle(const std::string& title)
 {
-    this->title = title;
-	this->getWindow().create(this->videoMode, this->title);
+	this->getWindow().setTitle(title);
 }
 
 
@@ -73,19 +74,18 @@ void Window::setTitle(const std::string& title)
 /// Constructors
 Window::Window()
 	: window(
-		{1280, 800}, "Szczur3D", sf::Style::Default, sf::ContextSettings(24u, 0u, 0u, 3u, 3u),
-		"Assets/Shaders/default/vertex.shader", 
-		"Assets/Shaders/default/fragment.shader"
-	) // @warn usunąc to i używać init
+		{1280, 800}, "Szczur3D"
+		// @todo ! tu brakuje tego ShaderProgram dla Window :|
+	) // @warn @todo . usunąc to i używać init
 {
-	LOG_INFO(this, ": Window module initializing");
-	//this->init();
-	LOG_INFO(this, ": Window module initialized");
+	LOG_INFO("Initializing Window module");
+	this->init();
+	LOG_INFO("Module Window initialized");
 }
-/// Deconstructor
+/// Destructor
 Window::~Window()
 {
-	LOG_INFO(this, ": Window module destructed");
+	LOG_INFO("Module Window destructed");
 }
 
 
@@ -94,8 +94,20 @@ Window::~Window()
 /// init
 void Window::init()
 {
-	// Create 
-    this->setVideoMode(this->videoMode);
+	// Shaders
+	sf3d::FShader frag;
+	frag.loadFromFile("Assets/Shaders/default.frag");
+
+	sf3d::VShader vert;
+	vert.loadFromFile("Assets/Shaders/default.vert");
+
+	sf3d::ShaderProgram* program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić.
+	program->linkShaders(frag, vert);
+
+	this->getWindow().setProgram(program);
+	
+	// Create
+	this->setVideoMode(this->videoMode);
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 	// @todo load from settings
 }
@@ -109,7 +121,8 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-    this->getWindow().clear(color);
+	this->getWindow().clear((float)color.r, (float)color.g, (float)color.b , (float)color.a, GL_COLOR_BUFFER_BIT);
+	//@todo: Fix it.
 }
 
 /// GL states

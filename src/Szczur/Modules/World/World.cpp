@@ -59,7 +59,7 @@ void World::render()
 	auto& target = getModule<Window>().getWindow(); // @todo . by render arg
 	
 	glEnable(GL_DEPTH_TEST);
-    target.clear(37, 37, 48, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    target.clear(37, 37, 48, 255, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	this->objects.forEach<sf3d::Drawable>([&target](auto&& drawable) {
 		target.draw(drawable);

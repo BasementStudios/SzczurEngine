@@ -14,22 +14,22 @@ namespace sf3d {
 			auto size = texture->getSize();
 			_vertices.set(0u, {
 				{0.f, 0.f, 0.f},
-				{1.f, 1.f, 1.f},
+				{1.f, 1.f, 1.f, 1.f},
 				{0.f, 0.f}
 			});
 			_vertices.set(1u, {
 				{(float)size.x, 0.f, 0.f},
-				{1.f, 1.f, 1.f},
+				{1.f, 1.f, 1.f, 1.f},
 				{1.f, 0.f}
 			});
 			_vertices.set(2u, {
 				{(float)size.x, -(float)size.y, 0.f},
-				{1.f, 1.f, 1.f},
+				{1.f, 1.f, 1.f, 1.f},
 				{1.f, 1.f}
 			});
 			_vertices.set(3u, {
 				{0.f, -(float)size.y, 0.f},
-				{1.f, 1.f, 1.f},
+				{1.f, 1.f, 1.f, 1.f},
 				{0.f, 1.f}
 			});
 		}

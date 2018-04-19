@@ -1,49 +1,60 @@
 #include "RenderTarget.hpp"
-
+#include "VertexArray.hpp"
+#include "Drawable.hpp"
+#include "Vertex.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
-#include <SFML/Graphics/Color.hpp>
+#include <iostream>
 
-#include "VertexArray.hpp"
-#include "Drawable.hpp"
-#include "Vertex.hpp"
 
 namespace sf3d {
 
-	RenderTarget::RenderTarget(const char* vertexPath, const char* fragmentPath, const glm::uvec2& size, float FOV) :
-		_windowSize(size),
-		_FOVx(
-			glm::degrees(2 * glm::atan(glm::tan(glm::radians(FOV / 2.f)) * ((float)size.x / (float)size.y)))
-		),
-		_FOVy(FOV),
-		_halfFOVxTan( glm::tan(glm::radians(_FOVx / 2.f)) ),
-		_halfFOVyTan( glm::tan(glm::radians(_FOVy / 2.f)) ),
-		_view(2.f / (float)size.y, {0.f, 0.f, 3 * (float)size.x / 2.f}),
-		_defaultView(_view),
-		_projection(1.f)
-	{
-		_projection = glm::perspective(glm::radians(FOV), (float)size.x / (float)size.y, 0.1f, 100.f);
+	void RenderTarget::_setBasicValues() {
+		_FOVx = glm::degrees(
+			2 * glm::atan(glm::tan(glm::radians(_FOVy / 2.f)) * ((float)_windowSize.x / (float)_windowSize.y))
+		);
+		_halfFOVxTan = glm::tan(glm::radians(_FOVx / 2.f));
+		_halfFOVyTan = glm::tan(glm::radians(_FOVy / 2.f));
+		_view.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
+		_defaultView.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
+		_projection = glm::perspective(glm::radians(_FOVy), (float)_windowSize.x / (float)_windowSize.y, 0.1f, 100.f);
+	}
 
-		if(!gladLoadGL()) {
-			std::cout << "Failed to initialize GLAD\n";
-			while(true);
-		}
-		_shader = new Shader(vertexPath, fragmentPath);
-		_states.shader = _shader;
+	RenderTarget::RenderTarget() {
+
+	}
+
+	RenderTarget::RenderTarget(const glm::uvec2& size, float FOV, ShaderProgram* program) :
+	_windowSize(size),
+	_FOVy(FOV)
+		{
+		_states.shader = program;
+		_setBasicValues();
 	}
 
 	RenderTarget::~RenderTarget() {
-		delete _shader;
+
 	}
 
-	void RenderTarget::clear(float r, float g, float b, GLbitfield flags) {
-		;
+	void RenderTarget::create(const glm::uvec2& size, float FOV, ShaderProgram* program) {
+		_windowSize = size;
+		_FOVy = FOV;
+		_states.shader = program;
+		_setBasicValues();
+
+	}
+
+	void RenderTarget::setProgram(ShaderProgram * program) {
+		_states.shader = program;
+	}
+
+	void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags) {
 		if(_setActive()) {
-			glClearColor(r / 255.f, g / 255.f, b / 255.f, 1.f);
+			glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
 			glClear(flags);
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
 
@@ -59,38 +70,25 @@ namespace sf3d {
 
 	void RenderTarget::draw(const VertexArray& vertices, RenderStates states) {
 		if(vertices.getSize() > 0 && _setActive()) {
+			ShaderProgram* shader;
 			if(states.shader)
-				states.shader->use();
-			else
-				_states.shader->use();
+				shader = states.shader;
+			else if(_states.shader)
+				shader = _states.shader;
+			else {
+				std::cout << "NO SHADER AVAILABLE!!!!\n";
+				return;
+			}
 
-			for(int i = 0; i < 3; i++)
-				states.transform.getMatrix()[3][i] *= 2.f / (float)_windowSize.y;
+			for (int i = 0; i < 3; ++i)
+				states.transform.getMatrix()[3][i] *= 2.0f / static_cast<float>(_windowSize.y);
 
-			glUniform1f(
-				glGetUniformLocation(states.shader->ID, "positionFactor"),
-				2.f / (float)_windowSize.y
-			);
-
-			glUniformMatrix4fv(
-				glGetUniformLocation(states.shader->ID, "model"),
-				1, GL_FALSE, glm::value_ptr(states.transform.getMatrix())
-			);
-
-			glUniformMatrix4fv(
-				glGetUniformLocation(states.shader->ID, "view"),
-				1, GL_FALSE, glm::value_ptr(_view.getTransform().getMatrix())
-			);
-
-			glUniformMatrix4fv(
-				glGetUniformLocation(states.shader->ID, "projection"),
-				1, GL_FALSE, glm::value_ptr(_projection)
-			);
-
-			glUniform1i(
-				glGetUniformLocation(states.shader->ID, "isTextured"),
-				(states.texture) ? 1 : 0
-			);
+			shader->use();
+			shader->setUniform("positionFactor", 2.0f / static_cast<float>(_windowSize.y));
+			shader->setUniform("model", states.transform.getMatrix());
+			shader->setUniform("view", _view.getTransform().getMatrix());
+			shader->setUniform("projection", _projection);
+			shader->setUniform("isTextured", states.texture != nullptr);
 
 			if(states.texture)
 				states.texture->bind();
@@ -99,9 +97,9 @@ namespace sf3d {
 
 			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 			states.texture->unbind();
-			glBindVertexArray(NULL);
+			glBindVertexArray(0);
 
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
 
@@ -120,8 +118,8 @@ namespace sf3d {
 			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 
 			states.texture->unbind();
-			glBindVertexArray(NULL);
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindVertexArray(0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
 
@@ -164,8 +162,8 @@ namespace sf3d {
 		float cosx = glm::cos(x);
 
 		glm::vec3 rotation{
-			cosy * sinx, 
-			siny * cosx, 
+			cosy * sinx,
+			siny * cosx,
 			-cosy * cosx
 		};
 		rotation = glm::rotateX(rotation, glm::radians(-_view.getRotation().x));
@@ -177,8 +175,8 @@ namespace sf3d {
 		});
 	}
 
-	bool RenderTarget::_setActive(bool state) {
-		glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+	bool RenderTarget::_setActive(bool /*state*/) {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return true;
 	}
 

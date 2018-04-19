@@ -11,9 +11,9 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float positionFactor;
 
-void main() 
+void main()
 {
-    gl_Position = projection * view * model * vec4(aPos*positionFactor, 1.0);
-    texCoord = aTexCoord;
-    ourColor = aColor;
+	gl_Position = projection * view * model * vec4(aPos*positionFactor, 1.0);
+	texCoord = aTexCoord;
+	ourColor = aColor;
 }

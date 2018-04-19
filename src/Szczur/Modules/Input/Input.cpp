@@ -5,12 +5,13 @@ namespace rat
 
 Input::Input()
 {
-	LOG_INFO(this, " : Input module constructed");
+	LOG_INFO("Initializing Input module");
+	LOG_INFO("Module Input initialized");
 }
 
 Input::~Input()
 {
-	LOG_INFO(this, " : Input module destructed");
+	LOG_INFO("Module Input destructed");
 }
 
 InputManager& Input::getManager()

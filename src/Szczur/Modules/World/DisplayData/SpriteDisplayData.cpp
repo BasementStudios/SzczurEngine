@@ -58,22 +58,22 @@ SpriteDisplayData::SpriteDisplayData(const std::string& name)
 		auto& size = this->texture.getSize();
 		this->verticles.set(0u, {
 			{0.f, 0.f, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{0.f, 0.f}
 		});
 		this->verticles.set(1u, {
 			{(float)size.x, 0.f, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{1.f, 0.f}
 		});
 		this->verticles.set(2u, {
 			{(float)size.x, -(float)size.y, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{1.f, 1.f}
 		});
 		this->verticles.set(3u, {
 			{0.f, -(float)size.y, 0.f},
-			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f, 1.f},
 			{0.f, 1.f}
 		});
 	}
