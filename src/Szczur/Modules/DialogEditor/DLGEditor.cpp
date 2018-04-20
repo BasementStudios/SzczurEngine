@@ -220,11 +220,8 @@ namespace rat
     }
 
     void DLGEditor::labelEditor()
-    {
-        std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
-        size_t clipSize = clipText.length();
-        
-        size_t size = _parts[_currentMajor][_currentMinor]->label.length() + clipSize + 30;
+    {    
+        size_t size = _parts[_currentMajor][_currentMinor]->label.length() + 100;
         char *newText = new char[size] {};
         strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), size);
 
@@ -292,9 +289,7 @@ namespace rat
 
         for (unsigned int i = 0; i < _parts[_currentMajor][_currentMinor]->dialogLines; ++i) {
             strcpy(dialogTime, _parts[_currentMajor][_currentMinor]->dialogTime[i].c_str());
-            std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
-            size_t clipSize = clipText.length();
-            size_t size = _parts[_currentMajor][_currentMinor]->dialogs[i].length() + clipSize + 25;
+            size_t size = _parts[_currentMajor][_currentMinor]->dialogs[i].length() + 100;
 			char *newText = new char[size] {};
 
             strncpy(newText, _parts[_currentMajor][_currentMinor]->dialogs[i].c_str(), size);

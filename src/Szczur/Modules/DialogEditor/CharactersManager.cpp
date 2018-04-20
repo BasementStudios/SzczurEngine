@@ -32,9 +32,7 @@ namespace rat
                     ImGui::EndTooltip();
                 }
 
-                std::string clipText = (ImGui::GetClipboardText() != nullptr) ? ImGui::GetClipboardText() : "";
-                size_t clipSize = clipText.length();  
-                size_t size = _characters[i].name.length() + clipSize + 30;
+                size_t size = _characters[i].name.length() + 100;
                 char *newText = new char[size] {};
                 strncpy(newText, _characters[i].name.c_str(), size);
 
