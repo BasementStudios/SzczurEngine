@@ -55,6 +55,7 @@ public:
 	/** @property VideoMode
 	 ** @description Defines a video mode.
 	 ** @access get set
+	 ** @info Aslo recreates the window.
 	 **/
 	sf::VideoMode getVideoMode() const;
 	void setVideoMode(const sf::VideoMode& mode);
