@@ -21,7 +21,9 @@ namespace rat
         DLGTextManager(std::vector<CharacterData>& characters);
         ~DLGTextManager();
 
+        void save(const std::string& path);
         void load(const std::string& path);
+        
         void add(const size_t key1, const size_t key2, DialogData* dialog);
 
         TextContainer_t& getContainer();

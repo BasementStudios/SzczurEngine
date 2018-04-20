@@ -46,27 +46,7 @@ namespace rat
 
     void DLGEditor::save()
     {
-        std::ofstream dlg;
-        dlg.open(_dialogPath + ".dlg", std::ios::trunc);
-        if (dlg.is_open()) {
-            for(auto major : _parts) {
-                for (auto it : major.second) {
-                    dlg << "[" << it.second->id << "][" << it.second->minorId << "]";
-                    dlg << "[" << it.second->audioStartTime << "-" << it.second->audioEndTime << "]";
-                    dlg << "[" << (it.second->label.empty() ? "-" : it.second->label) << "]";
-                    dlg << "{\n\0";
-                        for (unsigned int i = 0; i < it.second->dialogLines; ++i) {
-                            dlg << "\t[" << it.second->dialogTime[i] << "]";
-                            dlg << "[" << (_characters.size() ? _characters[it.second->chosenCharacter[i]].name : "-") << "]";
-                            dlg << (it.second->dialogs[i].empty() ? "_" : it.second->dialogs[i]) << "\n\0";
-                        } 
-                    dlg << "}\n\0\n\0";
-                }
-            }
-        }
-        dlg.close();
-
-        LOG_INFO("Dlg saved into: ", _dialogPath + ".dlg");
+        _textManager.save(_dialogPath + ".dlg");
     }
 
     DLGEditor::TextContainer_t& DLGEditor::getContainer()
