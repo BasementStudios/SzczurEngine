@@ -2,6 +2,7 @@
 #include "VertexArray.hpp"
 #include "Drawable.hpp"
 #include "Vertex.hpp"
+#include <SFML/Graphics/Color.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -53,6 +54,14 @@ namespace sf3d {
 	void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags) {
 		if(_setActive()) {
 			glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
+			glClear(flags);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+	}
+
+	void RenderTarget::clear(const sf::Color& color, GLbitfield flags) {
+		if(_setActive()) {
+			glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
 			glClear(flags);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
