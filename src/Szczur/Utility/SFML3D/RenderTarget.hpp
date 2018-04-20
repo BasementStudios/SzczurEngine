@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics/Color.hpp>
 #include "RenderStates.hpp"
 #include "View.hpp"
 #include "Linear.hpp"
@@ -20,6 +21,7 @@ namespace sf3d {
 		void setProgram(ShaderProgram* program);
 
 		void clear(float r, float g, float b, float a, GLbitfield flags);
+		void clear(const sf::Color& color, GLbitfield flags);
 
 		void draw(const Drawable& drawable, RenderStates states);
 		void draw(const Drawable& drawable);
