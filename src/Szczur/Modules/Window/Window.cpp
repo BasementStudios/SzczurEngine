@@ -43,8 +43,13 @@ sf::VideoMode Window::getVideoMode() const
 }
 void Window::setVideoMode(const sf::VideoMode& mode)
 {
-	this->videoMode = mode; // @todo , log videoMode change
+	this->videoMode = mode;
+	LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
+
+	// Recreate and reset properties
 	this->getWindow().create(this->videoMode, this->title);
+	this->getWindow().setTitle(this->title);
+	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
 /// FrameRate
@@ -55,6 +60,8 @@ unsigned int Window::getFramerateLimit() const
 void Window::setFramerateLimit(const unsigned int limit)
 {
 	this->framerateLimit = limit;
+	LOG_INFO("framerateLimit: " + this->framerateLimit);
+
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
@@ -66,7 +73,9 @@ const std::string& Window::getTitle() const
 void Window::setTitle(const std::string& title)
 {
 	this->title = title;
-	this->getWindow().create(this->videoMode, this->title);
+	LOG_INFO("Window title: " + this->title);
+
+	this->getWindow().setTitle(this->title);
 }
 
 
@@ -74,10 +83,6 @@ void Window::setTitle(const std::string& title)
 /* Operators */
 /// Constructors
 Window::Window()
-	: window(
-		{1280, 800}, "Szczur3D"
-		// @todo ! tu brakuje tego ShaderProgram dla Window :|
-	) // @warn @todo . usunąc to i używać init
 {
 	LOG_INFO("Initializing Window module");
 	this->init();
@@ -95,6 +100,10 @@ Window::~Window()
 /// init
 void Window::init()
 {
+	// Create
+	// @todo ? load videomode from settings
+	this->setVideoMode(this->videoMode);
+
 	// Shaders
 	sf3d::FShader frag;
 	frag.loadFromFile("Assets/Shaders/default.frag");
@@ -104,13 +113,7 @@ void Window::init()
 
 	sf3d::ShaderProgram* program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić.
 	program->linkShaders(frag, vert);
-
 	this->getWindow().setProgram(program);
-	
-	// Create
-	this->setVideoMode(this->videoMode);
-	this->getWindow().setFramerateLimit(this->framerateLimit);
-	// @todo load from settings
 }
 
 /// render
@@ -122,7 +125,8 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color);
+	this->getWindow().clear((float)color.r, (float)color.g, (float)color.b , (float)color.a, GL_COLOR_BUFFER_BIT);
+	//@todo: Fix it.
 }
 
 /// GL states

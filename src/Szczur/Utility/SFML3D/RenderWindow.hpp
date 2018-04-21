@@ -8,7 +8,7 @@
 namespace sf3d {
 	class RenderWindow : public sf::RenderWindow, public RenderTarget {
 	public:
-		RenderWindow() = delete;
+		RenderWindow();
 		RenderWindow(const RenderWindow&) = delete;
 		void operator=(const RenderWindow&) = delete;
 		RenderWindow(
@@ -19,13 +19,20 @@ namespace sf3d {
 			const sf::ContextSettings& settings = sf::ContextSettings{24u, 0u, 0u, 3u, 3u}
 		);
 
+		void create(
+			sf::VideoMode mode, 
+			const std::string& title, 
+			ShaderProgram* program = nullptr,
+			UINT32 style = sf::Style::Default,
+			const sf::ContextSettings& settings = sf::ContextSettings{24u, 0u, 0u, 3u, 3u}
+		);
+
 
 		//void clear(const sf::Color&) = delete;
 		//const sf::View& getView() const = delete;
 		//const sf::View& getDefaultView() const = delete;
 		//void setView(const sf::View&) = delete;
 
-		using sf::RenderTarget::clear;
 		using sf3d::RenderTarget::clear;
 		using sf3d::RenderTarget::draw;
 		using sf3d::RenderTarget::getView;

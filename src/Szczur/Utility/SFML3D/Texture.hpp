@@ -31,7 +31,7 @@ namespace sf3d {
 		const glm::uvec2& getSize() const;
 
 	private:
-		GLuint _textureID{0u};
+		GLuint _texture{0u};
 		glm::uvec2 _size{0.f, 0.f};
 
 	};

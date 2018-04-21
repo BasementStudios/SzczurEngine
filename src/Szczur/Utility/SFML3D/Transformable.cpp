@@ -4,8 +4,7 @@
 
 namespace sf3d {
 
-/* Properties */
-/// Position
+
 void Transformable::setPosition(const glm::vec3& position) {
 	_position = position;
 }
@@ -13,7 +12,7 @@ const glm::vec3& Transformable::getPosition() const {
 	return _position;
 }
 
-/// Rotation
+
 void Transformable::setRotation(const glm::vec3& direction) {
 	_rotation = direction;
 }
@@ -21,7 +20,7 @@ const glm::vec3& Transformable::getRotation() const {
 	return _rotation;
 }
 
-/// Scale
+
 void Transformable::setScale(const glm::vec3& value) {
 	_scale = value;
 }
@@ -29,7 +28,7 @@ const glm::vec3& Transformable::getScale() const {
 	return _scale;
 }
 
-/// Origin
+
 void Transformable::setOrigin(const glm::vec3& position) {
 	_origin.x = position.x;
 	_origin.y = -position.y;
@@ -41,8 +40,7 @@ const glm::vec3& Transformable::getOrigin() const {
 
 
 
-/* Methods */
-// Transform
+
 Transform Transformable::getTransform() const {
 	Transform transform;
 	transform.translate(_position);
@@ -55,17 +53,17 @@ Transform Transformable::getTransform() const {
 	return transform;
 }
 
-// Position
-void Transformable::translate(const glm::vec3& offset) {
+
+void Transformable::move(const glm::vec3& offset) {
 	_position += offset;
 }
 
-// Rotation
+
 void Transformable::rotate(const glm::vec3& direction) {
 	_rotation += direction;
 }
 
-// Scale
+
 void Transformable::scale(const glm::vec3& value) {
 	_scale *= value;
 }

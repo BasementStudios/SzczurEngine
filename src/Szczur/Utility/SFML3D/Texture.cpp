@@ -4,27 +4,27 @@
 
 namespace sf3d {
 	Texture::Texture() {
-		glGenTextures(1, &_textureID);
+		glGenTextures(1, &_texture);
 	}
 
 	Texture::~Texture() {
-		if(_textureID)
-			glDeleteTextures(1, &_textureID);
+		if(_texture)
+			glDeleteTextures(1, &_texture);
 	}
 
 	Texture::Texture(Texture&& other) {
-		this->_textureID = other._textureID; 
-		other._textureID = 0u;
+		this->_texture = other._texture; 
+		other._texture = 0u;
 	}
 	Texture& Texture::operator = (Texture&& other) {
-		this->_textureID = other._textureID;
-		other._textureID = 0u;
+		this->_texture = other._texture;
+		other._texture = 0u;
 		return *this;
 	}
 
 	bool Texture::loadFromFile(const char * path) {
-		if(_textureID)
-			glDeleteTextures(1, &_textureID);
+		if(_texture)
+			glDeleteTextures(1, &_texture);
 
 		sf::Image image;
 		if(image.loadFromFile(path)) {
@@ -32,7 +32,7 @@ namespace sf3d {
 			_size.x = size.x;
 			_size.y = size.y;
 			
-			glBindTexture(GL_TEXTURE_2D, _textureID);
+			glBindTexture(GL_TEXTURE_2D, _texture);
 			glTexImage2D(
 				GL_TEXTURE_2D, 0, GL_RGBA,
 				image.getSize().x, image.getSize().y,
@@ -56,8 +56,8 @@ namespace sf3d {
 	}
 
 	void Texture::bind() const {
-		if(_textureID)
-			glBindTexture(GL_TEXTURE_2D, _textureID);
+		if(_texture)
+			glBindTexture(GL_TEXTURE_2D, _texture);
 	}
 
 	void Texture::unbind() const {
@@ -74,7 +74,7 @@ namespace sf3d {
 	}
 
 	GLuint Texture::getID() const {
-		return _textureID;
+		return _texture;
 	}
 
 	const glm::uvec2& Texture::getSize() const {

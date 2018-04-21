@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics/Color.hpp>
 #include "RenderStates.hpp"
 #include "View.hpp"
 #include "Linear.hpp"
@@ -11,12 +12,16 @@ namespace sf3d {
 
 	class RenderTarget {
 	public:
+		RenderTarget();
 		RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 		~RenderTarget();
+
+		void create(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 
 		void setProgram(ShaderProgram* program);
 
 		void clear(float r, float g, float b, float a, GLbitfield flags);
+		void clear(const sf::Color& color, GLbitfield flags);
 
 		void draw(const Drawable& drawable, RenderStates states);
 		void draw(const Drawable& drawable);
@@ -37,6 +42,7 @@ namespace sf3d {
 
 
 	private:
+		void _setBasicValues();
 		virtual bool _setActive(bool state = true);
 
 		RenderStates _states;
