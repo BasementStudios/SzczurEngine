@@ -41,7 +41,7 @@ void DialogEditor::update()
 	{
 		if (_projectLoaded)
 		{
-			ImGui::Text("Path: %s", _projectPath.c_str());
+			ImGui::Text("Path: ./%s", _projectPath.c_str());
 
 			ImGui::Separator();
 
