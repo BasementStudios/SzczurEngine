@@ -321,8 +321,8 @@ namespace rat
         }
 
         if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
-        if (ImGui::Button("-##RemoveDialog", ImVec2(30, 27))) {
-            --(_parts[_currentMajor][_currentMinor]->dialogLines);
+        if (ImGui::Button("-##RemoveDialog", ImVec2(30, 27)) && _parts[_currentMajor][_currentMinor]->dialogLines > 1) {
+            --_parts[_currentMajor][_currentMinor]->dialogLines;
             _parts[_currentMajor][_currentMinor]->dialogs.pop_back();
             _parts[_currentMajor][_currentMinor]->dialogTime.pop_back();
             _parts[_currentMajor][_currentMinor]->chosenCharacter.pop_back();
