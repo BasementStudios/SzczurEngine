@@ -289,7 +289,7 @@ namespace rat
                     _playTest = true;
                     _playing  = true;
                     _startPlayerOffset = toIntSeconds(dialogTime);
-                    if(i+1 == _parts[_currentMajor][_currentMinor]->dialogLines) {
+                    if (i+1 == _parts[_currentMajor][_currentMinor]->dialogLines) {
                         _endPlayerOffset = toIntSeconds(_parts[_currentMajor][_currentMinor]->audioEndTime);
                     } 
                     else {
@@ -352,7 +352,7 @@ namespace rat
         if (semicolonPos == std::string::npos || semicolonPos != 2 || timeString.length() != 5) {
             timeString = "00:00";
         } 
-        else if(timeString[3] >= 54) {
+        else if (timeString[3] >= 54) {
             timeString[3] -= 6;
             timeString[1] += 1;
         }

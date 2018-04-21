@@ -106,7 +106,7 @@ namespace rat
         nlohmann::json json;
 
         std::ifstream file(path);
-        if(file.is_open()) {
+        if (file.is_open()) {
             file >> json;
         }
         file.close();
@@ -129,7 +129,7 @@ namespace rat
         }
 
         std::ofstream file(path, std::ios::trunc);
-        if(file.is_open()) {
+        if (file.is_open()) {
             file << json;
         }
         file.close();

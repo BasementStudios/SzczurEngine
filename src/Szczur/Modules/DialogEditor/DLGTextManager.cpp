@@ -60,7 +60,7 @@ namespace rat
         std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         file.close();
 
-        if(str.empty()) {
+        if (str.empty()) {
             std::ofstream dlg;
             dlg.open(path);
             if (dlg.is_open()) {
@@ -93,7 +93,7 @@ namespace rat
 
     void DLGTextManager::add(const size_t key1, const size_t key2, DialogData* dialog) 
     {
-        if(dialog) {
+        if (dialog) {
             if (auto it1 = _texts.find(key1); it1 != _texts.end()) {
                 if (auto it2 = it1->second.find(key2); it2 != it1->second.end()) {
                     delete it2->second;
