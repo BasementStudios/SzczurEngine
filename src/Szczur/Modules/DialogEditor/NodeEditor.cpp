@@ -409,6 +409,7 @@ void NodeEditor::update()
 			ed::BeginNode(node->Id);
 			{
 				ImGui::Text(node->Name.c_str());
+
 				if (node->Type == Node::Options)
 				{
 					ImGui::SameLine();
@@ -492,8 +493,24 @@ void NodeEditor::update()
 					}
 
 					ImGui::BeginGroup();
-					ImGui::Dummy(ImVec2(1.f, 0.f));
-					ImGui::Text(output->OptionTarget.ptr == nullptr ? "Not selected" : output->OptionTarget.ptr->label.c_str());
+
+					if (output->OptionTarget.ptr == nullptr)
+					{
+						ImGui::Text("Not selected");
+					}
+					else
+					{
+						ImGui::Text(output->OptionTarget.ptr->label.c_str());
+
+						if (output->ActionFunc)
+						{
+							ImGui::SameLine();
+							ImGui::PushStyleColor(ImGuiCol_Text, ImColor(128, 128, 128).Value);
+							ImGui::Text((" (" + output->ActionFuncName + ")").c_str());
+							ImGui::PopStyleColor();
+						}
+					}
+
 					ImGui::EndGroup();
 
 					ImGui::SameLine();
