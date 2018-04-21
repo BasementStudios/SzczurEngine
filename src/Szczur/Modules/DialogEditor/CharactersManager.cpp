@@ -35,7 +35,7 @@ namespace rat
                 size_t size = _characters[i].name.length() + 100;
                 char *newText = new char[size] {};
                 strncpy(newText, _characters[i].name.c_str(), size);
-
+                
                 ImGui::SameLine();
                 ImGui::PushItemWidth(ImGui::GetWindowWidth() - 130);
                 ImGui::InputText("##Characters Name Input", newText, size);

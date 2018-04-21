@@ -69,8 +69,9 @@ namespace rat
         
     void DLGEditor::player()
     { 
-        _sliderTime = _dialogAudio.getPlayingOffset().asSeconds();
+        _sliderTime       = _dialogAudio.getPlayingOffset().asSeconds();
         _sliderTimeString = toTime(static_cast<int>(_sliderTime));
+
         if (ImGui::SliderFloat("##DialogAudioPlayer", &_sliderTime, 0, _audioDuration, _sliderTimeString.c_str())) {
             if (_dialogAudio.getStatus() == sf::SoundSource::Status::Stopped) {
                 _dialogAudio.play();
@@ -137,18 +138,7 @@ namespace rat
         if (ImGui::Button("+##DialogMajorPartSelector", ImVec2(30, 27))) {
             size_t major = (--_parts.end())->first;
             ++major;
-            DialogData* temp = new DialogData {
-                major,
-                1,
-                "00:00",
-                "00:00",
-                "",
-                {""},
-                {"00:00"},
-                {0},
-                1
-            };
-            _parts[major] = {std::make_pair(1, temp)};
+            _textManager.add(major, 1, NULL);
             LOG_INFO("New major part added");
         }
     }
@@ -156,6 +146,7 @@ namespace rat
     void DLGEditor::minorPartSelector()
     {
         auto major = _parts.find(_currentMajor);
+        
         for (auto it : major->second) { 
             auto name = std::to_string(it.first) + "##DialogMinorPartSelector";
             bool changeColor = _currentMinor == it.first;
@@ -183,18 +174,7 @@ namespace rat
         if (ImGui::Button("+##DialogMinorPartSelector", ImVec2(30, 27))) {
             size_t minor = (--_parts[_currentMajor].end())->first;
             ++minor;
-            DialogData* temp = new DialogData {
-                _currentMajor,
-                minor,
-                "00:00",
-                "00:00",
-                "",
-                {""},
-                {"00:00"},
-                {0},
-                1
-            };
-            _parts[_currentMajor].insert_or_assign(minor, temp);
+            _textManager.add(_currentMajor, minor, NULL);
             LOG_INFO("New minor part added");
         }
     }
@@ -223,21 +203,22 @@ namespace rat
         strncpy(tempEndTime, _parts[_currentMajor][_currentMinor]->audioEndTime.c_str(), 6);
 
         if (ImGui::Button("##DialogTimeSelector-FromSliderToStartTime", ImVec2(50, 10))) {
-            _startTestPlayerOffset = toIntSeconds(_sliderTimeString);
-            _parts[_currentMajor][_currentMinor]->audioStartTime = toTime(_sliderTime);
+            _startTestPlayerOffset = _sliderTime;
+            _parts[_currentMajor][_currentMinor]->audioStartTime = _sliderTimeString;
         } 
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 16); 
         if (ImGui::Button("##DialogTimeSelectorStart-FromSliderToEndTime", ImVec2(50, 10))) {
-           _endTestPlayerOffset = toIntSeconds(_sliderTimeString);
-           _parts[_currentMajor][_currentMinor]->audioEndTime = toTime(_sliderTime);
+           _endTestPlayerOffset = _sliderTime;
+           _parts[_currentMajor][_currentMinor]->audioEndTime = _sliderTimeString;
         }
 
         ImGui::PushItemWidth(50);
             if (ImGui::InputText("##DialogTimeSelectorStart", tempStartTime, 6, 1)) {
+                std::string timeString = tempStartTime;
+                checkTimeString(timeString);
                 _startTestPlayerOffset = toIntSeconds(tempStartTime);
-                if (_startTestPlayerOffset > 0) _parts[_currentMajor][_currentMinor]->audioStartTime = tempStartTime; 
-                else _parts[_currentMajor][_currentMinor]->audioStartTime = "00:00";
+                _parts[_currentMajor][_currentMinor]->audioStartTime = tempStartTime;
             } 
         ImGui::PopItemWidth();
         ImGui::SameLine();
@@ -245,8 +226,10 @@ namespace rat
         ImGui::SameLine();
         ImGui::PushItemWidth(50);
         if (ImGui::InputText("##DialogTimeSelectorEnd", tempEndTime, 6, 1)) {
-            _endTestPlayerOffset = toIntSeconds(tempEndTime);
-            if (_endTestPlayerOffset > 0) _parts[_currentMajor][_currentMinor]->audioEndTime = tempEndTime; 
+            std::string timeString = tempEndTime;
+            checkTimeString(timeString);
+            _endTestPlayerOffset = toIntSeconds(timeString);
+            if (_endTestPlayerOffset > 0) _parts[_currentMajor][_currentMinor]->audioEndTime = timeString;
             else _parts[_currentMajor][_currentMinor]->audioEndTime = "00:00";
         }
         ImGui::PopItemWidth();
@@ -276,14 +259,14 @@ namespace rat
 
             ImGui::PushID(i);
                 if (ImGui::Button("##FromPlayerToDLGInput", ImVec2(20, 22))) {
-                    strcpy(dialogTime, _sliderTimeString.c_str());
+                   _parts[_currentMajor][_currentMinor]->dialogTime[i] = _sliderTimeString;
                 }
                 ImGui::SameLine();
                 ImGui::PushItemWidth(50); 
                 if (ImGui::InputText("##DLGTimeInput", dialogTime, 6, 1)) {
-                    if(toIntSeconds(dialogTime) == -1) {
-                        strcpy(dialogTime, "00:00");
-                    }
+                    std::string timeString = dialogTime;
+                    checkTimeString(timeString);
+                    _parts[_currentMajor][_currentMinor]->dialogTime[i] = timeString;
                 }
                 ImGui::PopItemWidth();
                 ImGui::SameLine();
@@ -314,7 +297,6 @@ namespace rat
                 }
             ImGui::PopID();
 
-            _parts[_currentMajor][_currentMinor]->dialogTime[i] = dialogTime;
             _parts[_currentMajor][_currentMinor]->dialogs[i] = newText;
 
 			delete[] newText;
@@ -341,8 +323,7 @@ namespace rat
     void DLGEditor::playAudio()
     {
         if (_playTest) {
-            int offset = _dialogAudio.getPlayingOffset().asSeconds();
-            if (offset >= _endPlayerOffset) {
+            if (_dialogAudio.getPlayingOffset().asSeconds() >= _endPlayerOffset) {
                 _dialogAudio.pause();
                 _playTest = false;
                 _playing = false;
@@ -363,9 +344,19 @@ namespace rat
 
     int DLGEditor::toIntSeconds(const std::string& timeString)
     {
-        auto semicolonPos = timeString.find(':');
-        if (semicolonPos == std::string::npos || semicolonPos != 2 || timeString.length() != 5) return -1;
         return (atoi(&timeString[0]) * 60) + atoi(&timeString[3]);
+    }
+
+    void DLGEditor::checkTimeString(std::string& timeString)
+    {
+        auto semicolonPos = timeString.find(':');
+        if (semicolonPos == std::string::npos || semicolonPos != 2 || timeString.length() != 5) {
+            timeString = "00:00";
+        } 
+        else if(timeString[3] >= 54) {
+            timeString[3] -= 6;
+            timeString[1] += 1;
+        }
     }
 
     bool DLGEditor::charactersCombo(int* currentItem)

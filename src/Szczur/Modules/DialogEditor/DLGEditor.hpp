@@ -77,6 +77,8 @@ namespace rat
         std::string toTime(int secI);
         int toIntSeconds(const std::string& timeString);
 
+        void checkTimeString(std::string& timeString);
+
         bool charactersCombo(int* currentItem);
 
     };

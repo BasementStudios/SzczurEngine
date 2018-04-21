@@ -69,19 +69,7 @@ namespace rat
             dlg.close();
             LOG_INFO("Generated new dlg file: ", path);
 
-            DialogData* obj = new DialogData {
-                1,
-                1,
-                "00:00",
-                "00:00",
-                "",
-                {""},
-                {"00:00"},
-                {0},
-                1
-            };
-                
-            add(1, 1, obj);
+            add(1, 1, NULL);
         }
         else {
             std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
@@ -113,8 +101,22 @@ namespace rat
                 it1->second.insert_or_assign(key2, dialog);
             }
             else {
-                 _texts[key1] = {std::make_pair(key2, dialog)};
+                _texts[key1] = {std::make_pair(key2, dialog)};
             }
+        }
+        else {
+            DialogData* obj = new DialogData {
+                key1,
+                key2,
+                "00:00",
+                "00:00",
+                "",
+                {""},
+                {"00:00"},
+                {0},
+                1
+            };
+            add(key1, key2, obj);
         }
     }
 
