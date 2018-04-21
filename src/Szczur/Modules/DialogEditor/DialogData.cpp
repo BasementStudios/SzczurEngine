@@ -1,6 +1,6 @@
 #include "DialogData.hpp"
+
 #include <sstream>
-#include <iostream>
 #include <regex>
 
 namespace rat 

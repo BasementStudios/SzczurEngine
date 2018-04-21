@@ -1,9 +1,6 @@
 #include "DLGTextManager.hpp"
 
-#include <fstream>
-#include <iostream>
 #include <regex>
-#include <memory>
 
 #include "Szczur/Utility/Logger.hpp"
 

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
 #include "DLGEditor.hpp"
 
 namespace rat

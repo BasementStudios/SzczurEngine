@@ -6,9 +6,9 @@
 #include <nlohmann/json.hpp>
 
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Config.hpp"
 
-#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {

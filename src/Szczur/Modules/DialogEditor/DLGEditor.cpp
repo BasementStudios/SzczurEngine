@@ -1,11 +1,9 @@
 #include "DLGEditor.hpp"
 
 #include <fstream>
-#include <iostream>
 
-#include <string>
 #include <cmath>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -52,6 +50,12 @@ namespace rat
     DLGEditor::TextContainer_t& DLGEditor::getContainer()
     {
         return _parts;
+    }
+
+    void DLGEditor::setCurrentMajor(int major)
+    { 
+        _currentMajor = major; 
+        _currentMinor = _parts[_currentMajor].begin()->first;
     }
 
     void DLGEditor::show()
@@ -341,7 +345,7 @@ namespace rat
         return (minI >= 10 ? minS : "0" + minS) + ":" + (secI >= 10 ? secS : "0" + secS);
     }
 
-    int DLGEditor::toIntSeconds(const std::string& timeString)
+    int DLGEditor::toIntSeconds(const std::string& timeString) const
     {
         return (atoi(&timeString[0]) * 60) + atoi(&timeString[3]);
     }
@@ -358,7 +362,7 @@ namespace rat
         }
     }
 
-    bool DLGEditor::charactersCombo(int* currentItem)
+    bool DLGEditor::charactersCombo(int* currentItem) const
     {
         return ImGui::Combo("##CharacterCombo", currentItem, [](void* vec, int idx, const char** outText) { 
                 auto& vector = *((std::vector<CharacterData>*)vec);
