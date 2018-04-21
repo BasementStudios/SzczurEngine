@@ -38,11 +38,12 @@ namespace rat
                 
                 ImGui::SameLine();
                 ImGui::PushItemWidth(ImGui::GetWindowWidth() - 130);
-                ImGui::InputText("##Characters Name Input", newText, size);
+                if (ImGui::InputText("##Characters Name Input", newText, size)) {
+                    _characters[i].name = newText;
+                }
+                delete[] newText;
                 ImGui::PopItemWidth();
 
-                _characters[i].name = newText;
-                delete[] newText;
 
                 ImGui::SameLine();
                 if (ImGui::Button("Load##Characters Manager")) {

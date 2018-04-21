@@ -185,13 +185,13 @@ namespace rat
         char *newText = new char[size] {};
         strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), size);
 
-        ImGui::InputText(" - Label##LabelNameInput", newText, size);
+        if (ImGui::InputText(" - Label##LabelNameInput", newText, size)) {
+            auto major = _parts.find(_currentMajor);
+            for (auto it : major->second) { 
+                it.second->label = newText;
+            }
+        };
        
-        auto major = _parts.find(_currentMajor);
-        for (auto it : major->second) { 
-            it.second->label = newText;
-        }
-
 		delete[] newText;
     }
 
@@ -272,7 +272,10 @@ namespace rat
                 ImGui::SameLine();
                 if (ImGui::GetWindowWidth() - 292 > 0) {
                     ImGui::PushItemWidth(ImGui::GetWindowWidth() - 292); 
-                    ImGui::InputText("##DLGDialogTextInput", newText, size); 
+                    if (ImGui::InputText("##DLGDialogTextInput", newText, size)) {
+                        _parts[_currentMajor][_currentMinor]->dialogs[i] = newText;
+                    }; 
+                    delete[] newText;
                     ImGui::SameLine();
                 }
                 else {
@@ -296,10 +299,6 @@ namespace rat
                     _dialogAudio.setPlayingOffset(sf::seconds(_startPlayerOffset));
                 }
             ImGui::PopID();
-
-            _parts[_currentMajor][_currentMinor]->dialogs[i] = newText;
-
-			delete[] newText;
         }
 
         if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);

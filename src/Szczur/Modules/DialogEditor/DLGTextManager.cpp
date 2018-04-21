@@ -94,8 +94,8 @@ namespace rat
     void DLGTextManager::add(const size_t key1, const size_t key2, DialogData* dialog) 
     {
         if(dialog) {
-            if(auto it1 = _texts.find(key1); it1 != _texts.end()) {
-                if(auto it2 = it1->second.find(key2); it2 != it1->second.end()) {
+            if (auto it1 = _texts.find(key1); it1 != _texts.end()) {
+                if (auto it2 = it1->second.find(key2); it2 != it1->second.end()) {
                     delete it2->second;
                 }
                 it1->second.insert_or_assign(key2, dialog);
@@ -105,17 +105,23 @@ namespace rat
             }
         }
         else {
+            std::string label = "";
+            if (auto it = _texts[key1].begin(); it != _texts[key1].end()) {
+                label = it->second->label;
+            }
+
             DialogData* obj = new DialogData {
                 key1,
                 key2,
                 "00:00",
                 "00:00",
-                "",
+                label,
                 {""},
                 {"00:00"},
                 {0},
                 1
             };
+
             add(key1, key2, obj);
         }
     }
