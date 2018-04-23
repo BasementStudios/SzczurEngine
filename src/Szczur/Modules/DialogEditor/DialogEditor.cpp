@@ -2,10 +2,11 @@
 
 #include <experimental/filesystem>
 
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
 #include "Szczur/Utility/MsgBox.hpp"
+
+namespace fs = std::experimental::filesystem;
 
 namespace rat
 {
@@ -15,6 +16,7 @@ DialogEditor::DialogEditor()
 	  _dlgEditor(_characters), _nodeEditor(this), _CharactersManager(_dlgEditor.getContainer())
 {
 	LOG_INFO("Initializing DialogEditor module");
+	refreshDialogsList();
 	LOG_INFO("Module DialogEditor initialized");
 }
 
@@ -37,9 +39,9 @@ void DialogEditor::update()
 			_nodeEditor.update();
 	}
 
-	if (ImGui::Begin("Dialog Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	if (_projectLoaded)
 	{
-		if (_projectLoaded)
+		if (ImGui::Begin("Dialog Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Path: ./%s", _projectPath.c_str());
 
@@ -69,84 +71,14 @@ void DialogEditor::update()
 			if (ImGui::Button("Show in explorer"))
 			{
 #ifdef OS_WINDOWS
-				auto path = std::experimental::filesystem::current_path().string() + "\\" + _projectPath;
+				auto path = fs::current_path().string() + "\\" + _projectPath;
 
 				ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 #endif
 			}
 
 			ImGui::Separator();
-		}
-		else
-		{
-			ImGui::Text("First create or load project");
-			ImGui::Separator();
-		}
 
-		if (ImGui::Button("Create new project"))
-		{
-			auto directory = DirectoryDialog::getExistingDirectory("Select project directory", std::experimental::filesystem::current_path().string());
-
-			if (!directory.empty())
-			{
-				_projectPath = fixPathSlashes(makePathRelative(directory));
-
-				_dlgEditor.load(_projectPath);
-				_nodeEditor.createNew();
-				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
-				_CharactersManager.clear();
-				_CharactersManager.save(_projectPath + "/characters.json");
-
-				std::experimental::filesystem::copy("dialog/dialog.flac", directory + "/dialog.flac");
-
-				_projectLoaded = true;
-			}
-		}
-
-		if (ImGui::Button("Open project..."))
-		{
-			auto currentPath = std::experimental::filesystem::current_path().string();
-
-			auto directory = DirectoryDialog::getExistingDirectory("Select project directory", currentPath);
-
-			if (!directory.empty())
-			{
-				directory = fixPathSlashes(makePathRelative(directory));
-
-				LOG_INFO("Opening ", directory, "...");
-
-				bool error = false;
-
-				if (!std::experimental::filesystem::exists(directory + "/dialog.dlg"))
-					error = true;
-
-				if (!std::experimental::filesystem::exists(directory + "/dialog.json"))
-					error = true;
-
-				if (!std::experimental::filesystem::exists(directory + "/characters.json"))
-					error = true;
-
-				if (error == false)
-				{
-					_projectPath = directory;
-
-					_CharactersManager.load(_projectPath + "/characters.json");
-					_dlgEditor.load(_projectPath);
-					_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
-					_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
-
-					_projectLoaded = true;
-				}
-				else
-				{
-					LOG_INFO("Missing files!");
-					MsgBox::show("Cannot open project because cannot find dialog.dlg, dialog.json or characters.json", "Missing files", MsgBox::Icon::Warning);
-				}
-			}
-		}
-
-		if (_projectLoaded)
-		{
 			if (ImGui::Button("Save"))
 			{
 				if (!_projectPath.empty())
@@ -171,22 +103,182 @@ void DialogEditor::update()
 			ImGui::Checkbox("Dlg Editor", &_showDlgEditor);
 			ImGui::Checkbox("Node Editor", &_showNodeEditor);
 		}
+		ImGui::End();
 	}
+
+	if (ImGui::Begin("Dialogs' Directory Browser", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("Dialogs");
+
+		if (ImGui::Button("Refresh list"))
+		{
+			refreshDialogsList();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Show in explorer"))
+		{
+			auto path = fs::current_path().string() + "\\" + _dialogsDirectory.Path;
+
+			ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+		}
+
+		ImGui::Separator();
+
+		showDirectory(_dialogsDirectory);
+	}
+
 	ImGui::End();
+
+	if (_showDirectoryPopup)
+	{
+		ImGui::OpenPopup("Directory Popup");
+		_showDirectoryPopup = false;
+	}
+
+	if (ImGui::BeginPopup("Directory Popup"))
+	{
+		ImGui::Selectable("Create directory");
+		ImGui::Selectable("Create project");
+
+		ImGui::EndPopup();
+	}
 }
 
-std::string DialogEditor::makePathRelative(const std::string& path)
+void DialogEditor::createProject(const std::string& path)
 {
-	auto currentPath = std::experimental::filesystem::current_path().string();
+	_projectPath = fixPathSlashes(path);
 
-	size_t start = path.find(currentPath);
+	_dlgEditor.load(_projectPath);
+	_nodeEditor.createNew();
+	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+	_CharactersManager.clear();
+	_CharactersManager.save(_projectPath + "/characters.json");
 
-	if (start != -1)
+	fs::copy("dialog/dialog.flac", path + "/dialog.flac");
+
+	_projectLoaded = true;
+}
+
+void DialogEditor::openProject(const std::string& path)
+{
+	if (path.empty())
+		return;
+
+	auto _path = fixPathSlashes(path);
+
+	auto currentPath = fs::current_path().string();
+
+	LOG_INFO("Opening `", _path, "`...");
+
+	if (isProjectDirectory(_path))
 	{
-		return path.substr(currentPath.length() + 1, path.length() - currentPath.length() - 1);
-	}
+		_projectPath = _path;
 
-	return path;
+		_CharactersManager.load(_projectPath + "/characters.json");
+		_dlgEditor.load(_projectPath);
+		_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
+		_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
+
+		_projectLoaded = true;
+	}
+	else
+	{
+		LOG_INFO("Missing files!");
+		MsgBox::show("Cannot open project because cannot find dialog.dlg, dialog.json or characters.json", "Missing files", MsgBox::Icon::Warning);
+	}
+}
+
+void DialogEditor::showDirectory(Directory& directory)
+{
+	for (auto& child : directory.Childs)
+	{
+		if (child.Type == Directory::DialogsDir)
+		{
+			if (ImGui::TreeNode(child.Name.c_str()))
+			{
+				ImGui::SameLine();
+
+				if (ImGui::SmallButton(("+##" + child.Name).c_str()))
+				{
+					_showDirectoryPopup = true;
+				}
+
+				showDirectory(child);
+				ImGui::TreePop();
+			}
+		}
+		else
+		{
+			ImGui::BulletText(child.Name.c_str());
+
+			ImGui::SameLine();
+
+			if (ImGui::SmallButton("Open"))
+			{
+				openProject(child.Path);
+			}
+		}
+	}
+}
+
+void DialogEditor::refreshDialogsList()
+{
+	_dialogsDirectory.Type = Directory::DialogsDir;
+	_dialogsDirectory.Name = "dialogs";
+	_dialogsDirectory.Path = "dialogs";
+
+	_dialogsDirectory.Childs.clear();
+
+	scanFolder(_dialogsDirectory, "dialogs");
+}
+
+void DialogEditor::scanFolder(Directory& directory, const std::string& path)
+{
+	for (auto& p : fs::directory_iterator(path))
+	{
+		if (fs::is_directory(p.status()))
+		{
+			Directory newDir;
+
+			newDir.Name = p.path().filename().string();
+			newDir.Path = p.path().string();
+			newDir.Parent = &directory;
+
+			if (isProjectDirectory(p.path().string()))
+			{
+				newDir.Type = Directory::ProjectDir;
+				LOG_INFO("(", newDir.Path, "): ", newDir.Type == Directory::ProjectDir ? "ProjectDir" : "DialogDir");
+			}
+			else
+			{
+				newDir.Type = Directory::DialogsDir;
+				newDir.Parent = &directory;
+				LOG_INFO("(", newDir.Path, "): ", newDir.Type == Directory::ProjectDir ? "ProjectDir" : "DialogDir");
+
+				scanFolder(newDir, newDir.Path);
+			}
+
+			directory.Childs.push_back(newDir);
+		}
+	}
+}
+
+bool DialogEditor::isProjectDirectory(const std::string& path)
+{
+	bool error = false;
+
+	if (!fs::exists(path + "/dialog.dlg"))
+		error = true;
+
+	if (!fs::exists(path + "/dialog.json"))
+		error = true;
+
+	if (!fs::exists(path + "/characters.json"))
+		error = true;
+
+	return !error;
 }
 
 std::string DialogEditor::fixPathSlashes(const std::string& path)
