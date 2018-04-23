@@ -97,6 +97,8 @@ void DialogEditor::update()
 				_CharactersManager.clear();
 				_CharactersManager.save(_projectPath + "/characters.json");
 
+				std::experimental::filesystem::copy("dialog/dialog.flac", directory + "/dialog.flac");
+
 				_projectLoaded = true;
 			}
 		}
