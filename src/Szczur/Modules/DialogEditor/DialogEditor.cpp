@@ -47,6 +47,8 @@ void DialogEditor::update()
 
 			if (ImGui::Button("Test dialog"))
 			{
+				getModule<Dialog>().unload();
+
 				_dlgEditor.save();
 				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
 				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::Lua);
