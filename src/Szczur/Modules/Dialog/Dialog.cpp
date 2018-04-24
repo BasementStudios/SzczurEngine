@@ -6,9 +6,6 @@ namespace rat {
         LOG_INFO(this, "Module Dialog constructed")
         auto& gui = getModule<GUI>();
         _initScript();
-        _dialogGUI.setKillerCallback([this](){
-            unload();
-        });
     }
 
 
@@ -41,7 +38,6 @@ namespace rat {
 
     DialogManager* Dialog::load(const std::string& path) {
         _dialogManager = new DialogManager(path, _dialogGUI);
-        _dialogGUI.show();
         return _dialogManager;
     }
 

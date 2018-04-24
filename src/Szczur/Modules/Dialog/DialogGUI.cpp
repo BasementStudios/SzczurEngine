@@ -43,8 +43,7 @@ namespace rat {
                     owner.setName(tab["name"]);
                     owner.setButtonsCreator(tab["creator"]);
                     owner.setInterface(tab["interface"]);
-
-					owner.hide();
+                    owner.hide();
                 }
             }
         );
@@ -122,42 +121,22 @@ namespace rat {
         return _buttonsCreator;
     }
 
-    
-    void DialogGUI::setKillerCallback(const std::function<void()>& killerCallback) {
-        _killerCallback = killerCallback;
-    }
-
-    const std::function<void()>& DialogGUI::getKillerCallback() const {
-        return _killerCallback;
-    }
-
-    void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t)> callback) {
+    void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, bool)> callback) {
         size_t i = 0u;
         _area->invisible();
         options.forEach([&i, this, callback, &textManager](Options::Option* option){
             if(option->condition == nullptr || std::invoke(option->condition)) {
                 TextWidget* button = new TextWidget;
-                //button->setString(textManager.getLabel(option->target));
                 _buttonsCreator.call(
                     i, 
                     button
                 );
                 button->setString(textManager.getLabel(option->target));
-                if(option->finishing) {
-                    button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
+                button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
                         if(option->afterAction)
                             std::invoke(option->afterAction);
-                        std::invoke(_killerCallback);
-                    });
-                }
-                
-                else {
-                    button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
-                            if(option->afterAction)
-                                std::invoke(option->afterAction);
-                            std::invoke(callback, option->target);
-                    });
-                }
+                        std::invoke(callback, option->target, option->finishing);
+                });
                 
                 _buttonsContainer->add(button);
                 ++i;
