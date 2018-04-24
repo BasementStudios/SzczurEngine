@@ -53,7 +53,7 @@ protected:
 
 private:
 	Directory _dialogsDirectory;
-	bool _showDirectoryPopup = false;
+	bool _showNewMapPopup = false;
 
 public:
 	DialogEditor();

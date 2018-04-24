@@ -37,10 +37,7 @@ void DialogEditor::update()
 
 		if (_showNodeEditor)
 			_nodeEditor.update();
-	}
 
-	if (_projectLoaded)
-	{
 		if (ImGui::Begin("Dialog Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Path: ./%s", _projectPath.c_str());
@@ -124,6 +121,11 @@ void DialogEditor::update()
 			ShellExecute(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 		}
 
+		if (ImGui::Button("Add map"))
+		{
+			_showNewMapPopup = true;
+		}
+
 		ImGui::Separator();
 
 		showDirectory(_dialogsDirectory);
@@ -131,16 +133,36 @@ void DialogEditor::update()
 
 	ImGui::End();
 
-	if (_showDirectoryPopup)
+	if (_showNewMapPopup)
 	{
-		ImGui::OpenPopup("Directory Popup");
-		_showDirectoryPopup = false;
+		ImGui::OpenPopup("New Map Popup");
+		_showNewMapPopup = false;
 	}
 
-	if (ImGui::BeginPopup("Directory Popup"))
+	if (ImGui::BeginPopupModal("New Map Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Selectable("Create directory");
-		ImGui::Selectable("Create project");
+		ImGui::Text("Map name:");
+
+		static char mapName[64];
+
+		ImGui::InputText("##MapName", mapName, 64);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Ok"))
+		{
+			fs::create_directory("dialogs/" + std::string(mapName));
+			refreshDialogsList();
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel"))
+		{
+			ImGui::CloseCurrentPopup();
+		}
 
 		ImGui::EndPopup();
 	}
@@ -202,7 +224,7 @@ void DialogEditor::showDirectory(Directory& directory)
 
 				if (ImGui::SmallButton(("+##" + child.Name).c_str()))
 				{
-					_showDirectoryPopup = true;
+					// open popup modal
 				}
 
 				showDirectory(child);
@@ -261,9 +283,6 @@ void DialogEditor::refreshDialogsList()
 
 		_dialogsDirectory.Childs.push_back(std::move(mapDir));
 	}
-
-
-	//scanFolder(_dialogsDirectory, "dialogs");
 }
 
 bool DialogEditor::isProjectDirectory(const std::string& path)
