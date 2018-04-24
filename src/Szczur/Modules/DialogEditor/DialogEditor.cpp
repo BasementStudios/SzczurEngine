@@ -27,7 +27,7 @@ DialogEditor::~DialogEditor()
 
 void DialogEditor::update()
 {
-	if (_projectLoaded)
+	if (_projectLoaded && _showDialogEditor)
 	{
 		if (_showCharactersManager)
 			_CharactersManager.update();
@@ -38,7 +38,7 @@ void DialogEditor::update()
 		if (_showNodeEditor)
 			_nodeEditor.update();
 
-		if (ImGui::Begin("Dialog Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+		if (ImGui::Begin("Dialog Editor", &_showDialogEditor, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Path: ./%s", _projectPath.c_str());
 
@@ -86,7 +86,7 @@ void DialogEditor::update()
 				}
 			}
 
-			if (ImGui::Button("Generate"))
+			if (ImGui::Button("Generate lua"))
 			{
 				LOG_INFO("Generating lua...");
 
@@ -101,7 +101,7 @@ void DialogEditor::update()
 			ImGui::Checkbox("Node Editor", &_showNodeEditor);
 		}
 		ImGui::End();
-	}
+}
 
 	if (ImGui::Begin("Dialogs' Directory Browser", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
@@ -221,6 +221,10 @@ void DialogEditor::createProject(const std::string& path)
 	fs::copy("dialog/dialog.flac", path + "/dialog.flac");
 
 	_projectLoaded = true;
+	_showDialogEditor = true;
+	_showDlgEditor = false;
+	_showNodeEditor = false;
+	_showCharactersManager = false;
 }
 
 void DialogEditor::openProject(const std::string& path)
@@ -244,6 +248,10 @@ void DialogEditor::openProject(const std::string& path)
 		_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
 
 		_projectLoaded = true;
+		_showDialogEditor = true;
+		_showDlgEditor = false;
+		_showNodeEditor = false;
+		_showCharactersManager = false;
 	}
 	else
 	{
