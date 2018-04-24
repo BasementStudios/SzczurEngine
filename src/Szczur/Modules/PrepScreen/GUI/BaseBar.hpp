@@ -12,6 +12,12 @@ namespace rat
         BaseBar();
         void setPosition(float x, float y);
         void setParent(Widget* parent);
+        void deactivate();
+        void activate();
+        /*
+        void invisible();
+        void visible();
+        */
 
     protected:
         void _addWidget(Widget* addon);

@@ -70,7 +70,7 @@ namespace rat
 
     void ColorFilterBar::_onClick()
     {
-        bool adding = false;
+        bool adding = true; 
         
         if(adding)
         {

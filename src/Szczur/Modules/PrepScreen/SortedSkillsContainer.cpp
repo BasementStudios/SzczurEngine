@@ -93,6 +93,7 @@ namespace rat
 
     std::vector<Skill*> SortedSkillsContainer::getWholeColors(const std::string& profession, const Colors_t& colors) const
     {
+        if(colors.size() == 0) return getWholeProfession(profession);
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end()) return {};
         Skills_t wholeColors;

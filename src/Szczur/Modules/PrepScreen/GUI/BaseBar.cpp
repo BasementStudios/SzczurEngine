@@ -28,6 +28,23 @@ namespace rat
         auto size = static_cast<sf::Vector2f>(texture->getSize());
         widget->setScale({x/size.x, y/size.y});
     }
-    
+    void BaseBar::deactivate()
+    {
+        _base->deactivate();
+    }
+    void BaseBar::activate()
+    {
+        _base->activate();
+    }
+    /*
+    void BaseBar::invisible()
+    {
+        _base->invisible();
+    }
+    void BaseBar::visible()
+    {
+        _base->visible();
+    }
+    */
         
 }

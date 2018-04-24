@@ -41,7 +41,8 @@ namespace rat
 
         _costBar.setParent(_infoBar);
         _costBar.setPosition(0.f, _size.y - 16.f - _costBar.getPPSize().y);
-        _costBar.setGrayPPPosition(_size.x - 16.f - _costBar.getPPSize().x - 64.f, 0.f);
+        //_costBar.setGrayPPPosition(_size.x - 16.f - _costBar.getPPSize().x - 64.f, 0.f);
+        _costBar.setWidth(150.f);
         //_costBar.setGrayPPPosition(10.f, 0.f);
 
         auto click = [&](Widget* owner){

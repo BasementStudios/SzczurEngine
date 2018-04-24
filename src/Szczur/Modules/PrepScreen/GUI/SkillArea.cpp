@@ -14,7 +14,7 @@ namespace rat
     SkillArea::SkillArea(GrayPPBar& sourceBar)
     :
     _sourceBar(sourceBar),
-    _chosenColors({"Fire"}),
+    _chosenColors({}),
     _curentProfession("Mele")
     {
         _base = new ScrollAreaWidget;
