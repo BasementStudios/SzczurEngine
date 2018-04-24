@@ -34,7 +34,7 @@ public:
 	std::vector<Directory> Childs;
 };
 
-class DialogEditor : public Module<Script, Dialog>
+class DialogEditor : public Module<Input, Script, Dialog>
 {
 	friend NodeEditor;
 

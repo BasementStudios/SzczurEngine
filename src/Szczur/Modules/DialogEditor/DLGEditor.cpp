@@ -9,8 +9,8 @@
 
 namespace rat
 {
-    DLGEditor::DLGEditor(std::vector<CharacterData>& characters)
-        : _characters(characters), _textManager(characters), _parts(_textManager.getContainer())
+    DLGEditor::DLGEditor(std::vector<CharacterData>& characters, const InputManager& inputManager)
+        : _inputManager(inputManager), _characters(characters), _textManager(characters), _parts(_textManager.getContainer())
     {
         
     }
@@ -40,6 +40,20 @@ namespace rat
     {
         show();
         playAudio();
+        input();
+    }
+
+    void DLGEditor::input()
+    {
+        if (_inputManager.isKept(InputCode(Keyboard::LControl)) && _inputManager.isPressed(InputCode(Keyboard::Tab))) {
+            if (_inputManager.isKept(InputCode(Keyboard::LShift)) && _currentMajor != _parts.size()) {
+                ++_currentMajor;
+                _currentMinor = _parts[_currentMajor].begin()->first;
+            }
+            else if(_currentMinor != _parts[_currentMajor].size()) {
+                ++_currentMinor;
+            }
+        }
     }
 
     void DLGEditor::save()

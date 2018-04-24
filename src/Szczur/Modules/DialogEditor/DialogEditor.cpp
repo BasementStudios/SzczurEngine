@@ -13,7 +13,7 @@ namespace rat
 
 DialogEditor::DialogEditor()
 	: _characters(_CharactersManager.getCharactersContainer()),
-	  _dlgEditor(_characters), _nodeEditor(this), _CharactersManager(_dlgEditor.getContainer())
+	  _dlgEditor(_characters, getModule<Input>().getManager()), _nodeEditor(this), _CharactersManager(_dlgEditor.getContainer())
 {
 	LOG_INFO("Initializing DialogEditor module");
 	refreshDialogsList();

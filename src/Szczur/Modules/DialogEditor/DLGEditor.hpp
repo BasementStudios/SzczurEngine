@@ -2,6 +2,7 @@
 
 #include <SFML/Audio.hpp>
 
+#include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Config.hpp"
 
 #include "DLGTextManager.hpp"
@@ -15,6 +16,8 @@ namespace rat
         using TextContainer_t = boost::container::flat_map<size_t, boost::container::flat_map<size_t, DialogData*>>;
 
 	private:
+
+        const InputManager& _inputManager;
 
         std::vector<CharacterData>& _characters;
         DLGTextManager _textManager;
@@ -46,7 +49,7 @@ namespace rat
 
     public:
 
-        DLGEditor(std::vector<CharacterData>& characters);
+        DLGEditor(std::vector<CharacterData>& characters, const InputManager& inputManager);
         void load(const std::string& path);
 
         void update();
@@ -60,9 +63,10 @@ namespace rat
 
     private:
 
+        void input();
+
         void playAudio();
         void show();
-
 
         void player();
         void majorPartSelector();
