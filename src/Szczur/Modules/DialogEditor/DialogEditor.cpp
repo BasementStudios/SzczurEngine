@@ -231,36 +231,39 @@ void DialogEditor::refreshDialogsList()
 
 	_dialogsDirectory.Childs.clear();
 
-	scanFolder(_dialogsDirectory, "dialogs");
-}
-
-void DialogEditor::scanFolder(Directory& directory, const std::string& path)
-{
-	for (auto& p : fs::directory_iterator(path))
+	for (auto& mapDirPath : fs::directory_iterator("dialogs"))
 	{
-		if (fs::is_directory(p.status()))
+		if (mapDirPath.path().filename() == "config")
+			continue;
+
+		if (!fs::is_directory(mapDirPath.status()))
+			continue;
+
+		Directory mapDir;
+		mapDir.Name = mapDirPath.path().filename().string();
+		mapDir.Path = mapDirPath.path().string();
+		mapDir.Type = Directory::DialogsDir;
+
+		for (auto& dialogDirPath : fs::directory_iterator(mapDirPath.path()))
 		{
-			Directory newDir;
+			if (!fs::is_directory(dialogDirPath.status()))
+				continue;
 
-			newDir.Name = p.path().filename().string();
-			newDir.Path = p.path().string();
+			if (!isProjectDirectory(dialogDirPath.path().string()))
+				continue;
 
-			if (isProjectDirectory(p.path().string()))
-			{
-				newDir.Type = Directory::ProjectDir;
-				//LOG_INFO("(", newDir.Path, "): ProjectDir");
-			}
-			else
-			{
-				newDir.Type = Directory::DialogsDir;
-				//LOG_INFO("(", newDir.Path, "): DialogDir");
-
-				scanFolder(newDir, newDir.Path);
-			}
-
-			directory.Childs.push_back(newDir);
+			Directory dialogDir;
+			dialogDir.Name = dialogDirPath.path().filename().string();
+			dialogDir.Path = dialogDirPath.path().string();
+			dialogDir.Type = Directory::ProjectDir;
+			mapDir.Childs.push_back(std::move(dialogDir));
 		}
+
+		_dialogsDirectory.Childs.push_back(std::move(mapDir));
 	}
+
+
+	//scanFolder(_dialogsDirectory, "dialogs");
 }
 
 bool DialogEditor::isProjectDirectory(const std::string& path)

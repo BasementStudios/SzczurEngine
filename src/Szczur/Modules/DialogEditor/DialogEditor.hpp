@@ -68,7 +68,6 @@ private:
 	void showDirectory(Directory& directory);
 
 	void refreshDialogsList();
-	void scanFolder(Directory& directory, const std::string& path);
 
 	bool isProjectDirectory(const std::string& path);
 
