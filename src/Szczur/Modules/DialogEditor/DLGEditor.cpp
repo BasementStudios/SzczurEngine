@@ -106,17 +106,17 @@ namespace rat
     {
         for (auto it : _parts) { 
             auto name = std::to_string(it.first) + "##DialogMajorPartSelector";
-            bool changeColor = _currentMajor == it.first;
-            if (changeColor) { 
+            bool isCurrenMajor = _currentMajor == it.first;
+            if (isCurrenMajor) { 
                 ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.6f)); 
                 ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.8f)); 
                 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.7f)); 
             }
-            if (ImGui::Button(name.c_str(), ImVec2(30, 27))) {
+            if (ImGui::Button(name.c_str(), ImVec2(30, 27)) && !isCurrenMajor) {
                 _currentMajor = it.first;
                 _currentMinor = it.second.begin()->first;
             }
-            if (changeColor) { ImGui::PopStyleColor(3); }
+            if (isCurrenMajor) { ImGui::PopStyleColor(3); }
             ImGui::SameLine();
         }
         if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
