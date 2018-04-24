@@ -28,6 +28,8 @@ public:
 
 	DirectoryType Type;
 
+	bool Root = false;
+
 	// Only when Type == DialogsDir
 	std::vector<Directory> Childs;
 };
@@ -47,6 +49,7 @@ protected:
 	NodeEditor _nodeEditor;
 	CharactersManager _CharactersManager;
 
+	bool _showDialogEditor = false;
 	bool _showDlgEditor = false;
 	bool _showNodeEditor = false;
 	bool _showCharactersManager = false;
@@ -54,6 +57,9 @@ protected:
 private:
 	Directory _dialogsDirectory;
 	bool _showNewMapPopup = false;
+
+	bool _showNewDialogPopup = false;
+	Directory* _newDialogPopupCurrentDir = nullptr;
 
 public:
 	DialogEditor();

@@ -166,6 +166,46 @@ void DialogEditor::update()
 
 		ImGui::EndPopup();
 	}
+
+	if (_showNewDialogPopup)
+	{
+		ImGui::OpenPopup("New Dialog Popup");
+		_showNewDialogPopup = false;
+	}
+
+	if (ImGui::BeginPopupModal("New Dialog Popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		if (_newDialogPopupCurrentDir == nullptr)
+			ImGui::CloseCurrentPopup();
+
+		ImGui::Text("Dialog name:");
+
+		static char dialogName[64];
+
+		ImGui::InputText("##DialogName", dialogName, 64);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Ok"))
+		{
+			auto path = _newDialogPopupCurrentDir->Path + "\\" + std::string(dialogName);
+
+			fs::create_directory(path);
+			createProject(path);
+			refreshDialogsList();
+
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel"))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
 }
 
 void DialogEditor::createProject(const std::string& path)
@@ -220,13 +260,6 @@ void DialogEditor::showDirectory(Directory& directory)
 		{
 			if (ImGui::TreeNode(child.Name.c_str()))
 			{
-				ImGui::SameLine();
-
-				if (ImGui::SmallButton(("+##" + child.Name).c_str()))
-				{
-					// open popup modal
-				}
-
 				showDirectory(child);
 				ImGui::TreePop();
 			}
@@ -243,6 +276,18 @@ void DialogEditor::showDirectory(Directory& directory)
 			}
 		}
 	}
+
+	if (!directory.Root)
+	{
+		ImGui::Bullet();
+		ImGui::SameLine();
+
+		if (ImGui::SmallButton(("New##" + directory.Name).c_str()))
+		{
+			_newDialogPopupCurrentDir = &directory;
+			_showNewDialogPopup = true;
+		}
+	}
 }
 
 void DialogEditor::refreshDialogsList()
@@ -250,6 +295,7 @@ void DialogEditor::refreshDialogsList()
 	_dialogsDirectory.Type = Directory::DialogsDir;
 	_dialogsDirectory.Name = "dialogs";
 	_dialogsDirectory.Path = "dialogs";
+	_dialogsDirectory.Root = true;
 
 	_dialogsDirectory.Childs.clear();
 
