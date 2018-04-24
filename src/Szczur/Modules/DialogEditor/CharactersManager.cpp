@@ -81,6 +81,7 @@ namespace rat
 
                 ImGui::PopID();
             }
+            ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 37);
             if (ImGui::Button("+##Characters Manager", ImVec2(30, 27))) {
                 _characters.push_back({"", ""});
                 LOG_INFO("New Character added");
