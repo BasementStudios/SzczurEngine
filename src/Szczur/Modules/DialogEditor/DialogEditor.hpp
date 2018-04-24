@@ -28,8 +28,6 @@ public:
 
 	DirectoryType Type;
 
-	Directory* Parent = nullptr;
-
 	// Only when Type == DialogsDir
 	std::vector<Directory> Childs;
 };

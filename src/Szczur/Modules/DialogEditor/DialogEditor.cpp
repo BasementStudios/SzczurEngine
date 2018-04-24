@@ -244,18 +244,16 @@ void DialogEditor::scanFolder(Directory& directory, const std::string& path)
 
 			newDir.Name = p.path().filename().string();
 			newDir.Path = p.path().string();
-			newDir.Parent = &directory;
 
 			if (isProjectDirectory(p.path().string()))
 			{
 				newDir.Type = Directory::ProjectDir;
-				LOG_INFO("(", newDir.Path, "): ", newDir.Type == Directory::ProjectDir ? "ProjectDir" : "DialogDir");
+				//LOG_INFO("(", newDir.Path, "): ProjectDir");
 			}
 			else
 			{
 				newDir.Type = Directory::DialogsDir;
-				newDir.Parent = &directory;
-				LOG_INFO("(", newDir.Path, "): ", newDir.Type == Directory::ProjectDir ? "ProjectDir" : "DialogDir");
+				//LOG_INFO("(", newDir.Path, "): DialogDir");
 
 				scanFolder(newDir, newDir.Path);
 			}
