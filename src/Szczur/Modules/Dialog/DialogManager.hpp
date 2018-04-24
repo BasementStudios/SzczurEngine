@@ -60,6 +60,7 @@ namespace rat {
 
         bool _paused;
         bool _clearButtons;
+        bool _destroyed{false};
 
         bool _nextMinor();
 

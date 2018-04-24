@@ -66,11 +66,14 @@ namespace rat {
             auto state = _soundManager.update();
             if(state == sf::SoundSource::Status::Paused) {
                 if(!_nextMinor()) { //Finished every minor in this id
+                    if(_destroyed)
+                        return true;
                     _paused = true;
                     for(auto& it : _options) {
                         if(it->checkIfRunsWith(_current)) {
-                            _dialogGUI.interpretOptions(_textManager, *it, [this](size_t id){
+                            _dialogGUI.interpretOptions(_textManager, *it, [this](size_t id, bool finishing){
                                 _current = id;
+                                this->_destroyed = finishing;
                                 return play();
                             });
                             break;
