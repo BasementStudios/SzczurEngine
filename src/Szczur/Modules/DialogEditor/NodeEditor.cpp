@@ -505,8 +505,18 @@ void NodeEditor::update()
 						if (output->ActionFunc)
 						{
 							ImGui::SameLine();
-							ImGui::PushStyleColor(ImGuiCol_Text, ImColor(128, 128, 128).Value);
-							ImGui::Text((" (" + output->ActionFuncName + ")").c_str());
+
+							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(183, 28, 28).Value);
+							ImGui::Button("!");
+							ImGui::PopStyleColor();
+						}
+
+						if (output->ConditionFunc)
+						{
+							ImGui::SameLine();
+
+							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(63, 81, 181).Value);
+							ImGui::Button("?");
 							ImGui::PopStyleColor();
 						}
 					}
@@ -743,6 +753,7 @@ void NodeEditor::showPopups()
 				}
 			}
 		}
+
 
 		if (pin->Kind == ed::PinKind::Output && pin->Node->Type == Node::Options)
 		{
