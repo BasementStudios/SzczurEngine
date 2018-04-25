@@ -93,7 +93,6 @@ namespace rat
         auto newTextPos = ((ppSize - textSize)/2.f) + ppPos;
 
         _costAmount->setPosition(newTextPos);
-        std::cout << "PP pos: x: " << ppPos.x << " y: " << ppPos.y << "\n";
     }
 
     void CostBar::setWidth(float width)
@@ -127,7 +126,6 @@ namespace rat
 
     void CostBar::_recalculate()
     {
-        std::cout << "Recalculating...\n";
         if(_numOfActivated == 0) return;
         float dim = _padding + _dim;
         float coloredWidth = float(_numOfActivated) * dim;

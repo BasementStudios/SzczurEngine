@@ -22,6 +22,7 @@ namespace rat
         std::vector<ImageWidget*> _pps;
         sf::Texture* _texture{nullptr};
 
+
         float _dim{40.f}; 
 
         void _resetPPWidget(ImageWidget* pp);

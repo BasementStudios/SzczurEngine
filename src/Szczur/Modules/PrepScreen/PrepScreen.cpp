@@ -130,7 +130,6 @@ namespace rat
         _coloredPPsBar.recalculate();
         _grayPPsBar.recalculate();
 
-        std::cout << "Before initing Assets..\n";        
         _initSkillArea();
         _initChosenSkillArea();
         _initProfArea();
@@ -147,12 +146,9 @@ namespace rat
     {
         _skillArea.initChosenSkillArea(_chosenSkillArea);
         _skillArea.setParent(_centerWindow);
-        std::cout << "Before\n";
         _skillArea.initViaSkillCodex(_codex);
-        std::cout << "Codex is good\n";
         _skillArea.initAssetsViaGUI(getModule<GUI>());
-        std::cout << "Sfter\n";        
-        _skillArea.activate("Mele", {"Fire"});
+        _skillArea.activate("Mele", {});
     }
 
     void PrepScreen::_initProfArea()

@@ -29,7 +29,6 @@ namespace rat
 
     void ColorFilterBar::initAssetsViaGUI(GUI& gui)
     {
-        std::cout << "Filter color: " << _color << " initing...\n";
         auto* iconTexture = gui.getAsset<sf::Texture>("assets/PrepScreen/" + _color + "PP.png");
         _icon->setTexture(iconTexture);
         _setWidgetSize(_icon, _dim, _dim);

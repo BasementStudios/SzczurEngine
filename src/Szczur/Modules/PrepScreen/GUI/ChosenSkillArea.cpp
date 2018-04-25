@@ -47,9 +47,7 @@ namespace rat
         auto freeSlot = std::find_if(_skillBars.begin(), _skillBars.end(), [](const std::unique_ptr<ChosenSkillBar>& skillBar){
             return skillBar->isFree();
         });
-        std::cout << "freeSlot found\n";
         (*freeSlot)->setSkill(skill);
-        std::cout << "freeSlot skill added\n";
         recalculate();
     }
     bool ChosenSkillArea::hasFreeSpace() const
