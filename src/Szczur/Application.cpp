@@ -13,6 +13,7 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<GUI>();
+	initModule<GUITest>();
 	#ifdef EDITOR
 	{
 		ImGui::CreateContext();
@@ -48,6 +49,7 @@ void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<GUI>().update(deltaTime);
+	getModule<GUITest>().update(deltaTime);
 	/*
 		Put other updates here
 	*/
@@ -70,6 +72,7 @@ void Application::render()
 {
 	getModule<Window>().clear();
 	getModule<GUI>().render();
+	getModule<GUITest>().render();
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
