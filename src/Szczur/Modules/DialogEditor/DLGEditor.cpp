@@ -46,12 +46,19 @@ namespace rat
     void DLGEditor::input()
     {
         if (_inputManager.isKept(InputCode(Keyboard::LControl)) && _inputManager.isPressed(InputCode(Keyboard::Tab))) {
-            if (_inputManager.isKept(InputCode(Keyboard::LShift)) && _currentMajor != _parts.size()) {
-                ++_currentMajor;
-                _currentMinor = _parts[_currentMajor].begin()->first;
+            if (_inputManager.isKept(InputCode(Keyboard::LShift))) { 
+                if (_currentMinor != _parts[_currentMajor].begin()->first) {
+                    --_currentMinor;
+                }
+                else {
+                    _currentMinor = (--_parts[_currentMajor].end())->first;    
+                }
             }
             else if(_currentMinor != _parts[_currentMajor].size()) {
                 ++_currentMinor;
+            }
+            else {
+                _currentMinor = _parts[_currentMajor].begin()->first;
             }
         }
     }
