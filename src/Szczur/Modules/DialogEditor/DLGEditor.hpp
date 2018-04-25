@@ -47,6 +47,8 @@ namespace rat
 
         float _sliderTime = 0;
 
+        bool _isWindowFocused;
+
     public:
 
         DLGEditor(std::vector<CharacterData>& characters, const InputManager& inputManager);

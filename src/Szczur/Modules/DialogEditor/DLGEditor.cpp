@@ -45,6 +45,8 @@ namespace rat
 
     void DLGEditor::input()
     {
+        if(!_isWindowFocused) return;
+
         if (_inputManager.isKept(InputCode(Keyboard::LControl)) && _inputManager.isPressed(InputCode(Keyboard::Tab))) {
             if (_inputManager.isKept(InputCode(Keyboard::LShift))) { 
                 if (_currentMinor != _parts[_currentMajor].begin()->first) {
@@ -82,6 +84,8 @@ namespace rat
     void DLGEditor::show()
     {
         ImGui::Begin("Dlg Files Editor");
+            _isWindowFocused = ImGui::IsWindowFocused();
+
             player();              ImGui::Separator();
             majorPartSelector();   ImGui::Separator();
             minorPartSelector();   ImGui::Separator();
