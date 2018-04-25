@@ -77,6 +77,9 @@ namespace rat
         void labelEditor();
         void mainEditor();
 
+        void addMinor();
+        void removeMinor();
+
         std::string toTime(int secI);
         int toIntSeconds(const std::string& timeString) const;
 

@@ -47,20 +47,29 @@ namespace rat
     {
         if(!_isWindowFocused) return;
 
-        if (_inputManager.isKept(InputCode(Keyboard::LControl)) && _inputManager.isPressed(InputCode(Keyboard::Tab))) {
-            if (_inputManager.isKept(InputCode(Keyboard::LShift))) { 
-                if (_currentMinor != _parts[_currentMajor].begin()->first) {
-                    --_currentMinor;
+        if (_inputManager.isKept(InputCode(Keyboard::LControl))) {
+            if (_inputManager.isPressed(InputCode(Keyboard::Add))) {
+                addMinor();
+            }
+            if (_inputManager.isPressed(InputCode(Keyboard::Subtract))) {
+                removeMinor();
+            }
+
+            if (_inputManager.isPressed(InputCode(Keyboard::Tab))) {
+                if (_inputManager.isKept(InputCode(Keyboard::LShift))) { 
+                    if (_currentMinor != _parts[_currentMajor].begin()->first) {
+                        --_currentMinor;
+                    }
+                    else {
+                        _currentMinor = (--_parts[_currentMajor].end())->first;    
+                    }
+                }
+                else if(_currentMinor != _parts[_currentMajor].size()) {
+                    ++_currentMinor;
                 }
                 else {
-                    _currentMinor = (--_parts[_currentMajor].end())->first;    
+                    _currentMinor = _parts[_currentMajor].begin()->first;
                 }
-            }
-            else if(_currentMinor != _parts[_currentMajor].size()) {
-                ++_currentMinor;
-            }
-            else {
-                _currentMinor = _parts[_currentMajor].begin()->first;
             }
         }
     }
@@ -192,19 +201,11 @@ namespace rat
         }
         if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
         if (ImGui::Button("-##DialogMinorPartSelector", ImVec2(30, 27))) {
-            size_t minor = (--_parts[_currentMajor].end())->first;
-            if (minor == _parts[_currentMajor].begin()->first) { return; }
-            if (_currentMinor == minor) { --_currentMinor; }
-            delete _parts[_currentMajor][minor];
-            _parts[_currentMajor].erase(minor);
-            LOG_INFO("Minor part has been removed");
+            removeMinor();
         } 
         ImGui::SameLine();
         if (ImGui::Button("+##DialogMinorPartSelector", ImVec2(30, 27))) {
-            size_t minor = (--_parts[_currentMajor].end())->first;
-            ++minor;
-            _textManager.add(_currentMajor, minor, NULL);
-            LOG_INFO("New minor part added");
+            addMinor();
         }
     }
 
@@ -346,6 +347,24 @@ namespace rat
             _parts[_currentMajor][_currentMinor]->chosenCharacter.push_back(0);
             LOG_INFO("Added dialog part");
         }
+    }
+
+    void DLGEditor::addMinor()
+    {
+        size_t minor = (--_parts[_currentMajor].end())->first;
+        ++minor;
+        _textManager.add(_currentMajor, minor, NULL);
+        LOG_INFO("New minor part added");
+    }
+
+    void DLGEditor::removeMinor()
+    {
+        size_t minor = (--_parts[_currentMajor].end())->first;
+        if (minor == _parts[_currentMajor].begin()->first) { return; }
+        if (_currentMinor == minor) { --_currentMinor; }
+        delete _parts[_currentMajor][minor];
+        _parts[_currentMajor].erase(minor);
+        LOG_INFO("Minor part has been removed");
     }
  
     void DLGEditor::playAudio()
