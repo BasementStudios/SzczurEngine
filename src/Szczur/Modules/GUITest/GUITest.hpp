@@ -16,9 +16,11 @@ namespace rat
         void update(float deltaTime = (1.f/60.f));
         void render();
     private:
-        sf::RenderTexture _canvas;    
+        sf::RenderTexture _canvas;   
 
-        Patch testPatch; 
+        float _scale{1.f}; 
+
+        NinePatch testPatch; 
     };
 
 }

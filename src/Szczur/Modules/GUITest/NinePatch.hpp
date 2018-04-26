@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "Patch.hpp"
+
 #include <SFML/Graphics.hpp>
 
 namespace rat
@@ -24,6 +26,9 @@ namespace rat
         void setInnerSize(const sf::IntRect& rect);
         void setInnerSize(int x, int y, int width, int height);
 
+        void setScale(const sf::Vector2f& scale);
+        void setScale(float x, float y);
+
     private:
         sf::Vector2i _size{0, 0};
         bool _isSizeSet{false};
@@ -40,19 +45,17 @@ namespace rat
 
         sf::Vector2f _position{0.f, 0.f};
 
-        sf::Sprite _topBar;
-        sf::Sprite _bottomBar;
-        sf::Sprite _leftBar;
-        sf::Sprite _rightBar;
+        Patch _topBar;
+        Patch _bottomBar;
+        Patch _leftBar;
+        Patch _rightBar;
 
-        sf::Sprite _topLeftCorner;
-        sf::Sprite _topRightCorner;
-        sf::Sprite _bottomLeftCorner;
-        sf::Sprite _bottomRightCorner;
+        Patch _topLeftCorner;
+        Patch _topRightCorner;
+        Patch _bottomLeftCorner;
+        Patch _bottomRightCorner;
 
-        sf::Sprite _inner;
-
-        std::vector<sf::Sprite*> _sprites;
+        Patch _inner;
 
         void _recalcTexturesAreas();
         void _recalcSpritesSize();

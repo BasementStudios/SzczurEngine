@@ -4,22 +4,24 @@
 
 namespace rat
 {
-    class Patch
+    class Patch : public sf::Drawable
     {
     public:
         enum class Direction{ None, Vertical, Horizontal, All };
 
-        
-
-        void draw(sf::RenderTarget& target) const;        
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;       
 
         void setSize(int x, int y);
         void setSize(sf::Vector2i size);
+        void setPosition(sf::Vector2f position);
         void setPosition(float x, float y);
         void setTexture(sf::Texture* texture);
         void setTextureRect(const sf::IntRect& rect);
         void setScale(float x, float y);
+        void setScale(const sf::Vector2f& scale);
         void setDirection(Direction direction);
+
+        const sf::Vector2i& getSize();
 
 
     private:
@@ -31,7 +33,7 @@ namespace rat
         sf::Vector2f _position{0.f, 0.f};
         sf::Vector2u _textureRect;
         int _elementAmount{1};
-        sf::Vector2i _elementDim{0, 0};
+        sf::Vector2f _elementDim{0.f, 0.f};
         sf::Vector2f _scale{1.f, 1.f};
 
         bool _isSizeSet{false};

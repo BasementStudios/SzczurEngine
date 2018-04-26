@@ -13,12 +13,12 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
-        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"));
-        testPatch.setTextureRect({{0, 200}, {248, 248}});
+        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
+        //testPatch.setTextureRect({{0, 200}, {248, 248}});
         testPatch.setPosition(0.f, 0.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
-        testPatch.setDirection(Patch::Direction::None);
+        //testPatch.setDirection(Patch::Direction::None);
     }
     
     
@@ -27,8 +27,18 @@ namespace rat
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+        {
+            _scale-= deltaTime * 0.2f;
+            if(_scale < 0.2f) _scale = 0.f;
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+        {
+            _scale+= deltaTime * 0.2f;
+        }
+        testPatch.setScale(_scale, _scale);
 
-        
+
         testPatch.setSize(mousePos.x, mousePos.y);        
     }
     void GUITest::render()
@@ -36,7 +46,7 @@ namespace rat
        _canvas.clear(sf::Color::Transparent);
         
         testPatch.draw(_canvas);
-        //_canvas.draw(_root);
+        //_canvas.draw(testPatch);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));

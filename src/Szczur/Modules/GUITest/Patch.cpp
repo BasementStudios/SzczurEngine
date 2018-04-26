@@ -17,7 +17,7 @@ namespace rat
         }
     }
 
-    void Patch::draw(sf::RenderTarget& target) const
+    void Patch::draw(sf::RenderTarget& target, sf::RenderStates states) const     
     {
         if(_texture)
         {        
@@ -54,9 +54,19 @@ namespace rat
     
     void Patch::setScale(float x, float y)
     {
-        _scale = {x, y};
+        setScale({x, y});
+    }
+    void Patch::setScale(const sf::Vector2f& scale)
+    {
+        _scale = scale;
         if(_texture) _recalcRecurrence();
     }
+    const sf::Vector2i& Patch::getSize()
+    {
+        return _size;
+    }
+    
+    
     void Patch::setTexture(sf::Texture* texture)
     {
         _texture = nullptr;
@@ -78,9 +88,18 @@ namespace rat
 
     void Patch::setSize(int x, int y)
     {
-        _size = {x, y};
+        switch(_direction)
+        {
+            case Direction::Horizontal:
+                _size.x = x;
+            break;
+            case Direction::Vertical:
+                _size.y = y;
+            break;
+        }
         _isSizeSet = true;
         if(_texture) _recalcRecurrence();
+
     }
     
     void Patch::setTextureRect(const sf::IntRect& rect)
@@ -92,6 +111,11 @@ namespace rat
     
     void Patch::_recalcSpriteSize()
     {}
+    void Patch::setPosition(sf::Vector2f position)
+    {
+        setPosition(position.x, position.y);
+    }
+    
     void Patch::setPosition(float x, float y)
     {
         _position = {x, y};
@@ -122,9 +146,9 @@ namespace rat
                 
                 float widthTimes = round(totalWidth/realElementDim);
                 _elementAmount = int(widthTimes);
-                _elementDim.x = int(totalWidth/widthTimes);
+                _elementDim.x = totalWidth/widthTimes;
 
-                float xScale = float(_elementDim.x) / realElementDim;
+                float xScale = _elementDim.x / realElementDim;
                 _sprite.setScale(xScale * _scale.x, _scale.y);
             } break;
 
@@ -136,18 +160,19 @@ namespace rat
                 
                 float heightTimes = round(totalHeigt/realElementDim);
                 _elementAmount = int(heightTimes);
-                _elementDim.y = int(totalHeigt/heightTimes);
+                _elementDim.y = totalHeigt/heightTimes;
 
-                float yScale = float(_elementDim.y) / realElementDim;
+                float yScale = _elementDim.y / realElementDim;
                 _sprite.setScale(_scale.x, yScale * _scale.y);
             } break;
 
             case Direction::None:
             {
                 _elementAmount = 1;
-                auto texSize = static_cast<sf::Vector2f>(_texture->getSize());
-                _elementDim.x = int(texSize.x * _scale.x);
-                _elementDim.y = int(texSize.y * _scale.y);
+                sf::Vector2i texSize = {_sprite.getTextureRect().width, _sprite.getTextureRect().height};
+                _elementDim.x = texSize.x * _scale.x;
+                _elementDim.y = texSize.y * _scale.y;
+                _size = static_cast<sf::Vector2i>(_elementDim);
                 _sprite.setScale(_scale);
             } break;
         }
