@@ -18,7 +18,7 @@ namespace rat
         testPatch.setPosition(0.f, 0.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
-        testPatch.setDirection(Patch::Direction::Vertical);
+        testPatch.setDirection(Patch::Direction::None);
     }
     
     

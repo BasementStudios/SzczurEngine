@@ -31,7 +31,7 @@ namespace rat
         sf::Vector2f _position{0.f, 0.f};
         sf::Vector2u _textureRect;
         int _elementAmount{1};
-        float _elementDim{0.f};
+        sf::Vector2i _elementDim{0, 0};
         sf::Vector2f _scale{1.f, 1.f};
 
         bool _isSizeSet{false};

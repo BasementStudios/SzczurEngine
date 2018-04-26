@@ -29,7 +29,7 @@ namespace rat
                     for(int i = 0; i < _elementAmount; i++)
                     {
                         target.draw(_sprite);
-                        _sprite.move(_elementDim, 0.f);
+                        _sprite.move(_elementDim.x, 0.f);
                     }
                 } break;
                 case Direction::Vertical:
@@ -37,8 +37,13 @@ namespace rat
                     for(int i = 0; i < _elementAmount; i++)
                     {
                         target.draw(_sprite);
-                        _sprite.move(0.f, _elementDim);
+                        _sprite.move(0.f, _elementDim.y);
                     }
+                } break;
+
+                case Direction::None:
+                {
+                    target.draw(_sprite);
                 } break;
             }
 
@@ -117,11 +122,12 @@ namespace rat
                 
                 float widthTimes = round(totalWidth/realElementDim);
                 _elementAmount = int(widthTimes);
-                _elementDim = totalWidth/widthTimes;
+                _elementDim.x = int(totalWidth/widthTimes);
 
-                float xScale = _elementDim / realElementDim;
+                float xScale = float(_elementDim.x) / realElementDim;
                 _sprite.setScale(xScale * _scale.x, _scale.y);
             } break;
+
             case Direction::Vertical:
             {
                 float totalHeigt = float(_size.y);
@@ -130,10 +136,19 @@ namespace rat
                 
                 float heightTimes = round(totalHeigt/realElementDim);
                 _elementAmount = int(heightTimes);
-                _elementDim = totalHeigt/heightTimes;
+                _elementDim.y = int(totalHeigt/heightTimes);
 
-                float yScale = _elementDim / realElementDim;
+                float yScale = float(_elementDim.y) / realElementDim;
                 _sprite.setScale(_scale.x, yScale * _scale.y);
+            } break;
+
+            case Direction::None:
+            {
+                _elementAmount = 1;
+                auto texSize = static_cast<sf::Vector2f>(_texture->getSize());
+                _elementDim.x = int(texSize.x * _scale.x);
+                _elementDim.y = int(texSize.y * _scale.y);
+                _sprite.setScale(_scale);
             } break;
         }
     }
