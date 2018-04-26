@@ -15,7 +15,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
         testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
         //testPatch.setTextureRect({{0, 200}, {248, 248}});
-        testPatch.setPosition(0.f, 0.f);
+        testPatch.setPosition(20.f, 20.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
         //testPatch.setDirection(Patch::Direction::None);
@@ -39,7 +39,7 @@ namespace rat
         testPatch.setScale(_scale, _scale);
 
 
-        testPatch.setSize(mousePos.x, mousePos.y);        
+        testPatch.setSize(mousePos.x - 20, mousePos.y - 20);        
     }
     void GUITest::render()
     {

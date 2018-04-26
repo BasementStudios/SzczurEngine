@@ -119,12 +119,12 @@ namespace rat
         _topBar.setPosition(_position.x + leftCornerW, _position.y);
         _topRightCorner.setPosition(_position.x + leftCornerW + innerWidth, _position.y);
 
-        _leftBar.setPosition(0, topCornerH);
-        _rightBar.setPosition(leftCornerW + innerWidth, topCornerH);
+        _leftBar.setPosition(_position.x + 0, _position.y + topCornerH);
+        _rightBar.setPosition(_position.x + leftCornerW + innerWidth, _position.y + topCornerH);
 
-        _bottomLeftCorner.setPosition(0, topCornerH + innerHeight);
-        _bottomBar.setPosition(leftCornerW, topCornerH + innerHeight);
-        _bottomRightCorner.setPosition(leftCornerW + innerWidth, topCornerH + innerHeight);
+        _bottomLeftCorner.setPosition(_position.x + 0, _position.y + topCornerH + innerHeight);
+        _bottomBar.setPosition(_position.x + leftCornerW, _position.y + topCornerH + innerHeight);
+        _bottomRightCorner.setPosition(_position.x + leftCornerW + innerWidth, _position.y + topCornerH + innerHeight);
     }
 
     void NinePatch::_recalcSpritesSize()
