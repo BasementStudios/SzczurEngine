@@ -3,9 +3,11 @@
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 
+#include "NinePatch.hpp"
+
 namespace rat
 {
-    class GUITest : public Module<Input, Window, Script> 
+    class GUITest : public Module<Input, Window, GUI> 
     {
     public:
         GUITest();
@@ -14,6 +16,8 @@ namespace rat
         void render();
     private:
         sf::RenderTexture _canvas;    
+
+        NinePatch testPatch;
     };
 
 }
