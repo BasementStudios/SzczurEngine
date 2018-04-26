@@ -4,6 +4,7 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 
 #include "NinePatch.hpp"
+#include "Patch.hpp"
 
 namespace rat
 {
@@ -17,7 +18,7 @@ namespace rat
     private:
         sf::RenderTexture _canvas;    
 
-        NinePatch testPatch;
+        Patch testPatch; 
     };
 
 }

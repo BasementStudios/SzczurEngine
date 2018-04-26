@@ -13,9 +13,11 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
-        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
+        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"));
+        testPatch.setTextureRect({{200, 0}, {248, 248}});
         testPatch.setPosition(0.f, 100.f);
         testPatch.setSize(1200, 700);
+        testPatch.setScale(0.2f, 0.2f);
     }
     
     
@@ -24,6 +26,8 @@ namespace rat
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);
+
+        
         testPatch.setSize(mousePos.x, 300);        
     }
     void GUITest::render()

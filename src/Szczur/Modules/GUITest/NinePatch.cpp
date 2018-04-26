@@ -120,18 +120,14 @@ namespace rat
         float innerWidth = float(_size.x - (texSize.x - _innerRect.width));
         float innerHeight = float(_size.y - (texSize.y - _innerRect.height));
 
-        std::cout << "InnerWidth: " << innerWidth << " InnerHeight: " << innerHeight << "\n";
 
         float innerBarWidth = float(_topBar.getTextureRect().width);
-        std::cout << "InnerBarWidth: " << innerBarWidth << "\n";
         
         float widthTimes = round(innerWidth/innerBarWidth);
-        std::cout << "WidthTimes: " << widthTimes << "\n";
         _innerWidthBarTimes = int(widthTimes);
         _innerWidthBar = innerWidth/widthTimes;
 
         float xBarScale = _innerWidthBar / innerBarWidth;
-        std::cout << "xBarScale: " << xBarScale << "\n";
         _topBar.setScale(xBarScale, 1.f);
     }
     
