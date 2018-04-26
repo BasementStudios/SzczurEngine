@@ -19,7 +19,7 @@ namespace rat
         void setTexture(sf::Texture* texture);
         void setTextureRect(const sf::IntRect& rect);
         void setScale(float x, float y);
-        void setDirection(Direction type);
+        void setDirection(Direction direction);
 
 
     private:

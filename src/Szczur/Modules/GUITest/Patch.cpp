@@ -31,13 +31,16 @@ namespace rat
                         target.draw(_sprite);
                         _sprite.move(_elementDim, 0.f);
                     }
-                    std::cout << "Drawing, Element Amount: " << _elementAmount << "\n";
-                    std::cout << "Sprite Scale" << _sprite.getScale().x << "\n";
-                    //std::cout << "Sprite Scale" << _sprite.getScale().x << "\n";
-                }
-                break;
+                } break;
+                case Direction::Vertical:
+                {
+                    for(int i = 0; i < _elementAmount; i++)
+                    {
+                        target.draw(_sprite);
+                        _sprite.move(0.f, _elementDim);
+                    }
+                } break;
             }
-            std::cout << "Sprite Scale" << _sprite.getScale().x << "\n";
 
             _recalcSpritePos();
         }
@@ -94,6 +97,13 @@ namespace rat
         _sprite.setPosition(_position);
     }
 
+    void Patch::setDirection(Direction direction)
+    {
+        _direction = direction;
+        if(_texture) _recalcRecurrence();
+    }
+    
+
     void Patch::_recalcRecurrence()
     {
 
@@ -111,15 +121,20 @@ namespace rat
 
                 float xScale = _elementDim / realElementDim;
                 _sprite.setScale(xScale * _scale.x, _scale.y);
+            } break;
+            case Direction::Vertical:
+            {
+                float totalHeigt = float(_size.y);
 
-                std::cout << "Element Dim: " << _elementDim << "\n";
-                std::cout << "Element Amount: " << _elementAmount << "\n";
-                std::cout << "Element Scale: " << xScale * _scale.x << "\n";
-                if(_texture)
-                {
-                    std::cout << "Texture size: x: " << _texture->getSize().x << "\n";
-                }
-            }
+                float realElementDim = float(_sprite.getTextureRect().height) * _scale.y;
+                
+                float heightTimes = round(totalHeigt/realElementDim);
+                _elementAmount = int(heightTimes);
+                _elementDim = totalHeigt/heightTimes;
+
+                float yScale = _elementDim / realElementDim;
+                _sprite.setScale(_scale.x, yScale * _scale.y);
+            } break;
         }
     }
     

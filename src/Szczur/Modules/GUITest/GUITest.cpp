@@ -14,10 +14,11 @@ namespace rat
         auto& gui = getModule<GUI>();
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
         testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"));
-        testPatch.setTextureRect({{200, 0}, {248, 248}});
-        testPatch.setPosition(0.f, 100.f);
+        testPatch.setTextureRect({{0, 200}, {248, 248}});
+        testPatch.setPosition(0.f, 0.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
+        testPatch.setDirection(Patch::Direction::Vertical);
     }
     
     
@@ -28,7 +29,7 @@ namespace rat
         auto mousePos = sf::Mouse::getPosition(window);
 
         
-        testPatch.setSize(mousePos.x, 300);        
+        testPatch.setSize(mousePos.x, mousePos.y);        
     }
     void GUITest::render()
     {
