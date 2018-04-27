@@ -42,6 +42,9 @@ void World::init()
 	{
 		using stoneObject_t = Object<BaseObject, SpriteComponent>; // @todo deduction WIP :f
 		
+		this->spriteDisplayData.reserve(20);
+		this->objects.getContainer<stoneObject_t>().reserve(20);
+		
 		auto& stoneDisplayData = this->spriteDisplayData.emplace_back("Stone");
 		auto& lochaDisplayData = this->spriteDisplayData.emplace_back("Locha");
 		auto& lochaObject = this->objects.emplace<stoneObject_t>(BaseObject{"locha"}, SpriteComponent{&lochaDisplayData});
