@@ -28,6 +28,7 @@ public:
 public:
 	BaseObject();
 	BaseObject(const std::string&  name);
+	virtual ~BaseObject() = default;
 };
 
 }

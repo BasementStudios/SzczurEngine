@@ -58,6 +58,7 @@ void Application::update()
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
 	}
 	#endif
+	getModule<World>().update(deltaTime);
 
 	getModule<Input>().getManager().finishLogic();
 }

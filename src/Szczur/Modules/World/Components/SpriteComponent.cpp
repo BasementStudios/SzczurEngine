@@ -39,6 +39,9 @@ SpriteComponent::SpriteComponent(SpriteComponent&& other)
 	: displayData(other.displayData)
 {};
 
+void SpriteComponent::setDisplayData(SpriteDisplayData* displayData) {
+	this->displayData = displayData;
+}
 
 
 /* Methods */

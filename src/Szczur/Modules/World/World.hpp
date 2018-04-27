@@ -32,6 +32,12 @@ namespace rat {
 class World : public Module<Window/*, DragonBones*/>
 {
     /* Types */
+	#ifdef EDITOR
+		BaseObject* _focusedObject{nullptr};
+
+		void _renderFocusedObjectsParams();
+		void _renderObjectsList();
+	#endif
 protected:
 	using ObjectsHolder_t = Componable::ObjectsHolder<
 		// Base type of object

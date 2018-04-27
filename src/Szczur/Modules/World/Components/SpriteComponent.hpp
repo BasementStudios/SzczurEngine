@@ -53,6 +53,8 @@ public:
 	SpriteComponent(SpriteDisplayData* displayData);
 	SpriteComponent(SpriteComponent&& other);
 
+	void setDisplayData(SpriteDisplayData* displayData);
+
 
 
 	/* Methods */
