@@ -19,6 +19,14 @@ namespace rat
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
         //testPatch.setDirection(Patch::Direction::None);
+        gui.addAsset<sf::Texture>("Assets/Test/Scroller.png");
+        gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
+        
+        scroller.setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        scroller.setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+
+        scroller.setSize({50, 300});
+        scroller.setPosition(200.f, 200.f);
     }
     
     
@@ -29,23 +37,38 @@ namespace rat
         auto mousePos = sf::Mouse::getPosition(window);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
-            _scale-= deltaTime * 0.2f;
-            if(_scale < 0.2f) _scale = 0.f;
+            _scale-= deltaTime * 0.4f;
+            if(_scale < 0.2f) _scale = 0.2f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))
         {
-            _scale+= deltaTime * 0.2f;
+            _scale+= deltaTime * 0.4f;
+            //if(_scale > 1.f) _scale = 1.f;
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+        {
+            _prop+= deltaTime * 0.4f;
+            if(_prop > 1.f) _prop = 1.f;            
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+        {
+            _prop-= deltaTime * 0.4f;
+            if(_prop < 0.f) _prop = 0.f;
         }
         testPatch.setScale(_scale, _scale);
 
 
-        testPatch.setSize(mousePos.x - 20, mousePos.y - 20);        
+        //testPatch.setSize(mousePos.x - 20, mousePos.y - 20); 
+        scroller.setSize(mousePos - sf::Vector2i{200, 200});
+        scroller.setWidthProportion(_scale); 
+        scroller.setProportion(_prop); 
     }
     void GUITest::render()
     {
        _canvas.clear(sf::Color::Transparent);
         
-        testPatch.draw(_canvas);
+        //testPatch.draw(_canvas);
+        _canvas.draw(scroller);
         //_canvas.draw(testPatch);
 
         _canvas.display();

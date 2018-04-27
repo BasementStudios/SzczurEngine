@@ -9,6 +9,9 @@ namespace rat
     public:
         enum class Direction{ None, Vertical, Horizontal, All };
 
+        Patch() = default;
+        Patch(Direction direction);
+
         void draw(sf::RenderTarget& target, sf::RenderStates states) const override;       
 
         void setSize(int x, int y);
@@ -21,6 +24,7 @@ namespace rat
         void setScale(const sf::Vector2f& scale);
         void setDirection(Direction direction);
 
+        const sf::Vector2f& getPosition();
         const sf::Vector2i& getSize();
 
 

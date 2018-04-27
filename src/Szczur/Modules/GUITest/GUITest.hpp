@@ -5,6 +5,7 @@
 
 #include "NinePatch.hpp"
 #include "Patch.hpp"
+#include "Scroller2.hpp"
 
 namespace rat
 {
@@ -19,8 +20,10 @@ namespace rat
         sf::RenderTexture _canvas;   
 
         float _scale{1.f}; 
+        float _prop{1.f}; 
 
         NinePatch testPatch; 
+        Scroller2 scroller;
     };
 
 }

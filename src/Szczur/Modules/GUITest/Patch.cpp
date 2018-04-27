@@ -6,16 +6,10 @@
 
 namespace rat
 {
-    void Patch::_recalcTexturesAreas()
+    Patch::Patch(Direction direction)
     {
-        switch(_direction)
-        {
-            case Direction::Horizontal:
-            {
-
-            }
-        }
-    }
+        setDirection(direction);
+    } 
 
     void Patch::draw(sf::RenderTarget& target, sf::RenderStates states) const     
     {
@@ -132,6 +126,11 @@ namespace rat
         if(_texture) _recalcRecurrence();
     }
     
+    const sf::Vector2f& Patch::getPosition()
+    {
+        return _position;
+    }
+    
 
     void Patch::_recalcRecurrence()
     {
@@ -144,7 +143,7 @@ namespace rat
 
                 float realElementDim = float(_sprite.getTextureRect().width) * _scale.x;
                 
-                float widthTimes = round(totalWidth/realElementDim);
+                float widthTimes = std::max(round(totalWidth/realElementDim), 1.f);
                 _elementAmount = int(widthTimes);
                 _elementDim.x = totalWidth/widthTimes;
 
@@ -158,7 +157,7 @@ namespace rat
 
                 float realElementDim = float(_sprite.getTextureRect().height) * _scale.y;
                 
-                float heightTimes = round(totalHeigt/realElementDim);
+                float heightTimes = std::max(round(totalHeigt/realElementDim), 1.f);
                 _elementAmount = int(heightTimes);
                 _elementDim.y = totalHeigt/heightTimes;
 
@@ -169,11 +168,8 @@ namespace rat
             case Direction::None:
             {
                 _elementAmount = 1;
-                sf::Vector2i texSize = {_sprite.getTextureRect().width, _sprite.getTextureRect().height};
-                _elementDim.x = texSize.x * _scale.x;
-                _elementDim.y = texSize.y * _scale.y;
-                _size = static_cast<sf::Vector2i>(_elementDim);
                 _sprite.setScale(_scale);
+                _size = {int(_sprite.getGlobalBounds().width), int(_sprite.getGlobalBounds().height)};
             } break;
         }
     }
