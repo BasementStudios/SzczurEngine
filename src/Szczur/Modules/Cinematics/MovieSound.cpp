@@ -1,5 +1,6 @@
 #include "Szczur/Modules/Cinematics/MovieSound.hpp"
 
+
 MovieSound::MovieSound(AVFormatContext* ctx, int index)
 : m_formatCtx(ctx)
 , m_audioStreamIndex(index)
@@ -20,6 +21,7 @@ MovieSound::MovieSound(AVFormatContext* ctx, int index)
 
 MovieSound::~MovieSound()
 {
+    
 }
 
 void MovieSound::initResampler()
@@ -47,7 +49,6 @@ void MovieSound::initResampler()
     m_dstNbChannels = av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO);
     err = av_samples_alloc_array_and_samples(&m_dstData, &m_dstLinesize, m_dstNbChannels, m_dstNbSamples, AV_SAMPLE_FMT_S16, 0);
 }
-
 bool MovieSound::decodePacket(AVPacket* packet, AVFrame* outputFrame, bool& gotFrame)
 {
     bool needsMoreDecoding = false;
@@ -96,21 +97,27 @@ bool MovieSound::onGetData(sf::SoundStream::Chunk &data)
     std::deque<AVPacket*> *pack;
     pack = &g_audioPkts;
 
+    auto func = [pack]  {
+            return !pack->empty();
+        };
+     
     while (data.sampleCount < av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO) * m_sampleRate)
     {
+        
         bool needsMoreDecoding = false;
         bool gotFrame = false;
         
-        std::unique_lock<std::mutex> lk(g_mut);
- 
-        g_newPktCondition.wait(lk,[pack] { return !pack->empty();});
+       std::unique_lock<std::mutex> lk(g_mut);
+
+        g_newPktCondition.wait(lk,func);
 
         AVPacket* packet = g_audioPkts.front();
+        
         g_audioPkts.pop_front();
-  
+      
         do {
             needsMoreDecoding = decodePacket(packet, m_audioFrame, gotFrame);
-            
+             
             if (gotFrame)
             {
                 uint8_t* samples = NULL;
@@ -143,5 +150,5 @@ void MovieSound::onSeek(sf::Time timeOffset)
     }
     g_audioPkts.clear();
     avcodec_flush_buffers(m_codecCtx);
-    //g_newPktCondition.notify_one();
+    g_newPktCondition.notify_one();
 }

@@ -1,16 +1,12 @@
 #pragma once
 #include "Szczur/Modules/Cinematics/MovieSound.hpp"
 #include "Szczur/Application.hpp"
-
-
 /*
- Main class of playing movies. 
- It's a prototype and have a lot of bugs like desynchronized video and audio (rarely). 
- The biggest problem is video stream which drops some frames. 
-
+ Main class of playing movies.  
  For this moment class loads .mp4 correctly
+ Just call loadFromFile(<filepath>) and play
 */
-class MoviePlayer
+class MoviePlayer :public rat::Module<rat::Window>
 {
 public:
     MoviePlayer() = default;

@@ -1,16 +1,14 @@
 #include "Szczur/Modules/Cinematics/MoviePlayer.hpp"
 
-
 bool MoviePlayer::loadFromFile(const char * filename)
 {
     av_register_all();
 
     if(avformat_open_input(&pFormatCtx, filename, NULL, NULL)!=0)
         return false; 
-    
+
     if(avformat_find_stream_info(pFormatCtx, NULL)<0)
         return false; 
-    
     
     av_dump_format(pFormatCtx, 0, filename, 0);
     
@@ -30,7 +28,7 @@ bool MoviePlayer::loadFromFile(const char * filename)
     
     if(videoStream < 0)
         return false;
-    
+
     if(videoStream >= 0)
     {
         pCodecCtx = pFormatCtx->streams[videoStream]->codec;
@@ -47,50 +45,76 @@ bool MoviePlayer::loadFromFile(const char * filename)
         if(avcodec_open2(paCodecCtx, paCodec, &optionsDictA))
             return false;
     }
- 
+
     pFrame = av_frame_alloc();
     pFrameRGB = av_frame_alloc();
     if (pFrameRGB == nullptr)
     {
         return false;
     }
-    
+
     numBytes = avpicture_get_size(AV_PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
     buffer = (uint8_t*)av_malloc(numBytes * sizeof(uint8_t));
     
     sws_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
     
     avpicture_fill((AVPicture*)pFrameRGB, buffer, AV_PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
+    return true;
 }
-
 
 void MoviePlayer::play()
 {
+    int64_t duration = pFormatCtx->duration;
 
     const int FrameSize = pCodecCtx->width * pCodecCtx->height * 3;
 
      sf::Uint8* Data = new sf::Uint8[pCodecCtx->width * pCodecCtx->height * 4];
     
-    /* example window for drawing movie */
-     sf::RenderWindow window(sf::VideoMode(pCodecCtx->width, pCodecCtx->height), "SFML window");
+    auto &window = getModule<rat::Window>().getWindow(); 
 
     im_video.create(pCodecCtx->width, pCodecCtx->height);
     im_video.setSmooth(false);
 
-
     sf::Sprite sprite(im_video);
 
-    MovieSound sound(pFormatCtx, audioStream);
+    float x = window.getSize().x;
+    float y = window.getSize().y;
+    sprite.setScale(x/im_video.getSize().x,y/im_video.getSize().y);
 
-    sound.play();
-
+    MovieSound *sound;
+    sound = new MovieSound(pFormatCtx,audioStream);
+    sound->play();
+    sf::Clock clock;
     while (window.isOpen())
     {
-     
+        if(clock.getElapsedTime().asMicroseconds()>duration)
+        {
+            for(auto p : sound->g_videoPkts)
+            {
+                av_free_packet(p);
+               // av_free(p);
+            }
+            for(auto p : sound->g_audioPkts)
+            {
+                av_free_packet(p);
+                av_free(p);
+            }
+            sws_freeContext(sws_ctx);
+            av_free(buffer);
+            av_free(pFrameRGB);
+            av_free(pFrame);
+            avcodec_close(pCodecCtx);
+            avcodec_close(paCodecCtx);
+            avformat_close_input(&pFormatCtx);
+            getModule<rat::Window>().getWindow().clear();
+            getModule<rat::Window>().getWindow().display();
+            delete [] Data;
+    
+            return;
+        }
         sf::Event event;
         while (window.pollEvent(event))
         {
-           
             if (event.type == sf::Event::Closed)
             {
                 window.close();
@@ -101,57 +125,41 @@ void MoviePlayer::play()
             }  
         }
         
-        AVPacket* packet_ptr = 0;
+        AVPacket* packet_ptr = nullptr;
         
-        if(sound.g_videoPkts.size() < 150)
+        if(sound->g_videoPkts.size() < 150)
         {
             packet_ptr = (AVPacket*)av_malloc(sizeof(AVPacket));
             av_init_packet(packet_ptr);
             
             if(av_read_frame(pFormatCtx, packet_ptr) < 0)
             {
-                if(sound.g_videoPkts.empty() || sound.g_audioPkts.empty())
-                {
-                    for(auto p : sound.g_videoPkts)
-                    {
-                        av_free_packet(p);
-                        av_free(p);
-                    }
-                    
-                    for(auto p : sound.g_audioPkts)
-                    {
-                        av_free_packet(p);
-                        av_free(p);
-                    }
-                    
-                    break;
-                }
-                else
+                if(sound->g_videoPkts.empty() || sound->g_audioPkts.empty())
                 {
                     av_free_packet(packet_ptr);
                     av_free(packet_ptr);
-                    
-                    packet_ptr = 0;
+                    packet_ptr = nullptr;
                 }
+                av_free_packet(packet_ptr);
+                av_free(packet_ptr);
             }
-            
             if(packet_ptr)
             {
                 AVPacket& packet = *packet_ptr;
                 if(packet.stream_index == videoStream)
                 {
-                    sound.g_videoPkts.push_back(packet_ptr);
+                    sound->g_videoPkts.push_back(packet_ptr);
                 }
                 else if(packet.stream_index == audioStream)
                 {
                     if(packet_ptr->pts >= blockPts && !syncAV)
                     {
-                        std::lock_guard<std::mutex> lk(sound.g_mut);
+                         std::lock_guard<std::mutex> lk(sound->g_mut);
                         for(auto p : audioSyncBuffer)
                         {
                             if(p->pts >= blockPts)
                             {
-                                sound.g_audioPkts.push_back(p);
+                                sound->g_audioPkts.push_back(p);
                             }
                             else
                             {
@@ -159,9 +167,10 @@ void MoviePlayer::play()
                                 av_free(p);
                             }
                         }
-                        sound.g_audioPkts.push_back(packet_ptr);
-                        sound.g_newPktCondition.notify_one();
-                        
+                    
+                        sound->g_audioPkts.push_back(packet_ptr);
+                        sound->g_newPktCondition.notify_one();
+                           
                         audioSyncBuffer.clear();
                     }
                     
@@ -172,14 +181,15 @@ void MoviePlayer::play()
                     
                 }
             }
+   
         }
-        
+
         const auto pStream = pFormatCtx->streams[videoStream];
         
-        if(sound.timeElapsed() > m_lastDecodedTimeStamp && sound.isAudioReady() && !sound.g_videoPkts.empty())
+        if(sound->timeElapsed() > m_lastDecodedTimeStamp && sound->isAudioReady() && !sound->g_videoPkts.empty())
         {
-            packet_ptr = sound.g_videoPkts.front();
-            sound.g_videoPkts.pop_front();
+            packet_ptr = sound->g_videoPkts.front();
+            sound->g_videoPkts.pop_front();
             
             auto decodedLength = avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, packet_ptr);
             
@@ -194,7 +204,6 @@ void MoviePlayer::play()
                     Data[j + 2] = pFrameRGB->data[0][i + 2];
                     Data[j + 3] = 255;
                 }
-                
                 im_video.update(Data);
                 
                 window.clear();
@@ -211,19 +220,19 @@ void MoviePlayer::play()
                 if(syncAV)
                 {
                     blockPts = ms;
-                    sound.setPlayingOffset(sf::milliseconds(blockPts));
+                    sound->setPlayingOffset(sf::milliseconds(blockPts));
                     
                     syncAV = false;
                 }
                 
             }
-            
+           
             if(decodedLength < packet_ptr->size)
             {
                 packet_ptr->data += decodedLength;
                 packet_ptr->size -= decodedLength;
                 
-                sound.g_videoPkts.push_front(packet_ptr);
+                sound->g_videoPkts.push_front(packet_ptr);
             }
             else
             {
@@ -231,7 +240,6 @@ void MoviePlayer::play()
                 av_free(packet_ptr);
             }
         }
-        
     }
     
     
