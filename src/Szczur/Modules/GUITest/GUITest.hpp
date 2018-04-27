@@ -5,7 +5,7 @@
 
 #include "NinePatch.hpp"
 #include "Patch.hpp"
-#include "Scroller2.hpp"
+#include "Scroller.hpp"
 
 namespace rat
 {
@@ -22,9 +22,10 @@ namespace rat
         float _scale{1.f}; 
         float _prop{1.f}; 
         float _shift{0.7f};
+        sf::Vector2f _size{30, 300};
 
         NinePatch testPatch; 
-        Scroller2 scroller;
+        Scroller scroller;
     };
 
 }

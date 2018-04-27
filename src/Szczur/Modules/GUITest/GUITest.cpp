@@ -27,7 +27,7 @@ namespace rat
         scroller.setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         scroller.setBoundTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
-        scroller.setSize({50, 300});
+        scroller.setSize({30, 300});
         scroller.setPosition(200.f, 200.f);
     }
     
@@ -67,13 +67,28 @@ namespace rat
             _shift-= deltaTime * 0.4f;
             if(_shift < 0.f) _shift = 0.f;
         }
-        testPatch.setScale(_scale, _scale);
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        {
+            _size.y += deltaTime * 50.f;
+            //if(_shift > 1.f) _shift = 1.f;            
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        {
+            _size.y -= deltaTime * 50.f;
+            if(_size.y < 0.f) _size.y = 0.f;
+        }
 
 
-        //testPatch.setSize(mousePos.x - 20, mousePos.y - 20); 
-        scroller.setSize({30, mousePos.y - 200});
+        //testPatch.setScale(_scale, _scale);
+        //testPatch.setSize(mousePos.x - 200, mousePos.y - 200);
+        
+
+        scroller.setSize(static_cast<sf::Vector2i>(_size));
+        //scroller.setSize(sf::Vector2i(mousePos.x - 200, mousePos.y - 200));
+
+        scroller.setScrollerPosition(static_cast<sf::Vector2f>(mousePos));
         scroller.setWidthProportion(_scale); 
-        scroller.setProportion(_prop); 
+        //scroller.setProportion(_prop); 
         scroller.setBoundShiftProportion(_shift);
     }
     void GUITest::render()

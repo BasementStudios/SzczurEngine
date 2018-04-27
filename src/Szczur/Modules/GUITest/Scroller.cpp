@@ -6,130 +6,195 @@ namespace rat
 {
     void Scroller::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(_bar);
+        target.draw(_path);
         target.draw(_scroller);
+        target.draw(_upperBound);
+        target.draw(_bottomBound);
     }
 
     void Scroller::setPosition(float x, float y)
     {
-        setPosition({x, y});
+        _position = {x, y};
+       _recalcAll();
     }
-    void Scroller::setPosition(const sf::Vector2f& pos)
+    void Scroller::setPosition(const sf::Vector2f& position)
     {
-        auto shift = pos - _bar.getPosition();
-        _bar.setPosition(pos);
-        _setScrollerPosition(_scroller.getPosition() + shift);
+        setPosition(position.x, position.y);
+    }
+    void Scroller::setScrollerPosition(const sf::Vector2f& position)
+    {
+        _scroller.setPosition(position);
+        _recalcScrollerPos();
     }
     
+    
 
-    void Scroller::setBarTexture(sf::Texture* texture)
+    void Scroller::setPathTexture(const sf::Texture* texture)
     {
-        _bar.setTexture(texture);
-        _recalcOrigin();
-        _recalcSize();
-        _recalcPos();
+        _isPathSet = true;
+        _path.setTexture(*texture);
+        _recalcAll();
     }
-    void Scroller::setScrollerTexture(sf::Texture* texture)
+    void Scroller::setScrollerTexture(const sf::Texture* texture)
     {
+        _isScrollerSet = true;
         _scroller.setTexture(*texture);
-        _scroller.setScale(0.2f, 0.2f);
-        _recalcOrigin();
-        _recalcSize();
-        _recalcPos();
-        //_setScrollerPosition(_bar.getPosition() + sf::Vector2f{0.f, 150.f});
-        _recalcRelPath();
-        setProportion(0.5f);
+        _recalcAll();
     }
 
+    void Scroller::setBoundTexture(const sf::Texture* texture)
+    {
+        _areBoundsSet = true;
+        _upperBound.setTexture(*texture);
+        _bottomBound.setTexture(*texture);
+        _recalcAll();
+    }
     
-    void Scroller::_setScrollerPosition(float x, float y)
+    
+    void Scroller::setProportion(float proportion)
     {
-        _setScrollerPosition({x, y});
-    }
-    void Scroller::_setScrollerPosition(const sf::Vector2f& pos)
-    {
-        _scroller.setPosition(pos);
-        _recalcPos();
+        if(proportion < 0.f) proportion = 0.f;
+        if(proportion > 1.f) proportion = 1.f;
+        _proportion = proportion;
+        if(_isScrollerSet) _recalcScrollerPosByProp();
     }
 
-    void Scroller::setSize(int x, int y)
-    {
-        setSize({x, y});
-    }
     void Scroller::setSize(const sf::Vector2i& size)
     {
         _size = size;
-        _bar.setSize(size);
-        //_recalcSize();
-        _recalcRelPath();
+        _recalcAll();
     }
-
-    void Scroller::setScale(float x, float y)
+    void Scroller::setWidthProportion(float proportion)
     {
-        setScale({x, y});
+        _widthProp = proportion;
+        _recalcAll();
     }
-    void Scroller::setScale(const sf::Vector2f& scale)
+
+    void Scroller::setBoundShiftProportion(float proportion)
     {
-        _bar.setScale(scale);
-        _scroller.setScale(scale);
-        _recalcOrigin();
+        if(proportion < 0.f) proportion = 0.f;
+        if(proportion > 1.f) proportion = 1.f;
+        _boundShiftProp = proportion;
+        _recalcAll();
     }
-
-    void Scroller::_recalcSize()
-    {
-        _scrollerLength = _scroller.getGlobalBounds().height;
-        _scrollerPathLength = _size.y - _scrollerLength;
-    }
-     void Scroller::_recalcPos()
-     {
-        auto barPos = _bar.getPosition();
-        auto scrollerPos = _scroller.getPosition();
-
-        auto scrollerWidth = _scroller.getGlobalBounds().width;
-        _scroller.setPosition(barPos.x + float(scrollerWidth)/2.f, scrollerPos.y);       
-
-        if(scrollerPos.y < barPos.y) _scroller.setPosition(scrollerPos.x, barPos.y);
-        if(scrollerPos.y > barPos.y - _scrollerLength) _scroller.setPosition(scrollerPos.x, barPos.y - _scrollerLength);
-     }
     
-    void Scroller::_recalcOrigin()
+
+    void Scroller::_recalcPathSize()
     {
-        auto scrollerWidth = _scroller.getTextureRect().width;
-        _scroller.setOrigin(float(scrollerWidth)/2.f, 0.f); 
+        float widthProp = 1.f/_widthProp;
+
+        sf::Vector2f newScale = _path.getScale();
+        auto texSize = sf::Vector2f{float(_path.getTextureRect().width), float(_path.getTextureRect().height)};
+        newScale.x = float(_size.x)/texSize.x;
+        if(widthProp < 1.f) 
+        {
+            newScale.x *= widthProp;
+        }
+        newScale.y = (float(_size.y) - 2.f * _getRealBoundLength()) / texSize.y;
+
+        _path.setScale(newScale);
+    }
+    void Scroller::_recalcPathPos()
+    {
+        float pathWidth = _path.getGlobalBounds().width;
+        float width = float(_size.x);
+
+        float xShift = (width - pathWidth) / 2.f;
+        float newX = _position.x + xShift;
+
+        _path.setPosition(newX, _position.y + _getRealBoundLength());
     }
 
-    float Scroller::getProportion() const
+    void Scroller::_recalcScrollerSize()
     {
-        if(_scrollerRelPath.y == 0.f) return 0.f;
-        return _scrollerRelPos.y / _scrollerRelPath.y;
-    }
-    void Scroller::_recalcRelPath()
-    {
-        float oldProp = getProportion();
-        
-        auto path = _bar.getSize();
-        std::cout << "Bar size: x: " << path.x << " y: " << path.y << "\n";
-        path.y -= _scroller.getGlobalBounds().height;
-        _scrollerRelPath = static_cast<sf::Vector2f>(path);
+        sf::Vector2f newScale = _scroller.getScale();
+        auto texSize = sf::Vector2f{float(_scroller.getTextureRect().width), float(_scroller.getTextureRect().height)};
+        newScale.x = float(_size.x)/texSize.x;
+        if(_widthProp < 1.f) 
+        {
+            newScale.x *= _widthProp;
+        }
+        newScale.y = float(_scrollerLength) / texSize.y;
 
-        _recalcRelPos(oldProp);
+        _scroller.setScale(newScale);
     }
-    void Scroller::_recalcRelPos(float prop)
+    
+    void Scroller::_recalcScrollerPos()
     {
-        float newY = _scrollerRelPath.y * prop;
-        _scrollerRelPos.y = newY;
-        sf::Vector2f newScrollerPos = _bar.getPosition();
-        newScrollerPos.y += newY;
-        _scroller.setPosition(newScrollerPos);
+        auto scrollerPos = _scroller.getPosition();
+        float newX = scrollerPos.x;
+        float newY = scrollerPos.y;
+
+        auto realPathLength = _getRealPathLength();
+        float maxTop = _path.getGlobalBounds().top;
+        float maxBottom = maxTop + realPathLength;
+
+        if(newY < maxTop) newY = maxTop;
+        if(newY > maxBottom) newY = maxBottom;
+
+        float scrollerWidth = _scroller.getGlobalBounds().width;
+        float width = float(_size.x);
+
+        float xShift = (width - scrollerWidth) / 2.f;
+        newX = _position.x + xShift;
+
+        _scroller.setPosition(newX, newY);
+
+        _proportion = (maxBottom - scrollerPos.y) / realPathLength;
     }
-    void Scroller::_recalcRelPos()
+    
+    void Scroller::_recalcScrollerPosByProp()
     {
-        _recalcRelPos(getProportion());
+        auto scrollerPos = _scroller.getPosition();
+        auto realPathLength = _getRealPathLength();
+        float maxTop = _path.getGlobalBounds().top;
+
+        _scroller.setPosition(scrollerPos.x, maxTop + (realPathLength * _proportion));
     }
 
-    void Scroller::setProportion(float proportion)
+    void Scroller::_recalcBoundPos()
     {
-        _recalcRelPos(proportion);
+        _upperBound.setPosition(_position);
+        float boundHeight = _bottomBound.getGlobalBounds().height;
+        _bottomBound.setPosition(_position.x, _position.y + float(_size.y));
+    }
+    void Scroller::_recalcBoundSize()
+    {
+        auto texSize = sf::Vector2f{float(_upperBound.getTextureRect().width), float(_upperBound.getTextureRect().height)};
+        float scale = float(_size.x) / texSize.x;
+        _upperBound.setScale(scale, scale);
+        _bottomBound.setScale(scale, -scale);
+    }
+    
+    float Scroller::_getRealPathLength() const
+    {
+        //if(!_isPathSet) return 0.f;
+        return _path.getGlobalBounds().height - _scroller.getGlobalBounds().height;
+    }
+    float Scroller::_getRealBoundLength() const
+    {
+        if(!_areBoundsSet) return 0.f;
+        return (_upperBound.getGlobalBounds().height * _boundShiftProp);
+    }
+
+    void Scroller::_recalcAll()
+    {
+        if(_areBoundsSet)
+        {
+            _recalcBoundSize();
+            _recalcBoundPos();
+        }
+        if(_isPathSet)
+        {
+            _recalcPathSize();
+            _recalcScrollerSize();
+        }
+        if(_isScrollerSet)
+        {
+            _recalcScrollerPosByProp();
+            _recalcScrollerPos();
+            _recalcPathPos();
+        }
     }
     
 }

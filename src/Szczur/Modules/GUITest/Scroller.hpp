@@ -2,8 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Patch.hpp"
-
 namespace rat
 {
     class Scroller : public sf::Drawable
@@ -12,43 +10,53 @@ namespace rat
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
         void setPosition(float x, float y);
-        void setPosition(const sf::Vector2f& pos);
+        void setPosition(const sf::Vector2f& position);
+        void setPathTexture(const sf::Texture* texture);
+        void setScrollerTexture(const sf::Texture* texture);
+        void setBoundTexture(const sf::Texture* texture);
 
-        void setSize(int x, int y);
         void setSize(const sf::Vector2i& size);
-
-        void setScale(float x, float y);
-        void setScale(const sf::Vector2f& scale);
-
-        void setBarTexture(sf::Texture* texture);
-        void setScrollerTexture(sf::Texture* texture);
+        void setWidthProportion(float proportion);
+        void setBoundShiftProportion(float proportion);
 
         void setProportion(float proportion);
-
-        float getProportion() const;
+        void setScrollerPosition(const sf::Vector2f& position);
     private:
-        Patch _bar{Patch::Direction::Vertical};
 
+        sf::Sprite _path;
         sf::Sprite _scroller;
 
-        sf::Vector2i _size;
-        float _scrollerLength{0.f};
-        float _scrollerPathLength{0.f};
+        sf::Sprite _upperBound;
+        sf::Sprite _bottomBound;
+        float _boundShiftProp{0.7f};   
 
-        sf::Vector2f _scrollerRelPos{0.f, 0.f};
-        sf::Vector2f _scrollerRelPath{0.f, 0.f};
+        bool _areBoundsSet{false};     
+        bool _isScrollerSet{false};
+        bool _isPathSet{false};
+
+        float _widthProp{1.f};
+        int _scrollerLength{60};
+
+        sf::Vector2i _size{0, 0};
+        sf::Vector2f _position{0.f, 0.f};
 
 
-        bool _isLocked{false};
-        void _setScrollerPosition(float x, float y);
-        void _setScrollerPosition(const sf::Vector2f& pos);
+        float _proportion{0.f};   
 
-        void _recalcSize();
-        void _recalcPos();
-        void _recalcOrigin();
+        void _recalcPathSize();
+        void _recalcPathPos();
 
-        void _recalcRelPath();
-        void _recalcRelPos();
-        void _recalcRelPos(float prop);
+        void _recalcScrollerSize();
+        void _recalcScrollerPos();
+        void _recalcScrollerPosByProp();
+
+        void _recalcBoundPos();
+        void _recalcBoundSize();
+
+        float _getRealPathLength() const;
+        float _getRealBoundLength() const;
+
+        void _recalcAll();
+
     };
 }
