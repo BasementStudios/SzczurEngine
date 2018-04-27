@@ -33,7 +33,7 @@ public:
 
 	InputStatus_e getStatus(const InputCode& code) const;
 
-	bool checkStatus(const InputCode& code, InputStatus_e _Status) const;
+	bool checkStatus(const InputCode& code, InputStatus_e status) const;
 
 	bool isUnkept(const InputCode& code) const;
 
