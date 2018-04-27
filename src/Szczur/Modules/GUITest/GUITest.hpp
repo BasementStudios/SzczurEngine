@@ -21,6 +21,7 @@ namespace rat
 
         float _scale{1.f}; 
         float _prop{1.f}; 
+        float _shift{0.7f};
 
         NinePatch testPatch; 
         Scroller2 scroller;
