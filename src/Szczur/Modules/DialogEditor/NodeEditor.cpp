@@ -361,7 +361,7 @@ void NodeEditor::backupLuaFunctions()
 			{
 				size_t start = code.find("--b:c(" + std::to_string(out->Id) + "):", lastIndex);
 
-				if (start > 0)
+				if (start != std::string::npos)
 				{
 					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
 					size_t end = code.find("--e:c(" + std::to_string(out->Id) + ")", codeStart) - 1; // -1 - remove tab
@@ -379,7 +379,7 @@ void NodeEditor::backupLuaFunctions()
 			{
 				size_t start = code.find("--b:a(" + std::to_string(out->Id) + "):", lastIndex);
 
-				if (start > 0)
+				if (start != std::string::npos)
 				{
 					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
 					size_t end = code.find("--e:a(" + std::to_string(out->Id) + ")", codeStart) - 1; // -1 - remove tab
