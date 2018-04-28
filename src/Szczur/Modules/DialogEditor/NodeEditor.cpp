@@ -979,6 +979,8 @@ void NodeEditor::showOptionFunctionConfig()
 				}
 			}
 
+			ImGui::Separator();
+
 			ImGui::Text(_functionType == 1 ? _currentFunctionOption->ActionFuncCode.c_str() : _currentFunctionOption->ConditionFuncCode.c_str());
 		}
 
