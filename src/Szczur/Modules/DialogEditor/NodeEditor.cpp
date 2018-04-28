@@ -518,6 +518,11 @@ void NodeEditor::update()
 							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(183, 28, 28).Value);
 							ImGui::Button("!");
 							ImGui::PopStyleColor();
+
+							if (ImGui::IsItemHovered())
+							{
+								showTooltip(output->ActionFuncName);
+							}
 						}
 
 						if (output->ConditionFunc)
@@ -527,6 +532,11 @@ void NodeEditor::update()
 							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(63, 81, 181).Value);
 							ImGui::Button("?");
 							ImGui::PopStyleColor();
+
+							if (ImGui::IsItemHovered())
+							{
+								showTooltip(output->ConditionFuncName);
+							}
 						}
 					}
 
