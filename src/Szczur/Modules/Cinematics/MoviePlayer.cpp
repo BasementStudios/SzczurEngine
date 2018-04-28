@@ -4,129 +4,132 @@ bool MoviePlayer::loadFromFile(const char * filename)
 {
     av_register_all();
 
-    if(avformat_open_input(&pFormatCtx, filename, NULL, NULL)!=0)
+    if(avformat_open_input(&m_pFormatCtx, filename, NULL, NULL)!=0)
         return false; 
 
-    if(avformat_find_stream_info(pFormatCtx, NULL)<0)
+    if(avformat_find_stream_info(m_pFormatCtx, NULL)<0)
         return false; 
     
-    av_dump_format(pFormatCtx, 0, filename, 0);
+    av_dump_format(m_pFormatCtx, 0, filename, 0);
     
-    videoStream = -1;
-    audioStream = -1;
-    for(int i = 0; i < pFormatCtx->nb_streams; ++i)
+    m_videoStream = -1;
+    m_audioStream = -1;
+    for(int i = 0; i < m_pFormatCtx->nb_streams; ++i)
     {
-        if(pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+        if(m_pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
         {
-            videoStream = i;
+            m_videoStream = i;
         }
-        else if(pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+        else if(m_pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
         {
-            audioStream = i;
+            m_audioStream = i;
         }
     }
     
-    if(videoStream < 0)
+    if(m_videoStream < 0)
         return false;
 
-    if(videoStream >= 0)
+    if(m_videoStream >= 0)
     {
-        pCodecCtx = pFormatCtx->streams[videoStream]->codec;
-        pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+        m_pCodecCtx = m_pFormatCtx->streams[m_videoStream]->codec;
+        m_pCodec = avcodec_find_decoder(m_pCodecCtx->codec_id);
         
-        if(avcodec_open2(pCodecCtx, pCodec, &optionsDict)<0)
+        if(avcodec_open2(m_pCodecCtx, m_pCodec, &m_optionsDict)<0)
             return false;
     }
-    if(audioStream >= 0)
+    if(m_audioStream >= 0)
     {
-        paCodecCtx = pFormatCtx->streams[audioStream]->codec;
-        paCodec = avcodec_find_decoder(paCodecCtx->codec_id);
+        m_paCodecCtx = m_pFormatCtx->streams[m_audioStream]->codec;
+        m_paCodec = avcodec_find_decoder(m_paCodecCtx->codec_id);
         
-        if(avcodec_open2(paCodecCtx, paCodec, &optionsDictA))
+        if(avcodec_open2(m_paCodecCtx, m_paCodec, &m_optionsDictA))
             return false;
     }
 
-    pFrame = av_frame_alloc();
-    pFrameRGB = av_frame_alloc();
-    if (pFrameRGB == nullptr)
+    m_pFrame = av_frame_alloc();
+    m_pFrameRGB = av_frame_alloc();
+    if (m_pFrameRGB == nullptr)
     {
         return false;
     }
 
-    numBytes = avpicture_get_size(AV_PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
-    buffer = (uint8_t*)av_malloc(numBytes * sizeof(uint8_t));
+    m_numBytes = avpicture_get_size(AV_PIX_FMT_RGB24, m_pCodecCtx->width, m_pCodecCtx->height);
+    m_buffer = (uint8_t*)av_malloc(m_numBytes * sizeof(uint8_t));
     
-    sws_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+    m_sws_ctx = sws_getContext(m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt, m_pCodecCtx->width, m_pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
     
-    avpicture_fill((AVPicture*)pFrameRGB, buffer, AV_PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
+    avpicture_fill((AVPicture*)m_pFrameRGB, m_buffer, AV_PIX_FMT_RGB24, m_pCodecCtx->width, m_pCodecCtx->height);
     return true;
 }
 
 void MoviePlayer::jumpTo(const unsigned int &seekTarget)
 {
-    if(sound)
+    if(m_sound)
     {
-        for(auto p : sound->g_videoPkts)
+        for(auto p : m_sound->g_videoPkts)
         {
             av_free_packet(p);
-            av_free(p);
+           // av_free(p);
         }
-        sound->g_videoPkts.clear();
+        m_sound->g_videoPkts.clear();
         int64_t seekOnVideo = seekTarget;
-        seekOnVideo = av_rescale_q(seekOnVideo, AV_TIME_BASE_Q, pFormatCtx->streams[videoStream]->time_base);
-        auto ret = avformat_seek_file(pFormatCtx, videoStream, 0, seekOnVideo, seekOnVideo, AVSEEK_FLAG_BACKWARD);
+        seekOnVideo = av_rescale_q(seekOnVideo, AV_TIME_BASE_Q, m_pFormatCtx->streams[m_videoStream]->time_base);
+        auto ret = avformat_seek_file(m_pFormatCtx, m_videoStream, 0, seekOnVideo, seekOnVideo, AVSEEK_FLAG_BACKWARD);
         assert(ret >= 0);
-        avcodec_flush_buffers(pCodecCtx);
-                
-        syncAV = true;
+        avcodec_flush_buffers(m_pCodecCtx);
+        m_syncAV = true;
     }
 }
 
 void MoviePlayer::play()
 {
-    int64_t duration = pFormatCtx->duration;
-    const int FrameSize = pCodecCtx->width * pCodecCtx->height * 3;
+    int64_t duration = m_pFormatCtx->duration;
+    const int FrameSize = m_pCodecCtx->width * m_pCodecCtx->height * 3;
 
-     sf::Uint8* Data = new sf::Uint8[pCodecCtx->width * pCodecCtx->height * 4];
+     sf::Uint8* Data = new sf::Uint8[m_pCodecCtx->width * m_pCodecCtx->height * 4];
     
     auto &window = getModule<rat::Window>().getWindow(); 
 
-    im_video.create(pCodecCtx->width, pCodecCtx->height);
-    im_video.setSmooth(false);
+    m_im_video.create(m_pCodecCtx->width, m_pCodecCtx->height);
+    m_im_video.setSmooth(false);
 
-    sf::Sprite sprite(im_video);
+    sf::Sprite sprite(m_im_video);
 
     float x = window.getSize().x;
     float y = window.getSize().y;
-    sprite.setScale(x/im_video.getSize().x,y/im_video.getSize().y);
+    sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
 
    
-    sound = new MovieSound(pFormatCtx,audioStream);
-    sound->play();
-    
+    m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
+    m_sound->play();
+    m_VClock = new sf::Clock;
+    int IdeltaTime;
+    int IstartTime;
+    m_videoTime=0;
     while (window.isOpen())
     {
-        if(sound->timeElapsed()*1000>=duration-200000)
+        IstartTime = m_VClock->getElapsedTime().asMicroseconds();
+        if(m_videoTime>=duration)
         {
-            for(auto p : sound->g_videoPkts)
+            for(auto p : m_sound->g_videoPkts)
             {
                 av_free_packet(p);
                // av_free(p);
             }
-            for(auto p : sound->g_audioPkts)
+            for(auto p : m_sound->g_audioPkts)
             {
                 av_free_packet(p);
                 av_free(p);
             }
-            sws_freeContext(sws_ctx);
-            av_free(buffer);
-            av_free(pFrameRGB);
-            av_free(pFrame);
-            avcodec_close(pCodecCtx);
-            avcodec_close(paCodecCtx);
-            avformat_close_input(&pFormatCtx);
-            getModule<rat::Window>().getWindow().clear();
-            getModule<rat::Window>().getWindow().display();
+            sws_freeContext(m_sws_ctx);
+            av_free(m_buffer);
+            av_free(m_pFrameRGB);
+            av_free(m_pFrame);
+            avcodec_close(m_pCodecCtx);
+            avcodec_close(m_paCodecCtx);
+            avformat_close_input(&m_pFormatCtx);
+            window.clear();
+            window.display();
             delete [] Data;
             return;
         }
@@ -146,14 +149,14 @@ void MoviePlayer::play()
        
         AVPacket* packet_ptr = nullptr;
         
-        if(sound->g_videoPkts.size() < 150)
+        if(m_sound->g_videoPkts.size() < 150)
         {
             packet_ptr = (AVPacket*)av_malloc(sizeof(AVPacket));
             av_init_packet(packet_ptr);
             
-            if(av_read_frame(pFormatCtx, packet_ptr) < 0)
+            if(av_read_frame(m_pFormatCtx, packet_ptr) < 0)
             {
-                if(sound->g_videoPkts.empty() || sound->g_audioPkts.empty())
+                if(m_sound->g_videoPkts.empty() || m_sound->g_audioPkts.empty())
                 {
                     av_free_packet(packet_ptr);
                     av_free(packet_ptr);
@@ -165,20 +168,20 @@ void MoviePlayer::play()
             if(packet_ptr)
             {
                 AVPacket& packet = *packet_ptr;
-                if(packet.stream_index == videoStream)
+                if(packet.stream_index == m_videoStream)
                 {
-                    sound->g_videoPkts.push_back(packet_ptr);
+                    m_sound->g_videoPkts.push_back(packet_ptr);
                 }
-                else if(packet.stream_index == audioStream)
+                else if(packet.stream_index == m_audioStream)
                 {
-                    if(packet_ptr->pts >= blockPts && !syncAV)
+                    if(packet_ptr->pts >= m_blockPts && !m_syncAV)
                     {
-                         std::lock_guard<std::mutex> lk(sound->g_mut);
-                        for(auto p : audioSyncBuffer)
+                         std::lock_guard<std::mutex> lk(m_sound->g_mut);
+                        for(auto p : m_audioSyncBuffer)
                         {
-                            if(p->pts >= blockPts)
+                            if(p->pts >= m_blockPts)
                             {
-                                sound->g_audioPkts.push_back(p);
+                                m_sound->g_audioPkts.push_back(p);
                             }
                             else
                             {
@@ -187,15 +190,15 @@ void MoviePlayer::play()
                             }
                         }
                     
-                        sound->g_audioPkts.push_back(packet_ptr);
-                        sound->g_newPktCondition.notify_one();
+                        m_sound->g_audioPkts.push_back(packet_ptr);
+                        m_sound->g_newPktCondition.notify_one();
                            
-                        audioSyncBuffer.clear();
+                        m_audioSyncBuffer.clear();
                     }
                     
-                    if(syncAV)
+                    if(m_syncAV)
                     {
-                        audioSyncBuffer.push_back(packet_ptr);
+                        m_audioSyncBuffer.push_back(packet_ptr);
                     }
                     
                 }
@@ -203,27 +206,27 @@ void MoviePlayer::play()
    
         }
 
-        const auto pStream = pFormatCtx->streams[videoStream];
+        const auto pStream = m_pFormatCtx->streams[m_videoStream];
         
-        if(sound->timeElapsed() > m_lastDecodedTimeStamp && sound->isAudioReady() && !sound->g_videoPkts.empty())
+        if(m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady() && !m_sound->g_videoPkts.empty())
         {
-            packet_ptr = sound->g_videoPkts.front();
-            sound->g_videoPkts.pop_front();
+            packet_ptr = m_sound->g_videoPkts.front();
+            m_sound->g_videoPkts.pop_front();
             
-            auto decodedLength = avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished, packet_ptr);
+            auto decodedLength = avcodec_decode_video2(m_pCodecCtx, m_pFrame, &m_frameFinished, packet_ptr);
             
-            if(frameFinished)
+            if(m_frameFinished)
             {
-                sws_scale(sws_ctx, (uint8_t const * const *)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
+                sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize);
                 
                 for (int i = 0, j = 0; i < FrameSize; i += 3, j += 4)
                 {
-                    Data[j + 0] = pFrameRGB->data[0][i + 0];
-                    Data[j + 1] = pFrameRGB->data[0][i + 1];
-                    Data[j + 2] = pFrameRGB->data[0][i + 2];
+                    Data[j + 0] = m_pFrameRGB->data[0][i + 0];
+                    Data[j + 1] = m_pFrameRGB->data[0][i + 1];
+                    Data[j + 2] = m_pFrameRGB->data[0][i + 2];
                     Data[j + 3] = 255;
                 }
-                im_video.update(Data);
+                m_im_video.update(Data);
                 
                 window.clear();
                 
@@ -231,17 +234,17 @@ void MoviePlayer::play()
                 
                 window.display();
                 
-                int64_t timestamp = av_frame_get_best_effort_timestamp(pFrame);
+                int64_t timestamp = av_frame_get_best_effort_timestamp(m_pFrame);
                 int64_t startTime = pStream->start_time != AV_NOPTS_VALUE ? pStream->start_time : 0;
                 int64_t ms = 1000 * (timestamp - startTime) * av_q2d(pStream->time_base);
                 m_lastDecodedTimeStamp = ms;
                 
-                if(syncAV)
+                if(m_syncAV)
                 {
-                    blockPts = ms;
-                    sound->setPlayingOffset(sf::milliseconds(blockPts));
-                    
-                    syncAV = false;
+                    m_blockPts = ms;
+                    m_sound->setPlayingOffset(sf::milliseconds(m_blockPts));
+                    m_videoTime = m_sound->timeElapsed()*1000;
+                    m_syncAV = false;
                 }
                 
             }
@@ -251,7 +254,7 @@ void MoviePlayer::play()
                 packet_ptr->data += decodedLength;
                 packet_ptr->size -= decodedLength;
                 
-                sound->g_videoPkts.push_front(packet_ptr);
+                m_sound->g_videoPkts.push_front(packet_ptr);
             }
             else
             {
@@ -259,16 +262,18 @@ void MoviePlayer::play()
                 av_free(packet_ptr);
             }
         }
+    IdeltaTime = m_VClock->getElapsedTime().asMicroseconds() - IstartTime;
+    m_videoTime +=IdeltaTime;
     }
     
     
-    sws_freeContext(sws_ctx);
-    av_free(buffer);
-    av_free(pFrameRGB);
-    av_free(pFrame);
-    avcodec_close(pCodecCtx);
-    avcodec_close(paCodecCtx);
-    avformat_close_input(&pFormatCtx);
+    sws_freeContext(m_sws_ctx);
+    av_free(m_buffer);
+    av_free(m_pFrameRGB);
+    av_free(m_pFrame);
+    avcodec_close(m_pCodecCtx);
+    avcodec_close(m_paCodecCtx);
+    avformat_close_input(&m_pFormatCtx);
     
     delete [] Data;
 

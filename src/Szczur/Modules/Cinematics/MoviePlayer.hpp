@@ -14,28 +14,30 @@ public:
     void play();
     void jumpTo(const unsigned int &seekTarget);
 private:
-    MovieSound *sound = nullptr;
-    AVFormatContext *pFormatCtx = nullptr;
-    AVCodecContext  *pCodecCtx = nullptr;
-    AVCodecContext  *paCodecCtx = nullptr;
-    AVCodec         *pCodec = nullptr;
-    AVCodec         *paCodec = nullptr;
-    AVFrame         *pFrame = nullptr;
-    AVFrame         *pFrameRGB = nullptr;
-    int             frameFinished;
-    int             numBytes;
-    uint8_t         *buffer = nullptr;
+    MovieSound *m_sound = nullptr;
+    AVFormatContext *m_pFormatCtx = nullptr;
+    AVCodecContext  *m_pCodecCtx = nullptr;
+    AVCodecContext  *m_paCodecCtx = nullptr;
+    AVCodec         *m_pCodec = nullptr;
+    AVCodec         *m_paCodec = nullptr;
+    AVFrame         *m_pFrame = nullptr;
+    AVFrame         *m_pFrameRGB = nullptr;
+    int             m_frameFinished;
+    int             m_numBytes;
+    uint8_t         *m_buffer = nullptr;
     int64_t         m_lastDecodedTimeStamp = 0;
     
-    AVDictionary    *optionsDict = nullptr;
-    AVDictionary    *optionsDictA = nullptr;
-    SwsContext      *sws_ctx = nullptr;
-    sf::Texture im_video;
-    bool syncAV = false;
-    int64_t blockPts = 0;
-    std::vector<AVPacket*> audioSyncBuffer;
+    AVDictionary    *m_optionsDict = nullptr;
+    AVDictionary    *m_optionsDictA = nullptr;
+    SwsContext      *m_sws_ctx = nullptr;
+    sf::Texture m_im_video;
+    bool m_syncAV = false;
+    int64_t m_blockPts = 0;
+    std::vector<AVPacket*> m_audioSyncBuffer;
 
-    int videoStream;
-    int audioStream;
+    sf::Clock *m_VClock;
+    int m_videoStream;
+    int m_audioStream;
+    int m_videoTime;
 
 };
