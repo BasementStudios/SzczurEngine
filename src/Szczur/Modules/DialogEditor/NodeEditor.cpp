@@ -56,8 +56,13 @@ void NodeEditor::reset()
 	_context = ed::CreateEditor(nullptr);
 	ed::SetCurrentEditor(_context);
 
-	_currentOption = nullptr;
 	_nodeManager->reset();
+
+	_optionConfigWindow = false;
+	_currentOption = nullptr;
+
+	_optionFunctionConfigWindow = false;
+	_currentFunctionOption = nullptr;
 }
 
 void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
@@ -516,7 +521,16 @@ void NodeEditor::update()
 							ImGui::SameLine();
 
 							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(183, 28, 28).Value);
-							ImGui::Button("!");
+							
+							if (ImGui::Button(("!##" + std::to_string(output->Id)).c_str()))
+							{
+								_optionFunctionConfigWindow = true;
+								_currentFunctionOption = output.get();
+								ImGui::SetWindowFocus("Option function");
+								_functionType = 1;
+								backupLuaFunctions();
+							}
+
 							ImGui::PopStyleColor();
 
 							if (ImGui::IsItemHovered())
@@ -528,9 +542,18 @@ void NodeEditor::update()
 						if (output->ConditionFunc)
 						{
 							ImGui::SameLine();
-
+					
 							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(63, 81, 181).Value);
-							ImGui::Button("?");
+							
+							if (ImGui::Button(("?##" + std::to_string(output->Id)).c_str()))
+							{
+								_optionFunctionConfigWindow = true;
+								_currentFunctionOption = output.get();
+								ImGui::SetWindowFocus("Option function");
+								_functionType = 2;
+								backupLuaFunctions();
+							}
+
 							ImGui::PopStyleColor();
 
 							if (ImGui::IsItemHovered())
@@ -708,6 +731,7 @@ void NodeEditor::update()
 
 	showPopups();
 	showOptionConfig();
+	showOptionFunctionConfig();
 }
 
 void NodeEditor::showPopups()
@@ -919,6 +943,45 @@ void NodeEditor::showOptionConfig()
 				}
 			}
 		}
+		ImGui::End();
+	}
+}
+
+void NodeEditor::showOptionFunctionConfig()
+{
+	if (_optionFunctionConfigWindow && _currentFunctionOption && _functionType)
+	{
+		if (ImGui::Begin("Option function", &_optionFunctionConfigWindow, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Node name: %s", _currentFunctionOption->Node->Name.c_str());
+			ImGui::Text("Function type: %s", _functionType == 1 ? "Action" : "Condition");
+			
+			ImGui::Separator();
+
+			char nameBuffer[128] = { 0 };
+
+			if (_functionType == 1)
+			{
+				strcpy(nameBuffer, _currentFunctionOption->ActionFuncName.c_str());
+
+				if (ImGui::InputText("Action name", nameBuffer, 128))
+				{
+					_currentFunctionOption->ActionFuncName = nameBuffer;
+				}
+			}
+			else if (_functionType == 2)
+			{
+				strcpy(nameBuffer, _currentFunctionOption->ConditionFuncName.c_str());
+
+				if (ImGui::InputText("Condition name", nameBuffer, 128))
+				{
+					_currentFunctionOption->ConditionFuncName = nameBuffer;
+				}
+			}
+
+			ImGui::Text(_functionType == 1 ? _currentFunctionOption->ActionFuncCode.c_str() : _currentFunctionOption->ConditionFuncCode.c_str());
+		}
+
 		ImGui::End();
 	}
 }

@@ -34,6 +34,10 @@ private:
 	bool _optionConfigWindow = false;
 	NodePin* _currentOption = nullptr;
 
+	bool _optionFunctionConfigWindow = false;
+	NodePin* _currentFunctionOption = nullptr;
+	int _functionType = 0; // 0 - none, 1 - action, 2 - condition
+
 	DLGEditor::TextContainer_t* _parts;
 
 	char _renameBuffer[256];
@@ -56,9 +60,13 @@ private:
 	void showPopups();
 	void showOptionConfig();
 
+	void showOptionFunctionConfig();
+
 	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
 	void backupLuaFunctions();
+
+	void showTooltip(const std::string& message);
 };
 
 }
