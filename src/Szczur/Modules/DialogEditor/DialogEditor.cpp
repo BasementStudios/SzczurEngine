@@ -105,8 +105,6 @@ void DialogEditor::update()
 
 	if (ImGui::Begin("Dialogs' Directory Browser", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		ImGui::Text("Dialogs");
-
 		if (ImGui::Button("Refresh list"))
 		{
 			refreshDialogsList();
@@ -278,7 +276,7 @@ void DialogEditor::showDirectory(Directory& directory)
 
 			ImGui::SameLine();
 
-			if (ImGui::SmallButton("Open"))
+			if (ImGui::SmallButton(("Open##" + child.Name).c_str()))
 			{
 				openProject(child.Path);
 			}
