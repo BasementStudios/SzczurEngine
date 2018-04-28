@@ -616,9 +616,9 @@ void NodeEditor::update()
 					}
 				}
 			}
-
-			ed::EndCreate();
 		}
+
+		ed::EndCreate();
 
 		if (ed::BeginDelete())
 		{
