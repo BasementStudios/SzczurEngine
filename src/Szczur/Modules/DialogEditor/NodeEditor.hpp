@@ -46,10 +46,6 @@ public:
 
 	void update();
 
-	void showPopups();
-
-	void showOptionConfig();
-
 	void save(const std::string& fileName, FileFormat saveFormat);
 	void load(const std::string& fileName, FileFormat loadFormat);
 
@@ -59,6 +55,9 @@ public:
 	void setTextContainer(DLGEditor::TextContainer_t* parts) { _parts = parts; }
 
 private:
+	void showPopups();
+	void showOptionConfig();
+
 	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
 	void backupLuaFunctions();
