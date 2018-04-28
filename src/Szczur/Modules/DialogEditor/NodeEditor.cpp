@@ -395,6 +395,15 @@ void NodeEditor::backupLuaFunctions()
 	}
 }
 
+void NodeEditor::showTooltip(const std::string& message)
+{
+	ImGui::SetNextWindowPos(ed::CanvasToScreen(ImGui::GetMousePos()) + ImVec2(16, 8));
+
+	ImGui::BeginTooltip();
+	ImGui::Text(message.c_str());
+	ImGui::EndTooltip();
+}
+
 void NodeEditor::update()
 {
 	bool renamePopup = false;
