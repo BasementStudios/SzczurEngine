@@ -560,67 +560,62 @@ void NodeEditor::update()
 		}
 
 		// create link
-		if (!creatingNode)
+		if (ed::BeginCreate(ImColor(255, 255, 255), 2.0f))
 		{
-			if (ed::BeginCreate(ImColor(255, 255, 255), 2.0f))
+			int startPinId = 0, endPinId = 0;
+
+			if (ed::QueryNewLink(&startPinId, &endPinId))
 			{
-				int startPinId = 0, endPinId = 0;
+				auto startPin = _nodeManager->findPin(startPinId);
+				auto endPin = _nodeManager->findPin(endPinId);
 
-				if (ed::QueryNewLink(&startPinId, &endPinId))
+				_newLinkPin = startPin ? startPin : endPin;
+
+				if (startPin->Kind == ed::PinKind::Input)
 				{
-					auto startPin = _nodeManager->findPin(startPinId);
-					auto endPin = _nodeManager->findPin(endPinId);
+					std::swap(startPin, endPin);
+					std::swap(startPinId, endPinId);
+				}
 
-					_newLinkPin = startPin ? startPin : endPin;
-
-					if (startPin->Kind == ed::PinKind::Input)
+				if (startPin && endPin)
+				{
+					if (endPin == startPin)
 					{
-						std::swap(startPin, endPin);
-						std::swap(startPinId, endPinId);
+						ed::RejectNewItem(ImColor(255, 0, 0), 2.0f);
 					}
-
-					if (startPin && endPin)
+					else if (endPin->Kind == startPin->Kind)
 					{
-						if (endPin == startPin)
+						ed::RejectNewItem(ImColor(255, 0, 0), 2.0f);
+					}
+					else if (startPin->Node->Type == Node::Start && endPin->Node->Type == Node::End)
+					{
+						ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
+					}
+					else if (_nodeManager->isPinLinked(startPinId))
+					{
+						ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
+					}
+					else
+					{
+						if (ed::AcceptNewItem(ImColor(128, 255, 128), 4.0f))
 						{
-							ed::RejectNewItem(ImColor(255, 0, 0), 2.0f);
-						}
-						else if (endPin->Kind == startPin->Kind)
-						{
-							ed::RejectNewItem(ImColor(255, 0, 0), 2.0f);
-						}
-						else if (startPin->Node->Type == Node::Start && endPin->Node->Type == Node::End)
-						{
-							ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
-						}
-						else if (_nodeManager->isPinLinked(startPinId))
-						{
-							ed::RejectNewItem(ImColor(255, 0, 0), 1.0f);
-						}
-						else
-						{
-							if (ed::AcceptNewItem(ImColor(128, 255, 128), 4.0f))
-							{
-								auto link = _nodeManager->createLink(startPinId, endPinId);
+							auto link = _nodeManager->createLink(startPinId, endPinId);
 
-								if (startPin->Node == endPin->Node)
-								{
-									link->SameNode = true;
-									link->Color.Value.w = 0.f;
-									startPin->LinkToSameNode = true;
-								}
-								else
-								{
-									link->SameNode = false;
-									startPin->LinkToSameNode = false;
-								}
+							if (startPin->Node == endPin->Node)
+							{
+								link->SameNode = true;
+								link->Color.Value.w = 0.f;
+								startPin->LinkToSameNode = true;
+							}
+							else
+							{
+								link->SameNode = false;
+								startPin->LinkToSameNode = false;
 							}
 						}
 					}
 				}
 			}
-			else
-				_newLinkPin = nullptr;
 
 			ed::EndCreate();
 		}

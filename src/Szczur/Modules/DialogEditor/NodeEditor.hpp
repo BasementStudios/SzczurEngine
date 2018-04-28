@@ -27,8 +27,6 @@ private:
 
 	DialogEditor* _dialogEditor = nullptr;
 
-	bool creatingNode = false;
-
 	NodePin* _newLinkPin = nullptr;
 
 	int _contextId = 0;
