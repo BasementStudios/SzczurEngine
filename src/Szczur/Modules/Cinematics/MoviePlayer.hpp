@@ -12,8 +12,9 @@ public:
     MoviePlayer() = default;
     bool loadFromFile(const char* filename);
     void play();
-
+    void jumpTo(const unsigned int &seekTarget);
 private:
+    MovieSound *sound = nullptr;
     AVFormatContext *pFormatCtx = nullptr;
     AVCodecContext  *pCodecCtx = nullptr;
     AVCodecContext  *paCodecCtx = nullptr;

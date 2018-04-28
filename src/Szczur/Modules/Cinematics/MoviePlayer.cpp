@@ -62,10 +62,29 @@ bool MoviePlayer::loadFromFile(const char * filename)
     return true;
 }
 
+void MoviePlayer::jumpTo(const unsigned int &seekTarget)
+{
+    if(sound)
+    {
+        for(auto p : sound->g_videoPkts)
+        {
+            av_free_packet(p);
+            av_free(p);
+        }
+        sound->g_videoPkts.clear();
+        int64_t seekOnVideo = seekTarget;
+        seekOnVideo = av_rescale_q(seekOnVideo, AV_TIME_BASE_Q, pFormatCtx->streams[videoStream]->time_base);
+        auto ret = avformat_seek_file(pFormatCtx, videoStream, 0, seekOnVideo, seekOnVideo, AVSEEK_FLAG_BACKWARD);
+        assert(ret >= 0);
+        avcodec_flush_buffers(pCodecCtx);
+                
+        syncAV = true;
+    }
+}
+
 void MoviePlayer::play()
 {
     int64_t duration = pFormatCtx->duration;
-
     const int FrameSize = pCodecCtx->width * pCodecCtx->height * 3;
 
      sf::Uint8* Data = new sf::Uint8[pCodecCtx->width * pCodecCtx->height * 4];
@@ -81,13 +100,13 @@ void MoviePlayer::play()
     float y = window.getSize().y;
     sprite.setScale(x/im_video.getSize().x,y/im_video.getSize().y);
 
-    MovieSound *sound;
+   
     sound = new MovieSound(pFormatCtx,audioStream);
     sound->play();
-    sf::Clock clock;
+    
     while (window.isOpen())
     {
-        if(clock.getElapsedTime().asMicroseconds()>duration)
+        if(sound->timeElapsed()*1000>=duration-200000)
         {
             for(auto p : sound->g_videoPkts)
             {
@@ -109,9 +128,9 @@ void MoviePlayer::play()
             getModule<rat::Window>().getWindow().clear();
             getModule<rat::Window>().getWindow().display();
             delete [] Data;
-    
             return;
         }
+       
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -122,9 +141,9 @@ void MoviePlayer::play()
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {
                 window.close();
-            }  
+            } 
         }
-        
+       
         AVPacket* packet_ptr = nullptr;
         
         if(sound->g_videoPkts.size() < 150)
