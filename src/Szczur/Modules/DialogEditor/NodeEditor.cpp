@@ -269,7 +269,7 @@ std::string NodeEditor::generateCode()
 					code += "\n\t--b:c(" + std::to_string(out->Id) + "): " + out->ConditionFuncName + "\n";
 
 					if (out->ConditionFuncCode.empty())
-						code += "\tcondition = function()\n\n\t\tend;\n";
+						code += "\tcondition = function()\n\t\t\n\t\tend;\n";
 					else
 						code += out->ConditionFuncCode;
 
@@ -282,7 +282,7 @@ std::string NodeEditor::generateCode()
 					code += "\n\t--b:a(" + std::to_string(out->Id) + "): " + out->ActionFuncName + "\n";
 					
 					if (out->ActionFuncCode.empty())
-						code += "\taction = function()\n\n\t\tend;\n";
+						code += "\taction = function()\n\t\t\n\t\tend;\n";
 					else
 						code += out->ActionFuncCode;
 
