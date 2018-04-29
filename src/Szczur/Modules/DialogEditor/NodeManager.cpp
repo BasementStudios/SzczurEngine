@@ -129,7 +129,6 @@ bool NodeManager::read(const json& j)
 
 			pin->ConditionFunc = true;
 			pin->ConditionFuncName = condition["name"].get<std::string>();
-			pin->ConditionFuncCode = condition["code"].get<std::string>();
 		}
 
 		if (j.find("action") != j.end())
@@ -138,7 +137,6 @@ bool NodeManager::read(const json& j)
 
 			pin->ActionFunc = true;
 			pin->ActionFuncName = action["name"].get<std::string>();
-			pin->ActionFuncCode = action["code"].get<std::string>();
 		}
 	};
 
@@ -230,16 +228,14 @@ void NodeManager::write(json& j)
 		if (pin->ConditionFunc)
 		{
 			j["condition"] = {
-				{ "name", pin->ConditionFuncName },
-				{ "code", pin->ConditionFuncCode }
+				{ "name", pin->ConditionFuncName }
 			};
 		}
 
 		if (pin->ActionFunc)
 		{
 			j["action"] = {
-				{ "name", pin->ActionFuncName },
-				{ "code", pin->ActionFuncCode }
+				{ "name", pin->ActionFuncName }
 			};
 		}
 	};
