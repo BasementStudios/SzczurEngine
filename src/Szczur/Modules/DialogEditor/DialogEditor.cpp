@@ -216,7 +216,7 @@ void DialogEditor::createProject(const std::string& path)
 	_CharactersManager.clear();
 	_CharactersManager.save(_projectPath + "/characters.json");
 
-	fs::copy("dialog/dialog.flac", path + "/dialog.flac");
+	fs::copy("dialogs/dialog.flac", path + "/dialog.flac");
 
 	_projectLoaded = true;
 	_showDialogEditor = true;
