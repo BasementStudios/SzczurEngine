@@ -20,8 +20,10 @@ class BaseObject : public sf3d::Transformable
 {
 	/* Variables */
 public:
-	const std::string name;
-
+	std::string name;
+	//#ifdef EDITOR
+	bool locked{false};
+	//#endif
 
 
     /* Operators */

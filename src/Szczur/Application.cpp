@@ -14,6 +14,7 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	//initModule<DragonBones>();
+	initModule<Camera>();
 	initModule<World>();
 
 	LOG_INFO("Modules initialized");
@@ -59,7 +60,7 @@ void Application::update()
 	}
 	#endif
 	getModule<World>().update(deltaTime);
-
+	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();
 }
 

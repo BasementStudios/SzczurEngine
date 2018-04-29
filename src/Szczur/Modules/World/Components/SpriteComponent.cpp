@@ -32,15 +32,23 @@ const sf3d::VertexArray& SpriteComponent::getVertices() const
 /* Operators */
 SpriteComponent::SpriteComponent()
 {};
-SpriteComponent::SpriteComponent(SpriteDisplayData* displayData)
-	: displayData(displayData)
-{};
-SpriteComponent::SpriteComponent(SpriteComponent&& other)
-	: displayData(other.displayData)
-{};
+SpriteComponent::SpriteComponent(SpriteDisplayData* displayData) {
+	setDisplayData(displayData);
+};
+SpriteComponent::SpriteComponent(SpriteComponent&& other) {
+	setDisplayData(other.displayData);
+};
 
 void SpriteComponent::setDisplayData(SpriteDisplayData* displayData) {
 	this->displayData = displayData;
+	if(displayData) {
+		const auto& size = displayData->getTexture().getSize();
+		setOrigin({(float)size.x/2.f, (float)size.y, 0.f});
+	}
+}
+
+SpriteDisplayData* SpriteComponent::getDisplayData() const {
+	return displayData;
 }
 
 
@@ -48,9 +56,11 @@ void SpriteComponent::setDisplayData(SpriteDisplayData* displayData) {
 /// draw
 void SpriteComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	states.transform *= this->getTransform();
-	states.texture = &(this->getTexture());
-	target.draw(this->getVertices(), states);
+	if(displayData) {
+		states.transform *= this->getTransform();
+		states.texture = &(this->getTexture());
+		target.draw(this->getVertices(), states);
+	}
 }
 
 }

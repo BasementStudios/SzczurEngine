@@ -1,32 +1,19 @@
 #pragma once
 
-/** @file Camera.hpp
- ** @description Header file with Camera class. 
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
 
-#include <SFML/System/Vector2.hpp>
+#include <Szczur/Utility/SFML3D/View.hpp>
+#include <Szczur/Utility/Modules/Module.hpp>
+#include <Szczur/Modules/Window/Window.hpp>
 
 namespace rat {
 
-class Camera
-{
-    /* Types */
-public:
-    using Position_t = sf::Vector2f;
-
-
-
-    /* Fields */
-private:
-    Position_t* _target;
-    Position_t  _position   {0.f, 0.f};
-
-
-
-    /* Operators */
-public:
-    ;
-};
+    class Camera : public Module<Window> {
+    public:
+        Camera();
+        void setView(const sf3d::View& view);
+        void update();
+    private:
+        sf3d::View _view;
+    };
 
 }

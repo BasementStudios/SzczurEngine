@@ -40,6 +40,7 @@ private:
 	sf::VideoMode   videoMode		{1280, 800};
 	std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
+	sf3d::ShaderProgram* program;
 
 
 

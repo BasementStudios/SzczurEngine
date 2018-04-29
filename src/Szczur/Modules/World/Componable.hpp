@@ -113,10 +113,10 @@ struct ObjectsHolder
 	}
 	
 	/* Methods */
-	template <typename TType, typename... Args>
+	template <typename... Args>
 	inline auto& emplace(Args&&... args)
 	{
-		return this->getContainer<TType>().emplace_back(std::forward<Args>(args)...);
+		return this->getContainer<Object<Args...>>().emplace_back(std::forward<Args>(args)...);
 	}
 	
 	template <
@@ -138,8 +138,13 @@ struct ObjectsHolder
 			}
 
 			if constexpr (Index + 1 < Size) {
+                forEach<TComponent, Index + 1, Size, TCallable >(std::forward<ContainersTuple_t>(containersTuple), std::forward<TCallable>(callable));
+            }
+			/*
+			if constexpr (Index + 1 < Size) {
 				forEach<TComponent, Index + 1>(std::forward<ContainersTuple_t>(containersTuple), std::forward<TCallable>(callable));
 			}
+			*/
 		}
 	}
 };

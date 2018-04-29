@@ -54,6 +54,7 @@ public:
 	SpriteComponent(SpriteComponent&& other);
 
 	void setDisplayData(SpriteDisplayData* displayData);
+	SpriteDisplayData* getDisplayData() const;
 
 
 
