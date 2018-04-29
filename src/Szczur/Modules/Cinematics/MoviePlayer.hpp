@@ -1,6 +1,10 @@
 #pragma once
 #include "Szczur/Modules/Cinematics/MovieSound.hpp"
+#include "Szczur/Modules/Cinematics/VideoLoop.hpp"
 #include "Szczur/Application.hpp"
+
+class VideoLoop;
+
 /*
  Main class of playing movies.  
  For this moment class loads .mp4 correctly
@@ -9,10 +13,15 @@
 class MoviePlayer :public rat::Module<rat::Window>
 {
 public:
+
+    typedef void(*callme)();
+
     MoviePlayer() = default;
     bool loadFromFile(const char* filename);
     void play();
     void jumpTo(const unsigned int &seekTarget);
+    void setFont(sf::Font &font);
+    void addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,callme fevent2,const char *text2);
 private:
     MovieSound *m_sound = nullptr;
     AVFormatContext *m_pFormatCtx = nullptr;
@@ -40,4 +49,6 @@ private:
     int m_audioStream;
     int m_videoTime;
 
+    sf::Font m_font;
+    std::vector<std::shared_ptr<VideoLoop> > m_loops;
 };

@@ -20,6 +20,7 @@ extern "C" {
 #include <chrono>
 #include <algorithm>
 #include <assert.h>
+#include <memory>
 
 class MovieSound : public sf::SoundStream
 {
@@ -30,10 +31,8 @@ public:
 	std::deque<AVPacket*> g_audioPkts;
 	std::deque<AVPacket*> g_videoPkts;
 
-
     MovieSound(AVFormatContext* ctx, int index);
     virtual ~MovieSound();
-    
     
     bool isAudioReady() const
     {
@@ -44,7 +43,7 @@ public:
     {
         return sf::SoundStream::getPlayingOffset().asMilliseconds();
     }
-    
+
 private:
     
     virtual bool onGetData(Chunk& data);
@@ -68,7 +67,6 @@ private:
     int m_dstNbChannels;
     int m_dstLinesize;
     uint8_t** m_dstData;
-    
     
     sf::Time initialTime;
 };

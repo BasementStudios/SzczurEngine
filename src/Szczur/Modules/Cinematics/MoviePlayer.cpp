@@ -83,12 +83,18 @@ void MoviePlayer::jumpTo(const unsigned int &seekTarget)
 
 void MoviePlayer::play()
 {
+    auto &window = getModule<rat::Window>().getWindow(); 
+    for(auto p : m_loops)
+    {
+        p->setFont(m_font);
+        p->init(window.getSize());
+    }
+
     int64_t duration = m_pFormatCtx->duration;
     const int FrameSize = m_pCodecCtx->width * m_pCodecCtx->height * 3;
 
      sf::Uint8* Data = new sf::Uint8[m_pCodecCtx->width * m_pCodecCtx->height * 4];
     
-    auto &window = getModule<rat::Window>().getWindow(); 
 
     m_im_video.create(m_pCodecCtx->width, m_pCodecCtx->height);
     m_im_video.setSmooth(false);
@@ -99,13 +105,14 @@ void MoviePlayer::play()
     float y = window.getSize().y;
     sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
 
-   
     m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
     m_sound->play();
     m_VClock = new sf::Clock;
     int IdeltaTime;
     int IstartTime;
     m_videoTime=0;
+    size_t count =  m_loops.size();
+    int ICurrentLoop = 0;
     while (window.isOpen())
     {
         IstartTime = m_VClock->getElapsedTime().asMicroseconds();
@@ -144,9 +151,26 @@ void MoviePlayer::play()
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
             {
                 window.close();
-            } 
+            }
+            if(!m_loops.empty()) 
+            {
+                if(m_loops[ICurrentLoop] && event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Down))
+                {
+                    m_loops[ICurrentLoop]->change();
+                }
+                if( m_loops[ICurrentLoop] && m_loops[ICurrentLoop]->getStartTime()<= m_videoTime &&event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
+                {
+                    m_loops[ICurrentLoop]->setDraw(false);
+                    m_loops[ICurrentLoop] = nullptr;
+                    ICurrentLoop++;
+                    if(ICurrentLoop==count)
+                    {
+                        ICurrentLoop--;
+                    }
+                    if(m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->setTime(m_videoTime);
+                }
+            }
         }
-       
         AVPacket* packet_ptr = nullptr;
         
         if(m_sound->g_videoPkts.size() < 150)
@@ -232,6 +256,7 @@ void MoviePlayer::play()
                 
                 window.draw(sprite);
                 
+                if(!m_loops.empty() && m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->draw();
                 window.display();
                 
                 int64_t timestamp = av_frame_get_best_effort_timestamp(m_pFrame);
@@ -244,6 +269,7 @@ void MoviePlayer::play()
                     m_blockPts = ms;
                     m_sound->setPlayingOffset(sf::milliseconds(m_blockPts));
                     m_videoTime = m_sound->timeElapsed()*1000;
+                    if(!m_loops.empty()) m_loops[ICurrentLoop]->setTime(m_videoTime);
                     m_syncAV = false;
                 }
                 
@@ -262,8 +288,18 @@ void MoviePlayer::play()
                 av_free(packet_ptr);
             }
         }
-    IdeltaTime = m_VClock->getElapsedTime().asMicroseconds() - IstartTime;
-    m_videoTime +=IdeltaTime;
+        IdeltaTime = m_VClock->getElapsedTime().asMicroseconds() - IstartTime;
+        m_videoTime +=IdeltaTime;
+        
+        if(!m_loops.empty() &&m_loops[ICurrentLoop]) 
+        {
+            int result = m_loops[ICurrentLoop]->update(IdeltaTime);
+            if(result>=0&&!m_syncAV)
+            {
+                jumpTo(result);
+            }
+        }
+    
     }
     
     
@@ -278,4 +314,15 @@ void MoviePlayer::play()
     delete [] Data;
 
     return;
+}
+
+void MoviePlayer::setFont(sf::Font &font)
+{
+    m_font = font;
+}
+
+void MoviePlayer::addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,callme fevent2,const char *text2)
+{
+    std::shared_ptr<VideoLoop> loop = std::make_shared<VideoLoop>(startTime,endTime,fevent1,text1,fevent2,text2);
+    m_loops.push_back(loop);
 }
