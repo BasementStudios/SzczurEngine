@@ -73,8 +73,10 @@ private:
 	void drawIcon(bool filled, ImColor&& color = ImColor(255, 255, 255));
 	std::string generateCode();
 	void backupLuaFunctions();
+	std::string getLuaFunction(NodePin* pin, FunctionType functionType, const std::string& code = std::string(), size_t* lastIndex = nullptr);
 
 	void showTooltip(const std::string& message);
+
 };
 
 }

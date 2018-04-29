@@ -364,40 +364,65 @@ void NodeEditor::backupLuaFunctions()
 			// condition
 			if (out->ConditionFunc)
 			{
-				size_t start = code.find("--b:c(" + std::to_string(out->Id) + "):", lastIndex);
-
-				if (start != std::string::npos)
-				{
-					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
-					size_t end = code.find("--e:c(" + std::to_string(out->Id) + ")", codeStart) - 1; // -1 - remove tab
-
-					std::string func = code.substr(codeStart, end - codeStart);
-					//LOG_INFO("(", codeStart, ", ", end, "): Condition:\n", func);
-					out->ConditionFuncCode = func;
-
-					lastIndex = end;
-				}
+				out->ConditionFuncCode = getLuaFunction(out.get(), FunctionType::Condition, code, &lastIndex);
 			}
 
 			// action
 			if (out->ActionFunc)
 			{
-				size_t start = code.find("--b:a(" + std::to_string(out->Id) + "):", lastIndex);
-
-				if (start != std::string::npos)
-				{
-					size_t codeStart = code.find("\n", start) + 1; // +1 - remove new line
-					size_t end = code.find("--e:a(" + std::to_string(out->Id) + ")", codeStart) - 1; // -1 - remove tab
-
-					std::string func = code.substr(codeStart, end - codeStart);
-					//LOG_INFO("(", codeStart, ", ", end, "): Action:\n", func);
-					out->ActionFuncCode = func;
-
-					lastIndex = end;
-				}
+				out->ActionFuncCode = getLuaFunction(out.get(), FunctionType::Action, code, &lastIndex);
 			}
 		}
 	}
+}
+
+std::string NodeEditor::getLuaFunction(NodePin* pin, FunctionType functionType, const std::string& code, size_t* lastIndex)
+{
+	if (functionType == FunctionType::None)
+		return std::string();
+
+	std::string _code;
+
+	if (code.empty())
+	{
+		std::ifstream file(_dialogEditor->_projectPath + "/dialog.lua");
+
+		if (file.bad())
+			return std::string();
+
+		_code = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		file.close();
+	}
+	else
+	{
+		_code = code;
+	}
+
+	size_t _lastIndex = lastIndex == nullptr ? 0 : *lastIndex;
+
+	std::string beginString = functionType == FunctionType::Action ? "--b:a(" : "--b:c(";
+	std::string endString = functionType == FunctionType::Action ? "--e:a(" : "--e:c(";
+
+	size_t start = _code.find(beginString + std::to_string(pin->Id) + "):", _lastIndex);
+
+	if (start != std::string::npos)
+	{
+		size_t codeStart = _code.find("\n", start) + 1; // +1 - remove new line
+		size_t end = _code.find(endString + std::to_string(pin->Id) + ")", codeStart) - 1; // -1 - remove tab
+
+		if (end == std::string::npos)
+			return std::string();
+
+		std::string func = _code.substr(codeStart, end - codeStart);
+		//LOG_INFO("(", codeStart, ", ", end, "): Condition:\n", func);
+
+		if (lastIndex != nullptr)
+			*lastIndex = end;
+
+		return func;
+	}
+
+	return std::string();
 }
 
 void NodeEditor::showTooltip(const std::string& message)
@@ -527,8 +552,8 @@ void NodeEditor::update()
 								_optionFunctionConfigWindow = true;
 								_currentFunctionOption = output.get();
 								ImGui::SetWindowFocus("Option function");
-								_functionType = 1;
-								backupLuaFunctions();
+								_functionType = FunctionType::Action;
+								output->ActionFuncCode = getLuaFunction(output.get(), FunctionType::Action);
 							}
 
 							ImGui::PopStyleColor();
@@ -550,8 +575,8 @@ void NodeEditor::update()
 								_optionFunctionConfigWindow = true;
 								_currentFunctionOption = output.get();
 								ImGui::SetWindowFocus("Option function");
-								_functionType = 2;
-								backupLuaFunctions();
+								_functionType = FunctionType::Condition;
+								output->ConditionFuncCode = getLuaFunction(output.get(), FunctionType::Condition);
 							}
 
 							ImGui::PopStyleColor();
