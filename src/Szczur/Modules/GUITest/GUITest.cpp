@@ -32,10 +32,14 @@ namespace rat
 
         widget->setMinimalSize(250, 250);
         widget->setOriginProp(0.5f, 0.5f);
+
+        widget1->setOriginProp(0.2f, 0.2f);
+        widget1->setPosition(100.f, 100.f);
+        widget->add(widget1);
         
         widget2->setMinimalSize(50, 50);
         widget2->setPosition(250.f, 100.f);
-        widget->add(widget2);
+        widget1->add(widget2);
         
         widget3->setMinimalSize(25, 25);
         widget3->setPosition(0.f, 0.f);
@@ -68,6 +72,7 @@ namespace rat
             _prop-= deltaTime * 0.4f;
             if(_prop < 0.f) _prop = 0.f;
         }
+        /*
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
             _shift+= deltaTime * 0.4f;
@@ -78,14 +83,25 @@ namespace rat
             _shift-= deltaTime * 0.4f;
             if(_shift < 0.f) _shift = 0.f;
         }
+        */
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            _size.y += deltaTime * 50.f;
+            _size.x -= deltaTime * 150.f;
+            if(_size.x < 0.f) _size.x = 0.f;
             //if(_shift > 1.f) _shift = 1.f;            
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            _size.y -= deltaTime * 50.f;
+            _size.x += deltaTime * 150.f;
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        {
+            _size.y += deltaTime * 150.f;
+            //if(_shift > 1.f) _shift = 1.f;            
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        {
+            _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
@@ -95,7 +111,7 @@ namespace rat
 
         /*
         //testPatch.setScale(_scale, _scale);
-        //testPatch.setSize(mousePos.x - 200, mousePos.y - 200);
+        testPatch.setSize(mousePos.x - 200, mousePos.y - 200);
         
 
         scroller.setSize(static_cast<sf::Vector2i>(_size));

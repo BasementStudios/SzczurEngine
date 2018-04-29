@@ -29,6 +29,7 @@ namespace rat
         NinePatch testPatch; 
         Scroller scroller;
         Widget2* widget{new Widget2};
+        Widget2* widget1{new Widget2};
         Widget2* widget2{new Widget2};
         Widget2* widget3{new Widget2};
     };

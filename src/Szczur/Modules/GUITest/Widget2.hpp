@@ -60,7 +60,6 @@ namespace rat
 
         sf::FloatRect _bounds;
         sf::Vector2f _position;
-        bool _isPosChanged{false};
         sf::Vector2f _origin;
         sf::Vector2f _originProp;
         bool _isOriginPropSet{false};
@@ -71,6 +70,7 @@ namespace rat
         void _recalcSize();
         void _recalcOrigin();
         void _recalcPos();
+        void _recalcPosByParent();
 
         virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 

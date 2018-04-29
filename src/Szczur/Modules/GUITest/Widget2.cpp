@@ -95,10 +95,11 @@ namespace rat
     void Widget2::setPosition(float x, float y)
     {
         _position = {x, y};
-        _isPosChanged = true;
         _recalcPos();
-        //if(_parent) _parent->_recalcSize();
+        if(_parent) _parent->_recalcSize();
     }
+
+
     void Widget2::setMinimalSize(int x, int y)
     {
         _isMinSizeSet = true;
@@ -149,6 +150,7 @@ namespace rat
         _bounds.height = size.y;
 
         _recalcOrigin();
+        if(_parent) _parent->_recalcSize();
     }
 
     sf::Vector2f Widget2::_getChildrenSize() const
@@ -189,11 +191,6 @@ namespace rat
         {
             _bounds.left += _parent->_bounds.left;
             _bounds.top += _parent->_bounds.top;
-            if(_isPosChanged) 
-            {
-                _isPosChanged = false;
-                _parent->_recalcSize();
-            }
         }
         _recalcChildrenPos();
     }
