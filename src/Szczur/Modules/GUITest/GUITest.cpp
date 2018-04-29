@@ -29,6 +29,17 @@ namespace rat
 
         scroller.setSize({30, 300});
         scroller.setPosition(200.f, 200.f);
+
+        widget->setMinimalSize(250, 250);
+        widget->setOriginProp(0.5f, 0.5f);
+        
+        widget2->setMinimalSize(50, 50);
+        widget2->setPosition(250.f, 100.f);
+        widget->add(widget2);
+        
+        widget3->setMinimalSize(25, 25);
+        widget3->setPosition(0.f, 0.f);
+        widget2->add(widget3);
     }
     
     
@@ -78,7 +89,11 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
+        widget->setPosition(float(mousePos.x), float(mousePos.y));
 
+        widget3->setPosition(_size.x, _size.y);
+
+        /*
         //testPatch.setScale(_scale, _scale);
         //testPatch.setSize(mousePos.x - 200, mousePos.y - 200);
         
@@ -89,15 +104,17 @@ namespace rat
         scroller.setScrollerPosition(static_cast<sf::Vector2f>(mousePos));
         scroller.setWidthProportion(_scale); 
         //scroller.setProportion(_prop); 
-        scroller.setBoundShiftProportion(_shift);
+        scroller.setBoundShiftProportion(_shift);*/
     }
     void GUITest::render()
     {
        _canvas.clear(sf::Color::Transparent);
         
         //testPatch.draw(_canvas);
-        _canvas.draw(scroller);
+        //_canvas.draw(scroller);
         //_canvas.draw(testPatch);
+
+        _canvas.draw(*widget);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
