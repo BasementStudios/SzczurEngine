@@ -21,6 +21,14 @@ public:
 	};
 
 private:
+	enum class FunctionType
+	{
+		None,
+		Action,
+		Condition
+	};
+
+private:
 	ed::EditorContext* _context;
 
 	std::unique_ptr<NodeManager> _nodeManager;
@@ -36,7 +44,7 @@ private:
 
 	bool _optionFunctionConfigWindow = false;
 	NodePin* _currentFunctionOption = nullptr;
-	int _functionType = 0; // 0 - none, 1 - action, 2 - condition
+	FunctionType _functionType = FunctionType::None;
 
 	DLGEditor::TextContainer_t* _parts;
 

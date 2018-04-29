@@ -949,18 +949,18 @@ void NodeEditor::showOptionConfig()
 
 void NodeEditor::showOptionFunctionConfig()
 {
-	if (_optionFunctionConfigWindow && _currentFunctionOption && _functionType)
+	if (_optionFunctionConfigWindow && _currentFunctionOption && _functionType != FunctionType::None)
 	{
 		if (ImGui::Begin("Option function", &_optionFunctionConfigWindow, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Node name: %s", _currentFunctionOption->Node->Name.c_str());
-			ImGui::Text("Function type: %s", _functionType == 1 ? "Action" : "Condition");
+			ImGui::Text("Function type: %s", _functionType == FunctionType::Action ? "Action" : "Condition");
 			
 			ImGui::Separator();
 
 			char nameBuffer[128] = { 0 };
 
-			if (_functionType == 1)
+			if (_functionType == FunctionType::Action)
 			{
 				strcpy(nameBuffer, _currentFunctionOption->ActionFuncName.c_str());
 
@@ -969,7 +969,7 @@ void NodeEditor::showOptionFunctionConfig()
 					_currentFunctionOption->ActionFuncName = nameBuffer;
 				}
 			}
-			else if (_functionType == 2)
+			else if (_functionType == FunctionType::Condition)
 			{
 				strcpy(nameBuffer, _currentFunctionOption->ConditionFuncName.c_str());
 
@@ -981,7 +981,7 @@ void NodeEditor::showOptionFunctionConfig()
 
 			ImGui::Separator();
 
-			ImGui::Text(_functionType == 1 ? _currentFunctionOption->ActionFuncCode.c_str() : _currentFunctionOption->ConditionFuncCode.c_str());
+			ImGui::Text(_functionType == FunctionType::Action ? _currentFunctionOption->ActionFuncCode.c_str() : _currentFunctionOption->ConditionFuncCode.c_str());
 		}
 
 		ImGui::End();
