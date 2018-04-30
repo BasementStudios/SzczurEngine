@@ -27,21 +27,25 @@ namespace rat {
         std::string str((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         file.close();
         //  \[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+)
-        std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
+        //std::regex word_regex( R"(\[(\d+)\][\s]*\[(\d+)\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
+        std::regex word_regex( R"(\[[\s]*(\d+)[\s]*\:*[\s]*(.*)[\s]*\][\s]*\[[\s]*(\d+)[\s]*\:*[\s]*(.*)[\s]*\][\s]*\[(\d+)\:(\d+)\-(\d+)\:(\d+)\][\s]*\[(.+)\][\s]*\{\n?([\d\D][^\}]+))"s);
         for(auto it = std::sregex_iterator(str.begin(), str.end(), word_regex); it!=std::sregex_iterator(); ++it) {
             Type_t* obj = new Type_t;
             obj->setId( std::stoi(it->str(1u)) );
-            obj->setMinorId( std::stoi(it->str(2u)) );
+            obj->setIdName( it->str(2u) );
 
-            obj->setVoiceStart( std::stoi(it->str(3u)) * 60 );
-            obj->setVoiceStart( std::stoi(it->str(4u)) + obj->getVoiceStart() );
+            obj->setMinorId( std::stoi(it->str(3u)) );
+            obj->setMinorIdName( it->str(4u) );
 
-            obj->setVoiceEnd( std::stoi(it->str(5u)) * 60 );
-            obj->setVoiceEnd( std::stoi(it->str(6u)) + obj->getVoiceEnd() );
+            obj->setVoiceStart( std::stoi(it->str(5u)) * 60 );
+            obj->setVoiceStart( std::stoi(it->str(6u)) + obj->getVoiceStart() );
 
-            obj->setLabel(it->str(7u));
+            obj->setVoiceEnd( std::stoi(it->str(7u)) * 60 );
+            obj->setVoiceEnd( std::stoi(it->str(8u)) + obj->getVoiceEnd() );
 
-            obj->interpretText(it->str(8u));
+            obj->setLabel(it->str(9u));
+
+            obj->interpretText(it->str(10u));
 
             add(obj->getId(), obj->getMinorId(), obj);
         }

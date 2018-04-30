@@ -34,6 +34,20 @@ namespace rat {
         return _minorId;
     }
 
+    void TextStruct::setIdName(const std::string& name) {
+        _idName = name;
+    }
+    const std::string& TextStruct::getIdName() const {
+        return _idName;
+    }
+
+    void TextStruct::setMinorIdName(const std::string& name) {
+        _minorIdName = name;
+    }
+    const std::string& TextStruct::getMinorIdName() const {
+        return _minorIdName;
+    }
+
     void TextStruct::setVoiceStart(size_t voiceStart) {
         _voiceStart = voiceStart;
     }

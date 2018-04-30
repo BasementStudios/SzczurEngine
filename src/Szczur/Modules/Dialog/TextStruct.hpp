@@ -23,6 +23,12 @@ namespace rat {
         void setMinorId(size_t minorId);
         size_t getMinorId() const;
 
+        void setIdName(const std::string& name);
+        const std::string& getIdName() const;
+
+        void setMinorIdName(const std::string& name);
+        const std::string& getMinorIdName() const;
+
         void setVoiceStart(size_t voiceStart);
         size_t getVoiceStart() const;
 
@@ -37,7 +43,9 @@ namespace rat {
         void forEach(std::function<void(Texts_t::iterator)> func);
     private:
         size_t _id;
+        std::string _idName;
         size_t _minorId;
+        std::string _minorIdName;
         size_t _voiceStart;
         size_t _voiceEnd;
         std::string _label;
