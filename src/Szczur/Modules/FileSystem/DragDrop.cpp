@@ -7,6 +7,7 @@ DragDrop* DragDrop::_this;
 
 DragDrop::DragDrop()
 {
+	LOG_INFO("Initializing DragDrop module");
 #ifdef EDITOR
 	auto& window = getModule<Window>().getWindow();
 
@@ -18,10 +19,12 @@ DragDrop::DragDrop()
 
 	_this = this;
 #endif
+	LOG_INFO("Module DragDrop initialized");
 }
 
 DragDrop::~DragDrop()
 {
+	LOG_INFO("Module DragDrop destructed");
 }
 
 #ifdef EDITOR
