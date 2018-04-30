@@ -8,6 +8,8 @@
 
 #include <memory>
 
+#include <dragonBones/parser/JSONDataParser.h>
+#include <dragonBones/parser/BinaryDataParser.h>
 //#include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Utility/Modules/Module.hpp"
@@ -22,6 +24,8 @@ class DragonBones : public Module<>
 { 
 	/* Types */
 public:
+	dragonBones::JSONDataParser   jsonParser;
+    dragonBones::BinaryDataParser binaryParser; 
 	//using Factory_t = dragonBones::SFMLFactory;
 	
 	/* Fields */

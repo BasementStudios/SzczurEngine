@@ -22,7 +22,7 @@ class SF3DTextureData : public TextureData
 
 	/* Fields */
 public:
-	sf3d::Texture* texture;
+	sf3d::Texture* texture; // @todo ? const?
 
 
 

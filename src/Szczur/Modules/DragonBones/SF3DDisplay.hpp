@@ -65,7 +65,7 @@ public:
 
 	void setColor(const sf::Color& color)
 	{
-		for (std::size_t i = 0; i < this->verticesDisplay.size(); ++i) {
+		for (std::size_t i = 0; i < this->verticesDisplay.getSize(); ++i) {
 			this->verticesDisplay.setColor(i,  {color.r, color.g, color.b, color.a});
 		}
 	}

@@ -3,30 +3,24 @@
 /** @file ArmatureDisplayData.hpp
  ** @description Header file with armature display data class as shared game armature display data.
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ ** @music Taconafide - SOMA
  **/
 
 #include <string>
 #include <vector>
 
-#include <dragonBones/model/DragonBonesData.h>
+#include <dragonBones/model/DragonBonesData.h> // @todo , FWD
 #include "Szczur/Utility/SFML3D/Texture.hpp"
-#include <dragonBones/model/TextureAtlasData.h>
+#include <Szczur/Modules/DragonBones/SF3DTextureAtlasData.hpp>
+#include <Szczur/Modules/DragonBones/SF3DTextureData.hpp>
 
-#include "Szczur/Modules/DragonBones/DragonBones.hpp" // Factory_t
+#include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
 namespace rat
 {
 
 class ArmatureDisplayData
 {
-	/* Types */
-public:
-	using SkeletonData_t 	= dragonBones::DragonBonesData;
-	using Texture_t    		= sf3d::Texture;
-	using AtlasData_t		= dragonBones::TextureAtlasData;
-	
-
-
 	/* Constants */
 protected:
 	// @info Data paths templates
@@ -41,23 +35,21 @@ protected:
 	
 	/* Fields */
 public: // @todo prot&prop
-	std::string			name;
+	std::string name;
 protected:
-	DragonBones::Factory_t&         factory;
-	SkeletonData_t*					skeletonData;
-	std::vector<Texture_t>			textures;
-	std::vector<AtlasData_t*>		atlasesData;
+	dragonBones::DragonBonesData*                  skeletonData; // @info Pointer, because created by DB parsers...
+	std::vector<sf3d::Texture>                     textures;
+	std::vector<dragonBones::SF3DTextureAtlasData> atlasesData;
 
 
 
 	/* Properties */
 public:
-	/** @property Factory
-	 ** @description Provides access to armature factory.
-	 ** @access referecne get
+	/** @property TextureData
+	 ** @description Details of texture in DragonBones texture atlas.
+	 ** @access pointer get // @todo , should be const 
 	 **/
-	DragonBones::Factory_t& getFactory();
-	const DragonBones::Factory_t& getFactory() const;
+	dragonBones::SF3DTextureData* getTextureData(const std::string& name) const;
 	
 	
 	
@@ -67,7 +59,7 @@ public:
 	 ** @description Loads armature display data.
 	 ** @argument name - name of the armature display data to load.
 	 **/
-	ArmatureDisplayData(const std::string& name, DragonBones::Factory_t& factory);
+	ArmatureDisplayData(const std::string& name, DragonBones& dragonBonesModule);
 
 	// Disable coping
 	//ArmatureDisplayData(const ArmatureDisplayData&) = delete; // @warn ? @todo .
@@ -76,6 +68,13 @@ public:
 	// Disable moving
 	//ArmatureDisplayData(ArmatureDisplayData&&) = delete;
 	//ArmatureDisplayData& operator = (ArmatureDisplayData&&) = delete;
+
+	
+	
+	/* Submethods */
+protected:
+	loadSkeletonData(const std::string& name, DragonBones& dragonBonesModule);
+	loadTextures(const std::string& name, DragonBones& dragonBonesModule);
 };
 
 }

@@ -3,12 +3,19 @@
 /** @file ArmatureComponent.hpp
  ** @description Header file with armature component class.
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ ** @music Taconafide - SOMA
  **/
+
+#include <string>
+#include <memory> // unique_ptr
+#include <vector>
 
 namespace dragonBones {
 	class Animation;
-	class SFMLArmatureDisplay;
+	class Armature;
+	class SF3DDisplay;
 }
+#include <dragonBones/armature/IArmatureProxy.h>
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 namespace sf3d {
@@ -23,46 +30,70 @@ namespace rat {
 	class ArmatureDisplayData;
 }
 
-
 namespace rat
 {
 
 /** @class ArmatureComponent
- ** @implements sf3d::Drawable
  ** @inheirts Component<BaseObject>
+ ** @implements sf3d::Drawable, dragonBones::IArmatureProxy
  ** @description DragonBones armature component for displaying object.
  **/
-class ArmatureComponent : public Componable::Component<BaseObject>, public sf3d::Drawable
+class ArmatureComponent
+	: public Component<BaseObject>, public sf3d::Drawable, public dragonBones::IArmatureProxy
 {
 	/* Fields */
 protected:
-	ArmatureDisplayData*                displayData {nullptr}; // @todo . shared 
+	ArmatureDisplayData* displayData {nullptr}; // @todo . shared 
 	
-	dragonBones::SFMLArmatureDisplay*   pose        {nullptr}; // @todo . Own armature system instead of static factory-pattern...
+	dragonBones::Armature* armature;
+
+	std::vector<std::unique_ptr<dragonBones::SF3DDisplay>> displays;
 
 
 
 	/* Properties */
 public:
+	/** @property Armature
+	 ** @description Provides access to DragonBones Armature object of current pose.
+	 ** @access pointer get
+	 ** @override dragonBones::IArmatureProxy
+	 **/
+	dragonBones::Armature* getArmature() const override;
 	/** @property Animation 
 	 ** @description Provides access to DragonBones Animation object of current pose.
 	 ** @access pointer get
+	 ** @override dragonBones::IArmatureProxy
 	 **/
-	dragonBones::Animation* getAnimation();
+	dragonBones::Animation* getAnimation() const override;
 
 
 
 	/* Operators */
 public:
+	// Constructors 
 	ArmatureComponent();
 	ArmatureComponent(ArmatureDisplayData* displayData, const std::string& animation = "");
+	
+	// Destructor
+	~ArmatureComponent();
+
+	// Movable
 	ArmatureComponent(ArmatureComponent&& other);
+	// @todo , move operator = 
 
 
 
 	/* Methods */
 protected:
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	// @todo void update(float deltaTime) override { this->getArmature()->advanceTime(deltaTime); }
+
+	// Satisfy dragonBones::IArmatureProxy interface
+public: // @todo ? protected & friend Armature?
+	void dbInit(dragonBones::Armature* armature) override;
+	void dbClear() override;
+	void dbUpdate() override;
+	void dispose(bool disposeProxy) override;
 };
 
 }
