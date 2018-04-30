@@ -79,13 +79,13 @@ namespace rat {
                 case sf::Event::MouseMoved: {
                     auto thisSize = getSize();
                     
-                    event.mouseMove.x += _origin.x;
-                    event.mouseMove.y += _origin.y;
+                    event.mouseMove.x += int(_origin.x * _winProp.x);
+                    event.mouseMove.y += int(_origin.y * _winProp.y);
                     if(
                         event.mouseMove.x >= 0 &&
-                        event.mouseMove.x <= thisSize.x &&
+                        event.mouseMove.x <= thisSize.x * _winProp.x &&
                         event.mouseMove.y >= 0 &&
-                        event.mouseMove.y <= thisSize.y
+                        event.mouseMove.y <= thisSize.y * _winProp.y
                     ) {
                         if(!_isHovered) {
                             _callback(CallbackType::onHoverIn);
@@ -123,8 +123,8 @@ namespace rat {
                 if(event.type == sf::Event::MouseMoved) {
                     auto itPosition = it->getPosition();
                     sf::Event tempEvent(event);
-                    tempEvent.mouseMove.x -= (itPosition.x);
-                    tempEvent.mouseMove.y -= (itPosition.y);
+                    tempEvent.mouseMove.x -= int(itPosition.x * _winProp.x);
+                    tempEvent.mouseMove.y -= int(itPosition.y * _winProp.y);
                     it->input(tempEvent);
                 }
                 else
@@ -298,4 +298,12 @@ namespace rat {
     {
         setSize({(unsigned int)width, (unsigned int)height});
     }
+
+    sf::Vector2f Widget::_winProp{1.f, 1.f};
+	void Widget::setWinProp(sf::Vector2f prop)
+    {
+        _winProp = prop;
+    }
+    
+    
 }

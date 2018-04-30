@@ -71,6 +71,8 @@ namespace rat {
 		void invisible();
 		bool isVisible() const;
 
+		static void setWinProp(sf::Vector2f prop);
+
 	protected:
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
@@ -106,6 +108,8 @@ namespace rat {
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		void _recalcOrigin();
+
+		static sf::Vector2f _winProp;
 
 
 	};

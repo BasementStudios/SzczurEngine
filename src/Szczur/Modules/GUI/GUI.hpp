@@ -40,6 +40,7 @@ namespace rat {
         BasicGuiAssetsManager _assets;
 
         sf::RenderTexture _canvas;
+        const sf::Vector2u _standartWindowSize;
     };
 }
 
