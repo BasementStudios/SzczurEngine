@@ -3,65 +3,13 @@
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
-{/*
-    void Widget2::draw(sf::RenderTarget& target, sf::RenderStates) const
-    {
-        if(_isVisible)
-        {
-            _draw();
-            _drawChildren();    
-        }
-
-    }
+{
+    /*
+   
     void Widget2::handleEvents(const sf::Event& event);
 	void Widget2::update(float deltaTime);
 
-    void Widget2::setSize(const sf::Vector2u& size)
-    {
-        _isMinSizeSet = true;
-        _minimalSize = size;
-        _recalcSize();
-    } 
-        void Widget2::setSize(size_t x, size_t y);
-
-		Widget* Widget2::add(Widget* object);
-        void Widget2::setParent(Widget* parent);
-
-		virtual void Widget2::calculateSize();
-		sf::Vector2u Widget2::getSize() const;
-
-		void Widget2::setPosition(const sf::Vector2f& offset);
-		void Widget2::setPosition(float x, float y);
-		void Widget2::move(const sf::Vector2f& offset);
-		void Widget2::move(float offsetX, float offsetY);
-
-		void Widget2::activate();
-		void Widget2::deactivate();
-		bool Widget2::isActivated() const;
-
-		void Widget2::visible();
-		void Widget2::invisible();
-		bool Widget2::isVisible() const;
-
-    void Widget2::_drawChildren (sf::RenderTarget& target, sf::RenderStates states) const
-    {
-        for(auto* child : _children)
-        {
-            child->draw(target, states);
-        }
-    }
-    void Widget2::_recalcSize()
-    {
-
-    }
-    sf::Vector2u Widget2::_getChildrenSize() const
-    {
-        sf::Vector2u size = {0u, 0u};
-        for(auto* child : _children)
-        {
-            auto childSize = child->getGlobalBounds();
-        }
-    }*/
+   */
 
 
     void Widget2::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -123,6 +71,16 @@ namespace rat
     {
         return {int(_bounds.width), int(_bounds.height)};
     }
+    sf::Vector2i Widget2::getMinimalSize() const
+    {
+        if(_isMinSizeSet) return _minSize;
+        return {};
+    }
+    
+    sf::FloatRect Widget2::getGlobalBounds() const
+    {
+        return _bounds;
+    }
     sf::Vector2f Widget2::getPosition() const
     {
         auto pos = _position;
@@ -145,6 +103,10 @@ namespace rat
         sf::Vector2f chSize = _getChildrenSize();
         size.x = std::max(size.x, chSize.x);
         size.y = std::max(size.y, chSize.y);
+
+        sf::Vector2f comSize = _getComponentsSize();
+        size.x = std::max(size.x, comSize.x);
+        size.y = std::max(size.y, comSize.y);
 
         _bounds.width = size.x;
         _bounds.height = size.y;
@@ -193,6 +155,7 @@ namespace rat
             _bounds.top += _parent->_bounds.top;
         }
         _recalcChildrenPos();
+        _setComponentsPosition({_bounds.left, _bounds.top});
     }
 
     void Widget2::_recalcChildrenPos()
