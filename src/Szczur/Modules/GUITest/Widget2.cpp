@@ -25,6 +25,7 @@ namespace rat
         shape.setOutlineThickness(1.f);
         target.draw(shape, states);
 
+        _drawComponents(target, states);
         _drawChildren(target, states);
     }
 
@@ -90,6 +91,11 @@ namespace rat
         }
         return pos;
     }
+    bool Widget2::hasMinimalSize() const
+    {
+        return _isMinSizeSet;
+    }
+    
     
 
     void Widget2::_recalcSize()
@@ -111,6 +117,7 @@ namespace rat
         _bounds.width = size.x;
         _bounds.height = size.y;
 
+        _recalculateComponentsSize();
         _recalcOrigin();
         if(_parent) _parent->_recalcSize();
     }
@@ -155,7 +162,7 @@ namespace rat
             _bounds.top += _parent->_bounds.top;
         }
         _recalcChildrenPos();
-        _setComponentsPosition({_bounds.left, _bounds.top});
+        _recalculateComponentsPosition();
     }
 
     void Widget2::_recalcChildrenPos()

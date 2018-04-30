@@ -7,6 +7,7 @@
 #include "Patch.hpp"
 #include "Scroller.hpp"
 #include "Widget2.hpp"
+#include "ImageWidget2.hpp"
 
 namespace rat
 {
@@ -32,6 +33,9 @@ namespace rat
         Widget2* widget1{new Widget2};
         Widget2* widget2{new Widget2};
         Widget2* widget3{new Widget2};
+        ImageWidget2* iWidget{new ImageWidget2};
+
+        bool hasBeenChanged{false};
     };
 
 }

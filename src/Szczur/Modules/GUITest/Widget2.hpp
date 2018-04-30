@@ -26,16 +26,19 @@ namespace rat
         sf::Vector2f getPosition() const;
         sf::FloatRect getGlobalBounds() const;
 
+        bool hasMinimalSize() const;
+
         virtual ~Widget2();
 
     protected:
-        virtual void _setComponentsPosition(sf::Vector2f position) {}
+        virtual void _recalculateComponentsPosition() {}
         virtual sf::Vector2f _getComponentsSize() const { return {}; }
-        virtual void _setComponentsSize(sf::Vector2f size) {}
+        virtual void _recalculateComponentsSize() {}
         virtual void _drawComponents(sf::RenderTarget& target, sf::RenderStates) const {}
         virtual void _updateComponents(float dt) {}
         virtual void _handleComponentsEvent(sf::Event e) {}
 
+        virtual void _recalcSize() final;
     private:
         Widget2* _parent{nullptr};
         Children_t _children;
@@ -49,7 +52,6 @@ namespace rat
         sf::Vector2i _minSize;
         bool _isMinSizeSet{false};
 
-        void _recalcSize();
         void _recalcOrigin();
         void _recalcPos();
         void _recalcPosByParent();

@@ -43,7 +43,10 @@ namespace rat
         
         widget3->setMinimalSize(25, 25);
         widget3->setPosition(0.f, 0.f);
-        widget2->add(widget3);
+        iWidget->add(widget3);
+
+        iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        widget->add(iWidget);
     }
     
     
@@ -104,10 +107,21 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+        {
+            if(!hasBeenChanged)
+            {
+                std::cout << "Beng\n";
+                hasBeenChanged = true;
+                auto& gui = getModule<GUI>();
+                iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+            }
+        }
 
         widget->setPosition(float(mousePos.x), float(mousePos.y));
 
         widget3->setPosition(_size.x, _size.y);
+        //iWidget->setMinimalSize(_size.x, _size.y);
 
         /*
         //testPatch.setScale(_scale, _scale);
