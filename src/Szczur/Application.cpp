@@ -1,5 +1,7 @@
 #include "Application.hpp"
 
+#include "Utility/MsgBox.hpp"
+
 namespace rat
 {
 
@@ -47,7 +49,26 @@ void Application::input()
 		#endif
 
 		if (event.type == sf::Event::Closed) {
-			getModule<Window>().getWindow().close();
+
+			if (getModule<DialogEditor>().isProjectLoaded())
+			{
+				auto result = MsgBox::show(getModule<Window>().getWindow().getSystemHandle(), "Do you want to save the project??", "Dialog Editor", MsgBox::Icon::Question, MsgBox::Button::YesNoCancel);
+
+				switch (result)
+				{
+					case MsgBox::Result::Yes:
+						getModule<DialogEditor>().saveProject();
+					case MsgBox::Result::No:
+						getModule<Window>().getWindow().close();
+						break;
+					case MsgBox::Result::Cancel:
+						break;
+				}
+			}
+			else
+			{
+				getModule<Window>().getWindow().close();
+			}
 		}
 	}
 }

@@ -67,6 +67,9 @@ public:
 
 	void update();
 
+	void saveProject();
+	bool isProjectLoaded() { return _projectLoaded; }
+
 private:
 	void createProject(const std::string& path);
 	void openProject(const std::string& path);

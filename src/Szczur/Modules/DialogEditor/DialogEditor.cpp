@@ -47,9 +47,7 @@ void DialogEditor::update()
 			if (ImGui::Button("Test dialog"))
 			{
 				getModule<Dialog>().unload();
-
-				_dlgEditor.save();
-				_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+				saveProject();
 				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::Lua);
 				_showCharactersManager = false;
 				_showDlgEditor = false;
@@ -80,9 +78,7 @@ void DialogEditor::update()
 			{
 				if (!_projectPath.empty())
 				{
-					_CharactersManager.save(_projectPath + "/characters.json");
-					_dlgEditor.save();
-					_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+					saveProject();
 				}
 			}
 
@@ -204,6 +200,13 @@ void DialogEditor::update()
 
 		ImGui::EndPopup();
 	}
+}
+
+void DialogEditor::saveProject()
+{
+	_dlgEditor.save();
+	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+	_CharactersManager.save(_projectPath + "/characters.json");
 }
 
 void DialogEditor::createProject(const std::string& path)
