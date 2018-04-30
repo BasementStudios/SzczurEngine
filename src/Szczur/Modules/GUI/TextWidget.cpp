@@ -68,6 +68,7 @@ namespace rat {
 
     void TextWidget::addLetter(char letter) {
         _text.setString( _text.getString() + letter );
+        calculateSize();
     }
 
     void TextWidget::removeLast() {
@@ -76,6 +77,7 @@ namespace rat {
             str.erase( str.getSize()-1, 1 );
             _text.setString(str);
         }
+        calculateSize();
     }
 
     size_t TextWidget::getLength() {
@@ -88,13 +90,14 @@ namespace rat {
 
     void TextWidget::setString(const std::string& str) {
         //_text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
-        _aboutToRecalculate=true;
+        //_aboutToRecalculate=true;
         _text.setString(getUnicodeString(str));
+        calculateSize();
     }
 
     void TextWidget::setFont(sf::Font* font) {
         _text.setFont(*font);
-
+        calculateSize();
     }
 
     const sf::Font* TextWidget::getFont() const {
@@ -103,6 +106,7 @@ namespace rat {
 
     void TextWidget::setCharacterSize(unsigned int size) {
         _text.setCharacterSize(size);
+        calculateSize();
     }
 
     unsigned int TextWidget::getCharacterSize() const {

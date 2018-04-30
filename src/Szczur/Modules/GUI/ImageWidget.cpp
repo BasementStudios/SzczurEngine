@@ -38,6 +38,7 @@ namespace rat {
 
     void ImageWidget::setTexture(sf::Texture* texture) {
         _sprite.setTexture(*texture);
+        _hasTexture = true;
         calculateSize();
     }
 
@@ -59,4 +60,19 @@ namespace rat {
         if(auto it = _callbacks.find(type); it != _callbacks.end())
             std::invoke(it->second, this);
     }
+
+    void ImageWidget::_calculateSize()
+    {
+        if(!_hasTexture) return;
+
+        auto texSize = static_cast<sf::Vector2f>(_sprite.getTexture()->getSize());
+        sf::Vector2f scale = {1.f, 1.f};
+        if(_isMinSizeSet)
+        {
+            auto minSize = static_cast<sf::Vector2f>(getMinimalSize());
+            scale = {minSize.x / texSize.x, minSize.y / texSize.y};            
+        }
+        _sprite.setScale(scale);
+    }
+    
 }

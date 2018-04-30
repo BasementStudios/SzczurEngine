@@ -101,6 +101,7 @@ void Application::render()
 {
 	getModule<Window>().clear();
 	getModule<GUI>().render();
+	getModule<GUITest>().render();
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());

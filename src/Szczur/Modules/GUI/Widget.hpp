@@ -42,16 +42,26 @@ namespace rat {
 
 		void clear();
 
-		void input(const sf::Event& event);
+		void input(sf::Event event);
 		void update(float deltaTime);
 
 		virtual void calculateSize();
 		sf::Vector2u getSize() const;
+		sf::Vector2u getMinimalSize() const;
 
 		void move(const sf::Vector2f& offset);
 		void move(float offsetX, float offsetY);
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
+
+		void setOrigin(const sf::Vector2f& origin);
+		void setOrigin(float x, float y);
+
+		void setPropOrigin(const sf::Vector2f& prop);
+		void setPropOrigin(float x, float y);
+
+		void setSize(sf::Vector2u size);
+		void setSize(size_t width, size_t height);
 
 		void activate();
 		void deactivate();
@@ -61,11 +71,14 @@ namespace rat {
 		void invisible();
 		bool isVisible() const;
 
+		static void setWinProp(sf::Vector2f prop);
+
 	protected:
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
 		virtual sf::Vector2u _getSize() const;
+		virtual void _calculateSize() {}
 
 		bool _aboutToRecalculate;
 
@@ -78,6 +91,13 @@ namespace rat {
 
 		Widget* _parent;
 
+		sf::Vector2u _minSize;
+		bool _isMinSizeSet{false};
+
+		sf::Vector2f _origin{0.f, 0.f};
+		sf::Vector2f _propOrigin;
+		bool _isPropOriginSet{false};
+
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
 		
@@ -86,6 +106,11 @@ namespace rat {
 		virtual void _callback(CallbackType type);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+		void _recalcOrigin();
+
+		static sf::Vector2f _winProp;
+
 
 	};
 }

@@ -72,17 +72,20 @@ namespace rat {
         return object;
     }
 
-    void Widget::input(const sf::Event& event) {
+    void Widget::input(sf::Event event) {
         if(isActivated()) {
             _input(event);
             switch(event.type) {
                 case sf::Event::MouseMoved: {
                     auto thisSize = getSize();
+                    
+                    event.mouseMove.x += int(_origin.x * _winProp.x);
+                    event.mouseMove.y += int(_origin.y * _winProp.y);
                     if(
                         event.mouseMove.x >= 0 &&
-                        event.mouseMove.x <= thisSize.x &&
+                        event.mouseMove.x <= thisSize.x * _winProp.x &&
                         event.mouseMove.y >= 0 &&
-                        event.mouseMove.y <= thisSize.y
+                        event.mouseMove.y <= thisSize.y * _winProp.y
                     ) {
                         if(!_isHovered) {
                             _callback(CallbackType::onHoverIn);
@@ -120,8 +123,8 @@ namespace rat {
                 if(event.type == sf::Event::MouseMoved) {
                     auto itPosition = it->getPosition();
                     sf::Event tempEvent(event);
-                    tempEvent.mouseMove.x -= itPosition.x;
-                    tempEvent.mouseMove.y -= itPosition.y;
+                    tempEvent.mouseMove.x -= int(itPosition.x * _winProp.x);
+                    tempEvent.mouseMove.y -= int(itPosition.y * _winProp.y);
                     it->input(tempEvent);
                 }
                 else
@@ -154,13 +157,13 @@ namespace rat {
             states.transform *= getTransform();
 
             //  Uncomment to get into debug mode :D
-            /*sf::RectangleShape shape;
+            sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            //shape.setFillColor(sf::Color(0,0,255,70));
+            shape.setFillColor(sf::Color(0,0,255,70));
             shape.setFillColor(sf::Color::Transparent);
             shape.setOutlineColor(sf::Color::White);
             shape.setOutlineThickness(1.f);
-            target.draw(shape, states);*/
+            target.draw(shape, states);
             
             _draw(target, states);
             for(auto it : _children)
@@ -170,24 +173,29 @@ namespace rat {
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
+        _calculateSize();
         _size = {0u,0u};
-        for(auto it : _children) {
-            auto itSize = it->getSize();
-            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
-            auto itOrigin = it->getOrigin();
-            if(itPosition.x + itSize.x - itOrigin.x > _size.x)
-                _size.x = itPosition.x + itSize.x - itOrigin.x;
-            if(itPosition.y + itSize.y - itOrigin.y > _size.y)
-                _size.y = itPosition.y + itSize.y - itOrigin.y;
-        }
         auto ownSize = _getSize();
-        if(ownSize.x > _size.x)
-            _size.x = ownSize.x;
-        if(ownSize.y > _size.y)
-            _size.y = ownSize.y;
 
-        if(_parent != nullptr)
-            _parent->calculateSize();
+        if(ownSize.x > _size.x) _size.x = ownSize.x;
+        if(ownSize.y > _size.y) _size.y = ownSize.y;
+
+        if(_isMinSizeSet)
+        {
+            _size.x = std::max(_size.x, _minSize.x);
+            _size.y = std::max(_size.y, _minSize.y);
+        }
+
+        for(auto child : _children) {
+            auto childSize = child->getSize();
+            auto childPosition = static_cast<sf::Vector2i>(child->getPosition());
+            auto childOrigin = child->getOrigin();
+            if(childPosition.x + childSize.x - childOrigin.x > _size.x)
+                _size.x = childPosition.x + childSize.x - childOrigin.x;
+            if(childPosition.y + childSize.y - childOrigin.y > _size.y)
+                _size.y = childPosition.y + childSize.y - childOrigin.y;
+        }
+        _recalcOrigin();
     }
 
     sf::Vector2u Widget::_getSize() const {
@@ -197,6 +205,13 @@ namespace rat {
     sf::Vector2u Widget::getSize() const {
         return _size;
     }
+
+	sf::Vector2u Widget::getMinimalSize() const
+    {
+        if(!_isMinSizeSet) return {};
+        return _minSize;
+    }
+    
 
     void Widget::activate() {
         _isActivated = true;
@@ -238,4 +253,57 @@ namespace rat {
         sf::Transformable::setPosition(x, y);
         _aboutToRecalculate = true;
     }
+
+    void Widget::setOrigin(const sf::Vector2f& origin)
+    {
+        _isPropOriginSet = false;
+        _origin = origin;
+        _recalcOrigin();
+    }
+	void Widget::setOrigin(float x, float y)
+    {
+        setOrigin({x, y});
+    }
+
+	void Widget::setPropOrigin(const sf::Vector2f& prop)
+    {
+        _isPropOriginSet = true;
+        _propOrigin = prop;
+        _recalcOrigin();
+    }
+	void Widget::setPropOrigin(float x, float y)
+    {
+        setPropOrigin({x, y});
+    }
+
+    void Widget::_recalcOrigin()
+    {
+        if(_isPropOriginSet)
+        {
+            auto size = static_cast<sf::Vector2f>(getSize());
+            _origin = {size.x * _propOrigin.x, size.y * _propOrigin.y};
+        }
+        sf::Transformable::setOrigin(_origin);
+        if(_parent) _parent->calculateSize();
+    }
+        
+
+    void Widget::setSize(sf::Vector2u size)
+    {
+        _isMinSizeSet = true;
+        _minSize = size;
+        calculateSize();
+    }
+	void Widget::setSize(size_t width, size_t height)
+    {
+        setSize({(unsigned int)width, (unsigned int)height});
+    }
+
+    sf::Vector2f Widget::_winProp{1.f, 1.f};
+	void Widget::setWinProp(sf::Vector2f prop)
+    {
+        _winProp = prop;
+    }
+    
+    
 }
