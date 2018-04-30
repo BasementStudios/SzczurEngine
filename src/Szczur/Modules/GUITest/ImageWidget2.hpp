@@ -16,7 +16,6 @@ namespace rat
     private:
         sf::Sprite _sprite;
         const sf::Texture* _texture{nullptr};
-        bool _isSizeFixed{false};
         sf::Vector2f _fixedSize{};
 
         void _setSpriteSize(sf::Vector2f size);

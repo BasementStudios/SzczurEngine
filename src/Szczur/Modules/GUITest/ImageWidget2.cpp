@@ -10,7 +10,6 @@ namespace rat
         _sprite.setTexture(*_texture);
         _reacalcSpriteSize();
         _recalcSize();
-        std::cout << "Everything correct?\n";
     }
     
     void ImageWidget2::_recalculateComponentsPosition()
@@ -26,7 +25,6 @@ namespace rat
     }
     void ImageWidget2::_recalculateComponentsSize()
     {
-        _isSizeFixed = true;
         _reacalcSpriteSize();
     }
     void ImageWidget2::_drawComponents(sf::RenderTarget& target, sf::RenderStates states) const

@@ -6,8 +6,8 @@
 #include "NinePatch.hpp"
 #include "Patch.hpp"
 #include "Scroller.hpp"
-#include "Widget2.hpp"
-#include "ImageWidget2.hpp"
+#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
 
 namespace rat
 {
@@ -18,7 +18,7 @@ namespace rat
         void init();
         void update(float deltaTime = (1.f/60.f));
         void render();
-        ~GUITest() { delete widget; }
+        ~GUITest() { /*delete widget;*/ }
     private:
         sf::RenderTexture _canvas;   
 
@@ -29,11 +29,11 @@ namespace rat
 
         NinePatch testPatch; 
         Scroller scroller;
-        Widget2* widget{new Widget2};
-        Widget2* widget1{new Widget2};
-        Widget2* widget2{new Widget2};
-        Widget2* widget3{new Widget2};
-        ImageWidget2* iWidget{new ImageWidget2};
+        Widget* widget{nullptr};
+        Widget* widget1{nullptr};
+        Widget* widget2{nullptr};
+        Widget* widget3{nullptr};
+        ImageWidget* iWidget{nullptr};
 
         bool hasBeenChanged{false};
     };

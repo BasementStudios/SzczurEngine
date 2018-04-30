@@ -12,6 +12,8 @@ namespace rat
     void GUITest::init()
     {
         auto& gui = getModule<GUI>();
+
+
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
         testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
         //testPatch.setTextureRect({{0, 200}, {248, 248}});
@@ -30,23 +32,33 @@ namespace rat
         scroller.setSize({30, 300});
         scroller.setPosition(200.f, 200.f);
 
-        widget->setMinimalSize(250, 250);
-        widget->setOriginProp(0.5f, 0.5f);
 
-        widget1->setOriginProp(0.2f, 0.2f);
-        widget1->setPosition(100.f, 100.f);
+        widget = gui.addInterface();
+        //widget->setMinimalSize(250, 250);
+        //widget->setOriginProp(0.5f, 0.5f);
+
+        std::cout << "Masslo\n";
+        widget1 = new Widget;
+        //widget1->setOriginProp(0.2f, 0.2f);
+        widget1->setPosition(0.f, 0.f);
         widget->add(widget1);
         
-        widget2->setMinimalSize(50, 50);
-        widget2->setPosition(250.f, 100.f);
+        widget2 = new Widget;
+        //widget2->setMinimalSize(50, 50);
+        widget2->setPosition(0.f, 0.f);
         widget1->add(widget2);
         
-        widget3->setMinimalSize(25, 25);
+
+        iWidget = new ImageWidget;
+        iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        widget->add(iWidget);
+
+        widget3 = new Widget;
+        //widget3->setMinimalSize(25, 25);
         widget3->setPosition(0.f, 0.f);
         iWidget->add(widget3);
 
-        iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        widget->add(iWidget);
+        std::cout << "Ogorek\n";
     }
     
     
@@ -118,7 +130,7 @@ namespace rat
             }
         }
 
-        widget->setPosition(float(mousePos.x), float(mousePos.y));
+        //widget->setPosition(float(mousePos.x), float(mousePos.y));
 
         widget3->setPosition(_size.x, _size.y);
         //iWidget->setMinimalSize(_size.x, _size.y);
@@ -144,7 +156,7 @@ namespace rat
         //_canvas.draw(scroller);
         //_canvas.draw(testPatch);
 
-        _canvas.draw(*widget);
+        //_canvas.draw(*widget);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
