@@ -47,6 +47,17 @@ namespace rat
     {
         if(!_isWindowFocused) return;
 
+        if (_inputManager.isPressed(InputCode(Keyboard::Space))) {
+            if(_playing) {
+                _dialogAudio.pause();
+                _playing = false;
+            }
+            else {
+                _dialogAudio.play();
+                _playing = true;
+            }
+        }
+
         if (_inputManager.isKept(InputCode(Keyboard::LControl))) {
             if (_inputManager.isPressed(InputCode(Keyboard::Add))) {
                 addMinor();
