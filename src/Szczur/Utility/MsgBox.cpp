@@ -53,8 +53,13 @@ int getButtonId(Button button)
 
 Result show(const std::string& text, const std::string& title, Icon icon, Button button)
 {
-#if defined(EDITOR) && defined(OS_WINDOWS)
-	int result = MessageBoxA(nullptr, text.c_str(), title.c_str(), getIconId(icon) | getButtonId(button));
+	return show(nullptr, text, title, icon, button);
+}
+
+Result show(void* hwnd, const std::string& text, const std::string& title, Icon icon, Button button)
+{
+#if defined(EDITOR)
+	int result = MessageBoxA(reinterpret_cast<HWND>(hwnd), text.c_str(), title.c_str(), getIconId(icon) | getButtonId(button));
 
 	switch (result)
 	{

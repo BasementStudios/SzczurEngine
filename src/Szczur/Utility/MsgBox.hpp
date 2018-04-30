@@ -37,5 +37,8 @@ enum class Result
 };
 
 Result show(const std::string& text, const std::string& title = "", Icon icon = Icon::Information, Button button = Button::Ok);
+Result show(void* hwnd, const std::string& text, const std::string& title = "", Icon icon = Icon::Information, Button button = Button::Ok);
+
+
 
 }
