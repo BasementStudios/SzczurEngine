@@ -53,6 +53,9 @@ namespace rat {
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
 
+		void setSize(sf::Vector2u size);
+		void setSize(size_t width, size_t height);
+
 		void activate();
 		void deactivate();
 		bool isActivated() const;
@@ -66,6 +69,7 @@ namespace rat {
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
 		virtual sf::Vector2u _getSize() const;
+		virtual void _calculateSize() {}
 
 		bool _aboutToRecalculate;
 
@@ -78,6 +82,9 @@ namespace rat {
 
 		Widget* _parent;
 
+		sf::Vector2u _minSize;
+		bool _isMinSizeSet{false};
+
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
 		
@@ -86,6 +93,7 @@ namespace rat {
 		virtual void _callback(CallbackType type);
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 
 	};
 }

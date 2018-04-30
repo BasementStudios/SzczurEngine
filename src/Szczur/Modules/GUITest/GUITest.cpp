@@ -34,6 +34,7 @@ namespace rat
 
 
         widget = gui.addInterface();
+        widget->setSize(500u, 1500u);
         //widget->setMinimalSize(250, 250);
         //widget->setOriginProp(0.5f, 0.5f);
 
@@ -51,6 +52,7 @@ namespace rat
 
         iWidget = new ImageWidget;
         iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        iWidget->setPosition(100.f, 100.f);
         widget->add(iWidget);
 
         widget3 = new Widget;

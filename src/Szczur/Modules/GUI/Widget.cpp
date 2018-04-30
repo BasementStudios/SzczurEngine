@@ -170,24 +170,31 @@ namespace rat {
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
+        _calculateSize();
         _size = {0u,0u};
-        for(auto it : _children) {
-            auto itSize = it->getSize();
-            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
-            auto itOrigin = it->getOrigin();
-            if(itPosition.x + itSize.x - itOrigin.x > _size.x)
-                _size.x = itPosition.x + itSize.x - itOrigin.x;
-            if(itPosition.y + itSize.y - itOrigin.y > _size.y)
-                _size.y = itPosition.y + itSize.y - itOrigin.y;
-        }
         auto ownSize = _getSize();
-        if(ownSize.x > _size.x)
-            _size.x = ownSize.x;
-        if(ownSize.y > _size.y)
-            _size.y = ownSize.y;
 
-        if(_parent != nullptr)
-            _parent->calculateSize();
+        if(ownSize.x > _size.x) _size.x = ownSize.x;
+        if(ownSize.y > _size.y) _size.y = ownSize.y;
+
+        if(_isMinSizeSet)
+        {
+            _size.x = std::max(_size.x, _minSize.x);
+            _size.y = std::max(_size.y, _minSize.y);
+        }
+
+        for(auto child : _children) {
+            auto childSize = child->getSize();
+            auto childPosition = static_cast<sf::Vector2i>(child->getPosition());
+            auto childOrigin = child->getOrigin();
+            if(childPosition.x + childSize.x - childOrigin.x > _size.x)
+                _size.x = childPosition.x + childSize.x - childOrigin.x;
+            if(childPosition.y + childSize.y - childOrigin.y > _size.y)
+                _size.y = childPosition.y + childSize.y - childOrigin.y;
+        }
+        
+
+        if(_parent != nullptr) _parent->calculateSize();
     }
 
     sf::Vector2u Widget::_getSize() const {
@@ -237,5 +244,16 @@ namespace rat {
     void Widget::setPosition(float x, float y) {
         sf::Transformable::setPosition(x, y);
         _aboutToRecalculate = true;
+    }
+
+    void Widget::setSize(sf::Vector2u size)
+    {
+        _isMinSizeSet = true;
+        _minSize = size;
+        calculateSize();
+    }
+	void Widget::setSize(size_t width, size_t height)
+    {
+        setSize({width, height});
     }
 }
