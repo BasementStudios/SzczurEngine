@@ -72,12 +72,15 @@ namespace rat {
         return object;
     }
 
-    void Widget::input(const sf::Event& event) {
+    void Widget::input(sf::Event event) {
         if(isActivated()) {
             _input(event);
             switch(event.type) {
                 case sf::Event::MouseMoved: {
                     auto thisSize = getSize();
+                    
+                    event.mouseMove.x += _origin.x;
+                    event.mouseMove.y += _origin.y;
                     if(
                         event.mouseMove.x >= 0 &&
                         event.mouseMove.x <= thisSize.x &&
@@ -120,8 +123,8 @@ namespace rat {
                 if(event.type == sf::Event::MouseMoved) {
                     auto itPosition = it->getPosition();
                     sf::Event tempEvent(event);
-                    tempEvent.mouseMove.x -= itPosition.x;
-                    tempEvent.mouseMove.y -= itPosition.y;
+                    tempEvent.mouseMove.x -= (itPosition.x);
+                    tempEvent.mouseMove.y -= (itPosition.y);
                     it->input(tempEvent);
                 }
                 else
@@ -192,9 +195,7 @@ namespace rat {
             if(childPosition.y + childSize.y - childOrigin.y > _size.y)
                 _size.y = childPosition.y + childSize.y - childOrigin.y;
         }
-        
-
-        if(_parent != nullptr) _parent->calculateSize();
+        _recalcOrigin();
     }
 
     sf::Vector2u Widget::_getSize() const {
@@ -204,6 +205,13 @@ namespace rat {
     sf::Vector2u Widget::getSize() const {
         return _size;
     }
+
+	sf::Vector2u Widget::getMinimalSize() const
+    {
+        if(!_isMinSizeSet) return {};
+        return _minSize;
+    }
+    
 
     void Widget::activate() {
         _isActivated = true;
@@ -246,6 +254,40 @@ namespace rat {
         _aboutToRecalculate = true;
     }
 
+    void Widget::setOrigin(const sf::Vector2f& origin)
+    {
+        _isPropOriginSet = false;
+        _origin = origin;
+        _recalcOrigin();
+    }
+	void Widget::setOrigin(float x, float y)
+    {
+        setOrigin({x, y});
+    }
+
+	void Widget::setPropOrigin(const sf::Vector2f& prop)
+    {
+        _isPropOriginSet = true;
+        _propOrigin = prop;
+        _recalcOrigin();
+    }
+	void Widget::setPropOrigin(float x, float y)
+    {
+        setPropOrigin({x, y});
+    }
+
+    void Widget::_recalcOrigin()
+    {
+        if(_isPropOriginSet)
+        {
+            auto size = static_cast<sf::Vector2f>(getSize());
+            _origin = {size.x * _propOrigin.x, size.y * _propOrigin.y};
+        }
+        sf::Transformable::setOrigin(_origin);
+        if(_parent) _parent->calculateSize();
+    }
+        
+
     void Widget::setSize(sf::Vector2u size)
     {
         _isMinSizeSet = true;
@@ -254,6 +296,6 @@ namespace rat {
     }
 	void Widget::setSize(size_t width, size_t height)
     {
-        setSize({width, height});
+        setSize({(unsigned int)width, (unsigned int)height});
     }
 }

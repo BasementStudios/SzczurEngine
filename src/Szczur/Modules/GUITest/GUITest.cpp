@@ -32,35 +32,25 @@ namespace rat
         scroller.setSize({30, 300});
         scroller.setPosition(200.f, 200.f);
 
-
         widget = gui.addInterface();
-        widget->setSize(500u, 1500u);
-        //widget->setMinimalSize(250, 250);
-        //widget->setOriginProp(0.5f, 0.5f);
-
-        std::cout << "Masslo\n";
-        widget1 = new Widget;
-        //widget1->setOriginProp(0.2f, 0.2f);
-        widget1->setPosition(0.f, 0.f);
-        widget->add(widget1);
-        
-        widget2 = new Widget;
-        //widget2->setMinimalSize(50, 50);
-        widget2->setPosition(0.f, 0.f);
-        widget1->add(widget2);
-        
+        widget->setSize(100, 100);
+        widget->setPosition(250.f, 250.f);
+        widget->setCallback(Widget::CallbackType::onHoverIn, [](Widget* self){
+            std::cout << "Beng\n";
+        });
 
         iWidget = new ImageWidget;
         iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         iWidget->setPosition(100.f, 100.f);
         widget->add(iWidget);
 
+        /*
         widget3 = new Widget;
-        //widget3->setMinimalSize(25, 25);
+        widget3->setSize(25, 25);
         widget3->setPosition(0.f, 0.f);
         iWidget->add(widget3);
+        */
 
-        std::cout << "Ogorek\n";
     }
     
     
@@ -125,7 +115,6 @@ namespace rat
         {
             if(!hasBeenChanged)
             {
-                std::cout << "Beng\n";
                 hasBeenChanged = true;
                 auto& gui = getModule<GUI>();
                 iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
@@ -134,8 +123,9 @@ namespace rat
 
         //widget->setPosition(float(mousePos.x), float(mousePos.y));
 
-        widget3->setPosition(_size.x, _size.y);
-        //iWidget->setMinimalSize(_size.x, _size.y);
+        widget->setPropOrigin(_prop, _prop);
+        widget->setPosition(_size.x, _size.y);
+        //iWidget->setSize(_size.x, _size.y);
 
         /*
         //testPatch.setScale(_scale, _scale);

@@ -23,15 +23,13 @@ namespace rat
         sf::RenderTexture _canvas;   
 
         float _scale{1.f}; 
-        float _prop{1.f}; 
+        float _prop{0.f}; 
         float _shift{0.7f};
         sf::Vector2f _size{30, 30.f};
 
         NinePatch testPatch; 
         Scroller scroller;
         Widget* widget{nullptr};
-        Widget* widget1{nullptr};
-        Widget* widget2{nullptr};
         Widget* widget3{nullptr};
         ImageWidget* iWidget{nullptr};
 
