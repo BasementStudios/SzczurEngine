@@ -60,6 +60,8 @@ public:
 public:
 	int Id = -1;
 	std::string Name;
+	int NameId = 0;
+
 	std::vector<std::unique_ptr<NodePin>> Inputs;
 	std::vector<std::unique_ptr<NodePin>> Outputs;
 

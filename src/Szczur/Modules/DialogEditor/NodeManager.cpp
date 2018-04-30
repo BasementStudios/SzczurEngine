@@ -156,8 +156,11 @@ bool NodeManager::read(const json& j)
 	{
 		auto node = std::make_unique<Node>();
 		node->Id = jsonNode["id"];
-		node->Name = jsonNode["name"].get<std::string>();
 		node->Type = static_cast<Node::NodeType>(jsonNode["type"]);
+		node->Name = jsonNode["name"].get<std::string>();
+
+		if (node->Type == Node::NodeType::Options)
+			node->NameId = jsonNode.find("nodeId") == jsonNode.end() ? node->Id : jsonNode["nodeId"].get<int>();
 
 		node->_lastPinId = jsonNode["lastPinId"];
 
@@ -251,6 +254,10 @@ void NodeManager::write(json& j)
 
 		jsonNode["id"] = node->Id;
 		jsonNode["name"] = node->Name;
+
+		if (node->Type == Node::NodeType::Options)
+			jsonNode["nameId"] = node->NameId;
+		
 		jsonNode["type"] = node->Type;
 		jsonNode["lastPinId"] = node->_lastPinId;
 		

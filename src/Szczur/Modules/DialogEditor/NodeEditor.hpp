@@ -77,6 +77,7 @@ private:
 
 	void showTooltip(const std::string& message);
 
+	int generateNodeNameId();
 };
 
 }

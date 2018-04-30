@@ -434,6 +434,41 @@ void NodeEditor::showTooltip(const std::string& message)
 	ImGui::EndTooltip();
 }
 
+int NodeEditor::generateNodeNameId()
+{
+	std::vector<int> ids = { 0 };
+
+	for (auto& node : _nodeManager->getNodes())
+	{
+		if (node->Type == Node::NodeType::Options)
+			ids.push_back(node->NameId);
+	}
+
+	//for (auto id : ids)
+	//{
+	//	LOG_INFO("ID: ", id);
+	//}
+
+	std::sort(ids.begin(), ids.end());
+
+	int i = 0;
+	for (i = 0; i < ids.size() - 1; ++i)
+	{
+		int current = ids[i];
+		int next = ids[i + 1];
+
+		if (next - current > 1)
+		{
+			return current + 1;
+		}
+	}
+
+	if (i == ids.size() - 1)
+	{
+		return ids.back() + 1;
+	}
+}
+
 void NodeEditor::update()
 {
 	bool renamePopup = false;
@@ -765,8 +800,11 @@ void NodeEditor::showPopups()
 	{
 		if (ImGui::MenuItem("Create options"))
 		{
+			auto nameId = generateNodeNameId();
+
 			auto node = _nodeManager->createNode("Options ");
-			node->Name += std::to_string(node->Id);
+			node->Name += std::to_string(nameId);
+			node->NameId = nameId;
 			node->createPin(ed::PinKind::Input);
 
 			ed::SetNodePosition(node->Id, ed::ScreenToCanvas(ImGui::GetMousePos()));
