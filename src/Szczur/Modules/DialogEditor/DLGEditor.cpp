@@ -47,8 +47,8 @@ namespace rat
     {
         if(!_isWindowFocused) return;
 
-        if (_inputManager.isPressed(InputCode(Keyboard::Space))) {
-            if(_playing) {
+		if (_inputManager.isPressed(InputCode(Keyboard::Space)) && !ImGui::IsAnyItemActive()) {
+			if(_playing) {
                 _dialogAudio.pause();
                 _playing = false;
             }
