@@ -279,7 +279,7 @@ std::string NodeEditor::generateCode()
 				// skip
 				if (out->SkipOptions)
 				{
-					code += "\tskip = true;";
+					code += "\tskip = true;\n";
 				}
 
 				// condition
