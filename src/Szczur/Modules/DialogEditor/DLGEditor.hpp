@@ -49,7 +49,7 @@ namespace rat
 
         bool _isWindowFocused;
 
-        bool _renaming;
+        bool _renaming = false;
         enum {
             Minor,
             Major

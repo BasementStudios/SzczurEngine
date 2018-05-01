@@ -502,7 +502,7 @@ namespace rat
     bool DLGEditor::minorsCombo()
     {
         return ImGui::Combo("##minorNamesCombo", &_currentMinor, [](void* vec, int idx, const char** outText) { 
-                auto& vector = *((std::vector<DialogData*>*)vec);
+                auto& vector = *((std::vector<std::shared_ptr<DialogData>>*)vec);
                 if (idx < 0 || idx >= (int)(vector.size())) { 
                     return false; 
                 }
