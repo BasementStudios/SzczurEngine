@@ -34,7 +34,7 @@ namespace rat {
 
         void setCharacterTexture(sf::Texture* texture);
 
-        void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, bool)> callback);
+        void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback);
 
         void setInterface(Widget* _interface);
         Widget* getInterface() const;

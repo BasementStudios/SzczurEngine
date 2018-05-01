@@ -5,8 +5,8 @@
 #include <memory>
 
 namespace rat {
-    TextManager::TextManager() :
-    _finishedMinor(false) {
+    TextManager::TextManager() {
+    //_finishedMinor(false) {
         
     }
 
@@ -66,47 +66,53 @@ namespace rat {
         return dialog;
     }
 
-    void TextManager::set(const Key_t key) {
-        _current = _texts.find(key);
-        if(_current != _texts.end())
-            _minorCurrent = _current->second.begin();
-        _finishedMinor = false;
+    void TextManager::set(const Key_t major, const Key_t minor) {
+        
+        if(auto it = _texts.find(major); it != _texts.end()) {
+            if(auto it2 = it->second.find(minor); it2 != it->second.end()) 
+                _minorCurrent = it2;
+            else
+                LOG_ERROR("Given Minor was NOT found")
+        }
+        else
+            LOG_ERROR("Given Major was NOT found");
+            
     }
 
-    void TextManager::next() {
+    /*void TextManager::next() {
         auto temp = _current;
         ++_current;
         if(_current == _texts.end())
             _current = _texts.begin();
         _minorCurrent = _current->second.begin();
         _finishedMinor = false;
-    }
+    }*/
 
-    void TextManager::setMinor(const Key_t key) {
+    /*void TextManager::setMinor(const Key_t key) {
         _minorCurrent = _current->second.find(key);
         _finishedMinor = false;
-    }
+    }*/
 
-    void TextManager::nextMinor() {
+    /*void TextManager::nextMinor() {
         auto temp = _minorCurrent;
         ++_minorCurrent;
         if(_minorCurrent == _current->second.end()) {
             _finishedMinor = true;
             _minorCurrent = _current->second.begin();
         }
-    }
+    }*/
 
     TextManager::Type_t* TextManager::getStruct() const {
         return _minorCurrent->second;
     }
 
-    bool TextManager::isMinorFinished() {
+    /*bool TextManager::isMinorFinished() {
         return _finishedMinor;
-    }
+    }*/
 
-    const std::string& TextManager::getLabel(Key_t id) const {
-        if(auto it = _texts.find(id); it != _texts.end()) {
-            if(auto it2 = it->second.find(1); it2 != it->second.end()) {
+    const std::string& TextManager::getLabel(const Key_t major, const Key_t minor) const {
+        if(auto it = _texts.find(major); it != _texts.end()) {
+            if(auto it2 = it->second.find(minor); it2 != it->second.end()) {
                 return it2->second->getLabel();
             }
         }

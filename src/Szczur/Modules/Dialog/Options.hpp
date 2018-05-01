@@ -13,7 +13,7 @@ namespace rat {
         struct Option;
 
         using Key_t = size_t;
-        using Runners_t = boost::container::flat_set<Key_t>;
+        using Runners_t = boost::container::flat_set<std::pair<size_t, size_t>>;
         template<typename R>
         using Callback_t = std::function<R()>;
         using Condition_t = Callback_t<bool>;
@@ -22,7 +22,8 @@ namespace rat {
 
         struct Option {
             Condition_t condition;
-            Key_t target;
+            Key_t majorTarget;
+            Key_t minorTarget;
             AfterAction_t afterAction;
             bool finishing;
         };
@@ -32,27 +33,19 @@ namespace rat {
 
         static void initScript(Script& script);
 
-        template<typename... Ts>
-        void setRunners(Ts... runners) {
-            _runners.clear();
-            (_runners.insert(runners), ...);
-        }
-
-        template<typename... Ts>
-        void addRunners(Ts... runners) {
-            (_runners.insert(runners), ...);
-        }
+        void addRunner(size_t major, size_t minor);
 
         void addOption(
             Condition_t condition, 
-            Key_t target, 
+            Key_t majorTarget,
+            Key_t minorTarget, 
             AfterAction_t afterAction,
             bool finishing
         );
 
         void forEach(std::function<void(Option*)> func);
 
-        bool checkIfRunsWith(Key_t id) const;
+        bool checkIfRunsWith(Key_t major, Key_t minor) const;
     private:
         Options_t _options;
         Runners_t _runners;

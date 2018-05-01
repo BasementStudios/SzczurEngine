@@ -121,7 +121,7 @@ namespace rat {
         return _buttonsCreator;
     }
 
-    void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, bool)> callback) {
+    void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback) {
         size_t i = 0u;
         _area->invisible();
         options.forEach([&i, this, callback, &textManager](Options::Option* option){
@@ -131,11 +131,11 @@ namespace rat {
                     i, 
                     button
                 );
-                button->setString(textManager.getLabel(option->target));
+                button->setString(textManager.getLabel(option->majorTarget, option->minorTarget));
                 button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
                         if(option->afterAction)
                             std::invoke(option->afterAction);
-                        std::invoke(callback, option->target, option->finishing);
+                        std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
                 });
                 
                 _buttonsContainer->add(button);
