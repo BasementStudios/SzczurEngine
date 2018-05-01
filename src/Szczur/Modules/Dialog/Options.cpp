@@ -25,7 +25,8 @@ namespace rat {
                         tab["majorTarget"],
                         tab["minorTarget"],
                         (tab["action"].valid()) ? tab["action"] : nullptr,
-                        (tab["finishing"].valid()) ? tab["finishing"] : false
+                        (tab["finishing"].valid()) ? tab["finishing"] : false,
+                        (tab["skip"].valid()) ? tab["skip"] : false
                     );
                 }
             }
@@ -39,8 +40,8 @@ namespace rat {
         _runners.insert({major, minor});
     }
 
-    void Options::addOption(Condition_t condition, Key_t majorTarget, Key_t minorTarget, AfterAction_t afterAction, bool finishing) {
-        _options.push_back(new Option{condition, majorTarget, minorTarget, afterAction, finishing});
+    void Options::addOption(Condition_t condition, Key_t majorTarget, Key_t minorTarget, AfterAction_t afterAction, bool finishing, bool skip) {
+        _options.push_back(new Option{condition, majorTarget, minorTarget, afterAction, finishing, skip});
     }
 
     bool Options::checkIfRunsWith(Key_t major, Key_t minor) const {

@@ -26,6 +26,7 @@ namespace rat {
             Key_t minorTarget;
             AfterAction_t afterAction;
             bool finishing;
+            bool skip;
         };
 
         Options();
@@ -40,7 +41,8 @@ namespace rat {
             Key_t majorTarget,
             Key_t minorTarget, 
             AfterAction_t afterAction,
-            bool finishing
+            bool finishing,
+            bool skip
         );
 
         void forEach(std::function<void(Option*)> func);
