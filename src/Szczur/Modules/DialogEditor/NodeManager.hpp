@@ -15,6 +15,7 @@ using json = nlohmann::json;
 
 namespace rat
 {
+
 class Node;
 class NodeManager;
 
@@ -24,10 +25,16 @@ struct NodePin
 	Node* Node = nullptr;
 	ed::PinKind Kind = ed::PinKind::Input;
 
-	union
+	struct
 	{
-		DialogData* ptr = nullptr;
-		int id;
+		DialogData* Ptr = nullptr;
+		std::weak_ptr<DialogData> WeakPtr;
+
+		struct
+		{
+			int Major = -1;
+			int Minor = -1;
+		} Id;
 	} OptionTarget;
 
 	bool LinkToSameNode = false;
@@ -39,6 +46,8 @@ struct NodePin
 	bool ActionFunc = false;
 	std::string ActionFuncName;
 	std::string ActionFuncCode;
+
+	bool SkipOptions = false;
 
 	NodePin() { }
 	NodePin(int id, ed::PinKind kind) :

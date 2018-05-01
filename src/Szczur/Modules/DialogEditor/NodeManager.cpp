@@ -122,7 +122,18 @@ bool NodeManager::read(const json& j)
 		pin->Id = j["id"];
 
 		if (pin->Kind == ed::PinKind::Output)
-			pin->OptionTarget.id = j["optionTarget"];
+		{
+			if (j.find("target") != j.end())
+			{
+				const auto& target = j["target"];
+
+				pin->OptionTarget.Id.Major = target["major"];
+				pin->OptionTarget.Id.Minor = target["minor"];
+			}
+
+			//pin->OptionTarget.id = j["optionTarget"];
+			pin->SkipOptions = j.find("skip") != j.end() ? j["skip"].get<bool>() : false;
+		}
 
 		pin->LinkToSameNode = j["linkToSameNode"];
 
@@ -230,7 +241,19 @@ void NodeManager::write(json& j)
 
 		if (pin->Kind == ed::PinKind::Output)
 		{
-			j["optionTarget"] = pin->OptionTarget.ptr ? pin->OptionTarget.ptr->id : -1;
+			if (pin->OptionTarget.Ptr != nullptr)
+			{
+				const auto& optionTargetId = pin->OptionTarget.Ptr;
+
+				auto target = json::object();
+
+				target["major"] = optionTargetId->id;
+				target["minor"] = optionTargetId->minorId;
+
+				j["target"] = target;
+			}
+
+			j["skip"] = pin->SkipOptions;
 		}
 
 		j["linkToSameNode"] = pin->LinkToSameNode;

@@ -147,11 +147,17 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 					{
 						if (output->Kind == ed::PinKind::Output)
 						{
-							auto targetId = output->OptionTarget.id;
+							auto id = output->OptionTarget.Id;
 
-							if (targetId >= 0 && targetId < _parts->size())
+							if (id.Major >= 0 && id.Major < _parts->size())
 							{
-								output->OptionTarget.ptr = *(_parts->at(targetId).begin());
+								auto& major = _parts->at(id.Major);
+
+								if (id.Minor >= 0 && id.Minor < major.size())
+								{
+									output->OptionTarget.Ptr = major.at(id.Minor).get();
+									output->OptionTarget.WeakPtr = major.at(id.Minor);
+								}
 							}
 						}
 					}
@@ -212,12 +218,11 @@ std::string NodeEditor::generateCode()
 				firstOptions = false;
 			}
 
-			code += "options = dialog:newOptions(";
+			code += "options = dialog:newOptions()\n";
 
 			auto& in = node->Inputs.front();
-			bool first = true;
 
-			std::vector<int> runners;
+			std::vector<std::pair<int, int>> runners;
 
 			for (auto& link : _nodeManager->getLinks())
 			{
@@ -225,9 +230,11 @@ std::string NodeEditor::generateCode()
 				{
 					auto pin = _nodeManager->findPin(link->StartPinId);
 
-					if (pin && pin->OptionTarget.ptr)
+					auto optionTargetPtr = pin->OptionTarget.Ptr;
+
+					if (pin && optionTargetPtr)
 					{
-						if (pin->OptionTarget.ptr->id < 1)
+						if (optionTargetPtr->id < 0)
 							continue;
 
 						bool skip = false;
@@ -235,7 +242,10 @@ std::string NodeEditor::generateCode()
 						// check if runner is already in
 						for (auto runner : runners)
 						{
-							if (runner == pin->OptionTarget.ptr->id)
+							auto major = runner.first;
+							auto minor = runner.second;
+
+							if (optionTargetPtr->id == major && optionTargetPtr->minorId == minor)
 							{
 								skip = true;
 								break;
@@ -245,19 +255,14 @@ std::string NodeEditor::generateCode()
 						if (skip)
 							continue;
 
-						if (first)
-							first = false;
-						else
-							code += ", ";
+						code += "options:addRunner(" + std::to_string(optionTargetPtr->id) + ", " + std::to_string(optionTargetPtr->minorId) + ")\n";
 
-						code += std::to_string(pin->OptionTarget.ptr->id);
-
-						runners.push_back(static_cast<int>(pin->OptionTarget.ptr->id));
+						runners.push_back(std::make_pair(optionTargetPtr->id, optionTargetPtr->minorId));
 					}
 				}
 			}
 
-			code += ")\n\n";
+			code += "\n\n";
 
 			////// Options
 			for (auto& out : node->Outputs)
@@ -265,8 +270,17 @@ std::string NodeEditor::generateCode()
 				code += "options.add = {\n";
 
 				// target
-				if (out->OptionTarget.ptr)
-					code += "\ttarget = " + std::to_string(out->OptionTarget.ptr->id) + ";\n";
+				if (out->OptionTarget.Ptr)
+				{
+					code += "\tmajorTarget = " + std::to_string(out->OptionTarget.Ptr->id) + ";\n";
+					code += "\tminorTarget = " + std::to_string(out->OptionTarget.Ptr->minorId) + ";\n";
+				}
+
+				// skip
+				if (out->SkipOptions)
+				{
+					code += "\tskip = true;";
+				}
 
 				// condition
 				if (out->ConditionFunc)
@@ -323,9 +337,9 @@ std::string NodeEditor::generateCode()
 	// start with
 	for (auto& link : _nodeManager->getLinks())
 	{
-		if (pinStartNode->OptionTarget.ptr && link->StartPinId == pinStartNode->Id)
+		if (pinStartNode->OptionTarget.Ptr && link->StartPinId == pinStartNode->Id)
 		{
-			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.ptr->id) + ")";
+			std::string code = "dialog:startWith(" + std::to_string(pinStartNode->OptionTarget.Ptr->id) + ", " + std::to_string(pinStartNode->OptionTarget.Ptr->minorId) + ")";
 
 			codeSegment.push_back(code);
 		}
@@ -531,6 +545,9 @@ void NodeEditor::update()
 				// draw outputs
 				for (auto& output : node->Outputs)
 				{
+					if (output->OptionTarget.WeakPtr.expired())
+						output->OptionTarget.Ptr = nullptr;
+						
 					ed::PushStyleVar(ed::StyleVar_PivotAlignment, ImVec2(1.0f, 0.5f));
 					ed::PushStyleVar(ed::StyleVar_PivotSize, ImVec2(0, 0));
 
@@ -539,20 +556,9 @@ void NodeEditor::update()
 					if (node->Type == Node::Options || node->Type == Node::Start)
 					{
 						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+						
 
-						auto& ptr = output->OptionTarget.ptr;
-
-						if (_parts)
-						{
-							auto result = std::find_if(_parts->begin(), _parts->end(), [ptr] (auto& part) { return *part.begin() == ptr; });
-
-							if (result == _parts->end())
-							{
-								ptr = nullptr;
-							}
-						}
-
-						std::string label = (output->OptionTarget.ptr == nullptr ? "SET" : std::to_string(output->OptionTarget.ptr->id)) + "##" + std::to_string(output->Id);
+						std::string label = (output->OptionTarget.Ptr == nullptr ? "SET" : std::to_string(output->OptionTarget.Ptr->id) + ":" + std::to_string(output->OptionTarget.Ptr->minorId)) + "##" + std::to_string(output->Id);
 
 						if (ImGui::Button(label.c_str()))
 						{
@@ -562,19 +568,31 @@ void NodeEditor::update()
 							_optionConfigWindow = true;
 						}
 
+						if (output->OptionTarget.Ptr)
+						{
+							if (ImGui::IsItemHovered())
+							{
+								std::string str;
+								str = "Major: " + output->OptionTarget.Ptr->majorFullName;
+								str += "\nMinor: " + output->OptionTarget.Ptr->minorFullName;
+
+								showTooltip(str);
+							}
+						}
+
 						ImGui::PopStyleVar();
 						ImGui::SameLine();
 					}
 
 					ImGui::BeginGroup();
 
-					if (output->OptionTarget.ptr == nullptr)
+					if (output->OptionTarget.Ptr == nullptr)
 					{
 						ImGui::Text("Not selected");
 					}
 					else
 					{
-						ImGui::Text(output->OptionTarget.ptr->label.c_str());
+						ImGui::Text(output->OptionTarget.Ptr->label.c_str());
 
 						if (output->ActionFunc)
 						{
@@ -928,50 +946,87 @@ void NodeEditor::showOptionConfig()
 
 				ImGui::Text("Set target dialog");
 
-				std::string defaultLabel;
-
-				if (_currentOption->OptionTarget.ptr != nullptr)
-				{
-					auto dialog = _currentOption->OptionTarget.ptr;
-
-					defaultLabel = "[" + std::to_string(dialog->id) + "] " + dialog->label;
-				}
-
 				// edit
-				if (ImGui::Button("E"))
+				/*if (ImGui::Button("Edit"))
 				{
-					if (_currentOption->OptionTarget.ptr)
+					if (_currentOption->OptionTarget.Ptr)
 					{
 						_dialogEditor->_showDlgEditor = true;
 
-						_dialogEditor->_dlgEditor.setCurrentMajor(static_cast<int>(_currentOption->OptionTarget.ptr->id));
+						_dialogEditor->_dlgEditor.setCurrentMajor(static_cast<int>(_currentOption->OptionTarget.Ptr->id));
 
 						ImGui::SetWindowFocus("Dlg Files Editor");
 					}
+				}*/
+
+
+				std::string defaultLabelMajor;
+				std::string defaultLabelMinor;
+
+				//LOG_INFO(_currentOption->OptionTarget.Ptr);
+
+				if (_currentOption->OptionTarget.Ptr != nullptr)
+				{
+					auto dialog = _currentOption->OptionTarget.Ptr;
+
+					defaultLabelMajor = _currentOption->OptionTarget.Ptr->majorFullName;
+					defaultLabelMinor = _currentOption->OptionTarget.Ptr->minorFullName;
 				}
 
-				ImGui::SameLine();
-
-				if (ImGui::BeginCombo("Target dialog", defaultLabel.c_str()))
+				if (ImGui::BeginCombo("Target major", defaultLabelMajor.c_str()))
 				{
-					for (auto part : *_parts)
+					for (auto& part : *_parts)
 					{
-						auto& dialog = *(part.begin());
+						bool isSelected = (_currentOption->OptionTarget.Id.Major == part.front()->id);
 
-						bool isSelected = (_currentOption->OptionTarget.ptr == dialog);
+						if (ImGui::Selectable(part.front()->majorFullName.c_str(), isSelected))
+						{
+							_currentOption->OptionTarget.Ptr = part.front().get();
+							_currentOption->OptionTarget.WeakPtr = part.front();
+							_currentOption->OptionTarget.Id.Major = part.front()->id;
+						}
 
-						std::string label = "[" + std::to_string(dialog->id) + "] " + dialog->label;
-
-						if (ImGui::Selectable(label.c_str(), isSelected))
-							_currentOption->OptionTarget.ptr = dialog;
 						if (isSelected)
 							ImGui::SetItemDefaultFocus();
 					}
 					ImGui::EndCombo();
 				}
 
+				if (ImGui::BeginCombo("Target minor", defaultLabelMinor.c_str()))
+				{
+					if (_currentOption->OptionTarget.Ptr)
+					{
+						for (auto part : _parts->at(_currentOption->OptionTarget.Id.Major))
+						{
+							bool isSelected = (_currentOption->OptionTarget.Ptr == part.get());
+
+							if (ImGui::Selectable(part->minorFullName.c_str(), isSelected))
+							{
+								_currentOption->OptionTarget.Ptr = part.get();
+								_currentOption->OptionTarget.WeakPtr = part;
+								_currentOption->OptionTarget.Id.Minor = part->minorId;
+							}
+
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
 				if (_currentOption->Node->Type == Node::Options)
 				{
+					ImGui::Separator();
+
+					ImGui::Checkbox("Skip options", &_currentOption->SkipOptions);
+
+					if (ImGui::IsItemHovered())
+					{
+						ImGui::BeginTooltip();
+						ImGui::Text("Autoselect this option");
+						ImGui::EndTooltip();
+					}
+
 					ImGui::Separator();
 
 					ImGui::Checkbox("Condition", &_currentOption->ConditionFunc);
