@@ -68,8 +68,8 @@ namespace rat
                     _characters.erase(_characters.begin() + i);
 
                     for(auto& majors : _dialogParts) {
-                        for(auto& minor : majors.second) {
-                            for (auto& it : minor.second->chosenCharacter) {
+                        for(auto& minor : majors) {
+                            for (auto& it : minor->chosenCharacter) {
                                 if (i < static_cast<unsigned>(it)) {
                                     --it;
                                 }

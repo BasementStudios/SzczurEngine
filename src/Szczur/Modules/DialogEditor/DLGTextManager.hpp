@@ -8,9 +8,12 @@ namespace rat
 {
     class DLGTextManager 
     {
-        template<typename T>
-        using FlatMap_t = boost::container::flat_map<size_t, T>;
-        using TextContainer_t = FlatMap_t<FlatMap_t<DialogData*>>; //TODO: Fuck off raw pointers!
+    
+    public:
+
+        using TextContainer_t = std::vector<std::vector<DialogData*>>; //TODO: Fuck off raw pointers!
+
+    private:
 
         TextContainer_t _texts;
 
@@ -25,6 +28,9 @@ namespace rat
         void load(const std::string& path);
         
         void add(const size_t key1, const size_t key2, DialogData* dialog);
+        
+        void remove(const size_t key1);
+        void remove(const size_t key1, const size_t key2);
 
         TextContainer_t& getContainer();
     };

@@ -12,7 +12,7 @@ namespace rat
     DLGEditor::DLGEditor(std::vector<CharacterData>& characters, const InputManager& inputManager)
         : _inputManager(inputManager), _characters(characters), _textManager(characters), _parts(_textManager.getContainer())
     {
-        
+
     }
 
     void DLGEditor::load(const std::string& path)
@@ -30,10 +30,10 @@ namespace rat
 
     void DLGEditor::loadData() 
     {
-        _textManager.load(_dialogPath + ".dlg"); 
+        _textManager.load(_dialogPath + ".dlg");
 
-        _currentMajor = _parts.begin()->first;
-        _currentMinor = _parts[_currentMajor].begin()->first;
+        _currentMajor = 0;
+        _currentMinor = 0;
     }
 
     void DLGEditor::update()
@@ -45,6 +45,15 @@ namespace rat
 
     void DLGEditor::input()
     {
+        if (_renaming && _isRenamingWindowFocused) {
+            if (_inputManager.isPressed(InputCode(Keyboard::Return))) {
+                rename();
+            }
+            if (_inputManager.isPressed(InputCode(Keyboard::Escape))) {
+                _renaming = false;
+            }
+        }
+
         if(!_isWindowFocused) return;
 
 		if (_inputManager.isPressed(InputCode(Keyboard::Space)) && !ImGui::IsAnyItemActive()) {
@@ -68,18 +77,18 @@ namespace rat
 
             if (_inputManager.isPressed(InputCode(Keyboard::Tab))) {
                 if (_inputManager.isKept(InputCode(Keyboard::LShift))) { 
-                    if (_currentMinor != _parts[_currentMajor].begin()->first) {
+                    if (_currentMinor > 0) {
                         --_currentMinor;
                     }
                     else {
-                        _currentMinor = (--_parts[_currentMajor].end())->first;    
+                        _currentMinor = _parts[_currentMajor].size() - 1;  
                     }
                 }
-                else if(_currentMinor != _parts[_currentMajor].size()) {
+                else if(_currentMinor < _parts[_currentMajor].size() - 1) {
                     ++_currentMinor;
                 }
                 else {
-                    _currentMinor = _parts[_currentMajor].begin()->first;
+                    _currentMinor = 0;
                 }
             }
         }
@@ -98,7 +107,7 @@ namespace rat
     void DLGEditor::setCurrentMajor(int major)
     { 
         _currentMajor = major; 
-        _currentMinor = _parts[_currentMajor].begin()->first;
+        _currentMinor = 0;
     }
 
     void DLGEditor::show()
@@ -106,15 +115,62 @@ namespace rat
         ImGui::Begin("Dlg Files Editor");
             _isWindowFocused = ImGui::IsWindowFocused();
 
-            player();              ImGui::Separator();
-            majorPartSelector();   ImGui::Separator();
-            minorPartSelector();   ImGui::Separator();
-            labelEditor();         ImGui::Separator();
-            timeSelector();        ImGui::Separator();
-            mainEditor();
+                player();              ImGui::Separator();
+                majorPartSelector();   ImGui::Separator();
+                minorPartSelector();   ImGui::Separator();
+                labelEditor();         ImGui::Separator();
+                timeSelector();        ImGui::Separator();
+                mainEditor();
         ImGui::End();
+
+        if(_renaming) {
+            ImGui::Begin("Rename", NULL, ImGuiWindowFlags_NoResize);
+                _isRenamingWindowFocused = ImGui::IsWindowFocused();
+
+                ImGui::Text("Name: "); ImGui::SameLine();
+
+                size_t size = _renamingName.length() + 100;
+                char *newText = new char[size] {};
+                strncpy(newText, _renamingName.c_str(), size);
+                ImGui::PushItemWidth(300);
+                    if (ImGui::InputText("##NewNameInput", newText, size)) {
+                        _renamingName = newText;
+                    }
+                    if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+                        ImGui::SetKeyboardFocusHere(0);
+                    }
+                ImGui::PopItemWidth();
+                delete[] newText;
+
+
+                ImGui::SetCursorPosX(260);
+
+                if(ImGui::Button("CANCEL##RenamingWindow")) {
+                    _renaming = false;
+                }
+
+                ImGui::SameLine(); 
+
+                if (ImGui::Button(" OK ##RenamingWindow")) {
+                    rename();
+                }
+
+            ImGui::End();
+        }
     }
 
+    void DLGEditor::rename()
+    {
+        if (_renameType == Major) {
+            for(auto& it : _parts[_renamingMajor]) {
+                 it->renameMajor(_renamingName);
+            }
+        }
+        else {
+             _parts[_renamingMajor][_renamingMinor]->renameMinor(_renamingName);
+        }
+        _renaming = false;
+    }
         
     void DLGEditor::player()
     { 
@@ -149,75 +205,70 @@ namespace rat
 
     void DLGEditor::majorPartSelector()
     {
-        for (auto it : _parts) { 
-            auto name = std::to_string(it.first) + "##DialogMajorPartSelector";
-            bool isCurrenMajor = _currentMajor == it.first;
-            if (isCurrenMajor) { 
-                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.6f)); 
-                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.8f)); 
-                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.7f)); 
+        ImGui::PushItemWidth(300);
+            if (majorsCombo()) {
+                _currentMinor = 0;   
             }
-            if (ImGui::Button(name.c_str(), ImVec2(30, 27)) && !isCurrenMajor) {
-                _currentMajor = it.first;
-                _currentMinor = it.second.begin()->first;
-            }
-            if (isCurrenMajor) { ImGui::PopStyleColor(3); }
             ImGui::SameLine();
-        }
-        if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
-        if (ImGui::Button("-##DialogMajorPartSelector", ImVec2(30, 27))) {
-            size_t major = (--_parts.end())->first;
-
-            if (major == _parts.begin()->first) 
-				return;
-
-            if (_currentMajor == major) { 
-				--_currentMajor; 
-				_currentMinor = _parts[_currentMajor].begin()->first;
-			}
-
-            for (auto it : _parts[major]) {
-                delete it.second;
-            }
-
-            _parts.erase(major);
-            LOG_INFO("Major part has been removed");
+        ImGui::PopItemWidth();
+        
+        if (ImGui::Button("Rename##MajorPartSelector", ImVec2(70, 23))) {
+            _renaming = true;
+            _renamingMajor = _currentMajor;
+            _renamingName = _parts[_currentMajor][0]->majorName;
+            _renameType = Major;
         } 
         ImGui::SameLine();
-        if (ImGui::Button("+##DialogMajorPartSelector", ImVec2(30, 27))) {
-            size_t major = (--_parts.end())->first;
-            ++major;
-            _textManager.add(major, 1, NULL);
-            LOG_INFO("New major part added");
+
+        if (auto winWidth = ImGui::GetWindowWidth(); winWidth > 553) {
+            ImGui::SetCursorPosX(winWidth - 160);
+        }
+
+        if (ImGui::Button("Add##MajorPartSelector", ImVec2(70, 23))) {
+            _currentMajor = _parts.size();
+            _currentMinor = 0;
+            _textManager.add(_currentMajor, 0, NULL);
+        } 
+        ImGui::SameLine();
+
+        if (ImGui::Button("Remove##MajorPartSelector", ImVec2(70, 23)) && _parts.size() > 1) {
+            if (_currentMajor == _parts.size() - 1) {
+                --_currentMajor;
+            }
+            _textManager.remove(_currentMajor);
         }
     }
 
+
     void DLGEditor::minorPartSelector()
     {
-        auto major = _parts.find(_currentMajor);
-        
-        for (auto it : major->second) { 
-            auto name = std::to_string(it.first) + "##DialogMinorPartSelector";
-            bool changeColor = _currentMinor == it.first;
-            if (changeColor) { 
-                ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.6f)); 
-                ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.8f)); 
-                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(1.5f, 0.79f, 0.7f)); 
-            }
-            if (ImGui::Button(name.c_str(), ImVec2(30, 27))) {
-                _currentMinor = it.first;
-            }
-            if (changeColor) { ImGui::PopStyleColor(3); }
+        ImGui::PushItemWidth(300);
+            minorsCombo();
             ImGui::SameLine();
-        }
-        if (ImGui::GetWindowWidth() - ImGui::GetCursorPosX() - 80 >= 0) ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 80);
-        if (ImGui::Button("-##DialogMinorPartSelector", ImVec2(30, 27))) {
-            removeMinor();
+        ImGui::PopItemWidth();
+
+        if (ImGui::Button("Rename##MinorPartSelector", ImVec2(70, 23))) {
+            _renaming = true;
+            _renamingMajor = _currentMajor;
+            _renamingMinor = _currentMinor;
+            _renamingName = _parts[_currentMajor][_currentMinor]->minorName;
+            _renameType = Minor;
         } 
         ImGui::SameLine();
-        if (ImGui::Button("+##DialogMinorPartSelector", ImVec2(30, 27))) {
-            addMinor();
+
+        if (auto winWidth = ImGui::GetWindowWidth(); winWidth > 553) {
+            ImGui::SetCursorPosX(winWidth - 160);
         }
+
+        if (ImGui::Button("Add##MinorPartSelector", ImVec2(70, 23))) {
+            addMinor();
+        } 
+        ImGui::SameLine();
+
+        if (ImGui::Button("Remove##MinorPartSelector", ImVec2(70, 23))) {
+            removeMinor();
+        }
+
     }
 
     void DLGEditor::labelEditor()
@@ -227,9 +278,8 @@ namespace rat
         strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), size);
 
         if (ImGui::InputText(" - Label##LabelNameInput", newText, size)) {
-            auto major = _parts.find(_currentMajor);
-            for (auto it : major->second) { 
-                it.second->label = newText;
+            for (auto& it : _parts[_currentMajor]) { 
+                it->label = newText;
             }
         };
        
@@ -362,19 +412,21 @@ namespace rat
 
     void DLGEditor::addMinor()
     {
-        size_t minor = (--_parts[_currentMajor].end())->first;
-        ++minor;
-        _textManager.add(_currentMajor, minor, NULL);
+        ++_currentMinor;
+        _textManager.add(_currentMajor, _currentMinor, NULL);
+
         LOG_INFO("New minor part added");
     }
 
     void DLGEditor::removeMinor()
     {
-        size_t minor = (--_parts[_currentMajor].end())->first;
-        if (minor == _parts[_currentMajor].begin()->first) { return; }
-        if (_currentMinor == minor) { --_currentMinor; }
-        delete _parts[_currentMajor][minor];
-        _parts[_currentMajor].erase(minor);
+        if(_parts[_currentMajor].size() > 1) {
+            if (_currentMinor == _parts[_currentMajor].size() - 1) {
+                --_currentMinor;
+            }
+            _textManager.remove(_currentMajor, _currentMinor);
+        }
+
         LOG_INFO("Minor part has been removed");
     }
  
@@ -427,5 +479,29 @@ namespace rat
                 *outText = vector[idx].name.c_str();
                 return true;
             }, (void*)&_characters, _characters.size());
+    }
+
+    bool DLGEditor::majorsCombo()
+    {
+        return ImGui::Combo("##majorNamesCombo", &_currentMajor, [](void* vec, int idx, const char** outText) { 
+                auto& vector = *((DLGEditor::TextContainer_t*)vec);
+                if (idx < 0 || idx >= (int)(vector.size())) { 
+                    return false; 
+                }
+                *outText = vector[idx][0]->majorFullName.c_str();
+                return true;
+            }, (void*)&_parts, _parts.size());
+    }
+
+    bool DLGEditor::minorsCombo()
+    {
+        return ImGui::Combo("##minorNamesCombo", &_currentMinor, [](void* vec, int idx, const char** outText) { 
+                auto& vector = *((std::vector<DialogData*>*)vec);
+                if (idx < 0 || idx >= (int)(vector.size())) { 
+                    return false; 
+                }
+                *outText = vector[idx]->minorFullName.c_str();
+                return true;
+            }, (void*)&_parts[_currentMajor], _parts[_currentMajor].size());
     }
 }

@@ -151,7 +151,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 
 							if (targetId > 0)
 							{
-								output->OptionTarget.ptr = _parts->at(targetId).begin()->second;
+								output->OptionTarget.ptr = *(_parts->at(targetId).begin());
 							}
 						}
 					}
@@ -544,7 +544,7 @@ void NodeEditor::update()
 
 						if (_parts)
 						{
-							auto result = std::find_if(_parts->begin(), _parts->end(), [ptr] (auto& part) { return part.second.begin()->second == ptr; });
+							auto result = std::find_if(_parts->begin(), _parts->end(), [ptr] (auto& part) { return *part.begin() == ptr; });
 
 							if (result == _parts->end())
 							{
@@ -956,7 +956,7 @@ void NodeEditor::showOptionConfig()
 				{
 					for (auto part : *_parts)
 					{
-						auto& dialog = part.second.begin()->second;
+						auto& dialog = *(part.begin());
 
 						bool isSelected = (_currentOption->OptionTarget.ptr == dialog);
 

@@ -7,6 +7,9 @@ namespace rat
 {
     void DialogData::interpretText(const std::string& text, std::vector<CharacterData>& characters)
     {
+        majorFullName = "[" + std::to_string(id) + "] " + majorName;
+        minorFullName = "[" + std::to_string(minorId) + "] " + minorName;
+
         using namespace std::string_literals;
         std::stringstream stream;
         stream << text;
@@ -24,5 +27,17 @@ namespace rat
                 dialogs.push_back(it->str(4) == "_" ? "" : it->str(4));
             }
         }
+    }
+
+    void DialogData::renameMajor(const std::string& name)
+    {
+        majorName = name;
+        majorFullName = "[" + std::to_string(id) + "] " + majorName;
+    }
+    
+    void DialogData::renameMinor(const std::string& name)
+    {
+        minorName = name;
+        minorFullName = "[" + std::to_string(minorId) + "] " + minorName;
     }
 }

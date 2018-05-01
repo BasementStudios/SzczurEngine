@@ -13,7 +13,7 @@ namespace rat
     class DLGEditor
     {
 	public:
-        using TextContainer_t = boost::container::flat_map<size_t, boost::container::flat_map<size_t, DialogData*>>;
+        using TextContainer_t  = DLGTextManager::TextContainer_t;
 
 	private:
 
@@ -23,8 +23,8 @@ namespace rat
         DLGTextManager _textManager;
         TextContainer_t& _parts;
 
-        size_t _currentMajor = 1;
-        size_t _currentMinor = 1;
+        int _currentMajor = 0;
+        int _currentMinor = 0;
 
         std::string _dialogPath;
 
@@ -48,6 +48,16 @@ namespace rat
         float _sliderTime = 0;
 
         bool _isWindowFocused;
+
+        bool _isRenamingWindowFocused;
+        bool _renaming;
+        enum {
+            Minor,
+            Major
+        } _renameType;
+        int _renamingMajor;
+        int _renamingMinor;
+        std::string _renamingName;
 
     public:
 
@@ -80,12 +90,16 @@ namespace rat
         void addMinor();
         void removeMinor();
 
+        void rename();
+
         std::string toTime(int secI);
         int toIntSeconds(const std::string& timeString) const;
 
         void checkTimeString(std::string& timeString);
 
         bool charactersCombo(int* currentItem) const;
+        bool majorsCombo(); 
+        bool minorsCombo();
 
     };
 }
