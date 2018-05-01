@@ -946,19 +946,20 @@ void NodeEditor::showOptionConfig()
 
 				ImGui::Text("Set target dialog");
 
+				ImGui::SameLine();
+
 				// edit
-				/*if (ImGui::Button("Edit"))
+				if (ImGui::Button("Edit"))
 				{
 					if (_currentOption->OptionTarget.Ptr)
 					{
 						_dialogEditor->_showDlgEditor = true;
 
-						_dialogEditor->_dlgEditor.setCurrentMajor(static_cast<int>(_currentOption->OptionTarget.Ptr->id));
+						_dialogEditor->_dlgEditor.setCurrentDialog(static_cast<int>(_currentOption->OptionTarget.Ptr->id), static_cast<int>(_currentOption->OptionTarget.Ptr->minorId));
 
 						ImGui::SetWindowFocus("Dlg Files Editor");
 					}
-				}*/
-
+				}
 
 				std::string defaultLabelMajor;
 				std::string defaultLabelMinor;

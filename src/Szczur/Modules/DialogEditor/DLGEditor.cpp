@@ -106,10 +106,10 @@ namespace rat
         return _parts;
     }
 
-    void DLGEditor::setCurrentMajor(int major)
+    void DLGEditor::setCurrentDialog(int major, int minor)
     { 
         _currentMajor = major; 
-        _currentMinor = 0;
+        _currentMinor = minor;
     }
 
     void DLGEditor::show()

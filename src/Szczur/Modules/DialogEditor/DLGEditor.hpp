@@ -70,7 +70,7 @@ namespace rat
 
         TextContainer_t& getContainer();
 
-		void setCurrentMajor(int major);
+		void setCurrentDialog(int major, int minor);
 
     private:
 
