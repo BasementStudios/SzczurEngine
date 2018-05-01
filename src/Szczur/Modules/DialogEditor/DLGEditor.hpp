@@ -49,7 +49,6 @@ namespace rat
 
         bool _isWindowFocused;
 
-        bool _isRenamingWindowFocused;
         bool _renaming;
         enum {
             Minor,
@@ -79,6 +78,8 @@ namespace rat
 
         void playAudio();
         void show();
+
+        void renameWindow();
 
         void player();
         void majorPartSelector();

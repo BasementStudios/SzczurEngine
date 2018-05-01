@@ -45,12 +45,14 @@ namespace rat
 
     void DLGEditor::input()
     {
-        if (_renaming && _isRenamingWindowFocused) {
+
+        if (_renaming) {
             if (_inputManager.isPressed(InputCode(Keyboard::Return))) {
                 rename();
             }
             if (_inputManager.isPressed(InputCode(Keyboard::Escape))) {
                 _renaming = false;
+                ImGui::CloseCurrentPopup();
             }
         }
 
@@ -114,19 +116,21 @@ namespace rat
     {
         ImGui::Begin("Dlg Files Editor");
             _isWindowFocused = ImGui::IsWindowFocused();
+            renameWindow();
 
-                player();              ImGui::Separator();
-                majorPartSelector();   ImGui::Separator();
-                minorPartSelector();   ImGui::Separator();
-                labelEditor();         ImGui::Separator();
-                timeSelector();        ImGui::Separator();
-                mainEditor();
+            player();              ImGui::Separator();
+            majorPartSelector();   ImGui::Separator();
+            minorPartSelector();   ImGui::Separator();
+            labelEditor();         ImGui::Separator();
+            timeSelector();        ImGui::Separator();
+            mainEditor();
         ImGui::End();
+    }
 
-        if(_renaming) {
-            ImGui::Begin("Rename", NULL, ImGuiWindowFlags_NoResize);
-                _isRenamingWindowFocused = ImGui::IsWindowFocused();
-
+    void DLGEditor::renameWindow()
+    {
+        if (_renaming) {
+            ImGui::BeginPopupModal("Rename", NULL, ImGuiWindowFlags_NoResize);
                 ImGui::Text("Name: "); ImGui::SameLine();
 
                 size_t size = _renamingName.length() + 100;
@@ -147,6 +151,7 @@ namespace rat
 
                 if(ImGui::Button("CANCEL##RenamingWindow")) {
                     _renaming = false;
+                    ImGui::CloseCurrentPopup();
                 }
 
                 ImGui::SameLine(); 
@@ -155,7 +160,7 @@ namespace rat
                     rename();
                 }
 
-            ImGui::End();
+            ImGui::EndPopup();
         }
     }
 
@@ -170,6 +175,7 @@ namespace rat
              _parts[_renamingMajor][_renamingMinor]->renameMinor(_renamingName);
         }
         _renaming = false;
+        ImGui::CloseCurrentPopup();
     }
         
     void DLGEditor::player()
@@ -214,6 +220,7 @@ namespace rat
         
         if (ImGui::Button("Rename##MajorPartSelector", ImVec2(70, 23))) {
             _renaming = true;
+            ImGui::OpenPopup("Rename");
             _renamingMajor = _currentMajor;
             _renamingName = _parts[_currentMajor][0]->majorName;
             _renameType = Major;
@@ -249,6 +256,7 @@ namespace rat
 
         if (ImGui::Button("Rename##MinorPartSelector", ImVec2(70, 23))) {
             _renaming = true;
+            ImGui::OpenPopup("Rename");
             _renamingMajor = _currentMajor;
             _renamingMinor = _currentMinor;
             _renamingName = _parts[_currentMajor][_currentMinor]->minorName;
