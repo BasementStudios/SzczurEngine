@@ -24,11 +24,8 @@ namespace rat {
         object.set("bindCharacter", &DialogManager::bindCharacter);
         object.set(
             "newOptions", 
-            [](DialogManager& owner, sol::variadic_args va) {
+            [](DialogManager& owner) {
                 Options* options = new Options;
-                for(auto v : va)
-                    options->addRunners<Options::Key_t>(v);
-
                 owner.addOptions(options);
                 return options;
             }
@@ -65,19 +62,19 @@ namespace rat {
         if(!_paused) {
             auto state = _soundManager.update();
             if(state == sf::SoundSource::Status::Paused) {
-                if(!_nextMinor()) { //Finished every minor in this id
-                    if(_destroyed)
-                        return true;
-                    _paused = true;
-                    for(auto& it : _options) {
-                        if(it->checkIfRunsWith(_current)) {
-                            _dialogGUI.interpretOptions(_textManager, *it, [this](size_t id, bool finishing){
-                                _current = id;
-                                this->_destroyed = finishing;
-                                return play();
-                            });
-                            break;
-                        }
+                //if(!_nextMinor()) { //Finished every minor in this id
+                if(_destroyed)
+                    return true;
+                _paused = true;
+                for(auto& it : _options) {
+                    if(it->checkIfRunsWith(_currentMajor, _currentMinor)) {
+                        _dialogGUI.interpretOptions(_textManager, *it, [this](size_t major, size_t minor, bool finishing){
+                            _currentMajor = major;
+                            _currentMinor = minor;
+                            this->_destroyed = finishing;
+                            return play();
+                        });
+                        break;
                     }
                 }
             }
@@ -91,30 +88,31 @@ namespace rat {
         _soundManager.load(path);
     }
 
-    void DialogManager::startWith(size_t id) {
-        _current = id;
+    void DialogManager::startWith(size_t major, size_t minor) {
+        _currentMajor = major;
+        _currentMinor = minor;
     }
     
     void DialogManager::play() {
         _paused = false;
-        return play(_current);
+        return play(_currentMajor, _currentMinor);
     }
 
-    void DialogManager::play(size_t id) {
-        _textManager.set(id);
+    void DialogManager::play(size_t major, size_t minor) {
+        _textManager.set(major, minor);
         _changeStruct(_textManager.getStruct());
         _clearButtons = true;
         _dialogGUI.show();
     }
 
 
-    bool DialogManager::_nextMinor() {
+    /*bool DialogManager::_nextMinor() {
         _textManager.nextMinor();
         if(_textManager.isMinorFinished())
             return false;
         _changeStruct(_textManager.getStruct());
         return true;
-    }
+    }*/
 
     void DialogManager::_changeStruct(TextStruct* strct) {
         _soundManager.eraseCallbacks();

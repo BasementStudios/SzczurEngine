@@ -34,9 +34,9 @@ namespace rat {
 
         void skip();
 
-        void startWith(size_t id);
+        void startWith(size_t major, size_t minor);
 
-        void play(size_t id);
+        void play(size_t major, size_t minor);
         void play();
 
         void bindCharacter(const std::string& character, const std::string& path);
@@ -56,13 +56,14 @@ namespace rat {
 
         CharactersBinds_t _charactersBinds;
 
-        size_t _current;
+        size_t _currentMajor;
+        size_t _currentMinor;
 
         bool _paused;
         bool _clearButtons;
         bool _destroyed{false};
 
-        bool _nextMinor();
+        //bool _nextMinor();
 
         void _changeStruct(TextStruct* strct);
     };

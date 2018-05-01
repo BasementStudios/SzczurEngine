@@ -121,25 +121,32 @@ namespace rat {
         return _buttonsCreator;
     }
 
-    void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, bool)> callback) {
+    void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback) {
         size_t i = 0u;
         _area->invisible();
-        options.forEach([&i, this, callback, &textManager](Options::Option* option){
-            if(option->condition == nullptr || std::invoke(option->condition)) {
-                TextWidget* button = new TextWidget;
-                _buttonsCreator.call(
-                    i, 
-                    button
-                );
-                button->setString(textManager.getLabel(option->target));
-                button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
-                        if(option->afterAction)
-                            std::invoke(option->afterAction);
-                        std::invoke(callback, option->target, option->finishing);
-                });
-                
-                _buttonsContainer->add(button);
-                ++i;
+        bool skipped{false};
+        options.forEach([&i, this, callback, &textManager, &skipped](Options::Option* option){
+            if(!skipped) {
+                if(option->skip) {
+                    skipped = true;
+                    std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
+                }
+                if(option->condition == nullptr || std::invoke(option->condition)) {
+                    TextWidget* button = new TextWidget;
+                    _buttonsCreator.call(
+                        i, 
+                        button
+                    );
+                    button->setString(textManager.getLabel(option->majorTarget, option->minorTarget));
+                    button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
+                            if(option->afterAction)
+                                std::invoke(option->afterAction);
+                            std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
+                    });
+                    
+                    _buttonsContainer->add(button);
+                    ++i;
+                }
             }
         });
     }

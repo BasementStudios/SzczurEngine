@@ -13,48 +13,21 @@ namespace rat {
     void Options::initScript(Script& script) {
         auto object = script.newClass<Options>("Options", "Dialog");
         
+        object.set("addRunner", &Options::addRunner);
+
         object.setProperty(
             "add",
             []() {},
             [](Options& owner, sol::table tab) {
-                if(tab["target"].valid()) {
+                if(tab["majorTarget"].valid() && tab["minorTarget"].valid()) {
                     owner.addOption(
                         (tab["condition"].valid()) ? tab["condition"] : nullptr,
-                        tab["target"],
+                        tab["majorTarget"],
+                        tab["minorTarget"],
                         (tab["action"].valid()) ? tab["action"] : nullptr,
-                        (tab["finishing"].valid()) ? tab["finishing"] : false
+                        (tab["finishing"].valid()) ? tab["finishing"] : false,
+                        (tab["skip"].valid()) ? tab["skip"] : false
                     );
-
-                    /*auto condValid = tab["condition"].valid();
-                    auto actiValid = tab["action"].valid();
-                    if(condValid && actiValid) {
-                        owner.addOption(
-                            tab.get<sol::function>("condition"),
-                            tab["target"],
-                            tab.get<sol::function>("action")
-                        );
-                    }
-                    else if(condValid) {
-                        owner.addOption(
-                            tab.get<sol::function>("condition"),
-                            tab["target"],
-                            nullptr
-                        );
-                    }
-                    else if(actiValid) {
-                        owner.addOption(
-                            nullptr,
-                            tab["target"],
-                            tab.get<sol::function>("action")
-                        );
-                    }
-                    else {
-                        owner.addOption(
-                            nullptr,
-                            tab["target"],
-                            nullptr
-                        );
-                    }*/
                 }
             }
         );
@@ -63,12 +36,16 @@ namespace rat {
         object.init();
     }
 
-    void Options::addOption(Condition_t condition, Key_t target, AfterAction_t afterAction, bool finishing) {
-        _options.push_back(new Option{condition, target, afterAction, finishing});
+    void Options::addRunner(size_t major, size_t minor) {
+        _runners.insert({major, minor});
     }
 
-    bool Options::checkIfRunsWith(Key_t id) const {
-        return _runners.find(id) != _runners.end();
+    void Options::addOption(Condition_t condition, Key_t majorTarget, Key_t minorTarget, AfterAction_t afterAction, bool finishing, bool skip) {
+        _options.push_back(new Option{condition, majorTarget, minorTarget, afterAction, finishing, skip});
+    }
+
+    bool Options::checkIfRunsWith(Key_t major, Key_t minor) const {
+        return _runners.find({major, minor}) != _runners.end();
     }
 
     void Options::forEach(std::function<void(Option*)> func) {

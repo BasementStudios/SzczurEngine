@@ -23,22 +23,22 @@ namespace rat {
 
         void load(const std::string& path);
 
-        const std::string& getLabel(Key_t id) const;
+        const std::string& getLabel(const Key_t major, const Key_t minor) const;
 
         Type_t* add(const Key_t key1, const Key_t key2, Type_t* dialog);
-        void set(const Key_t key);
-        void next();
+        void set(const Key_t major, const Key_t minor);
+        //void next();
 
-        void setMinor(const Key_t key);
-        void nextMinor();
+        //void setMinor(const Key_t key);
+        //void nextMinor();
         Type_t* getStruct() const;
 
-        bool isMinorFinished();
+        //bool isMinorFinished();
     private:
-        bool _finishedMinor;
+        //bool _finishedMinor;
 
         TextContainer_t _texts;
-        TextContainer_t::iterator _current;
+        //TextContainer_t::iterator _current;
         TextContainer_t::mapped_type::iterator _minorCurrent;
     };
 }
