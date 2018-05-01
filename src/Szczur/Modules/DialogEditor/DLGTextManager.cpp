@@ -123,10 +123,8 @@ namespace rat
             }
         }
         else {
-            std::string label = "";
             std::string majorName = "";
             if (_texts.size() > key1) {
-                label = _texts[key1][0]->label;
                 majorName = _texts[key1][0]->majorName;
             }
 
@@ -137,7 +135,7 @@ namespace rat
                 "",
                 "00:00",
                 "00:00",
-                label,
+                "",
                 {""},
                 {"00:00"},
                 {0},

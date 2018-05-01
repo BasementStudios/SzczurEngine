@@ -286,9 +286,7 @@ namespace rat
         strncpy(newText, _parts[_currentMajor][_currentMinor]->label.c_str(), size);
 
         if (ImGui::InputText(" - Label##LabelNameInput", newText, size)) {
-            for (auto& it : _parts[_currentMajor]) { 
-                it->label = newText;
-            }
+            _parts[_currentMajor][_currentMinor]->label = newText;
         };
        
 		delete[] newText;
