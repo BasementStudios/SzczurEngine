@@ -120,7 +120,10 @@ bool NodeManager::read(const json& j)
 	auto readPin = [] (json::reference j, NodePin* pin) 
 	{
 		pin->Id = j["id"];
-		pin->OptionTarget.id = j["optionTarget"];
+
+		if (pin->Kind == ed::PinKind::Output)
+			pin->OptionTarget.id = j["optionTarget"];
+
 		pin->LinkToSameNode = j["linkToSameNode"];
 
 		if (j.find("condition") != j.end())
@@ -176,10 +179,9 @@ bool NodeManager::read(const json& j)
 		{
 			auto input = std::make_unique<NodePin>();
 
-			readPin(jsonInput, input.get());
-
 			input->Node = node.get();
 			input->Kind = ed::PinKind::Input;
+			readPin(jsonInput, input.get());
 
 			node->Inputs.push_back(std::move(input));
 		}
@@ -191,10 +193,10 @@ bool NodeManager::read(const json& j)
 		{
 			auto output = std::make_unique<NodePin>();
 
-			readPin(jsonOutputs, output.get());
-
 			output->Node = node.get();
 			output->Kind = ed::PinKind::Output;
+
+			readPin(jsonOutputs, output.get());
 
 			node->Outputs.push_back(std::move(output));
 		}
@@ -225,8 +227,14 @@ void NodeManager::write(json& j)
 {
 	auto writePin = [] (json::object_t::mapped_type::reference j, NodePin* pin) {
 		j["id"] = pin->Id;
-		j["optionTarget"] = pin->OptionTarget.ptr ? pin->OptionTarget.ptr->id : 0;
+
+		if (pin->Kind == ed::PinKind::Output)
+		{
+			j["optionTarget"] = pin->OptionTarget.ptr ? pin->OptionTarget.ptr->id : -1;
+		}
+
 		j["linkToSameNode"] = pin->LinkToSameNode;
+
 
 		if (pin->ConditionFunc)
 		{

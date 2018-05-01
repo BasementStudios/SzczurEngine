@@ -149,7 +149,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 						{
 							auto targetId = output->OptionTarget.id;
 
-							if (targetId > 0)
+							if (targetId >= 0 && targetId < _parts->size())
 							{
 								output->OptionTarget.ptr = *(_parts->at(targetId).begin());
 							}
