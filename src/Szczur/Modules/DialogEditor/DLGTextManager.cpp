@@ -15,9 +15,7 @@ namespace rat
 
     DLGTextManager::~DLGTextManager() 
     {
-        for(auto& it1 : _texts)
-            for(auto& it2 : it1)
-                delete it2;
+        
     }
 
     void DLGTextManager::save(const std::string& path)
@@ -47,9 +45,6 @@ namespace rat
 
     void DLGTextManager::load(const std::string& path) 
     {
-        for(auto& it1 : _texts)
-            for(auto& it2 : it1)
-                delete it2;
         _texts.clear();
 
         using namespace std::string_literals;
@@ -83,7 +78,7 @@ namespace rat
                 }
                 prevMajor = majorID;
 
-                DialogData* obj = new DialogData {
+                auto obj = DialogData {
                     static_cast<unsigned>(majorNr),
                     it->str(2u),
                     static_cast<unsigned>(minorNr),
@@ -92,9 +87,9 @@ namespace rat
                     it->str(7u) + ":" + it->str(8u),
                     (it->str(9u) == "-" ? "" : it->str(9u))
                 };
-                obj->interpretText(it->str(10u), _characters);
+                obj.interpretText(it->str(10u), _characters);
                 
-                add(majorNr, minorNr, obj);
+                add(majorNr, minorNr, std::make_shared<DialogData>(obj));
 
                 minorNr++;
             }
@@ -103,23 +98,23 @@ namespace rat
 
     }
 
-    void DLGTextManager::add(const size_t key1, const size_t key2, DialogData* dialog) 
+    void DLGTextManager::add(const size_t key1, const size_t key2, std::shared_ptr<DialogData> dialog) 
     {
         if (dialog) {
             if (_texts.size() > key1) {
                 if(_texts[key1].size() <= key2) {
-                    _texts[key1].push_back(dialog);
+                    _texts[key1].emplace_back(std::move(dialog));
                 }
                 else {
                     for(auto i = key2; i < _texts[key1].size(); ++i) {
                         ++(_texts[key1][i]->minorId);
                         _texts[key1][i]->renameMinor(_texts[key1][i]->minorName);
                     }
-                    _texts[key1].insert(_texts[key1].begin() + key2, dialog);
+                    _texts[key1].insert(_texts[key1].begin() + key2, std::move(dialog));
                 }
             }
             else {
-                _texts.push_back({dialog});             
+                _texts.push_back({std::move(dialog)});             
             }
         }
         else {
@@ -128,7 +123,7 @@ namespace rat
                 majorName = _texts[key1][0]->majorName;
             }
 
-            DialogData* obj = new DialogData {
+            auto obj = DialogData {
                 key1,
                 majorName,
                 key2,
@@ -143,7 +138,7 @@ namespace rat
                 ("[" + std::to_string(key1) + "] " + majorName),
                 ("[" + std::to_string(key2) + "]")
             };
-            add(key1, key2, obj);
+            add(key1, key2, std::make_shared<DialogData>(obj));
         }
     }
 
@@ -156,8 +151,6 @@ namespace rat
             }
         }
 
-        for(auto& it : _texts[key1])
-            delete it;
         _texts.erase(_texts.begin() + key1);
     }
 
@@ -168,7 +161,6 @@ namespace rat
             _texts[key1][i]->renameMinor(_texts[key1][i]->minorName);
         }
 
-        delete _texts[key1][key2];
         _texts[key1].erase(_texts[key1].begin() + key2);
     }
 

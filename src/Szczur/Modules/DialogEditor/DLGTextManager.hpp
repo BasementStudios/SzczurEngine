@@ -1,6 +1,7 @@
 #pragma once
 
-#include <boost/container/flat_map.hpp>
+#include <memory>
+#include <vector>
 
 #include "DialogData.hpp"
 
@@ -11,7 +12,7 @@ namespace rat
     
     public:
 
-        using TextContainer_t = std::vector<std::vector<DialogData*>>; //TODO: Fuck off raw pointers!
+        using TextContainer_t = std::vector<std::vector<std::shared_ptr<DialogData>>>;
 
     private:
 
@@ -27,7 +28,7 @@ namespace rat
         void save(const std::string& path);
         void load(const std::string& path);
         
-        void add(const size_t key1, const size_t key2, DialogData* dialog);
+        void add(const size_t key1, const size_t key2, std::shared_ptr<DialogData> dialog);
         
         void remove(const size_t key1);
         void remove(const size_t key1, const size_t key2);
