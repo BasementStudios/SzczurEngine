@@ -72,9 +72,16 @@ void MoviePlayer::jumpTo(const unsigned int &seekTarget)
            // av_free(p);
         }
         m_sound->g_videoPkts.clear();
-        int64_t seekOnVideo = seekTarget;
-        seekOnVideo = av_rescale_q(seekOnVideo, AV_TIME_BASE_Q, m_pFormatCtx->streams[m_videoStream]->time_base);
-        auto ret = avformat_seek_file(m_pFormatCtx, m_videoStream, 0, seekOnVideo, seekOnVideo, AVSEEK_FLAG_BACKWARD);
+        double fps = av_q2d(m_pFormatCtx->streams[m_videoStream]->r_frame_rate);
+        int64_t seekOnVideo = seekTarget * (fps/1000000);
+
+        seekOnVideo = seekOnVideo *
+             (m_pFormatCtx->streams[m_videoStream]->time_base.den /
+              m_pFormatCtx->streams[m_videoStream]->time_base.num) /
+             (m_pFormatCtx->streams[m_videoStream]->codec->time_base.den /
+              m_pFormatCtx->streams[m_videoStream]->codec->time_base.num )*
+              m_pCodecCtx->ticks_per_frame;
+        auto ret = avformat_seek_file(m_pFormatCtx, m_videoStream, 0, seekOnVideo, seekOnVideo, AVSEEK_FLAG_FRAME);
         assert(ret >= 0);
         avcodec_flush_buffers(m_pCodecCtx);
         m_syncAV = true;
@@ -110,14 +117,47 @@ void MoviePlayer::play()
     m_VClock = new sf::Clock;
     int IdeltaTime;
     int IstartTime;
-    m_videoTime=0;
+
     size_t count =  m_loops.size();
     int ICurrentLoop = 0;
+    int max = 0;
+    
     while (window.isOpen())
     {
-        IstartTime = m_VClock->getElapsedTime().asMicroseconds();
-        if(m_videoTime>=duration)
+        sf::sleep(sf::milliseconds(1));
+        if((max>m_sound->timeElapsed()*1000 && !m_syncAV&& max>duration-4000000)||(m_sound->g_audioPkts.empty()&&max>duration-4000000))
         {
+            while(window.isOpen()&&!m_sound->g_videoPkts.empty())
+            {
+                IstartTime = m_VClock->getElapsedTime().asMilliseconds();
+                AVPacket *packet_ptr = m_sound->g_videoPkts.front();
+
+                auto decodedLength = avcodec_decode_video2(m_pCodecCtx, m_pFrame, &m_frameFinished, packet_ptr);
+    
+                if(!sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize))
+                {
+                    break;
+                }
+                            
+                for (int i = 0, j = 0; i < FrameSize; i += 3, j += 4)
+                {
+                    Data[j + 0] = m_pFrameRGB->data[0][i + 0];
+                    Data[j + 1] = m_pFrameRGB->data[0][i + 1];
+                    Data[j + 2] = m_pFrameRGB->data[0][i + 2];
+                    Data[j + 3] = 255;
+                }
+                
+                m_im_video.update(Data);
+                
+                window.clear();
+                    
+                window.draw(sprite);
+                m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
+                if(!m_loops.empty() && m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->draw();
+                window.display();
+                IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - IstartTime;
+                sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-IdeltaTime));
+            }
             for(auto p : m_sound->g_videoPkts)
             {
                 av_free_packet(p);
@@ -140,7 +180,11 @@ void MoviePlayer::play()
             delete [] Data;
             return;
         }
-       
+
+        if(max<m_sound->timeElapsed()*1000)
+        {
+            max = m_sound->timeElapsed()*1000;
+        }
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -158,7 +202,7 @@ void MoviePlayer::play()
                 {
                     m_loops[ICurrentLoop]->change();
                 }
-                if( m_loops[ICurrentLoop] && m_loops[ICurrentLoop]->getStartTime()<= m_videoTime &&event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
+                if( m_loops[ICurrentLoop] && m_loops[ICurrentLoop]->getStartTime()<= max &&event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
                 {
                     m_loops[ICurrentLoop]->setDraw(false);
                     m_loops[ICurrentLoop] = nullptr;
@@ -167,7 +211,7 @@ void MoviePlayer::play()
                     {
                         ICurrentLoop--;
                     }
-                    if(m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->setTime(m_videoTime);
+                    if(m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->setTime(max);
                 }
             }
         }
@@ -268,8 +312,8 @@ void MoviePlayer::play()
                 {
                     m_blockPts = ms;
                     m_sound->setPlayingOffset(sf::milliseconds(m_blockPts));
-                    m_videoTime = m_sound->timeElapsed()*1000;
-                    if(!m_loops.empty()) m_loops[ICurrentLoop]->setTime(m_videoTime);
+                    max = m_sound->timeElapsed()*1000;
+                    if(!m_loops.empty()) m_loops[ICurrentLoop]->setTime(max);
                     m_syncAV = false;
                 }
                 
@@ -288,12 +332,10 @@ void MoviePlayer::play()
                 av_free(packet_ptr);
             }
         }
-        IdeltaTime = m_VClock->getElapsedTime().asMicroseconds() - IstartTime;
-        m_videoTime +=IdeltaTime;
         
         if(!m_loops.empty() &&m_loops[ICurrentLoop]) 
         {
-            int result = m_loops[ICurrentLoop]->update(IdeltaTime);
+            int result = m_loops[ICurrentLoop]->update(max);
             if(result>=0&&!m_syncAV)
             {
                 jumpTo(result);

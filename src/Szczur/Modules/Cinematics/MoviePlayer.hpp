@@ -47,7 +47,6 @@ private:
     sf::Clock *m_VClock;
     int m_videoStream;
     int m_audioStream;
-    int m_videoTime;
 
     sf::Font m_font;
     std::vector<std::shared_ptr<VideoLoop> > m_loops;

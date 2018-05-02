@@ -57,7 +57,7 @@ void VideoLoop::setFont(sf::Font &font)
 
 int VideoLoop::update(const int &deltaTime)
 {
-    m_currentTime +=deltaTime;
+    m_currentTime = deltaTime;
     if(m_currentTime<m_timeEnd)
     {
         return -1;
