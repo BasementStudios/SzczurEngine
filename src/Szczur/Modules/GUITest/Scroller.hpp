@@ -4,7 +4,7 @@
 
 namespace rat
 {
-    class Scroller : public sf::Drawable
+    class Scroller : public sf::Drawable, public sf::Transformable
     {
     public:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

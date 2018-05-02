@@ -6,15 +6,17 @@ namespace rat
 {
     void Scroller::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(_path);
-        target.draw(_scroller);
-        target.draw(_upperBound);
-        target.draw(_bottomBound);
+        states.transform *= getTransform();
+        target.draw(_path, states);
+        target.draw(_scroller, states);
+        target.draw(_upperBound, states);
+        target.draw(_bottomBound, states);
     }
 
     void Scroller::setPosition(float x, float y)
     {
         _position = {x, y};
+        sf::Transformable::setPosition(_position);        
        _recalcAll();
     }
     void Scroller::setPosition(const sf::Vector2f& position)
@@ -109,9 +111,9 @@ namespace rat
         float width = float(_size.x);
 
         float xShift = (width - pathWidth) / 2.f;
-        float newX = _position.x + xShift;
+        float newX = /*_position.x + */xShift;
 
-        _path.setPosition(newX, _position.y + _getRealBoundLength());
+        _path.setPosition(newX, /*_position.y + */_getRealBoundLength());
     }
 
     void Scroller::_recalcScrollerSize()
@@ -145,7 +147,7 @@ namespace rat
         float width = float(_size.x);
 
         float xShift = (width - scrollerWidth) / 2.f;
-        newX = _position.x + xShift;
+        newX = /*_position.x + */xShift;
 
         _scroller.setPosition(newX, newY);
 
@@ -163,9 +165,9 @@ namespace rat
 
     void Scroller::_recalcBoundPos()
     {
-        _upperBound.setPosition(_position);
+        /*_upperBound.setPosition(_position);*/
         float boundHeight = _bottomBound.getGlobalBounds().height;
-        _bottomBound.setPosition(_position.x, _position.y + float(_size.y));
+        _bottomBound.setPosition(0.f/* + _position.x*/, /*_position.y + */float(_size.y));
     }
     void Scroller::_recalcBoundSize()
     {

@@ -101,7 +101,7 @@ namespace rat {
 
             _renderTexture.display();
             target.draw(sf::Sprite(_renderTexture.getTexture()), states);
-            target.draw(_scroller);
+            target.draw(_scroller, states);
         }
     } 
 
