@@ -28,7 +28,7 @@ namespace rat {
         Widget* addInterface();
 
         template<typename T>
-        T* getAsset(const std::string& key) const;
+        T* getAsset(const std::string& key);
 
         template<typename T>
         void addAsset(const std::string& path);
