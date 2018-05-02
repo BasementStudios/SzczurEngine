@@ -8,8 +8,10 @@ namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :
     Widget(),
     _scrollSpeed(10.f),
-    _offset(0.f) {
-        _renderTexture.create(10,10);
+    _offset(0.f) 
+    {
+        _scroller.setWidthProportion(2.1f);
+        setSize(10 + _minScrollSize.x, _minScrollSize.y);
     }
 
     void ScrollAreaWidget::initScript(Script& script) {
@@ -28,19 +30,26 @@ namespace rat {
         );
         object.init();
     }
-
+/*
     void ScrollAreaWidget::setSize(size_t x, size_t y) {
-        _renderTexture.create(x,y);
-        _aboutToRecalculate = true;
+        setSize({unsigned int(x), unsigned int(y)});
     }
 
     void ScrollAreaWidget::setSize(sf::Vector2u size) {
         _renderTexture.create(size.x, size.y);
         _aboutToRecalculate = true;
+    }*/
+    void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture)
+    {
+        _scroller.setScrollerTexture(texture);
     }
-
-    sf::Vector2u ScrollAreaWidget::getSize() const {
-        return _renderTexture.getSize();
+    void ScrollAreaWidget::setPathTexture(sf::Texture* texture)
+    {
+        _scroller.setPathTexture(texture);
+    }
+    void ScrollAreaWidget::setBoundsTexture(sf::Texture* texture)
+    {
+        _scroller.setBoundTexture(texture);
     }
 
     void ScrollAreaWidget::setScrollSpeed(float speed) {
@@ -52,11 +61,18 @@ namespace rat {
     }
 
     sf::Vector2u ScrollAreaWidget::_getSize() const {
-        return _renderTexture.getSize();
+        return {_renderTexture.getSize().x + _scroller.getSize().x, _scroller.getSize().y};
     }
 
     void ScrollAreaWidget::calculateSize() {
         _aboutToRecalculate = false;
+        _size = {};
+        if(_isMinSizeSet)
+        {
+            _size.x = std::max(_size.x, _minSize.x);
+            _size.y = std::max(_size.y, _minSize.y);
+        }
+        _calculateSize();
         _size = _getSize();
         if(_parent != nullptr)
             _parent->calculateSize();
@@ -85,6 +101,7 @@ namespace rat {
 
             _renderTexture.display();
             target.draw(sf::Sprite(_renderTexture.getTexture()), states);
+            target.draw(_scroller);
         }
     } 
 
@@ -104,6 +121,20 @@ namespace rat {
             for(auto& it : _children)
                 it->move({0.f, offset});
         }
+    }
+
+    void ScrollAreaWidget::_calculateSize()
+    {
+        auto size = getSize();
+
+        size.x = std::max(size.x, _minScrollSize.x);
+        size.y = std::max(size.y, _minScrollSize.y);
+
+        float barWidth = float(_minScrollSize.x);
+        float barX = float(size.x - _minScrollSize.x);
+        _scroller.setPosition(barX, 0.f);
+        _scroller.setSize(_minScrollSize.x, size.y);
+        _renderTexture.create(size.x - _minScrollSize.x, size.y);
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) {

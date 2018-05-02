@@ -16,8 +16,11 @@ namespace rat
         void setBoundTexture(const sf::Texture* texture);
 
         void setSize(const sf::Vector2i& size);
+        void setSize(int width, int height);
         void setWidthProportion(float proportion);
         void setBoundShiftProportion(float proportion);
+
+        sf::Vector2u getSize() const;
 
         void setProportion(float proportion);
         void setScrollerPosition(const sf::Vector2f& position);

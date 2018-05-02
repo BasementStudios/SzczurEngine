@@ -48,7 +48,6 @@ namespace rat {
             sf::Vector2f winProp = { float(event.size.width) / float(_standartWindowSize.x),
             float(event.size.height) / float(_standartWindowSize.y) };
             Widget::setWinProp(winProp);
-            std::cout << "Blala\n";
         }
         _root.input(event);
     }

@@ -173,12 +173,7 @@ namespace rat {
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
-        _calculateSize();
         _size = {0u,0u};
-        auto ownSize = _getSize();
-
-        if(ownSize.x > _size.x) _size.x = ownSize.x;
-        if(ownSize.y > _size.y) _size.y = ownSize.y;
 
         if(_isMinSizeSet)
         {
@@ -195,6 +190,13 @@ namespace rat {
             if(childPosition.y + childSize.y - childOrigin.y > _size.y)
                 _size.y = childPosition.y + childSize.y - childOrigin.y;
         }
+
+        _calculateSize();
+        auto ownSize = _getSize();
+
+        if(ownSize.x > _size.x) _size.x = ownSize.x;
+        if(ownSize.y > _size.y) _size.y = ownSize.y;
+        
         _recalcOrigin();
     }
 

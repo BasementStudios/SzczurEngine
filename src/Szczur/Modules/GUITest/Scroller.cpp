@@ -59,6 +59,11 @@ namespace rat
         if(_isScrollerSet) _recalcScrollerPosByProp();
     }
 
+    void Scroller::setSize(int width, int height)
+    {
+        setSize({width, height});
+    }
+    
     void Scroller::setSize(const sf::Vector2i& size)
     {
         _size = size;
@@ -77,7 +82,11 @@ namespace rat
         _boundShiftProp = proportion;
         _recalcAll();
     }
-    
+
+    sf::Vector2u Scroller::getSize() const
+    {
+        return sf::Vector2u(_size);
+    }
 
     void Scroller::_recalcPathSize()
     {

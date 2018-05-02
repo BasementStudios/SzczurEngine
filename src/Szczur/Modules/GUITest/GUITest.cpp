@@ -39,11 +39,19 @@ namespace rat
             std::cout << "Beng\n";
         });
 
+
+        scroll->setSize(100, 200);
+        scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+        scroll->setPosition(100.f, 100.f);
+        widget->add(scroll);
+
         iWidget = new ImageWidget;
         iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        iWidget->setPosition(100.f, 100.f);
-        widget->add(iWidget);
-
+        iWidget->setPosition(0.f, 0.f);
+        iWidget->setSize(50, 50);
+        scroll->add(iWidget);
         /*
         widget3 = new Widget;
         widget3->setSize(25, 25);
@@ -121,7 +129,7 @@ namespace rat
             }
         }
 
-        //widget->setPosition(float(mousePos.x), float(mousePos.y));
+        scroll->setPosition(float(mousePos.x), float(mousePos.y));
 
         widget->setPropOrigin(_prop, _prop);
         widget->setPosition(_size.x, _size.y);

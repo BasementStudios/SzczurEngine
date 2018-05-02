@@ -8,6 +8,7 @@
 #include "Scroller.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 
 namespace rat
 {
@@ -32,6 +33,7 @@ namespace rat
         Widget* widget{nullptr};
         Widget* widget3{nullptr};
         ImageWidget* iWidget{nullptr};
+        ScrollAreaWidget* scroll{new ScrollAreaWidget};
 
         bool hasBeenChanged{false};
     };
