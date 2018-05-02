@@ -1,58 +1,75 @@
+/*
+*********************************************************************
+* File          : SFMLTextureAtlasData.cpp
+* Project		: DragonBonesSFML
+* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
+* License   	: MIT License
+*********************************************************************
+*/
 
-/** @file SF3DTextureAtlasData.cpp
- ** @author Piotr Krupa (piotrkrupa06@gmail.com)
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
- **/
+#include "SF3DTextureAtlasData.h"
 
-#include "SF3DTextureAtlasData.hpp"
+#include <memory>
 
-#include "Szczur/Utility/SFML3D/Texture.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 
-#include "SF3DTextureData.hpp"
+#include "SF3DTextureData.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-/* Properties */
-sf3d::Texture* SF3DTextureAtlasData::getRenderTexture() const 
+SFMLTextureAtlasData::SFMLTextureAtlasData()
 {
-	return texture;
+	_onClear();
 }
-void SF3DTextureAtlasData::setRenderTexture(sf3d::Texture* value)
+
+SFMLTextureAtlasData::~SFMLTextureAtlasData()
 {
-	if (texture == value) {
+	_onClear();
+}
+
+void SFMLTextureAtlasData::setRenderTexture(sf3d::Texture* value)
+{
+	if (_renderTexture == value)
+	{
 		return;
 	}
-	texture = value;
 
-	if (texture != nullptr) {
-		// Set texture to related texture data objects
-		for (const auto& pair : textures) {
+	_renderTexture = value;
+
+	if (_renderTexture != nullptr)
+	{
+		for (const auto& pair : textures)
+		{
 			const auto textureData = static_cast<SF3DTextureData*>(pair.second);
 
-			if (textureData->texture == nullptr) {
-				textureData->texture = texture;
+			if (textureData->texture == nullptr)
+			{
+				sf::FloatRect rect(
+					textureData->region.x, textureData->region.y,
+					textureData->rotated ? textureData->region.height : textureData->region.width,
+					textureData->rotated ? textureData->region.width : textureData->region.height
+				);
+
+
+				textureData->setTexture(_renderTexture, rect);
 			}
+		}
+	}
+	else
+	{
+		for (const auto& pair : textures)
+		{
+			const auto textureData = static_cast<SF3DTextureData*>(pair.second);
+
+			// textureData->Sprite.reset();
+
+			// nothing to release
 		}
 	}
 }
 
-
-
-/* Operators */
-SF3DTextureAtlasData::SF3DTextureAtlasData()
-{
-	_onClear();
-}
-
-SF3DTextureAtlasData::~SF3DTextureAtlasData()
-{
-	_onClear();
-}
-
-
-
-/* Methods */
-TextureData* SF3DTextureAtlasData::createTexture() const
+TextureData* SFMLTextureAtlasData::createTexture() const
 {
 	return BaseObject::borrowObject<SF3DTextureData>();
 }

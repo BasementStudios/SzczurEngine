@@ -6,7 +6,7 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-//#include <dragonBones/SF3DFactory.h>
+//#include <dragonBones/SFMLFactory.h>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -45,13 +45,13 @@ DragonBones::~DragonBones()
 /// init
 void DragonBones::init()
 {
-
+	;
 }
 
 /// update
 void DragonBones::update(float deltaTime)
 {
-	this->factory.update(deltaTime);
+	//this->factory.update(deltaTime);
 }
 
 }
