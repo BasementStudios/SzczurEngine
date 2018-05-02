@@ -54,6 +54,9 @@ namespace rat {
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
 
+		void setPadding(const sf::Vector2f& padding);
+		void setPadding(float width, float height);
+
 		void setOrigin(const sf::Vector2f& origin);
 		void setOrigin(float x, float y);
 
@@ -98,6 +101,8 @@ namespace rat {
 		sf::Vector2f _propOrigin;
 		bool _isPropOriginSet{false};
 
+		sf::Vector2f _padding;
+
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
 		
@@ -110,6 +115,7 @@ namespace rat {
 		void _recalcOrigin();
 
 		static sf::Vector2f _winProp;
+		sf::Vector2u _getChildrenSize();
 
 
 	};

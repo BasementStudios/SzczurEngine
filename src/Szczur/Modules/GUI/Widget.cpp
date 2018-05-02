@@ -166,6 +166,8 @@ namespace rat {
             target.draw(shape, states);
             
             _draw(target, states);
+
+            states.transform.translate(_padding);
             for(auto it : _children)
                 target.draw(*it, states);
         }
@@ -173,7 +175,7 @@ namespace rat {
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
-        _size = {0u,0u};
+        _size = static_cast<sf::Vector2u>(_padding);
 
         if(_isMinSizeSet)
         {
@@ -181,15 +183,9 @@ namespace rat {
             _size.y = std::max(_size.y, _minSize.y);
         }
 
-        for(auto child : _children) {
-            auto childSize = child->getSize();
-            auto childPosition = static_cast<sf::Vector2i>(child->getPosition());
-            auto childOrigin = child->getOrigin();
-            if(childPosition.x + childSize.x - childOrigin.x > _size.x)
-                _size.x = childPosition.x + childSize.x - childOrigin.x;
-            if(childPosition.y + childSize.y - childOrigin.y > _size.y)
-                _size.y = childPosition.y + childSize.y - childOrigin.y;
-        }
+        auto chSize = _getChildrenSize();
+        _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
+        _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
 
         _calculateSize();
         auto ownSize = _getSize();
@@ -200,12 +196,38 @@ namespace rat {
         _recalcOrigin();
     }
 
+	sf::Vector2u Widget::_getChildrenSize()
+    {
+        sf::Vector2u size;
+        for(auto child : _children) {
+            auto childSize = child->getSize();
+            auto childPosition = static_cast<sf::Vector2i>(child->getPosition());
+            auto childOrigin = child->getOrigin();
+            if(childPosition.x + childSize.x - childOrigin.x > size.x)
+                size.x = childPosition.x + childSize.x - childOrigin.x;
+            if(childPosition.y + childSize.y - childOrigin.y > size.y)
+                size.y = childPosition.y + childSize.y - childOrigin.y;
+        }
+        return size;
+    }
+    
+
     sf::Vector2u Widget::_getSize() const {
         return {0u, 0u};
     }
 
     sf::Vector2u Widget::getSize() const {
         return _size;
+    }
+
+    void Widget::setPadding(const sf::Vector2f& padding)
+    {
+        _padding = padding;
+        calculateSize();
+    }
+	void Widget::setPadding(float width, float height)
+    {
+        setPadding({width, height});
     }
 
 	sf::Vector2u Widget::getMinimalSize() const

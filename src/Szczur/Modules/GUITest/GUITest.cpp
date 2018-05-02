@@ -38,6 +38,7 @@ namespace rat
         widget->setCallback(Widget::CallbackType::onHoverIn, [](Widget* self){
             std::cout << "Beng\n";
         });
+        widget->setPadding(10.f, 10.f);
 
 
         scroll->setSize(100, 200);
