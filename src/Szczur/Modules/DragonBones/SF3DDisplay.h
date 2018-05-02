@@ -2,12 +2,14 @@
 /** @file Display.hpp
 ** @author Piotr Krupa (piotrkrupa06@gmail.com)
 ** @author Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
+** @author Kuba (Metriko)
 **/
 
 #pragma once
 
 #include <vector>
 
+#include <dragonBones/DragonBonesHeaders.h>
 #include <glad/glad.h> // vec3
 #include <SFML/Graphics/Color.hpp>
 
@@ -43,23 +45,18 @@ protected:
 
 	/* Operators */
 public:
-	SF3DDisplay()
-	{
-		//this->verticesDisplay.setPrimitveType(this->primitiveType);
-	}
+	SF3DDisplay() = default;
 	~SF3DDisplay() = default;
-
-
 
 	/* Methods */
 public:
-	void setMatrix(const Matrix& matrix, const glm::vec3& offset = { 0.f, 0.f, 0.f }, const float& scale = 1.f) // @test 
+	void setMatrix(const Matrix& matrix, const glm::vec3& offset = { 0.f, 0.f, 0.f }, const float& scale = 1.f)
 	{
 		auto& mat = this->transform.getMatrix();
 
 		mat = glm::mat4(
-			matrix.a, matrix.c, 0.f, 0.f,
-			matrix.b, -matrix.d, 0.f, 0.f,
+			matrix.a, matrix.b, 0.f, 0.f,
+			matrix.c, matrix.d, 0.f, 0.f,
 			0.f, 0.f, 1.f, 0.f,
 			offset.x, offset.y, 0.f, 1.f
 		);

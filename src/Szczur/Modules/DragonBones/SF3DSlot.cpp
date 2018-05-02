@@ -203,8 +203,8 @@ void SF3DSlot::_updateFrame()
 					auto& verts = _renderDisplay->verticesDisplay;
 					auto size = _renderDisplay->texture->getSize();
 
-					float sizeX = size.x;
-					float sizeY = size.y;
+					float sizeX = (float)size.x;
+					float sizeY = (float)size.y;
 
 					float texX = region.x / sizeX;
 					float texY = region.y / sizeY;
@@ -299,7 +299,7 @@ void SF3DSlot::_updateMesh()
 					}
 
 					xG += (matrix.a * xL + matrix.c * yL + matrix.tx) * weight;
-					yG -= (matrix.b * xL + matrix.d * yL + matrix.ty) * weight;
+					yG += (matrix.b * xL + matrix.d * yL + matrix.ty) * weight;
 				}
 			}
 
@@ -352,7 +352,7 @@ void SF3DSlot::_updateMesh()
 
 void SF3DSlot::_identityTransform()
 {
-	_renderDisplay->setMatrix(Matrix(), glm::vec3(), _textureScale);
+	//_renderDisplay->setMatrix();
 }
 
 void SF3DSlot::_updateTransform()
@@ -374,13 +374,11 @@ void SF3DSlot::_updateTransform()
 		pos.y -= (globalTransformMatrix.b + globalTransformMatrix.d);
 	}
 
-	char flippedX = 1;
-
-	if (_armature->getFlipX())
-		flippedX = -1;
-
-	globalTransformMatrix.b *= -flippedX;
-	globalTransformMatrix.c *= flippedX;
+	if (_deformVertices == nullptr || _display != _meshDisplay)
+	{
+		globalTransformMatrix.c *= -1.f;
+		globalTransformMatrix.d *= -1.f;
+	}
 
 	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
 }
