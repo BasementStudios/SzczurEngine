@@ -20,6 +20,7 @@ namespace rat
         testPatch.setPosition(0.f, 0.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
+        testPatch.setRotation(20.f);
         //testPatch.setDirection(Patch::Direction::None);
         gui.addAsset<sf::Texture>("Assets/Test/Scroller.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
@@ -50,7 +51,7 @@ namespace rat
 
         iWidget = new ImageWidget;
         iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        iWidget->setPosition(0.f, 0.f);
+        iWidget->setPosition(0.f, 200.f);
         iWidget->setSize(50, 50);
         scroll->add(iWidget);
         /*
@@ -130,7 +131,7 @@ namespace rat
             }
         }
 
-        scroll->setPosition(float(mousePos.x), float(mousePos.y));
+        //scroll->setPosition(float(mousePos.x), float(mousePos.y));
 
         widget->setPropOrigin(_prop, _prop);
         widget->setPosition(_size.x, _size.y);

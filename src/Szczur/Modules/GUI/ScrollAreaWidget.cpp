@@ -3,6 +3,7 @@
 
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :
@@ -96,8 +97,10 @@ namespace rat {
 
             _draw(target, states);
             _renderTexture.clear(sf::Color::Transparent);
+            auto childrenStates = sf::RenderStates::Default;
+            childrenStates.transform *= _childrenTransform;
             for(auto it : _children)
-                _renderTexture.draw(*it);
+                _renderTexture.draw(*it, childrenStates);
 
             _renderTexture.display();
             target.draw(sf::Sprite(_renderTexture.getTexture()), states);
@@ -113,13 +116,22 @@ namespace rat {
             float offset = _scrollSpeed*static_cast<float>(event.mouseWheelScroll.delta);
 
             _offset += offset;
-            if(_offset > 0) {
-                _offset -= offset;
-                offset = -_offset;
+            if(_offset > 0) 
+            {
+                offset = offset -_offset;
                 _offset = 0;
             }
-            for(auto& it : _children)
-                it->move({0.f, offset});
+            float maxOffset = -(_childrenHeight - float(_getSize().y));
+            if(_offset < maxOffset)
+            {
+                offset = offset - (_offset - maxOffset);
+                _offset = maxOffset;
+            }
+
+            _childrenTransform.translate(0.f, offset);
+
+            float offsetProp = _offset/maxOffset;
+            _scroller.setProportion(offsetProp);
         }
     }
 
@@ -135,6 +147,8 @@ namespace rat {
         _scroller.setPosition(barX, 0.f);
         _scroller.setSize(_minScrollSize.x, size.y);
         _renderTexture.create(size.x - _minScrollSize.x, size.y);
+
+        _childrenHeight = float(std::max(_getChildrenSize().y, size.y));
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) {

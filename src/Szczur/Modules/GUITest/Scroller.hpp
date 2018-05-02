@@ -23,6 +23,7 @@ namespace rat
         sf::Vector2u getSize() const;
 
         void setProportion(float proportion);
+        void moveProportion(float proportionOffset);
         void setScrollerPosition(const sf::Vector2f& position);
     private:
 

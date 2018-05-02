@@ -79,8 +79,8 @@ namespace rat {
                 case sf::Event::MouseMoved: {
                     auto thisSize = getSize();
                     
-                    event.mouseMove.x += int(_origin.x * _winProp.x);
-                    event.mouseMove.y += int(_origin.y * _winProp.y);
+                    event.mouseMove.x += int((_origin.x + _padding.x) * _winProp.x);
+                    event.mouseMove.y += int((_origin.y + _padding.y) * _winProp.y);
                     if(
                         event.mouseMove.x >= 0 &&
                         event.mouseMove.x <= thisSize.x * _winProp.x &&

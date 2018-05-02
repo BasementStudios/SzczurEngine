@@ -60,6 +60,11 @@ namespace rat
         _proportion = proportion;
         if(_isScrollerSet) _recalcScrollerPosByProp();
     }
+    void Scroller::moveProportion(float proportionOffset)
+    {
+        setProportion(_proportion + proportionOffset);
+    }
+    
 
     void Scroller::setSize(int width, int height)
     {

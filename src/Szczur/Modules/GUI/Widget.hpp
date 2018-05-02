@@ -107,6 +107,7 @@ namespace rat {
 		CallbacksLuaContainer_t _luaCallbacks;
 		
 		Children_t _children;
+		sf::Vector2u _getChildrenSize();
 	private:
 		virtual void _callback(CallbackType type);
 
@@ -115,7 +116,6 @@ namespace rat {
 		void _recalcOrigin();
 
 		static sf::Vector2f _winProp;
-		sf::Vector2u _getChildrenSize();
 
 
 	};
