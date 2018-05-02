@@ -8,12 +8,12 @@
 
 namespace rat
 {
-    class NinePatch
+    class NinePatch : public sf::Drawable, public sf::Transformable
     {
     public:
         NinePatch();
 
-        void draw(sf::RenderTarget& target);
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
         void setTexture(sf::Texture* texture);
         void setTexture(sf::Texture* texture, int padding);
@@ -21,7 +21,7 @@ namespace rat
         void setTexture(sf::Texture* texture, const sf::IntRect& rect);
 
         void setSize(int x, int y);
-        void setPosition(float x, float y);
+        /*void setPosition(float x, float y);*/
 
         void setInnerSize(const sf::IntRect& rect);
         void setInnerSize(int x, int y, int width, int height);
@@ -43,7 +43,7 @@ namespace rat
         int _innerHeightTimes{0};
         float _innerHeight{0.f};
 
-        sf::Vector2f _position{0.f, 0.f};
+        /*sf::Vector2f _position{0.f, 0.f};*/
 
         Patch _topBar;
         Patch _bottomBar;

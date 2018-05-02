@@ -4,7 +4,7 @@
 
 namespace rat
 {
-    class Patch : public sf::Drawable
+    class Patch : public sf::Drawable, public sf::Transformable
     {
     public:
         enum class Direction{ None, Vertical, Horizontal, All };
@@ -16,15 +16,17 @@ namespace rat
 
         void setSize(int x, int y);
         void setSize(sf::Vector2i size);
+        /*
         void setPosition(sf::Vector2f position);
         void setPosition(float x, float y);
+        */
         void setTexture(sf::Texture* texture);
         void setTextureRect(const sf::IntRect& rect);
         void setScale(float x, float y);
         void setScale(const sf::Vector2f& scale);
         void setDirection(Direction direction);
 
-        const sf::Vector2f& getPosition();
+        /*const sf::Vector2f& getPosition();*/
         const sf::Vector2i& getSize();
 
 
@@ -34,7 +36,7 @@ namespace rat
         mutable sf::Sprite _sprite;
         sf::Texture* _texture{nullptr}; 
         sf::Vector2i _size{0, 0};
-        sf::Vector2f _position{0.f, 0.f};
+        //sf::Vector2f _position{0.f, 0.f};
         sf::Vector2u _textureRect;
         int _elementAmount{1};
         sf::Vector2f _elementDim{0.f, 0.f};

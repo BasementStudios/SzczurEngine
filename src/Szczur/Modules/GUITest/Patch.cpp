@@ -15,14 +15,14 @@ namespace rat
     {
         if(_texture)
         {        
-            target.draw(_sprite);
+            states.transform *= getTransform();
             switch(_direction)
             {
                 case Direction::Horizontal:
                 {
                     for(int i = 0; i < _elementAmount; i++)
                     {
-                        target.draw(_sprite);
+                        target.draw(_sprite, states);
                         _sprite.move(_elementDim.x, 0.f);
                     }
                 } break;
@@ -30,18 +30,18 @@ namespace rat
                 {
                     for(int i = 0; i < _elementAmount; i++)
                     {
-                        target.draw(_sprite);
+                        target.draw(_sprite, states);
                         _sprite.move(0.f, _elementDim.y);
                     }
                 } break;
 
                 case Direction::None:
                 {
-                    target.draw(_sprite);
+                    target.draw(_sprite, states);
                 } break;
             }
 
-            _recalcSpritePos();
+           _sprite.setPosition(0.f, 0.f);
         }
 
     }
@@ -105,6 +105,8 @@ namespace rat
     
     void Patch::_recalcSpriteSize()
     {}
+
+    /*
     void Patch::setPosition(sf::Vector2f position)
     {
         setPosition(position.x, position.y);
@@ -118,18 +120,19 @@ namespace rat
     void Patch::_recalcSpritePos() const
     {
         _sprite.setPosition(_position);
-    }
+    }*/
 
     void Patch::setDirection(Direction direction)
     {
         _direction = direction;
         if(_texture) _recalcRecurrence();
     }
-    
+    /*
     const sf::Vector2f& Patch::getPosition()
     {
         return _position;
-    }
+        sf::Transformable::
+    }*/
     
 
     void Patch::_recalcRecurrence()

@@ -17,7 +17,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
         testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
         //testPatch.setTextureRect({{0, 200}, {248, 248}});
-        testPatch.setPosition(20.f, 20.f);
+        testPatch.setPosition(0.f, 0.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
         //testPatch.setDirection(Patch::Direction::None);
@@ -135,10 +135,10 @@ namespace rat
         widget->setPosition(_size.x, _size.y);
         //iWidget->setSize(_size.x, _size.y);
 
-        /*
-        //testPatch.setScale(_scale, _scale);
-        testPatch.setSize(mousePos.x - 200, mousePos.y - 200);
         
+        //testPatch.setScale(_scale, _scale);
+        //testPatch.setSize(mousePos.x, mousePos.y);
+        /*
 
         scroller.setSize(static_cast<sf::Vector2i>(_size));
         //scroller.setSize(sf::Vector2i(mousePos.x - 200, mousePos.y - 200));
@@ -153,6 +153,7 @@ namespace rat
        _canvas.clear(sf::Color::Transparent);
         
         //testPatch.draw(_canvas);
+        _canvas.draw(testPatch);
         //_canvas.draw(scroller);
         //_canvas.draw(testPatch);
 
