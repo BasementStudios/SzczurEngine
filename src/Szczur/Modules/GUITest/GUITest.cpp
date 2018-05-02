@@ -17,10 +17,10 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
         testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
         //testPatch.setTextureRect({{0, 200}, {248, 248}});
-        testPatch.setPosition(0.f, 0.f);
+        testPatch.setPosition(50.f, 50.f);
         testPatch.setSize(1200, 700);
         testPatch.setScale(0.2f, 0.2f);
-        testPatch.setRotation(20.f);
+        //testPatch.setRotation(20.f);
         //testPatch.setDirection(Patch::Direction::None);
         gui.addAsset<sf::Texture>("Assets/Test/Scroller.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
@@ -131,7 +131,7 @@ namespace rat
             }
         }
 
-        //scroll->setPosition(float(mousePos.x), float(mousePos.y));
+        testPatch.setSize(float(mousePos.x - 50), float(mousePos.y - 50));
 
         widget->setPropOrigin(_prop, _prop);
         widget->setPosition(_size.x, _size.y);

@@ -55,9 +55,14 @@ namespace rat
         _scale = scale;
         if(_texture) _recalcRecurrence();
     }
-    const sf::Vector2i& Patch::getSize()
+    const sf::Vector2i& Patch::getSize() const
     {
         return _size;
+    }
+    sf::Vector2i Patch::getElementSize() const
+    {
+        sf::Vector2f texSize = {(float)_sprite.getTextureRect().width, (float)_sprite.getTextureRect().height};
+        return { int(texSize.x * _scale.x), int(texSize.y * _scale.y) };
     }
     
     
@@ -73,6 +78,15 @@ namespace rat
 
         _recalcRecurrence();
     }
+
+    void Patch::setWidth(int width)
+    {
+        setSize(width, _size.y);
+    }
+    void Patch::setHeight(int height)
+    {
+        setSize(_size.x, height);
+    }
     
     void Patch::setSize(sf::Vector2i size)
     {
@@ -82,15 +96,7 @@ namespace rat
 
     void Patch::setSize(int x, int y)
     {
-        switch(_direction)
-        {
-            case Direction::Horizontal:
-                _size.x = x;
-            break;
-            case Direction::Vertical:
-                _size.y = y;
-            break;
-        }
+        _size = {x, y};
         _isSizeSet = true;
         if(_texture) _recalcRecurrence();
 
@@ -105,22 +111,6 @@ namespace rat
     
     void Patch::_recalcSpriteSize()
     {}
-
-    /*
-    void Patch::setPosition(sf::Vector2f position)
-    {
-        setPosition(position.x, position.y);
-    }
-    
-    void Patch::setPosition(float x, float y)
-    {
-        _position = {x, y};
-        _recalcSpritePos();
-    }
-    void Patch::_recalcSpritePos() const
-    {
-        _sprite.setPosition(_position);
-    }*/
 
     void Patch::setDirection(Direction direction)
     {
@@ -172,9 +162,14 @@ namespace rat
             {
                 _elementAmount = 1;
                 _sprite.setScale(_scale);
-                _size = {int(_sprite.getGlobalBounds().width), int(_sprite.getGlobalBounds().height)};
+                _elementDim = {_sprite.getGlobalBounds().width, _sprite.getGlobalBounds().height};
             } break;
         }
+                sf::Vector2f scale{1.f, 1.f};
+                auto elementSize = static_cast<sf::Vector2f>(getElementSize());
+                if(float(_size.x) < elementSize.x && _direction != Direction::Horizontal) scale.x = float(_size.x)/elementSize.x;
+                if((float)_size.y < elementSize.y && _direction != Direction::Vertical) scale.y = float(_size.y)/elementSize.y;
+                _sprite.scale(scale);
     }
     
 }

@@ -113,7 +113,6 @@ namespace rat
         int topCornerH = _topLeftCorner.getSize().y;
         int bottomCornerH = _bottomLeftCorner.getSize().y;
 
-        auto texSize = static_cast<sf::Vector2i>(_texture->getSize());
         int innerWidth = _size.x - (leftCornerW + rightCornerW);
         int innerHeight = _size.y - (topCornerH + bottomCornerH);
 
@@ -131,21 +130,83 @@ namespace rat
 
     void NinePatch::_recalcSpritesSize()
     {
-        int leftCornerW = _topLeftCorner.getSize().x;
-        int rightCornerW = _topLeftCorner.getSize().x;
+        int width = _size.x;
+        int height = _size.y;
 
-        int topCornerH = _topLeftCorner.getSize().y;
-        int bottomCornerH = _bottomLeftCorner.getSize().y;
 
-        auto texSize = static_cast<sf::Vector2i>(_texture->getSize());
-        int innerWidth = _size.x - (leftCornerW + rightCornerW);
-        int innerHeight = _size.y - (topCornerH + bottomCornerH);
+        int leftCornerW = _topLeftCorner.getElementSize().x;
+        int rightCornerW = _topRightCorner.getElementSize().x;
 
-        _topBar.setSize(innerWidth, 0);
-        _bottomBar.setSize(innerWidth, 0);
+        int topCornerH = _topLeftCorner.getElementSize().y;
+        int bottomCornerH = _bottomLeftCorner.getElementSize().y;
 
-        _leftBar.setSize(0, innerHeight);
-        _rightBar.setSize(0, innerHeight);
+        int cornersWidth = leftCornerW + rightCornerW;
+        int cornersHeight = topCornerH + bottomCornerH;
+
+        int innerWidth = width - cornersWidth;
+        int innerHeight = height - cornersHeight;
+
+        if(innerWidth < 0)
+        {
+            float prop = float(leftCornerW)/float(cornersWidth);
+
+            int leftW = int(round(prop * float(_size.x)));
+            int rightW = int(round((1.f - prop) * float(_size.x)));
+
+            _topLeftCorner.setWidth(leftW);
+            _bottomLeftCorner.setWidth(leftW);
+            _leftBar.setWidth(leftW);
+
+            _topRightCorner.setWidth(rightW);
+            _bottomRightCorner.setWidth(rightW);
+            _rightBar.setWidth(rightW);
+
+            innerWidth = 0;
+        }
+        else
+        {
+            _topLeftCorner.setWidth(leftCornerW);
+            _bottomLeftCorner.setWidth(leftCornerW);
+            _leftBar.setWidth(leftCornerW);
+
+            _topRightCorner.setWidth(rightCornerW);
+            _bottomRightCorner.setWidth(rightCornerW);
+            _rightBar.setWidth(rightCornerW);
+        }
+        if(innerHeight < 0)
+        {
+            float prop = float(topCornerH)/float(cornersHeight);
+            int topH = int(round(prop * float(_size.y)));
+            int bottomH = int(round((1.f - prop) * float(_size.y)));
+
+            _topLeftCorner.setHeight(topH);
+            _topRightCorner.setHeight(topH);
+            _topBar.setHeight(topH);
+
+            _bottomLeftCorner.setHeight(bottomH);
+            _bottomRightCorner.setHeight(bottomH);
+            _bottomBar.setHeight(bottomH);
+
+            innerHeight = 0;
+        }
+        else
+        {
+            _topLeftCorner.setHeight(topCornerH);
+            _topRightCorner.setHeight(topCornerH);
+            _topBar.setHeight(topCornerH);            
+
+            _bottomLeftCorner.setHeight(bottomCornerH);
+            _bottomRightCorner.setHeight(bottomCornerH);
+            _bottomBar.setHeight(bottomCornerH);
+        }
+
+        _topBar.setWidth(innerWidth);
+        _bottomBar.setWidth(innerWidth);
+
+        _leftBar.setHeight(innerHeight);
+        _rightBar.setHeight(innerHeight);
+
+
     }
     
     void NinePatch::setInnerSize(int x, int y, int width, int height)
