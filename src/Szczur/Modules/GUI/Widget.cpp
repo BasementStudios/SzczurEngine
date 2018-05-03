@@ -79,21 +79,25 @@ namespace rat {
                 case sf::Event::MouseMoved: {
                     auto thisSize = getSize();
                     
-                    event.mouseMove.x += int((_origin.x + _padding.x) * _winProp.x);
-                    event.mouseMove.y += int((_origin.y + _padding.y) * _winProp.y);
+                    event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
+                    event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
                     if(
                         event.mouseMove.x >= 0 &&
                         event.mouseMove.x <= thisSize.x * _winProp.x &&
                         event.mouseMove.y >= 0 &&
                         event.mouseMove.y <= thisSize.y * _winProp.y
-                    ) {
-                        if(!_isHovered) {
+                    ) 
+                    {
+                        if(!_isHovered) 
+                        {
                             _callback(CallbackType::onHoverIn);
                             _isHovered = true;
                         }
                     }
-                    else {
-                        if(_isHovered) {
+                    else 
+                    {
+                        if(_isHovered) 
+                        {
                             _callback(CallbackType::onHoverOut);
                             _isHovered = false;
                         }

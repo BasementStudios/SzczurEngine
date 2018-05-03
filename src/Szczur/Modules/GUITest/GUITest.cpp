@@ -54,6 +54,12 @@ namespace rat
         iWidget->setPosition(0.f, 200.f);
         iWidget->setSize(50, 50);
         scroll->add(iWidget);
+
+        win->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
+        widget->add(win);
+        win->setPosition(50.f, 50.f);
+        win->setScale(0.2f, 0.2f);
+
         /*
         widget3 = new Widget;
         widget3->setSize(25, 25);
@@ -131,7 +137,7 @@ namespace rat
             }
         }
 
-        testPatch.setSize(float(mousePos.x - 50), float(mousePos.y - 50));
+        win->setSize(float(mousePos.x - 50), float(mousePos.y - 50));
 
         widget->setPropOrigin(_prop, _prop);
         widget->setPosition(_size.x, _size.y);

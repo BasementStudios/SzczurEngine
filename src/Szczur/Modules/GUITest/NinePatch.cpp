@@ -214,12 +214,17 @@ namespace rat
         setInnerSize({{x, y}, {width, height}});
     }
 
-    void NinePatch::setSize(int x, int y)
+    void NinePatch::setSize(const sf::Vector2i& size)
     {
         _isSizeSet = true;
-        _size = {x, y};
+        _size = size;
         _recalcSpritesSize();
         _recalcSpritesPos();
+    }
+
+    void NinePatch::setSize(int x, int y)
+    {
+        setSize({x, y});
     }
     /*
     void NinePatch::setPosition(float x, float y)
@@ -245,6 +250,12 @@ namespace rat
     {
         setScale({x, y});
     }
+
+    sf::IntRect NinePatch::getInnerTextureRect() const
+    {
+        return _innerRect;
+    }
+    
     
     
 }
