@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include "BaseBar.hpp"
 
 #include <vector>
@@ -8,9 +8,10 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "../SkillBaseInfo.hpp"
-
+*/
 namespace rat
 {
+    /*
     class ImageWidget; class TextWidget; class TextAreaWidget;
 
     class InfoSkillArea : public BaseBar
@@ -44,4 +45,5 @@ namespace rat
         void _initProperty(TextWidget* property);
         void _initTextArea(TextAreaWidget* text);
     };
+    */
 }

@@ -6,6 +6,7 @@
 
 namespace rat
 {
+    /*
     SkillInfoArea::SkillInfoArea()
     {
         _textsBase = new Widget;
@@ -25,5 +26,5 @@ namespace rat
 
     }
     
-
+*/
 }

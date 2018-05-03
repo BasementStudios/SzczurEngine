@@ -11,6 +11,7 @@
 
 namespace rat
 {
+    /*
     class TextAreaWidget; class TextWidget;
 
     class SkillInfoArea : public BaseBar
@@ -33,4 +34,5 @@ namespace rat
 
 
     };
+    */
 }

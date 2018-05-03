@@ -6,7 +6,7 @@
 #include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
-#include "Szczur/Modules/GUITest/GUITest.hpp"
+//#include "Szczur/Modules/GUITest/GUITest.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 namespace rat
 {

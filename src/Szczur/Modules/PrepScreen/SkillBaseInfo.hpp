@@ -6,6 +6,7 @@
 
 namespace rat
 {
+    /*
     struct SkillBaseInfo
     {
         std::string name{"SkillName"}; 
@@ -19,4 +20,5 @@ namespace rat
         std::string effect{"Effect"};
         
     };
+    */
 }

@@ -6,7 +6,7 @@
 
 namespace rat
 {
-
+/*
     InfoSkillArea::InfoSkillArea()
     {
         _properties = new Widget;
@@ -25,7 +25,7 @@ namespace rat
             TextWidget* property = new TextWidget;
             _properties.emplace_back
         }
-        */
+        
     }
     void InfoSkillArea::setSize(float width, float height)
     {
@@ -65,5 +65,5 @@ namespace rat
         _textAreas.emplace_back(text);
         _addWidget(text);
     }
-
+*/
 }
