@@ -64,7 +64,7 @@ namespace rat {
             _children.push_back(object);
             object->setParent(this);
             //_aboutToRecalculate = true;
-            calculateSize();
+            _aboutToRecalculate = true;
         }
         else {
             LOG_ERROR("Widget given to Widget::add is nullptr")
@@ -234,7 +234,7 @@ namespace rat {
     void Widget::setPadding(const sf::Vector2f& padding)
     {
         _padding = padding;
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 	void Widget::setPadding(float width, float height)
     {
@@ -327,7 +327,7 @@ namespace rat {
     {
         _isMinSizeSet = true;
         _minSize = size;
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 	void Widget::setSize(size_t width, size_t height)
     {
