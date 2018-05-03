@@ -24,15 +24,16 @@ namespace rat
     _sourceBar(_parentArea.getSourceBar())
     {
         _bar = new ImageWidget;
+        //_bar->setSize(150, 72);
         _icon = new ImageWidget;
         _bar->add(_icon);
+        _icon->setSize(64, 64);
         _icon->setPosition(4.f, 4.f);
-        _icon->setPosition(4.f, 4.f);
-
 
         _infoBar = new Widget;
         _bar->add(_infoBar);
-        _infoBar->setPosition(64.f + 4.f + 4.f, 4.f + 4.f);
+        _infoBar->setPosition(64.f, 0.f);
+        _infoBar->setPadding(4.f, 4.f);
 
         _nameText = new TextWidget;
         _infoBar->add(_nameText);
@@ -40,7 +41,7 @@ namespace rat
         _nameText->setCharacterSize(14);
 
         _costBar.setParent(_infoBar);
-        _costBar.setPosition(0.f, _size.y - 16.f - _costBar.getPPSize().y);
+        _costBar.setPosition(0.f, _size.y - 12.f - _costBar.getPPSize().y);
         //_costBar.setGrayPPPosition(_size.x - 16.f - _costBar.getPPSize().x - 64.f, 0.f);
         _costBar.setWidth(150.f);
         //_costBar.setGrayPPPosition(10.f, 0.f);
@@ -140,6 +141,7 @@ namespace rat
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
+        _bar->setTexture(gui.getAsset<sf::Texture>("assets/Test/SkillBar.png"));
         _costBar.loadAssetsFromGUI(gui);
     }
 }

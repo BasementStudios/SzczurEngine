@@ -70,8 +70,7 @@ namespace rat
             const std::string path = "assets/PrepScreen/" + color + "PP.png";
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
-
-            _setWidgetSize(widget, _dim, _dim);
+            widget->setSize(_dim, _dim);
         }        
         _costAmount->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
         _setIconTexture(gui.getAsset<sf::Texture>("assets/PrepScreen/PP.png"));
@@ -80,8 +79,7 @@ namespace rat
     void CostBar::_setIconTexture(sf::Texture* texture)
     {
         _costPP->setTexture(texture);
-        auto size = static_cast<sf::Vector2f>(texture->getSize());
-        _costPP->setScale({_dim/size.x, _dim/size.y}); 
+        _costPP->setSize(_dim, _dim); 
     }
 
     void CostBar::_recalculateCostAmount()

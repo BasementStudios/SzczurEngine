@@ -6,7 +6,8 @@
 
 namespace rat
 {
-    class Widget; class ImageWidget;
+    class Widget; class ImageWidget; class WindowWidget;
+    class GUI;
 
     class ProfessionBar
     {
@@ -18,13 +19,17 @@ namespace rat
         void setParent(Widget* parent);
         void setProfession(const std::string& profession);
 
+        void initAssetsViaGUI(GUI& gui);
+
         const std::string& getProfession() const;
-        constexpr static float dim = 120.f; 
+        constexpr static float _dim = 130.f; 
+        constexpr static float _pad = 15.f; 
 
     private:
         SkillArea& _skillArea;
 
         ImageWidget* _icon{nullptr};
+        WindowWidget* _window{nullptr};
         std::string _profession;
 
         void _onClick();

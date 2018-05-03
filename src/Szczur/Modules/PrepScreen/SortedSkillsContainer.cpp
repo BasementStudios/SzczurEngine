@@ -6,6 +6,8 @@
 #include "Skill.hpp"
 #include "SkillCodex.hpp"
 
+#include "Szczur/Utility/Logger.hpp" 
+
 namespace rat
 {
     size_t SortedSkillsContainer::ColorSetHasher::operator()(const Colors_t& colors) const
@@ -107,8 +109,10 @@ namespace rat
                     wholeColors.emplace_back(skill);
                 }
             }
+            //std::cout << "Color\n";
         }
         _sort(wholeColors);
+        //std::cout << "Sorted\n";
         return wholeColors;
     }
 

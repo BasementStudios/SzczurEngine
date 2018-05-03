@@ -18,19 +18,20 @@ namespace rat
     _curentProfession("Mele")
     {
         _base = new ScrollAreaWidget;
-        _base->setSize(240.f, 400.f);
+        _base->setSize(300.f, 400.f);
     }
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
     {
-        gui.addAsset<sf::Texture>("assets/PrepScreen/skillBar.png");
         _textureBar = gui.getAsset<sf::Texture>("assets/PrepScreen/skillBar.png");
 
-        gui.addAsset<sf::Texture>("assets/PrepScreen/skillBarLocked.png");
         _textureLocked = gui.getAsset<sf::Texture>("assets/PrepScreen/skillBarLocked.png");
 
-        gui.addAsset<sf::Font>("assets/fonts/NotoMono.ttf");
         _font = gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf");
+
+        _base->setPathTexture(gui.getAsset<sf::Texture>("assets/Test/ScrollerBar.png"));
+        _base->setScrollerTexture(gui.getAsset<sf::Texture>("assets/Test/Scroller.png"));
+        _base->setBoundsTexture(gui.getAsset<sf::Texture>("assets/Test/ScrollerBound.png"));
 
         for(auto& skillBar : _skillBars)
         {

@@ -18,9 +18,7 @@ namespace rat
     {
         for(auto& profBar : _profBars)
         {
-            const std::string path = "assets/PrepScreen/" + profBar->getProfession() + "Icon.png";
-            gui.addAsset<sf::Texture>(path);
-            profBar->setTexture(gui.getAsset<sf::Texture>(path));
+            profBar->initAssetsViaGUI(gui);
         }
     }
     void ProfessionArea::setParent(Widget* parent)
@@ -36,7 +34,7 @@ namespace rat
         {
             auto profBar = std::make_unique<ProfessionBar>(skillArea);
             profBar->setParent(_base);
-            profBar->setPosition(0.f, profBar->dim * float(i++));
+            profBar->setPosition(0.f, profBar->_dim * float(i++));
             profBar->setProfession(prof);
 
             _profBars.emplace_back(std::move(profBar));
