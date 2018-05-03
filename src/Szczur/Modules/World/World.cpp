@@ -52,6 +52,7 @@ void World::init()
 		}
 		//_camera = &(this->objects["Singsle"].emplace(BaseObject{"Camera"}, SpriteDisplayData{nullptr}));
 		_camera = &(objects["Single"].emplace(BaseObject{"Camera"}, SpriteComponent{nullptr}));
+		_camera->locked = true;
 		//this->objects["Path"].emplace(BaseObject{"locha"}, SpriteComponent{nullptr}).setPosition({0.f, 0.f, -1000.f});
 
 		glEnable(GL_BLEND);
@@ -96,55 +97,80 @@ void World::_renderDisplayDataManager() {
 			try{
 				spriteDisplayData.emplace_back(enteredText);
 			}
-			catch(const std::exception& exc) {
-			}
+			catch(const std::exception& exc) {}
 			for(int i = 0; i<255; ++i)
 				enteredText[i] = '\0';
 		}
 		ImGui::Separator();
-		for(auto it = spriteDisplayData.begin(); it!=spriteDisplayData.end(); ++it) {
-			if(ImGui::SmallButton("-")) {
-				//spriteDisplayData.erase(it);
-				//--it;
+		if(ImGui::BeginChild("Datas")) {
+			for(auto it = spriteDisplayData.begin(); it!=spriteDisplayData.end(); ++it) {
+				if(ImGui::SmallButton("-")) {
+					//Set displayData pointer in every SpriteComponent object which is using this displayData
+					for(auto& it2 : objects) {
+						it2.second.forEach<SpriteComponent>([&it](auto&& object) {
+							if(object.getDisplayData() == &(*it))
+								object.setDisplayData(nullptr);
+						});
+					}
+					spriteDisplayData.erase(it);
+					--it;
+					continue;
+				}
+				ImGui::SameLine();
+				ImGui::Text(it->name.c_str());
 			}
-			ImGui::SameLine();
-			ImGui::Text(it->name.c_str());
 		}
+		ImGui::EndChild();
 	}
 	ImGui::End();
 }
 
 void World::_renderFocusedObjectsParams() {
 	if(ImGui::Begin("Object Parameters")) {
-		glm::vec3 position = _focusedObject->getPosition();
-		glm::vec3 origin = _focusedObject->getOrigin();
-		origin.y = -origin.y;
-		glm::vec3 rotation = _focusedObject->getRotation();
-		glm::vec3 scale = _focusedObject->getScale();
-		char name[255];
-		std::strcpy(&name[0], _focusedObject->name.c_str());
-		ImGui::InputText("", name, 255);
-		_focusedObject->name = std::string(name);
-		ImGui::DragFloat3("Position", reinterpret_cast<float*>(&position));
-		ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
-		ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
-		ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.01f);
-		ImGui::Checkbox("Locked", &(_focusedObject->locked));
-		_focusedObject->setPosition(position);
-		_focusedObject->setOrigin(origin);
-		_focusedObject->setRotation(rotation);
-		_focusedObject->setScale(scale);
-		ImGui::Spacing();
-		if(SpriteComponent* object = dynamic_cast<SpriteComponent*>(_focusedObject)) {
-			if(ImGui::BeginMenu("DisplayData")) {
-				if(ImGui::MenuItem("None", nullptr, object->getDisplayData() == nullptr))
-					object->setDisplayData(nullptr);
-				for(auto& it : spriteDisplayData) {
-					if(ImGui::MenuItem(it.name.c_str(), nullptr, object->getDisplayData() == &it))
-						object->setDisplayData(&it);
+		if(ImGui::CollapsingHeader("Base")) {
+			glm::vec3 position = _focusedObject->getPosition();
+			glm::vec3 origin = _focusedObject->getOrigin();
+			origin.y = -origin.y;
+			glm::vec3 rotation = _focusedObject->getRotation();
+			glm::vec3 scale = _focusedObject->getScale();
+			char name[255];
+			std::strcpy(&name[0], _focusedObject->name.c_str());
+			ImGui::InputText("", name, 255);
+			_focusedObject->name = std::string(name);
+			ImGui::DragFloat3("Position", reinterpret_cast<float*>(&position));
+			ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
+			ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
+			ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.01f);
+			ImGui::Checkbox("Locked", &(_focusedObject->locked));
+			_focusedObject->setPosition(position);
+			_focusedObject->setOrigin(origin);
+			_focusedObject->setRotation(rotation);
+			_focusedObject->setScale(scale);
+		}
+		if(ImGui::CollapsingHeader("SpriteComponent")) {
+			if(SpriteComponent* object = dynamic_cast<SpriteComponent*>(_focusedObject)) {
+				if(ImGui::BeginCombo(
+					"Display Data", 
+					(object->getDisplayData())?object->getDisplayData()->name.c_str() : "None")
+				) {
+					if(ImGui::MenuItem("None", nullptr, object->getDisplayData() == nullptr))
+						object->setDisplayData(nullptr);
+					for(auto& it : spriteDisplayData) {
+						if(ImGui::MenuItem(it.name.c_str(), nullptr, object->getDisplayData() == &it))
+							object->setDisplayData(&it);
+					}
+					ImGui::EndCombo();
 				}
-
-				ImGui::EndMenu();
+				glm::uvec2 size = ((object->getDisplayData()) ? object->getDisplayData()->getTexture().getSize() : glm::uvec2{0u, 0u});
+				ImGui::Text("Size {");
+				ImGui::SameLine();
+				ImGui::Text(std::to_string(size.x).c_str());
+				ImGui::SameLine();
+				ImGui::Text(", ");
+				ImGui::SameLine();
+				ImGui::Text(std::to_string(size.y).c_str());
+				ImGui::SameLine();
+				ImGui::Text("}");
 			}
 		}
 
@@ -177,8 +203,8 @@ void World::_renderObjectsList() {
 				}
 				ImGui::Separator();
 			}
-			ImGui::EndChild();
 		}
+		ImGui::EndChild();
 
 	}
 	ImGui::End();
