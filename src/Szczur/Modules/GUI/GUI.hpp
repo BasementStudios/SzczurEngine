@@ -28,7 +28,7 @@ namespace rat {
         Widget* addInterface();
 
         template<typename T>
-        T* getAsset(const std::string& key) const;
+        T* getAsset(const std::string& key);
 
         template<typename T>
         void addAsset(const std::string& path);
@@ -40,6 +40,7 @@ namespace rat {
         BasicGuiAssetsManager _assets;
 
         sf::RenderTexture _canvas;
+        const sf::Vector2u _standartWindowSize;
     };
 }
 

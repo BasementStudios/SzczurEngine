@@ -34,24 +34,30 @@ namespace rat {
         }
         
         template<typename T>
-        void loadFromFile(const std::string& path) {
+        T* loadFromFile(const std::string& path)
+        {
             T* obj = new T;
             if(obj->loadFromFile(path))
-                _add(
-                    fnv1a_32(path.begin(), path.end()),
-                    obj
-                );
-            else {
+            {
+                _add( fnv1a_32(path.begin(), path.end()), obj);
+                return obj;
+            }
+            else 
+            {
                 LOG_ERROR("Cannot load file: \"", path, "\"");
                 delete obj;
+                return nullptr;
             }
         }
 
         template<typename T>
-        T* get(const std::string& path) const {
+        T* get(const std::string& path)
+        {
             auto* result = _get<T>(fnv1a_32(path.begin(), path.end()));
-            if(!result) {
-                LOG_ERROR("Cannot get file: \"", path, "\"");
+            if(!result) 
+            {
+                return loadFromFile<T>(path);
+                //LOG_ERROR("Cannot get file: \"", path, "\"");
             }
             return result;
         }

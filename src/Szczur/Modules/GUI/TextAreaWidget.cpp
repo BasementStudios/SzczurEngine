@@ -61,22 +61,26 @@ namespace rat {
         sf::String sfstr = getUnicodeString(text);
         _text.setString(_wrapText(sfstr));
         _aboutToRecalculate = true;
+        calculateSize();
     }
 
     void TextAreaWidget::setSize(sf::Vector2u size) {
         _size = size;
         _toWrap = true;
         _aboutToRecalculate = true;
+        calculateSize();
     }
 
     void TextAreaWidget::setFont(sf::Font* font) {
         _text.setFont(*font);
+        calculateSize();
     }
 
     void TextAreaWidget::setCharacterSize(size_t size) {
         _text.setCharacterSize(size);
         _toWrap = true;
         _aboutToRecalculate = true;
+        calculateSize();
     }
 
     void TextAreaWidget::setColor(const sf::Color& color) {

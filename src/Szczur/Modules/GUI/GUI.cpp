@@ -5,7 +5,10 @@
 #include "TextAreaWidget.hpp"
 #include "ScrollAreaWidget.hpp"
 namespace rat {
-    GUI::GUI() {
+    GUI::GUI() 
+    :
+    _standartWindowSize(getModule<Window>().getWindow().getSize())
+    {
         LOG_INFO(this, "Module GUI constructed")
         initScript();
         auto& window = getModule<Window>().getWindow();
@@ -40,6 +43,12 @@ namespace rat {
     }
     
     void GUI::input(const sf::Event& event) {
+        if(event.type == sf::Event::Resized)
+        {
+            sf::Vector2f winProp = { float(event.size.width) / float(_standartWindowSize.x),
+            float(event.size.height) / float(_standartWindowSize.y) };
+            Widget::setWinProp(winProp);
+        }
         _root.input(event);
     }
 

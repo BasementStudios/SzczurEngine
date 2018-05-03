@@ -72,25 +72,32 @@ namespace rat {
         return object;
     }
 
-    void Widget::input(const sf::Event& event) {
+    void Widget::input(sf::Event event) {
         if(isActivated()) {
             _input(event);
             switch(event.type) {
                 case sf::Event::MouseMoved: {
                     auto thisSize = getSize();
+                    
+                    event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
+                    event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
                     if(
                         event.mouseMove.x >= 0 &&
-                        event.mouseMove.x <= thisSize.x &&
+                        event.mouseMove.x <= thisSize.x * _winProp.x &&
                         event.mouseMove.y >= 0 &&
-                        event.mouseMove.y <= thisSize.y
-                    ) {
-                        if(!_isHovered) {
+                        event.mouseMove.y <= thisSize.y * _winProp.y
+                    ) 
+                    {
+                        if(!_isHovered) 
+                        {
                             _callback(CallbackType::onHoverIn);
                             _isHovered = true;
                         }
                     }
-                    else {
-                        if(_isHovered) {
+                    else 
+                    {
+                        if(_isHovered) 
+                        {
                             _callback(CallbackType::onHoverOut);
                             _isHovered = false;
                         }
@@ -116,19 +123,26 @@ namespace rat {
 
                 default: break;
             }
-            for(auto it : _children) {
-                if(event.type == sf::Event::MouseMoved) {
-                    auto itPosition = it->getPosition();
-                    sf::Event tempEvent(event);
-                    tempEvent.mouseMove.x -= itPosition.x;
-                    tempEvent.mouseMove.y -= itPosition.y;
-                    it->input(tempEvent);
-                }
-                else
-                    it->input(event);
-            }
+            _inputChildren(event);
         }
     }
+
+	void Widget::_inputChildren(sf::Event event)
+    {
+        for(auto it : _children) 
+        {
+            if(event.type == sf::Event::MouseMoved)
+            {
+                auto itPosition = it->getPosition();
+                sf::Event tempEvent(event);
+                tempEvent.mouseMove.x -= int(itPosition.x * _winProp.x);
+                tempEvent.mouseMove.y -= int(itPosition.y * _winProp.y);
+                it->input(tempEvent);
+            }
+            else it->input(event);
+        }
+    }
+    
 
     void Widget::update(float deltaTime) {
         if(isActivated()) {
@@ -154,15 +168,17 @@ namespace rat {
             states.transform *= getTransform();
 
             //  Uncomment to get into debug mode :D
-            /*sf::RectangleShape shape;
+            sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            //shape.setFillColor(sf::Color(0,0,255,70));
+            shape.setFillColor(sf::Color(0,0,255,70));
             shape.setFillColor(sf::Color::Transparent);
             shape.setOutlineColor(sf::Color::White);
             shape.setOutlineThickness(1.f);
-            target.draw(shape, states);*/
+            target.draw(shape, states);
             
             _draw(target, states);
+
+            states.transform.translate(_padding);
             for(auto it : _children)
                 target.draw(*it, states);
         }
@@ -170,25 +186,42 @@ namespace rat {
 
     void Widget::calculateSize() {
         _aboutToRecalculate = false;
-        _size = {0u,0u};
-        for(auto it : _children) {
-            auto itSize = it->getSize();
-            auto itPosition = static_cast<sf::Vector2i>(it->getPosition());
-            auto itOrigin = it->getOrigin();
-            if(itPosition.x + itSize.x - itOrigin.x > _size.x)
-                _size.x = itPosition.x + itSize.x - itOrigin.x;
-            if(itPosition.y + itSize.y - itOrigin.y > _size.y)
-                _size.y = itPosition.y + itSize.y - itOrigin.y;
-        }
-        auto ownSize = _getSize();
-        if(ownSize.x > _size.x)
-            _size.x = ownSize.x;
-        if(ownSize.y > _size.y)
-            _size.y = ownSize.y;
+        _size = static_cast<sf::Vector2u>(_padding);
 
-        if(_parent != nullptr)
-            _parent->calculateSize();
+        if(_isMinSizeSet)
+        {
+            _size.x = std::max(_size.x, _minSize.x);
+            _size.y = std::max(_size.y, _minSize.y);
+        }
+
+        auto chSize = _getChildrenSize();
+        _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
+        _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
+
+        _calculateSize();
+        auto ownSize = _getSize();
+
+        if(ownSize.x > _size.x) _size.x = ownSize.x;
+        if(ownSize.y > _size.y) _size.y = ownSize.y;
+        
+        _recalcOrigin();
     }
+
+	sf::Vector2u Widget::_getChildrenSize()
+    {
+        sf::Vector2u size;
+        for(auto child : _children) {
+            auto childSize = child->getSize();
+            auto childPosition = static_cast<sf::Vector2i>(child->getPosition());
+            auto childOrigin = child->getOrigin();
+            if(childPosition.x + childSize.x - childOrigin.x > size.x)
+                size.x = childPosition.x + childSize.x - childOrigin.x;
+            if(childPosition.y + childSize.y - childOrigin.y > size.y)
+                size.y = childPosition.y + childSize.y - childOrigin.y;
+        }
+        return size;
+    }
+    
 
     sf::Vector2u Widget::_getSize() const {
         return {0u, 0u};
@@ -197,6 +230,23 @@ namespace rat {
     sf::Vector2u Widget::getSize() const {
         return _size;
     }
+
+    void Widget::setPadding(const sf::Vector2f& padding)
+    {
+        _padding = padding;
+        calculateSize();
+    }
+	void Widget::setPadding(float width, float height)
+    {
+        setPadding({width, height});
+    }
+
+	sf::Vector2u Widget::getMinimalSize() const
+    {
+        if(!_isMinSizeSet) return {};
+        return _minSize;
+    }
+    
 
     void Widget::activate() {
         _isActivated = true;
@@ -238,4 +288,62 @@ namespace rat {
         sf::Transformable::setPosition(x, y);
         _aboutToRecalculate = true;
     }
+
+    void Widget::setOrigin(const sf::Vector2f& origin)
+    {
+        _isPropOriginSet = false;
+        _origin = origin;
+        _recalcOrigin();
+    }
+	void Widget::setOrigin(float x, float y)
+    {
+        setOrigin({x, y});
+    }
+
+	void Widget::setPropOrigin(const sf::Vector2f& prop)
+    {
+        _isPropOriginSet = true;
+        _propOrigin = prop;
+        _recalcOrigin();
+    }
+	void Widget::setPropOrigin(float x, float y)
+    {
+        setPropOrigin({x, y});
+    }
+
+    void Widget::_recalcOrigin()
+    {
+        if(_isPropOriginSet)
+        {
+            auto size = static_cast<sf::Vector2f>(getSize());
+            _origin = {size.x * _propOrigin.x, size.y * _propOrigin.y};
+        }
+        sf::Transformable::setOrigin(_origin);
+        if(_parent) _parent->calculateSize();
+    }
+        
+
+    void Widget::setSize(sf::Vector2u size)
+    {
+        _isMinSizeSet = true;
+        _minSize = size;
+        calculateSize();
+    }
+	void Widget::setSize(size_t width, size_t height)
+    {
+        setSize({(unsigned int)width, (unsigned int)height});
+    }
+	void Widget::lockSize()
+    {
+        setSize(getSize());
+    }
+    
+    sf::Vector2f Widget::_winProp{1.f, 1.f};
+
+	void Widget::setWinProp(sf::Vector2f prop)
+    {
+        _winProp = prop;
+    }
+    
+    
 }
