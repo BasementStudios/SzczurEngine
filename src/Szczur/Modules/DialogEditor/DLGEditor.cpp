@@ -114,6 +114,8 @@ namespace rat
 
     void DLGEditor::show()
     {
+        textWindow();
+
         ImGui::Begin("Dlg Files Editor");
             _isWindowFocused = ImGui::IsWindowFocused();
             renameWindow();
@@ -161,6 +163,42 @@ namespace rat
                 }
 
             ImGui::EndPopup();
+        }
+    }
+
+    void DLGEditor::textWindow()
+    {
+        if (_isTextWindow)
+        {   
+            ImGui::Begin("Text##DLGPopupWindow");
+                size_t size = 250;
+                char *newText = new char[size] {};
+                strncpy(newText, _wrappedText.c_str(), size);
+                ImGui::InputTextMultiline("##WrappedText", newText, size, ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 65));
+                _wrappedText = newText;
+                if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+                    ImGui::SetKeyboardFocusHere(0);
+                }
+                delete[] newText;
+
+                ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 130);
+
+                if(ImGui::Button("CANCEL##TextWindow")) {
+                    _isTextWindow = false;
+                }
+
+                ImGui::SameLine(); 
+
+                if (ImGui::Button(" OK ##TextWindow")) {
+                    for(auto i = 0; i < _wrappedText.length(); ++i) {
+                        if (_wrappedText[i] == '\n' && _wrappedText[i+1] != '\n') {
+                            _wrappedText.erase(_wrappedText.begin() + i);
+                        }
+                    }
+                    _parts[_currentMajor][_currentMinor]->dialogs[_currentDialogPart] = _wrappedText;
+                    _isTextWindow = false;
+                }
+            ImGui::End();
         }
     }
 
@@ -349,7 +387,7 @@ namespace rat
 
         for (unsigned int i = 0; i < _parts[_currentMajor][_currentMinor]->dialogLines; ++i) {
             strcpy(dialogTime, _parts[_currentMajor][_currentMinor]->dialogTime[i].c_str());
-            size_t size = _parts[_currentMajor][_currentMinor]->dialogs[i].length() + 100;
+            size_t size = 250;
 			char *newText = new char[size] {};
 
             strncpy(newText, _parts[_currentMajor][_currentMinor]->dialogs[i].c_str(), size);
@@ -367,8 +405,8 @@ namespace rat
                 }
                 ImGui::PopItemWidth();
                 ImGui::SameLine();
-                if (ImGui::GetWindowWidth() - 292 > 0) {
-                    ImGui::PushItemWidth(ImGui::GetWindowWidth() - 292); 
+                if (ImGui::GetWindowWidth() - 332 > 0) {
+                    ImGui::PushItemWidth(ImGui::GetWindowWidth() - 332); 
                     if (ImGui::InputText("##DLGDialogTextInput", newText, size)) {
                         _parts[_currentMajor][_currentMinor]->dialogs[i] = newText;
                     }; 
@@ -378,6 +416,46 @@ namespace rat
                 else {
                     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 6);
                 }
+                if (ImGui::Button("...", ImVec2(32, 23))) {
+                    _isTextWindow = true;
+
+                    auto temp = _parts[_currentMajor][_currentMinor]->dialogs[i];
+                    std::string s;
+
+                    for(auto index = 0; index < temp.length(); ++index) {
+                        s += temp[index];
+                        if(temp[index] == '\n') {
+                            s += "\n";
+                        }
+                    }
+
+                    auto wordlen = [](const char * str){
+                        int tempindex=0;
+                        while(str[tempindex]!=' ' && str[tempindex]!=0 && str[tempindex]!='\n'){
+                            ++tempindex;
+                        }
+                        return(tempindex);
+                    };
+
+                    int index=0;
+                    int curlinelen = 0;
+                    while(index > s.length()){
+                        if(s[index] == '\n'){
+                            curlinelen=0;
+                        }
+                        else if(s[index] == ' ') {
+                            if(curlinelen+wordlen(&s[index+1]) >= 45){
+                                s[index] = '\n';
+                                curlinelen = 0;
+                            }
+                        }
+                        curlinelen++;
+                        index++;
+                    }
+                    _wrappedText = s;
+                    _currentDialogPart = i;
+                }
+                ImGui::SameLine();
                 ImGui::PushItemWidth(150); 
                 charactersCombo(&_parts[_currentMajor][_currentMinor]->chosenCharacter[i]);
                 ImGui::PopItemWidth();

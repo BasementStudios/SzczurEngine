@@ -58,6 +58,10 @@ namespace rat
         int _renamingMinor;
         std::string _renamingName;
 
+        bool _isTextWindow = false;
+        int _currentDialogPart;
+        std::string _wrappedText;
+
     public:
 
         DLGEditor(std::vector<CharacterData>& characters, const InputManager& inputManager);
@@ -80,6 +84,7 @@ namespace rat
         void show();
 
         void renameWindow();
+        void textWindow();
 
         void player();
         void majorPartSelector();
