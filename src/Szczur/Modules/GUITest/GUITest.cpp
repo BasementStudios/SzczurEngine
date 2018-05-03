@@ -54,6 +54,9 @@ namespace rat
         iWidget->setPosition(0.f, 200.f);
         iWidget->setSize(50, 50);
         scroll->add(iWidget);
+        iWidget->setCallback(Widget::CallbackType::onPress, [](Widget* owner){
+            std::cout << "Oddej mi tyn rower!!!111!11!\n";
+        });
 
         win->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
         widget->add(win);

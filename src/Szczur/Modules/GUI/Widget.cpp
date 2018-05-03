@@ -123,19 +123,26 @@ namespace rat {
 
                 default: break;
             }
-            for(auto it : _children) {
-                if(event.type == sf::Event::MouseMoved) {
-                    auto itPosition = it->getPosition();
-                    sf::Event tempEvent(event);
-                    tempEvent.mouseMove.x -= int(itPosition.x * _winProp.x);
-                    tempEvent.mouseMove.y -= int(itPosition.y * _winProp.y);
-                    it->input(tempEvent);
-                }
-                else
-                    it->input(event);
-            }
+            _inputChildren(event);
         }
     }
+
+	void Widget::_inputChildren(sf::Event event)
+    {
+        for(auto it : _children) 
+        {
+            if(event.type == sf::Event::MouseMoved)
+            {
+                auto itPosition = it->getPosition();
+                sf::Event tempEvent(event);
+                tempEvent.mouseMove.x -= int(itPosition.x * _winProp.x);
+                tempEvent.mouseMove.y -= int(itPosition.y * _winProp.y);
+                it->input(tempEvent);
+            }
+            else it->input(event);
+        }
+    }
+    
 
     void Widget::update(float deltaTime) {
         if(isActivated()) {

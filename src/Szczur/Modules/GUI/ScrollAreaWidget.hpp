@@ -29,6 +29,8 @@ namespace rat {
 		virtual void _input(const sf::Event& event) override;
         virtual sf::Vector2u _getSize() const override;
 		virtual void _calculateSize() override;
+
+        virtual void _inputChildren(sf::Event event) override;
     private:
         mutable sf::RenderTexture _renderTexture;
         sf::Transform _childrenTransform;

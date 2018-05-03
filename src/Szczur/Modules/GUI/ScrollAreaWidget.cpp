@@ -135,6 +135,26 @@ namespace rat {
         }
     }
 
+    void ScrollAreaWidget::_inputChildren(sf::Event event)
+    {
+        if(_isHovered)
+        {
+            for(auto it : _children) 
+            {
+                if(event.type == sf::Event::MouseMoved)
+                {
+                    auto itPosition = it->getPosition();
+                    sf::Event tempEvent(event);
+                    tempEvent.mouseMove.x += int((-itPosition.x) * _winProp.x);
+                    tempEvent.mouseMove.y += int((-itPosition.y - _offset) * _winProp.y);
+                    it->input(tempEvent);
+                }
+                else it->input(event);
+            }
+        }
+    }
+    
+
     void ScrollAreaWidget::_calculateSize()
     {
         auto size = getSize();

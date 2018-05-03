@@ -83,6 +83,8 @@ namespace rat {
 		virtual sf::Vector2u _getSize() const;
 		virtual void _calculateSize() {}
 
+		virtual void _inputChildren(sf::Event event);
+
 		bool _aboutToRecalculate;
 
 		bool _isHovered;
@@ -115,9 +117,8 @@ namespace rat {
 
 		void _recalcOrigin();
 
+	protected:
 		static sf::Vector2f _winProp;
-
-
 	};
 }
 //#include "Widget.tpp"
