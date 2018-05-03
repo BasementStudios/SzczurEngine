@@ -65,6 +65,7 @@ namespace rat {
 
 		void setSize(sf::Vector2u size);
 		void setSize(size_t width, size_t height);
+		void lockSize();
 
 		void activate();
 		void deactivate();

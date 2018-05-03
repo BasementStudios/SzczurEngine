@@ -333,8 +333,13 @@ namespace rat {
     {
         setSize({(unsigned int)width, (unsigned int)height});
     }
-
+	void Widget::lockSize()
+    {
+        setSize(getSize());
+    }
+    
     sf::Vector2f Widget::_winProp{1.f, 1.f};
+
 	void Widget::setWinProp(sf::Vector2f prop)
     {
         _winProp = prop;
