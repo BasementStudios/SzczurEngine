@@ -203,8 +203,8 @@ void SF3DSlot::_updateFrame()
 					auto& verts = _renderDisplay->verticesDisplay;
 					auto size = _renderDisplay->texture->getSize();
 
-					float sizeX = (float)size.x;
-					float sizeY = (float)size.y;
+					float sizeX = static_cast<float>(size.x);
+					float sizeY = static_cast<float>(size.y);
 
 					float texX = region.x / sizeX;
 					float texY = region.y / sizeY;
@@ -223,13 +223,13 @@ void SF3DSlot::_updateFrame()
 						{ texWidth, texY }
 					});
 					verts.set(2u, sf3d::Vertex{
-						{ region.width, -region.height, 0.f },
+						{ region.width, region.height, 0.f },
 						{ 1.f, 1.f, 1.f, 1.f },
 						{ texWidth, texHeight }
 					 });
 
 					verts.set(3u, sf3d::Vertex{
-						{ 0.f, -region.height, 0.f },
+						{ 0.f, region.height, 0.f },
 						{ 1.f, 1.f, 1.f, 1.f },
 						{ texX, texHeight }
 					});
@@ -372,12 +372,6 @@ void SF3DSlot::_updateTransform()
 	{
 		pos.x -= (globalTransformMatrix.a + globalTransformMatrix.c);
 		pos.y -= (globalTransformMatrix.b + globalTransformMatrix.d);
-	}
-
-	if (_deformVertices == nullptr || _display != _meshDisplay)
-	{
-		globalTransformMatrix.c *= -1.f;
-		globalTransformMatrix.d *= -1.f;
 	}
 
 	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
