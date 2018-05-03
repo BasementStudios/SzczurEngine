@@ -14,10 +14,12 @@ namespace rat {
 
         using Key_t = size_t;
         using Runners_t = boost::container::flat_set<std::pair<size_t, size_t>>;
-        template<typename R>
+        /*template<typename R>
         using Callback_t = std::function<R()>;
         using Condition_t = Callback_t<bool>;
-        using AfterAction_t = Callback_t<void>;
+        using AfterAction_t = Callback_t<void>;*/
+        using Condition_t = sol::function;
+        using AfterAction_t = sol::function;
         using Options_t = std::vector<Option*>;
 
         struct Option {

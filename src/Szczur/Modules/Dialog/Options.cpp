@@ -21,10 +21,10 @@ namespace rat {
             [](Options& owner, sol::table tab) {
                 if(tab["majorTarget"].valid() && tab["minorTarget"].valid()) {
                     owner.addOption(
-                        (tab["condition"].valid()) ? tab["condition"] : nullptr,
+                        ((tab["condition"].valid()) ? (tab["condition"].get<sol::function>()) : sol::function{}),
                         tab["majorTarget"],
                         tab["minorTarget"],
-                        (tab["action"].valid()) ? tab["action"] : nullptr,
+                        ((tab["action"].valid()) ? (tab["action"].get<sol::function>()) : sol::function{}),
                         (tab["finishing"].valid()) ? tab["finishing"] : false,
                         (tab["skip"].valid()) ? tab["skip"] : false
                     );
