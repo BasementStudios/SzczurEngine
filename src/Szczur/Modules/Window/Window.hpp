@@ -8,14 +8,17 @@
 
 #include <string>
 
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Vertex.hpp>
-#include <SFML/Graphics/Color.hpp>
 
+#include "Szczur/Utility/SFML3D/RenderWindow.hpp"
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/Vertex.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -25,11 +28,9 @@ namespace rat {
  **/
 class Window : public Module<>
 {
-
-
-
 	/* Types */
-	using Window_t = sf::RenderWindow;
+public:
+	using Window_t = sf3d::RenderWindow;
 
 
 
@@ -54,6 +55,7 @@ public:
 	/** @property VideoMode
 	 ** @description Defines a video mode.
 	 ** @access get set
+	 ** @info Aslo recreates the window.
 	 **/
 	sf::VideoMode getVideoMode() const;
 	void setVideoMode(const sf::VideoMode& mode);
@@ -96,12 +98,22 @@ public:
 	void init();
 	void render();
 
-	/// Cleaning
+	// Cleaning
 	void clear(const sf::Color& color = sf::Color::Transparent);
 
-	/// Drawing
+	// GL states
+	void pushGLStates();
+	void popGLStates();
+
+	// Drawing
+	// 	2D
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
+	// 	3D
+	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states);
+	void draw(const sf3d::Drawable& drawable);
+	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states);
+	void draw(const sf3d::VertexArray& vertices);
 };
 
 }

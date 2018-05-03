@@ -8,14 +8,18 @@
 
 #include <string>
 
-#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Vertex.hpp>
-#include <SFML/Graphics/Color.hpp>
 
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/Vertex.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -40,7 +44,12 @@ sf::VideoMode Window::getVideoMode() const
 void Window::setVideoMode(const sf::VideoMode& mode)
 {
 	this->videoMode = mode;
+	LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
+
+	// Recreate and reset properties
 	this->getWindow().create(this->videoMode, this->title);
+	this->getWindow().setTitle(this->title);
+	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
 /// FrameRate
@@ -51,6 +60,8 @@ unsigned int Window::getFramerateLimit() const
 void Window::setFramerateLimit(const unsigned int limit)
 {
 	this->framerateLimit = limit;
+	LOG_INFO("framerateLimit: " + this->framerateLimit);
+
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
@@ -62,7 +73,9 @@ const std::string& Window::getTitle() const
 void Window::setTitle(const std::string& title)
 {
 	this->title = title;
-	this->getWindow().create(this->videoMode, this->title);
+	LOG_INFO("Window title: " + this->title);
+
+	this->getWindow().setTitle(this->title);
 }
 
 
@@ -88,9 +101,19 @@ Window::~Window()
 void Window::init()
 {
 	// Create
+	// @todo ? load videomode from settings
 	this->setVideoMode(this->videoMode);
-	this->getWindow().setFramerateLimit(this->framerateLimit);
-	// @todo load from settings
+
+	// Shaders
+	sf3d::FShader frag;
+	frag.loadFromFile("Assets/Shaders/default.frag");
+
+	sf3d::VShader vert;
+	vert.loadFromFile("Assets/Shaders/default.vert");
+
+	sf3d::ShaderProgram* program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić.
+	program->linkShaders(frag, vert);
+	this->getWindow().setProgram(program);
 }
 
 /// render
@@ -102,17 +125,46 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color);
+	this->getWindow().clear((float)color.r, (float)color.g, (float)color.b , (float)color.a, GL_COLOR_BUFFER_BIT);
+	//@todo: Fix it.
 }
 
+/// GL states
+void Window::pushGLStates()
+{
+	this->getWindow().pushGLStates();
+}
+void Window::popGLStates()
+{
+	this->getWindow().popGLStates();
+}
+
+/// draw
+// 2D
 void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
 {
 	this->getWindow().draw(drawable, states);
 }
-
-void Window::draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
+void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states)
 {
 	this->getWindow().draw(vertices, vertexCount, type, states);
+}
+// 3D
+void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
+{
+	this->getWindow().draw(drawable, states);
+}
+void Window::draw(const sf3d::Drawable& drawable)
+{
+	this->getWindow().draw(drawable);
+}
+void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
+{
+	this->getWindow().draw(vertices, states);
+}
+void Window::draw(const sf3d::VertexArray& vertices)
+{
+	this->getWindow().draw(vertices);
 }
 
 }

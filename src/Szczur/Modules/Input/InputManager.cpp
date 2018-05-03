@@ -83,9 +83,9 @@ InputStatus_e InputManager::getStatus(const InputCode& code) const
 	return InputStatus_e::Unkept;
 }
 
-bool InputManager::checkStatus(const InputCode& code, InputStatus_e _Status) const
+bool InputManager::checkStatus(const InputCode& code, InputStatus_e status) const
 {
-	return getStatus(code) == _Status;
+	return getStatus(code) == status;
 }
 
 bool InputManager::isUnkept(const InputCode& code) const
