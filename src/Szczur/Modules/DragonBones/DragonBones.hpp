@@ -14,8 +14,8 @@
 
 #include "Szczur/Utility/Modules/Module.hpp"
 
-#include "SF3DFactory.h"
-#include "SF3DArmatureDisplay.h"
+#include "SF3DFactory.hpp"
+#include "SF3DArmatureDisplay.hpp"
 
 namespace rat 
 {

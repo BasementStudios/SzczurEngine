@@ -10,16 +10,16 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SFMLTextureAtlasData : public TextureAtlasData
+class SF3DTextureAtlasData : public TextureAtlasData
 {
-	BIND_CLASS_TYPE_B(SFMLTextureAtlasData);
+	BIND_CLASS_TYPE_B(SF3DTextureAtlasData);
 
 private:
 	sf3d::Texture* _renderTexture;
 
 public:
-	SFMLTextureAtlasData();
-	~SFMLTextureAtlasData();
+	SF3DTextureAtlasData();
+	~SF3DTextureAtlasData();
 
 	virtual TextureData* createTexture() const override;
 

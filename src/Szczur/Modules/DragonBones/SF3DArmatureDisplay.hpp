@@ -6,9 +6,7 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Rect.hpp>
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
 
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
@@ -21,7 +19,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SF3DArmatureDisplay : public IArmatureProxy
+class SF3DArmatureDisplay : public IArmatureProxy, public sf3d::Drawable
 {
 protected:
 	Armature*									_armature;

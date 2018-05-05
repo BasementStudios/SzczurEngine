@@ -85,7 +85,7 @@ TextureAtlasData* SF3DFactory::loadTextureAtlasData(const std::string& filePath,
 	if (data.str().empty())
 		return nullptr;
 
-	return static_cast<SFMLTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
+	return static_cast<SF3DTextureAtlasData*>(BaseFactory::parseTextureAtlasData(data.str().c_str(), atlasTexture, name, scale));
 }
 
 TextureAtlasData* SF3DFactory::createTextureAtlasData(std::vector<SF3DTextureData*>& texturesData, DragonBonesData* dragonBonesData)
@@ -93,7 +93,7 @@ TextureAtlasData* SF3DFactory::createTextureAtlasData(std::vector<SF3DTextureDat
 	if (dragonBonesData == nullptr)
 		return nullptr;
 
-	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SFMLTextureAtlasData>();
+	auto textureAtlasData = dragonBones::BaseObject::borrowObject<dragonBones::SF3DTextureAtlasData>();
 	
 	textureAtlasData->name = dragonBonesData->name;
 	
@@ -141,7 +141,7 @@ void SF3DFactory::update(float lastUpdate)
 
 TextureAtlasData* SF3DFactory::_buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const
 {
-	auto textureAtlasData_ = static_cast<SFMLTextureAtlasData*>(textureAtlasData);
+	auto textureAtlasData_ = static_cast<SF3DTextureAtlasData*>(textureAtlasData);
 
 	if (textureAtlasData != nullptr)
 	{
@@ -156,7 +156,7 @@ TextureAtlasData* SF3DFactory::_buildTextureAtlasData(TextureAtlasData* textureA
 	}
 	else
 	{
-		textureAtlasData_ = BaseObject::borrowObject<SFMLTextureAtlasData>();
+		textureAtlasData_ = BaseObject::borrowObject<SF3DTextureAtlasData>();
 	}
 
 	return textureAtlasData_;
