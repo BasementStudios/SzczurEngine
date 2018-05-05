@@ -41,6 +41,10 @@ namespace rat
         _isPaddingSet = true;
         Widget::setPadding(padding);
     }
+    void WindowWidget::setPadding(float x, float y)
+    {
+        setPadding({x, y});
+    }
 
     void WindowWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const
     {

@@ -15,6 +15,7 @@ namespace rat
         void setScale(float x, float y);
 
         virtual void setPadding(const sf::Vector2f& padding) override;
+        virtual void setPadding(float x, float y) override;
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual sf::Vector2u _getSize() const override;
