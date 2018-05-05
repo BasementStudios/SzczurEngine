@@ -47,7 +47,7 @@ namespace rat {
     }
 
     sf::Vector2u ImageWidget::_getSize() const {
-        return {(size_t)_sprite.getGlobalBounds().width, (size_t)_sprite.getGlobalBounds().height};
+        return {(unsigned int)_sprite.getGlobalBounds().width, (unsigned int)_sprite.getGlobalBounds().height};
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
