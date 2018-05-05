@@ -32,6 +32,7 @@ namespace rat
 
         sf::IntRect getInnerTextureRect() const;
 
+
     private:
         sf::Vector2i _size{0, 0};
         bool _isSizeSet{false};
@@ -45,8 +46,6 @@ namespace rat
 
         int _innerHeightTimes{0};
         float _innerHeight{0.f};
-
-        /*sf::Vector2f _position{0.f, 0.f};*/
 
         Patch _topBar;
         Patch _bottomBar;
