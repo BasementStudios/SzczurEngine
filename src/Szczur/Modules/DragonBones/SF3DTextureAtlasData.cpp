@@ -12,17 +12,17 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-SFMLTextureAtlasData::SFMLTextureAtlasData()
+SF3DTextureAtlasData::SF3DTextureAtlasData()
 {
 	_onClear();
 }
 
-SFMLTextureAtlasData::~SFMLTextureAtlasData()
+SF3DTextureAtlasData::~SF3DTextureAtlasData()
 {
 	_onClear();
 }
 
-void SFMLTextureAtlasData::setRenderTexture(sf3d::Texture* value)
+void SF3DTextureAtlasData::setRenderTexture(sf3d::Texture* value)
 {
 	if (_renderTexture == value)
 	{
@@ -63,7 +63,7 @@ void SFMLTextureAtlasData::setRenderTexture(sf3d::Texture* value)
 	}
 }
 
-TextureData* SFMLTextureAtlasData::createTexture() const
+TextureData* SF3DTextureAtlasData::createTexture() const
 {
 	return BaseObject::borrowObject<SF3DTextureData>();
 }
