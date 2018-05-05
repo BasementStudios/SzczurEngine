@@ -9,9 +9,7 @@
 
 namespace rat
 {
-    class ImageWidget;
-    class TextWidget;
-    class Widget;
+    class ImageWidget; class TextWidget; class Widget; class WindowWidget;
     class GUI;
 
     class SkillArea; class ChosenSkillArea; class GrayPPBar;
@@ -42,16 +40,13 @@ namespace rat
 
         void _onClick();
 
-        std::vector<ImageWidget*> _coloredPPs;
-        Widget* _infoBar{nullptr};
-        ImageWidget* _bar{nullptr};
-        ImageWidget* _icon{nullptr};
-        TextWidget* _nameText{nullptr};
-
         CostBar _costBar;
 
-        sf::Texture* _textureBar{nullptr};
-        sf::Texture* _textureLocked{nullptr};
+        WindowImage* _iconWindow{nullptr};
+        ImageWidget* _icon{nullptr};
+
+        WindowWidget* _infoBar{nullptr};
+        TextWidget* _name{nullptr};
 
         static sf::Vector2u _size; 
     };

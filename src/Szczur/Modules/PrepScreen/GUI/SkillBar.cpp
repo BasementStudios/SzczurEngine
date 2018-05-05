@@ -4,7 +4,7 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
-#include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
 
 #include "GrayPPBar.hpp"
 #include "SkillArea.hpp"
@@ -24,36 +24,12 @@ namespace rat
     _chosenArea(_parentArea.getChosenSkillArea()),
     _sourceBar(_parentArea.getSourceBar())
     {
-        _bar = new ImageWidget;
-        _bar->setSize(_size);
-        _addWidget(_bar);
-
+        _iconWindow = new WindowWidget; 
         _icon = new ImageWidget;
-        _bar->add(_icon);
-        _icon->setSize(64, 64);
-        _icon->setPosition(4.f, 4.f);
+        _infoBar = new WindowWidget;
+        _name = new TextWidget;
 
-        _infoBar = new Widget;
-        _bar->add(_infoBar);
-        _infoBar->setPosition(64.f, 0.f);
-        _infoBar->setPadding(4.f, 4.f);
-
-        _nameText = new TextWidget;
-        _infoBar->add(_nameText);
-        _nameText->setPosition(0.f, 0.f);
-        _nameText->setCharacterSize(14);
-
-        _costBar.setParent(_infoBar);
-        _costBar.setPosition(0.f, _size.y - 12.f - _costBar.getPPSize().y);
-        //_costBar.setGrayPPPosition(_size.x - 16.f - _costBar.getPPSize().x - 64.f, 0.f);
-        _costBar.setWidth(150.f);
-        //_costBar.setGrayPPPosition(10.f, 0.f);
-
-        auto click = [&](Widget* owner){
-            _onClick();
-        };
-
-        _bar->setCallback(Widget::CallbackType::onPress, click);
+        
     }
 
     void SkillBar::setSkill(Skill* skill)
