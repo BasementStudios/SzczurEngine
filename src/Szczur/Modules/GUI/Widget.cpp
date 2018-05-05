@@ -184,9 +184,11 @@ namespace rat {
         }
     }
 
-    void Widget::calculateSize() {
+    void Widget::calculateSize() 
+    {
         _aboutToRecalculate = false;
-        _size = static_cast<sf::Vector2u>(_padding);
+        auto oldSize = _size;
+        _size = {};
 
         if(_isMinSizeSet)
         {
@@ -205,6 +207,7 @@ namespace rat {
         if(ownSize.y > _size.y) _size.y = ownSize.y;
         
         _recalcOrigin();
+        if(_parent && _size != oldSize) _parent->calculateSize();
     }
 
 	sf::Vector2u Widget::_getChildrenSize()
@@ -319,7 +322,7 @@ namespace rat {
             _origin = {size.x * _propOrigin.x, size.y * _propOrigin.y};
         }
         sf::Transformable::setOrigin(_origin);
-        if(_parent) _parent->calculateSize();
+        if(_parent) _parent->_aboutToRecalculate = true;
     }
         
 
