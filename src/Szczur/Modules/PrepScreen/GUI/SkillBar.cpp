@@ -32,19 +32,23 @@ namespace rat
         _name = new TextWidget;
 
         _iconWindow->setSize(_size.y, _size.y);
-        _iconWindow->setScale(0.5f, 0.5f);
-        _add(_iconWindow);
+        _iconWindow->setScale(0.3f, 0.3f);
+        _addWidget(_iconWindow);
         
-        _icon->setSize(_size.y - 6, _size.y - 6);
+        
+        _icon->setSize(_size.y - 4, _size.y - 4);
         _iconWindow->add(_icon);
 
         _infoBar->setSize(_size.x - _size.y, _size.y);
         _infoBar->setPosition(_size.y, 0);
-        _infoBar->setScale(0.5f, 0.5f);
+        _infoBar->setScale(0.3f, 0.3f);
         _infoBar->setPadding(10, 10);
-        _add(_infoBar);
+        _infoBar->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
+            _onClick();
+        });
+        _addWidget(_infoBar);
 
-        _name->setCharacterSize(10);
+        _name->setCharacterSize(20);
         _infoBar->add(_name);
     }
 
@@ -81,7 +85,8 @@ namespace rat
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
-        auto* barTex = gui.addAsset<sf::Texture>("assets/Test/Bar.png");
+        gui.addAsset<sf::Texture>("assets/Test/Bar.png");
+        auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
         _iconWindow->setTexture(barTex, 6);
         _infoBar->setTexture(barTex, 6);
         _name->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
