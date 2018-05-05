@@ -37,8 +37,6 @@ namespace rat
 
         for(auto& skillBar : _skillBars)
         {
-            skillBar->setBarTexture(_textureBar, _textureLocked);
-            skillBar->setFont(_font);
             skillBar->loadAssetsFromGUI(gui);
         }
     }

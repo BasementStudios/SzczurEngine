@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <SFML/System/Vector2.hpp>
+
 namespace rat
 {
     class Widget; class ImageWidget;

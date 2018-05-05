@@ -15,7 +15,7 @@
 
 namespace rat
 {
-    /*
+    
      sf::Vector2u SkillBar::_size = {240, 72};
 
     SkillBar::SkillBar(SkillArea& parentArea)
@@ -26,6 +26,8 @@ namespace rat
     {
         _bar = new ImageWidget;
         _bar->setSize(_size);
+        _addWidget(_bar);
+
         _icon = new ImageWidget;
         _bar->add(_icon);
         _icon->setSize(64, 64);
@@ -54,34 +56,6 @@ namespace rat
         _bar->setCallback(Widget::CallbackType::onPress, click);
     }
 
-    void SkillBar::setParent(Widget* parent)
-    {
-        parent->add(_bar);
-    }
-
-    void SkillBar::setPosition(float x, float y)
-    {
-        _bar->setPosition(x, y);
-    }
-    void SkillBar::setPosition(const sf::Vector2f& pos)
-    {
-        _bar->setPosition(pos);
-    }
-    void SkillBar::move(float x, float y)
-    {
-        _bar->move(x, y);
-    }
-    
-
-    void SkillBar::setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture)
-    {
-        _textureBar = mainTexture;
-        _textureLocked = lockTexture;
-        _bar->setTexture(_textureBar);
-        auto size = static_cast<sf::Vector2f>(mainTexture->getSize());
-        _bar->setScale({_size.x/size.x, _size.y/size.y});
-    }
-
     void SkillBar::setSkill(Skill* skill)
     {
         _skill = skill;
@@ -94,10 +68,6 @@ namespace rat
     {
         assert(_skill);
         return _skill->getTexturePath();
-    }
-    void SkillBar::setFont(sf::Font* font)
-    {
-        _nameText->setFont(font);
     }
 
     void SkillBar::activate()
@@ -147,10 +117,5 @@ namespace rat
         _nameText->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
         _costBar.loadAssetsFromGUI(gui);
     }
-    */
-
-   SkillBar::SkillBar()
-   {
-       
-   }
+    
 }
