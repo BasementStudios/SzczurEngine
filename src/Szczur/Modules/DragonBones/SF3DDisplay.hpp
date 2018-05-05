@@ -1,5 +1,4 @@
-
-/** @file Display.hpp
+/** @file SF3DDisplay.hpp
 ** @author Piotr Krupa (piotrkrupa06@gmail.com)
 ** @author Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
 ** @author Kuba (Metriko)
@@ -82,36 +81,6 @@ public:
 			target.draw(this->verticesDisplay, states);
 		}
 	}
-
-	/* @todo .
-	sf::FloatRect getBoundingBox(const sf::Vector2f& position)
-	{
-	if (texture == nullptr)
-	return sf::FloatRect();
-
-	if (verticesDisplay.empty())
-	return sf::FloatRect();
-
-	sf::Vector2f min = verticesDisplay[0].position;
-	sf::Vector2f max = verticesDisplay[0].position;
-
-	for (auto& vert : verticesDisplay)
-	{
-	min.x = std::min(min.x, vert.position.x);
-	min.y = std::min(min.y, vert.position.y);
-	max.x = std::max(max.x, vert.position.x);
-	max.y = std::max(max.y, vert.position.y);
-	}
-
-	sf::FloatRect rect(min, max - min);
-
-	sf::Transform matrix;
-	matrix.translate(position).combine(this->transform);
-	rect = matrix.transformRect(rect);
-
-	return rect;
-	}
-	*/
 };
 
 DRAGONBONES_NAMESPACE_END

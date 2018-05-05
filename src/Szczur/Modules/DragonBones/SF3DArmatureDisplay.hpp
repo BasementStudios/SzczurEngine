@@ -1,11 +1,6 @@
-/*
-*********************************************************************
-* File          : SF3DArmatureDisplay.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DArmatureDisplay.hpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
 #pragma once
 
@@ -20,7 +15,7 @@
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
-#include "SF3DEventDispatcher.h"
+#include "SF3DEventDispatcher.hpp"
 
 #include <glm/glm.hpp>
 
@@ -31,8 +26,6 @@ class SF3DArmatureDisplay : public IArmatureProxy
 protected:
 	Armature*									_armature;
 	SFMLEventDispatcher							_dispatcher;
-
-	glm::vec3								_position;
 
 public:
 	SF3DArmatureDisplay();
@@ -51,11 +44,6 @@ public:
 	
 	Armature* getArmature() const override { return _armature; }
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
-
-	sf::FloatRect getBoundingBox() const;
-
-	void setPosition(const glm::vec3& pos) { _position = pos; }
-	auto& getPosition() { return _position; }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
 };

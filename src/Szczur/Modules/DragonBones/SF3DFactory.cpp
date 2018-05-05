@@ -1,25 +1,20 @@
-/*
-*********************************************************************
-* File          : SF3DFactory.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DFactory.cpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
-#include "SF3DFactory.h"
+#include "SF3DFactory.hpp"
 
 #include <fstream>
 #include <sstream>
 
 #include <SFML/Graphics.hpp>
 
-#include "SF3DSlot.h"
-#include "SF3DTextureData.h"
-#include "SF3DTextureAtlasData.h"
-#include "SF3DArmatureDisplay.h"
-#include "SF3DDisplay.h"
-#include "SF3DEventDispatcher.h"
+#include "SF3DSlot.hpp"
+#include "SF3DTextureData.hpp"
+#include "SF3DTextureAtlasData.hpp"
+#include "SF3DArmatureDisplay.hpp"
+#include "SF3DDisplay.hpp"
+#include "SF3DEventDispatcher.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 

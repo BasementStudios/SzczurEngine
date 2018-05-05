@@ -1,18 +1,13 @@
-/*
-*********************************************************************
-* File          : SF3DArmatureDisplay.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DArmatureDisplay.cpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
-#include "SF3DArmatureDisplay.h"
+#include "SF3DArmatureDisplay.hpp"
 
 #include <SFML/Graphics.hpp>
 
-#include "SF3DSlot.h"
-#include "SF3DDisplay.h"
+#include "SF3DSlot.hpp"
+#include "SF3DDisplay.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -64,52 +59,12 @@ void SF3DArmatureDisplay::dispose(bool disposeProxy)
 	}
 }
 
-sf::FloatRect SF3DArmatureDisplay::getBoundingBox() const
-{
-	/*auto slots = _armature->getSlots();
-	bool isFirst = true;
-
-	sf::Vector2f min;
-	sf::Vector2f max;
-
-	for (const auto slot : _armature->getSlots())
-	{
-		if (!slot->getVisible() || !slot->getDisplay())
-		{
-			continue;
-		}
-
-		auto display = static_cast<SF3DDisplay*>(slot->getRawDisplay());
-		const auto bounds = display->getBoundingBox(_position);
-		if (isFirst)
-		{
-			isFirst = false;
-			min = { bounds.left, bounds.top };
-			max = { bounds.left + bounds.width, bounds.top + bounds.height };
-		}
-		else
-		{
-			min.x = std::min(min.x, bounds.left);
-			min.y = std::min(min.y, bounds.top);
-			max.x = std::max(max.x, bounds.left + bounds.width);
-			max.y = std::max(max.y, bounds.top + bounds.height);
-		}
-	}
-	*
-	return sf::FloatRect(min, max - min);*/
-	return sf::FloatRect();
-}
-
 void SF3DArmatureDisplay::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	states.transform.translate(this->_position);
-	
 	for (auto slot : _armature->getSlots())
 	{
 		if (!slot)
 			continue;
-
-		//states.transform.translate({ 100.f, -100.f, 0 });
 
 		auto display = static_cast<SF3DDisplay*>(slot->getRawDisplay());
 		

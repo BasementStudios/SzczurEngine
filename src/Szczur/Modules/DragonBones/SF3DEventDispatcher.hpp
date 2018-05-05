@@ -1,12 +1,6 @@
-/*
-*********************************************************************
-* File          : SFMLEventDispatcher.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
-
+/** @file SF3DEventDispatcher.hpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 #pragma once
 
 #include <unordered_map>

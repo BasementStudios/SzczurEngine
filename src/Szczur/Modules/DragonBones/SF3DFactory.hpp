@@ -1,11 +1,6 @@
-/*
-*********************************************************************
-* File          : SF3DFactory.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DFactory.hpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
 #pragma once
 
@@ -14,11 +9,9 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include <SFML/Graphics/Sprite.hpp>
-
-#include "SF3DArmatureDisplay.h"
-#include "SF3DSlot.h"
-#include "SF3DTextureData.h"
+#include "SF3DArmatureDisplay.hpp"
+#include "SF3DSlot.hpp"
+#include "SF3DTextureData.hpp"
 
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 

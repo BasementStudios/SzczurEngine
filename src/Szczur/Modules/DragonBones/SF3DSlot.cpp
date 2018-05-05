@@ -1,20 +1,15 @@
-/*
-*********************************************************************
-* File          : SF3DSlot.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-*				: Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DSlot.cpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+** @author Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
+**/
 
-#include "SF3DSlot.h"
+#include "SF3DSlot.hpp"
 
 #include <SFML/Graphics.hpp>
 
-#include "SF3DArmatureDisplay.h"
-#include "SF3DTextureAtlasData.h"
-#include "SF3DTextureData.h"
+#include "SF3DArmatureDisplay.hpp"
+#include "SF3DTextureAtlasData.hpp"
+#include "SF3DTextureData.hpp"
 
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/SFML3D/Vertex.hpp"

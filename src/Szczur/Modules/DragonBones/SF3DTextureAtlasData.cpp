@@ -1,20 +1,14 @@
-/*
-*********************************************************************
-* File          : SFMLTextureAtlasData.cpp
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DTextureAtlasData.cpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
-#include "SF3DTextureAtlasData.h"
+#include "SF3DTextureAtlasData.hpp"
 
 #include <memory>
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/System/Vector2.hpp>
 
-#include "SF3DTextureData.h"
+#include "SF3DTextureData.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 

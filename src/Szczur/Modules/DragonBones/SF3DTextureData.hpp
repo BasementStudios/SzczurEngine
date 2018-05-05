@@ -1,11 +1,7 @@
-/*
-*********************************************************************
-* File          : SF3DTextureData.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DTextureAtlasData.hpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+** @author Patryk (PsychoX) Ludwikowski <psychoxivi@gmail.com>
+**/
 
 #pragma once
 

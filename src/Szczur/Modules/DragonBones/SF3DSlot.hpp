@@ -1,11 +1,6 @@
-/*
-*********************************************************************
-* File          : SF3DSlot.h
-* Project		: DragonBonesSFML
-* Developers    : Piotr Krupa (piotrkrupa06@gmail.com)
-* License   	: MIT License
-*********************************************************************
-*/
+/** @file SF3DSlot.hpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
 #pragma once
 
@@ -13,7 +8,7 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include "SF3DDisplay.h"
+#include "SF3DDisplay.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
