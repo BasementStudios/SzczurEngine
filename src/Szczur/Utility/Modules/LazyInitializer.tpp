@@ -11,6 +11,7 @@ template <typename T>
 LazyInitializer<T>& LazyInitializer<T>::operator = (const LazyInitializer<T>& rhs)
 {
 	getRef() = rhs.getRef();
+
 	return *this;
 }
 
@@ -24,6 +25,7 @@ template <typename T>
 LazyInitializer<T>& LazyInitializer<T>::operator = (LazyInitializer<T>&& rhs)
 {
 	getRef() = std::move(rhs.getRef());
+
 	return *this;
 }
 
@@ -53,18 +55,6 @@ typename LazyInitializer<T>::ConstPointer_t LazyInitializer<T>::getPtr() const
 }
 
 template <typename T>
-typename LazyInitializer<T>::Pointer_t LazyInitializer<T>::operator -> ()
-{
-	return getPtr();
-}
-
-template <typename T>
-typename LazyInitializer<T>::ConstPointer_t LazyInitializer<T>::operator -> () const
-{
-	return getPtr();
-}
-
-template <typename T>
 typename LazyInitializer<T>::Reference_t LazyInitializer<T>::getRef()
 {
 	return *getPtr();
@@ -74,18 +64,6 @@ template <typename T>
 typename LazyInitializer<T>::ConstReference_t LazyInitializer<T>::getRef() const
 {
 	return *getPtr();
-}
-
-template <typename T>
-typename LazyInitializer<T>::Reference_t LazyInitializer<T>::operator * ()
-{
-	return getRef();
-}
-
-template <typename T>
-typename LazyInitializer<T>::ConstReference_t LazyInitializer<T>::operator * () const
-{
-	return getRef();
 }
 
 template <typename T>
