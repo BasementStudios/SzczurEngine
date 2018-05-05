@@ -3,8 +3,7 @@
 namespace rat {
     Camera::Camera() :
     _view(getModule<Window>().getWindow().getDefaultView()) {
-        _view.rotate({20.f, 0.f, 0.f});
-        _view.move({100.f, 0.f, 0.f});
+        _view.move({0.f, 0.f, 1000.f});
     }
 
     void Camera::setView(const sf3d::View& view) {

@@ -39,6 +39,8 @@ namespace sf3d {
 
 		Linear getLinerByScreenPos(const glm::vec2& pos) const;
 
+		RenderStates getDefaultRenderStates() const;
+
 
 
 	private:

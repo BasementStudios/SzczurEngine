@@ -1,118 +1,112 @@
 #pragma once
 
-/** @file World.hpp
- ** @description Header file with main class of the World module. 
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
+#include <fstream>
 
-#include <vector>
-#include <string>
-#include <unordered_map>
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "Szczur/Utility/Modules/Module.hpp"
-#include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/Camera/Camera.hpp"
-#include "Szczur/Modules/Input/Input.hpp"
-//#include "Szczur/Modules/DragonBones/DragonBones.hpp"
+#include "boost/container/flat_map.hpp"
+#include <Szczur/Utility/Modules/Module.hpp>
+#include <Szczur/Modules/Input/Input.hpp>
+#include <Szczur/Modules/Window/Window.hpp>
+#include <Szczur/Modules/Camera/Camera.hpp>
 
-#include "Szczur/Modules/World/Componable.hpp"
-#include "BaseObject.hpp"
-#include "DisplayData/SpriteDisplayData.hpp" /*
-#include "DisplayData/SpriteStatesDisplayData.hpp"
-#include "DisplayData/ArmatureDisplayData.hpp"
-#include "DisplayData/ArmaturePosesDisplayData.hpp" */
-#include "Components/SpriteComponent.hpp" 
-#include "Components/InputController.hpp" /*
-#include "Components/SpriteStatesComponent.hpp"
-#include "Components/ArmatureComponent.hpp"
-#include "Components/ArmaturePosesComponent.hpp" */
+#include "Entity.hpp"
+#include "SpriteDisplayData.hpp"
 
-namespace rat {
-
-/** @class World
- ** @description Manages objects in the game world through the maps system, including loading and saving, object types management and other.
- **/
-class World : public Module<Window, Input, Camera/*, DragonBones*/>
+namespace rat
 {
-    /* Types */
-	#ifdef EDITOR
-		BaseObject* _focusedObject{nullptr};
-		BaseObject* _editorCamera{nullptr};
 
-		bool _ifRenderObjectsList{true};
-		bool _ifRenderDisplayDataManager{false};
+	class World : public Module<Window, Input, Camera>
+	{
+	public:
 
-		void _renderDisplayDataManager();
-		void _renderFocusedObjectsParams();
-		void _renderObjectsList();
-		void _renderBar();
-	#endif
-	BaseObject* _camera{nullptr};
-protected:
-	using ObjectsHolder_t = Componable::ObjectsHolder<
-		// Base type of object
-		BaseObject,
-		// All variants // @todo . budowanie z listy typów komponentów;
-		//Componable::Object<BaseObject>,
-		Componable::Object<BaseObject, SpriteComponent>
-		//Componable::Object<BaseObject, InputController>,
-		//Componable::Object<BaseObject, SpriteComponent, InputController>
-		/*,
-		Componable::Object<BaseObject, SpriteStatesComponent>,
-		Componable::Object<BaseObject, ArmatureComponent>,
-		Componable::Object<BaseObject, ArmaturePosesComponent> */
-	>;
+		using EntitiesHolder_t   = std::vector<Entity>;
+		using SpriteDisplayDataHolder_t = std::vector<SpriteDisplayData>;
+		using CollectingHolder_t = boost::container::flat_map<std::string, EntitiesHolder_t>;
+		///
+		World();
+			
 
+		///
+		World(const World&) = delete;
 
+		///
+		World& operator = (const World&) = delete;
 
-	/* Fields */
-public: // @warn priv&prop
-    std::vector<SpriteDisplayData> 			spriteDisplayData; /*
-	std::vector<SpriteStatesDisplayData>	spriteStatesDisplayData;
-	std::vector<ArmatureDisplayData> 		armatureDisplayData;
-	std::vector<ArmaturePosesDisplayData> 	armaturePosesDisplayDatas; */
+		///
+		World(World&&) = delete;
 
-	std::unordered_map<std::string, ObjectsHolder_t> objects;/*{
-		{"Foreground", ObjectsHolder_t{}},
-		{"Background", ObjectsHolder_t{}},
-		{"Path", ObjectsHolder_t{}},
-		{"Single", ObjectsHolder_t{}}
-	};*/
+		///
+		World& operator = (World&&) = delete;
 
-	//ObjectsHolder_t	singlesObjects;
-	//ObjectsHolder_t	pathObjects;
-	//ObjectsHolder_t	backgroundObjects;
-	//ObjectsHolder_t	foregroundObjects;
+		///
+		~World() = default;
 
-	std::string currentMap {""};
+		///
+		void update();
 
+		///
+		void render();
 
+		///
+		EntitiesHolder_t::iterator addEntity(const std::string group, const std::string name = _getUniqueName());
 
-	/* Operators */
-public:
-	// Module constructor/destructor
-	World();
-	~World();
+		///
+		Entity* getEntity(const std::string group, const std::string name);
 
-	// Disable coping
-	World(const World&) = delete;
-	World& operator = (const World&) = delete;
+		const Entity* getEntity(const std::string group, const std::string name) const;
 
-	// Disable moving
-	World(World&&) = delete;
-	World& operator = (World&&) = delete;
+		///
+		bool removeEntity(const std::string group, const std::string name);
 
+		///
+		void removeAllEntities(const std::string group);
 
+		///
+		void removeAllEntities();
 
-	/* Methods */
-public:
-    // Module system
-	void init();
-	void update(float deltaTime);
-	void render();
+		///
+		bool hasEntity(const std::string group, const std::string name);
 
-	// @todo . load
-	// @todo . save
-};
+		///
+		void loadFromFile(const std::string& filepath);
+
+		///
+		void saveToFile(const std::string& filepath) const;
+
+	private:
+		#ifdef EDITOR
+			void _renderBar();
+			void _renderDisplayDataManager();
+			void _renderFocusedObjectsParams();
+			void _renderObjectsList();
+			void _renderModulesManager();
+
+			bool _ifRenderObjectsList{true};
+			bool _ifRenderDisplayDataManager{false};
+			bool _anySelected{false};
+			bool _ifRenderModulesManager{false};
+			EntitiesHolder_t::iterator _focusedObject;
+			EntitiesHolder_t::iterator _camera;
+			Entity _freeCamera{""};
+			float _freeCameraVelocity{50.f};
+			bool _rotatingCamera{false};
+			sf::Vector2i _previousMouse;
+
+		#endif
+
+		static std::string _getUniqueName();
+
+		EntitiesHolder_t& _getSubHolder(const std::string& group);
+
+		const EntitiesHolder_t& _getSubHolder(const std::string& group) const;
+
+		typename EntitiesHolder_t::iterator _find(const std::string group, const std::string& name);
+
+		typename EntitiesHolder_t::const_iterator _find(const std::string group, const std::string& name) const;
+
+		CollectingHolder_t _collectingHolder;
+
+		SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
+
+	};
 
 }

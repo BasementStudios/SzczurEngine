@@ -67,6 +67,10 @@ namespace sf3d {
 		}
 	}
 
+	RenderStates RenderTarget::getDefaultRenderStates() const {
+		return _states;
+	}
+
 	void RenderTarget::draw(const Drawable & drawable, RenderStates states) {
 		drawable.draw(*this, states);
 	}

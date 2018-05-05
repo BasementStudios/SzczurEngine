@@ -32,7 +32,7 @@ public:
 
 	void init();
 
-	void input();
+	bool input();
 
 	void update();
 

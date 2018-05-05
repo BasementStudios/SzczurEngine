@@ -29,7 +29,7 @@ void Application::init()
 	#endif
 }
 
-void Application::input()
+bool Application::input()
 {
 	sf::Event event;
 
@@ -44,8 +44,10 @@ void Application::input()
 
 		if (event.type == sf::Event::Closed) {
 			getModule<Window>().getWindow().close();
+			return false;
 		}
 	}
+	return true;
 }
 
 void Application::update()
@@ -59,14 +61,15 @@ void Application::update()
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
 	}
 	#endif
-	getModule<World>().update(deltaTime);
+	getModule<World>().update();
 	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();
 }
 
 void Application::render()
-{
-	getModule<Window>().clear();
+{	
+	glEnable(GL_DEPTH_TEST);
+	getModule<Window>().getWindow().clear(37.f, 37.f, 37.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	getModule<World>().render();
 
@@ -87,9 +90,10 @@ int Application::run()
 		LOG_INFO("Starting main loop of application");
 
 		while (getModule<Window>().getWindow().isOpen()) {
-			input();
-			update();
-			render();
+			if(input()) {
+				update();
+				render();
+			}
 		}
 	}
 	catch (const std::exception& exception) {
