@@ -13,6 +13,7 @@ void Application::init()
 
 	initModule<Window>();
 	initModule<Input>();
+	initModule<World>();
 
 	LOG_INFO("Modules initialized");
 
@@ -53,6 +54,8 @@ void Application::update()
 		Put other updates here
 	*/
 
+	getModule<World>().update();
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -75,6 +78,8 @@ void Application::render()
 		ImGui::SFML::Render(getModule<Window>().getWindow());
 	}
 	#endif
+
+	getModule<World>().render();
 
 	getModule<Window>().render();
 }
