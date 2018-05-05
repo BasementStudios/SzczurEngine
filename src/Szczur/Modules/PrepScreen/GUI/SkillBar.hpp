@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BaseBar.hpp"
+
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "../Skill.hpp"
 
@@ -14,19 +16,13 @@ namespace rat
 
     class SkillArea; class ChosenSkillArea; class GrayPPBar;
 
-    class SkillBar
+    class SkillBar : public BaseBar
     {
     public:
         SkillBar(SkillArea& parentArea);
         void setSkill(Skill* skill);
-        void setParent(Widget* parent);
-        void setPosition(float x, float y);
-        void setPosition(const sf::Vector2f& pos);
-        void move(float x, float y);
-        void setBarTexture(sf::Texture* mainTexture, sf::Texture* lockTexture);
         const std::string& getIconPath() const;
         void setIconTexture(sf::Texture* icon); 
-        void setFont(sf::Font* font);
         void loadAssetsFromGUI(GUI& gui);
 
         void activate();
@@ -57,6 +53,6 @@ namespace rat
         sf::Texture* _textureBar{nullptr};
         sf::Texture* _textureLocked{nullptr};
 
-        static sf::Vector2f _size; 
+        static sf::Vector2u _size; 
     };
 }

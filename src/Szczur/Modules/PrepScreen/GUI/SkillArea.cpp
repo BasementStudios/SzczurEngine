@@ -2,12 +2,14 @@
 
 #include <algorithm>
 
+
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 
 #include "ChosenSkillArea.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
+#include <ctime>
 
 namespace rat
 {
@@ -176,5 +178,6 @@ namespace rat
                 activeIndex++;
             }
         }
+        _base->calculateSize();
     }
 }

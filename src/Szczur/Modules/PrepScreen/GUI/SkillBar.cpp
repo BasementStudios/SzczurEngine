@@ -15,7 +15,8 @@
 
 namespace rat
 {
-     sf::Vector2f SkillBar::_size = {240.f, 72.f};
+    /*
+     sf::Vector2u SkillBar::_size = {240, 72};
 
     SkillBar::SkillBar(SkillArea& parentArea)
     :
@@ -24,7 +25,7 @@ namespace rat
     _sourceBar(_parentArea.getSourceBar())
     {
         _bar = new ImageWidget;
-        //_bar->setSize(150, 72);
+        _bar->setSize(_size);
         _icon = new ImageWidget;
         _bar->add(_icon);
         _icon->setSize(64, 64);
@@ -141,7 +142,15 @@ namespace rat
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
+        gui.addAsset<sf::Texture>("assets/Test/SkillBar.png");
         _bar->setTexture(gui.getAsset<sf::Texture>("assets/Test/SkillBar.png"));
+        _nameText->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
         _costBar.loadAssetsFromGUI(gui);
     }
+    */
+
+   SkillBar::SkillBar()
+   {
+       
+   }
 }

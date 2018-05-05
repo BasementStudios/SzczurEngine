@@ -4,6 +4,8 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 
+#include <ctime>
+
 namespace rat
 {
     ProfessionBar::ProfessionBar(SkillArea& skillArea)
@@ -50,7 +52,10 @@ namespace rat
 
     void ProfessionBar::_onClick()
     {
+        clock_t t = clock();        
         _skillArea.setProfession(_profession);
+        float time = float(clock() - t);
+        std::cout << "Time elapsed: " << time/CLOCKS_PER_SEC << "s\n";
     }
     
 }

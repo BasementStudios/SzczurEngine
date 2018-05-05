@@ -11,6 +11,9 @@ namespace rat
     public:
         BaseBar();
         void setPosition(float x, float y);
+        void setPosition(const sf::Vector2f& position);
+        void move(float offsetX, float offsetY);
+        void move(const sf::Vector2f& offset);
         void setParent(Widget* parent);
         void deactivate();
         void activate();
