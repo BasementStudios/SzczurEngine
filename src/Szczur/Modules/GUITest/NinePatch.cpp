@@ -226,12 +226,7 @@ namespace rat
     {
         setSize({x, y});
     }
-    /*
-    void NinePatch::setPosition(float x, float y)
-    {
-        _position = {x, y};
-        //_recalcSpritesPos();
-    }*/
+
     void NinePatch::setScale(const sf::Vector2f& scale)
     {
         _topLeftCorner.setScale(scale);
@@ -246,6 +241,7 @@ namespace rat
         _recalcSpritesSize();
         _recalcSpritesPos();
     }
+    
     void NinePatch::setScale(float x, float y)
     {
         setScale({x, y});

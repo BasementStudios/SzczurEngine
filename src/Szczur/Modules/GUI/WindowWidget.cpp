@@ -6,26 +6,40 @@ namespace rat
     :
     Widget()
     {
-        _ninePatch.setScale(0.2f, 0.2f);
+        setScale({0.2f, 0.2f});
     }
     
     void WindowWidget::setTexture(sf::Texture* texture, int padding)
     {
         _ninePatch.setTexture(texture, padding);
-        setPadding(padding, padding);
+        _calcPadding();
     }
     void WindowWidget::setScale(const sf::Vector2f& scale)
     {
-        auto innerRect = _ninePatch.getInnerTextureRect();
-        sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
-        sf::Vector2f padding = {rectPadding.x * scale.x, rectPadding.y * scale.y};
-
         _ninePatch.setScale(scale);
-        setPadding(padding);
+        _scale = scale;
+        _calcPadding();
     }
+    void WindowWidget::_calcPadding()
+    {
+        if(!_isPaddingSet)
+        {
+            auto innerRect = _ninePatch.getInnerTextureRect();
+            sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
+            sf::Vector2f padding = {rectPadding.x * _scale.x, rectPadding.y * _scale.y};
+            Widget::setPadding(padding);
+        }
+    }
+    
     void WindowWidget::setScale(float x, float y)
     {
         setScale({x, y});
+    }
+
+    void WindowWidget::setPadding(const sf::Vector2f& padding)
+    {
+        _isPaddingSet = true;
+        Widget::setPadding(padding);
     }
 
     void WindowWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const
