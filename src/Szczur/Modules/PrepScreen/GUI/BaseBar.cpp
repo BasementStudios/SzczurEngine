@@ -29,6 +29,14 @@ namespace rat
     {
         parent->add(_base);
     }
+    void BaseBar::setSize(const sf::Vector2u& size)
+    {
+        _base->setSize(size);
+    }
+    void BaseBar::setSize(unsigned int width, unsigned int height)
+    {
+        setSize({width, height});
+    }
     void BaseBar::_addWidget(Widget* addon)
     {
         _base->add(addon);
@@ -43,11 +51,18 @@ namespace rat
     void BaseBar::deactivate()
     {
         _base->deactivate();
+        _base->invisible();
     }
     void BaseBar::activate()
     {
         _base->activate();
+        _base->visible();
     }
+    bool BaseBar::isActivate() const
+    {
+        return _base->isActivated();
+    }
+    
     /*
     void BaseBar::invisible()
     {

@@ -24,18 +24,34 @@ namespace rat
     _chosenArea(_parentArea.getChosenSkillArea()),
     _sourceBar(_parentArea.getSourceBar())
     {
+        setSize(_size);
+
         _iconWindow = new WindowWidget; 
         _icon = new ImageWidget;
         _infoBar = new WindowWidget;
         _name = new TextWidget;
 
+        _iconWindow->setSize(_size.y, _size.y);
+        _iconWindow->setScale(0.5f, 0.5f);
+        _add(_iconWindow);
         
+        _icon->setSize(_size.y - 6, _size.y - 6);
+        _iconWindow->add(_icon);
+
+        _infoBar->setSize(_size.x - _size.y, _size.y);
+        _infoBar->setPosition(_size.y, 0);
+        _infoBar->setScale(0.5f, 0.5f);
+        _infoBar->setPadding(10, 10);
+        _add(_infoBar);
+
+        _name->setCharacterSize(10);
+        _infoBar->add(_name);
     }
 
     void SkillBar::setSkill(Skill* skill)
     {
         _skill = skill;
-        _nameText->setString(skill->getName());
+        _name->setString(skill->getName());
         _costBar.setSkill(skill);
         _icon->setTexture(skill->getTexture());
     }
@@ -44,29 +60,6 @@ namespace rat
     {
         assert(_skill);
         return _skill->getTexturePath();
-    }
-
-    void SkillBar::activate()
-    {
-        _bar->activate();
-        _bar->visible();
-        _icon->activate();
-        _icon->visible();
-        if(!_bar->getTexture()) std::cout << "Texture is bad\n";
-        _isActivate = true;
-    }
-    void SkillBar::deactivate()
-    {
-        _bar->deactivate();
-        _bar->invisible();
-        _icon->deactivate();
-        _icon->invisible();
-        _isActivate = false;
-    }
-
-    bool SkillBar::isActivate() const
-    {
-        return _isActivate;
     }
 
     void SkillBar::_onClick()
@@ -88,9 +81,10 @@ namespace rat
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
-        gui.addAsset<sf::Texture>("assets/Test/SkillBar.png");
-        _bar->setTexture(gui.getAsset<sf::Texture>("assets/Test/SkillBar.png"));
-        _nameText->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
+        auto* barTex = gui.addAsset<sf::Texture>("assets/Test/Bar.png");
+        _iconWindow->setTexture(barTex, 6);
+        _infoBar->setTexture(barTex, 6);
+        _name->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
         _costBar.loadAssetsFromGUI(gui);
     }
     

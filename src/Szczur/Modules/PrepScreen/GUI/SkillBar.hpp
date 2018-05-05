@@ -23,9 +23,6 @@ namespace rat
         void setIconTexture(sf::Texture* icon); 
         void loadAssetsFromGUI(GUI& gui);
 
-        void activate();
-        void deactivate();
-        bool isActivate() const;
         bool isBought() const{
             return _skill->isBought();
         }
@@ -42,7 +39,7 @@ namespace rat
 
         CostBar _costBar;
 
-        WindowImage* _iconWindow{nullptr};
+        WindowWidget* _iconWindow{nullptr};
         ImageWidget* _icon{nullptr};
 
         WindowWidget* _infoBar{nullptr};
