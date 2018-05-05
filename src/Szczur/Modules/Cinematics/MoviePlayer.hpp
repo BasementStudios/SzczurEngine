@@ -34,14 +34,16 @@ private:
     int             m_frameFinished;
     int             m_numBytes;
     uint8_t         *m_buffer = nullptr;
-    int64_t         m_lastDecodedTimeStamp = 0;
-    
+    int             m_ICurrentFrame = 0;
+    int             ICurrentLoop = 0;
+    int             max = 0;
+    float           IframeTime;
     AVDictionary    *m_optionsDict = nullptr;
     AVDictionary    *m_optionsDictA = nullptr;
     SwsContext      *m_sws_ctx = nullptr;
-    sf::Texture m_im_video;
-    bool m_syncAV = false;
-    int64_t m_blockPts = 0;
+    sf::Texture     m_im_video;
+    bool            m_syncAV = false;
+    int64_t         m_blockPts = 0;
     std::vector<AVPacket*> m_audioSyncBuffer;
 
     sf::Clock *m_VClock;

@@ -75,6 +75,8 @@ void MoviePlayer::jumpTo(const unsigned int &seekTarget)
         double fps = av_q2d(m_pFormatCtx->streams[m_videoStream]->r_frame_rate);
         int64_t seekOnVideo = seekTarget * (fps/1000000);
 
+        m_ICurrentFrame = seekOnVideo;
+
         seekOnVideo = seekOnVideo *
              (m_pFormatCtx->streams[m_videoStream]->time_base.den /
               m_pFormatCtx->streams[m_videoStream]->time_base.num) /
@@ -119,9 +121,9 @@ void MoviePlayer::play()
     int IstartTime;
 
     size_t count =  m_loops.size();
-    int ICurrentLoop = 0;
-    int max = 0;
     
+    float IframeTime = 1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->r_frame_rate);
+ 
     while (window.isOpen())
     {
         sf::sleep(sf::milliseconds(1));
@@ -275,8 +277,7 @@ void MoviePlayer::play()
         }
 
         const auto pStream = m_pFormatCtx->streams[m_videoStream];
-        
-        if(m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady() && !m_sound->g_videoPkts.empty())
+        if(m_sound->timeElapsed() > IframeTime * m_ICurrentFrame && m_sound->isAudioReady() && !m_sound->g_videoPkts.empty())
         {
             packet_ptr = m_sound->g_videoPkts.front();
             m_sound->g_videoPkts.pop_front();
@@ -285,6 +286,7 @@ void MoviePlayer::play()
             
             if(m_frameFinished)
             {
+                m_ICurrentFrame++;
                 sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize);
                 
                 for (int i = 0, j = 0; i < FrameSize; i += 3, j += 4)
@@ -302,16 +304,11 @@ void MoviePlayer::play()
                 
                 if(!m_loops.empty() && m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->draw();
                 window.display();
-                
-                int64_t timestamp = av_frame_get_best_effort_timestamp(m_pFrame);
-                int64_t startTime = pStream->start_time != AV_NOPTS_VALUE ? pStream->start_time : 0;
-                int64_t ms = 1000 * (timestamp - startTime) * av_q2d(pStream->time_base);
-                m_lastDecodedTimeStamp = ms;
-                
+                           
                 if(m_syncAV)
                 {
-                    m_blockPts = ms;
-                    m_sound->setPlayingOffset(sf::milliseconds(m_blockPts));
+                    m_blockPts = IframeTime * m_ICurrentFrame;
+                    m_sound->setPlayingOffset(sf::milliseconds(IframeTime * m_ICurrentFrame));
                     max = m_sound->timeElapsed()*1000;
                     if(!m_loops.empty()) m_loops[ICurrentLoop]->setTime(max);
                     m_syncAV = false;

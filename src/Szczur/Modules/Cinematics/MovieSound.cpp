@@ -116,7 +116,7 @@ bool MovieSound::onGetData(sf::SoundStream::Chunk &data)
         g_audioPkts.pop_front();
       
         do {
-            needsMoreDecoding = decodePacket(packet, m_audioFrame, gotFrame);
+            needsMoreDecoding = decodePacket(packet, m_audioFrame, gotFrame);     
              
             if (gotFrame)
             {
@@ -150,5 +150,5 @@ void MovieSound::onSeek(sf::Time timeOffset)
     }
     g_audioPkts.clear();
     avcodec_flush_buffers(m_codecCtx);
-    g_newPktCondition.notify_one();
+  //  g_newPktCondition.notify_one();
 }
