@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include <SFML/Graphics/String.hpp>
+#include <SFML/System/String.hpp>
 
 namespace rat
 {
