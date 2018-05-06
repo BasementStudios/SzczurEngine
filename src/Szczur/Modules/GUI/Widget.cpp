@@ -166,7 +166,7 @@ namespace rat {
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         if(isVisible()) {
             states.transform *= getTransform();
-
+            /*
             //  Uncomment to get into debug mode :D
             sf::RectangleShape shape;
             shape.setSize(static_cast<sf::Vector2f>(getSize()));
@@ -175,6 +175,7 @@ namespace rat {
             shape.setOutlineColor(sf::Color::White);
             shape.setOutlineThickness(1.f);
             target.draw(shape, states);
+            */
             
             _draw(target, states);
 

@@ -36,7 +36,7 @@ namespace rat
         _addWidget(_iconWindow);
         
         
-        _icon->setSize(_size.y - 4, _size.y - 4);
+        _icon->setSize(_size.y - 2 * round(_iconWindow->getPadding().x), _size.y - 2 * round(_iconWindow->getPadding().x));
         _iconWindow->add(_icon);
 
         _infoBar->setSize(_size.x - _size.y, _size.y);
