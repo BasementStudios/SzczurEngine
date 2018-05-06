@@ -10,6 +10,9 @@
 
 #include "Entity.hpp"
 #include "SpriteDisplayData.hpp"
+#include "ArmatureComponent.hpp"
+#include "ArmatureDisplayData.hpp"
+#include "LevelEditor.hpp"
 
 namespace rat
 {
@@ -20,6 +23,7 @@ namespace rat
 
 		using EntitiesHolder_t   = std::vector<Entity>;
 		using SpriteDisplayDataHolder_t = std::vector<SpriteDisplayData>;
+		using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
 		using CollectingHolder_t = boost::container::flat_map<std::string, EntitiesHolder_t>;
 		///
 		World();
@@ -73,25 +77,8 @@ namespace rat
 		void saveToFile(const std::string& filepath) const;
 
 	private:
-		#ifdef EDITOR
-			void _renderBar();
-			void _renderDisplayDataManager();
-			void _renderFocusedObjectsParams();
-			void _renderObjectsList();
-			void _renderModulesManager();
 
-			bool _ifRenderObjectsList{true};
-			bool _ifRenderDisplayDataManager{false};
-			bool _anySelected{false};
-			bool _ifRenderModulesManager{false};
-			EntitiesHolder_t::iterator _focusedObject;
-			EntitiesHolder_t::iterator _camera;
-			Entity _freeCamera{""};
-			float _freeCameraVelocity{50.f};
-			bool _rotatingCamera{false};
-			sf::Vector2i _previousMouse;
-
-		#endif
+		EntitiesHolder_t::iterator _camera;
 
 		static std::string _getUniqueName();
 
@@ -106,6 +93,10 @@ namespace rat
 		CollectingHolder_t _collectingHolder;
 
 		SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
+
+		ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
+
+		LevelEditor _levelEditor;
 
 	};
 

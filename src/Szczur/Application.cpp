@@ -53,7 +53,6 @@ bool Application::input()
 void Application::update()
 {
 	float deltaTime = _mainClock.restart().asFSeconds();
-	
 	getModule<DragonBones>().update(deltaTime);
 	
 	#ifdef EDITOR

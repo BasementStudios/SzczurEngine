@@ -69,7 +69,6 @@ public:
 	bool addComponent(size_t componentID)
 	{
 		if (hasComponent(componentID)) return false;
-
 		_holder.emplace_back(ComponentTraits::createFromComponentID(componentID));
 
 		return true;
