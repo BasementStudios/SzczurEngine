@@ -5,8 +5,7 @@
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
 #include "Component.hpp"
-// #include "SpriteDisplayData.hpp"
-class SpriteDisplayData;
+#include "Szczur/Modules/World/Data/SpriteDisplayData.hpp"
 
 namespace rat
 {
@@ -17,7 +16,7 @@ public:
 
 	///
 	SpriteComponent()
-		: Component{ typeID<SpriteComponent>(), "SpriteComponent", typeID<sf3d::Drawable>() }
+		: Component { typeID<SpriteComponent>(), "SpriteComponent", typeID<sf3d::Drawable>() }
 	{
 
 	}
@@ -87,15 +86,15 @@ public:
 	///
 	virtual void saveToConfig(Json& config) const override
 	{
-		config["name"] = getName();
+		// config["name"] = getName();
 		//config["textureID"] = getTextureID();
 		//config["verticesCount"] = getVerticesCount();
 	}
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override {
-		//states.transform *= getTransform().;
-		//getTransform();
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override
+	{
+
 	}
 
 private:

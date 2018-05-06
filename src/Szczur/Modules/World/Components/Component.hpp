@@ -15,6 +15,9 @@ size_t typeID()
 	return reinterpret_cast<size_t>(&typeID<T>);
 }
 
+// FWD
+class Entity;
+
 class Component
 {
 public:
