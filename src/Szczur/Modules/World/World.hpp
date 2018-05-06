@@ -1,5 +1,7 @@
 #pragma once
+
 #include <memory>
+
 #include "Scene.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
@@ -33,7 +35,7 @@ public:
 	~World();
 
 	///
-	void update();
+	void update(float deltaTime);
 
 	///
 	void render();
@@ -51,6 +53,9 @@ public:
 	Scene* getCurrentScene() const;
 
 	///
+	size_t getCurrentSceneID() const;
+
+	///
 	bool hasScene(size_t id) const;
 
 	///
@@ -60,7 +65,16 @@ public:
 	void removeAllScenes();
 
 	///
+	ScenesHolder_t& getScenes();
+
+	///
 	const ScenesHolder_t& getScenes() const;
+
+	///
+	void loadFromFile(const std::string& filepath);
+
+	///
+	void saveToFile(const std::string& filepath) const;
 
 private:
 

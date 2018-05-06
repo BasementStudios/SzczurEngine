@@ -1,5 +1,3 @@
-#include "Entity.hpp"
-
 #include <algorithm>
 
 #include "Scene.hpp"
@@ -7,7 +5,7 @@
 namespace rat
 {
 
-Entity::Entity(const Scene* parent)
+Entity::Entity(Scene* parent)
 	: _id { _getUniqueID() }
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
@@ -38,7 +36,7 @@ Entity& Entity::operator = (const Entity& rhs)
 	return *this;
 }
 
-void Entity::update()
+void Entity::update(float /*deltaTime*/)
 {
 
 }
@@ -63,6 +61,11 @@ const std::string& Entity::getName() const
 	return _name;
 }
 
+Scene* Entity::getScene()
+{
+	return _parent;
+}
+
 const Scene* Entity::getScene() const
 {
 	return _parent;
@@ -80,33 +83,37 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 
 void Entity::loadFromConfig(const Json& config)
 {
-	// for (const Json& component : config["components"])
-	// {
-	// 	addComponent(component["name"].get<std::string>());
-	//
-	// 	getComponent(component["name"].get<std::string>())->loadFromConfig(component);
-	// }
+	_id = config["id"];
+	_name = config["name"];
+
+	const Json& components = config["components"];
+
+	for (const Json& component : components)
+	{
+		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
+	}
 }
 
 void Entity::saveToConfig(Json& config) const
 {
-	// config["name"] = getName();
-	// config["components"] = Json::array();
-	//
-	// for (const auto& component : getComponents())
-	// {
-	// 	config["components"].push_back(Json::object());
-	// 	Json& currComponent = config["components"].back();
-	//
-	// 	component->saveToConfig(currComponent);
-	// }
+	config["id"] = getID();
+	config["name"] = getName();
+	config["components"] = Json::array();
+
+	for (const auto& component : _holder)
+	{
+		config["components"].push_back(Json::object());
+		Json& comp = config["components"].back();
+
+		component->saveToConfig(comp);
+	}
 }
 
 size_t Entity::_getUniqueID()
 {
 	static size_t id = 0;
 
-	return id++;
+	return ++id;
 }
 
 typename Entity::ComponentsHolder_t::iterator Entity::_findByComponentID(size_t id)
@@ -123,19 +130,17 @@ typename Entity::ComponentsHolder_t::const_iterator Entity::_findByComponentID(s
 	});
 }
 
-typename Entity::ComponentsHolder_t::iterator Entity::_findByFeatureID(size_t featureID)
+typename Entity::ComponentsHolder_t::iterator Entity::_findByFeature(Component::Feature_e feature)
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
-		const auto& featureIDs = arg->getFeatureIDs();
-		return std::find(featureIDs.begin(), featureIDs.end(), featureID) != featureIDs.end();
+		return arg->getFeatures() & feature;
 	});
 }
 
-typename Entity::ComponentsHolder_t::const_iterator Entity::_findByFeatureID(size_t featureID) const
+typename Entity::ComponentsHolder_t::const_iterator Entity::_findByFeature(Component::Feature_e feature) const
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
-		const auto& featureIDs = arg->getFeatureIDs();
-		return std::find(featureIDs.begin(), featureIDs.end(), featureID) != featureIDs.end();
+		return arg->getFeatures() & feature;
 	});
 }
 

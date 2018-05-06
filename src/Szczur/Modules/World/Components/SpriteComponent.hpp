@@ -4,7 +4,7 @@
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
-#include "Component.hpp"
+#include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/World/Data/SpriteDisplayData.hpp"
 
 namespace rat
@@ -15,8 +15,8 @@ class SpriteComponent : public sf3d::Drawable, public Component
 public:
 
 	///
-	SpriteComponent()
-		: Component { typeID<SpriteComponent>(), "SpriteComponent", typeID<sf3d::Drawable>() }
+	SpriteComponent(Entity* parent)
+		: Component { parent, fnv1a_64("SpriteComponent"), "SpriteComponent", Component::Drawable }
 	{
 
 	}
@@ -55,23 +55,17 @@ public:
 	}
 
 	///
-	virtual void* getFeature(size_t featureID) override
+	virtual void* getFeature(Component::Feature_e feature) override
 	{
-		if (featureID == typeID<sf3d::Drawable>())
-		{
-			return static_cast<sf3d::Drawable*>(this);
-		}
+		if (feature == Feature_e::Drawable)	return static_cast<sf3d::Drawable*>(this);
 
 		return nullptr;
 	}
 
 	///
-	virtual const void* getFeature(size_t featureID) const override
+	virtual const void* getFeature(Component::Feature_e feature) const override
 	{
-		if (featureID == typeID<sf3d::Drawable>())
-		{
-			return static_cast<const sf3d::Drawable*>(this);
-		}
+		if (feature == Feature_e::Drawable) return static_cast<const sf3d::Drawable*>(this);
 
 		return nullptr;
 	}
@@ -79,22 +73,19 @@ public:
 	///
 	virtual void loadFromConfig(const Json& config) override
 	{
-		//setTextureID(config["textureID"].get<int>());
-		//setVerticesCount(config["verticesCount"].get<size_t>());
+		Component::loadFromConfig(config);
 	}
 
 	///
 	virtual void saveToConfig(Json& config) const override
 	{
-		// config["name"] = getName();
-		//config["textureID"] = getTextureID();
-		//config["verticesCount"] = getVerticesCount();
+		Component::saveToConfig(config);
 	}
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override
+	virtual void draw(sf3d::RenderTarget& /*target*/, sf3d::RenderStates /*states*/) const override
 	{
-
+		// TODO
 	}
 
 private:

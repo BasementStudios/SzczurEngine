@@ -2,7 +2,7 @@
 
 #include "Szczur/Utility/SFML3D/Transformable.hpp"
 
-#include "Components/Components.hpp"
+#include "Components.hpp"
 
 namespace rat
 {
@@ -17,7 +17,7 @@ public:
 	using ComponentsHolder_t = std::vector<std::unique_ptr<Component>>;
 
 	///
-	Entity(const Scene* parent);
+	Entity(Scene* parent);
 
 	///
 	Entity(const Entity& rhs);
@@ -35,7 +35,7 @@ public:
 	virtual ~Entity() = default;
 
 	///
-	void update();
+	void update(float deltaTime);
 
 	///
 	void render();
@@ -48,6 +48,9 @@ public:
 
 	///
 	const std::string& getName() const;
+
+	///
+	Scene* getScene();
 
 	///
 	const Scene* getScene() const;
@@ -66,23 +69,23 @@ public:
 	}
 
 	///
-	Component* addComponent(size_t componentID)
+	Component* addComponent(Hash64_t componentID)
 	{
-		return addComponent(ComponentTraits::createFromComponentID(componentID));
+		return addComponent(ComponentTraits::createFromComponentID(this, componentID));
 	}
 
 	///
 	template <typename T>
 	Component* addComponent()
 	{
-		return addComponent(typeID<T>());
+		return addComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
 	void removeAllComponents();
 
 	///
-	bool removeComponent(size_t componentID)
+	bool removeComponent(Hash64_t componentID)
 	{
 		if (auto it = _findByComponentID(componentID); it != _holder.end())
 		{
@@ -98,11 +101,11 @@ public:
 	template <typename T>
 	bool removeComponent()
 	{
-		return removeComponent(typeID<T>());
+		return removeComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
-	Component* getComponent(size_t componentID) const
+	Component* getComponent(Hash64_t componentID) const
 	{
 		if (auto it = _findByComponentID(componentID); it != _holder.end())
 		{
@@ -116,23 +119,25 @@ public:
 	template <typename T>
 	Component* getComponent() const
 	{
-		return getComponent(typeID<T>());
+		return getComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
 	template <typename T>
 	T* getComponentAs() const
 	{
-		return static_cast<T*>(getComponent(typeID<T>()));
+		return static_cast<T*>(getComponent(ComponentTraits::getIdentifierFromType<T>()));
 	}
 
 	///
 	template <typename T>
 	T* getFeature()
 	{
-		if (auto it = _findByFeatureID(typeID<T>()); it != _holder.end())
+		auto feature = ComponentTraits::getFeatureFromType<T>();
+
+		if (auto it = _findByFeature(feature); it != _holder.end())
 		{
-			return static_cast<T*>(it->get()->getFeature(typeID<T>()));
+			return static_cast<T*>(it->get()->getFeature(feature));
 		}
 
 		return nullptr;
@@ -142,16 +147,18 @@ public:
 	template <typename T>
 	const T* getFeature() const
 	{
-		if (auto it = _findByFeatureID(typeID<T>()); it != _holder.end())
+		auto feature = ComponentTraits::getFeatureFromType<T>();
+
+		if (auto it = _findByFeature(feature); it != _holder.end())
 		{
-			return static_cast<T*>(it->get()->getFeature(typeID<T>()));
+			return static_cast<const T*>(it->get()->getFeature(feature));
 		}
 
 		return nullptr;
 	}
 
 	///
-	bool hasComponent(size_t componentID) const
+	bool hasComponent(Hash64_t componentID) const
 	{
 		return _findByComponentID(componentID) != _holder.end();
 	}
@@ -160,7 +167,7 @@ public:
 	template <typename T>
 	bool hasComponent() const
 	{
-		return hasComponent(typeID<T>());
+		return hasComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
@@ -184,14 +191,14 @@ private:
 	typename ComponentsHolder_t::const_iterator _findByComponentID(size_t id) const;
 
 	///
-	typename ComponentsHolder_t::iterator _findByFeatureID(size_t featureID);
+	typename ComponentsHolder_t::iterator _findByFeature(Component::Feature_e feature);
 
 	///
-	typename ComponentsHolder_t::const_iterator _findByFeatureID(size_t featureID) const;
+	typename ComponentsHolder_t::const_iterator _findByFeature(Component::Feature_e feature) const;
 
 	size_t _id;
 	std::string _name;
-	const Scene* _parent;
+	Scene* _parent;
 	ComponentsHolder_t _holder;
 
 };

@@ -50,8 +50,10 @@ void Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+
 	getModule<DragonBones>().update(deltaTime);
-	getModule<World>().update();
+	getModule<World>().update(deltaTime);
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));

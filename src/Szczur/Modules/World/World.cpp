@@ -4,17 +4,22 @@ namespace rat
 {
 
 World::World()
-	: _currentSceneID { static_cast<size_t>(-1) }
+	: _currentSceneID { 0 }
 {
 	LOG_INFO("Initializing World module");
-	LOG_INFO("Module World initialized");
 
-	// _currentSceneID = addScene()->getID();
-	// getCurrentScene()->addEntity("single")->setName("Cedmin");
-	// getCurrentScene()->getEntity("single", 0)->addComponent(ComponentTraits::createFromName("SpriteComponent"));
-	// getCurrentScene()->addEntity("background")->setName("Tlo");
-	// getCurrentScene()->addEntity("foreground")->setName("Kamyk");
-	// getCurrentScene()->addEntity("path")->setName("Droga");
+	_currentSceneID = addScene()->getID();
+	getCurrentScene()->addEntity("single")->setName("Cedmin");
+	auto* ptr = getCurrentScene()->getEntity("single", 1)->addComponent<SpriteComponent>();
+	ptr->getEntity()->setName("Karion");
+	getCurrentScene()->addEntity("background")->setName("Tlo");
+	getCurrentScene()->addEntity("foreground")->setName("Kamyk");
+	getCurrentScene()->addEntity("path")->setName("Droga");
+
+	// loadFromFile("test.json");
+	saveToFile("test.json");
+
+	LOG_INFO("Module World initialized");
 }
 
 World::~World()
@@ -22,11 +27,11 @@ World::~World()
 	LOG_INFO("Module World destructed");
 }
 
-void World::update()
+void World::update(float deltaTime)
 {
 	if (isCurrentSceneValid())
 	{
-		getCurrentScene()->update();
+		getCurrentScene()->update(deltaTime);
 	}
 }
 
@@ -51,7 +56,7 @@ bool World::removeScene(size_t id)
 
 		if (_currentSceneID == id)
 		{
-			_currentSceneID = static_cast<size_t>(-1);
+			_currentSceneID = 0;
 		}
 
 		return true;
@@ -75,6 +80,11 @@ Scene* World::getCurrentScene() const
 	return getScene(_currentSceneID);
 }
 
+size_t World::getCurrentSceneID() const
+{
+	return _currentSceneID;
+}
+
 bool World::hasScene(size_t id) const
 {
 	return _find(id) != _holder.end();
@@ -82,19 +92,60 @@ bool World::hasScene(size_t id) const
 
 bool World::isCurrentSceneValid() const
 {
-	return _currentSceneID != static_cast<size_t>(-1);
+	return _currentSceneID != 0;
 }
 
 void World::removeAllScenes()
 {
 	_holder.clear();
 
-	_currentSceneID = static_cast<size_t>(-1);
+	_currentSceneID = 0;
+}
+
+World::ScenesHolder_t& World::getScenes()
+{
+	return _holder;
 }
 
 const World::ScenesHolder_t& World::getScenes() const
 {
 	return _holder;
+}
+
+void World::loadFromFile(const std::string& filepath)
+{
+	std::ifstream file{ filepath };
+	Json config;
+
+	file >> config;
+
+	_currentSceneID = config["currentSceneID"];
+
+	const Json& scenes = config["scenes"];
+
+	for (auto& current : scenes)
+	{
+		addScene()->loadFromConfig(current);
+	}
+}
+
+void World::saveToFile(const std::string& filepath) const
+{
+	std::ofstream file{ filepath };
+	Json config;
+
+	config["currentSceneID"] = getCurrentSceneID();
+	Json& scenes = config["scenes"] = Json::array();
+
+	for (auto& scene : _holder)
+	{
+		scenes.push_back(Json::object());
+		Json& current = scenes.back();
+
+		scene->saveToConfig(current);
+	}
+
+	file << std::setw(4) << config << std::endl;
 }
 
 typename World::ScenesHolder_t::iterator World::_find(size_t id)

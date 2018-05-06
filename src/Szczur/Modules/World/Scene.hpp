@@ -35,7 +35,7 @@ public:
 	~Scene() = default;
 
 	///
-	void update();
+	void update(float deltaTime);
 
 	///
 	void render();
@@ -71,10 +71,10 @@ public:
 	bool hasEntity(const std::string group, size_t id);
 
 	///
-	void loadFromFile(const std::string& filepath);
+	void loadFromConfig(const Json& config);
 
 	///
-	void saveToFile(const std::string& filepath) const;
+	void saveToConfig(Json& config) const;
 
 private:
 
