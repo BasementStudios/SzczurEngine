@@ -6,10 +6,10 @@ Przykład modułu
 
 ### Plik główny modułu
 
-Każdy moduł powinien mieć swój główny plik z główną klasą modułu, np. `YourModule.hpp`, w odpowiednim dla modułu katalogu, czyli `src/Szczur/Modules/` i folder o nazwie jak moduł: `YourModule`.
+Każdy moduł powinien mieć swój główny plik z główną klasą modułu, np. `YourModule.hpp`, w odpowiednim dla modułu katalogu, czyli `src/Szczur/Modules/` i folder o nazwie jak moduł: `YourModule`. Można ustawić konstruktor i destruktor - bardzo często np. do zapisania do logu informacji o inicjalizacji i destrukcji modułu (nie jest to koniecznie).
 
 ```cpp
-#include "Szczur/Utility/Module.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat
 {
@@ -18,6 +18,21 @@ class YourModule : public Module<Dependencies...>
 {
 	// code
 };
+
+template <typename ModulesTuple>
+inline YourModule::YourModule(ModulesTuple&& tuple) : Module(tuple)
+{
+	LOG_INFO("[YourModule] Module initializing"); 
+	// Your module constructor code
+	LOG_INFO("[YourModule] Module initialized!"); 
+}
+inline YourModule::~YourModule()
+{
+    // Your module destructor code
+    LOG_INFO("[YourModule] Module destructed"); 
+}
+
+}
 
 }
 ```

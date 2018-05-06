@@ -13,6 +13,7 @@ void Application::init()
 
 	initModule<Window>();
 	initModule<Input>();
+	initModule<DragonBones>();
 	initModule<World>();
 
 	LOG_INFO("Modules initialized");
@@ -49,20 +50,11 @@ void Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-
-	/*
-		Put other updates here
-	*/
-
+	getModule<DragonBones>().update(deltaTime);
 	getModule<World>().update();
-
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
-
-		/*
-			Put main editor window here
-		*/
 	}
 	#endif
 
@@ -72,6 +64,8 @@ void Application::update()
 void Application::render()
 {
 	getModule<Window>().clear();
+
+	getModule<World>().render();
 
 	#ifdef EDITOR
 	{
