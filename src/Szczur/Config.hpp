@@ -53,4 +53,4 @@
 #endif
 
 // Global helper for modules system
-namespace rat::detail { template <typename T> inline T* globalPtr_v = nullptr; }
+namespace rat::detail { template <typename T> inline T* globalPtr = nullptr; }
