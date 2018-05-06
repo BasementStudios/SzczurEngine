@@ -243,6 +243,10 @@ namespace rat {
     {
         setPadding({width, height});
     }
+    sf::Vector2f Widget::getPadding() const
+    {
+        return _padding;
+    }
 
 	sf::Vector2u Widget::getMinimalSize() const
     {

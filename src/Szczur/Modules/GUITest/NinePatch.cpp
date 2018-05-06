@@ -18,6 +18,8 @@ namespace rat
         _topRightCorner.setDirection(Patch::Direction::None);
         _bottomLeftCorner.setDirection(Patch::Direction::None);
         _bottomRightCorner.setDirection(Patch::Direction::None);
+
+        _inner.setDirection(Patch::Direction::All);
     }
     
     void NinePatch::draw(sf::RenderTarget& target, sf::RenderStates states) const 
@@ -35,6 +37,8 @@ namespace rat
             target.draw(_bottomLeftCorner, states);
             target.draw(_bottomBar, states);
             target.draw(_bottomRightCorner, states);
+
+            target.draw(_inner, states);
         }
     }
 
@@ -50,6 +54,7 @@ namespace rat
         _topRightCorner.setTexture(texture);
         _bottomLeftCorner.setTexture(texture);
         _bottomRightCorner.setTexture(texture);
+        _inner.setTexture(texture);
 
         _recalcTexturesAreas();
     }
@@ -101,6 +106,8 @@ namespace rat
         _bottomBar.setTextureRect({ {innerX, innerY + innerH}, {innerW, textureH - (innerY + innerH)} });
         _bottomRightCorner.setTextureRect({ {innerX + innerW, innerY + innerH}, {textureW - (innerX + innerW), textureH - (innerY + innerH)} });
 
+        _inner.setTextureRect({ {innerX, innerY}, {innerW, innerH} });
+
         _recalcSpritesSize();
         _recalcSpritesPos();
     }
@@ -116,16 +123,18 @@ namespace rat
         int innerWidth = _size.x - (leftCornerW + rightCornerW);
         int innerHeight = _size.y - (topCornerH + bottomCornerH);
 
-        _topLeftCorner.setPosition({0.f, 0.f}/* + _position*/);
-        _topBar.setPosition(/*_position.x + */leftCornerW, 0.f/* + _position.y*/);
-        _topRightCorner.setPosition(/*_position.x + */leftCornerW + innerWidth, 0.f/* + _position.y*/);
+        _topLeftCorner.setPosition({0.f, 0.f});
+        _topBar.setPosition(leftCornerW, 0.f);
+        _topRightCorner.setPosition(leftCornerW + innerWidth, 0.f);
 
-        _leftBar.setPosition(/*_position.x + */0, /*_position.y + */topCornerH);
-        _rightBar.setPosition(/*_position.x + */leftCornerW + innerWidth, /*_position.y + */topCornerH);
+        _leftBar.setPosition(0, topCornerH);
+        _rightBar.setPosition(leftCornerW + innerWidth, topCornerH);
 
-        _bottomLeftCorner.setPosition(/*_position.x + */0, /*_position.y + */topCornerH + innerHeight);
-        _bottomBar.setPosition(/*_position.x + */leftCornerW, /*_position.y + */topCornerH + innerHeight);
-        _bottomRightCorner.setPosition(/*_position.x + */leftCornerW + innerWidth, /*_position.y + */topCornerH + innerHeight);
+        _bottomLeftCorner.setPosition(0, topCornerH + innerHeight);
+        _bottomBar.setPosition(leftCornerW, topCornerH + innerHeight);
+        _bottomRightCorner.setPosition(leftCornerW + innerWidth, topCornerH + innerHeight);
+
+        _inner.setPosition(leftCornerW, topCornerH);
     }
 
     void NinePatch::_recalcSpritesSize()
@@ -160,6 +169,8 @@ namespace rat
             _topRightCorner.setWidth(rightW);
             _bottomRightCorner.setWidth(rightW);
             _rightBar.setWidth(rightW);
+
+            
 
             innerWidth = 0;
         }
@@ -206,6 +217,8 @@ namespace rat
         _leftBar.setHeight(innerHeight);
         _rightBar.setHeight(innerHeight);
 
+        _inner.setSize(innerWidth, innerHeight);
+
 
     }
     
@@ -237,6 +250,7 @@ namespace rat
         _bottomLeftCorner.setScale(scale);
         _bottomBar.setScale(scale);
         _bottomRightCorner.setScale(scale);
+        _inner.setScale(scale);
 
         _recalcSpritesSize();
         _recalcSpritesPos();

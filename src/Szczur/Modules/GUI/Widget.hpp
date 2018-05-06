@@ -56,6 +56,7 @@ namespace rat {
 
 		virtual void setPadding(const sf::Vector2f& padding);
 		virtual void setPadding(float width, float height);
+		sf::Vector2f getPadding() const;
 
 		void setOrigin(const sf::Vector2f& origin);
 		void setOrigin(float x, float y);

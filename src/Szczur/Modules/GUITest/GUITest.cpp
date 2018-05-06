@@ -14,8 +14,8 @@ namespace rat
         auto& gui = getModule<GUI>();
 
 
-        gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
-        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
+        gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
+        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
         //testPatch.setTextureRect({{0, 200}, {248, 248}});
         testPatch.setPosition(50.f, 50.f);
         testPatch.setSize(1200, 700);
@@ -58,7 +58,7 @@ namespace rat
             std::cout << "Oddej mi tyn rower!!!111!11!\n";
         });
 
-        win->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), 200);
+        win->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
         widget->add(win);
         win->setPosition(50.f, 50.f);
         win->setScale(0.2f, 0.2f);
@@ -164,7 +164,7 @@ namespace rat
        _canvas.clear(sf::Color::Transparent);
         
         //testPatch.draw(_canvas);
-        _canvas.draw(testPatch);
+        //_canvas.draw(testPatch);
         //_canvas.draw(scroller);
         //_canvas.draw(testPatch);
 
