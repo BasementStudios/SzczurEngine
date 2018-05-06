@@ -21,7 +21,8 @@ namespace rat {
 		_armatureDisplayDataHolder.reserve(100);
         _camera = addEntity("single", "Camera");
 		_camera->setLock(true);
-		_camera->setPosition({0.f, 0.f, 1000.f});
+		_camera->setPosition({0.f, 1160.f, 3085.f});
+		_camera->setRotation({15.f, 0.f, 0.f});
     }
 
     void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -280,6 +281,14 @@ namespace rat {
 								object->setArmatureDisplayData(&it);
 						}
 						ImGui::EndCombo();
+					}
+					if(auto* arm = object->getArmature(); arm) {
+						auto names = arm->getAnimation()->getAnimationNames();
+						for(auto& it : names) {
+							if(ImGui::Button(it.c_str())) {
+								arm->getAnimation()->play(it);
+							}
+						}
 					}
 				}
 			}
