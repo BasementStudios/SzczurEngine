@@ -18,8 +18,8 @@ SF3DArmatureDisplay::SF3DArmatureDisplay()
 
 SF3DArmatureDisplay::~SF3DArmatureDisplay()
 {
+	delete _armature;
 	_armature = nullptr;
-
 }
 
 void SF3DArmatureDisplay::dbInit(Armature* armature)
