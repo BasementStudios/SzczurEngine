@@ -35,7 +35,7 @@ namespace rat
         sf::Texture* _texture{nullptr}; 
         sf::Vector2i _size{0, 0};
         sf::Vector2u _textureRect;
-        int _elementAmount{1};
+        sf::Vector2i _elementAmount{1, 1};
         sf::Vector2f _elementDim{0.f, 0.f};
         sf::Vector2f _scale{1.f, 1.f};
 

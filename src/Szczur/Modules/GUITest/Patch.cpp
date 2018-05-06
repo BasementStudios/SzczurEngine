@@ -16,32 +16,13 @@ namespace rat
         if(_texture)
         {        
             states.transform *= getTransform();
-            switch(_direction)
-            {
-                case Direction::Horizontal:
-                {
-                    for(int i = 0; i < _elementAmount; i++)
-                    {
-                        target.draw(_sprite, states);
-                        _sprite.move(_elementDim.x, 0.f);
-                    }
-                } break;
-                case Direction::Vertical:
-                {
-                    for(int i = 0; i < _elementAmount; i++)
-                    {
-                        target.draw(_sprite, states);
-                        _sprite.move(0.f, _elementDim.y);
-                    }
-                } break;
 
-                case Direction::None:
+            for(int y = 0; y < _elementAmount.y; y++)
+                for(int x = 0; x < _elementAmount.x; x++)
                 {
+                    _sprite.setPosition(float(x) * _elementDim.x, float(y) * _elementDim.y);
                     target.draw(_sprite, states);
-                } break;
-            }
-
-           _sprite.setPosition(0.f, 0.f);
+                }
         }
 
     }
@@ -117,59 +98,46 @@ namespace rat
         _direction = direction;
         if(_texture) _recalcRecurrence();
     }
-    /*
-    const sf::Vector2f& Patch::getPosition()
-    {
-        return _position;
-        sf::Transformable::
-    }*/
     
 
     void Patch::_recalcRecurrence()
     {
 
-        switch(_direction)
+        auto elementSize = static_cast<sf::Vector2f>(getElementSize());
+        _elementDim = elementSize;
+        _sprite.setScale(_scale);
+        _elementAmount = {1, 1};
+
+
+        if(_direction == Direction::Horizontal || _direction == Direction::All)
         {
-            case Direction::Horizontal:
-            {
-                float totalWidth = float(_size.x);
+            float totalWidth = float(_size.x);
+            float realWidth = elementSize.x;
+            
+            float widthTimes = std::max(round(totalWidth/realWidth), 1.f);
+            _elementAmount.x = int(widthTimes);
+            _elementDim.x = totalWidth/widthTimes;
 
-                float realElementDim = float(_sprite.getTextureRect().width) * _scale.x;
-                
-                float widthTimes = std::max(round(totalWidth/realElementDim), 1.f);
-                _elementAmount = int(widthTimes);
-                _elementDim.x = totalWidth/widthTimes;
-
-                float xScale = _elementDim.x / realElementDim;
-                _sprite.setScale(xScale * _scale.x, _scale.y);
-            } break;
-
-            case Direction::Vertical:
-            {
-                float totalHeigt = float(_size.y);
-
-                float realElementDim = float(_sprite.getTextureRect().height) * _scale.y;
-                
-                float heightTimes = std::max(round(totalHeigt/realElementDim), 1.f);
-                _elementAmount = int(heightTimes);
-                _elementDim.y = totalHeigt/heightTimes;
-
-                float yScale = _elementDim.y / realElementDim;
-                _sprite.setScale(_scale.x, yScale * _scale.y);
-            } break;
-
-            case Direction::None:
-            {
-                _elementAmount = 1;
-                _sprite.setScale(_scale);
-                _elementDim = {_sprite.getGlobalBounds().width, _sprite.getGlobalBounds().height};
-            } break;
+            float xScale = _elementDim.x / realWidth;
+            _sprite.scale(xScale, 1.f);
         }
-                sf::Vector2f scale{1.f, 1.f};
-                auto elementSize = static_cast<sf::Vector2f>(getElementSize());
-                if(float(_size.x) < elementSize.x && _direction != Direction::Horizontal) scale.x = float(_size.x)/elementSize.x;
-                if((float)_size.y < elementSize.y && _direction != Direction::Vertical) scale.y = float(_size.y)/elementSize.y;
-                _sprite.scale(scale);
+        if(_direction == Direction::Vertical || _direction == Direction::All)
+        {
+            float totalHeigt = float(_size.y);
+            float realHeight = elementSize.y;
+            
+            float heightTimes = std::max(round(totalHeigt/realHeight), 1.f);
+            _elementAmount.y = int(heightTimes);
+            _elementDim.y = totalHeigt/heightTimes;
+
+            float yScale = _elementDim.y / realHeight;
+            _sprite.scale(1.f, yScale);
+        }
+
+        sf::Vector2f scale{1.f, 1.f};
+        if(float(_size.x) < elementSize.x && _direction != Direction::Horizontal && _direction != Direction::All) scale.x = float(_size.x)/elementSize.x;
+        if((float)_size.y < elementSize.y && _direction != Direction::Vertical && _direction != Direction::All) scale.y = float(_size.y)/elementSize.y;
+        _sprite.scale(scale);
     }
     
 }
