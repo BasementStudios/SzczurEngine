@@ -59,7 +59,7 @@ getModule<ModuleName>() // getter w klasie Application
 getModule<ModuleName>() // getter w środku innego modułu
 ```
 ```cpp
-detail::globalPtr_v<ModuleName> // tylko w celach TESTÓW!
+detail::globalPtr<ModuleName> // tylko w celach TESTÓW!
 ```
 
 
