@@ -1,5 +1,5 @@
 #pragma once
-
+#include <memory>
 #include "Scene.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
