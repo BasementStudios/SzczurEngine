@@ -62,6 +62,7 @@ namespace rat
         widget->add(win);
         win->setPosition(50.f, 50.f);
         win->setScale(0.2f, 0.2f);
+        win->setPatchAmount(3, 5);        
 
         /*
         widget3 = new Widget;
@@ -140,15 +141,15 @@ namespace rat
             }
         }
 
-        win->setSize(float(mousePos.x - 50), float(mousePos.y - 50));
+        //win->setSize(float(mousePos.x - 50), float(mousePos.y - 50));
 
         widget->setPropOrigin(_prop, _prop);
         widget->setPosition(_size.x, _size.y);
         //iWidget->setSize(_size.x, _size.y);
 
         
-        //testPatch.setScale(_scale, _scale);
-        //testPatch.setSize(mousePos.x, mousePos.y);
+        win->setScale(_scale, _scale);
+        win->setSize(mousePos.x - 75, mousePos.y - 75);
         /*
 
         scroller.setSize(static_cast<sf::Vector2i>(_size));

@@ -1,5 +1,7 @@
 #include "WindowWidget.hpp"
 
+#include "Szczur/Utility/Logger.hpp"
+
 namespace rat
 {
     WindowWidget::WindowWidget()
@@ -20,17 +22,6 @@ namespace rat
         _scale = scale;
         _calcPadding();
     }
-    void WindowWidget::_calcPadding()
-    {
-        if(!_isPaddingSet)
-        {
-            auto innerRect = _ninePatch.getInnerTextureRect();
-            sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
-            sf::Vector2f padding = {rectPadding.x * _scale.x, rectPadding.y * _scale.y};
-            Widget::setPadding(padding);
-        }
-    }
-    
     void WindowWidget::setScale(float x, float y)
     {
         setScale({x, y});
@@ -45,6 +36,18 @@ namespace rat
     {
         setPadding({x, y});
     }
+    void WindowWidget::_calcPadding()
+    {
+        if(!_isPaddingSet)
+        {
+            auto innerRect = _ninePatch.getInnerTextureRect();
+            sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
+            sf::Vector2f padding = {rectPadding.x * _scale.x, rectPadding.y * _scale.y};
+            Widget::setPadding(padding);
+        }
+    }
+    
+
 
     void WindowWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
@@ -52,12 +55,38 @@ namespace rat
     }
 	sf::Vector2u WindowWidget::_getSize() const
     {
-        return {};
+        return _minWinSize;
+    }
     
+    void WindowWidget::setPatchAmount(const sf::Vector2u& amount)
+    {
+        _isPathesAmountSet = true;
+        _patchesAmount = amount;
+        _calcPatchesAmount();
+        _aboutToRecalculate = true;
+    }
+    void WindowWidget::setPatchAmount(unsigned int horizontalAmount, unsigned int verticalAmount)
+    {
+        setPatchAmount({horizontalAmount, verticalAmount});
     }
 	void WindowWidget::_calculateSize()
     {
-        auto size = static_cast<sf::Vector2i>(getSize());
-        _ninePatch.setSize(size);
+        _calcPatchesAmount();
+        auto size = static_cast<sf::Vector2u>(getSize());
+        size.x = std::max(_minWinSize.x, size.x);
+        size.y = std::max(_minWinSize.y, size.y);
+        _ninePatch.setSize(static_cast<sf::Vector2i>(size));
     }
+    void WindowWidget::_calcPatchesAmount()
+    {
+        if(_isPathesAmountSet)
+        {
+            auto innerElSize = _ninePatch.getInnerPathSize();
+            sf::Vector2i innerSize = {innerElSize.x * int(_patchesAmount.x), innerElSize.y * int(_patchesAmount.y)};
+            auto newSize = innerSize + _ninePatch.getCornersCombinedSize();
+            _minWinSize = static_cast<sf::Vector2u>(newSize);
+        }
+    }
+
+
 }

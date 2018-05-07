@@ -22,16 +22,20 @@ namespace rat
 
         void setSize(const sf::Vector2i& size);
         void setSize(int x, int y);
-        /*void setPosition(float x, float y);*/
+        sf::Vector2i getSize() const;
 
         void setInnerSize(const sf::IntRect& rect);
         void setInnerSize(int x, int y, int width, int height);
+        sf::IntRect getInnerTextureRect() const;
 
         void setScale(const sf::Vector2f& scale);
         void setScale(float x, float y);
+        //sf::Vector2f getScale() const;
 
-        sf::IntRect getInnerTextureRect() const;
+        sf::Vector2i getInnerPathSize() const;
+        sf::Vector2i getInnerSize() const;
 
+        sf::Vector2i getCornersCombinedSize() const;
 
     private:
         sf::Vector2i _size{0, 0};

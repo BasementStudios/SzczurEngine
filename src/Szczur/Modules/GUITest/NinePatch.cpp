@@ -83,6 +83,11 @@ namespace rat
         _isInnerRectSet = true;
         if(_texture) _recalcTexturesAreas();
     }
+    void NinePatch::setInnerSize(int x, int y, int width, int height)
+    {
+        setInnerSize({{x, y}, {width, height}});
+    }
+
     void NinePatch::_recalcTexturesAreas()
     {
         if(!_texture) LOG_ERROR("Trying recalculating nullptr texture");
@@ -222,10 +227,6 @@ namespace rat
 
     }
     
-    void NinePatch::setInnerSize(int x, int y, int width, int height)
-    {
-        setInnerSize({{x, y}, {width, height}});
-    }
 
     void NinePatch::setSize(const sf::Vector2i& size)
     {
@@ -238,6 +239,11 @@ namespace rat
     void NinePatch::setSize(int x, int y)
     {
         setSize({x, y});
+    }
+
+    sf::Vector2i NinePatch::getSize() const
+    {
+        return _size;
     }
 
     void NinePatch::setScale(const sf::Vector2f& scale)
@@ -259,6 +265,22 @@ namespace rat
     void NinePatch::setScale(float x, float y)
     {
         setScale({x, y});
+    }
+
+    sf::Vector2i NinePatch::getInnerPathSize() const
+    {
+        return _inner.getElementSize();
+    }
+    sf::Vector2i NinePatch::getInnerSize() const
+    {
+        return _inner.getSize();
+    }
+
+    sf::Vector2i NinePatch::getCornersCombinedSize() const
+    {
+        int width = _topLeftCorner.getElementSize().x + _topRightCorner.getElementSize().x;
+        int height = _topLeftCorner.getElementSize().y + _bottomLeftCorner.getElementSize().y;
+        return {width, height};
     }
 
     sf::IntRect NinePatch::getInnerTextureRect() const
