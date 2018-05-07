@@ -1,5 +1,5 @@
 #include <iostream>
-#include "script.hpp"
+#include "Script.hpp"
 #include <sol.hpp>
 #include <SFML/Graphics.hpp>
 #include "Szczur/Utility/Modules/Module.hpp"
