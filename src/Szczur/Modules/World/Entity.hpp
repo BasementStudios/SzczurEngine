@@ -1,13 +1,14 @@
 #pragma once
 
-#include <algorithm>
+#include "Szczur/Utility/SFML3D/Transformable.hpp"
 
 #include "Components.hpp"
 
-#include <Szczur/Utility/SFML3D/Transformable.hpp>
-
 namespace rat
 {
+
+// FWD
+class Scene;
 
 class Entity : public sf3d::Transformable
 {
@@ -16,36 +17,13 @@ public:
 	using ComponentsHolder_t = std::vector<std::unique_ptr<Component>>;
 
 	///
-	Entity(const std::string& name)
-		: _name{ name }
-	{
-
-	}
+	Entity(Scene* parent);
 
 	///
-	Entity(const Entity& rhs)
-	{
-		for (const auto& ptr : rhs._holder)
-		{
-			_holder.emplace_back(ptr->copy());
-		}
-	}
+	Entity(const Entity& rhs);
 
 	///
-	Entity& operator = (const Entity& rhs)
-	{
-		if (this != &rhs)
-		{
-			removeAllComponents();
-
-			for (const auto& ptr : rhs._holder)
-			{
-				_holder.emplace_back(ptr->copy());
-			}
-		}
-
-		return *this;
-	}
+	Entity& operator = (const Entity& rhs);
 
 	///
 	Entity(Entity&&) = default;
@@ -54,57 +32,60 @@ public:
 	Entity& operator = (Entity&&) = default;
 
 	///
-	void setName(const std::string& name)
+	virtual ~Entity() = default;
+
+	///
+	void update(float deltaTime);
+
+	///
+	void render();
+
+	///
+	size_t getID() const;
+
+	///
+	void setName(const std::string& name);
+
+	///
+	const std::string& getName() const;
+
+	///
+	Scene* getScene();
+
+	///
+	const Scene* getScene() const;
+
+	///
+	Component* addComponent(std::unique_ptr<Component> component)
 	{
-		_name = name;
+		if (auto ptr = getComponent(component->getComponentID()); ptr != nullptr)
+		{
+			LOG_WARNING("Entity ( ", getID(), " ) ", std::quoted(getName()), " already has ", ComponentTraits::getNameFromIdentifier(ptr->getComponentID()), " component, existing one returned");
+
+			return ptr;
+		}
+
+		return _holder.emplace_back(std::move(component)).get();
 	}
 
 	///
-	const std::string& getName() const
+	Component* addComponent(Hash64_t componentID)
 	{
-		return _name;
-	}
-
-	///
-	bool addComponent(size_t componentID)
-	{
-		if (hasComponent(componentID)) return false;
-		_holder.emplace_back(ComponentTraits::createFromComponentID(componentID));
-
-		return true;
-	}
-
-	///
-	bool addComponent(const std::string& name)
-	{
-		return addComponent(ComponentTraits::getIdentifierFromName(name));
+		return addComponent(ComponentTraits::createFromComponentID(this, componentID));
 	}
 
 	///
 	template <typename T>
-	bool addComponent()
+	Component* addComponent()
 	{
-		return addComponent(typeID<T>());
+		return addComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
-	bool addComponent(std::unique_ptr<Component> ptr)
-	{
-		if (hasComponent(ptr->getComponentID())) return false;
-
-		_holder.emplace_back(std::move(ptr));
-
-		return true;
-	}
+	void removeAllComponents();
 
 	///
-	void removeAllComponents()
-	{
-		_holder.clear();
-	}
-
-	///
-	bool removeComponent(size_t componentID)
+	bool removeComponent(Hash64_t componentID)
 	{
 		if (auto it = _findByComponentID(componentID); it != _holder.end())
 		{
@@ -117,20 +98,14 @@ public:
 	}
 
 	///
-	bool removeComponent(const std::string& name)
-	{
-		return removeComponent(ComponentTraits::getIdentifierFromName(name));
-	}
-
-	///
 	template <typename T>
 	bool removeComponent()
 	{
-		return removeComponent(typeID<T>());
+		return removeComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
-	Component* getComponent(size_t componentID) const
+	Component* getComponent(Hash64_t componentID) const
 	{
 		if (auto it = _findByComponentID(componentID); it != _holder.end())
 		{
@@ -141,32 +116,28 @@ public:
 	}
 
 	///
-	Component* getComponent(const std::string& name) const
-	{
-		return getComponent(ComponentTraits::getIdentifierFromName(name));
-	}
-
-	///
 	template <typename T>
 	Component* getComponent() const
 	{
-		return getComponent(typeID<T>());
+		return getComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
 	template <typename T>
 	T* getComponentAs() const
 	{
-		return static_cast<T*>(getComponent(typeID<T>()));
+		return static_cast<T*>(getComponent(ComponentTraits::getIdentifierFromType<T>()));
 	}
 
 	///
 	template <typename T>
 	T* getFeature()
 	{
-		if (auto it = _findByFeatureID(typeID<T>()); it != _holder.end())
+		auto feature = ComponentTraits::getFeatureFromType<T>();
+
+		if (auto it = _findByFeature(feature); it != _holder.end())
 		{
-			return static_cast<T*>(it->get()->getFeature(typeID<T>()));
+			return static_cast<T*>(it->get()->getFeature(feature));
 		}
 
 		return nullptr;
@@ -176,115 +147,60 @@ public:
 	template <typename T>
 	const T* getFeature() const
 	{
-		if (auto it = _findByFeatureID(typeID<T>()); it != _holder.end())
+		auto feature = ComponentTraits::getFeatureFromType<T>();
+
+		if (auto it = _findByFeature(feature); it != _holder.end())
 		{
-			return static_cast<T*>(it->get()->getFeature(typeID<T>()));
+			return static_cast<const T*>(it->get()->getFeature(feature));
 		}
 
 		return nullptr;
 	}
 
 	///
-	bool hasComponent(size_t id) const
+	bool hasComponent(Hash64_t componentID) const
 	{
-		return _findByComponentID(id) != _holder.end();
-	}
-
-	///
-	bool hasComponent(const std::string& name) const
-	{
-		return hasComponent(ComponentTraits::getIdentifierFromName(name));
+		return _findByComponentID(componentID) != _holder.end();
 	}
 
 	///
 	template <typename T>
 	bool hasComponent() const
 	{
-		return hasComponent(typeID<T>());
+		return hasComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
 
 	///
-	const ComponentsHolder_t& getComponents() const
-	{
-		return _holder;
-	}
+	const ComponentsHolder_t& getComponents() const;
 
 	///
-	virtual void loadFromConfig(const Json& config)
-	{
-		for (const Json& component : config["components"])
-		{
-			addComponent(component["name"].get<std::string>());
-
-			getComponent(component["name"].get<std::string>())->loadFromConfig(component);
-		}
-	}
+	virtual void loadFromConfig(const Json& config);
 
 	///
-	void saveToConfig(Json& config) const
-	{
-		config["name"] = getName();
-		config["components"] = Json::array();
-
-		for (const auto& component : getComponents())
-		{
-			config["components"].push_back(Json::object());
-			Json& currComponent = config["components"].back();
-
-			component->saveToConfig(currComponent);
-		}
-	}
-
-	#ifdef EDITOR
-	bool isLocked() const {
-		return _locked;
-	}
-	void setLock(bool lock) {
-		_locked = lock;
-	}
-	#endif
+	virtual void saveToConfig(Json& config) const;
 
 private:
 
 	///
-	typename ComponentsHolder_t::iterator _findByComponentID(size_t id)
-	{
-		return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
-			return arg->getComponentID() == id;
-		});
-	}
+	static size_t _getUniqueID();
 
 	///
-	typename ComponentsHolder_t::const_iterator _findByComponentID(size_t id) const
-	{
-		return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
-			return arg->getComponentID() == id;
-		});
-	}
+	typename ComponentsHolder_t::iterator _findByComponentID(size_t id);
 
 	///
-	typename ComponentsHolder_t::iterator _findByFeatureID(size_t featureID)
-	{
-		return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
-			const auto& featureIDs = arg->getFeatureIDs();
-			return std::find(featureIDs.begin(), featureIDs.end(), featureID) != featureIDs.end();
-		});
-	}
+	typename ComponentsHolder_t::const_iterator _findByComponentID(size_t id) const;
 
 	///
-	typename ComponentsHolder_t::const_iterator _findByFeatureID(size_t featureID) const
-	{
-		return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
-			const auto& featureIDs = arg->getFeatureIDs();
-			return std::find(featureIDs.begin(), featureIDs.end(), featureID) != featureIDs.end();
-		});
-	}
+	typename ComponentsHolder_t::iterator _findByFeature(Component::Feature_e feature);
 
+	///
+	typename ComponentsHolder_t::const_iterator _findByFeature(Component::Feature_e feature) const;
+
+	size_t _id;
 	std::string _name;
+	Scene* _parent;
 	ComponentsHolder_t _holder;
-	#ifdef EDITOR
-	bool _locked{false};
-	#endif
+
 };
 
 }

@@ -1,61 +1,76 @@
 #pragma once
 
-#include "SpriteComponent.hpp"
-#include "ArmatureComponent.hpp"
-#include "InputControllerComponent.hpp"
-#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Components/SpriteComponent.hpp"
+#include "Components/ArmatureComponent.hpp"
 
 namespace rat
 {
 
+// FWD
+class Entity;
+
 struct ComponentTraits
 {
 	///
-	static std::unique_ptr<Component> createFromComponentID(size_t componentID)
+	static std::unique_ptr<Component> createFromComponentID(Entity* parent, Hash64_t id)
 	{
-		if (componentID == typeID<SpriteComponent>()) return std::make_unique<SpriteComponent>();
-		if (componentID == typeID<ArmatureComponent>()) return std::make_unique<ArmatureComponent>();
-		if (componentID == typeID<InputControllerComponent>()) return std::make_unique<InputControllerComponent>();
+		if (id == fnv1a_64("SpriteComponent")) return std::make_unique<SpriteComponent>(parent);
+		if (id == fnv1a_64("ArmatureComponent")) return std::make_unique<ArmatureComponent>(parent);
+
 		return nullptr;
 	}
 
 	///
-	static std::unique_ptr<Component> createFromName(const std::string& name)
+	static std::unique_ptr<Component> createFromName(Entity* parent, const std::string& name)
 	{
-		if (name == "SpriteComponent") return std::make_unique<SpriteComponent>();
-		if (name == "ArmatureComponent") return std::make_unique<ArmatureComponent>();
-		if (name == "InputControllerComponent") return std::make_unique<InputControllerComponent>();
+		if (name == "SpriteComponent") return std::make_unique<SpriteComponent>(parent);
+		if (name == "ArmatureComponent") return std::make_unique<ArmatureComponent>(parent);
 
 		return nullptr;
 	}
 
 	///
 	template <typename T>
-	static std::unique_ptr<Component> createFromType()
+	static std::unique_ptr<Component> createFromType(Entity* parent)
 	{
-		return std::make_unique<T>();
+		return std::make_unique<T>(parent);
 	}
 
 	///
-	static size_t getIdentifierFromName(const std::string& name)
+	static Hash64_t getIdentifierFromName(const std::string& name)
 	{
-		if (name == "SpriteComponent") return typeID<SpriteComponent>();
-		if (name == "ArmatureComponent") return typeID<ArmatureComponent>();
-		if (name == "Drawable") return typeID<sf3d::Drawable>();
-		if (name == "InputControllerComponent") return typeID<InputControllerComponent>();
+		if (name == "SpriteComponent") return fnv1a_64("SpriteComponent");
+		if (name == "ArmatureComponent") return fnv1a_64("ArmatureComponent");
 
 		return 0;
 	}
 
 	///
-	static std::string getNameFromIdentifier(size_t id)
+	static std::string getNameFromIdentifier(Hash64_t id)
 	{
-		if (id == typeID<SpriteComponent>()) return "SpriteComponent";
-		if (id == typeID<ArmatureComponent>()) return "ArmatureComponent";
-		if (id == typeID<sf3d::Drawable>()) return "Drawable";
-		if (id == typeID<InputControllerComponent>()) return "InputControllerComponent";
+		if (id == fnv1a_64("SpriteComponent")) return "SpriteComponent";
+		if (id == fnv1a_64("ArmatureComponent")) return "ArmatureComponent";
 
 		return "";
+	}
+
+	///
+	template <typename T>
+	static Hash64_t getIdentifierFromType()
+	{
+		if (std::is_same_v<T, SpriteComponent>) return fnv1a_64("SpriteComponent");
+		if (std::is_same_v<T, ArmatureComponent>) return fnv1a_64("ArmatureComponent");
+
+		return 0;
+	}
+
+	///
+	template <typename T>
+	static Component::Feature_e getFeatureFromType()
+	{
+		if (std::is_same_v<T, sf3d::Drawable>) return Component::Drawable;
+
+		return static_cast<Component::Feature_e>(0);
 	}
 
 };

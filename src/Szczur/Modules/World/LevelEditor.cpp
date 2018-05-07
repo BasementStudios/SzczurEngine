@@ -6,101 +6,73 @@
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 
 namespace rat {
-    LevelEditor::LevelEditor(
-        CollectingHolder_t &collectingHolder,
-        SpriteDisplayDataHolder_t &spriteDisplayDataHolder,
-        ArmatureDisplayDataHolder_t &armatureDisplayDataHolder):
-    _collectingHolder(collectingHolder),
-    _spriteDisplayDataHolder(spriteDisplayDataHolder),
-    _armatureDisplayDataHolder(armatureDisplayDataHolder) {
-        for (auto& holder : _collectingHolder)
-		{
-			holder.second.reserve(100);
-		}
-		_spriteDisplayDataHolder.reserve(100);
-		_armatureDisplayDataHolder.reserve(100);
-        _camera = addEntity("single", "Camera");
-		_camera->setLock(true);
-		_camera->setPosition({0.f, 1160.f, 3085.f});
-		_camera->setRotation({15.f, 0.f, 0.f});
+    LevelEditor::LevelEditor() {
+
     }
 
+	void LevelEditor::setScene(Scene* scene, size_t camera) {
+		_scene = scene;
+		if(scene) {
+			_camera = camera;
+		}
+	}
+
     void LevelEditor::render(sf3d::RenderTarget& target) {
-        _renderBar();
-        if(_ifRenderObjectsList)
-            _renderObjectsList();
-        if(_anySelected)
-            _renderFocusedObjectsParams();
-        if(_ifRenderModulesManager)
-            _renderModulesManager();
-        if(_ifRenderDisplayDataManager)
-            _renderDisplayDataManager();
-        if(_ifRenderArmatureDisplayManager)
-            _renderArmatureDisplayManager();
+		if(_scene) {
+			_renderBar();
+			if(_ifRenderObjectsList)
+				_renderObjectsList();
+			if(_anySelected)
+				_renderFocusedObjectsParams();
+			if(_ifRenderModulesManager)
+				_renderModulesManager();
+			if(_ifRenderDisplayDataManager)
+				_renderDisplayDataManager();
+			if(_ifRenderArmatureDisplayManager)
+				_renderArmatureDisplayManager();
 
-        sf3d::RectangleShape rect({100.f, 100.f});
-        rect.setColor({1.f, 1.f, 0.f, 0.2f});
-        rect.setOrigin({50.f, 50.f, 0.f});
+			sf3d::RectangleShape rect({100.f, 100.f});
+			rect.setColor({1.f, 1.f, 0.f, 0.2f});
+			rect.setOrigin({50.f, 50.f, 0.f});
 
-        glDisable(GL_DEPTH_TEST);
-        for (auto& group : _collectingHolder) {
-            for(auto object = group.second.begin(); object != group.second.end(); ++object) {
-                if(object->isLocked() == false) {
-                    if(_focusedObject == object && _anySelected)
-                        rect.setColor({1.f, 0.f, 1.f, 0.2f});
-                    else
-                        rect.setColor({1.f, 1.f, 0.f, 0.2f});
-                    rect.setPosition(object->getPosition());
-                    target.draw(rect);
-                }
-            }
-        }
-        glEnable(GL_DEPTH_TEST);
+			glDisable(GL_DEPTH_TEST);
+			_scene->forEach([this, &rect, &target](const std::string& group, Entity* entity){
+				if(_focusedObject == entity->getID() && _anySelected)
+					rect.setColor({1.f, 0.f, 1.f, 0.2f});
+				else
+					rect.setColor({1.f, 1.f, 0.f, 0.2f});
+				rect.setPosition(entity->getPosition());
+				target.draw(rect);
+			}); 
+			glEnable(GL_DEPTH_TEST);
+		}
     }
 
     void LevelEditor::update(InputManager& input, Camera& camera) {
-		for (auto& holder : _collectingHolder)
-		{
-			for (auto& entity : holder.second)
-			{
-				//std::cout << entity.getName() << '\n';
-			}
-		}
-
-		for (auto& holder : _collectingHolder) {
-			for (auto& entity : holder.second) {
-				if (auto ptr = entity.getComponentAs<InputControllerComponent>(); ptr != nullptr) {
-					entity.move(ptr->update(input));
-				}
-			}
-		}
-
-
-		
 		if(input.isKept(Keyboard::W))
 			_freeCamera.move({
-				_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.getRotation().y)),
+				_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y)),
 				0.f,
-				-_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.getRotation().y))
+				-_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y))
 			});
 		if(input.isKept(Keyboard::S))
 			_freeCamera.move({
-				-_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.getRotation().y)),
+				-_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y)),
 				0.f,
-				_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.getRotation().y))
+				_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y))
 			});
 		if(input.isKept(Keyboard::D)) {
 			_freeCamera.move(glm::vec3{
-				_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.getRotation().y)),
+				_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y)),
 				0.f,
-				_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.getRotation().y))
+				_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y))
 			});
 		}
 		if(input.isKept(Keyboard::A)) {
 			_freeCamera.move(glm::vec3{
-				-_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.getRotation().y)),
+				-_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y)),
 				0.f,
-				-_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.getRotation().y))
+				-_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y))
 			});
 		}
 		if(input.isKept(Keyboard::Space))
@@ -127,12 +99,13 @@ namespace rat {
 
 		sf3d::View view;
 		if(_focusedObject == _camera && _anySelected) {
-			view.setRotation(_camera->getRotation());
-			view.setCenter(_camera->getPosition());
+			auto* cam = _scene->getEntity("single", _camera);
+			view.setRotation(cam->getRotation());
+			view.setCenter(cam->getPosition());
 		}
 		else {
-			view.setRotation(_freeCamera.getRotation());
-			view.setCenter(_freeCamera.getPosition());
+			view.setRotation(_freeCamera.rotation);
+			view.setCenter(_freeCamera.position);
 		}
 		camera.setView(view);
     }
@@ -382,133 +355,6 @@ namespace rat {
 		}
 		ImGui::End();
 	}
-
-    
-    LevelEditor::EntitiesHolder_t::iterator LevelEditor::addEntity(const std::string group, const std::string name) {
-		auto& subGroup = _getSubHolder(group);
-		if (auto it = _find(group, name); it == subGroup.end()) {
-			subGroup.emplace_back(name);
-			return subGroup.end()-1;
-		}
-		return subGroup.end();
-	}
-
-    Entity* LevelEditor::getEntity(const std::string group, const std::string name) {
-		if (auto it = _find(group, name); it != _getSubHolder(group).end())
-		{
-			return &(*it);
-		}
-
-		return nullptr;
-	}
-
-	const Entity* LevelEditor::getEntity(const std::string group, const std::string name) const {
-		if (auto it = _find(group, name); it != _getSubHolder(group).end())
-		{
-			return &(*it);
-		}
-
-		return nullptr;
-	}
-
-	///
-	bool LevelEditor::removeEntity(const std::string group, const std::string name) {
-		if (auto it = _find(group, name); it != _getSubHolder(group).end())
-		{
-			_getSubHolder(group).erase(it);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	///
-	void LevelEditor::removeAllEntities(const std::string group){
-		_getSubHolder(group).clear();
-	}
-
-	///
-	void LevelEditor::removeAllEntities()	{
-		for (auto& holder : _collectingHolder) {
-			holder.second.clear();
-		}
-	}
-
-	///
-	bool LevelEditor::hasEntity(const std::string group, const std::string name) {
-		return _find(group, name) != _getSubHolder(group).end();
-	}
-
-
-	///
-	void LevelEditor::loadFromFile(const std::string& filepath){
-		std::ifstream file{ filepath };
-		Json config;
-
-		file >> config;
-
-		for (auto it = config.begin(); it != config.end(); ++it)
-		{
-			for (Json& entity : it.value())
-			{
-				addEntity(it.key(), entity["name"]);
-
-				getEntity(it.key(), entity["name"])->loadFromConfig(entity);
-			}
-		}
-	}
-
-	///
-	void LevelEditor::saveToFile(const std::string& filepath) const{
-		std::ofstream file{ filepath };
-		Json config;
-
-		for (auto& holder : _collectingHolder) {
-			Json& currGroup = config[holder.first] = Json::array();
-
-			for (auto& entity : holder.second) {
-				currGroup.push_back(Json::object());
-				Json& currEntity = currGroup.back();
-
-				entity.saveToConfig(currEntity);
-			}
-		}
-
-		file << std::setw(4) << config << std::endl;
-	}
-
-    std::string LevelEditor::_getUniqueName() {
-		static size_t id = 0;
-
-		return "unnamed_" + std::to_string(id++);
-	}
-
-    LevelEditor::EntitiesHolder_t& LevelEditor::_getSubHolder(const std::string& group) {
-		return _collectingHolder.at(group);
-	}
-
-	const LevelEditor::EntitiesHolder_t& LevelEditor::_getSubHolder(const std::string& group) const	{
-		return _collectingHolder.at(group);
-	}
-
-	typename LevelEditor::EntitiesHolder_t::iterator LevelEditor::_find(const std::string group, const std::string& name) {
-		auto& subHolder = _getSubHolder(group);
-
-		return std::find_if(subHolder.begin(), subHolder.end(), [&](const auto& arg) {
-			return arg.getName() == name;
-		});
-	}
-
-	typename LevelEditor::EntitiesHolder_t::const_iterator LevelEditor::_find(const std::string group, const std::string& name) const {
-		const auto& subHolder = _getSubHolder(group);
-
-		return std::find_if(subHolder.begin(), subHolder.end(), [&](const auto& arg) {
-			return arg.getName() == name;
-		});
-	}
-
-
 }
 
 //#endif

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 
 #include "Szczur/Utility/SFML3D/Sprite.hpp"
@@ -17,8 +18,6 @@ namespace rat
 
         const sf3d::Texture& getTexture() const;
 
-        const std::string& getName() const;
-        void setName(const std::string& name);
 
         virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 

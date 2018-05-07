@@ -2,31 +2,29 @@
 
 #include <memory>
 #include <vector>
+
 #include <json.hpp>
 using Json = nlohmann::json;
+
+#include "Szczur/Utility/Convert/Hash.hpp"
 
 namespace rat
 {
 
-template <typename T>
-size_t typeID()
-{
-	return reinterpret_cast<size_t>(&typeID<T>);
-}
+// FWD
+class Entity;
 
 class Component
 {
 public:
 
-	///
-	template <typename... Ts>
-	Component(const std::string& name, size_t componentID, Ts... featureIDs)
-		: _name{ name }
-		, _componentID{ componentID }
-		, _featureIDs{ featureIDs... }
+	enum Feature_e
 	{
-		//static_assert((... || std::is_same_v<size_t, Ts>), "featureIDs must be of type size_t");
-	}
+		Drawable = 1 << 0
+	};
+
+	///
+	Component(Entity* parent, Hash64_t id, const std::string& name, size_t features = 0);
 
 	///
 	Component(const Component&) = default;
@@ -47,46 +45,38 @@ public:
 	virtual std::unique_ptr<Component> copy() const = 0;
 
 	///
-	const std::string& getName() const
-	{
-		return _name;
-	}
+	Hash64_t getComponentID() const;
 
 	///
-	size_t getComponentID() const
-	{
-		return _componentID;
-	}
+	virtual void* getFeature(Component::Feature_e);
 
 	///
-	const std::vector<size_t>& getFeatureIDs() const
-	{
-		return _featureIDs;
-	}
+	virtual const void* getFeature(Component::Feature_e) const;
 
 	///
-	virtual void* getFeature(size_t)
-	{
-		return nullptr;
-	}
+	size_t getFeatures() const;
 
 	///
-	virtual const void* getFeature(size_t) const
-	{
-		return nullptr;
-	}
+	const std::string& getName() const;
 
 	///
-	virtual void loadFromConfig(const Json& config) = 0;
+	Entity* getEntity();
 
 	///
-	virtual void saveToConfig(Json& config) const = 0;
+	const Entity* getEntity() const;
+
+	///
+	virtual void loadFromConfig(const Json& config);
+
+	///
+	virtual void saveToConfig(Json& config) const;
 
 private:
 
+	Hash64_t _id;
+	size_t _features;
 	std::string _name;
-	size_t _componentID;
-	std::vector<size_t> _featureIDs;
+	Entity* _parent;
 
 };
 

@@ -9,8 +9,8 @@ Timer::TimePoint_t Timer::now()
 }
 
 Timer::Timer()
-	: _refPoint{ now() }
-	, _pausePoint{ now() }
+	: _refPoint { now() }
+	, _pausePoint { now() }
 {
 
 }
@@ -33,17 +33,23 @@ void Timer::pause()
 
 void Timer::toggle()
 {
-	if(isPaused())
+	if (isPaused())
+	{
 		start();
+	}
 	else
+	{
 		pause();
+	}
 }
 
 Time Timer::restart()
 {
 	Time Ret = getElapsedTime();
+
 	_pausePoint = TimePoint_t{ Duration_t::zero() };
 	_refPoint = now();
+
 	return Ret;
 }
 
@@ -59,10 +65,13 @@ bool Timer::hasPassed(const Duration_t& duration) const
 
 bool Timer::checkStep(const Duration_t& duration)
 {
-	if(hasPassed(duration)) {
+	if (hasPassed(duration))
+	{
 		restart();
+
 		return true;
 	}
+
 	return false;
 }
 

@@ -1,0 +1,48 @@
+#pragma once
+
+#include <memory>
+
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Modules/DragonBones/SF3DArmatureDisplay.hpp"
+
+#include "Szczur/Modules/World/Component.hpp"
+#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
+
+namespace rat
+{
+
+    class ArmatureComponent : public Component, public sf3d::Drawable
+    {
+    private:
+
+        dragonBones::SF3DArmatureDisplay* _armature = nullptr;
+        ArmatureDisplayData* _armatureDisplayData = nullptr;
+
+    public:
+
+        ArmatureComponent(Entity* parent);
+
+        ~ArmatureComponent();
+
+        void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData);
+
+        ArmatureDisplayData* getArmatureDisplayData();
+
+        const ArmatureDisplayData* getArmatureDisplayData() const;
+
+        dragonBones::SF3DArmatureDisplay* getArmature();
+
+        virtual std::unique_ptr<Component> copy() const;
+
+        virtual void* getFeature(Component::Feature_e feature) override;
+
+        virtual const void* getFeature(Component::Feature_e feature) const override;
+
+        virtual void loadFromConfig(const Json& config) {}
+
+        virtual void saveToConfig(Json& config) const {}
+
+        void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+    };
+
+}

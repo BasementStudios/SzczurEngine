@@ -1,103 +1,99 @@
 #pragma once
 
-#include <fstream>
+#include <memory>
 
-#include "boost/container/flat_map.hpp"
-#include <Szczur/Utility/Modules/Module.hpp>
-#include <Szczur/Modules/Input/Input.hpp>
-#include <Szczur/Modules/Window/Window.hpp>
-#include <Szczur/Modules/Camera/Camera.hpp>
+#include "Scene.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Utility/Modules/Module.hpp"
 
-#include "Entity.hpp"
-#include "SpriteDisplayData.hpp"
-#include "ArmatureComponent.hpp"
-#include "ArmatureDisplayData.hpp"
-#include "LevelEditor.hpp"
+#ifdef EDITOR
+	#include "LevelEditor.hpp"
+#endif
 
 namespace rat
 {
 
-	class World : public Module<Window, Input, Camera>
-	{
-	public:
+class World : public Module<Window, Input>
+{
+public:
 
-		using EntitiesHolder_t   = std::vector<Entity>;
-		using SpriteDisplayDataHolder_t = std::vector<SpriteDisplayData>;
-		using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
-		using CollectingHolder_t = boost::container::flat_map<std::string, EntitiesHolder_t>;
-		///
-		World();
-			
+	using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
 
-		///
-		World(const World&) = delete;
+	///
+	World();
 
-		///
-		World& operator = (const World&) = delete;
+	///
+	World(const World&) = delete;
 
-		///
-		World(World&&) = delete;
+	///
+	World& operator = (const World&) = delete;
 
-		///
-		World& operator = (World&&) = delete;
+	///
+	World(World&&) = delete;
 
-		///
-		~World() = default;
+	///
+	World& operator = (World&&) = delete;
 
-		///
-		void update();
+	///
+	~World();
 
-		///
-		void render();
+	///
+	void update(float deltaTime);
 
-		///
-		EntitiesHolder_t::iterator addEntity(const std::string group, const std::string name = _getUniqueName());
+	///
+	void render();
 
-		///
-		Entity* getEntity(const std::string group, const std::string name);
+	///
+	Scene* addScene();
 
-		const Entity* getEntity(const std::string group, const std::string name) const;
+	///
+	bool removeScene(size_t id);
 
-		///
-		bool removeEntity(const std::string group, const std::string name);
+	///
+	Scene* getScene(size_t id) const;
 
-		///
-		void removeAllEntities(const std::string group);
+	///
+	Scene* getCurrentScene() const;
 
-		///
-		void removeAllEntities();
+	///
+	size_t getCurrentSceneID() const;
 
-		///
-		bool hasEntity(const std::string group, const std::string name);
+	///
+	bool hasScene(size_t id) const;
 
-		///
-		void loadFromFile(const std::string& filepath);
+	///
+	bool isCurrentSceneValid() const;
 
-		///
-		void saveToFile(const std::string& filepath) const;
+	///
+	void removeAllScenes();
 
-	private:
+	///
+	ScenesHolder_t& getScenes();
 
-		EntitiesHolder_t::iterator _camera;
+	///
+	const ScenesHolder_t& getScenes() const;
 
-		static std::string _getUniqueName();
+	///
+	void loadFromFile(const std::string& filepath);
 
-		EntitiesHolder_t& _getSubHolder(const std::string& group);
+	///
+	void saveToFile(const std::string& filepath) const;
 
-		const EntitiesHolder_t& _getSubHolder(const std::string& group) const;
+private:
 
-		typename EntitiesHolder_t::iterator _find(const std::string group, const std::string& name);
+	///
+	typename ScenesHolder_t::iterator _find(size_t id);
 
-		typename EntitiesHolder_t::const_iterator _find(const std::string group, const std::string& name) const;
+	///
+	typename ScenesHolder_t::const_iterator _find(size_t id) const;
 
-		CollectingHolder_t _collectingHolder;
-
-		SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
-
-		ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
-
+	ScenesHolder_t _holder;
+	size_t _currentSceneID;
+	#ifdef EDITOR
 		LevelEditor _levelEditor;
+	#endif
 
-	};
+};
 
 }

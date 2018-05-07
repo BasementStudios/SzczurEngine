@@ -1,43 +1,54 @@
 #include "World.hpp"
 
-/** @file World.cpp
- ** @description Implementation file with main class of the World module. 
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
-
-#include "Szczur/Utility/Logger.hpp"
-#include "Szczur/Utility/SFML3D/Drawable.hpp"
-
-#include "Szczur/Utility/SFML3D/Sprite.hpp"
-#include "Szczur/Utility/SFML3D/Texture.hpp"
-#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
-#include <glm/glm.hpp>
-#include <ImGui/imgui.h> 
-#include <SFML/Graphics.hpp>
-#include "SpriteComponent.hpp"
-
 namespace rat
 {
 
-	/* Operators */
-	/// Constructor
-	World::World()
-	: _collectingHolder{ { "background", {} }, { "foreground", {} }, { "path", {} }, { "single", {} } },
-	_levelEditor{_collectingHolder, _spriteDisplayDataHolder, _armatureDisplayDataHolder}
-	{
-		
-	}
+World::World()
+	: _currentSceneID { 0 }
+{
+	LOG_INFO("Initializing World module");
 
-	///
-	void World::update()
-	{
-		_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
-	}
+	_currentSceneID = addScene()->getID();
+	auto* camera = getCurrentScene()->addEntity("single");
+	camera->setName("Camera");
+	camera->setPosition({0.f, 1160.f, 3085.f}); 
+    camera->setRotation({15.f, 0.f, 0.f}); 
+	#ifdef EDITOR
+		_levelEditor.setScene(getCurrentScene(), camera->getID());
+	#endif
+	//getCurrentScene()->addEntity("single")->setName("Cedmin");
+	//auto* ptr = getCurrentScene()->getEntity("single", 1)->addComponent<SpriteComponent>();
+	//ptr->getEntity()->setName("Karion");
+	//getCurrentScene()->addEntity("background")->setName("Tlo");
+	//getCurrentScene()->addEntity("foreground")->setName("Kamyk");
+	//getCurrentScene()->addEntity("path")->setName("Droga");
 
-	///
-	void World::render()
+	// loadFromFile("test.json");
+	//saveToFile("test.json");
+
+	LOG_INFO("Module World initialized");
+}
+
+World::~World()
+{
+	LOG_INFO("Module World destructed");
+}
+
+void World::update(float deltaTime)
+{
+	if (isCurrentSceneValid())
 	{
-		auto& window = getModule<Window>().getWindow();
+		getCurrentScene()->update(deltaTime);
+	}
+	#ifdef EDITOR
+		_levelEditor.update(deltaTime);
+	#endif
+}
+
+void World::render()
+{
+	auto& window = getModule<Window>().getWindow();
+	/*
 		for (auto& holder : _collectingHolder) {
 			for (auto& entity : holder.second) {
 				if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) {
@@ -47,134 +58,132 @@ namespace rat
 				}
 			}
 		}
+	*/
+	if (isCurrentSceneValid())
+	{
+		getCurrentScene()->render();
+	}
+	#ifdef EDITOR
 		_levelEditor.render(window);
-		#ifdef EDITOR
-			
-			
-		#endif
-	}
+	#endif
+}
 
-	World::EntitiesHolder_t::iterator World::addEntity(const std::string group, const std::string name) {
-		auto& subGroup = _getSubHolder(group);
-		if (auto it = _find(group, name); it == subGroup.end()) {
-			subGroup.emplace_back(name);
-			return subGroup.end()-1;
-		}
-		return subGroup.end();
-	}
+Scene* World::addScene()
+{
+	return _holder.emplace_back(std::make_unique<Scene>()).get();
+}
 
-	Entity* World::getEntity(const std::string group, const std::string name) {
-		if (auto it = _find(group, name); it != _getSubHolder(group).end())
+bool World::removeScene(size_t id)
+{
+	if (auto it = _find(id); it != _holder.end())
+	{
+		_holder.erase(it);
+
+		if (_currentSceneID == id)
 		{
-			return &(*it);
+			_currentSceneID = 0;
 		}
 
-		return nullptr;
+		return true;
 	}
 
-	const Entity* World::getEntity(const std::string group, const std::string name) const {
-		if (auto it = _find(group, name); it != _getSubHolder(group).end())
-		{
-			return &(*it);
-		}
+	return false;
+}
 
-		return nullptr;
+Scene* World::getScene(size_t id) const
+{
+	if (auto it = _find(id); it != _holder.end())
+	{
+		return it->get();
 	}
 
-	///
-	bool World::removeEntity(const std::string group, const std::string name) {
-		if (auto it = _find(group, name); it != _getSubHolder(group).end())
-		{
-			_getSubHolder(group).erase(it);
+	return nullptr;
+}
 
-			return true;
-		}
+Scene* World::getCurrentScene() const
+{
+	return getScene(_currentSceneID);
+}
 
-		return false;
+size_t World::getCurrentSceneID() const
+{
+	return _currentSceneID;
+}
+
+bool World::hasScene(size_t id) const
+{
+	return _find(id) != _holder.end();
+}
+
+bool World::isCurrentSceneValid() const
+{
+	return _currentSceneID != 0;
+}
+
+void World::removeAllScenes()
+{
+	_holder.clear();
+
+	_currentSceneID = 0;
+}
+
+World::ScenesHolder_t& World::getScenes()
+{
+	return _holder;
+}
+
+const World::ScenesHolder_t& World::getScenes() const
+{
+	return _holder;
+}
+
+void World::loadFromFile(const std::string& filepath)
+{
+	std::ifstream file{ filepath };
+	Json config;
+
+	file >> config;
+
+	_currentSceneID = config["currentSceneID"];
+
+	const Json& scenes = config["scenes"];
+
+	for (auto& current : scenes)
+	{
+		addScene()->loadFromConfig(current);
+	}
+}
+
+void World::saveToFile(const std::string& filepath) const
+{
+	std::ofstream file{ filepath };
+	Json config;
+
+	config["currentSceneID"] = getCurrentSceneID();
+	Json& scenes = config["scenes"] = Json::array();
+
+	for (auto& scene : _holder)
+	{
+		scenes.push_back(Json::object());
+		Json& current = scenes.back();
+
+		scene->saveToConfig(current);
 	}
 
-	///
-	void World::removeAllEntities(const std::string group){
-		_getSubHolder(group).clear();
-	}
+	file << std::setw(4) << config << std::endl;
+}
 
-	///
-	void World::removeAllEntities()	{
-		for (auto& holder : _collectingHolder) {
-			holder.second.clear();
-		}
-	}
+typename World::ScenesHolder_t::iterator World::_find(size_t id)
+{
+	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
+		return arg->getID() == id;
+	});
+}
 
-	///
-	bool World::hasEntity(const std::string group, const std::string name) {
-		return _find(group, name) != _getSubHolder(group).end();
-	}
-
-
-	///
-	void World::loadFromFile(const std::string& filepath){
-		std::ifstream file{ filepath };
-		Json config;
-
-		file >> config;
-
-		for (auto it = config.begin(); it != config.end(); ++it)
-		{
-			for (Json& entity : it.value())
-			{
-				addEntity(it.key(), entity["name"]);
-
-				getEntity(it.key(), entity["name"])->loadFromConfig(entity);
-			}
-		}
-	}
-
-	///
-	void World::saveToFile(const std::string& filepath) const{
-		std::ofstream file{ filepath };
-		Json config;
-
-		for (auto& holder : _collectingHolder) {
-			Json& currGroup = config[holder.first] = Json::array();
-
-			for (auto& entity : holder.second) {
-				currGroup.push_back(Json::object());
-				Json& currEntity = currGroup.back();
-
-				entity.saveToConfig(currEntity);
-			}
-		}
-
-		file << std::setw(4) << config << std::endl;
-	}
-
-	std::string World::_getUniqueName() {
-		static size_t id = 0;
-
-		return "unnamed_" + std::to_string(id++);
-	}
-
-	World::EntitiesHolder_t& World::_getSubHolder(const std::string& group) {
-		return _collectingHolder.at(group);
-	}
-
-	const World::EntitiesHolder_t& World::_getSubHolder(const std::string& group) const	{
-		return _collectingHolder.at(group);
-	}
-
-	typename World::EntitiesHolder_t::iterator World::_find(const std::string group, const std::string& name) {
-		auto& subHolder = _getSubHolder(group);
-
-		return std::find_if(subHolder.begin(), subHolder.end(), [&](const auto& arg) {
-			return arg.getName() == name;
-		});
-	}
-
-	typename World::EntitiesHolder_t::const_iterator World::_find(const std::string group, const std::string& name) const {
-		const auto& subHolder = _getSubHolder(group);
-
-		return std::find_if(subHolder.begin(), subHolder.end(), [&](const auto& arg) {
-			return arg.getName() == name;
-		});
-	}
+typename World::ScenesHolder_t::const_iterator World::_find(size_t id) const
+{
+	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
+		return arg->getID() == id;
+	});
+}
 }

@@ -3,9 +3,11 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "SpriteDisplayData.hpp"
-#include "ArmatureComponent.hpp"
-#include "ArmatureDisplayData.hpp"
+#include "Scene.hpp"
+#include "Components/ArmatureComponent.hpp"
+#include "Components/SpriteComponent.hpp"
+#include "data/SpriteDisplayData.hpp"
+#include "data/ArmatureDisplayData.hpp"
 
 #include <boost/container/flat_map.hpp>
 #include "Szczur/Modules/Input/InputManager.hpp"
@@ -14,35 +16,14 @@
 namespace rat {
     class LevelEditor {
     public:
-        using EntitiesHolder_t   = std::vector<Entity>;
-		using SpriteDisplayDataHolder_t = std::vector<SpriteDisplayData>;
-		using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
-		using CollectingHolder_t = boost::container::flat_map<std::string, EntitiesHolder_t>;
+        LevelEditor();
 
-        LevelEditor(
-            CollectingHolder_t &collectingHolder,
-            SpriteDisplayDataHolder_t &spriteDisplayDataHolder,
-            ArmatureDisplayDataHolder_t &armatureDisplayDataHolder
-        );
+        void setScene(Scene* scene, size_t camera);
+
         void render(sf3d::RenderTarget& target);
         void update(InputManager& input, Camera& camera);
     private:
-        CollectingHolder_t& _collectingHolder;
-
-		SpriteDisplayDataHolder_t& _spriteDisplayDataHolder;
-
-		ArmatureDisplayDataHolder_t& _armatureDisplayDataHolder;
-        
-        EntitiesHolder_t::iterator addEntity(const std::string group, const std::string name = _getUniqueName());
-        Entity* getEntity(const std::string group, const std::string name);
-
-		const Entity* getEntity(const std::string group, const std::string name) const;
-		bool removeEntity(const std::string group, const std::string name);
-		void removeAllEntities(const std::string group);
-		void removeAllEntities();
-		bool hasEntity(const std::string group, const std::string name);
-		void loadFromFile(const std::string& filepath);
-		void saveToFile(const std::string& filepath) const;
+        Scene* _scene{nullptr};
 
         void _renderBar();
         void _renderDisplayDataManager();
@@ -56,21 +37,17 @@ namespace rat {
         bool _ifRenderArmatureDisplayManager{false};
         bool _anySelected{false};
         bool _ifRenderModulesManager{false};
-        EntitiesHolder_t::iterator _focusedObject;
-        EntitiesHolder_t::iterator _camera;
-        Entity _freeCamera{""};
+        size_t _focusedObject{static_cast<size_t>(-1)};
+        size_t _camera{static_cast<size_t>(-1)};
+        struct {
+            glm::vec3 position{0.f, 0.f, 0.f};
+            glm::vec3 rotation{0.f, 0.f, 0.f};
+            void move(const glm::vec3& offset) {position += offset;}
+            void rotate(const glm::vec3& offset) {rotation += offset;}
+        } _freeCamera;
         float _freeCameraVelocity{50.f};
         bool _rotatingCamera{false};
         sf::Vector2i _previousMouse;
-
-        static std::string _getUniqueName();
-        EntitiesHolder_t& _getSubHolder(const std::string& group);
-
-		const EntitiesHolder_t& _getSubHolder(const std::string& group) const;
-
-		typename EntitiesHolder_t::iterator _find(const std::string group, const std::string& name);
-
-		typename EntitiesHolder_t::const_iterator _find(const std::string group, const std::string& name) const;
     };
 }
 
