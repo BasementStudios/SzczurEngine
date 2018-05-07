@@ -3,10 +3,11 @@
 #include <memory>
 
 #include "Scene.hpp"
+
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Camera/Camera.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
-
 #ifdef EDITOR
 	#include "LevelEditor.hpp"
 #endif
@@ -14,7 +15,7 @@
 namespace rat
 {
 
-class World : public Module<Window, Input>
+class World : public Module<Window, Input, Camera>
 {
 public:
 
@@ -51,6 +52,9 @@ public:
 	bool removeScene(size_t id);
 
 	///
+	void removeAllScenes();
+
+	///
 	Scene* getScene(size_t id) const;
 
 	///
@@ -64,9 +68,6 @@ public:
 
 	///
 	bool isCurrentSceneValid() const;
-
-	///
-	void removeAllScenes();
 
 	///
 	ScenesHolder_t& getScenes();

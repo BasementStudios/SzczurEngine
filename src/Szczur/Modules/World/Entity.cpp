@@ -84,7 +84,7 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 void Entity::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
-	_name = config["name"];
+	_name = config["name"].get<std::string>();
 
 	const Json& components = config["components"];
 

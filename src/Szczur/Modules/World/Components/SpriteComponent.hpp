@@ -3,7 +3,7 @@
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-
+#include "Szczur/Modules/World/Entity.hpp"
 #include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/World/Data/SpriteDisplayData.hpp"
 
@@ -83,9 +83,11 @@ public:
 	}
 
 	///
-	virtual void draw(sf3d::RenderTarget& /*target*/, sf3d::RenderStates /*states*/) const override
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override
 	{
-		// TODO
+		if(_spriteDisplayData) {
+			target.draw(*_spriteDisplayData, states);
+		}
 	}
 
 private:

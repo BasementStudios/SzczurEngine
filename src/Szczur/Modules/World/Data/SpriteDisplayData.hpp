@@ -18,6 +18,7 @@ namespace rat
 
         const sf3d::Texture& getTexture() const;
 
+        const std::string& getName() const;
 
         virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 

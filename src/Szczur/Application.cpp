@@ -54,15 +54,14 @@ void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 
-	getModule<DragonBones>().update(deltaTime);
-	getModule<World>().update(deltaTime);
-
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
 	}
 	#endif
-	getModule<World>().update();
+
+	getModule<DragonBones>().update(deltaTime);
+	getModule<World>().update(deltaTime);
 	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();
 }
@@ -80,7 +79,6 @@ void Application::render()
 	}
 	#endif
 
-	getModule<World>().render();
 
 	getModule<Window>().render();
 }

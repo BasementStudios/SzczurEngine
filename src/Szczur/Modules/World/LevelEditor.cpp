@@ -36,12 +36,12 @@ namespace rat {
 			rect.setOrigin({50.f, 50.f, 0.f});
 
 			glDisable(GL_DEPTH_TEST);
-			_scene->forEach([this, &rect, &target](const std::string& group, Entity* entity){
-				if(_focusedObject == entity->getID() && _anySelected)
+			_scene->forEach([this, &rect, &target](const std::string& group, Entity& entity){
+				if(_focusedObject == entity.getID() && _anySelected)
 					rect.setColor({1.f, 0.f, 1.f, 0.2f});
 				else
 					rect.setColor({1.f, 1.f, 0.f, 0.2f});
-				rect.setPosition(entity->getPosition());
+				rect.setPosition(entity.getPosition());
 				target.draw(rect);
 			}); 
 			glEnable(GL_DEPTH_TEST);
@@ -142,12 +142,13 @@ namespace rat {
     void LevelEditor::_renderDisplayDataManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Display Data Manager", &_ifRenderDisplayDataManager)) {
+			auto& spriteDisplayDataHolder = _scene->getSpriteDisplayData();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Add")) {
 				try{
-					_spriteDisplayDataHolder.emplace_back(enteredText);
+					spriteDisplayDataHolder.emplace_back(enteredText);
 				}
 				catch(const std::exception& exc) {
 				}
@@ -156,7 +157,7 @@ namespace rat {
 			}
 			ImGui::Separator();
 			if(ImGui::BeginChild("Datas")) {
-				for(auto it = _spriteDisplayDataHolder.begin(); it!=_spriteDisplayDataHolder.end(); ++it) {
+				for(auto it = spriteDisplayDataHolder.begin(); it!=spriteDisplayDataHolder.end(); ++it) {
 					if(ImGui::SmallButton("-")) {
 						//spriteDisplayData.erase(it);
 						//--it;
@@ -172,12 +173,13 @@ namespace rat {
     void LevelEditor::_renderArmatureDisplayManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Armature Data Manager", &_ifRenderArmatureDisplayManager)) {
+			auto& armatureDisplayDataHolder = _scene->getArmatureDisplayData();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Add")) {
 				try{
-					_armatureDisplayDataHolder.emplace_back(enteredText);
+					armatureDisplayDataHolder.emplace_back(enteredText);
 				}
 				catch(const std::exception& exc) {
 				}
@@ -186,7 +188,7 @@ namespace rat {
 			}
 			ImGui::Separator();
 			if(ImGui::BeginChild("Datas")) {
-				for(auto it = _armatureDisplayDataHolder.begin(); it!=_armatureDisplayDataHolder.end(); ++it) {
+				for(auto it = armatureDisplayDataHolder.begin(); it!=armatureDisplayDataHolder.end(); ++it) {
 					if(ImGui::SmallButton("-")) {
 						//_armatureDisplayDataHolder.erase(it);
 						//--it;
@@ -202,76 +204,72 @@ namespace rat {
 	}
     void LevelEditor::_renderFocusedObjectsParams() {
 		if(ImGui::Begin("Object Parameters", &_anySelected)) {
-			if(ImGui::CollapsingHeader("Base")) {
-				glm::vec3 position = _focusedObject->getPosition();
-				glm::vec3 origin = _focusedObject->getOrigin();
-				origin.y = -origin.y;
-				glm::vec3 rotation = _focusedObject->getRotation();
-				glm::vec3 scale = _focusedObject->getScale();
-				char name[255];
-				std::strcpy(&name[0], _focusedObject->getName().c_str());
-				ImGui::InputText("", name, 255);
-				_focusedObject->setName(name);
-				ImGui::DragFloat3("Position", reinterpret_cast<float*>(&position));
-				ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
-				ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
-				ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.01f);
-				//ImGui::Checkbox("Locked", &(_focusedObject->locked));
-				_focusedObject->setPosition(position);
-				_focusedObject->setOrigin(origin);
-				_focusedObject->setRotation(rotation);
-				_focusedObject->setScale(scale);
-			}
+			Entity* focusedObject = _scene->getEntity(_focusedObject);
+			if(focusedObject) {
+				if(ImGui::CollapsingHeader("Base")) {
+					glm::vec3 position = focusedObject->getPosition();
+					glm::vec3 origin = focusedObject->getOrigin();
+					origin.y = -origin.y;
+					glm::vec3 rotation = focusedObject->getRotation();
+					glm::vec3 scale = focusedObject->getScale();
+					char name[255];
+					std::strcpy(&name[0], focusedObject->getName().c_str());
+					ImGui::InputText("", name, 255);
+					focusedObject->setName(name);
+					ImGui::DragFloat3("Position", reinterpret_cast<float*>(&position));
+					ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
+					ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
+					ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.01f);
+					//ImGui::Checkbox("Locked", &(_focusedObject->locked));
+					focusedObject->setPosition(position);
+					focusedObject->setOrigin(origin);
+					focusedObject->setRotation(rotation);
+					focusedObject->setScale(scale);
+				}
 
-			if(auto* object = _focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
-				if(ImGui::CollapsingHeader("Sprite Component")) {
-					if(ImGui::BeginCombo(
-						"DisplayData",
-						( object->getSpriteDisplayData() )?object->getSpriteDisplayData()->getName().c_str() : "None"
-					)) {
-						if(ImGui::MenuItem("None", nullptr, object->getSpriteDisplayData() == nullptr))
-							object->setSpriteDisplayData(nullptr);
-						for(auto& it : _spriteDisplayDataHolder) {
-							if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getSpriteDisplayData() == &it))
-								object->setSpriteDisplayData(&it);
+				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
+					if(ImGui::CollapsingHeader("Sprite Component")) {
+						if(ImGui::BeginCombo(
+							"DisplayData",
+							( object->getSpriteDisplayData() )?object->getSpriteDisplayData()->getName().c_str() : "None"
+						)) {
+							if(ImGui::MenuItem("None", nullptr, object->getSpriteDisplayData() == nullptr))
+								object->setSpriteDisplayData(nullptr);
+							for(auto& it : _scene->getSpriteDisplayData()) {
+								if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getSpriteDisplayData() == &it))
+									object->setSpriteDisplayData(&it);
+							}
+
+							ImGui::EndCombo();
 						}
-
-						ImGui::EndCombo();
 					}
 				}
-			}
 
-			if(auto* object = _focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
-				if(ImGui::CollapsingHeader("Armature Component")) {
-					if(ImGui::BeginCombo(
-						"DisplayData",
-						( object->getArmatureDisplayData() )?object->getArmatureDisplayData()->getName().c_str() : "None"
-					)) {
-						if(ImGui::MenuItem("None", nullptr, object->getArmatureDisplayData() == nullptr))
-							object->setArmatureDisplayData(nullptr);
-						for(auto& it : _armatureDisplayDataHolder) {
-							if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getArmatureDisplayData() == &it))
-								object->setArmatureDisplayData(&it);
+				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
+					if(ImGui::CollapsingHeader("Armature Component")) {
+						if(ImGui::BeginCombo(
+							"DisplayData",
+							( object->getArmatureDisplayData() )?object->getArmatureDisplayData()->getName().c_str() : "None"
+						)) {
+							if(ImGui::MenuItem("None", nullptr, object->getArmatureDisplayData() == nullptr))
+								object->setArmatureDisplayData(nullptr);
+							for(auto& it : _scene->getArmatureDisplayData()) {
+								if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getArmatureDisplayData() == &it))
+									object->setArmatureDisplayData(&it);
+							}
+							ImGui::EndCombo();
 						}
-						ImGui::EndCombo();
-					}
-					if(auto* arm = object->getArmature(); arm) {
-						auto names = arm->getAnimation()->getAnimationNames();
-						for(auto& it : names) {
-							if(ImGui::Button(it.c_str())) {
-								arm->getAnimation()->play(it);
+						if(auto* arm = object->getArmature(); arm) {
+							auto names = arm->getAnimation()->getAnimationNames();
+							for(auto& it : names) {
+								if(ImGui::Button(it.c_str())) {
+									arm->getAnimation()->play(it);
+								}
 							}
 						}
 					}
 				}
 			}
-
-			if(auto* object = _focusedObject->getComponentAs<InputControllerComponent>(); object != nullptr) {
-				if(ImGui::CollapsingHeader("InputControllerComponent")) {
-					
-				}
-			}
-
 		}
 		ImGui::End();
 	}
@@ -280,25 +278,24 @@ namespace rat {
 			ImGui::Separator();
 			if(ImGui::BeginChild("Objects")) {
 				int i{0};
-				for(auto& group : _collectingHolder) {
+				auto& collectingHolder = _scene->getAllEntities();
+				for(auto& group : collectingHolder) {
 					if(ImGui::SmallButton((std::string{"+###"} + std::to_string(i++)).c_str())) {
-						auto it = addEntity(group.first);
-						if(it != group.second.end()) {
-							_focusedObject = it;
+						Entity* ent = _scene->addEntity(group.first);
+						if(ent) {
+							_focusedObject = ent->getID();
 							_anySelected = true;
 						}
 						else
 							_anySelected = false;
-						//_focusedObject->move({0.f, 0.f, -1000.f});
 					}
 					ImGui::SameLine();
 					if(ImGui::TreeNode(group.first.c_str())) {
 						for(auto object = group.second.begin(); object != group.second.end(); ++object) {
-							bool temp = object == _focusedObject && _anySelected;
+							bool temp = object->getID() == _focusedObject && _anySelected;
 							if(ImGui::SmallButton("-")) {
-								if(temp) {
+								if(temp)
 									_anySelected = false;
-								}
 								group.second.erase(object);
 								--object;
 								continue;
@@ -309,7 +306,7 @@ namespace rat {
 									_anySelected = false;
 								}
 								else {
-									_focusedObject = object;
+									_focusedObject = object->getID();
 									_anySelected = true;
 								}
 							}
@@ -330,26 +327,20 @@ namespace rat {
 				ImGui::Text("Select Object First!");
 			}
 			else {
-				bool sC = _focusedObject->hasComponent<SpriteComponent>();
+				auto* focusedObject = _scene->getEntity(_focusedObject);
+				bool sC = focusedObject->hasComponent<SpriteComponent>();
 				if(ImGui::Selectable("SpriteComponent", sC)) {
 					if(sC)
-						_focusedObject->removeComponent<SpriteComponent>();
+						focusedObject->removeComponent<SpriteComponent>();
 					else
-						_focusedObject->addComponent<SpriteComponent>();
+						focusedObject->addComponent<SpriteComponent>();
 				}
-				sC = _focusedObject->hasComponent<InputControllerComponent>();
-				if(ImGui::Selectable("InputControllerComponent", sC)) {
-					if(sC)
-						_focusedObject->removeComponent<InputControllerComponent>();
-					else
-						_focusedObject->addComponent<InputControllerComponent>();
-				}
-				sC = _focusedObject->hasComponent<ArmatureComponent>();
+				sC = focusedObject->hasComponent<ArmatureComponent>();
 				if(ImGui::Selectable("ArmatureComponent", sC)) {
 					if(sC)
-						_focusedObject->removeComponent<ArmatureComponent>();
+						focusedObject->removeComponent<ArmatureComponent>();
 					else
-						_focusedObject->addComponent<ArmatureComponent>();
+						focusedObject->addComponent<ArmatureComponent>();
 				}
 			}
 		}

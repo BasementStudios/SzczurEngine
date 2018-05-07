@@ -12,8 +12,12 @@ namespace rat {
         return _texture;
     }
 
+    const std::string& SpriteDisplayData::getName() const {
+        return _name;
+    }
+
     void SpriteDisplayData::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const {
         states.texture = &_texture;
-        target.draw(_sprite);
+        target.draw(_sprite, states);
     }
 }

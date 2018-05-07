@@ -16,12 +16,14 @@ World::World()
 	#ifdef EDITOR
 		_levelEditor.setScene(getCurrentScene(), camera->getID());
 	#endif
+
 	//getCurrentScene()->addEntity("single")->setName("Cedmin");
-	//auto* ptr = getCurrentScene()->getEntity("single", 1)->addComponent<SpriteComponent>();
+	//auto* ptr = getCurrentScene()->getEntity(1)->addComponent<SpriteComponent>();
 	//ptr->getEntity()->setName("Karion");
 	//getCurrentScene()->addEntity("background")->setName("Tlo");
 	//getCurrentScene()->addEntity("foreground")->setName("Kamyk");
 	//getCurrentScene()->addEntity("path")->setName("Droga");
+	//getCurrentScene()->removeEntity(1);
 
 	// loadFromFile("test.json");
 	//saveToFile("test.json");
@@ -41,27 +43,25 @@ void World::update(float deltaTime)
 		getCurrentScene()->update(deltaTime);
 	}
 	#ifdef EDITOR
-		_levelEditor.update(deltaTime);
+		_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
 	#endif
 }
 
 void World::render()
 {
 	auto& window = getModule<Window>().getWindow();
-	/*
-		for (auto& holder : _collectingHolder) {
-			for (auto& entity : holder.second) {
-				if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) {
-					sf3d::RenderStates states = window.getDefaultRenderStates();
-					states.transform *= entity.getTransform();
-					window.draw(*ptr, states);
-				}
-			}
-		}
-	*/
+	
+
+	
 	if (isCurrentSceneValid())
 	{
-		getCurrentScene()->render();
+		getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
+			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) {
+				sf3d::RenderStates states = window.getDefaultRenderStates();
+				states.transform *= entity.getTransform();
+				window.draw(*ptr, states);
+			}
+		});
 	}
 	#ifdef EDITOR
 		_levelEditor.render(window);
@@ -88,6 +88,13 @@ bool World::removeScene(size_t id)
 	}
 
 	return false;
+}
+
+void World::removeAllScenes()
+{
+	_holder.clear();
+
+	_currentSceneID = 0;
 }
 
 Scene* World::getScene(size_t id) const
@@ -118,13 +125,6 @@ bool World::hasScene(size_t id) const
 bool World::isCurrentSceneValid() const
 {
 	return _currentSceneID != 0;
-}
-
-void World::removeAllScenes()
-{
-	_holder.clear();
-
-	_currentSceneID = 0;
 }
 
 World::ScenesHolder_t& World::getScenes()
