@@ -305,7 +305,7 @@ void SF3DSlot::_updateMesh()
 
 				for (const auto& vert : verticesInTriagles[i])
 				{
-					verticesDisplay.setPosition(vert, { xG, yG, 0.f });
+					verticesDisplay.setPosition(vert, { xG, yG, (float)_zOrder });
 				}
 			}
 		}
@@ -338,7 +338,7 @@ void SF3DSlot::_updateMesh()
 
 				for (const auto& vert : verticesInTriagles[traingleIndex])
 				{
-					verticesDisplay.setPosition(vert, { xG, yG, 0.f });
+					verticesDisplay.setPosition(vert, { xG, yG, (float)_zOrder });
 				}
 			}
 		}
@@ -355,7 +355,7 @@ void SF3DSlot::_updateTransform()
 	glm::vec3 pos (
 		globalTransformMatrix.tx,
 		globalTransformMatrix.ty,
-		0.f
+		(float)_zOrder
 	);
 
 	if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
