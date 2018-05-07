@@ -15,11 +15,7 @@ class SpriteComponent : public sf3d::Drawable, public Component
 public:
 
 	///
-	SpriteComponent(Entity* parent)
-		: Component { parent, fnv1a_64("SpriteComponent"), "SpriteComponent", Component::Drawable }
-	{
-
-	}
+	SpriteComponent(Entity* parent);
 
 	///
 	SpriteComponent(const SpriteComponent&) = default;
@@ -37,56 +33,28 @@ public:
 	~SpriteComponent() = default;
 
 	///
-	virtual std::unique_ptr<Component> copy() const override
-	{
-		return std::make_unique<SpriteComponent>(*this);
-	}
+	virtual std::unique_ptr<Component> copy() const override;
 
 	///
-	void setSpriteDisplayData(SpriteDisplayData* spriteDisplayData)
-	{
-		_spriteDisplayData = spriteDisplayData;
-	}
+	void setSpriteDisplayData(SpriteDisplayData* spriteDisplayData);
 
 	///
-	SpriteDisplayData* getSpriteDisplayData() const
-	{
-		return _spriteDisplayData;
-	}
+	SpriteDisplayData* getSpriteDisplayData() const;
 
 	///
-	virtual void* getFeature(Component::Feature_e feature) override
-	{
-		if (feature == Feature_e::Drawable)	return static_cast<sf3d::Drawable*>(this);
-
-		return nullptr;
-	}
+	virtual void* getFeature(Component::Feature_e feature) override;
 
 	///
-	virtual const void* getFeature(Component::Feature_e feature) const override
-	{
-		if (feature == Feature_e::Drawable) return static_cast<const sf3d::Drawable*>(this);
-
-		return nullptr;
-	}
+	virtual const void* getFeature(Component::Feature_e feature) const override;
 
 	///
-	virtual void loadFromConfig(const Json& config) override
-	{
-		Component::loadFromConfig(config);
-	}
+	virtual void loadFromConfig(const Json& config) override;
 
 	///
-	virtual void saveToConfig(Json& config) const override
-	{
-		Component::saveToConfig(config);
-	}
+	virtual void saveToConfig(Json& config) const override;
 
 	///
-	virtual void draw(sf3d::RenderTarget& /*target*/, sf3d::RenderStates /*states*/) const override
-	{
-		// TODO
-	}
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
 private:
 

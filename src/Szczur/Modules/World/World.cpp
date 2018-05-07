@@ -8,18 +8,6 @@ World::World()
 {
 	LOG_INFO("Initializing World module");
 
-	_currentSceneID = addScene()->getID();
-	getCurrentScene()->addEntity("single")->setName("Cedmin");
-	auto* ptr = getCurrentScene()->getEntity(1)->addComponent<SpriteComponent>();
-	ptr->getEntity()->setName("Karion");
-	getCurrentScene()->addEntity("background")->setName("Tlo");
-	getCurrentScene()->addEntity("foreground")->setName("Kamyk");
-	getCurrentScene()->addEntity("path")->setName("Droga");
-	getCurrentScene()->removeEntity(1);
-
-	// loadFromFile("test.json");
-	saveToFile("test.json");
-
 	LOG_INFO("Module World initialized");
 }
 
@@ -40,7 +28,12 @@ void World::render()
 {
 	if (isCurrentSceneValid())
 	{
-		getCurrentScene()->render();
+		auto& window = getModule<Window>();
+		getCurrentScene()->forEach([&window](const std::string&, Entity& entity) { 
+			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) { 
+				window.draw(*ptr); 
+			} 
+		}); 
 	}
 }
 
