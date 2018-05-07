@@ -353,7 +353,8 @@ namespace rat
                 std::string timeString = tempStartTime;
                 checkTimeString(timeString);
                 _startTestPlayerOffset = toIntSeconds(tempStartTime);
-                _parts[_currentMajor][_currentMinor]->audioStartTime = tempStartTime;
+                if (_startTestPlayerOffset > 0) _parts[_currentMajor][_currentMinor]->audioStartTime = timeString;
+                else _parts[_currentMajor][_currentMinor]->audioStartTime = "00:00";
             } 
         ImGui::PopItemWidth();
         ImGui::SameLine();
