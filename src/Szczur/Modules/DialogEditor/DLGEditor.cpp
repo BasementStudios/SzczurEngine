@@ -171,7 +171,7 @@ namespace rat
         if (_isTextWindow)
         {   
             ImGui::Begin("Text##DLGPopupWindow");
-                size_t size = 250;
+                size_t size = _wrappedText.length() + 200;
                 char *newText = new char[size] {};
                 strncpy(newText, _wrappedText.c_str(), size);
                 ImGui::InputTextMultiline("##WrappedText", newText, size, ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight() - 65));
@@ -387,7 +387,7 @@ namespace rat
 
         for (unsigned int i = 0; i < _parts[_currentMajor][_currentMinor]->dialogLines; ++i) {
             strcpy(dialogTime, _parts[_currentMajor][_currentMinor]->dialogTime[i].c_str());
-            size_t size = 250;
+            size_t size = _wrappedText.length() + 200;
 			char *newText = new char[size] {};
 
             strncpy(newText, _parts[_currentMajor][_currentMinor]->dialogs[i].c_str(), size);
