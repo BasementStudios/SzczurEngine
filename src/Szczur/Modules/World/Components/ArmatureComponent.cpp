@@ -2,6 +2,8 @@
 
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"
 
+#include "../Entity.hpp"
+
 namespace rat
 {
 
@@ -62,8 +64,10 @@ namespace rat
 
     void ArmatureComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
     {
-        if(_armature)
+        if(_armature) {
+            states.transform *= getEntity()->getTransform();
             _armature->draw(target, states);
+        }
     }
 
 }
