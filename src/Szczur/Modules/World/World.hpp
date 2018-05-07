@@ -47,6 +47,9 @@ public:
 	bool removeScene(size_t id);
 
 	///
+	void removeAllScenes();
+
+	///
 	Scene* getScene(size_t id) const;
 
 	///
@@ -60,9 +63,6 @@ public:
 
 	///
 	bool isCurrentSceneValid() const;
-
-	///
-	void removeAllScenes();
 
 	///
 	ScenesHolder_t& getScenes();

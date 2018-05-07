@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <functional>
 
 #include <boost/container/flat_map.hpp>
 
@@ -13,8 +14,10 @@ class Scene
 {
 public:
 
-	using EntitiesHolder_t   = std::vector<Entity>;
-	using CollectingHolder_t = boost::container::flat_map<std::string, EntitiesHolder_t>;
+	using EntitiesHolder_t            = std::vector<Entity>;
+	using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>;
+	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
+	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
 
 	///
 	Scene();
@@ -50,25 +53,58 @@ public:
 	const std::string& getName() const;
 
 	///
-	Entity* addEntity(const std::string group);
+	Entity* addEntity(const std::string& group);
 
 	///
-	bool removeEntity(const std::string group, size_t id);
+	bool removeEntity(size_t id);
 
 	///
-	void removeAllEntities(const std::string group);
+	bool removeEntity(const std::string& group, size_t id);
+
+	///
+	void removeAllEntities(const std::string& group);
 
 	///
 	void removeAllEntities();
 
 	///
-	Entity* getEntity(const std::string group, size_t id);
+	Entity* getEntity(size_t id);
 
     ///
-	const Entity* getEntity(const std::string group, size_t id) const;
+	const Entity* getEntity(size_t id) const;
 
 	///
-	bool hasEntity(const std::string group, size_t id);
+	Entity* getEntity(const std::string& group, size_t id);
+
+    ///
+	const Entity* getEntity(const std::string& group, size_t id) const;
+
+	///
+	bool hasEntity(const std::string& group, size_t id);
+
+	///
+	EntitiesHolder_t& getEntities(const std::string& group);
+
+	///
+	const EntitiesHolder_t& getEntities(const std::string& group) const;
+
+	///
+	CollectingHolder_t& getAllEntities();
+
+	///
+	const CollectingHolder_t& getAllEntities() const;
+
+	///
+	SpriteDisplayDataHolder_t& getSpriteDisplayData();
+
+	///
+	const SpriteDisplayDataHolder_t& getSpriteDisplayData() const;
+
+	///
+	ArmatureDisplayDataHolder_t& getArmatureDisplayData();
+
+	///
+	const ArmatureDisplayDataHolder_t& getArmatureDisplayData() const;
 
 	///
 	void loadFromConfig(const Json& config);
@@ -76,41 +112,24 @@ public:
 	///
 	void saveToConfig(Json& config) const;
 
-private:
+	void forEach(const std::function<void(const std::string& group, Entity& entity)>& callback);
 
-	// #ifdef EDITOR
-	// 	void _renderBar();
-	// 	//void _renderDisplayDataManager();
-	// 	void _renderFocusedObjectsParams();
-	// 	void _renderObjectsList();
-	// 	void _renderModulesManager();
-    //
-	// 	bool _ifRenderObjectsList{true};
-	// 	//bool _ifRenderDisplayDataManager{false};
-	// 	bool _anySelected{false};
-	// 	bool _ifRenderModulesManager{false};
-	// 	EntitiesHolder_t::iterator _focusedObject;
-    //
-	// #endif
+private:
 
     ///
 	static size_t _getUniqueID();
 
     ///
-	EntitiesHolder_t& _getSubHolder(const std::string& group);
+	typename EntitiesHolder_t::iterator _find(const std::string& group, size_t id);
 
     ///
-	const EntitiesHolder_t& _getSubHolder(const std::string& group) const;
-
-    ///
-	typename EntitiesHolder_t::iterator _find(const std::string group, size_t id);
-
-    ///
-	typename EntitiesHolder_t::const_iterator _find(const std::string group, size_t id) const;
+	typename EntitiesHolder_t::const_iterator _find(const std::string& group, size_t id) const;
 
     size_t _id;
     std::string _name;
 	CollectingHolder_t _collectingHolder;
+	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
+	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
 
 };
 

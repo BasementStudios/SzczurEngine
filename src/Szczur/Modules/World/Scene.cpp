@@ -14,7 +14,7 @@ Scene::Scene()
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _collectingHolder { { "background", {} }, { "foreground", {} }, { "path", {} }, { "single", {} } }
 {
-	for (auto& holder : _collectingHolder)
+	for (auto& holder : getAllEntities())
 	{
 		holder.second.reserve(100);
 	}
@@ -22,7 +22,7 @@ Scene::Scene()
 
 void Scene::update(float deltaTime)
 {
-	for (auto& holder : _collectingHolder)
+	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
@@ -33,7 +33,7 @@ void Scene::update(float deltaTime)
 
 void Scene::render()
 {
-	for (auto& holder : _collectingHolder)
+	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
@@ -57,16 +57,16 @@ const std::string& Scene::getName() const
 	return _name;
 }
 
-Entity* Scene::addEntity(const std::string group)
+Entity* Scene::addEntity(const std::string& group)
 {
-	return &_getSubHolder(group).emplace_back(this);
+	return &getEntities(group).emplace_back(this);
 }
 
-bool Scene::removeEntity(const std::string group, size_t id)
+bool Scene::removeEntity(const std::string& group, size_t id)
 {
-	if (auto it = _find(group, id); it != _getSubHolder(group).end())
+	if (auto it = _find(group, id); it != getEntities(group).end())
 	{
-		_getSubHolder(group).erase(it);
+		getEntities(group).erase(it);
 
 		return true;
 	}
@@ -74,22 +74,70 @@ bool Scene::removeEntity(const std::string group, size_t id)
 	return false;
 }
 
-void Scene::removeAllEntities(const std::string group)
+bool Scene::removeEntity(size_t id)
 {
-	_getSubHolder(group).clear();
+	if (auto it = _find("single", id); it != getEntities("single").end())
+	{
+		getEntities("single").erase(it);
+
+		return true;
+	}
+
+	if (auto it = _find("path", id); it != getEntities("path").end())
+	{
+		getEntities("path").erase(it);
+
+		return true;
+	}
+
+	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
+	{
+		getEntities("foreground").erase(it);
+
+		return true;
+	}
+
+	if (auto it = _find("background", id); it != getEntities("background").end())
+	{
+		getEntities("background").erase(it);
+
+		return true;
+	}
+
+	return false;
+}
+
+void Scene::removeAllEntities(const std::string& group)
+{
+	getEntities(group).clear();
 }
 
 void Scene::removeAllEntities()
 {
-	for (auto& holder : _collectingHolder)
+	for (auto& holder : getAllEntities())
 	{
 		holder.second.clear();
 	}
 }
 
-Entity* Scene::getEntity(const std::string group, size_t id)
+Entity* Scene::getEntity(size_t id)
 {
-	if (auto it = _find(group, id); it != _getSubHolder(group).end())
+	if (auto it = _find("single", id); it != getEntities("single").end())
+	{
+		return &(*it);
+	}
+
+	if (auto it = _find("path", id); it != getEntities("path").end())
+	{
+		return &(*it);
+	}
+
+	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
+	{
+		return &(*it);
+	}
+
+	if (auto it = _find("background", id); it != getEntities("background").end())
 	{
 		return &(*it);
 	}
@@ -97,9 +145,24 @@ Entity* Scene::getEntity(const std::string group, size_t id)
 	return nullptr;
 }
 
-const Entity* Scene::getEntity(const std::string group, size_t id) const
+const Entity* Scene::getEntity(size_t id) const
 {
-	if (auto it = _find(group, id); it != _getSubHolder(group).end())
+	if (auto it = _find("single", id); it != getEntities("single").end())
+	{
+		return &(*it);
+	}
+
+	if (auto it = _find("path", id); it != getEntities("path").end())
+	{
+		return &(*it);
+	}
+
+	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
+	{
+		return &(*it);
+	}
+
+	if (auto it = _find("background", id); it != getEntities("background").end())
 	{
 		return &(*it);
 	}
@@ -107,15 +170,75 @@ const Entity* Scene::getEntity(const std::string group, size_t id) const
 	return nullptr;
 }
 
-bool Scene::hasEntity(const std::string group, size_t id)
+Entity* Scene::getEntity(const std::string& group, size_t id)
 {
-	return _find(group, id) != _getSubHolder(group).end();
+	if (auto it = _find(group, id); it != getEntities(group).end())
+	{
+		return &(*it);
+	}
+
+	return nullptr;
+}
+
+const Entity* Scene::getEntity(const std::string& group, size_t id) const
+{
+	if (auto it = _find(group, id); it != getEntities(group).end())
+	{
+		return &(*it);
+	}
+
+	return nullptr;
+}
+
+bool Scene::hasEntity(const std::string& group, size_t id)
+{
+	return _find(group, id) != getEntities(group).end();
+}
+
+Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group)
+{
+	return getAllEntities().at(group);
+}
+
+const Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group) const
+{
+	return getAllEntities().at(group);
+}
+
+Scene::CollectingHolder_t& Scene::getAllEntities()
+{
+	return _collectingHolder;
+}
+
+const Scene::CollectingHolder_t& Scene::getAllEntities() const
+{
+	return _collectingHolder;
+}
+
+Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayData()
+{
+	return _spriteDisplayDataHolder;
+}
+
+const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayData() const
+{
+	return _spriteDisplayDataHolder;
+}
+
+Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayData()
+{
+	return _armatureDisplayDataHolder;
+}
+
+const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayData() const
+{
+	return _armatureDisplayDataHolder;
 }
 
 void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
-	_name = config["name"];
+	_name = config["name"].get<std::string>();
 
 	const Json& groups = config["groups"];
 
@@ -135,7 +258,7 @@ void Scene::saveToConfig(Json& config) const
 
 	Json& groups = config["groups"] = Json::object();
 
-	for (auto& holder : _collectingHolder)
+	for (auto& holder : getAllEntities())
 	{
 		Json& group = groups[holder.first] = Json::array();
 
@@ -149,6 +272,12 @@ void Scene::saveToConfig(Json& config) const
 	}
 }
 
+void Scene::forEach(const std::function<void(const std::string& group, Entity& entity)>& callback) {
+	for(auto& group : _collectingHolder)
+		for(auto& entity : group.second)
+			std::invoke(callback, group.first, entity);
+}
+
 size_t Scene::_getUniqueID()
 {
 	static size_t id = 0;
@@ -156,28 +285,18 @@ size_t Scene::_getUniqueID()
 	return ++id;
 }
 
-Scene::EntitiesHolder_t& Scene::_getSubHolder(const std::string& group)
+typename Scene::EntitiesHolder_t::iterator Scene::_find(const std::string& group, size_t id)
 {
-	return _collectingHolder.at(group);
-}
-
-const Scene::EntitiesHolder_t& Scene::_getSubHolder(const std::string& group) const
-{
-	return _collectingHolder.at(group);
-}
-
-typename Scene::EntitiesHolder_t::iterator Scene::_find(const std::string group, size_t id)
-{
-	auto& subHolder = _getSubHolder(group);
+	auto& subHolder = getEntities(group);
 
 	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
 		return arg.getID() == id;
 	});
 }
 
-typename Scene::EntitiesHolder_t::const_iterator Scene::_find(const std::string group, size_t id) const
+typename Scene::EntitiesHolder_t::const_iterator Scene::_find(const std::string& group, size_t id) const
 {
-	const auto& subHolder = _getSubHolder(group);
+	const auto& subHolder = getEntities(group);
 
 	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
 		return arg.getID() == id;

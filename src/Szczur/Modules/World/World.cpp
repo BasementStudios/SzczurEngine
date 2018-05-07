@@ -10,11 +10,12 @@ World::World()
 
 	_currentSceneID = addScene()->getID();
 	getCurrentScene()->addEntity("single")->setName("Cedmin");
-	auto* ptr = getCurrentScene()->getEntity("single", 1)->addComponent<SpriteComponent>();
+	auto* ptr = getCurrentScene()->getEntity(1)->addComponent<SpriteComponent>();
 	ptr->getEntity()->setName("Karion");
 	getCurrentScene()->addEntity("background")->setName("Tlo");
 	getCurrentScene()->addEntity("foreground")->setName("Kamyk");
 	getCurrentScene()->addEntity("path")->setName("Droga");
+	getCurrentScene()->removeEntity(1);
 
 	// loadFromFile("test.json");
 	saveToFile("test.json");
@@ -65,6 +66,13 @@ bool World::removeScene(size_t id)
 	return false;
 }
 
+void World::removeAllScenes()
+{
+	_holder.clear();
+
+	_currentSceneID = 0;
+}
+
 Scene* World::getScene(size_t id) const
 {
 	if (auto it = _find(id); it != _holder.end())
@@ -93,13 +101,6 @@ bool World::hasScene(size_t id) const
 bool World::isCurrentSceneValid() const
 {
 	return _currentSceneID != 0;
-}
-
-void World::removeAllScenes()
-{
-	_holder.clear();
-
-	_currentSceneID = 0;
 }
 
 World::ScenesHolder_t& World::getScenes()
