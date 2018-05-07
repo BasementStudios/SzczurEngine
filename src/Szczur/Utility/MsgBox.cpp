@@ -23,7 +23,7 @@ int getIconId(Icon icon)
 			return MB_ICONQUESTION;
 	}
 #else
-	return Icon::Information;
+	return static_cast<int>(Icon::Information);
 #endif
 }
 
@@ -47,7 +47,7 @@ int getButtonId(Button button)
 			return MB_RETRYCANCEL;
 	}
 #else
-	return Button::Ok;
+	return static_cast<int>(Button::Ok);
 #endif
 }
 
