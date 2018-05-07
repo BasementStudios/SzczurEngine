@@ -2,6 +2,7 @@
 
 #include "Components/SpriteComponent.hpp"
 #include "Components/ArmatureComponent.hpp"
+#include <memory>
 
 namespace rat
 {

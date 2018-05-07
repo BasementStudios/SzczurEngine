@@ -55,13 +55,12 @@ void World::render()
 	
 	if (isCurrentSceneValid())
 	{
-		getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
-			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) {
-				sf3d::RenderStates states = window.getDefaultRenderStates();
-				states.transform *= entity.getTransform();
-				window.draw(*ptr, states);
-			}
-		});
+		auto& window = getModule<Window>();
+		getCurrentScene()->forEach([&window](const std::string&, Entity& entity) { 
+			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) { 
+				window.draw(*ptr); 
+			} 
+		}); 
 	}
 	#ifdef EDITOR
 		_levelEditor.render(window);
