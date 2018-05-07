@@ -101,6 +101,12 @@ void MoviePlayer::play()
         if(!m_isInit) p->init(window.getSize());
     }
 
+    if(m_loops[m_ICurrentLoop])
+    {
+        m_loops[m_ICurrentLoop]->change();
+        m_jump = m_loops[m_ICurrentLoop]->change();
+    }
+
     int64_t duration = m_pFormatCtx->duration;
     const int FrameSize = m_pCodecCtx->width * m_pCodecCtx->height * 3;
 
@@ -124,7 +130,6 @@ void MoviePlayer::play()
 
     size_t count =  m_loops.size();
     
-    int ICurrentLoop = 0;
     int ISmax = 0;
   
     while (window.isOpen())
@@ -158,7 +163,7 @@ void MoviePlayer::play()
                     
                 window.draw(sprite);
                 m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
-                if(!m_loops.empty() && m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->draw();
+                if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw();
                 window.display();
                 IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - IstartTime;
                 sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-IdeltaTime));
@@ -203,29 +208,29 @@ void MoviePlayer::play()
             }
             if(!m_loops.empty()) 
             {
-                if(m_loops[ICurrentLoop] && event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Down))
+                if(m_loops[m_ICurrentLoop] && event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Down))
                 {
-                    m_jump = m_loops[ICurrentLoop]->change();
+                    m_jump = m_loops[m_ICurrentLoop]->change();
                 }
-                if( m_loops[ICurrentLoop] && m_loops[ICurrentLoop]->getStartTime()<= ISmax &&event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
+                if( m_loops[m_ICurrentLoop] && m_loops[m_ICurrentLoop]->getStartTime()<= ISmax &&event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
                 {
-                    m_loops[ICurrentLoop]->setDraw(false);
-                    m_loops[ICurrentLoop] = nullptr;
+                    m_loops[m_ICurrentLoop]->setDraw(false);
+                    m_loops[m_ICurrentLoop] = nullptr;
                     if(m_jump!=0) 
                     {
                         jumpTo(m_jump);
                     }
                     m_jump =0;
-                    ICurrentLoop++;
-                    if(ICurrentLoop==count)
+                    m_ICurrentLoop++;
+                    if(m_ICurrentLoop==count)
                     {
-                        ICurrentLoop--;
+                        m_ICurrentLoop--;
                     }
                     else
                     {
-                        m_jump = m_loops[ICurrentLoop]->startJump;
+                        m_jump = m_loops[m_ICurrentLoop]->startJump;
                     }
-                    if(m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->setTime(ISmax);
+                    if(m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->setTime(ISmax);
                 }
             }
         }
@@ -313,7 +318,7 @@ void MoviePlayer::play()
                 
                 window.draw(sprite);
                 
-                if(!m_loops.empty() && m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->draw();
+                if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw();
                 window.display();
                 
                 int64_t timestamp = av_frame_get_best_effort_timestamp(m_pFrame);
@@ -325,7 +330,7 @@ void MoviePlayer::play()
                     m_blockPts = ms;
                     m_sound->setPlayingOffset(sf::milliseconds(m_blockPts));
                     ISmax = m_sound->timeElapsed()*1000;
-                    if(!m_loops.empty() && m_loops[ICurrentLoop]) m_loops[ICurrentLoop]->setTime(ISmax);
+                    if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->setTime(ISmax);
                     m_syncAV = false;
                 }
                 
@@ -345,9 +350,9 @@ void MoviePlayer::play()
             }
         }
         
-        if(!m_loops.empty() && m_loops[ICurrentLoop]) 
+        if(!m_loops.empty() && m_loops[m_ICurrentLoop]) 
         {
-            int result = m_loops[ICurrentLoop]->update(ISmax);
+            int result = m_loops[m_ICurrentLoop]->update(ISmax);
             if(result>=0&&!m_syncAV)
             {
                 jumpTo(result);

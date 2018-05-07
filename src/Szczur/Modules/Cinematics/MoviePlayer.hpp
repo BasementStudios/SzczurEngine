@@ -77,9 +77,7 @@ private:
     int                 m_numBytes;
     uint8_t             *m_buffer = nullptr;
     int                 m_ICurrentFrame = 0;
-    int                 ICurrentLoop = 0;
-    int                 max = 0;
-    float               IframeTime;
+    int                 m_ICurrentLoop = 0;
     AVDictionary        *m_optionsDict = nullptr;
     AVDictionary        *m_optionsDictA = nullptr;
     SwsContext          *m_sws_ctx = nullptr;
