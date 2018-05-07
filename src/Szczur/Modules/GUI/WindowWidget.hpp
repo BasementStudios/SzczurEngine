@@ -14,6 +14,9 @@ namespace rat
         void setScale(const sf::Vector2f& scale);
         void setScale(float x, float y);
 
+        void setPatchAmount(const sf::Vector2u& amount);
+        void setPatchAmount(unsigned int horizontalAmount, unsigned int verticalAmount);
+
         virtual void setPadding(const sf::Vector2f& padding) override;
         virtual void setPadding(float x, float y) override;
     protected:
@@ -25,6 +28,11 @@ namespace rat
         bool _isPaddingSet{false};
         sf::Vector2f _scale{1.f, 1.f};
 
+        sf::Vector2u _minWinSize;
+        sf::Vector2u _patchesAmount;
+        bool _isPathesAmountSet{false};
+
         void _calcPadding();
+        void _calcPatchesAmount();
     };
 }
