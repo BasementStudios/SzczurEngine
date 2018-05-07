@@ -127,11 +127,13 @@ namespace rat {
         bool skipped{false};
         options.forEach([&i, this, callback, &textManager, &skipped](Options::Option* option){
             if(!skipped) {
-                if(option->skip) {
-                    skipped = true;
-                    std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
-                }
-                if(option->condition == nullptr || std::invoke(option->condition)) {
+                if(option->condition.valid() ? (bool)(option->condition()) : true){
+                    if(option->skip) {
+                        skipped = true;
+                        std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
+                        if(option->afterAction.valid())
+                            option->afterAction();
+                    }
                     TextWidget* button = new TextWidget;
                     _buttonsCreator.call(
                         i, 
@@ -139,8 +141,9 @@ namespace rat {
                     );
                     button->setString(textManager.getLabel(option->majorTarget, option->minorTarget));
                     button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
-                            if(option->afterAction)
-                                std::invoke(option->afterAction);
+                            if(option->afterAction.valid())
+                                option->afterAction();
+                                //std::invoke(option->afterAction);
                             std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
                     });
                     
