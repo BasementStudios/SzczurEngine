@@ -124,8 +124,8 @@ SF3DArmatureDisplay* SF3DFactory::buildArmatureDisplay(const std::string& armatu
 
 sf3d::Texture* SF3DFactory::getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName) const
 {
-
 	const auto textureData = static_cast<SF3DTextureData*>(_getTextureData(dragonBonesName, textureName));
+
 	if (textureData != nullptr && textureData->texture != nullptr)
 	{
 		return textureData->texture;

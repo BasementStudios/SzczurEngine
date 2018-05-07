@@ -49,11 +49,6 @@ public:
 
 		texture = value;
 	}
-
-	const glm::vec2& getSize() const
-	{
-		return this->texture->getSize();
-	}
 };
 
 DRAGONBONES_NAMESPACE_END
