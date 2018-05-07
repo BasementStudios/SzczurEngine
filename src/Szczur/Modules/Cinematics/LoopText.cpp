@@ -1,11 +1,12 @@
 #include "Szczur/Modules/Cinematics/LoopText.hpp"
 
-LoopText::LoopText(callme callback,const char * text,unsigned int size)
+LoopText::LoopText(callme callback,const char * text,int jump,unsigned int size)
 {  
     func = callback;
     m_text.setCharacterSize(size);
     m_text.setString(text);
     m_set = false;
+    m_jump = jump;
 }
 
 bool LoopText::isSet()
@@ -33,9 +34,9 @@ void LoopText::setSize(const sf::Vector2f &vec)
     m_text.setScale(vec);
 }
 
-void LoopText::setPosition(const sf::Vector2f &vec)
+void LoopText::setPosition(const sf::Vector2i &vec)
 {
-    m_text.setPosition(vec);
+    m_text.setPosition(vec.x,vec.y);
 }
 
 void LoopText::draw()
@@ -51,4 +52,9 @@ void LoopText::setColor(const sf::Color &color)
 void LoopText::callEvent()
 {
     func();
+}
+
+int LoopText::getJump()
+{
+    return m_jump;
 }
