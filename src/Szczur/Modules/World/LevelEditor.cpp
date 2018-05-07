@@ -291,22 +291,24 @@ namespace rat {
 					}
 					ImGui::SameLine();
 					if(ImGui::TreeNode(group.first.c_str())) {
-						for(auto object = group.second.begin(); object != group.second.end(); ++object) {
-							bool temp = object->getID() == _focusedObject && _anySelected;
-							if(ImGui::SmallButton("-")) {
+						//for(auto object = group.second.begin(); object != group.second.end(); ++object) {
+						for(int i2 = 0; i2<group.second.size(); ++i2) {
+							Entity& object = group.second[i2];
+							bool temp = object.getID() == _focusedObject && _anySelected;
+							if(ImGui::SmallButton(    (std::string{"-###"}+std::to_string(i++)).c_str()    )) {
 								if(temp)
 									_anySelected = false;
-								group.second.erase(object);
-								--object;
+								group.second.erase(group.second.begin() + i2);
+								--i2;
 								continue;
 							}
 							ImGui::SameLine();
-							if(ImGui::Selectable((object->getName()+"###"+std::to_string(i++)).c_str(), temp)) {
+							if(ImGui::Selectable((object.getName()+"###"+std::to_string(i++)).c_str(), temp)) {
 								if(temp) {
 									_anySelected = false;
 								}
 								else {
-									_focusedObject = object->getID();
+									_focusedObject = object.getID();
 									_anySelected = true;
 								}
 							}
