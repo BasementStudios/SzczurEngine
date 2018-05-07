@@ -30,11 +30,7 @@ namespace rat
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
     {
-        _textureBar = gui.getAsset<sf::Texture>("assets/PrepScreen/skillBar.png");
-
-        _textureLocked = gui.getAsset<sf::Texture>("assets/PrepScreen/skillBarLocked.png");
-
-        _font = gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf");
+        _font = gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
 
         _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));

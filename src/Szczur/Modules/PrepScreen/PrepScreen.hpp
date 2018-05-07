@@ -95,5 +95,7 @@ namespace rat
         void _initProfArea();
         void _initChosenSkillArea();
         void _initColorFilterArea();
+
+        void _loadAssetsFromGUI();
     };
 }

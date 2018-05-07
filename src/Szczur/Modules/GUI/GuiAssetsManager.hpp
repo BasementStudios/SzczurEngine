@@ -56,8 +56,8 @@ namespace rat {
             auto* result = _get<T>(fnv1a_32(path.begin(), path.end()));
             if(!result) 
             {
-                return loadFromFile<T>(path);
-                //LOG_ERROR("Cannot get file: \"", path, "\"");
+                LOG_ERROR("Cannot get file: \"", path, "\"");
+                return nullptr;
             }
             return result;
         }

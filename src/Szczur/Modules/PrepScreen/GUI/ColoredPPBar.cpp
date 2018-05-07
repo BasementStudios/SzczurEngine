@@ -55,7 +55,7 @@ namespace rat
         PPColors colors;
         for(const auto& color : colors)
         {
-            const std::string path = "assets/PrepScreen/" + color + "PP.png";
+            const std::string path = "Assets/PrepScreen/" + color + "PP.png";
             gui.addAsset<sf::Texture>(path);
             _textures.emplace(color, gui.getAsset<sf::Texture>(path));
         }

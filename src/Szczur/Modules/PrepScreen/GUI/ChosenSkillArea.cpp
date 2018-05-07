@@ -4,7 +4,7 @@
 #include <cassert>
 
 #include "Szczur/Modules/GUI/GUI.hpp"
-#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "SkillArea.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
@@ -14,28 +14,31 @@ namespace rat
     ChosenSkillArea::ChosenSkillArea(SkillArea& parentArea, size_t size)
     :
     _parentArea(parentArea),
-    _size(size)
+    _size(size),
+    _widthPadding(70.f),
+    _iconSize{246.f, 400.f}
     {
-        _base = new Widget;
+        _skills = new Widget;
+        _addWidget(_skills);
+        _skills->setPadding(_widthPadding * _scale, 0.f);
+
+        _border = new WindowWidget;
+        _addWidget(_border);
         for(size_t i = 0; i < size; i++)
         {
             auto chSkillBar = std::make_unique<ChosenSkillBar>(*this);
-            chSkillBar->setParent(_base);
-            chSkillBar->setPosition(float(i)*120.f, 0.f);
+            chSkillBar->setParent(_skills);
+            chSkillBar->setPosition(_iconSize.x * _scale * float(i), 0.f);
+            chSkillBar->setSize(_iconSize * _scale);
             _skillBars.emplace_back(std::move(chSkillBar));
         }
     }
 
-    void ChosenSkillArea::setPosition(float x, float y)
+    void ChosenSkillArea::initAssetsViaGUI(GUI& gui)
     {
-        _base->setPosition(x, y);
-    }
-    void ChosenSkillArea::setParent(Widget* parent)
-    {
-        parent->add(_base);
-    }
-    void ChosenSkillArea::initTexturesViaGUI(GUI& gui)
-    {
+        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png"), 200);
+        _border->setScale(_scale, _scale);
+        _border->setPatchAmount((unsigned int)_size, 0);
         for(auto& chSkillBar : _skillBars)
         {
             chSkillBar->initAssetsViaGUI(gui);

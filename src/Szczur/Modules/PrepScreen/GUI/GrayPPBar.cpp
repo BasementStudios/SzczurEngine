@@ -75,7 +75,7 @@ namespace rat
 
     void GrayPPBar::initTextureViaGui(GUI& gui)
     {
-        std::string path = "assets/PrepScreen/PP.png";
+        std::string path = "Assets/PrepScreen/PP.png";
         gui.addAsset<sf::Texture>(path);
         _texture = gui.getAsset<sf::Texture>(path);
     }

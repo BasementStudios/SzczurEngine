@@ -29,10 +29,10 @@ namespace rat
 
     void ColorFilterBar::initAssetsViaGUI(GUI& gui)
     {
-        auto* iconTexture = gui.getAsset<sf::Texture>("assets/PrepScreen/" + _color + "PP.png");
+        auto* iconTexture = gui.getAsset<sf::Texture>("Assets/PrepScreen/" + _color + "PP.png");
         _icon->setTexture(iconTexture);
         _setWidgetSize(_icon, _dim, _dim);
-        auto* backTexture = gui.getAsset<sf::Texture>("assets/PrepScreen/PP.png");
+        auto* backTexture = gui.getAsset<sf::Texture>("Assets/PrepScreen/PP.png");
         _backIcon->setTexture(backTexture);
         _setWidgetSize(_backIcon, _dim + 2.f * _backPadding, _dim +2.f * _backPadding);
     }

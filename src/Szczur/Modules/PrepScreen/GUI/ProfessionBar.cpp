@@ -31,8 +31,10 @@ namespace rat
 
     void ProfessionBar::initAssetsViaGUI(GUI& gui)
     {
-        _icon->setTexture(gui.getAsset<sf::Texture>("assets/PrepScreen/" + _profession + "Icon.png"));
-        _window->setTexture(gui.getAsset<sf::Texture>("assets/Test/Window.png"), 200);
+        std::string path = "Assets/PrepScreen/" + _profession + "Icon.png";
+        gui.addAsset<sf::Texture>(path);
+        _icon->setTexture(gui.getAsset<sf::Texture>(path));
+        _window->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
         _window->setScale(0.2f, 0.2f);
         _window->setPadding(_pad, _pad);
     }

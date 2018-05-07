@@ -29,17 +29,13 @@ namespace rat
         return _codex;
     }
 
-    sf::Texture* PrepScreen::getTextureFrom(const std::string& name, GUI& gui)
-    {
-        std::string path = _folder + name;
-        gui.addAsset<sf::Texture>(path);
-        return gui.getAsset<sf::Texture>(path);
-    }
-
     void PrepScreen::initGUI()
     {
         auto& gui = getModule<GUI>();
 
+        _loadAssetsFromGUI();
+        
+        std::cout << "What\n";
         _codex.initAssetsViaGUI(gui);
 
         gui.addAsset<sf::Texture>("assets/PrepScreen/MenuBar.png");
@@ -58,10 +54,8 @@ namespace rat
         _chosenSkillsBar = new ImageWidget;
 
         ppBar->add(_coloredPPBar);
-        //_coloredPPBar->setTexture(getTextureFrom("coloredPPBar.png", gui));
 
         ppBar->add(_grayPPBar);
-        //_grayPPBar->setTexture(getTextureFrom("grayPPBar.png", gui));
         _grayPPBar->setPosition(0.f, 80.f);
 
         _centerWindow = new ImageWidget;
@@ -105,7 +99,7 @@ namespace rat
         _grayPPsBar.initTextureViaGui(gui);
         _grayPPsBar.setCenter(1280.f/2.f, 0);
 
-        PPSource fireSource = {"Fire", 1, 2};
+        PPSource fireSource = {"Fire", 1, 23};
         PPSource earthSource = {"Earth", 1, 3};
         PPSource essenceSource = {"Essence", 1, 3};
         PPSource physicalSource = {"Physical", 1, 2};
@@ -137,18 +131,18 @@ namespace rat
         _initColorFilterArea();
 
         _infoBar.setParent(_base);
-        _infoBar.setPosition(200.f, 400.f);
+        _infoBar.setPosition(1111.f, 400.f);
         _infoBar.setName("Test");
         _infoBar.initAssetsViaGUI(gui);
         _infoBar.setInfo("Testowe info\nHalo halo dzieciaki efwefe wfsdvds grefdbkrfikbnj hrebf wkjbjerfkefb reji nnbi nui uyth ctr v yt  vhyt  h crcg ctr gc yctych  tyc ytc trc h t yh vg c\nAmadeusz");
         
         _testBar = new WindowWidget;
-        gui.addAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png");
+        //gui.addAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png");
         _testBar->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png"), 200);
         _base->add(_testBar);
         _testBar->setScale(0.2f, 0.2f);
-        _testBar->setPosition(400.f, 350.f);
-        _testBar->setSize(300, 100);
+        _testBar->setPosition(1111.f, 350.f);
+        _testBar->setPatchAmount(4, 0);
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)
@@ -177,6 +171,7 @@ namespace rat
     {
         _chosenSkillArea.setParent(_base);
         _chosenSkillArea.setPosition(200.f, 600.f);
+        _chosenSkillArea.initAssetsViaGUI(getModule<GUI>());
     }
     void PrepScreen::_initColorFilterArea()
     {
@@ -185,5 +180,23 @@ namespace rat
         _colorFilterArea.initAssetsViaGUI(getModule<GUI>());
         _colorFilterArea.setWidth(250.f);   
     }
+
+    void PrepScreen::_loadAssetsFromGUI()
+    {
+        auto& gui = getModule<GUI>();
+
+        std::string path = "Assets/Test/";
+
+        gui.addAsset<sf::Texture>(path + "Bar.png");
+        gui.addAsset<sf::Texture>(path + "ChosenSkillWindow.png");
+        gui.addAsset<sf::Texture>(path + "Scroller.png");
+        gui.addAsset<sf::Texture>(path + "ScrollerBar.png");
+        gui.addAsset<sf::Texture>(path + "ScrollerBound.png");
+        gui.addAsset<sf::Texture>(path + "Window.png");
+        gui.addAsset<sf::Texture>(path + "Window2.png");
+
+        gui.addAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
+    }
+    
     
 }

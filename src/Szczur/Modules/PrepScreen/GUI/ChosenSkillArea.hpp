@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BaseBar.hpp"
+
 #include <vector>
 #include <memory>
 
@@ -7,16 +9,14 @@
 
 namespace rat
 {
-    class Widget;
+    class WindowWidget;
     class SkillArea;
 
-    class ChosenSkillArea
+    class ChosenSkillArea : public BaseBar
     {
     public:
         ChosenSkillArea(SkillArea& parentArea, size_t size = 6);
-        void setPosition(float x, float y);
-        void setParent(Widget* parent);
-        void initTexturesViaGUI(GUI& gui);
+        void initAssetsViaGUI(GUI& gui);
         void addSkill(Skill* skill);
         bool hasFreeSpace() const;
         void recalculate();
@@ -25,7 +25,13 @@ namespace rat
         SkillArea& _parentArea;
         size_t _size;
 
-        Widget* _base{nullptr};
+
+
+        float _widthPadding = 70.f;
+        sf::Vector2f _iconSize;
+        float _scale{0.2f};
+        WindowWidget* _border{nullptr};
+        Widget* _skills{nullptr};
 
         std::vector<std::unique_ptr<ChosenSkillBar>> _skillBars;
     };

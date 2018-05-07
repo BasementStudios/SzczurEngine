@@ -67,13 +67,13 @@ namespace rat
         size_t i = 0;
         for(auto& [color, widget] : _coloredPPs)
         {
-            const std::string path = "assets/PrepScreen/" + color + "PP.png";
+            const std::string path = "Assets/PrepScreen/" + color + "PP.png";
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
             widget->setSize(_dim, _dim);
         }        
-        _costAmount->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
-        _setIconTexture(gui.getAsset<sf::Texture>("assets/PrepScreen/PP.png"));
+        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
+        _setIconTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/PP.png"));
     }
 
     void CostBar::_setIconTexture(sf::Texture* texture)

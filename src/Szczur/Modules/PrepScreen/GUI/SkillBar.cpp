@@ -85,11 +85,10 @@ namespace rat
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
-        gui.addAsset<sf::Texture>("assets/Test/Bar.png");
         auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
         _iconWindow->setTexture(barTex, 6);
         _infoBar->setTexture(barTex, 6);
-        _name->setFont(gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf"));
+        _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
         _costBar.loadAssetsFromGUI(gui);
     }
     

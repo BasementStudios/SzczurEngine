@@ -1,28 +1,28 @@
 #pragma once
 
+#include "BaseBar.hpp"
+
 #include <SFML/Graphics/Texture.hpp>
 
 #include "../Skill.hpp"
 
 namespace rat
 {
-    class Widget; class ImageWidget; class TextWidget;
+    class ImageWidget; class TextWidget;
     class GUI;
     class ChosenSkillArea; class SkillArea; class GrayPPBar;
 
-    class ChosenSkillBar
+    class ChosenSkillBar : public BaseBar
     {
     public:
         ChosenSkillBar(ChosenSkillArea& parentArea);
 
         void setSkill(Skill* skill);
-        void setPosition(float x, float y);
-        void move(float x, float y);
-        void setParent(Widget* parent);
         void initAssetsViaGUI(GUI& gui);
         bool hasSkill() const;
         bool isFree() const;
         void setSize(float x, float y);
+        void setSize(const sf::Vector2f& size);
         void swapSkillsWith(ChosenSkillBar& other);
 
     private:
@@ -31,8 +31,6 @@ namespace rat
         GrayPPBar& _sourceBar;
 
         Skill* _skill{nullptr};
-
-        ImageWidget* _base{nullptr};
         ImageWidget* _icon{nullptr};       
 
         bool _hasSkill{false};
