@@ -86,6 +86,8 @@ namespace rat
 
         InfoBar _infoBar;
 
+        WindowWidget* _testBar{nullptr};
+
 
         void _setWidgetSize(ImageWidget* widget, float x, float y);
         void _initProfessionBar(GUI& gui);

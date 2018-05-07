@@ -5,6 +5,7 @@
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
 
 #include "ChosenSkillArea.hpp"
 
@@ -19,8 +20,12 @@ namespace rat
     _chosenColors({}),
     _curentProfession("Mele")
     {
-        _base = new ScrollAreaWidget;
-        _base->setSize(300.f, 400.f);
+        _base = new WindowWidget;
+        _base->setPadding(11.f, 11.f);
+
+        _skillsScroller = new ScrollAreaWidget;
+        _skillsScroller->setSize(300.f, 400.f);
+        _base->add(_skillsScroller);
     }
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
@@ -31,9 +36,11 @@ namespace rat
 
         _font = gui.getAsset<sf::Font>("assets/fonts/NotoMono.ttf");
 
-        _base->setPathTexture(gui.getAsset<sf::Texture>("assets/Test/ScrollerBar.png"));
-        _base->setScrollerTexture(gui.getAsset<sf::Texture>("assets/Test/Scroller.png"));
-        _base->setBoundsTexture(gui.getAsset<sf::Texture>("assets/Test/ScrollerBound.png"));
+        _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        _skillsScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+
+        _base->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
 
         for(auto& skillBar : _skillBars)
         {
@@ -51,7 +58,7 @@ namespace rat
         for(size_t i = 0; i < maxSkillBars; i++)
         {
             auto skillBar = std::make_unique<SkillBar>(*this);
-            skillBar->setParent(_base);
+            skillBar->setParent(_skillsScroller);
             _skillBars.emplace_back(std::move(skillBar));
         }
         deactivate();
@@ -176,6 +183,6 @@ namespace rat
                 activeIndex++;
             }
         }
-        _base->calculateSize();
+        _skillsScroller->calculateSize();
     }
 }

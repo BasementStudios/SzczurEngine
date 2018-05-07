@@ -9,6 +9,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
 
@@ -139,7 +140,15 @@ namespace rat
         _infoBar.setPosition(200.f, 400.f);
         _infoBar.setName("Test");
         _infoBar.initAssetsViaGUI(gui);
-        _infoBar.setInfo("Testowe info\nHalo halo dzieciak efwefe wfsdvds grefdbkrfikbnj hrebf wkjbjerfkefb reji nnbi nui uyt  h ctr v yt  vhyt  h crcg ctr gc yctych  tyc ytc trc h t yh vg c\nAmadeusz");
+        _infoBar.setInfo("Testowe info\nHalo halo dzieciaki efwefe wfsdvds grefdbkrfikbnj hrebf wkjbjerfkefb reji nnbi nui uyth ctr v yt  vhyt  h crcg ctr gc yctych  tyc ytc trc h t yh vg c\nAmadeusz");
+        
+        _testBar = new WindowWidget;
+        gui.addAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png");
+        _testBar->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png"), 200);
+        _base->add(_testBar);
+        _testBar->setScale(0.2f, 0.2f);
+        _testBar->setPosition(400.f, 350.f);
+        _testBar->setSize(300, 100);
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)

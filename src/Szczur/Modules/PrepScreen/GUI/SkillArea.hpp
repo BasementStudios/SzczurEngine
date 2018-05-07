@@ -49,7 +49,9 @@ namespace rat
         sf::Texture* _textureLocked{nullptr};
         sf::Font* _font{nullptr};
 
-        ScrollAreaWidget* _base{nullptr};
+        WindowWidget* _base{nullptr};
+        ScrollAreaWidget* _skillsScroller{nullptr};
+
 
         void _initNewSkillBarsAmount(size_t newAmount);
 
