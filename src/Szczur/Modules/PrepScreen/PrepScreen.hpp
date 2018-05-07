@@ -16,6 +16,8 @@
 #include "GUI/ChosenSkillArea.hpp"
 #include "GUI/ColorFilterArea.hpp"
 
+#include "GUI/InfoBar.hpp"
+
 namespace rat
 {
     class Widget; class ScrollAreaWidget; class ImageWidget;
@@ -81,6 +83,8 @@ namespace rat
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;
         ColorFilterArea _colorFilterArea;
+
+        InfoBar _infoBar;
 
 
         void _setWidgetSize(ImageWidget* widget, float x, float y);

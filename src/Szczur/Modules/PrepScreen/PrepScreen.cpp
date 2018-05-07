@@ -134,6 +134,12 @@ namespace rat
         _initChosenSkillArea();
         _initProfArea();
         _initColorFilterArea();
+
+        _infoBar.setParent(_base);
+        _infoBar.setPosition(200.f, 400.f);
+        _infoBar.setName("Test");
+        _infoBar.initAssetsViaGUI(gui);
+        _infoBar.setInfo("Testowe info\nHalo halo dzieciak efwefe wfsdvds grefdbkrfikbnj hrebf wkjbjerfkefb reji nnbi nui uyt  h ctr v yt  vhyt  h crcg ctr gc yctych  tyc ytc trc h t yh vg c\nAmadeusz");
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)

@@ -52,10 +52,10 @@ namespace rat
 
     void ProfessionBar::_onClick()
     {
-        clock_t t = clock();        
+        //clock_t t = clock();        
         _skillArea.setProfession(_profession);
-        float time = float(clock() - t);
-        std::cout << "Time elapsed: " << time/CLOCKS_PER_SEC << "s\n";
+        //float time = float(clock() - t);
+        //std::cout << "Time elapsed: " << time/CLOCKS_PER_SEC << "s\n";
     }
     
 }

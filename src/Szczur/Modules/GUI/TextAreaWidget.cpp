@@ -51,7 +51,7 @@ namespace rat {
         object.setProperty(
             "size",
             [](TextAreaWidget& owner){return owner._size;},
-            [](TextAreaWidget& owner, sol::table tab){ owner.setSize(sf::Vector2u{tab[1], tab[2]}); }
+            [](TextAreaWidget& owner, sol::table tab){ owner.setAreaSize(sf::Vector2u{tab[1], tab[2]}); }
         );
         
         object.init();
@@ -64,7 +64,7 @@ namespace rat {
         calculateSize();
     }
 
-    void TextAreaWidget::setSize(sf::Vector2u size) {
+    void TextAreaWidget::setAreaSize(sf::Vector2u size) {
         _size = size;
         _toWrap = true;
         _aboutToRecalculate = true;

@@ -15,7 +15,7 @@ namespace rat {
 
         void setString(const std::string& text);
 
-        void setSize(sf::Vector2u size);
+        void setAreaSize(sf::Vector2u size);
 
         void setFont(sf::Font* font);
 
