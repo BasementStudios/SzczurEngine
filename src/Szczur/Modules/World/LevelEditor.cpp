@@ -159,8 +159,9 @@ namespace rat {
 			if(ImGui::BeginChild("Datas")) {
 				for(auto it = spriteDisplayDataHolder.begin(); it!=spriteDisplayDataHolder.end(); ++it) {
 					if(ImGui::SmallButton("-")) {
-						//spriteDisplayData.erase(it);
-						//--it;
+						spriteDisplayDataHolder.erase(it);
+						--it;
+						continue;
 					}
 					ImGui::SameLine();
 					ImGui::Text(it->getName().c_str());
@@ -190,9 +191,9 @@ namespace rat {
 			if(ImGui::BeginChild("Datas")) {
 				for(auto it = armatureDisplayDataHolder.begin(); it!=armatureDisplayDataHolder.end(); ++it) {
 					if(ImGui::SmallButton("-")) {
-						//_armatureDisplayDataHolder.erase(it);
-						//--it;
-						//continue;
+						armatureDisplayDataHolder.erase(it);
+						--it;
+						continue;
 					}
 					ImGui::SameLine();
 					ImGui::Text(it->getName().c_str());
