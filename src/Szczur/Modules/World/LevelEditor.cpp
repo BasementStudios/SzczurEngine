@@ -5,7 +5,11 @@
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/modules/FileSystem/FileDialog.hpp"
+
+#include <ImGui/imgui.h>
+#include <iostream>
+
 
 namespace rat {
     LevelEditor::LevelEditor(SceneManager& scenes) :
@@ -115,15 +119,23 @@ namespace rat {
     void LevelEditor::_renderBar() {
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
+				static char buffer[255];
+				if(ImGui::InputText("File", buffer, 255u)) {
+
+				}
 				if(ImGui::MenuItem("Load")) {
-					//std::string file = FileDialog::getOpenFileName("Load", ".");
-					//std::cout << file << '\n';
+					std::string name = FileDialog::getOpenFileName("Load", ".");
+					std::cout << name << '\n';
+					/*try {
+						_scenes.loadFromFile(buffer);
+					}
+					catch(...) {}*/
 				}
 				if(ImGui::MenuItem("Save")) {
-					_scenes.saveToFile("test.json");
-				}
-				if(ImGui::MenuItem("Save as")) {
-					std::cout << "Save as\n";
+					try {
+						_scenes.saveToFile(buffer);
+					}
+					catch(...){}
 				}
 				if(ImGui::MenuItem("Exit")) {
 					std::cout << "Exit\n";

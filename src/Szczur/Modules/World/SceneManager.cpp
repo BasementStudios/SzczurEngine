@@ -9,6 +9,7 @@ namespace rat {
         camera->setPosition({0.f, 1160.f, 3085.f}); 
         camera->setRotation({15.f, 0.f, 0.f}); 
         scene->camera = camera->getID();
+        return scene;
     }
 
     bool SceneManager::removeScene(size_t id)
