@@ -86,7 +86,7 @@ namespace rat
         {
             auto& skillBar = _skillBars[i];
             skillBar->activate();
-            skillBar->setPosition(0.f, float(i) * 80.f);
+            skillBar->setPosition(0.f, float(i) * 80.f + 600.f);
         }
         for(size_t i = newAmount; i < _activeBarsAmount; i++)
         {

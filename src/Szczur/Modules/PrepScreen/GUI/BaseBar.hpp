@@ -6,7 +6,8 @@
 
 namespace rat
 {
-    class Widget; class ImageWidget;
+    class Widget; class ImageWidget; class WindowWidget; class TextWidget;
+    class TextAreaWidget; 
 
     class BaseBar
     {

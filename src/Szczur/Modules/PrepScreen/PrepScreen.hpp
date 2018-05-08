@@ -17,6 +17,7 @@
 #include "GUI/ColorFilterArea.hpp"
 
 #include "GUI/InfoBar.hpp"
+#include "GUI/GlyphBar.hpp"
 
 namespace rat
 {
@@ -42,7 +43,8 @@ namespace rat
         _skillArea(_grayPPsBar),
         _profArea(_skillArea),
         _chosenSkillArea(_skillArea),
-        _colorFilterArea(_skillArea)
+        _colorFilterArea(_skillArea),
+        _testGlyphBar("Wrath")
         {
             LOG_INFO(this, " : Module PrepScreen initing...");
             init();
@@ -87,6 +89,7 @@ namespace rat
         InfoBar _infoBar;
 
         WindowWidget* _testBar{nullptr};
+        GlyphBar _testGlyphBar;
 
 
         void _setWidgetSize(ImageWidget* widget, float x, float y);

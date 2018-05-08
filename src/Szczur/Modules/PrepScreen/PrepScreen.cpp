@@ -11,6 +11,8 @@
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 
+#include "GlyphTypes.hpp"
+
 #include "Szczur/Utility/Logger.hpp" 
 
 namespace rat
@@ -131,7 +133,7 @@ namespace rat
         _initColorFilterArea();
 
         _infoBar.setParent(_base);
-        _infoBar.setPosition(1111.f, 400.f);
+        _infoBar.setPosition(600.f, 400.f);
         _infoBar.setName("Test");
         _infoBar.initAssetsViaGUI(gui);
         _infoBar.setInfo("Testowe info\nHalo halo dzieciaki efwefe wfsdvds grefdbkrfikbnj hrebf wkjbjerfkefb reji nnbi nui uyth ctr v yt  vhyt  h crcg ctr gc yctych  tyc ytc trc h t yh vg c\nAmadeusz");
@@ -143,6 +145,11 @@ namespace rat
         _testBar->setScale(0.2f, 0.2f);
         _testBar->setPosition(1111.f, 350.f);
         _testBar->setPatchAmount(4, 0);
+
+        _testGlyphBar.setStartAmount(3);
+        _testGlyphBar.setPosition(300.f, 300.f);
+        _testGlyphBar.setParent(_base);
+        _testGlyphBar.initAssetsViaGUI(gui);
     }
 
     void PrepScreen::_setWidgetSize(ImageWidget* widget, float x, float y)
@@ -194,6 +201,14 @@ namespace rat
         gui.addAsset<sf::Texture>(path + "ScrollerBound.png");
         gui.addAsset<sf::Texture>(path + "Window.png");
         gui.addAsset<sf::Texture>(path + "Window2.png");
+        gui.addAsset<sf::Texture>(path + "GlyphCircle.png");
+
+        GlyphTypes glyphTypes;
+        for(auto& type : glyphTypes)
+        {
+            const std::string typePath = path + type + "Glyph.png";
+            gui.addAsset<sf::Texture>(typePath);
+        }
 
         gui.addAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
     }
