@@ -18,6 +18,8 @@ Scene::Scene()
 	{
 		holder.second.reserve(100);
 	}
+	_spriteDisplayDataHolder.reserve(100);
+	_armatureDisplayDataHolder.reserve(100);
 }
 
 void Scene::update(float deltaTime)
