@@ -1,6 +1,7 @@
 #include "SpriteComponent.hpp"
 
 #include "../Entity.hpp"
+#include "../Scene.hpp"
 
 namespace rat {
     SpriteComponent::SpriteComponent(Entity* parent)
@@ -46,12 +47,32 @@ namespace rat {
 	void SpriteComponent::loadFromConfig(const Json& config)
 	{
 		Component::loadFromConfig(config);
+		auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayData();
+		auto name = config["spriteDisplayData"].get<std::string>();
+		if(name != "") {
+			bool found{false};
+			for(auto& it : spriteDisplayDataHolder) {
+				if(name == it.getName()) {
+					setSpriteDisplayData(&it);
+					found = true;
+				}
+			}
+			if(!found) {
+				try {
+					setSpriteDisplayData(&(spriteDisplayDataHolder.emplace_back(name)));
+				}
+				catch(const std::exception& exc) {
+
+				}
+			}
+		}
 	}
 
 	///
 	void SpriteComponent::saveToConfig(Json& config) const
 	{
 		Component::saveToConfig(config);
+		config["spriteDisplayData"] = _spriteDisplayData ? _spriteDisplayData->getName() : "";
 	}
 
 	///

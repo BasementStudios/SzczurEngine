@@ -3,7 +3,12 @@
 namespace rat {
     Scene* SceneManager::addScene()
     {
-        return _holder.emplace_back(std::make_unique<Scene>()).get();
+        Scene* scene = _holder.emplace_back(std::make_unique<Scene>()).get();
+        Entity* camera = scene->addEntity("single");
+        camera->setName("Camera");
+        camera->setPosition({0.f, 1160.f, 3085.f}); 
+        camera->setRotation({15.f, 0.f, 0.f}); 
+        scene->camera = camera->getID();
     }
 
     bool SceneManager::removeScene(size_t id)
@@ -77,13 +82,17 @@ namespace rat {
 
         file >> config;
 
+        removeAllScenes();
+
         _currentSceneID = config["currentSceneID"];
 
         const Json& scenes = config["scenes"];
 
         for (auto& current : scenes)
         {
-            addScene()->loadFromConfig(current);
+            auto* scene = addScene();
+            scene->removeAllEntities();
+            scene->loadFromConfig(current);
         }
     }
 

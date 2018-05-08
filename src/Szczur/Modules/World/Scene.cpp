@@ -241,6 +241,7 @@ void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
+	camera = config["camera"];
 
 	const Json& groups = config["groups"];
 
@@ -257,6 +258,7 @@ void Scene::saveToConfig(Json& config) const
 {
 	config["id"] = getID();
 	config["name"] = getName();
+	config["camera"] = camera;
 
 	Json& groups = config["groups"] = Json::object();
 

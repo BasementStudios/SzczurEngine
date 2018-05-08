@@ -85,6 +85,26 @@ void Entity::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
+	setPosition({
+		config["position"]["x"].get<float>(),
+		config["position"]["y"].get<float>(),
+		config["position"]["z"].get<float>()
+	});
+	setRotation({
+		config["rotation"]["x"].get<float>(),
+		config["rotation"]["y"].get<float>(),
+		config["rotation"]["z"].get<float>()
+	});
+	setOrigin({
+		config["origin"]["x"].get<float>(),
+		config["origin"]["y"].get<float>(),
+		config["origin"]["z"].get<float>()
+	});
+	setScale({
+		config["scale"]["x"].get<float>(),
+		config["scale"]["y"].get<float>(),
+		config["scale"]["z"].get<float>()
+	});
 
 	const Json& components = config["components"];
 
@@ -99,6 +119,26 @@ void Entity::saveToConfig(Json& config) const
 	config["id"] = getID();
 	config["name"] = getName();
 	config["components"] = Json::array();
+
+
+	config["position"]["x"] = getPosition().x;
+	config["position"]["y"] = getPosition().y;
+	config["position"]["z"] = getPosition().z;
+
+	config["rotation"]["x"] = getRotation().x;
+	config["rotation"]["y"] = getRotation().y;
+	config["rotation"]["z"] = getRotation().z;
+
+	config["origin"]["x"] = getOrigin().x;
+	config["origin"]["y"] = getOrigin().y;
+	config["origin"]["z"] = getOrigin().z;
+
+	config["scale"]["x"] = getScale().x;
+	config["scale"]["y"] = getScale().y;
+	config["scale"]["z"] = getScale().z;
+
+
+	
 
 	for (const auto& component : _holder)
 	{

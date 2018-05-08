@@ -53,7 +53,6 @@ namespace rat {
 
         ///
         void saveToFile(const std::string& filepath) const;
-
     private:
         ScenesHolder_t _holder;
 

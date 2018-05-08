@@ -113,7 +113,7 @@ public:
 	void saveToConfig(Json& config) const;
 
 	void forEach(const std::function<void(const std::string& group, Entity& entity)>& callback);
-
+	size_t camera{0u};
 private:
 
     ///

@@ -12,6 +12,7 @@
 #include <boost/container/flat_map.hpp>
 #include "Szczur/Modules/Input/InputManager.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
+#include "SceneManager.hpp"
 
 namespace rat {
     struct FreeCamera {
@@ -27,14 +28,12 @@ namespace rat {
 
     class LevelEditor {
     public:
-        LevelEditor();
-
-        void setScene(Scene* scene, size_t camera);
+        LevelEditor(SceneManager& scenes);
 
         void render(sf3d::RenderTarget& target);
         void update(InputManager& input, Camera& camera);
     private:
-        Scene* _scene{nullptr};
+        SceneManager& _scenes;
 
         void _processEventsForFreeCamera(InputManager& input);
 
@@ -51,7 +50,6 @@ namespace rat {
         bool _anySelected{false};
         bool _ifRenderComponentsManager{false};
         size_t _focusedObject{static_cast<size_t>(-1)};
-        size_t _camera{static_cast<size_t>(-1)};
         FreeCamera _freeCamera;
         
     };

@@ -5,20 +5,17 @@
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
 namespace rat {
-    LevelEditor::LevelEditor() {
+    LevelEditor::LevelEditor(SceneManager& scenes) :
+	_scenes(scenes) {
 
     }
 
-	void LevelEditor::setScene(Scene* scene, size_t camera) {
-		_scene = scene;
-		if(scene) {
-			_camera = camera;
-		}
-	}
-
     void LevelEditor::render(sf3d::RenderTarget& target) {
-		if(_scene) {
+		auto* scene = _scenes.getCurrentScene();
+		if(scene) {
 			_renderBar();
 			if(_ifRenderObjectsList)
 				_renderObjectsList();
@@ -36,7 +33,7 @@ namespace rat {
 			rect.setOrigin({50.f, 50.f, 0.f});
 
 			glDisable(GL_DEPTH_TEST);
-			_scene->forEach([this, &rect, &target](const std::string& group, Entity& entity){
+			scene->forEach([this, &rect, &target](const std::string& group, Entity& entity){
 				if(_focusedObject == entity.getID() && _anySelected)
 					rect.setColor({1.f, 0.f, 1.f, 0.2f});
 				else
@@ -49,16 +46,16 @@ namespace rat {
     }
 
     void LevelEditor::update(InputManager& input, Camera& camera) {
-		
 		_freeCamera.processEvents(input);
-
 		sf3d::View view;
-		if(_focusedObject == _camera && _anySelected) {
-			auto* cam = _scene->getEntity("single", _camera);
+		auto* scene = _scenes.getCurrentScene();
+		if(_focusedObject == scene->camera && _anySelected) {
+			auto* cam = scene->getEntity("single", scene->camera);
 			view.setRotation(cam->getRotation());
 			view.setCenter(cam->getPosition());
 		}
 		else {
+			//std::cout << _freeCamera.position.x << ' ' << _freeCamera.position.y << '\n';
 			view.setRotation(_freeCamera.rotation);
 			view.setCenter(_freeCamera.position);
 		}
@@ -66,12 +63,13 @@ namespace rat {
     }
 
 	void FreeCamera::processEvents(InputManager& input) {
-		if(input.isKept(Keyboard::W))
+		if(input.isKept(Keyboard::W)) {
 			move({
 				velocity * glm::sin(glm::radians(rotation.y)),
 				0.f,
 				-velocity * glm::cos(glm::radians(rotation.y))
 			});
+		}
 		if(input.isKept(Keyboard::S))
 			move({
 				-velocity * glm::sin(glm::radians(rotation.y)),
@@ -118,10 +116,11 @@ namespace rat {
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("Load")) {
-					std::cout << "LOAD\n";
+					//std::string file = FileDialog::getOpenFileName("Load", ".");
+					//std::cout << file << '\n';
 				}
 				if(ImGui::MenuItem("Save")) {
-					std::cout << "Save\n";
+					_scenes.saveToFile("test.json");
 				}
 				if(ImGui::MenuItem("Save as")) {
 					std::cout << "Save as\n";
@@ -144,7 +143,7 @@ namespace rat {
     void LevelEditor::_renderDisplayDataManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Display Data Manager", &_ifRenderDisplayDataManager)) {
-			auto& spriteDisplayDataHolder = _scene->getSpriteDisplayData();
+			auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayData();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
@@ -176,7 +175,7 @@ namespace rat {
     void LevelEditor::_renderArmatureDisplayManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Armature Data Manager", &_ifRenderArmatureDisplayManager)) {
-			auto& armatureDisplayDataHolder = _scene->getArmatureDisplayData();
+			auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayData();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
@@ -207,7 +206,8 @@ namespace rat {
 	}
     void LevelEditor::_renderFocusedObjectsParams() {
 		if(ImGui::Begin("Object Parameters", &_anySelected)) {
-			Entity* focusedObject = _scene->getEntity(_focusedObject);
+			auto* scene = _scenes.getCurrentScene();
+			Entity* focusedObject = scene->getEntity(_focusedObject);
 			if(focusedObject) {
 				if(ImGui::CollapsingHeader("Base")) {
 					glm::vec3 position = focusedObject->getPosition();
@@ -238,7 +238,7 @@ namespace rat {
 						)) {
 							if(ImGui::MenuItem("None", nullptr, object->getSpriteDisplayData() == nullptr))
 								object->setSpriteDisplayData(nullptr);
-							for(auto& it : _scene->getSpriteDisplayData()) {
+							for(auto& it : scene->getSpriteDisplayData()) {
 								if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getSpriteDisplayData() == &it))
 									object->setSpriteDisplayData(&it);
 							}
@@ -256,7 +256,7 @@ namespace rat {
 						)) {
 							if(ImGui::MenuItem("None", nullptr, object->getArmatureDisplayData() == nullptr))
 								object->setArmatureDisplayData(nullptr);
-							for(auto& it : _scene->getArmatureDisplayData()) {
+							for(auto& it : scene->getArmatureDisplayData()) {
 								if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getArmatureDisplayData() == &it))
 									object->setArmatureDisplayData(&it);
 							}
@@ -281,10 +281,11 @@ namespace rat {
 			ImGui::Separator();
 			if(ImGui::BeginChild("Objects")) {
 				int i{0};
-				auto& collectingHolder = _scene->getAllEntities();
+				auto* scene = _scenes.getCurrentScene();
+				auto& collectingHolder = scene->getAllEntities();
 				for(auto& group : collectingHolder) {
 					if(ImGui::SmallButton((std::string{"+###"} + std::to_string(i++)).c_str())) {
-						Entity* ent = _scene->addEntity(group.first);
+						Entity* ent = scene->addEntity(group.first);
 						if(ent) {
 							_focusedObject = ent->getID();
 							_anySelected = true;
@@ -332,7 +333,7 @@ namespace rat {
 				ImGui::Text("Select Object First!");
 			}
 			else {
-				auto* focusedObject = _scene->getEntity(_focusedObject);
+				auto* focusedObject = _scenes.getCurrentScene()->getEntity(_focusedObject);
 				bool sC = focusedObject->hasComponent<SpriteComponent>();
 				if(ImGui::Selectable("SpriteComponent", sC)) {
 					if(sC)

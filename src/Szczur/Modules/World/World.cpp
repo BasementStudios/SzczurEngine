@@ -3,17 +3,14 @@
 namespace rat
 {
 
-World::World()
+World::World() :
+_levelEditor(_scenes)
 {
 	LOG_INFO("Initializing World module");
 
-	_scenes.setCurrentScene(_scenes.addScene()->getID());
-	auto* camera = _scenes.getCurrentScene()->addEntity("single");
-	camera->setName("Camera");
-	camera->setPosition({0.f, 1160.f, 3085.f}); 
-    camera->setRotation({15.f, 0.f, 0.f}); 
+	_scenes.setCurrentScene(_scenes.addScene()->getID());	
 	#ifdef EDITOR
-		_levelEditor.setScene(_scenes.getCurrentScene(), camera->getID());
+		//_levelEditor.setScene(_scenes.getCurrentScene(), camera->getID());
 	#endif
 
 	//getCurrentScene()->addEntity("single")->setName("Cedmin");
