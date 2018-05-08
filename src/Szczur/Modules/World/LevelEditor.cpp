@@ -24,8 +24,8 @@ namespace rat {
 				_renderObjectsList();
 			if(_anySelected)
 				_renderFocusedObjectsParams();
-			if(_ifRenderModulesManager)
-				_renderModulesManager();
+			if(_ifRenderComponentsManager)
+				_renderComponentsManager();
 			if(_ifRenderDisplayDataManager)
 				_renderDisplayDataManager();
 			if(_ifRenderArmatureDisplayManager)
@@ -135,7 +135,7 @@ namespace rat {
 				ImGui::MenuItem("Objects List", nullptr, &_ifRenderObjectsList);
 				ImGui::MenuItem("Display Data Manager", nullptr, &_ifRenderDisplayDataManager);
 				ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
-				ImGui::MenuItem("Modules Manager", nullptr, &_ifRenderModulesManager);
+				ImGui::MenuItem("Components Manager", nullptr, &_ifRenderComponentsManager);
 				ImGui::EndMenu();
 			}
 		}
@@ -326,8 +326,8 @@ namespace rat {
 		}
 		ImGui::End();
 	}
-    void LevelEditor::_renderModulesManager() {
-		if(ImGui::Begin("Modules Manager")) {
+    void LevelEditor::_renderComponentsManager() {
+		if(ImGui::Begin("Components Manager", &_ifRenderComponentsManager)) {
 			if(!_anySelected) {
 				ImGui::Text("Select Object First!");
 			}

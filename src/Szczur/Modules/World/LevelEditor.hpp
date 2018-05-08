@@ -43,13 +43,13 @@ namespace rat {
         void _renderArmatureDisplayManager();
         void _renderFocusedObjectsParams();
         void _renderObjectsList();
-        void _renderModulesManager();
+        void _renderComponentsManager();
 
         bool _ifRenderObjectsList{true};
         bool _ifRenderDisplayDataManager{false};
         bool _ifRenderArmatureDisplayManager{false};
         bool _anySelected{false};
-        bool _ifRenderModulesManager{false};
+        bool _ifRenderComponentsManager{false};
         size_t _focusedObject{static_cast<size_t>(-1)};
         size_t _camera{static_cast<size_t>(-1)};
         FreeCamera _freeCamera;
