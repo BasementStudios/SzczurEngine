@@ -14,7 +14,7 @@ namespace rat
         std::stringstream stream;
         stream << text;
         std::string temp;
-        std::regex word_regex( R"([\s]*\[(\d+)\:(\d+)\][\s]*\[(.+)\](.*))"s);
+        std::regex word_regex( R"([\s]*\[(\d+)\:(\d+)\][\s]*\[(.+?)\](.*))"s);
         while(std::getline(stream, temp)) {
             for(auto it = std::sregex_iterator(temp.begin(), temp.end(), word_regex); it!=std::sregex_iterator(); ++it, ++dialogLines) {
                 dialogTime.push_back(it->str(1) + ":" + it->str(2));
