@@ -49,53 +49,8 @@ namespace rat {
     }
 
     void LevelEditor::update(InputManager& input, Camera& camera) {
-		if(input.isKept(Keyboard::W))
-			_freeCamera.move({
-				_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y)),
-				0.f,
-				-_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y))
-			});
-		if(input.isKept(Keyboard::S))
-			_freeCamera.move({
-				-_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y)),
-				0.f,
-				_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y))
-			});
-		if(input.isKept(Keyboard::D)) {
-			_freeCamera.move(glm::vec3{
-				_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y)),
-				0.f,
-				_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::A)) {
-			_freeCamera.move(glm::vec3{
-				-_freeCameraVelocity * glm::cos(glm::radians(_freeCamera.rotation.y)),
-				0.f,
-				-_freeCameraVelocity * glm::sin(glm::radians(_freeCamera.rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::Space))
-			_freeCamera.move({0.f, _freeCameraVelocity, 0.f});
-		if(input.isKept(Keyboard::LControl))
-			_freeCamera.move({0.f, -_freeCameraVelocity, 0.f});
-		if(_rotatingCamera) {
-			auto mouse = input.getMousePosition();
-			_freeCamera.rotate({
-				(mouse.y - _previousMouse.y)/10.f,
-				(mouse.x - _previousMouse.x)/10.f, 
-				0.f
-			});
-			_previousMouse = mouse;
-		}
-		if(input.isPressed(Mouse::Right)) {
-			_rotatingCamera = true;
-			_previousMouse = input.getMousePosition();
-		}
-		if(input.isReleased(Mouse::Right)) {
-			_rotatingCamera = false;
-		}
-
+		
+		_freeCamera.processEvents(input);
 
 		sf3d::View view;
 		if(_focusedObject == _camera && _anySelected) {
@@ -110,7 +65,54 @@ namespace rat {
 		camera.setView(view);
     }
 
-
+	void FreeCamera::processEvents(InputManager& input) {
+		if(input.isKept(Keyboard::W))
+			move({
+				velocity * glm::sin(glm::radians(rotation.y)),
+				0.f,
+				-velocity * glm::cos(glm::radians(rotation.y))
+			});
+		if(input.isKept(Keyboard::S))
+			move({
+				-velocity * glm::sin(glm::radians(rotation.y)),
+				0.f,
+				velocity * glm::cos(glm::radians(rotation.y))
+			});
+		if(input.isKept(Keyboard::D)) {
+			move(glm::vec3{
+				velocity * glm::cos(glm::radians(rotation.y)),
+				0.f,
+				velocity * glm::sin(glm::radians(rotation.y))
+			});
+		}
+		if(input.isKept(Keyboard::A)) {
+			move(glm::vec3{
+				-velocity * glm::cos(glm::radians(rotation.y)),
+				0.f,
+				-velocity * glm::sin(glm::radians(rotation.y))
+			});
+		}
+		if(input.isKept(Keyboard::Space))
+			move({0.f, velocity, 0.f});
+		if(input.isKept(Keyboard::LControl))
+			move({0.f, -velocity, 0.f});
+		if(rotating) {
+			auto mouse = input.getMousePosition();
+			rotate({
+				(mouse.y - previousMouse.y)/10.f,
+				(mouse.x - previousMouse.x)/10.f, 
+				0.f
+			});
+			previousMouse = mouse;
+		}
+		if(input.isPressed(Mouse::Right)) {
+			rotating = true;
+			previousMouse = input.getMousePosition();
+		}
+		if(input.isReleased(Mouse::Right)) {
+			rotating = false;
+		}
+	}
 
     void LevelEditor::_renderBar() {
 		if(ImGui::BeginMainMenuBar()) {

@@ -14,6 +14,17 @@
 #include "Szczur/Modules/Camera/Camera.hpp"
 
 namespace rat {
+    struct FreeCamera {
+        glm::vec3 position{0.f, 0.f, 0.f};
+        glm::vec3 rotation{0.f, 0.f, 0.f};
+        bool rotating{false};
+        float velocity{50.f};
+        sf::Vector2i previousMouse{0, 0};
+        void move(const glm::vec3& offset) {position += offset;}
+        void rotate(const glm::vec3& offset) {rotation += offset;}
+        void processEvents(InputManager& input);
+    };
+
     class LevelEditor {
     public:
         LevelEditor();
@@ -24,6 +35,8 @@ namespace rat {
         void update(InputManager& input, Camera& camera);
     private:
         Scene* _scene{nullptr};
+
+        void _processEventsForFreeCamera(InputManager& input);
 
         void _renderBar();
         void _renderDisplayDataManager();
@@ -39,16 +52,11 @@ namespace rat {
         bool _ifRenderModulesManager{false};
         size_t _focusedObject{static_cast<size_t>(-1)};
         size_t _camera{static_cast<size_t>(-1)};
-        struct {
-            glm::vec3 position{0.f, 0.f, 0.f};
-            glm::vec3 rotation{0.f, 0.f, 0.f};
-            void move(const glm::vec3& offset) {position += offset;}
-            void rotate(const glm::vec3& offset) {rotation += offset;}
-        } _freeCamera;
-        float _freeCameraVelocity{50.f};
-        bool _rotatingCamera{false};
-        sf::Vector2i _previousMouse;
+        FreeCamera _freeCamera;
+        
     };
+
+    
 }
 
 //#endif
