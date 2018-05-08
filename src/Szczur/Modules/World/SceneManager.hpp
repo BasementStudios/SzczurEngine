@@ -37,6 +37,9 @@ namespace rat {
         bool hasScene(size_t id) const;
 
         ///
+        void setCurrentScene(size_t id);
+
+        ///
         Scene* getCurrentScene() const;
 
         ///

@@ -50,6 +50,11 @@ namespace rat {
         return _find(id) != _holder.end();
     }
 
+    void SceneManager::setCurrentScene(size_t id) {
+        if(_find(id) != _holder.end())
+            _currentSceneID = id;
+    }
+
     Scene* SceneManager::getCurrentScene() const
     {
         return getScene(_currentSceneID);
