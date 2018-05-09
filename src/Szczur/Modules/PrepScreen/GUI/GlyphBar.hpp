@@ -14,11 +14,13 @@ namespace rat
     class GlyphBar : public BaseBar
     {
     public:
+        GlyphBar();
         GlyphBar(const std::string& type);
 
         void setStartAmount(int amount);
         int getUsedAmount() const;
         void initAssetsViaGUI(GUI& gui);
+        void setType(const std::string& type);
         
     private:    
         std::string _type;

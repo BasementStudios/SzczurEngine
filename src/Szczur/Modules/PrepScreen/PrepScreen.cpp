@@ -146,7 +146,7 @@ namespace rat
         _testBar->setPosition(1111.f, 350.f);
         _testBar->setPatchAmount(4, 0);
 
-        _testGlyphBar.setStartAmount(3);
+        //_testGlyphBar.setStartAmount(3);
         _testGlyphBar.setPosition(300.f, 300.f);
         _testGlyphBar.setParent(_base);
         _testGlyphBar.initAssetsViaGUI(gui);

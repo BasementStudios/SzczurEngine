@@ -16,7 +16,7 @@ namespace rat
         }
     }
 
-    void GlyphContainer::addGlyph(const std::string& type)
+    void GlyphContainer::addGlyph(const std::string& type, int addon)
     {
         auto found = _glyphs.find(type);
         if(found == _glyphs.end())
@@ -24,9 +24,9 @@ namespace rat
             LOG_ERROR(this, "Glyph \"" + type + "\" is not valid." );
             return;
         }
-        found->second++;
+        found->second += addon;
     }
-    void GlyphContainer::removeGlyph(const std::string& type)
+    void GlyphContainer::removeGlyph(const std::string& type, int sub)
     {
         auto found = _glyphs.find(type);
         if(found == _glyphs.end())
@@ -35,12 +35,12 @@ namespace rat
             return;
         }
         auto& amount = found->second;
-        if(amount <= 0)
+        if(amount < sub)
         {
-            LOG_ERROR(this, "Trying remove glyph \"" + type + "\" that not exist" );
+            LOG_ERROR(this, "Trying remove glyphs \"" + type + "\" that not exist" );
             return;
         }
-        amount--;
+        amount -= sub;
     }
     int GlyphContainer::getGlyphAmount(const std::string& type)
     {

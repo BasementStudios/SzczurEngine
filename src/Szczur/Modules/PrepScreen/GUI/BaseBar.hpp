@@ -23,6 +23,8 @@ namespace rat
         void deactivate();
         void activate();
         bool isActivate() const;
+        void setPropOrigin(const sf::Vector2f& propOrigin);
+        void setPropOrigin(float x, float y);
 
     protected:
         void _addWidget(Widget* addon);

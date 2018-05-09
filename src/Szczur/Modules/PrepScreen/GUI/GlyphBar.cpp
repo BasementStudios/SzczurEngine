@@ -8,9 +8,7 @@
 
 namespace rat
 {
-    GlyphBar::GlyphBar(const std::string& type)
-    :
-    _type(type)
+    GlyphBar::GlyphBar()
     {
         _container = new ImageWidget;
         _glyph = new ImageWidget;
@@ -31,9 +29,20 @@ namespace rat
 
         _container->add(_amountState);
         _amountState->setPropOrigin(1.f, 1.f);
-        _amountState->setPosition(sf::Vector2f{100, 100});
+        _amountState->setPosition(sf::Vector2f{90, 90});
         _amountState->setCharacterSize(17);
         _amountState->setColor(sf::Color::White);
+    }
+
+    GlyphBar::GlyphBar(const std::string& type)
+    :
+    GlyphBar()
+    {
+        setType(type);
+    }
+    void GlyphBar::setType(const std::string& type)
+    {
+        _type = type;
     }
 
     void GlyphBar::setStartAmount(int amount)

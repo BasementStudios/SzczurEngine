@@ -62,7 +62,14 @@ namespace rat
     {
         return _base->isActivated();
     }
-    
+    void BaseBar::setPropOrigin(const sf::Vector2f& propOrigin)
+    {
+        _base->setPropOrigin(propOrigin);
+    }
+    void BaseBar::setPropOrigin(float x, float y)
+    {
+        setPropOrigin({x, y});
+    }
     /*
     void BaseBar::invisible()
     {
