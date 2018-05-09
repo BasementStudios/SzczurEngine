@@ -1,5 +1,7 @@
 #include "GUITest.hpp"
 
+#include "StressTester.hpp"
+
 namespace rat
 {
     GUITest::GUITest()
@@ -48,7 +50,7 @@ namespace rat
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
         scroll->setPosition(100.f, 100.f);
         widget->add(scroll);
-
+/*
         iWidget = new ImageWidget;
         iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         iWidget->setPosition(0.f, 200.f);
@@ -63,13 +65,24 @@ namespace rat
         win->setPosition(50.f, 50.f);
         win->setScale(0.2f, 0.2f);
         win->setPatchAmount(3, 5);        
-
+*/
         /*
         widget3 = new Widget;
         widget3->setSize(25, 25);
         widget3->setPosition(0.f, 0.f);
         iWidget->add(widget3);
         */
+       std::cout << "Grubosc widgeta: " << sizeof(Widget) << "\n"; 
+
+       std::cout << "Tester start\n";
+       StressTester stresser;
+       stresser.level = 10;
+       stresser.branchAmount = 4;
+       stresser.posRange = 80;
+       stresser.sizeRange = 40;
+       stresser.makeBranches(widget);
+       std::cout << "Tester stop\n";
+
 
     }
     
