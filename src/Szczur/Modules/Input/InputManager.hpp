@@ -99,16 +99,16 @@ private:
 	///
 	void _moveWheel(int which, int delta);
 
-	InputStatus_e _keyboard[Keyboard::Count];
-	InputStatus_e _mouse[Mouse::Count];
-	InputStatus_e _scroll[Scroll::Count];
+	InputStatus_e _keyboard[Keyboard::Count] = {};
+	InputStatus_e _mouse[Mouse::Count] = {};
+	InputStatus_e _scroll[Scroll::Count] = {};
 
-	InputCode _recentlyPressed;
-	InputCode _recentlyReleased;
+	InputCode _recentlyPressed = {};
+	InputCode _recentlyReleased = {};
 
-	unsigned _enteredCharacter;
+	unsigned _enteredCharacter = 0u;
 
-	sf::Vector2i _mousePosition;
+	sf::Vector2i _mousePosition = { 0, 0 };
 
 };
 
