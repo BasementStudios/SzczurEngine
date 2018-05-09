@@ -44,7 +44,7 @@ namespace rat {
 					rect.setColor({1.f, 1.f, 0.f, 0.2f});
 				rect.setPosition(entity.getPosition());
 				target.draw(rect);
-			}); 
+			});
 			glEnable(GL_DEPTH_TEST);
 		}
     }
@@ -53,8 +53,8 @@ namespace rat {
 		_freeCamera.processEvents(input);
 		sf3d::View view;
 		auto* scene = _scenes.getCurrentScene();
-		if(_focusedObject == scene->camera && _anySelected) {
-			auto* cam = scene->getEntity("single", scene->camera);
+		if(_focusedObject == scene->getCameraID() && _anySelected) {
+			auto* cam = scene->getEntity("single", scene->getCameraID());
 			view.setRotation(cam->getRotation());
 			view.setCenter(cam->getPosition());
 		}
@@ -102,7 +102,7 @@ namespace rat {
 			auto mouse = input.getMousePosition();
 			rotate({
 				(mouse.y - previousMouse.y)/10.f,
-				(mouse.x - previousMouse.x)/10.f, 
+				(mouse.x - previousMouse.x)/10.f,
 				0.f
 			});
 			previousMouse = mouse;

@@ -10,7 +10,7 @@ Scene* SceneManager::addScene()
     camera->setName("Camera");
     camera->setPosition({ 0.f, 1160.f, 3085.f });
     camera->setRotation({ 15.f, 0.f, 0.f });
-    scene->camera = camera->getID();
+    scene->setCameraID(camera->getID());
     return scene;
 }
 
