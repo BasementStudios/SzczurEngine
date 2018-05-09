@@ -24,5 +24,4 @@ const InputManager& Input::getManager() const
 	return _inputManager;
 }
 
-
 }

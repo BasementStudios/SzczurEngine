@@ -43,6 +43,7 @@ public:
 
 	template <typename U>
 	U& getModule();
+	
 	template <typename U>
 	const U& getModule() const;
 
