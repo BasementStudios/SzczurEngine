@@ -50,10 +50,12 @@ namespace rat {
     }
 
     void LevelEditor::update(InputManager& input, Camera& camera) {
-		_freeCamera.processEvents(input);
-		sf3d::View view;
 		auto* scene = _scenes.getCurrentScene();
-		if(_focusedObject == scene->camera && _anySelected) {
+		bool cameraFocused = _focusedObject == scene->camera && _anySelected;
+		if(ImGui::IsAnyItemActive() == false && !cameraFocused)
+			_freeCamera.processEvents(input);
+		sf3d::View view;
+		if(cameraFocused) {
 			auto* cam = scene->getEntity("single", scene->camera);
 			view.setRotation(cam->getRotation());
 			view.setCenter(cam->getPosition());
@@ -124,12 +126,10 @@ namespace rat {
 
 				}
 				if(ImGui::MenuItem("Load")) {
-					std::string name = FileDialog::getOpenFileName("Load", ".");
-					std::cout << name << '\n';
-					/*try {
+					try {
 						_scenes.loadFromFile(buffer);
 					}
-					catch(...) {}*/
+					catch(...) {}
 				}
 				if(ImGui::MenuItem("Save")) {
 					try {
