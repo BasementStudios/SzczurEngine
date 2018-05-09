@@ -157,10 +157,6 @@ namespace rat {
             for(auto& it : _children)
                 it->update(deltaTime);
         }
-
-        if(_aboutToRecalculate)
-            calculateSize();
-        
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -183,6 +179,14 @@ namespace rat {
                 target.draw(*it, states);
         }
     }
+
+	void Widget::invokeToCalculate()
+    {
+        for(auto* child : _children) child->invokeToCalculate();
+
+        if(_aboutToRecalculate) calculateSize();
+    }
+    
 
     void Widget::calculateSize() 
     {
@@ -207,7 +211,7 @@ namespace rat {
         if(ownSize.y > _size.y) _size.y = ownSize.y;
         
         _recalcOrigin();
-        if(_parent && _size != oldSize) _parent->calculateSize();
+        if(_parent && _size != oldSize) _parent->_aboutToRecalculate = true;
     }
 
 	sf::Vector2u Widget::_getChildrenSize()
@@ -281,19 +285,17 @@ namespace rat {
 
     void Widget::move(const sf::Vector2f& offset) {
         sf::Transformable::move(offset);
-        _aboutToRecalculate = true;
+        if(_parent) _parent->_aboutToRecalculate = true;   
     }
     void Widget::move(float offsetX, float offsetY) {
-        sf::Transformable::move(offsetX, offsetY);
-        _aboutToRecalculate = true;
+        move({offsetX, offsetY});
     }
     void Widget::setPosition(const sf::Vector2f& offset) {
         sf::Transformable::setPosition(offset);
-        _aboutToRecalculate = true;
+        if(_parent) _parent->_aboutToRecalculate = true;   
     }
     void Widget::setPosition(float x, float y) {
-        sf::Transformable::setPosition(x, y);
-        _aboutToRecalculate = true;
+        setPosition({x, y});
     }
 
     void Widget::setOrigin(const sf::Vector2f& origin)

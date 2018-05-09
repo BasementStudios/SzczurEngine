@@ -46,6 +46,8 @@ namespace rat {
 		void update(float deltaTime);
 
 		virtual void calculateSize();
+		void invokeToCalculate();
+
 		sf::Vector2u getSize() const;
 		sf::Vector2u getMinimalSize() const;
 

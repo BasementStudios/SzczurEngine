@@ -74,6 +74,8 @@ namespace rat
         */
        std::cout << "Grubosc widgeta: " << sizeof(Widget) << "\n"; 
 
+       widget->invisible();
+
        std::cout << "Tester start\n";
        StressTester stresser;
        stresser.level = 10;
