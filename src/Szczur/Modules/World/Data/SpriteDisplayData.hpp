@@ -23,8 +23,8 @@ namespace rat
         virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
     protected:
-        constexpr static auto _assetsFolderPath = "Assets/Objects/";
-        constexpr static auto _textureFilePath = "/texture.png";
+        constexpr static auto _assetsFolderPath = "";
+        constexpr static auto _textureFilePath = "";
     private:
         std::string _name;
         sf3d::Sprite _sprite;

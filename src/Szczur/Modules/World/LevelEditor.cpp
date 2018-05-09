@@ -2,19 +2,20 @@
 
 #include "LevelEditor.hpp"
 
+#include <iostream>
+#include <experimental/filesystem>
+
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 
 #include "Szczur/modules/FileSystem/FileDialog.hpp"
 
 #include <ImGui/imgui.h>
-#include <iostream>
-
 
 namespace rat {
     LevelEditor::LevelEditor(SceneManager& scenes) :
 	_scenes(scenes) {
-
+		_freeCamera.move({1000.f,500.f,2000.f});
     }
 
     void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -25,10 +26,6 @@ namespace rat {
 				_renderObjectsList();
 			if(_anySelected)
 				_renderFocusedObjectsParams();
-			// if(_ifRenderComponentsManager)
-				// _renderComponentsManager();
-			if(_ifRenderDisplayDataManager)
-				_renderDisplayDataManager();
 			if(_ifRenderArmatureDisplayManager)
 				_renderArmatureDisplayManager();
 
@@ -146,7 +143,6 @@ namespace rat {
 				ImGui::MenuItem("Objects List", nullptr, &_ifRenderObjectsList);
 				ImGui::MenuItem("Display Data Manager", nullptr, &_ifRenderDisplayDataManager);
 				ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
-				ImGui::MenuItem("Components Manager", nullptr, &_ifRenderComponentsManager);
 				ImGui::EndMenu();
 			}
 		}
@@ -252,19 +248,30 @@ namespace rat {
 
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Sprite Component")) {
-						if(ImGui::BeginCombo(
-							"DisplayData",
-							( object->getSpriteDisplayData() )?object->getSpriteDisplayData()->getName().c_str() : "None"
-						)) {
-							if(ImGui::MenuItem("None", nullptr, object->getSpriteDisplayData() == nullptr))
-								object->setSpriteDisplayData(nullptr);
-							for(auto& it : scene->getSpriteDisplayData()) {
-								if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getSpriteDisplayData() == &it))
-									object->setSpriteDisplayData(&it);
-							}
 
-							ImGui::EndCombo();
+						namespace filesystem = std::experimental::filesystem;
+						
+						auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayData();
+						if(ImGui::Button("Load texture...##sprite_component", ImVec2(40,0))) {
+							std::string file = FileDialog::getOpenFileName("Select texture", ".\\Assets");
+							if(file!="") {
+								try {
+									std::string current = filesystem::current_path().string();								
+									std::string relative = file.substr(current.size()+1);
+
+									if(current == file.substr(0, current.size())) {
+										auto& it = spriteDisplayDataHolder.emplace_back(relative);
+										object->setSpriteDisplayData(&it);
+									}
+								}
+								catch(const std::exception& exc) {
+									object->setSpriteDisplayData(nullptr);
+								}
+							}
 						}
+						ImGui::Text("Path:");
+						ImGui::SameLine();
+						ImGui::Text(object->getSpriteDisplayData() ? object->getSpriteDisplayData()->getName().c_str() : "None");
 					}
 				}
 
