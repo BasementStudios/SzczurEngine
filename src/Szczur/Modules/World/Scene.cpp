@@ -1,5 +1,7 @@
 #include "Scene.hpp"
 
+#include <functional>
+
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/Sprite.hpp"
@@ -18,6 +20,7 @@ Scene::Scene()
 	{
 		holder.second.reserve(100);
 	}
+
 	_spriteDisplayDataHolder.reserve(100);
 	_armatureDisplayDataHolder.reserve(100);
 }
@@ -274,10 +277,15 @@ void Scene::saveToConfig(Json& config) const
 	}
 }
 
-void Scene::forEach(const std::function<void(const std::string& group, Entity& entity)>& callback) {
-	for(auto& group : _collectingHolder)
-		for(auto& entity : group.second)
-			std::invoke(callback, group.first, entity);
+void Scene::forEach(const std::function<void(const std::string& group, Entity& entity)>& function)
+{
+	for (auto& group : _collectingHolder)
+	{
+		for (auto& entity : group.second)
+		{
+			std::invoke(function, group.first, entity);
+		}
+	}
 }
 
 size_t Scene::_getUniqueID()

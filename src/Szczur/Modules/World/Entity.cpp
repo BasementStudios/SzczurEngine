@@ -14,6 +14,9 @@ Entity::Entity(Scene* parent)
 }
 
 Entity::Entity(const Entity& rhs)
+	: _id { _getUniqueID() }
+	, _name { rhs.getName() + "_copy_" + std::to_string(_id) }
+	, _parent { rhs._parent }
 {
 	for (const auto& ptr : rhs._holder)
 	{
@@ -25,6 +28,10 @@ Entity& Entity::operator = (const Entity& rhs)
 {
 	if (this != &rhs)
 	{
+		_id = _getUniqueID();
+		_name = rhs.getName() + "_copy_" + std::to_string(_id);
+		_parent = rhs._parent;
+
 		removeAllComponents();
 
 		for (const auto& ptr : rhs._holder)

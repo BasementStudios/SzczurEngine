@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <functional>
 
 #include <boost/container/flat_map.hpp>
 
@@ -112,7 +111,8 @@ public:
 	///
 	void saveToConfig(Json& config) const;
 
-	void forEach(const std::function<void(const std::string& group, Entity& entity)>& callback);
+	///
+	void forEach(const std::function<void(const std::string& group, Entity& entity)>& function);
 
 private:
 

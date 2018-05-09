@@ -5,64 +5,80 @@
 
 #include "Scene.hpp"
 
-namespace rat {
-    class SceneManager {
-    public:
-        using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
+namespace rat
+{
 
-        ///
-        SceneManager() = default;
-        SceneManager(const SceneManager&) = delete;
-        SceneManager& operator=(const SceneManager&) = delete;
+class SceneManager
+{
+public:
 
-        ///
-        Scene* addScene();
+    using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
 
-	    /// 
-        bool removeScene(size_t id);
+    ///
+    SceneManager() = default;
 
-        ///
-        void removeAllScenes();
+    ///
+    SceneManager(const SceneManager&) = delete;
 
-        ///
-        Scene* getScene(size_t id) const;
+    ///
+    SceneManager& operator = (const SceneManager&) = delete;
 
-        ///
-        ScenesHolder_t& getScenes();
+    ///
+    SceneManager(SceneManager&&) = delete;
 
-        ///
-        const ScenesHolder_t& getScenes() const;
+    ///
+    SceneManager& operator = (SceneManager&&) = delete;
 
-        ///
-        bool hasScene(size_t id) const;
+    ///
+    Scene* addScene();
 
-        ///
-        void setCurrentScene(size_t id);
+    ///
+    bool removeScene(size_t id);
 
-        ///
-        Scene* getCurrentScene() const;
+    ///
+    void removeAllScenes();
 
-        ///
-        size_t getCurrentSceneID() const;
+    ///
+    Scene* getScene(size_t id) const;
 
-        ///
-        bool isCurrentSceneValid() const;
+    ///
+    ScenesHolder_t& getScenes();
 
-        ///
-        void loadFromFile(const std::string& filepath);
+    ///
+    const ScenesHolder_t& getScenes() const;
 
-        ///
-        void saveToFile(const std::string& filepath) const;
+    ///
+    bool hasScene(size_t id) const;
 
-    private:
-        ScenesHolder_t _holder;
+    ///
+    bool setCurrentScene(size_t id);
 
-        size_t _currentSceneID{0u};
+    ///
+    Scene* getCurrentScene() const;
 
-        ///
-        typename ScenesHolder_t::iterator _find(size_t id);
+    ///
+    size_t getCurrentSceneID() const;
 
-        ///
-        typename ScenesHolder_t::const_iterator _find(size_t id) const;
-    };
+    ///
+    bool isCurrentSceneValid() const;
+
+    ///
+    void loadFromFile(const std::string& filepath);
+
+    ///
+    void saveToFile(const std::string& filepath) const;
+
+private:
+
+    ///
+    typename ScenesHolder_t::iterator _find(size_t id);
+
+    ///
+    typename ScenesHolder_t::const_iterator _find(size_t id) const;
+
+    ScenesHolder_t _holder;
+    size_t _currentSceneID{ 0 };
+
+};
+
 }
