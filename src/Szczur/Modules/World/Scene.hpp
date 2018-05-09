@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <functional>
 
 #include <boost/container/flat_map.hpp>
 
@@ -112,8 +111,9 @@ public:
 	///
 	void saveToConfig(Json& config) const;
 
-	void forEach(const std::function<void(const std::string& group, Entity& entity)>& callback);
-	size_t camera{0u};
+	///
+	void forEach(const std::function<void(const std::string& group, Entity& entity)>& function);
+
 private:
 
     ///
@@ -130,6 +130,7 @@ private:
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
+	size_t camera{ 0 };
 
 };
 

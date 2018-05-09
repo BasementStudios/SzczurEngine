@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <tuple>
 
 #include "Szczur/Utility/Logger.hpp"
@@ -91,7 +92,7 @@ private:
 	///
 	template <size_t... Ns>
 	void _destroyAll(std::index_sequence<Ns...>);
-	
+
 	///
 	template <typename U>
 	void _destroy();

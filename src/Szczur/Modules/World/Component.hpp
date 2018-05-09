@@ -20,7 +20,7 @@ public:
 
 	enum Feature_e
 	{
-		Drawable = 1 << 0
+		Drawable = 1
 	};
 
 	///

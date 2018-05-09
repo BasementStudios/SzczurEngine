@@ -60,7 +60,7 @@ public:
 
 private:
 
-	int _data;
+	int _data = 0;
 
 };
 

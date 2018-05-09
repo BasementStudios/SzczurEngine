@@ -8,7 +8,8 @@ _levelEditor(_scenes)
 {
 	LOG_INFO("Initializing World module");
 
-	_scenes.setCurrentScene(_scenes.addScene()->getID());	
+	_scenes.setCurrentScene(_scenes.addScene()->getID());
+
 	#ifdef EDITOR
 		//_levelEditor.setScene(_scenes.getCurrentScene(), camera->getID());
 	#endif
@@ -46,15 +47,19 @@ void World::update(float deltaTime)
 void World::render()
 {
 	auto& window = getModule<Window>().getWindow();
+
 	if (_scenes.isCurrentSceneValid())
 	{
 		auto& window = getModule<Window>();
-		_scenes.getCurrentScene()->forEach([&window](const std::string&, Entity& entity) { 
-			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr) { 
-				window.draw(*ptr); 
-			} 
-		}); 
+
+		_scenes.getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
+			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
+			{
+				window.draw(*ptr);
+			}
+		});
 	}
+
 	#ifdef EDITOR
 		_levelEditor.render(window);
 	#endif

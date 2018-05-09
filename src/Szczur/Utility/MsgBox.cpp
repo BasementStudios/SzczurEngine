@@ -1,7 +1,7 @@
 #include "MsgBox.hpp"
 
-#if defined(EDITOR) && defined(OS_WINDOWS)
-#include <windows.h>
+#if defined(EDITOR)
+#	include <windows.h>
 #endif
 
 namespace rat::MsgBox
@@ -9,7 +9,7 @@ namespace rat::MsgBox
 
 int getIconId(Icon icon)
 {
-#if defined(EDITOR) && defined(OS_WINDOWS)
+#if defined(EDITOR)
 	switch (icon)
 	{
 		default:
@@ -23,13 +23,13 @@ int getIconId(Icon icon)
 			return MB_ICONQUESTION;
 	}
 #else
-	return Icon::Information;
+	return static_cast<int>(Icon::Information);
 #endif
 }
 
 int getButtonId(Button button)
 {
-#if defined(EDITOR) && defined(OS_WINDOWS)
+#if defined(EDITOR)
 	switch (button)
 	{
 		default:
@@ -47,13 +47,13 @@ int getButtonId(Button button)
 			return MB_RETRYCANCEL;
 	}
 #else
-	return Button::Ok;
+	return static_cast<int>(Button::Ok);
 #endif
 }
 
 Result show(const std::string& text, const std::string& title, Icon icon, Button button)
 {
-#if defined(EDITOR) && defined(OS_WINDOWS)
+#if defined(EDITOR)
 	int result = MessageBoxA(nullptr, text.c_str(), title.c_str(), getIconId(icon) | getButtonId(button));
 
 	switch (result)
