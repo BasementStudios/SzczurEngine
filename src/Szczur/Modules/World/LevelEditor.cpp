@@ -25,8 +25,8 @@ namespace rat {
 				_renderObjectsList();
 			if(_anySelected)
 				_renderFocusedObjectsParams();
-			if(_ifRenderComponentsManager)
-				_renderComponentsManager();
+			// if(_ifRenderComponentsManager)
+				// _renderComponentsManager();
 			if(_ifRenderDisplayDataManager)
 				_renderDisplayDataManager();
 			if(_ifRenderArmatureDisplayManager)
@@ -50,10 +50,12 @@ namespace rat {
     }
 
     void LevelEditor::update(InputManager& input, Camera& camera) {
-		_freeCamera.processEvents(input);
-		sf3d::View view;
 		auto* scene = _scenes.getCurrentScene();
-		if(_focusedObject == scene->getCameraID() && _anySelected) {
+		bool cameraFocused = _focusedObject == scene->getCameraID() && _anySelected;
+		if(ImGui::IsAnyItemActive() == false && !cameraFocused)
+			_freeCamera.processEvents(input);
+		sf3d::View view;
+		if(cameraFocused) {
 			auto* cam = scene->getEntity("single", scene->getCameraID());
 			view.setRotation(cam->getRotation());
 			view.setCenter(cam->getPosition());
@@ -124,12 +126,10 @@ namespace rat {
 
 				}
 				if(ImGui::MenuItem("Load")) {
-					std::string name = FileDialog::getOpenFileName("Load", ".");
-					std::cout << name << '\n';
-					/*try {
+					try {
 						_scenes.loadFromFile(buffer);
 					}
-					catch(...) {}*/
+					catch(...) {}
 				}
 				if(ImGui::MenuItem("Save")) {
 					try {
@@ -220,6 +220,14 @@ namespace rat {
 		if(ImGui::Begin("Object Parameters", &_anySelected)) {
 			auto* scene = _scenes.getCurrentScene();
 			Entity* focusedObject = scene->getEntity(_focusedObject);
+
+			// Change components
+			if(ImGui::Button("Change components...")) {
+				ImGui::OpenPopup("Change components...##modal");
+				ImGui::SetNextWindowSize(ImVec2(300,300));
+			}
+			_renderComponentsManager();
+
 			if(focusedObject) {
 				if(ImGui::CollapsingHeader("Base")) {
 					glm::vec3 position = focusedObject->getPosition();
@@ -339,30 +347,39 @@ namespace rat {
 		}
 		ImGui::End();
 	}
-    void LevelEditor::_renderComponentsManager() {
-		if(ImGui::Begin("Components Manager", &_ifRenderComponentsManager)) {
-			if(!_anySelected) {
-				ImGui::Text("Select Object First!");
+	void LevelEditor::_renderComponentsManager() {
+		if (ImGui::BeginPopupModal("Change components...##modal", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+
+			auto* focusedObject = _scenes.getCurrentScene()->getEntity(_focusedObject);
+
+			static bool selectedComponents[2];
+			if(ImGui::IsWindowAppearing()) {
+				selectedComponents[0] = focusedObject->hasComponent<SpriteComponent>();
+				selectedComponents[1] = focusedObject->hasComponent<ArmatureComponent>();
 			}
-			else {
-				auto* focusedObject = _scenes.getCurrentScene()->getEntity(_focusedObject);
-				bool sC = focusedObject->hasComponent<SpriteComponent>();
-				if(ImGui::Selectable("SpriteComponent", sC)) {
-					if(sC)
-						focusedObject->removeComponent<SpriteComponent>();
-					else
-						focusedObject->addComponent<SpriteComponent>();
+			if(ImGui::Button("Accept", ImVec2(70,0))) {
+
+				if(focusedObject->hasComponent<SpriteComponent>()!=selectedComponents[0]) {
+					if(selectedComponents[0]) focusedObject->addComponent<SpriteComponent>();
+					else focusedObject->removeComponent<SpriteComponent>();
 				}
-				sC = focusedObject->hasComponent<ArmatureComponent>();
-				if(ImGui::Selectable("ArmatureComponent", sC)) {
-					if(sC)
-						focusedObject->removeComponent<ArmatureComponent>();
-					else
-						focusedObject->addComponent<ArmatureComponent>();
+				if(focusedObject->hasComponent<ArmatureComponent>()!=selectedComponents[1]) {
+					if(selectedComponents[1]) focusedObject->addComponent<ArmatureComponent>();
+					else focusedObject->removeComponent<ArmatureComponent>();
 				}
+
+				ImGui::CloseCurrentPopup();
 			}
+			ImGui::SameLine();
+			if(ImGui::Button("Close", ImVec2(70,0))) {
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::Checkbox("SpriteComponent", &selectedComponents[0]);
+			ImGui::Checkbox("ArmatureComponent", &selectedComponents[1]);
+
+			ImGui::EndPopup();
 		}
-		ImGui::End();
 	}
 }
 
