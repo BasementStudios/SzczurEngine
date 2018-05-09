@@ -97,7 +97,7 @@ void Entity::loadFromConfig(const Json& config)
 	});
 	setOrigin({
 		config["origin"]["x"].get<float>(),
-		config["origin"]["y"].get<float>(),
+		-config["origin"]["y"].get<float>(),
 		config["origin"]["z"].get<float>()
 	});
 	setScale({
