@@ -162,23 +162,53 @@ namespace rat {
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         if(isVisible()) {
             states.transform *= getTransform();
-
-            //  Uncomment to get into debug mode :D
-            sf::RectangleShape shape;
-            shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            shape.setFillColor(sf::Color(0,0,255,70));
-            shape.setFillColor(sf::Color::Transparent);
-            shape.setOutlineColor(sf::Color::White);
-            shape.setOutlineThickness(1.f);
-            target.draw(shape, states);
             
             _draw(target, states);
-
-            states.transform.translate(_padding);
-            for(auto it : _children)
-                target.draw(*it, states);
+            _drawChildren(target, states);
+            #ifdef GUI_DEBUG
+            _drawDebug(target, states);
+	        #endif
         }
     }
+
+    void Widget::_drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        states.transform.translate(_padding);
+
+        for(auto it : _children) target.draw(*it, states);
+    }
+
+    #ifdef GUI_DEBUG
+		void Widget::_drawDebug(sf::RenderTarget& target, sf::RenderStates states) const
+        {
+            sf::RectangleShape shape;
+            shape.setOutlineColor({255, 255, 255, 125});
+            shape.setOutlineThickness(1.f);
+            shape.setFillColor(sf::Color::Transparent);
+            shape.setSize(static_cast<sf::Vector2f>(getSize()));
+            target.draw(shape, states);            
+
+            shape.setOutlineColor(sf::Color::Transparent);
+            shape.setSize(static_cast<sf::Vector2f>(getSize()) - _padding * 2.f);
+            shape.setFillColor(sf::Color(0, 0, 255, 10));
+            //shape.setFillColor(sf::Color::Transparent);
+            shape.setPosition(getPadding());
+            target.draw(shape, states);
+
+            shape.setFillColor({255, 0, 0, 70});
+            shape.setSize({float(_size.x), _padding.y});
+            shape.setPosition(0.f, 0.f);            
+            target.draw(shape, states);            
+            shape.setPosition(0.f, float(_size.y) - _padding.x);
+            target.draw(shape, states);
+
+            shape.setSize({_padding.x, float(_size.y) - 2.f *_padding.y});
+            shape.setPosition(0.f, _padding.y);
+            target.draw(shape, states);
+            shape.move(float(_size.x) - _padding.x, 0.f);
+            target.draw(shape, states);
+        }
+	#endif
 
 	void Widget::invokeToCalculate()
     {

@@ -72,6 +72,7 @@ namespace rat
         widget3->setPosition(0.f, 0.f);
         iWidget->add(widget3);
         */
+       /*
        std::cout << "Grubosc widgeta: " << sizeof(Widget) << "\n"; 
 
        widget->invisible();
@@ -84,7 +85,7 @@ namespace rat
        stresser.sizeRange = 40;
        stresser.makeBranches(widget);
        std::cout << "Tester stop\n";
-
+    */
 
     }
     
@@ -165,11 +166,11 @@ namespace rat
         
         win->setScale(_scale, _scale);
         win->setSize(mousePos.x - 75, mousePos.y - 75);
+        
+
+        //scroller.setSize(static_cast<sf::Vector2i>(_size));
+        scroller.setSize(sf::Vector2i(mousePos.x - 200, mousePos.y - 200));
         /*
-
-        scroller.setSize(static_cast<sf::Vector2i>(_size));
-        //scroller.setSize(sf::Vector2i(mousePos.x - 200, mousePos.y - 200));
-
         scroller.setScrollerPosition(static_cast<sf::Vector2f>(mousePos));
         scroller.setWidthProportion(_scale); 
         //scroller.setProportion(_prop); 
