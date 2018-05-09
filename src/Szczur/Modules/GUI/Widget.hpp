@@ -10,7 +10,7 @@
 
 #include "Szczur/Modules/Script/Script.hpp"
 
-#define GUI_DEBUG 1
+//#define GUI_DEBUG 1
 
 namespace rat {
 	class Widget : public sf::Drawable, public sf::Transformable {

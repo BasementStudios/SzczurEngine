@@ -58,9 +58,9 @@ namespace rat {
 
     void GUI::update(float deltaTime) 
     {
-        time_t start = clock();
+        //time_t start = clock();
         _root.invokeToCalculate();
-        std::cout << "Time elapsed: " << (clock() - start) << " clocks.\n";
+        //std::cout << "Time elapsed: " << (clock() - start) << " clocks.\n";
         _root.update(deltaTime);
     }
 

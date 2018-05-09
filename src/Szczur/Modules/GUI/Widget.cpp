@@ -163,11 +163,11 @@ namespace rat {
         if(isVisible()) {
             states.transform *= getTransform();
             
-            _draw(target, states);
-            _drawChildren(target, states);
             #ifdef GUI_DEBUG
             _drawDebug(target, states);
 	        #endif
+            _draw(target, states);
+            _drawChildren(target, states);
         }
     }
 
@@ -189,13 +189,15 @@ namespace rat {
             target.draw(shape, states);            
 
             shape.setOutlineColor(sf::Color::Transparent);
+            /*
             shape.setSize(static_cast<sf::Vector2f>(getSize()) - _padding * 2.f);
             shape.setFillColor(sf::Color(0, 0, 255, 10));
             //shape.setFillColor(sf::Color::Transparent);
             shape.setPosition(getPadding());
             target.draw(shape, states);
+            */
 
-            shape.setFillColor({255, 0, 0, 70});
+            shape.setFillColor({255, 0, 0, 100});
             shape.setSize({float(_size.x), _padding.y});
             shape.setPosition(0.f, 0.f);            
             target.draw(shape, states);            
