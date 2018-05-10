@@ -156,6 +156,7 @@ void Entity::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
+
 	setPosition({
 		config["position"]["x"].get<float>(),
 		config["position"]["y"].get<float>(),
@@ -183,10 +184,6 @@ void Entity::loadFromConfig(const Json& config)
 	{
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
 	}
-
-	setInitialUniqueID<Component>(1u + std::max_element(getComponents().begin(), getComponents().end(), [](const auto& first, const auto& second) {
-        return first->getComponentID() < second->getComponentID();
-    })->get()->getComponentID());
 }
 
 void Entity::saveToConfig(Json& config) const
@@ -211,9 +208,6 @@ void Entity::saveToConfig(Json& config) const
 	config["scale"]["x"] = getScale().x;
 	config["scale"]["y"] = getScale().y;
 	config["scale"]["z"] = getScale().z;
-
-
-	
 
 	for (const auto& component : _holder)
 	{

@@ -8,11 +8,11 @@ namespace rat
 Scene* SceneManager::addScene()
 {
     Scene* scene = _holder.emplace_back(std::make_unique<Scene>()).get();
-    Entity* camera = scene->addEntity("single");
-    camera->setName("Camera");
-    camera->setPosition({ 0.f, 1160.f, 3085.f });
-    camera->setRotation({ 15.f, 0.f, 0.f });
-    scene->setCameraID(camera->getID());
+    // Entity* camera = scene->addEntity("single");
+    // camera->setName("Camera");
+    // camera->setPosition({ 0.f, 1160.f, 3085.f });
+    // camera->setRotation({ 15.f, 0.f, 0.f });
+    // scene->setCameraID(camera->getID());
     return scene;
 }
 

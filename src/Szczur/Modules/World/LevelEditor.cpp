@@ -36,7 +36,7 @@ namespace rat {
 			rect.setOrigin({50.f, 50.f, 0.f});
 
 			glDisable(GL_DEPTH_TEST);
-			scene->forEach([this, &rect, &target](const std::string& group, Entity& entity){
+			scene->forEach([&](const std::string& group, Entity& entity){
 				rect.setPosition(entity.getPosition());
 				if(_focusedObject == entity.getID() && _anySelected) {
 					rect.setSize({100.f, 100.f});
@@ -150,6 +150,8 @@ namespace rat {
 					if(relative != "") {
 						try {
 							_scenes.loadFromFile(relative);
+                            _focusedObject = -1;
+                            _anySelected = false;
 						}
 						catch(...) {}
 					}
@@ -235,7 +237,7 @@ namespace rat {
 						continue;
 					}
 					ImGui::SameLine();
-					ImGui::Text(it->getName().c_str());
+					ImGui::Text(mapWindows1250ToUtf8(it->getName()).c_str());
 				}
 			}
 			ImGui::EndChild();
@@ -277,7 +279,7 @@ namespace rat {
 				}
 
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
-					if(ImGui::CollapsingHeader("Sprite Component")) {	
+					if(ImGui::CollapsingHeader("Sprite Component")) {
 
 						// Load texture button
 						auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayDataHolder();
@@ -296,13 +298,13 @@ namespace rat {
 						}
 						ImGui::Text("Path:");
 						ImGui::SameLine();
-						ImGui::Text(object->getSpriteDisplayData() ? object->getSpriteDisplayData()->getName().c_str() : "None");
+						ImGui::Text(object->getSpriteDisplayData() ? mapWindows1250ToUtf8(object->getSpriteDisplayData()->getName()).c_str() : "None");
 					}
 				}
 
-				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {					
+				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Armature Component")) {
-						
+
 						//Load armature button
 						auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayDataHolder();
 						if(ImGui::Button("Load armature...##armature_component")) {
@@ -321,14 +323,14 @@ namespace rat {
 						}
 						ImGui::Text("Path:");
 						ImGui::SameLine();
-						ImGui::Text(object->getArmatureDisplayData() ? object->getArmatureDisplayData()->getName().c_str() : "None");
+						ImGui::Text(object->getArmatureDisplayData() ? mapWindows1250ToUtf8(object->getArmatureDisplayData()->getName()).c_str() : "None");
 
 						// Select animation button
 						if(auto* arm = object->getArmature(); arm && arm->getAnimation()) {
 							ImGui::Button("Select animation##armature_component");
 
 							ImGui::SetNextWindowSize({300.f, 200.f});
-							if(ImGui::BeginPopupContextItem(NULL, 0)) {								
+							if(ImGui::BeginPopupContextItem(NULL, 0)) {
 								auto names = arm->getAnimation()->getAnimationNames();
 								for(auto& it : names) {
 									ImGui::PushID(it.c_str());
@@ -338,14 +340,14 @@ namespace rat {
 									ImGui::PopID();
 								}
 								ImGui::EndPopup();
-							}		
+							}
 							if(arm->getAnimation()->isPlaying()) {
 								ImGui::SameLine();
 								if(ImGui::Button("Stop##armature_component")) {
 									arm->getAnimation()->play(arm->getAnimation()->getLastAnimationName());
 									arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
 								}
-							}					
+							}
 						}
 					}
 
@@ -384,19 +386,19 @@ namespace rat {
 				auto* scene = _scenes.getCurrentScene();
 				for(auto& group : scene->getAllEntities()) {
 					ImGui::PushID(i);
-					
+
 					ImGui::PushStyleColor(ImGuiCol_Header, {0.f, 0.f, 0.f, 0.f});
 					if(ImGui::TreeNodeEx(group.first.c_str(), ImGuiTreeNodeFlags_FramePadding|ImGuiTreeNodeFlags_DefaultOpen|ImGuiTreeNodeFlags_Framed)) {
 						ImGui::PopStyleColor();
-						
+
 						// Context menu for group. Options: Add object
 						if(ImGui::BeginPopupContextItem("Group context menu")) {
-							if(ImGui::Selectable("Add object##group_context_menu")) {							
+							if(ImGui::Selectable("Add object##group_context_menu")) {
 								Entity* ent = scene->addEntity(group.first);
 								if(ent) {
 									_focusedObject = ent->getID();
 								}
-								_anySelected = static_cast<bool>(ent);	
+								_anySelected = static_cast<bool>(ent);
 							}
 							ImGui::EndPopup();
 						}
@@ -443,12 +445,12 @@ namespace rat {
 
 						// Context menu for group. Options: Add object
 						if(ImGui::BeginPopupContextItem("Group context menu")) {
-							if(ImGui::Selectable("Add object##group_context_menu")) {							
+							if(ImGui::Selectable("Add object##group_context_menu")) {
 								Entity* ent = scene->addEntity(group.first);
 								if(ent) {
 									_focusedObject = ent->getID();
 								}
-								_anySelected = static_cast<bool>(ent);	
+								_anySelected = static_cast<bool>(ent);
 							}
 							ImGui::EndPopup();
 						}
@@ -517,12 +519,12 @@ namespace rat {
     }
   //   std::string LevelEditor::_getRelativeDirectoryPathFromExplorer(const std::string& title, const std::string& directory) {
   //   	namespace filesystem = std::experimental::filesystem;
-						
+
 		// std::string dir;
 		// dir = DirectoryDialog::getExistingDirectory(title, directory);
 		// if(dir == "") return "";
 
-		// std::string current = filesystem::current_path().string();	
+		// std::string current = filesystem::current_path().string();
 
 		// if(current == dir.substr(0, current.size())) {
 		// 	return dir.substr(current.size()+1);
