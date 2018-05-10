@@ -15,7 +15,8 @@ Entity::Entity(Scene* parent, const std::string& group)
 }
 
 Entity::Entity(const Entity& rhs)
-	: _id { _getUniqueID() }
+	: sf3d::Transformable { static_cast<const sf3d::Transformable&>(rhs) }
+	, _id { _getUniqueID() }
 	, _group { rhs.getGroup() }
 	, _name { rhs.getName() + "_copy_" + std::to_string(_id) }
 	, _parent { rhs._parent }
@@ -30,6 +31,7 @@ Entity& Entity::operator = (const Entity& rhs)
 {
 	if (this != &rhs)
 	{
+		static_cast<sf3d::Transformable&>(*this) = static_cast<const sf3d::Transformable&>(rhs);
 		_id = _getUniqueID();
 		_group = rhs.getGroup();
 		_name = rhs.getName() + "_copy_" + std::to_string(_id);
