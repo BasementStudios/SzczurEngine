@@ -151,7 +151,7 @@ TextureAtlasData* SF3DFactory::_buildTextureAtlasData(TextureAtlasData* textureA
 		}
 		else
 		{
-			DRAGONBONES_ASSERT(false, "No atlas texture");
+			throw std::runtime_error("No atlas texture"); 
 		}
 	}
 	else

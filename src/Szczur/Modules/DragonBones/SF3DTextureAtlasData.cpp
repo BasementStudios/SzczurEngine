@@ -6,8 +6,6 @@
 
 #include <memory>
 
-#include <SFML/Graphics/Rect.hpp>
-
 #include "SF3DTextureData.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -39,14 +37,13 @@ void SF3DTextureAtlasData::setRenderTexture(sf3d::Texture* value)
 
 			if (textureData->texture == nullptr)
 			{
-				sf::FloatRect rect(
-					textureData->region.x, textureData->region.y,
-					textureData->rotated ? textureData->region.height : textureData->region.width,
-					textureData->rotated ? textureData->region.width : textureData->region.height
-				);
+				dragonBones::Rectangle region;
+				region.x = textureData->region.x;
+				region.y = textureData->region.y;
+				region.width = textureData->rotated ? textureData->region.height : textureData->region.width;
+				region.height = textureData->rotated ? textureData->region.width : textureData->region.height;
 
-
-				textureData->setTexture(_renderTexture, rect);
+				textureData->setTexture(_renderTexture, region);
 			}
 		}
 	}
@@ -55,8 +52,6 @@ void SF3DTextureAtlasData::setRenderTexture(sf3d::Texture* value)
 		for (const auto& pair : textures)
 		{
 			const auto textureData = static_cast<SF3DTextureData*>(pair.second);
-
-			// textureData->Sprite.reset();
 
 			// nothing to release
 		}
