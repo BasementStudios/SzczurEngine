@@ -101,17 +101,13 @@ void SceneManager::loadFromFile(const std::string& filepath)
 
     file >> config;
 
-    removeAllScenes();
-
     _currentSceneID = config["currentSceneID"];
 
     const Json& scenes = config["scenes"];
 
     for (auto& current : scenes)
     {
-        auto* scene = addScene();
-        scene->removeAllEntities();
-        scene->loadFromConfig(current);
+        addScene()->loadFromConfig(current);
     }
 
     setInitialUniqueID<Scene>(1u + std::max_element(getScenes().begin(), getScenes().end(), [](const auto& first, const auto& second) {

@@ -47,7 +47,8 @@ void World::update(float deltaTime)
 
 void World::render()
 {
-	auto& window = getModule<Window>();
+	auto& window = getModule<Window>().getWindow();
+
 	if (_getScenes().isCurrentSceneValid())
 	{
 		_getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
@@ -59,7 +60,7 @@ void World::render()
 	}
 
 	#ifdef EDITOR
-		_levelEditor.render(window.getWindow());
+		_levelEditor.render(window);
 	#endif
 }
 

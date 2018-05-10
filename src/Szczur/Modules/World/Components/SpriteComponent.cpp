@@ -3,6 +3,8 @@
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 
+#include "Szczur/Utility/Convert/Windows1250.hpp"
+
 namespace rat {
     SpriteComponent::SpriteComponent(Entity* parent)
     : Component { parent, fnv1a_64("SpriteComponent"), "SpriteComponent", Component::Drawable }
@@ -52,7 +54,7 @@ namespace rat {
 	{
 		Component::loadFromConfig(config);
 		auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
-		auto name = config["spriteDisplayData"].get<std::string>();
+		auto name = mapUtf8ToWindows1250(config["spriteDisplayData"].get<std::string>());
 		if(name != "") {
 			bool found{false};
 			for(auto& it : spriteDisplayDataHolder) {
@@ -76,7 +78,7 @@ namespace rat {
 	void SpriteComponent::saveToConfig(Json& config) const
 	{
 		Component::saveToConfig(config);
-		config["spriteDisplayData"] = _spriteDisplayData ? _spriteDisplayData->getName() : "";
+		config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
 	}
 
 	///
