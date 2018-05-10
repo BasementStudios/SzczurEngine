@@ -37,6 +37,11 @@ const std::string& Component::getName() const
 	return _name;
 }
 
+void Component::setEntity(Entity* entity)
+{
+	_parent = entity;
+}
+
 Entity* Component::getEntity()
 {
 	return _parent;

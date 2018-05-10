@@ -17,7 +17,7 @@ public:
 	using ComponentsHolder_t = std::vector<std::unique_ptr<Component>>;
 
 	///
-	Entity(Scene* parent);
+	Entity(Scene* parent, const std::string& group);
 
 	///
 	Entity(const Entity& rhs);
@@ -42,6 +42,12 @@ public:
 
 	///
 	size_t getID() const;
+
+	///
+	void setGroup(const std::string& group);
+
+	///
+	const std::string& getGroup() const;
 
 	///
 	void setName(const std::string& name);
@@ -197,6 +203,7 @@ private:
 	typename ComponentsHolder_t::const_iterator _findByFeature(Component::Feature_e feature) const;
 
 	size_t _id;
+	std::string _group;
 	std::string _name;
 	Scene* _parent;
 	ComponentsHolder_t _holder;

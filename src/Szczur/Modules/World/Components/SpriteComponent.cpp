@@ -10,9 +10,13 @@ namespace rat {
 
 	}
 	///
-	std::unique_ptr<Component> SpriteComponent::copy() const
+	std::unique_ptr<Component> SpriteComponent::copy(Entity* newParent) const
 	{
-		return std::make_unique<SpriteComponent>(*this);
+		auto ptr = std::make_unique<SpriteComponent>(*this);
+
+        ptr->setEntity(newParent);
+
+        return ptr;
 	}
 
 	///

@@ -64,7 +64,17 @@ const std::string& Scene::getName() const
 
 Entity* Scene::addEntity(const std::string& group)
 {
-	return &getEntities(group).emplace_back(this);
+	return &getEntities(group).emplace_back(this, group);
+}
+
+Entity* Scene::duplicateEntity(size_t id)
+{
+	if (auto ptr = getEntity(id); ptr != nullptr)
+	{
+		return &getEntities(ptr->getGroup()).emplace_back(*ptr);
+	}
+
+	return nullptr;
 }
 
 bool Scene::removeEntity(const std::string& group, size_t id)

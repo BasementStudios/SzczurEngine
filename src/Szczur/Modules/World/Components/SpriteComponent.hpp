@@ -32,7 +32,7 @@ public:
 	~SpriteComponent() = default;
 
 	///
-	virtual std::unique_ptr<Component> copy() const override;
+	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
 	///
 	void setSpriteDisplayData(SpriteDisplayData* spriteDisplayData);
