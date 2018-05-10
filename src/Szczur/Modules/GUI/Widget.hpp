@@ -10,7 +10,7 @@
 
 #include "Szczur/Modules/Script/Script.hpp"
 
-
+//#define GUI_DEBUG 1
 
 namespace rat {
 	class Widget : public sf::Drawable, public sf::Transformable {
@@ -46,6 +46,8 @@ namespace rat {
 		void update(float deltaTime);
 
 		virtual void calculateSize();
+		void invokeToCalculate();
+
 		sf::Vector2u getSize() const;
 		sf::Vector2u getMinimalSize() const;
 
@@ -87,6 +89,9 @@ namespace rat {
 
 		virtual void _inputChildren(sf::Event event);
 
+		virtual sf::Vector2u _getChildrenSize();
+		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
+
 		bool _aboutToRecalculate;
 
 		bool _isHovered;
@@ -111,11 +116,13 @@ namespace rat {
 		CallbacksLuaContainer_t _luaCallbacks;
 		
 		Children_t _children;
-		sf::Vector2u _getChildrenSize();
 	private:
 		virtual void _callback(CallbackType type);
-
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+		#ifdef GUI_DEBUG
+		void _drawDebug(sf::RenderTarget& target, sf::RenderStates states) const;
+		#endif
 
 		void _recalcOrigin();
 

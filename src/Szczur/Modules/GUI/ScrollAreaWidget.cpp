@@ -62,51 +62,25 @@ namespace rat {
     }
 
     sf::Vector2u ScrollAreaWidget::_getSize() const {
-        return {_renderTexture.getSize().x + _scroller.getSize().x, _scroller.getSize().y};
-    }
-
-    void ScrollAreaWidget::calculateSize() {
-        _aboutToRecalculate = false;
-        _size = {};
-        if(_isMinSizeSet)
-        {
-            _size.x = std::max(_size.x, _minSize.x);
-            _size.y = std::max(_size.y, _minSize.y);
-        }
-        _calculateSize();
-        _size = _getSize();
-        if(_parent != nullptr)
-            _parent->calculateSize();
+        return getMinimalSize();
     }
 
     void ScrollAreaWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
+        target.draw(_scroller, states);
     }
 
+    void ScrollAreaWidget::_drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
+    {
+        _renderTexture.clear(sf::Color::Transparent);
+        auto childrenStates = sf::RenderStates::Default;
+        childrenStates.transform *= _childrenTransform;
 
-    void ScrollAreaWidget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        if(isVisible()) {
-            states.transform *= getTransform();
+        for(auto child : _children) _renderTexture.draw(*child, childrenStates);
 
-            sf::RectangleShape shape;
-            shape.setSize(static_cast<sf::Vector2f>(getSize()));
-            shape.setFillColor(sf::Color(0,0,255,70));
-            shape.setFillColor(sf::Color::Transparent);
-            shape.setOutlineColor(sf::Color::White);
-            shape.setOutlineThickness(1.f);
-            target.draw(shape, states);
-
-            _draw(target, states);
-            _renderTexture.clear(sf::Color::Transparent);
-            auto childrenStates = sf::RenderStates::Default;
-            childrenStates.transform *= _childrenTransform;
-            for(auto it : _children)
-                _renderTexture.draw(*it, childrenStates);
-
-            _renderTexture.display();
-            target.draw(sf::Sprite(_renderTexture.getTexture()), states);
-            target.draw(_scroller, states);
-        }
-    } 
+        _renderTexture.display();
+        states.transform.translate(getPadding());
+        target.draw(sf::Sprite(_renderTexture.getTexture()), states);
+    }
 
     void ScrollAreaWidget::_update(float deltaTime) {
     }
@@ -153,6 +127,11 @@ namespace rat {
             }
         }
     }
+
+    sf::Vector2u ScrollAreaWidget::_getChildrenSize()
+    {
+        return {};
+    }
     
 
     void ScrollAreaWidget::_calculateSize()
@@ -166,9 +145,9 @@ namespace rat {
         float barX = float(size.x - _minScrollSize.x);
         _scroller.setPosition(barX, 0.f);
         _scroller.setSize(_minScrollSize.x, size.y);
-        _renderTexture.create(size.x - _minScrollSize.x, size.y);
+        _renderTexture.create(size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f));
 
-        _childrenHeight = float(std::max(_getChildrenSize().y, size.y));
+        _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) {

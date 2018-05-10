@@ -19,8 +19,6 @@ namespace rat {
         void setPathTexture(sf::Texture* texture);
         void setBoundsTexture(sf::Texture* texture);        
 
-        virtual void calculateSize() override;
-
         void setScrollSpeed(float speed);
         float getScrollSpeed() const;
     protected:
@@ -31,6 +29,8 @@ namespace rat {
 		virtual void _calculateSize() override;
 
         virtual void _inputChildren(sf::Event event) override;
+        virtual sf::Vector2u _getChildrenSize() override;
+		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;        
     private:
         mutable sf::RenderTexture _renderTexture;
         sf::Transform _childrenTransform;
@@ -42,6 +42,5 @@ namespace rat {
         float _childrenHeight{0.f};
 
         virtual void _callback(CallbackType type) override;
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     };
 }

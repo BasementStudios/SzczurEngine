@@ -4,6 +4,10 @@
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "ScrollAreaWidget.hpp"
+
+#include "Szczur/Utility/Logger.hpp"
+#include <ctime>
+
 namespace rat {
     GUI::GUI() 
     :
@@ -52,7 +56,11 @@ namespace rat {
         _root.input(event);
     }
 
-    void GUI::update(float deltaTime) {
+    void GUI::update(float deltaTime) 
+    {
+        //time_t start = clock();
+        _root.invokeToCalculate();
+        //std::cout << "Time elapsed: " << (clock() - start) << " clocks.\n";
         _root.update(deltaTime);
     }
 
