@@ -51,7 +51,7 @@ namespace rat {
 	void SpriteComponent::loadFromConfig(const Json& config)
 	{
 		Component::loadFromConfig(config);
-		auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayData();
+		auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
 		auto name = config["spriteDisplayData"].get<std::string>();
 		if(name != "") {
 			bool found{false};

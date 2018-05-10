@@ -9,7 +9,8 @@
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/modules/FileSystem/FileDialog.hpp"
+#include "Szczur/modules/FileSystem/DirectoryDialog.hpp"
 
 namespace rat {
     LevelEditor::LevelEditor(SceneManager& scenes) :
@@ -27,6 +28,8 @@ namespace rat {
 				_renderFocusedObjectsParams();
 			if(_ifRenderArmatureDisplayManager)
 				_renderArmatureDisplayManager();
+			if(_ifRenderDisplayDataManager)
+				_renderDisplayDataManager();
 
 			sf3d::RectangleShape rect({100.f, 100.f});
 			rect.setColor({1.f, 1.f, 0.f, 0.2f});
@@ -34,12 +37,30 @@ namespace rat {
 
 			glDisable(GL_DEPTH_TEST);
 			scene->forEach([this, &rect, &target](const std::string& group, Entity& entity){
-				if(_focusedObject == entity.getID() && _anySelected)
-					rect.setColor({1.f, 0.f, 1.f, 0.2f});
-				else
-					rect.setColor({1.f, 1.f, 0.f, 0.2f});
 				rect.setPosition(entity.getPosition());
-				target.draw(rect);
+				if(_focusedObject == entity.getID() && _anySelected) {
+					rect.setSize({100.f, 100.f});
+					rect.setOrigin({50.f, 50.f, 0.f});
+					rect.setColor({1.f, 0.3f, 1.f, 0.4f});
+					target.draw(rect);
+					rect.setSize({80.f, 80.f});
+					rect.setOrigin({40.f, 40.f, 0.f});
+					rect.setColor({0.f, 1.f, 1.f, 0.4f});
+					target.draw(rect);
+					// rect.setOutlineColor({1.f, 1.f, 0.f, 0.8f})
+					// rect.setOutlineThickness(2.f);
+				}
+				else {
+					rect.setSize({100.f, 100.f});
+					rect.setOrigin({50.f, 50.f, 0.f});
+					rect.setColor({0.7f, 0.f, 0.8f, 0.4f});
+					target.draw(rect);
+					rect.setSize({80.f, 80.f});
+					rect.setOrigin({40.f, 40.f, 0.f});
+					rect.setColor({1.f, 1.f, 0.f, 0.4f});
+					target.draw(rect);
+					// rect.setOutlineThickness(0.f);
+				}
 			});
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -65,6 +86,12 @@ namespace rat {
     }
 
 	void FreeCamera::processEvents(InputManager& input) {
+
+		velocity = 50.f;
+		if(input.isKept(Keyboard::LShift)) {
+			velocity = 200.f;
+		}
+
 		if(input.isKept(Keyboard::W)) {
 			move({
 				velocity * glm::sin(glm::radians(rotation.y)),
@@ -154,7 +181,7 @@ namespace rat {
     void LevelEditor::_renderDisplayDataManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Display Data Manager", &_ifRenderDisplayDataManager)) {
-			auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayData();
+			auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayDataHolder();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
@@ -186,7 +213,7 @@ namespace rat {
     void LevelEditor::_renderArmatureDisplayManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Armature Data Manager", &_ifRenderArmatureDisplayManager)) {
-			auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayData();
+			auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayDataHolder();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
@@ -228,7 +255,7 @@ namespace rat {
 			_renderComponentsManager();
 
 			if(focusedObject) {
-				if(ImGui::CollapsingHeader("Base")) {
+				if(ImGui::CollapsingHeader("Base", ImGuiTreeNodeFlags_DefaultOpen)) {
 					glm::vec3 position = focusedObject->getPosition();
 					glm::vec3 origin = focusedObject->getOrigin();
 					origin.y = -origin.y;
@@ -241,7 +268,7 @@ namespace rat {
 					ImGui::DragFloat3("Position", reinterpret_cast<float*>(&position));
 					ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
 					ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
-					ImGui::DragFloat3("Scale", reinterpret_cast<float*>(&scale), 0.01f);
+					ImGui::DragFloat2("Scale", reinterpret_cast<float*>(&scale), 0.01f);
 					//ImGui::Checkbox("Locked", &(_focusedObject->locked));
 					focusedObject->setPosition(position);
 					focusedObject->setOrigin(origin);
@@ -250,11 +277,13 @@ namespace rat {
 				}
 
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
-					if(ImGui::CollapsingHeader("Sprite Component")) {
+					if(ImGui::CollapsingHeader("Sprite Component")) {	
 
-						auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayData();
-						if(ImGui::Button("Load texture...##sprite_component", ImVec2(40,0))) {
+						// Load texture button
+						auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayDataHolder();
+						if(ImGui::Button("Load texture...##sprite_component")) {
 							std::string file = _getRelativePathFromExplorer("Select texture", ".\\Assets");
+							std::cout<<file<<std::endl;
 							if(file != "") {
 								try {
 									auto& it = spriteDisplayDataHolder.emplace_back(file);
@@ -271,78 +300,163 @@ namespace rat {
 					}
 				}
 
-				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
+				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {					
 					if(ImGui::CollapsingHeader("Armature Component")) {
-						if(ImGui::BeginCombo(
-							"DisplayData",
-							( object->getArmatureDisplayData() )?object->getArmatureDisplayData()->getName().c_str() : "None"
-						)) {
-							if(ImGui::MenuItem("None", nullptr, object->getArmatureDisplayData() == nullptr))
-								object->setArmatureDisplayData(nullptr);
-							for(auto& it : scene->getArmatureDisplayData()) {
-								if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getArmatureDisplayData() == &it))
+						
+						//Load armature button
+						auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayDataHolder();
+						if(ImGui::Button("Load armature...##armature_component")) {
+							// std::string directory = _getRelativeDirectoryPathFromExplorer("Select armature folder", "Assets");
+							std::string directory = _getRelativePathFromExplorer("Select armature file", ".\\Assets");
+							directory = std::experimental::filesystem::path(directory).parent_path().string();
+							if(directory != "") {
+								try {
+									auto& it = armatureDisplayDataHolder.emplace_back(directory);
 									object->setArmatureDisplayData(&it);
-							}
-							ImGui::EndCombo();
-						}
-						if(auto* arm = object->getArmature(); arm) {
-							auto names = arm->getAnimation()->getAnimationNames();
-							for(auto& it : names) {
-								if(ImGui::Button(it.c_str())) {
-									arm->getAnimation()->play(it);
+								}
+								catch(const std::exception& exc) {
+									object->setArmatureDisplayData(nullptr);
 								}
 							}
 						}
+						ImGui::Text("Path:");
+						ImGui::SameLine();
+						ImGui::Text(object->getArmatureDisplayData() ? object->getArmatureDisplayData()->getName().c_str() : "None");
+
+						// Select animation button
+						if(auto* arm = object->getArmature(); arm && arm->getAnimation()) {
+							ImGui::Button("Select animation##armature_component");
+
+							ImGui::SetNextWindowSize({300.f, 200.f});
+							if(ImGui::BeginPopupContextItem(NULL, 0)) {								
+								auto names = arm->getAnimation()->getAnimationNames();
+								for(auto& it : names) {
+									ImGui::PushID(it.c_str());
+									if(ImGui::Selectable(it.c_str())) {
+										arm->getAnimation()->play(it);
+									}
+									ImGui::PopID();
+								}
+								ImGui::EndPopup();
+							}		
+							if(arm->getAnimation()->isPlaying()) {
+								ImGui::SameLine();
+								if(ImGui::Button("Stop##armature_component")) {
+									arm->getAnimation()->play(arm->getAnimation()->getLastAnimationName());
+									arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
+								}
+							}					
+						}
 					}
+
+					// if(ImGui::CollapsingHeader("Armature Component")) {
+					// 	if(ImGui::BeginCombo(
+					// 		"DisplayData",
+					// 		( object->getArmatureDisplayData() )?object->getArmatureDisplayData()->getName().c_str() : "None"
+					// 	)) {
+					// 		if(ImGui::MenuItem("None", nullptr, object->getArmatureDisplayData() == nullptr))
+					// 			object->setArmatureDisplayData(nullptr);
+					// 		for(auto& it : scene->getArmatureDisplayData()) {
+					// 			if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getArmatureDisplayData() == &it))
+					// 				object->setArmatureDisplayData(&it);
+					// 		}
+					// 		ImGui::EndCombo();
+					// 	}
+					// 	if(auto* arm = object->getArmature(); arm) {
+					// 		auto names = arm->getAnimation()->getAnimationNames();
+					// 		for(auto& it : names) {
+					// 			if(ImGui::Button(it.c_str())) {
+					// 				arm->getAnimation()->play(it);
+					// 			}
+					// 		}
+					// 	}
+					// }
 				}
 			}
 		}
 		ImGui::End();
 	}
     void LevelEditor::_renderObjectsList() {
-		if(ImGui::Begin("Objects", &_ifRenderObjectsList)){
+		if(ImGui::Begin("Objects", &_ifRenderObjectsList)) {
 			ImGui::Separator();
 			if(ImGui::BeginChild("Objects")) {
-				int i{0};
+				int i = 0;
 				auto* scene = _scenes.getCurrentScene();
-				auto& collectingHolder = scene->getAllEntities();
-				for(auto& group : collectingHolder) {
-					if(ImGui::SmallButton((std::string{"+###"} + std::to_string(i++)).c_str())) {
-						Entity* ent = scene->addEntity(group.first);
-						if(ent) {
-							_focusedObject = ent->getID();
-							_anySelected = true;
+				for(auto& group : scene->getAllEntities()) {
+					ImGui::PushID(i);
+					
+					ImGui::PushStyleColor(ImGuiCol_Header, {0.f, 0.f, 0.f, 0.f});
+					if(ImGui::TreeNodeEx(group.first.c_str(), ImGuiTreeNodeFlags_FramePadding|ImGuiTreeNodeFlags_DefaultOpen|ImGuiTreeNodeFlags_Framed)) {
+						ImGui::PopStyleColor();
+						
+						// Context menu for group. Options: Add object
+						if(ImGui::BeginPopupContextItem("Group context menu")) {
+							if(ImGui::Selectable("Add object##group_context_menu")) {							
+								Entity* ent = scene->addEntity(group.first);
+								if(ent) {
+									_focusedObject = ent->getID();
+								}
+								_anySelected = static_cast<bool>(ent);	
+							}
+							ImGui::EndPopup();
 						}
-						else
-							_anySelected = false;
-					}
-					ImGui::SameLine();
-					if(ImGui::TreeNode(group.first.c_str())) {
-						//for(auto object = group.second.begin(); object != group.second.end(); ++object) {
+
 						for(int i2 = 0; i2<group.second.size(); ++i2) {
 							Entity& object = group.second[i2];
 							bool temp = object.getID() == _focusedObject && _anySelected;
-							if(ImGui::SmallButton(    (std::string{"-###"}+std::to_string(i++)).c_str()    )) {
-								if(temp)
-									_anySelected = false;
-								group.second.erase(group.second.begin() + i2);
-								--i2;
-								continue;
-							}
-							ImGui::SameLine();
-							if(ImGui::Selectable((object.getName()+"###"+std::to_string(i++)).c_str(), temp)) {
-								if(temp) {
-									_anySelected = false;
-								}
-								else {
+							ImGui::PushID(i2);
+							if(ImGui::Selectable(object.getName().c_str(), temp)) {
+								if(!temp) {
 									_focusedObject = object.getID();
-									_anySelected = true;
+								}
+								_anySelected = !temp;
+							}
+
+							// Context menu for object. Options: Duplicate|Remove
+							if(group.first != "single") {
+								if(ImGui::BeginPopupContextItem("Object context menu")) {
+									if(ImGui::Selectable("Duplicate##object_context_menu")) {
+										Entity* ent = scene->duplicateEntity(group.second[i2].getID());
+										if(ent) {
+											_focusedObject = ent->getID();
+										}
+										_anySelected = static_cast<bool>(ent);
+									}
+									if(ImGui::Selectable("Remove##object_context_menu")) {
+										if(temp)
+											_anySelected = false;
+										group.second.erase(group.second.begin() + i2);
+										ImGui::EndPopup();
+										ImGui::PopID();
+										break;
+									}
+									ImGui::EndPopup();
 								}
 							}
+
+							ImGui::PopID();
 						}
 						ImGui::TreePop();
 					}
+					else {
+						ImGui::PopStyleColor();
+
+						// Context menu for group. Options: Add object
+						if(ImGui::BeginPopupContextItem("Group context menu")) {
+							if(ImGui::Selectable("Add object##group_context_menu")) {							
+								Entity* ent = scene->addEntity(group.first);
+								if(ent) {
+									_focusedObject = ent->getID();
+								}
+								_anySelected = static_cast<bool>(ent);	
+							}
+							ImGui::EndPopup();
+						}
+
+					}
 					ImGui::Separator();
+					ImGui::PopID();
+					++i;
 				}
 			}
 			ImGui::EndChild();
@@ -401,4 +515,19 @@ namespace rat {
 
 		return "";
     }
+  //   std::string LevelEditor::_getRelativeDirectoryPathFromExplorer(const std::string& title, const std::string& directory) {
+  //   	namespace filesystem = std::experimental::filesystem;
+						
+		// std::string dir;
+		// dir = DirectoryDialog::getExistingDirectory(title, directory);
+		// if(dir == "") return "";
+
+		// std::string current = filesystem::current_path().string();	
+
+		// if(current == dir.substr(0, current.size())) {
+		// 	return dir.substr(current.size()+1);
+		// }
+
+		// return "";
+  //   }
 }

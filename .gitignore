@@ -10,3 +10,5 @@ settings.mk
 .clang_complete
 .vscode/
 *.npp
+
+out/

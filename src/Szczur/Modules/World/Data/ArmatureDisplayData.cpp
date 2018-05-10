@@ -1,20 +1,24 @@
 #include "ArmatureDisplayData.hpp"
+
+#include <experimental/filesystem>
  
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"
- 
+
 namespace rat
 {
  
-    ArmatureDisplayData::ArmatureDisplayData(const std::string& name)
-        : _name(name)
+    ArmatureDisplayData::ArmatureDisplayData(const std::string& path)
+        : _folderPath(path)
     {
+        _name = std::experimental::filesystem::path(path).filename().string();
+
         auto dbFactory = dragonBones::SF3DFactory::get();
 
         _texture = new sf3d::Texture;
-        _texture->loadFromFile(_assetsFolderPath + _name + _textureFilePath);
+        _texture->loadFromFile(_folderPath + _textureFilePath);
 
-        dbFactory->loadDragonBonesData(_assetsFolderPath + _name + _skeFilePath);
-        dbFactory->loadTextureAtlasData(_assetsFolderPath + _name + _textureAtlasFilePath, _texture);
+        dbFactory->loadDragonBonesData(_folderPath + _skeFilePath);
+        dbFactory->loadTextureAtlasData(_folderPath + _textureAtlasFilePath, _texture);
     }
     
     ArmatureDisplayData::~ArmatureDisplayData() {

@@ -47,10 +47,9 @@ void World::update(float deltaTime)
 
 void World::render()
 {
+	auto& window = getModule<Window>();
 	if (_getScenes().isCurrentSceneValid())
 	{
-		auto& window = getModule<Window>();
-
 		_getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
 			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
 			{
@@ -60,7 +59,7 @@ void World::render()
 	}
 
 	#ifdef EDITOR
-		_levelEditor.render(window);
+		_levelEditor.render(window.getWindow());
 	#endif
 }
 
