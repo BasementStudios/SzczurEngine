@@ -5,8 +5,9 @@
 namespace rat
 {
 
-Entity::Entity(Scene* parent)
+Entity::Entity(Scene* parent, const std::string& group)
 	: _id { _getUniqueID() }
+	, _group { group }
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
 {
@@ -15,12 +16,13 @@ Entity::Entity(Scene* parent)
 
 Entity::Entity(const Entity& rhs)
 	: _id { _getUniqueID() }
+	, _group { rhs.getGroup() }
 	, _name { rhs.getName() + "_copy_" + std::to_string(_id) }
 	, _parent { rhs._parent }
 {
 	for (const auto& ptr : rhs._holder)
 	{
-		_holder.emplace_back(ptr->copy());
+		_holder.emplace_back(ptr->copy(this));
 	}
 }
 
@@ -29,6 +31,7 @@ Entity& Entity::operator = (const Entity& rhs)
 	if (this != &rhs)
 	{
 		_id = _getUniqueID();
+		_group = rhs.getGroup();
 		_name = rhs.getName() + "_copy_" + std::to_string(_id);
 		_parent = rhs._parent;
 
@@ -36,7 +39,7 @@ Entity& Entity::operator = (const Entity& rhs)
 
 		for (const auto& ptr : rhs._holder)
 		{
-			_holder.emplace_back(ptr->copy());
+			_holder.emplace_back(ptr->copy(this));
 		}
 	}
 
@@ -56,6 +59,16 @@ void Entity::render()
 size_t Entity::getID() const
 {
 	return _id;
+}
+
+void Entity::setGroup(const std::string& group)
+{
+	_group = group;
+}
+
+const std::string& Entity::getGroup() const
+{
+	return _group;
 }
 
 void Entity::setName(const std::string& name)

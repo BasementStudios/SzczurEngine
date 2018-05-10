@@ -55,6 +55,9 @@ public:
 	Entity* addEntity(const std::string& group);
 
 	///
+	Entity* duplicateEntity(size_t id);
+
+	///
 	bool removeEntity(size_t id);
 
 	///

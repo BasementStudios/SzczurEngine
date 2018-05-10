@@ -42,7 +42,7 @@ public:
 	virtual ~Component() = default;
 
 	///
-	virtual std::unique_ptr<Component> copy() const = 0;
+	virtual std::unique_ptr<Component> copy(Entity* newParent) const = 0;
 
 	///
 	Hash64_t getComponentID() const;
@@ -58,6 +58,9 @@ public:
 
 	///
 	const std::string& getName() const;
+
+	///
+	void setEntity(Entity* entity);
 
 	///
 	Entity* getEntity();
