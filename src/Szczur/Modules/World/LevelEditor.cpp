@@ -1,16 +1,15 @@
-//#ifdef EDITOR
-
 #include "LevelEditor.hpp"
 
 #include <iostream>
 #include <experimental/filesystem>
 
+#include <ImGui/imgui.h>
+
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
+#include "Szczur/Utility/Convert/Windows1250.hpp"
 
-#include "Szczur/modules/FileSystem/FileDialog.hpp"
-
-#include <ImGui/imgui.h>
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
 
 namespace rat {
     LevelEditor::LevelEditor(SceneManager& scenes) :
@@ -252,7 +251,7 @@ namespace rat {
 
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Sprite Component")) {
-						
+
 						auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayData();
 						if(ImGui::Button("Load texture...##sprite_component", ImVec2(40,0))) {
 							std::string file = _getRelativePathFromExplorer("Select texture", ".\\Assets");
@@ -264,14 +263,11 @@ namespace rat {
 								catch(const std::exception& exc) {
 									object->setSpriteDisplayData(nullptr);
 								}
-								std::cout<<object->getSpriteDisplayData()->getName().c_str()<<std::endl;
-								for(char c : object->getSpriteDisplayData()->getName()) std::cout<<(int)c<<' '<<std::endl;
-								std::cout<<std::endl;
 							}
 						}
 						ImGui::Text("Path:");
 						ImGui::SameLine();
-						ImGui::Text(object->getSpriteDisplayData() ? object->getSpriteDisplayData()->getName().c_str() : "None");
+						ImGui::Text(object->getSpriteDisplayData() ? mapWindows1250toUtf8(object->getSpriteDisplayData()->getName()).c_str() : "None");
 					}
 				}
 
@@ -391,13 +387,13 @@ namespace rat {
 
     std::string LevelEditor::_getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
     	namespace filesystem = std::experimental::filesystem;
-						
+
 		std::string file;
 		if(saveButton) file = FileDialog::getSaveFileName(title, directory, filter);
 		else file = FileDialog::getOpenFileName(title, directory, filter);
 		if(file == "") return "";
 
-		std::string current = filesystem::current_path().string();	
+		std::string current = filesystem::current_path().string();
 
 		if(current == file.substr(0, current.size())) {
 			return file.substr(current.size()+1);
@@ -406,5 +402,3 @@ namespace rat {
 		return "";
     }
 }
-
-//#endif
