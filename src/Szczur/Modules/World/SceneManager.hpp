@@ -77,7 +77,7 @@ private:
     typename ScenesHolder_t::const_iterator _find(size_t id) const;
 
     ScenesHolder_t _holder;
-    size_t _currentSceneID{ 0 };
+    size_t _currentSceneID = 0u;
 
 };
 

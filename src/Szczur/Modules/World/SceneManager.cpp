@@ -1,5 +1,7 @@
 #include "SceneManager.hpp"
 
+#include <algorithm>
+
 namespace rat
 {
 
@@ -22,7 +24,7 @@ bool SceneManager::removeScene(size_t id)
 
         if (_currentSceneID == id)
         {
-            _currentSceneID = 0;
+            _currentSceneID = 0u;
         }
 
         return true;
@@ -35,7 +37,7 @@ void SceneManager::removeAllScenes()
 {
     _holder.clear();
 
-    _currentSceneID = 0;
+    _currentSceneID = 0u;
 }
 
 Scene* SceneManager::getScene(size_t id) const
@@ -87,11 +89,13 @@ size_t SceneManager::getCurrentSceneID() const
 
 bool SceneManager::isCurrentSceneValid() const
 {
-    return _currentSceneID != 0;
+    return _currentSceneID != 0u;
 }
 
 void SceneManager::loadFromFile(const std::string& filepath)
 {
+    removeAllScenes();
+
     std::ifstream file{ filepath };
     Json config;
 
@@ -109,6 +113,10 @@ void SceneManager::loadFromFile(const std::string& filepath)
         scene->removeAllEntities();
         scene->loadFromConfig(current);
     }
+
+    setInitialUniqueID<Scene>(1u + std::max_element(getScenes().begin(), getScenes().end(), [](const auto& first, const auto& second) {
+        return first->getID() < second->getID();
+    })->get()->getID());
 }
 
 void SceneManager::saveToFile(const std::string& filepath) const

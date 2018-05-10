@@ -6,7 +6,7 @@ namespace rat
 {
 
 Entity::Entity(Scene* parent, const std::string& group)
-	: _id { _getUniqueID() }
+	: _id { getUniqueID<Entity>() }
 	, _group { group }
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
@@ -16,7 +16,7 @@ Entity::Entity(Scene* parent, const std::string& group)
 
 Entity::Entity(const Entity& rhs)
 	: sf3d::Transformable { static_cast<const sf3d::Transformable&>(rhs) }
-	, _id { _getUniqueID() }
+	, _id { getUniqueID<Entity>() }
 	, _group { rhs.getGroup() }
 	, _name { rhs.getName() + "_copy_" + std::to_string(_id) }
 	, _parent { rhs._parent }
@@ -32,7 +32,7 @@ Entity& Entity::operator = (const Entity& rhs)
 	if (this != &rhs)
 	{
 		static_cast<sf3d::Transformable&>(*this) = static_cast<const sf3d::Transformable&>(rhs);
-		_id = _getUniqueID();
+		_id = getUniqueID<Entity>();
 		_group = rhs.getGroup();
 		_name = rhs.getName() + "_copy_" + std::to_string(_id);
 		_parent = rhs._parent;
@@ -93,9 +93,58 @@ const Scene* Entity::getScene() const
 	return _parent;
 }
 
+Component* Entity::addComponent(std::unique_ptr<Component> component)
+{
+	if (auto ptr = getComponent(component->getComponentID()); ptr != nullptr)
+	{
+		LOG_WARNING("Entity ( ", getID(), " ) ", std::quoted(getName()), " already has ", ComponentTraits::getNameFromIdentifier(ptr->getComponentID()), " component, existing one returned");
+
+		return ptr;
+	}
+
+	return _holder.emplace_back(std::move(component)).get();
+}
+
+Component* Entity::addComponent(Hash64_t componentID)
+{
+	return addComponent(ComponentTraits::createFromComponentID(this, componentID));
+}
+
+bool Entity::removeComponent(Hash64_t componentID)
+{
+	if (auto it = _findByComponentID(componentID); it != _holder.end())
+	{
+		_holder.erase(it);
+
+		return true;
+	}
+
+	return false;
+}
+
 void Entity::removeAllComponents()
 {
 	_holder.clear();
+}
+
+Component* Entity::getComponent(Hash64_t componentID) const
+{
+	if (auto it = _findByComponentID(componentID); it != _holder.end())
+	{
+		return it->get();
+	}
+
+	return nullptr;
+}
+
+bool Entity::hasComponent(Hash64_t componentID) const
+{
+	return _findByComponentID(componentID) != _holder.end();
+}
+
+Entity::ComponentsHolder_t& Entity::getComponents()
+{
+	return _holder;
 }
 
 const Entity::ComponentsHolder_t& Entity::getComponents() const
@@ -134,6 +183,10 @@ void Entity::loadFromConfig(const Json& config)
 	{
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
 	}
+
+	setInitialUniqueID<Component>(1u + std::max_element(getComponents().begin(), getComponents().end(), [](const auto& first, const auto& second) {
+        return first->getComponentID() < second->getComponentID();
+    })->get()->getComponentID());
 }
 
 void Entity::saveToConfig(Json& config) const
@@ -169,13 +222,6 @@ void Entity::saveToConfig(Json& config) const
 
 		component->saveToConfig(comp);
 	}
-}
-
-size_t Entity::_getUniqueID()
-{
-	static size_t id = 0;
-
-	return ++id;
 }
 
 typename Entity::ComponentsHolder_t::iterator Entity::_findByComponentID(size_t id)

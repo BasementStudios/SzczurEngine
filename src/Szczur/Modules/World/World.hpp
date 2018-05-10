@@ -1,12 +1,9 @@
 #pragma once
 
-#include <memory>
-
 #include "SceneManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
-#include "Szczur/Utility/Modules/Module.hpp"
 
 #ifdef EDITOR
 	#include "LevelEditor.hpp"
@@ -44,6 +41,12 @@ public:
 	void render();
 
 private:
+
+	///
+	SceneManager& _getScenes();
+
+	///
+	const SceneManager& _getScenes() const;
 
 	SceneManager _scenes;
 	#ifdef EDITOR

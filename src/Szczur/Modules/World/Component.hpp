@@ -6,6 +6,7 @@
 #include <json.hpp>
 using Json = nlohmann::json;
 
+#include "Szczur/Utility/UniqueID.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 namespace rat
