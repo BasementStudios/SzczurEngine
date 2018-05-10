@@ -6,9 +6,9 @@ namespace rat
 {
 
 ///
-std::string mapWindows1250toUtf8(const std::string& src);
+std::string mapWindows1250ToUtf8(const std::string& src);
 
 ///
-std::string mapUtf8toWindows1250(const std::string& src);
+std::string mapUtf8ToWindows1250(const std::string& src);
 
 }

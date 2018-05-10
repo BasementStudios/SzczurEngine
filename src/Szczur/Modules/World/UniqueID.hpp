@@ -22,7 +22,7 @@ size_t setInitialUniqueID(size_t id)
 template <typename T>
 size_t getUniqueID()
 {
-    return detail::globalID_v<T>++;
+    return ++detail::globalID_v<T>;
 }
 
 }
