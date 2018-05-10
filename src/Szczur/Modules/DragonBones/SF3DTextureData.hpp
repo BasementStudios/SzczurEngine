@@ -9,8 +9,6 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include <glm/glm.hpp> // vec2
-
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
@@ -40,14 +38,10 @@ public:
 		TextureData::_onClear();
 	}
 
-	void setTexture(sf3d::Texture *value, sf::FloatRect& rect)
+	void setTexture(sf3d::Texture *texture, dragonBones::Rectangle& region)
 	{
-		region.x = rect.left;
-		region.y = rect.top;
-		region.width = rect.width;
-		region.height = rect.height;
-
-		texture = value;
+		this->texture = texture;
+		this->region = region;
 	}
 };
 
