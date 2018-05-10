@@ -267,7 +267,7 @@ namespace rat {
 						}
 						ImGui::Text("Path:");
 						ImGui::SameLine();
-						ImGui::Text(object->getSpriteDisplayData() ? mapWindows1250toUtf8(object->getSpriteDisplayData()->getName()).c_str() : "None");
+						ImGui::Text(object->getSpriteDisplayData() ? object->getSpriteDisplayData()->getName().c_str() : "None");
 					}
 				}
 

@@ -35,6 +35,8 @@ public:
 
 	void render();
 
+	void setupImGuiStyle();
+
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
 
