@@ -118,21 +118,25 @@ namespace rat {
     void LevelEditor::_renderBar() {
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
-				static char buffer[255];
-				if(ImGui::InputText("File", buffer, 255u)) {
-
-				}
 				if(ImGui::MenuItem("Load")) {
-					try {
-						_scenes.loadFromFile(buffer);
+					std::string relative = _getRelativePathFromExplorer("Load world", ".\\Editor\\Saves", "Worlds (*.world)|*.world");
+					// std::cout<<"--l-"<<relative<<std::endl;
+					if(relative != "") {
+						try {
+							_scenes.loadFromFile(relative);
+						}
+						catch(...) {}
 					}
-					catch(...) {}
 				}
 				if(ImGui::MenuItem("Save")) {
-					try {
-						_scenes.saveToFile(buffer);
+					std::string relative = _getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+					// std::cout<<"--s-"<<relative<<std::endl;
+					if(relative != "") {
+						try {
+							_scenes.saveToFile(relative);
+						}
+						catch(...) {}
 					}
-					catch(...){}
 				}
 				if(ImGui::MenuItem("Exit")) {
 					std::cout << "Exit\n";
@@ -248,25 +252,21 @@ namespace rat {
 
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Sprite Component")) {
-
-						namespace filesystem = std::experimental::filesystem;
 						
 						auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayData();
 						if(ImGui::Button("Load texture...##sprite_component", ImVec2(40,0))) {
-							std::string file = FileDialog::getOpenFileName("Select texture", ".\\Assets");
-							if(file!="") {
+							std::string file = _getRelativePathFromExplorer("Select texture", ".\\Assets");
+							if(file != "") {
 								try {
-									std::string current = filesystem::current_path().string();								
-									std::string relative = file.substr(current.size()+1);
-
-									if(current == file.substr(0, current.size())) {
-										auto& it = spriteDisplayDataHolder.emplace_back(relative);
-										object->setSpriteDisplayData(&it);
-									}
+									auto& it = spriteDisplayDataHolder.emplace_back(file);
+									object->setSpriteDisplayData(&it);
 								}
 								catch(const std::exception& exc) {
 									object->setSpriteDisplayData(nullptr);
 								}
+								std::cout<<object->getSpriteDisplayData()->getName().c_str()<<std::endl;
+								for(char c : object->getSpriteDisplayData()->getName()) std::cout<<(int)c<<' '<<std::endl;
+								std::cout<<std::endl;
 							}
 						}
 						ImGui::Text("Path:");
@@ -388,6 +388,23 @@ namespace rat {
 			ImGui::EndPopup();
 		}
 	}
+
+    std::string LevelEditor::_getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
+    	namespace filesystem = std::experimental::filesystem;
+						
+		std::string file;
+		if(saveButton) file = FileDialog::getSaveFileName(title, directory, filter);
+		else file = FileDialog::getOpenFileName(title, directory, filter);
+		if(file == "") return "";
+
+		std::string current = filesystem::current_path().string();	
+
+		if(current == file.substr(0, current.size())) {
+			return file.substr(current.size()+1);
+		}
+
+		return "";
+    }
 }
 
 //#endif

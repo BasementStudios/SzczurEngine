@@ -44,6 +44,8 @@ namespace rat {
         void _renderObjectsList();
         void _renderComponentsManager();
 
+        std::string _getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter="", bool saveButton = false); 
+
         bool _ifRenderObjectsList{true};
         bool _ifRenderDisplayDataManager{false};
         bool _ifRenderArmatureDisplayManager{false};
