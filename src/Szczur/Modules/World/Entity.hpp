@@ -62,23 +62,10 @@ public:
 	const Scene* getScene() const;
 
 	///
-	Component* addComponent(std::unique_ptr<Component> component)
-	{
-		if (auto ptr = getComponent(component->getComponentID()); ptr != nullptr)
-		{
-			LOG_WARNING("Entity ( ", getID(), " ) ", std::quoted(getName()), " already has ", ComponentTraits::getNameFromIdentifier(ptr->getComponentID()), " component, existing one returned");
-
-			return ptr;
-		}
-
-		return _holder.emplace_back(std::move(component)).get();
-	}
+	Component* addComponent(std::unique_ptr<Component> component);
 
 	///
-	Component* addComponent(Hash64_t componentID)
-	{
-		return addComponent(ComponentTraits::createFromComponentID(this, componentID));
-	}
+	Component* addComponent(Hash64_t componentID);
 
 	///
 	template <typename T>
@@ -88,20 +75,10 @@ public:
 	}
 
 	///
-	void removeAllComponents();
+	bool removeComponent(Hash64_t componentID);
 
 	///
-	bool removeComponent(Hash64_t componentID)
-	{
-		if (auto it = _findByComponentID(componentID); it != _holder.end())
-		{
-			_holder.erase(it);
-
-			return true;
-		}
-
-		return false;
-	}
+	void removeAllComponents();
 
 	///
 	template <typename T>
@@ -111,15 +88,7 @@ public:
 	}
 
 	///
-	Component* getComponent(Hash64_t componentID) const
-	{
-		if (auto it = _findByComponentID(componentID); it != _holder.end())
-		{
-			return it->get();
-		}
-
-		return nullptr;
-	}
+	Component* getComponent(Hash64_t componentID) const;
 
 	///
 	template <typename T>
@@ -164,10 +133,7 @@ public:
 	}
 
 	///
-	bool hasComponent(Hash64_t componentID) const
-	{
-		return _findByComponentID(componentID) != _holder.end();
-	}
+	bool hasComponent(Hash64_t componentID) const;
 
 	///
 	template <typename T>
@@ -175,6 +141,9 @@ public:
 	{
 		return hasComponent(ComponentTraits::getIdentifierFromType<T>());
 	}
+
+	///
+	ComponentsHolder_t& getComponents();
 
 	///
 	const ComponentsHolder_t& getComponents() const;
@@ -186,9 +155,6 @@ public:
 	virtual void saveToConfig(Json& config) const;
 
 private:
-
-	///
-	static size_t _getUniqueID();
 
 	///
 	typename ComponentsHolder_t::iterator _findByComponentID(size_t id);

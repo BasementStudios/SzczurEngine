@@ -82,6 +82,9 @@ public:
 	const Entity* getEntity(const std::string& group, size_t id) const;
 
 	///
+	bool hasEntity(size_t id);
+
+	///
 	bool hasEntity(const std::string& group, size_t id);
 
 	///
@@ -97,16 +100,16 @@ public:
 	const CollectingHolder_t& getAllEntities() const;
 
 	///
-	SpriteDisplayDataHolder_t& getSpriteDisplayData();
+	SpriteDisplayDataHolder_t& getSpriteDisplayDataHolder();
 
 	///
-	const SpriteDisplayDataHolder_t& getSpriteDisplayData() const;
+	const SpriteDisplayDataHolder_t& getSpriteDisplayDataHolder() const;
 
 	///
-	ArmatureDisplayDataHolder_t& getArmatureDisplayData();
+	ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder();
 
 	///
-	const ArmatureDisplayDataHolder_t& getArmatureDisplayData() const;
+	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
 
 	///
 	void loadFromConfig(const Json& config);
@@ -115,12 +118,19 @@ public:
 	void saveToConfig(Json& config) const;
 
 	///
-	void forEach(const std::function<void(const std::string& group, Entity& entity)>& function);
+	template <typename F>
+	void forEach(F&& function)
+	{
+		for (auto& group : _collectingHolder)
+		{
+			for (auto& entity : group.second)
+			{
+				std::invoke(std::forward<F>(function), group.first, entity);
+			}
+		}
+	}
 
 private:
-
-    ///
-	static size_t _getUniqueID();
 
     ///
 	typename EntitiesHolder_t::iterator _find(const std::string& group, size_t id);

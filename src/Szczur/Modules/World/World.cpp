@@ -16,25 +16,35 @@ World::~World()
 
 void World::update(float deltaTime)
 {
-	if (_scenes.isCurrentSceneValid())
+	if (_getScenes().isCurrentSceneValid())
 	{
-		_scenes.getCurrentScene()->update(deltaTime);
+		_getScenes().getCurrentScene()->update(deltaTime);
 	}
 }
 
 void World::render()
 {
-	if (_scenes.isCurrentSceneValid())
+	if (_getScenes().isCurrentSceneValid())
 	{
 		auto& window = getModule<Window>();
 
-		_scenes.getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
+		_getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
 			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
 			{
 				window.draw(*ptr);
 			}
 		});
 	}
+}
+
+SceneManager& World::_getScenes()
+{
+	return _scenes;
+}
+
+const SceneManager& World::_getScenes() const
+{
+	return _scenes;
 }
 
 }
