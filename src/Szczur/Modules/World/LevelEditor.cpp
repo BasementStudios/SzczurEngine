@@ -363,6 +363,8 @@ namespace rat {
 									arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
 								}
 							}
+
+							ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
 						}
 					}
 
