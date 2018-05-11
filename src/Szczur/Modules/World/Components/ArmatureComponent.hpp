@@ -38,9 +38,8 @@ namespace rat
 
         virtual const void* getFeature(Component::Feature_e feature) const override;
 
-        virtual void loadFromConfig(const Json& config) {}
-
-        virtual void saveToConfig(Json& config) const {}
+        virtual void loadFromConfig(const Json& config);
+        virtual void saveToConfig(Json& config) const;
 
         void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
     };

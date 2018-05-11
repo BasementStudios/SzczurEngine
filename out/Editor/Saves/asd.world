@@ -2,15 +2,20 @@
     "currentSceneID": 1,
     "scenes": [
         {
-            "camera": 1,
+            "camera": 0,
             "groups": {
                 "background": [
                     {
                         "components": [
-                            {}
+                            {
+                                "armatureDisplayData": "Pig",
+                                "features": 1,
+                                "id": 917815813872066653,
+                                "name": "ArmatureComponent"
+                            }
                         ],
-                        "id": 2,
-                        "name": "unnamed_2",
+                        "id": 1,
+                        "name": "unnamed_1",
                         "origin": {
                             "x": 0.0,
                             "y": 0.0,
@@ -35,33 +40,7 @@
                 ],
                 "foreground": [],
                 "path": [],
-                "single": [
-                    {
-                        "components": [],
-                        "id": 1,
-                        "name": "Camera",
-                        "origin": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "position": {
-                            "x": 0.0,
-                            "y": 1160.0,
-                            "z": 3085.0
-                        },
-                        "rotation": {
-                            "x": 15.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        }
-                    }
-                ]
+                "single": []
             },
             "id": 1,
             "name": "unnamed_1"

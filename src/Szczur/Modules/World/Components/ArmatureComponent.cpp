@@ -3,6 +3,9 @@
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"
 
 #include "../Entity.hpp"
+#include "../Scene.hpp"
+
+#include "Szczur/Utility/Convert/Windows1250.hpp"
 
 namespace rat
 {
@@ -64,6 +67,33 @@ namespace rat
         if (feature == Component::Drawable) return static_cast<const sf3d::Drawable*>(this);
 
         return nullptr;
+    }
+    void ArmatureComponent::loadFromConfig(const Json& config) {
+        Component::loadFromConfig(config);
+		auto& armatureDisplayDataHolder = getEntity()->getScene()->getArmatureDisplayDataHolder();
+		auto name = mapUtf8ToWindows1250(config["armatureDisplayData"].get<std::string>());
+		if(name != "") {
+			bool found{false};
+			for(auto& it : armatureDisplayDataHolder) {
+				if(name == it.getName()) {
+					setArmatureDisplayData(&it);
+					found = true;
+				}
+			}
+			if(!found) {
+				try {
+					setArmatureDisplayData(&(armatureDisplayDataHolder.emplace_back("Assets/Armatures/"+name)));
+				}
+				catch(const std::exception& exc) {
+
+				}
+			}
+		}
+    }
+
+    void ArmatureComponent::saveToConfig(Json& config) const {
+        Component::saveToConfig(config);
+		config["armatureDisplayData"] = _armatureDisplayData ? mapWindows1250ToUtf8(_armatureDisplayData->getName()) : "";
     }
 
     void ArmatureComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
