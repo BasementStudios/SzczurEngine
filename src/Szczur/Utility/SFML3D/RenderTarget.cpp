@@ -20,7 +20,7 @@ namespace sf3d {
 		_halfFOVyTan = glm::tan(glm::radians(_FOVy / 2.f));
 		_view.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
 		_defaultView.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
-		_projection = glm::perspective(glm::radians(_FOVy), (float)_windowSize.x / (float)_windowSize.y, 0.1f, 100.f);
+		setRenderDistance(100.f);
 	}
 
 	RenderTarget::RenderTarget() {
@@ -49,6 +49,15 @@ namespace sf3d {
 
 	void RenderTarget::setProgram(ShaderProgram * program) {
 		_states.shader = program;
+	}
+
+	
+	void RenderTarget::setRenderDistance(float renderDistance) {
+		_renderDistance = renderDistance;
+		_projection = glm::perspective(glm::radians(_FOVy), (float)_windowSize.x / (float)_windowSize.y, 0.1f, _renderDistance);
+	}
+	float RenderTarget::getRenderDistance() const {
+		return _renderDistance;
 	}
 
 	void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags) {
