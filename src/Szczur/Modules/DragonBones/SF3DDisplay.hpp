@@ -57,7 +57,7 @@ public:
 			matrix.a, matrix.b, 0.f, 0.f,
 			matrix.c, matrix.d, 0.f, 0.f,
 			0.f, 0.f, 1.f, 0.f,
-			offset.x, offset.y, 0.f, 1.f
+			offset.x, offset.y, offset.z, 1.f
 		);
 
 		this->transform.scale(scale, scale, 1.f);
