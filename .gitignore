@@ -1,6 +1,8 @@
 # Compiling results
 obj/
 out/*
+!out/Assets/*
+!out/Editor/*
 
 # Configurations
 settings.mk
@@ -11,4 +13,3 @@ settings.mk
 .vscode/
 *.npp
 
-out/
