@@ -16,6 +16,9 @@ namespace sf3d {
 		RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 		~RenderTarget();
 
+		void setRenderDistance(float renderDistance);
+		float getRenderDistance() const;
+
 		void create(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
 
 		void setProgram(ShaderProgram* program);
@@ -53,6 +56,7 @@ namespace sf3d {
 		float _FOVx;
 		float _halfFOVxTan;
 		float _halfFOVyTan;
+		float _renderDistance;
 		View _view;
 		View _defaultView;
 		glm::mat4 _projection;
