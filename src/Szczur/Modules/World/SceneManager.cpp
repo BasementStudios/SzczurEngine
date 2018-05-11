@@ -107,7 +107,9 @@ void SceneManager::loadFromFile(const std::string& filepath)
 
     for (auto& current : scenes)
     {
-        addScene()->loadFromConfig(current);
+        auto* scene = addScene();
+        scene->removeAllEntities();
+        scene->loadFromConfig(current);
     }
 
     setInitialUniqueID<Scene>(1u + std::max_element(getScenes().begin(), getScenes().end(), [](const auto& first, const auto& second) {
