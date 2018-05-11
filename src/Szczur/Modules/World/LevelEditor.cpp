@@ -3,6 +3,10 @@
 #include <iostream>
 #include <experimental/filesystem>
 
+#ifdef OS_WINDOWS
+#include <Shellapi.h>
+#endif
+
 #include <ImGui/imgui.h>
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
@@ -166,6 +170,17 @@ namespace rat {
 						catch(...) {}
 					}
 				}
+
+				if (ImGui::MenuItem("Show in explorer")) {
+					std::string current = std::experimental::filesystem::current_path().string();
+
+#ifdef OS_WINDOWS
+					ShellExecute(NULL, "open", current.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+#endif
+				}
+
+				ImGui::Separator();
+
 				if(ImGui::MenuItem("Exit")) {
 					std::cout << "Exit\n";
 				}
