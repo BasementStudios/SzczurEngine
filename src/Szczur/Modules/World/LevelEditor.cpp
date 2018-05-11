@@ -151,6 +151,8 @@ namespace rat {
 				if(ImGui::MenuItem("New")) {
 					_scenes.removeAllScenes();
 					_scenes.setCurrentScene(_scenes.addScene()->getID());
+					_anySelected = false;
+					_focusedObject = static_cast<size_t>(-1);
 				}
 				if(ImGui::MenuItem("Load")) {
 					std::string relative = _getRelativePathFromExplorer("Load world", ".\\Editor\\Saves", "Worlds (*.world)|*.world");
