@@ -148,6 +148,10 @@ namespace rat {
     void LevelEditor::_renderBar() {
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
+				if(ImGui::MenuItem("New")) {
+					_scenes.removeAllScenes();
+					_scenes.setCurrentScene(_scenes.addScene()->getID());
+				}
 				if(ImGui::MenuItem("Load")) {
 					std::string relative = _getRelativePathFromExplorer("Load world", ".\\Editor\\Saves", "Worlds (*.world)|*.world");
 					// std::cout<<"--l-"<<relative<<std::endl;

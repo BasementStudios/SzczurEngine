@@ -1,21 +1,17 @@
 {
-    "currentSceneID": 1,
+    "currentSceneID": 3,
     "scenes": [
         {
-            "camera": 0,
+            "camera": 7,
             "groups": {
-                "background": [
+                "background": [],
+                "foreground": [],
+                "path": [],
+                "single": [
                     {
-                        "components": [
-                            {
-                                "armatureDisplayData": "Pig",
-                                "features": 1,
-                                "id": 917815813872066653,
-                                "name": "ArmatureComponent"
-                            }
-                        ],
-                        "id": 1,
-                        "name": "unnamed_1",
+                        "components": [],
+                        "id": 7,
+                        "name": "Camera",
                         "origin": {
                             "x": 0.0,
                             "y": 0.0,
@@ -23,11 +19,11 @@
                         },
                         "position": {
                             "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
+                            "y": 1160.0,
+                            "z": 3085.0
                         },
                         "rotation": {
-                            "x": 0.0,
+                            "x": 15.0,
                             "y": 0.0,
                             "z": 0.0
                         },
@@ -37,13 +33,10 @@
                             "z": 1.0
                         }
                     }
-                ],
-                "foreground": [],
-                "path": [],
-                "single": []
+                ]
             },
-            "id": 1,
-            "name": "unnamed_1"
+            "id": 3,
+            "name": "unnamed_3"
         }
     ]
 }
