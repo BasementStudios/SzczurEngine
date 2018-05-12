@@ -305,7 +305,7 @@ void SF3DSlot::_updateMesh()
 
 				for (const auto& vert : verticesInTriagles[i])
 				{
-					verticesDisplay.setPosition(vert, { xG, yG, 0.f });
+					verticesDisplay.setPosition(vert, { xG, yG, static_cast<float>(_zOrder) });
 				}
 			}
 		}
