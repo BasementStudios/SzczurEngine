@@ -319,12 +319,23 @@ namespace rat {
 					ImGui::DragFloat3("Position", reinterpret_cast<float*>(&position));
 					ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
 					ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
+					static bool lockRatio{false};
+					if(ImGui::Checkbox("##CheckboxLockRatio", &lockRatio)) {
+						
+					}
+					ImGui::SameLine();
 					ImGui::DragFloat2("Scale", reinterpret_cast<float*>(&scale), 0.01f);
 					//ImGui::Checkbox("Locked", &(_focusedObject->locked));
 					focusedObject->setPosition(position);
 					focusedObject->setOrigin(origin);
 					focusedObject->setRotation(rotation);
-					focusedObject->setScale(scale);
+					if(lockRatio == false) {
+						focusedObject->setScale(scale);
+					}
+					else {
+						float offset = (scale.x / focusedObject->getScale().x) + (scale.y / focusedObject->getScale().y) - 1;
+						focusedObject->scale( {offset, offset, 0.f} );
+					}
 				}
 
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>(); object != nullptr) {
