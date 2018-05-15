@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "Components/CameraComponent.hpp"
 namespace rat
 {
 
@@ -9,10 +10,11 @@ Scene* SceneManager::addScene()
 {
     Scene* scene = _holder.emplace_back(std::make_unique<Scene>()).get();
     Entity* camera = scene->addEntity("single");
+    camera->addComponent<CameraComponent>();
     camera->setName("Camera");
     camera->setPosition({ 0.f, 1160.f, 3085.f });
     camera->setRotation({ 15.f, 0.f, 0.f });
-    scene->setCameraID(camera->getID());
+    //scene->setCameraID(camera->getID());
     return scene;
 }
 

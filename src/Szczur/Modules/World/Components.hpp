@@ -2,6 +2,7 @@
 
 #include "Components/SpriteComponent.hpp"
 #include "Components/ArmatureComponent.hpp"
+#include "Components/CameraComponent.hpp"
 #include <memory>
 
 namespace rat
@@ -17,6 +18,7 @@ struct ComponentTraits
 	{
 		if (id == fnv1a_64("SpriteComponent")) return std::make_unique<SpriteComponent>(parent);
 		if (id == fnv1a_64("ArmatureComponent")) return std::make_unique<ArmatureComponent>(parent);
+		if (id == fnv1a_64("CameraComponent")) return std::make_unique<CameraComponent>(parent);
 
 		return nullptr;
 	}
@@ -26,6 +28,7 @@ struct ComponentTraits
 	{
 		if (name == "SpriteComponent") return std::make_unique<SpriteComponent>(parent);
 		if (name == "ArmatureComponent") return std::make_unique<ArmatureComponent>(parent);
+		if (name == "CameraComponent") return std::make_unique<CameraComponent>(parent);
 
 		return nullptr;
 	}
@@ -42,6 +45,7 @@ struct ComponentTraits
 	{
 		if (name == "SpriteComponent") return fnv1a_64("SpriteComponent");
 		if (name == "ArmatureComponent") return fnv1a_64("ArmatureComponent");
+		if (name == "CameraComponent") return fnv1a_64("CameraComponent");
 
 		return 0;
 	}
@@ -51,6 +55,7 @@ struct ComponentTraits
 	{
 		if (id == fnv1a_64("SpriteComponent")) return "SpriteComponent";
 		if (id == fnv1a_64("ArmatureComponent")) return "ArmatureComponent";
+		if (id == fnv1a_64("CameraComponent")) return "CameraComponent";
 
 		return "";
 	}
@@ -61,6 +66,7 @@ struct ComponentTraits
 	{
 		if (std::is_same_v<T, SpriteComponent>) return fnv1a_64("SpriteComponent");
 		if (std::is_same_v<T, ArmatureComponent>) return fnv1a_64("ArmatureComponent");
+		if (std::is_same_v<T, CameraComponent>) return fnv1a_64("CameraComponent");
 
 		return 0;
 	}

@@ -72,14 +72,23 @@ namespace rat {
 
     void LevelEditor::update(InputManager& input, Camera& camera) {
 		auto* scene = _scenes.getCurrentScene();
-		bool cameraFocused = _focusedObject == scene->getCameraID() && _anySelected;
-		if(ImGui::IsAnyItemActive() == false && !cameraFocused)
-			_freeCamera.processEvents(input);
 		sf3d::View view;
-		if(cameraFocused) {
-			auto* cam = scene->getEntity("single", scene->getCameraID());
-			view.setRotation(cam->getRotation());
-			view.setCenter(cam->getPosition());
+		Entity* currentCamera{nullptr};
+		_scenes.getCurrentScene()->forEach([this, &currentCamera](const std::string&, Entity& entity){
+			if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
+				if((_focusedObject == entity.getID() && _anySelected) || component->getLock())
+					currentCamera = &entity;
+			}
+		});
+		if(ImGui::IsAnyItemActive() == false) {
+			if(currentCamera==nullptr)
+				_freeCamera.processEvents(input);
+			else
+				currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
+		}
+		if(currentCamera) {
+			view.setRotation(currentCamera->getRotation());
+			view.setCenter(currentCamera->getPosition());
 		}
 		else {
 			//std::cout << _freeCamera.position.x << ' ' << _freeCamera.position.y << '\n';
@@ -357,6 +366,19 @@ namespace rat {
 						ImGui::Text("Path:");
 						ImGui::SameLine();
 						ImGui::Text(object->getSpriteDisplayData() ? mapWindows1250ToUtf8(object->getSpriteDisplayData()->getName()).c_str() : "None");
+					}
+				}
+
+				if(auto* object = focusedObject->getComponentAs<CameraComponent>(); object != nullptr) {
+					if(ImGui::CollapsingHeader("Camera Component")) {
+						float velocity = object->getVelocity();
+						bool locked = object->getLock();
+						ImGui::DragFloat("Velocity", &velocity);
+						ImGui::Checkbox("Locked", &locked);
+
+						object->setVelocity(velocity);
+						object->setLock(locked);
+
 					}
 				}
 

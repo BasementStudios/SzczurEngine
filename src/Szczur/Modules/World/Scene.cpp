@@ -275,7 +275,7 @@ const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() 
 	return _armatureDisplayDataHolder;
 }
 
-void Scene::setCameraID(size_t id)
+/*void Scene::setCameraID(size_t id)
 {
 	_cameraID = id;
 }
@@ -284,12 +284,12 @@ size_t Scene::getCameraID() const
 {
 	return _cameraID;
 }
-
+*/
 void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
-	_cameraID = config["camera"];
+	//_cameraID = config["camera"];
 
 	const Json& groups = config["groups"];
 
@@ -317,7 +317,7 @@ void Scene::saveToConfig(Json& config) const
 {
 	config["id"] = getID();
 	config["name"] = getName();
-	config["camera"] = getCameraID();
+	//config["camera"] = getCameraID();
 
 	Json& groups = config["groups"] = Json::object();
 
