@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include "BaseBar.hpp"
@@ -22,10 +23,10 @@ namespace rat
         void setWidth(float width);
         SkillArea& getSkillArea();
 
-        void setColor(const std::string& color);
-        void addColor(const std::string& color);
-        void removeColor(const std::string& color);
-        bool canBeAdded(const std::string& color);
+        void setGlyph(GlyphID);
+        void addGlyph(GlyphID);
+        void removeGlyph(GlyphID);
+        bool canBeAdded(GlyphID);
         void unchooseAll();
         bool hasOnlyOneFilterChosen() const;
 
@@ -34,8 +35,10 @@ namespace rat
         std::vector<std::unique_ptr<ColorFilterBar>> _filters;
 
 
-        std::set<std::string> _colors;
+        std::set<std::string> _glyphs;
         float _width{200.f};
         void _recalculateFilters();
     };
 }
+
+*/

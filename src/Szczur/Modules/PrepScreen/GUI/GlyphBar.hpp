@@ -29,7 +29,6 @@ namespace rat
 
         std::array<sf::Texture*, 4> _glyphTextures;
 
-
         constexpr static float _circleShiftProp = 0.14644660940672f;
 
         ImageWidget* _container{nullptr};

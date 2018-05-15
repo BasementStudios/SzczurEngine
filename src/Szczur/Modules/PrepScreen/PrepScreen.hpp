@@ -7,11 +7,11 @@
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 
-//#include "Szczur/Modules/PrepScreen/PPContainer.hpp"
-#include "Szczur/Modules/PrepScreen/SkillCodex.hpp"
+#include "Szczur/Modules/PrepScreen/ResourcesContainer.hpp"
+#include "Szczur/Modules/PrepScreen/Skill/SkillCodex.hpp"
 #include "GUI/SkillArea.hpp"
-#include "GUI/ColoredPPBar.hpp"
-#include "GUI/GrayPPBar.hpp"
+//#include "GUI/ColoredPPBar.hpp"
+#include "GUI/GrayPPArea.hpp"
 #include "GUI/ProfessionArea.hpp"
 #include "GUI/ChosenSkillArea.hpp"
 #include "GUI/ColorFilterArea.hpp"
@@ -28,70 +28,42 @@ namespace rat
     public:
         void init()
         {
-            //Script& script = getModule<Script>();
-            //script.scriptFile("D:/Sczur/SzczurEngine/src/Szczur/Modules/PrepScreen/PrepScreenGUI/PSGUI.lua");
             initGUI();
         }
 
         void initScript();
         void initGUI();
 
-        PrepScreen()
-        :
-        _coloredPPsBar(_source),
-        _grayPPsBar(_source),
-        _skillArea(_grayPPsBar),
-        _profArea(_skillArea),
-        _chosenSkillArea(_skillArea),
-        _colorFilterArea(_skillArea)
-        {
-            LOG_INFO(this, " : Module PrepScreen initing...");
-            init();
-            LOG_INFO(this, " : Module PrepScreen inited.");
-        }
-        ~PrepScreen()
-        {
-            LOG_INFO(this, " : Module PrepScreen destroyed.");
-        }
+        PrepScreen();
+        ~PrepScreen();
 
         SkillCodex& getSkillCodex();
 
     private:
         SkillCodex _codex;
-        PPContainer _source;
+        ResourcesContainer _source;
+
+        
         
         void addSkill(Skill* skill);
         void test();
         std::vector<std::unique_ptr<Skill>> testSkills;
 
-        sf::Texture* getTextureFrom(const std::string& name, GUI& gui);
-        std::string _folder = "assets/PrepScreen/";
-
         Widget* _base{nullptr};
-        ImageWidget* _coloredPPBar{nullptr};
-        Widget* _grayPPBar{nullptr};
 
-        ImageWidget* _centerWindow{nullptr};
+        //ColoredPPBar _coloredPPsBar;
+        GrayPPArea _grayPPsBar;
 
-        ScrollAreaWidget* _skillsBar{nullptr};
-
-        ImageWidget* _eq{nullptr};
-        ImageWidget* _chosenSkillsBar{nullptr};
-
-        ColoredPPBar _coloredPPsBar;
-        GrayPPBar _grayPPsBar;
         SkillArea _skillArea;
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;
-        ColorFilterArea _colorFilterArea;
+        //ColorFilterArea _colorFilterArea;
 
         InfoBar _infoBar;
 
         WindowWidget* _testBar{nullptr};
         GlyphArea _testGlyphBar;
 
-
-        void _setWidgetSize(ImageWidget* widget, float x, float y);
         void _initProfessionBar(GUI& gui);
         void _initSkillArea();
         void _initProfArea();

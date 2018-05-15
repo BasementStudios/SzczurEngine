@@ -17,8 +17,8 @@ namespace rat
         public:
             bool canBeBoughtFrom(const PPContainer& source)
             {
-                if(source.getPPAmount() < _ppCost) return false;
-                for(const auto[color, power] : _typesRequirement)
+                if(source.getAmount() < _ppCost) return false;
+                for(const auto[gliph, power] : _glyphesRequirement)
                 {
                     if(!source.hasProperColoredPP( {color, power} )) return false;
                 }
@@ -82,8 +82,7 @@ namespace rat
             }
 
         private:
-            std::map<std::string, size_t> _typesRequirement;
+            std::map<std::string, size_t> _glyphesRequirement;
             amount_t _ppCost;
-            bool _hasBeenBought{false};        
     };
 }

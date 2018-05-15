@@ -1,10 +1,12 @@
+/*
+
 #include "ColorFilterArea.hpp"
 
 #include <algorithm>
 #include <cassert>
 
 #include "Szczur/Modules/GUI/GUI.hpp"
-#include "../PPColors.hpp"
+#include "../GlyphTypes.hpp"
 
 #include "SkillArea.hpp"
 
@@ -15,12 +17,12 @@ namespace rat
     BaseBar(),
     _parentArea(parentArea)
     {
-        const PPColors ppColors;
-        for(const auto& ppColor : ppColors)
+        const GlyphTypes ppGlyphs;
+        for(const auto& ppGlyph : ppGlyphs)
         {
             auto filter = std::make_unique<ColorFilterBar>(*this);
             filter->deactivate();
-            filter->setColor(ppColor);
+            filter->setGlyph(ppGlyph);
             _addBar(filter);
             filter->activate();
             _filters.emplace_back(std::move(filter));
@@ -46,27 +48,27 @@ namespace rat
         return _parentArea;
     }
 
-    void ColorFilterArea::setColor(const std::string& color)
+    void ColorFilterArea::setGlyph(const std::string& glyph)
     {
-        _colors.clear();
-        _colors.emplace(color);
-        _parentArea.setColors(_colors);
+        _glyphs.clear();
+        _glyphs.emplace(glyph);
+        _parentArea.setGlyphs(_glyphs);
     }
-    void ColorFilterArea::addColor(const std::string& color)
+    void ColorFilterArea::addGlyph(const std::string& glyph)
     {
-        assert(canBeAdded(color));
-        _colors.emplace(color);
-        _parentArea.setColors(_colors);
+        assert(canBeAdded(glyph));
+        _glyphs.emplace(glyph);
+        _parentArea.setGlyphs(_glyphs);
     }
-    void ColorFilterArea::removeColor(const std::string& color)
+    void ColorFilterArea::removeGlyph(const std::string& glyph)
     {
-        assert(_colors.find(color) != _colors.end());
-        _colors.erase(color);
-        _parentArea.setColors(_colors);
+        assert(_glyphs.find(glyph) != _glyphs.end());
+        _glyphs.erase(glyph);
+        _parentArea.setGlyphs(_glyphs);
     }
-    bool ColorFilterArea::canBeAdded(const std::string& color)
+    bool ColorFilterArea::canBeAdded(const std::string& glyph)
     {
-        return _colors.size() < 3u;
+        return _glyphs.size() < 3u;
     }
     void ColorFilterArea::_recalculateFilters()
     {
@@ -93,8 +95,10 @@ namespace rat
     }
     bool ColorFilterArea::hasOnlyOneFilterChosen() const
     {
-        return _colors.size() == 1u;
+        return _glyphs.size() == 1u;
     }
     
     
 }
+
+*/

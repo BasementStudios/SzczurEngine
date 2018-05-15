@@ -2,7 +2,7 @@
 
 #include "ChosenSkillArea.hpp"
 #include "SkillArea.hpp"
-#include "GrayPPBar.hpp"
+#include "GrayPPArea.hpp"
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
@@ -15,7 +15,7 @@ namespace rat
     :
     _parentArea(parentArea),
     _skillArea(parentArea.getSkillArea()),
-    _sourceBar(_skillArea.getSourceBar())
+    _sourceBar(_skillArea.getSourceArea())
     {
         _icon = new ImageWidget;
         _addWidget(_icon);

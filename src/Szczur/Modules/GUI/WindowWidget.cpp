@@ -10,11 +10,15 @@ namespace rat
     {
         setScale({0.2f, 0.2f});
     }
-    
+
+    void WindowWidget::setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight)
+    {
+        _ninePatch.setTexture(texture, paddingWidth, paddingHeight);
+        _calcPadding();
+    }
     void WindowWidget::setTexture(sf::Texture* texture, int padding)
     {
-        _ninePatch.setTexture(texture, padding);
-        _calcPadding();
+        setTexture(texture, padding, padding);
     }
     void WindowWidget::setScale(const sf::Vector2f& scale)
     {

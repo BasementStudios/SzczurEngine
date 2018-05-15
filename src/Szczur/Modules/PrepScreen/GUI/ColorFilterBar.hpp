@@ -1,3 +1,4 @@
+/*
 #pragma once 
 
 #include <vector>
@@ -16,7 +17,7 @@ namespace rat
     public:
         ColorFilterBar(ColorFilterArea& parentArea);
         void initAssetsViaGUI(GUI& gui);
-        void setColor(const std::string& color);
+        void setGlyph(const std::string& color);
         void activate();
         void deactivate();
         void unchoose();
@@ -36,3 +37,4 @@ namespace rat
     };
     
 }
+*/

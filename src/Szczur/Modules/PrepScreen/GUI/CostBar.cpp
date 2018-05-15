@@ -3,7 +3,7 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
-#include "../PPColors.hpp"
+#include "../GlyphTypes.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
 
@@ -15,17 +15,19 @@ namespace rat
     BaseBar()
     {
         _costPP = new ImageWidget;
+        _costPP->setPropOrigin(1.f, 0.f);
         _addWidget(_costPP);
 
         _costAmount = new TextWidget;
         _addWidget(_costAmount);
-        PPColors colors;
-        for(auto& color : colors)
+        GlyphTypes glyphs;
+        GlyphesConverter converter;
+        for(auto& glyph : glyphs)
         {
            ImageWidget* reqWidget = new ImageWidget;
            _addWidget(reqWidget);
            reqWidget->invisible();
-           _coloredPPs.emplace(color, reqWidget);
+           _glyphs.emplace(converter.toEnum(glyph), reqWidget);
         }
         _recalculate();
     }
@@ -52,28 +54,22 @@ namespace rat
             _costAmount->setString(std::to_string(cost));
         }
 
-        _recalculateColored();
+        _recalculateGlyphs();
     }
-
-    void CostBar::setGrayPPPosition(float x, float y)
-    {
-        _costPP->setPosition(x, y);
-        _recalculateCostAmount();
-    }
-    
     
     void CostBar::loadAssetsFromGUI(GUI& gui)
     {
         size_t i = 0;
-        for(auto& [color, widget] : _coloredPPs)
+        GlyphesConverter converter;
+        for(auto& [glyph, widget] : _glyphs)
         {
-            const std::string path = "Assets/PrepScreen/" + color + "PP.png";
+            const std::string path = "Assets/Test/" + converter.toString(glyph) + "Glyph.png";
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
             widget->setSize(_dim, _dim);
         }        
         _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
-        _setIconTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/PP.png"));
+        _setIconTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png"));
     }
 
     void CostBar::_setIconTexture(sf::Texture* texture)
@@ -100,12 +96,12 @@ namespace rat
     }
     
     
-    void CostBar::_recalculateColored()
+    void CostBar::_recalculateGlyphs()
     {
         auto& cost = _skill->getCostInfo();
 
         size_t j = 0;
-        for(auto& [color, widget] : _coloredPPs)
+        for(auto& [glyph, widget] : _glyphs)
         {
             widget->invisible();
             widget->setPosition(0.f, 0.f);
@@ -113,9 +109,9 @@ namespace rat
 
         size_t i = 0;
         _numOfActivated = cost.getNumberOfRequirements();
-        for(auto& [color, power] : cost)
+        for(auto& [glyph, power] : cost)
         {
-            auto found = _coloredPPs.find(color);
+            auto found = _glyphs.find(glyph);
             auto* widget = found->second;
             widget->visible();
         }
@@ -126,15 +122,9 @@ namespace rat
     {
         if(_numOfActivated == 0) return;
         float dim = _padding + _dim;
-        float coloredWidth = float(_numOfActivated) * dim;
-        /*
-        if(coloredWidth < _width - _dim)
-        {
-            coloredWidth = _width - _dim;
-            dim = coloredWidth/float(_numOfActivated);            
-        }*/
+        float glyphedWidth = float(_numOfActivated) * dim;
         size_t i = 0;
-        for(auto& [color, widget] : _coloredPPs)
+        for(auto& [glyph, widget] : _glyphs)
         {
             if(widget->isVisible())
             {
@@ -142,7 +132,7 @@ namespace rat
                 i++;
             }
         }
-        setGrayPPPosition(_width - dim, 0.f);
+        _costPP->setPosition(0.f, _width);
     }
     
     

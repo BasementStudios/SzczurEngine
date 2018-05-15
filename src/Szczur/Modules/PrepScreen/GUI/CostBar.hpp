@@ -5,7 +5,8 @@
 #include <string>
 #include <map>
 
-#include "../Skill.hpp"
+#include "../Skill/Skill.hpp"
+#include "../GlyphTypes.hpp"
 
 namespace rat
 {
@@ -17,14 +18,13 @@ namespace rat
         CostBar();
         void loadAssetsFromGUI(GUI& gui);
         void setSkill(Skill* skill);
-        void setGrayPPPosition(float x, float y);
         void setWidth(float width);
 
         sf::Vector2f getPPSize() const;
     private:
         Skill* _skill{nullptr};
 
-        std::map<std::string, ImageWidget*> _coloredPPs;
+        std::map<GlyphID, ImageWidget*> _glyphs;
         ImageWidget* _costPP{nullptr};
         TextWidget* _costAmount{nullptr};
 
@@ -36,7 +36,7 @@ namespace rat
 
         void _setIconTexture(sf::Texture* texture);
         void _recalculateCostAmount();
-        void _recalculateColored();
+        void _recalculateGlyphs();
         void _recalculate();
     };
 }

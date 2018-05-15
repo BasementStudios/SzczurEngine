@@ -4,13 +4,13 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
-#include "../Skill.hpp"
+#include "../Skill/Skill.hpp"
 
 namespace rat
 {
     class ImageWidget; class TextWidget;
     class GUI;
-    class ChosenSkillArea; class SkillArea; class GrayPPBar;
+    class ChosenSkillArea; class SkillArea; class GrayPPArea;
 
     class ChosenSkillBar : public BaseBar
     {
@@ -28,7 +28,7 @@ namespace rat
     private:
         ChosenSkillArea& _parentArea;
         SkillArea& _skillArea;
-        GrayPPBar& _sourceBar;
+        GrayPPArea& _sourceBar;
 
         Skill* _skill{nullptr};
         ImageWidget* _icon{nullptr};       

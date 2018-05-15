@@ -1,3 +1,5 @@
+/*
+
 #include "ColorFilterBar.hpp"
 
 #include "Szczur/Modules/GUI/GUI.hpp"
@@ -37,7 +39,7 @@ namespace rat
         _setWidgetSize(_backIcon, _dim + 2.f * _backPadding, _dim +2.f * _backPadding);
     }
 
-    void ColorFilterBar::setColor(const std::string& color)
+    void ColorFilterBar::setGlyph(const std::string& color)
     {
         _color = color;
     }
@@ -76,7 +78,7 @@ namespace rat
             if(_isChosen)
             {
                 _backIcon->invisible();
-                _parentArea.removeColor(_color);
+                _parentArea.removeGlyph(_color);
                 _isChosen = false;
             }
             else
@@ -84,7 +86,7 @@ namespace rat
                 if(_parentArea.canBeAdded(_color))
                 {
                     _backIcon->visible();
-                    _parentArea.addColor(_color);
+                    _parentArea.addGlyph(_color);
                     _isChosen = true;                    
                 }
             }
@@ -95,10 +97,10 @@ namespace rat
             {
                 _parentArea.unchooseAll();
                 _isChosen = true;
-                _parentArea.setColor(_color);
+                _parentArea.setGlyph(_color);
                 _backIcon->visible();
             }
         }
     }
     
-}
+}*/

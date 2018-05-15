@@ -1,37 +1,23 @@
-#pragma once
-
-#include "PPBar.hpp"
-
-#include <vector>
+#include "BaseBar.hpp"
 
 namespace rat
 {
-    class ImageWidget; class GUI;
-
-    class GrayPPBar : public PPBar
+    class GrayPPBar : public BaseBar
     {
     public:
-        GrayPPBar(PPContainer& source);
+        GrayPPBar();
+        bool isTaken() const;
+        void take();
+        void returnTo();
 
-        void recalculate();
-        void initTextureViaGui(GUI& gui);
+        void setContainerTexture(sf::Texture* tex);
+        void setPPTexture(sf::Texture* tex);
 
-        PPContainer& getSource();
     private:
+        ImageWidget* _container{nullptr};
+        ImageWidget* _pp{nullptr};
 
-        std::vector<ImageWidget*> _pps;
-        sf::Texture* _texture{nullptr};
+        constexpr static float _border = 67.f;
 
-
-        float _dim{40.f}; 
-
-        void _resetPPWidget(ImageWidget* pp);
-        void _addPPWidget(size_t amount = 1);
-
-        size_t _activePPsAmount{0};
-
-        void _recalculateAllPPs();
-        void _recalculatePPsFromTo(size_t from, size_t to);
-        void _deactivatePPsFromTo(size_t from, size_t to);
     };
 }

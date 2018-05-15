@@ -1,8 +1,8 @@
 #pragma once
 
 #include "SkillBar.hpp"
-#include "../SkillCodex.hpp"
-#include "../SortedSkillsContainer.hpp"
+#include "../Skill/SortedSkillsContainer.hpp"
+#include "../GlyphTypes.hpp"
 
 #include <unordered_map>
 #include <set>
@@ -12,13 +12,14 @@
 namespace rat
 {
     class GUI; class ScrollAreaWidget;
+    class SkillCodex; class GrayPPArea;
     class ChosenSkillArea;
 
     class SkillArea
     {
         using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
     public:
-        SkillArea(GrayPPBar& sourceBar);
+        SkillArea(GrayPPArea& sourceBar);
 
         void initAssetsViaGUI(GUI& gui);
         void initViaSkillCodex(SkillCodex& skillCodex);
@@ -26,20 +27,20 @@ namespace rat
         void setParent(Widget* parent);
 
         void activate();
-        void activate(const std::string& profession, const std::set<std::string>& colors);
+        void activate(const std::string& profession, const std::set<GlyphID>& colors);
         void deactivate();
-        void setColors(const std::set<std::string>& colors);
-        void addColor(const std::string& color);
-        void removeColor(const std::string& color);
+        void setGlyphs(const std::set<GlyphID>& colors);
+        void addColor(GlyphID color);
+        void removeColor(GlyphID color);
         void setProfession(const std::string& profession);
         void initChosenSkillArea(ChosenSkillArea& chosenSkillArea);
         ChosenSkillArea& getChosenSkillArea() const;
         void recalculate();
 
-        GrayPPBar& getSourceBar();
+        GrayPPArea& getSourceArea();
 
     private:
-        GrayPPBar& _sourceBar;
+        GrayPPArea& _sourceBar;
         ChosenSkillArea* _chosenSkillArea{nullptr};
         SortedSkillsContainer _skills;
         SkillBars_t _skillBars;
@@ -57,7 +58,7 @@ namespace rat
 
         float _barHeight{80.f};
 
-        std::set<std::string> _chosenColors;
+        std::set<GlyphID> _chosenColors;
         std::string _curentProfession;
     };
 }

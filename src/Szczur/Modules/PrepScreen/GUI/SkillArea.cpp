@@ -2,19 +2,21 @@
 
 #include <algorithm>
 
-
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 
 #include "ChosenSkillArea.hpp"
+#include "GrayPPArea.hpp"
+
+#include "../Skill/SkillCodex.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
 #include <ctime>
 
 namespace rat
 {
-    SkillArea::SkillArea(GrayPPBar& sourceBar)
+    SkillArea::SkillArea(GrayPPArea& sourceBar)
     :
     _sourceBar(sourceBar),
     _chosenColors({}),
@@ -47,7 +49,7 @@ namespace rat
 
     void SkillArea::initViaSkillCodex(SkillCodex& skillCodex)
     {
-        _skills.initViaSkillCodex(skillCodex);
+        _skills.initViaSkillCodex(skillCodex);           
         size_t maxSkillBars = _skills.getMaxAmountOfSkills();
 
         _skillBars.clear();
@@ -66,11 +68,11 @@ namespace rat
         parent->add(_base);
     }
 
-    void SkillArea::activate(const std::string& profession, const std::set<std::string>& colors)
+    void SkillArea::activate(const std::string& profession, const std::set<GlyphID>& colors)
     {
         _curentProfession = profession;
         _chosenColors = colors;
-        auto skills = _skills.getWholeColors(profession, colors);
+        auto skills = _skills.getWholeGlyphs(profession, colors);
         size_t newBarsAmount = skills.size();
         size_t i = 0;
         for(auto* skill : skills)
@@ -86,7 +88,7 @@ namespace rat
         {
             auto& skillBar = _skillBars[i];
             skillBar->activate();
-            skillBar->setPosition(0.f, float(i) * 80.f + 600.f);
+            skillBar->setPosition(0.f, float(i) * 80.f);
         }
         for(size_t i = newAmount; i < _activeBarsAmount; i++)
         {
@@ -115,16 +117,16 @@ namespace rat
         }
     }
     
-    void SkillArea::setColors(const std::set<std::string>& colors)
+    void SkillArea::setGlyphs(const std::set<GlyphID>& colors)
     {
         activate(_curentProfession, colors);
     }
-    void SkillArea::addColor(const std::string& color)
+    void SkillArea::addColor(GlyphID color)
     {
         if(_chosenColors.find(color) == _chosenColors.end())
         {
             _chosenColors.emplace(color);
-            setColors(_chosenColors);
+            setGlyphs(_chosenColors);
         }
     }
     void SkillArea::setProfession(const std::string& profession)
@@ -133,7 +135,7 @@ namespace rat
 
     }
 
-    GrayPPBar& SkillArea::getSourceBar()
+    GrayPPArea& SkillArea::getSourceArea()
     {
         return _sourceBar;
     }

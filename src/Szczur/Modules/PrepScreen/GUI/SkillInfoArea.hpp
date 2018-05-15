@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include "BaseBar.hpp"
 
 #include <vector>
@@ -8,7 +8,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "../SkillBaseInfo.hpp"
-
+*/
 namespace rat
 {
     /*

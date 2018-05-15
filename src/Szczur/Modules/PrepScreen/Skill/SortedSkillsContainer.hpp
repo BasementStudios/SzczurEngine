@@ -5,31 +5,33 @@
 #include <vector>
 #include <string>
 
+#include "../GlyphTypes.hpp"
+
 namespace rat
 {
     class Skill; class SkillCodex;
     class SortedSkillsContainer
     {
-        using Colors_t = std::set<std::string>;
+        using Glyphs_t = std::set<GlyphID>;
         using Skills_t = std::vector<Skill*>;
-        using SkillColors_t = std::unordered_map<size_t, Skills_t>;
-        using SkillProfs_t = std::unordered_map<std::string, SkillColors_t>;
+        using SkillGlyphs_t = std::unordered_map<size_t, Skills_t>;
+        using SkillProfs_t = std::unordered_map<std::string, SkillGlyphs_t>;
     public:
         void initViaSkillCodex(SkillCodex& skillCodex);
-        Skills_t getSkills(const std::string& profession, const Colors_t& colors) const;
-        Skills_t getWholeColors(const std::string& profession, const Colors_t& colors) const;
+        Skills_t getSkills(const std::string& profession, const Glyphs_t& glyphs) const;
+        Skills_t getWholeGlyphs(const std::string& profession, const Glyphs_t& glyphs) const;
         Skills_t getWholeProfession(const std::string& profession) const;
         size_t getMaxAmountOfSkills() const;
 
     private:
-        struct ColorSetHasher
+        struct GlyphSetHasher
         {
-            using Colors_t = std::set<std::string>;            
-            size_t operator()(const Colors_t& colors) const;
+            using Glyphs_t = std::set<GlyphID>;            
+            size_t operator()(const Glyphs_t& glyphs) const;
         };
 
         SkillProfs_t _skills;
-        ColorSetHasher _hasher;
+        GlyphSetHasher _hasher;
         size_t _maxSkillsAmountInProfession{0};
 
         void _resortSkills();

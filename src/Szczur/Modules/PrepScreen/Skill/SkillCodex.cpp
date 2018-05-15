@@ -35,7 +35,7 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test2.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Fire", 1}
+            {GlyphID::Wrath, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -44,7 +44,8 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test1.png");
         skill->setPPCost(2);
         skill->setRequirements({
-            {"Fire", 1}
+            {GlyphID::Wrath, 1},
+            {GlyphID::Desperation, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -53,7 +54,7 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test4.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Fire", 1}
+            {GlyphID::Wrath, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -62,8 +63,8 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test5.png");
         skill->setPPCost(2);
         skill->setRequirements({
-            {"Fire", 1},
-            {"Earth", 1}
+            {GlyphID::Wrath, 1},
+            {GlyphID::Desperation, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -72,8 +73,8 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test8.png");
         skill->setPPCost(5);
         skill->setRequirements({
-            {"Fire", 1},
-            {"Essence", 1}
+            {GlyphID::Wrath, 1},
+            {GlyphID::Fear, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -82,7 +83,7 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test3.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Essence", 1}           
+            {GlyphID::Wrath, 1}           
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -91,7 +92,7 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test7.png");
         skill->setPPCost(5);
         skill->setRequirements({
-            {"Earth", 1}
+            {GlyphID::Wrath, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
@@ -100,7 +101,7 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test6.png");
         skill->setPPCost(3);
         skill->setRequirements({
-            {"Earth", 1}
+            {GlyphID::Wrath, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
     }

@@ -2,17 +2,13 @@
 
 #include "BaseBar.hpp"
 
-#include "Szczur/Modules/GUI/Widget.hpp"
-#include "../Skill.hpp"
+#include "../Skill/Skill.hpp"
 
 #include "CostBar.hpp"
 
 namespace rat
 {
-    class ImageWidget; class TextWidget; class Widget; class WindowWidget;
-    class GUI;
-
-    class SkillArea; class ChosenSkillArea; class GrayPPBar;
+    class SkillArea; class ChosenSkillArea; class GrayPPArea;
 
     class SkillBar : public BaseBar
     {
@@ -29,9 +25,10 @@ namespace rat
 
     private:
         Skill* _skill{nullptr};
+
         SkillArea& _parentArea;
         ChosenSkillArea& _chosenArea;
-        GrayPPBar& _sourceBar;
+        GrayPPArea& _sourceArea;
 
         bool _isActivate{true};
 

@@ -4,8 +4,11 @@
 
 #include <SFML/System/Vector2.hpp>
 
+namespace sf { class Texture; class Font;}
+
 namespace rat
 {
+    class GUI;
     class Widget; class ImageWidget; class WindowWidget; class TextWidget;
     class TextAreaWidget; 
 

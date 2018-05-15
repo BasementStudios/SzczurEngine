@@ -6,7 +6,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 
-#include "GrayPPBar.hpp"
+#include "GrayPPArea.hpp"
 #include "SkillArea.hpp"
 #include "ChosenSkillArea.hpp"
 
@@ -22,7 +22,7 @@ namespace rat
     :
     _parentArea(parentArea),
     _chosenArea(_parentArea.getChosenSkillArea()),
-    _sourceBar(_parentArea.getSourceBar())
+    _sourceArea(_parentArea.getSourceArea())
     {
         setSize(_size);
 
@@ -68,7 +68,7 @@ namespace rat
 
     void SkillBar::_onClick()
     {      
-        auto& source = _sourceBar.getSource();
+        auto& source = _sourceArea.getSource();
         if(!isBought())
         {
             if(_skill->canBeBoughtFrom(source) && _chosenArea.hasFreeSpace())
@@ -78,7 +78,7 @@ namespace rat
                 _chosenArea.addSkill(_skill);
 
                 _parentArea.recalculate();
-                _sourceBar.recalculate();
+                _sourceArea.recalculate();
             }
         }
     }

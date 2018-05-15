@@ -10,14 +10,17 @@
 
 namespace rat
 {
-    size_t SortedSkillsContainer::ColorSetHasher::operator()(const Colors_t& colors) const
+    size_t SortedSkillsContainer::GlyphSetHasher::operator()(const Glyphs_t& glyphs) const
     {
         size_t seed = 0;
-        if(colors.size() == 0) return seed;
-        std::hash<std::string> hasher;
-        for(const auto& color : colors)
+        if(glyphs.size() == 0) return seed;
+        std::hash<int> hasher;
+
+        
+        GlyphesConverter converter;
+        for(const GlyphID& glyph : glyphs)
         {
-            seed ^= hasher(color) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+            seed ^= hasher(int(glyph)) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
         }
         return seed;
     }
@@ -30,8 +33,8 @@ namespace rat
             if(skill->isUnlocked())
             {
                 const auto& prof = skill->getProfession();
-                const auto colors = skill->getColors();
-                size_t key = _hasher(colors);
+                const auto glyphs = skill->getGlyphs();
+                size_t key = _hasher(glyphs);
                 auto& suitableContainer = _skills[prof][key];
                 suitableContainer.emplace_back(skill.get());
             }
@@ -40,20 +43,20 @@ namespace rat
         _recalcMaxSkillsAmountProfession();
     }
 
-    std::vector<Skill*> SortedSkillsContainer::getSkills(const std::string& profession, const Colors_t& colors) const
+    std::vector<Skill*> SortedSkillsContainer::getSkills(const std::string& profession, const Glyphs_t& glyphs) const
     {
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end()) return {};
-        size_t key = _hasher(colors);
-        auto foundColor = foundProf->second.find(key);
-        if(foundColor == foundProf->second.end()) return {};
-        return foundColor->second;
+        size_t key = _hasher(glyphs);
+        auto foundGlyph = foundProf->second.find(key);
+        if(foundGlyph == foundProf->second.end()) return {};
+        return foundGlyph->second;
     }
 
     void SortedSkillsContainer::_resortSkills()
     {
-        for(auto& [prof, colors] : _skills)
-            for(auto& [key, skills] : colors)
+        for(auto& [prof, glyphs] : _skills)
+            for(auto& [key, skills] : glyphs)
                 {
                     _sort(skills);
                 }
@@ -62,10 +65,10 @@ namespace rat
     void SortedSkillsContainer::_recalcMaxSkillsAmountProfession()
     {
         size_t newMax = 0;
-        for(auto& [prof, colors] : _skills)
+        for(auto& [prof, glyphs] : _skills)
         {
             size_t skillsAmount = 0;
-            for(auto& [key, skills] : colors)
+            for(auto& [key, skills] : glyphs)
             {
                 skillsAmount += skills.size();
             }
@@ -84,8 +87,8 @@ namespace rat
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end()) return {};
         Skills_t wholeProf;
-        for(auto& [key, colors] : foundProf->second)
-            for(Skill* skill : colors)
+        for(auto& [key, glyphs] : foundProf->second)
+            for(Skill* skill : glyphs)
             {
                 wholeProf.emplace_back(skill);
             }
@@ -93,27 +96,25 @@ namespace rat
         return wholeProf;
     }
 
-    std::vector<Skill*> SortedSkillsContainer::getWholeColors(const std::string& profession, const Colors_t& colors) const
+    std::vector<Skill*> SortedSkillsContainer::getWholeGlyphs(const std::string& profession, const Glyphs_t& glyphs) const
     {
-        if(colors.size() == 0) return getWholeProfession(profession);
+        if(glyphs.size() == 0) return getWholeProfession(profession);
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end()) return {};
-        Skills_t wholeColors;
+        Skills_t wholeGlyphs;
         for(auto& [key, skills] : foundProf->second)
         {
             if(skills.size() == 0) continue;
-            if(skills.front()->hasColors(colors))
+            if(skills.front()->hasGlyphs(glyphs))
             {
                 for(auto* skill : skills)
                 {
-                    wholeColors.emplace_back(skill);
+                    wholeGlyphs.emplace_back(skill);
                 }
             }
-            //std::cout << "Color\n";
         }
-        _sort(wholeColors);
-        //std::cout << "Sorted\n";
-        return wholeColors;
+        _sort(wholeGlyphs);
+        return wholeGlyphs;
     }
 
     void SortedSkillsContainer::_sort(Skills_t& skills) const
