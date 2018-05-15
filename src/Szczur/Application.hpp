@@ -1,13 +1,13 @@
 #pragma once
-
+ 
 #include "Szczur/Utility/Time/Clock.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
-
 namespace rat
 {
 
@@ -49,7 +49,7 @@ public:
 private:
 
 	Clock _mainClock;
-	ModulesHolder<Window, Input, DragonBones, World, Camera> _modules;
+	ModulesHolder<Window, Input, Script, DragonBones, World, Camera> _modules;
 
 };
 

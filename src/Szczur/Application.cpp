@@ -13,6 +13,7 @@ void Application::init()
 
 	initModule<Window>();
 	initModule<Input>();
+	initModule<Script>();
 	initModule<DragonBones>();
 	initModule<Camera>();
 	initModule<World>();
@@ -56,6 +57,10 @@ void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 
+	/*
+		Put other updates here
+	*/
+	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -84,7 +89,6 @@ void Application::render()
 
 	getModule<Window>().render();
 }
-
 int Application::run()
 {
 	try {
@@ -113,6 +117,7 @@ int Application::run()
 
 	return 0;
 }
+ 
 
 void Application::setupImGuiStyle() {
   
@@ -188,5 +193,4 @@ void Application::setupImGuiStyle() {
 	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 0.80f, 0.00f, 0.43f);
 	style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.08f, 0.07f, 0.10f, 0.73f);
 }
-
 }
