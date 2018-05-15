@@ -13,10 +13,10 @@ void Application::init()
 
 	initModule<Window>();
 	initModule<Input>();
-	_modules.initModule<Script>();
+	initModule<Script>();
 
 	// For testing `Script`
-	_modules.initModule<BattleField>();
+	initModule<BattleField>();
 
 	LOG_INFO("Modules initialized");
 
@@ -56,8 +56,8 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-
 	_modules.getModule<BattleField>().update();
+	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
