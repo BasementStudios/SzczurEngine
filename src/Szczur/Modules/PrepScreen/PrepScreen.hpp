@@ -43,17 +43,11 @@ namespace rat
         SkillCodex _codex;
         ResourcesContainer _source;
 
-        
-        
-        void addSkill(Skill* skill);
         void test();
-        std::vector<std::unique_ptr<Skill>> testSkills;
 
         Widget* _base{nullptr};
 
-        //ColoredPPBar _coloredPPsBar;
-        GrayPPArea _grayPPsBar;
-
+        GrayPPArea _grayPPArea;
         SkillArea _skillArea;
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;

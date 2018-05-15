@@ -20,9 +20,9 @@ namespace rat
 
     PrepScreen::PrepScreen()
     :
-    //coloredPPsBar(_source),_//coloredPPsBar(_source),
-    _grayPPsBar(_source),
-    _skillArea(_grayPPsBar),
+    _grayPPArea(_source),
+    _testGlyphBar(_grayPPArea),
+    _skillArea(_grayPPArea),
     _profArea(_skillArea),
     _chosenSkillArea(_skillArea)//,
     //_colorFilterArea(_skillArea)
@@ -55,6 +55,8 @@ namespace rat
 
         _base = gui.addInterface();
 
+        _source.ppContainer.add(3);
+
         test();
     }
 
@@ -64,11 +66,11 @@ namespace rat
         auto& gui = getModule<GUI>();
 
 
-        _grayPPsBar.setParent(_base);
-        _grayPPsBar.initAssetsViaGUI(gui);
-        _grayPPsBar.setPosition(1280.f/2.f, 0);
+        _grayPPArea.setParent(_base);
+        _grayPPArea.initAssetsViaGUI(gui);
+        _grayPPArea.setPosition(1280.f/2.f, 0);
 
-        _grayPPsBar.recalculate();
+        _grayPPArea.recalculate();
 
         
 

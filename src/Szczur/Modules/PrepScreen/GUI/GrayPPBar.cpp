@@ -9,13 +9,14 @@ namespace rat
     {
         _container = new ImageWidget;
         _addWidget(_container);
-        _container->setSize(50, 50);
-        float padding = _border * 50.f / 1150.f;
+        auto dim = (unsigned int)(120 * 0.2f); 
+        _container->setSize(dim, dim);
+        float padding = _border * float(dim) / 1150.f;
         _container->setPadding(padding, padding);
 
         _pp = new ImageWidget;
         _container->add(_pp);
-        unsigned int ppDim = 50 - (unsigned int)(2.f * padding);
+        unsigned int ppDim = dim - (unsigned int)(2.f * padding);
         _pp->setSize(ppDim, ppDim);
     }
 

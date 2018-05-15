@@ -5,7 +5,9 @@
 
 namespace rat
 {
-    GlyphArea::GlyphArea()
+    GlyphArea::GlyphArea(GrayPPArea& source)
+    :
+    _sourceArea(source)
     {
         setPropOrigin(0.5f, 0.f);
 
@@ -20,7 +22,8 @@ namespace rat
         for(auto& type : types)
         {
             auto& glyphBar = _glyphBars[i];
-            glyphBar = std::make_unique<GlyphBar>(type);
+            glyphBar = std::make_unique<GlyphBar>(source);
+            glyphBar->setType(converter.toEnum(type));
             glyphBar->setPosition(float(i) * 120.f, 0.f);
             glyphBar->setStartAmount(_container.getGlyphAmount(converter.toEnum(type)));
             _addBar(glyphBar);

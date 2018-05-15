@@ -8,6 +8,8 @@ namespace rat
         using power_t = unsigned long long int;
         
     public:
+        PPContainer();
+
         amount_t getTotalAmount() const;
         amount_t getAmount() const;
 

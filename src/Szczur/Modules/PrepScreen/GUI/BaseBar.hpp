@@ -20,6 +20,7 @@ namespace rat
         void setPosition(const sf::Vector2f& position);
         void setSize(const sf::Vector2u& size);
         void setSize(unsigned int width, unsigned int height);
+        sf::Vector2u getSize() const;
         void move(float offsetX, float offsetY);
         void move(const sf::Vector2f& offset);
         void setParent(Widget* parent);

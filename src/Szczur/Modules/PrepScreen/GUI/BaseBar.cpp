@@ -37,6 +37,13 @@ namespace rat
     {
         setSize({width, height});
     }
+    sf::Vector2u BaseBar::getSize() const
+    {
+        auto width = std::max(_base->getSize().x, _base->getMinimalSize().x);
+        auto height = std::max(_base->getSize().y, _base->getMinimalSize().y);
+        return {width, height};
+    }
+    
     void BaseBar::_addWidget(Widget* addon)
     {
         _base->add(addon);

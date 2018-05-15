@@ -4,13 +4,22 @@
 
 namespace rat
 {
+    PPContainer::PPContainer()
+    :
+    _actualAmount{0},
+    _totalAmount{0}
+    {
+        _actualAmount = 0;
+        _totalAmount = 0;
+    }
+
     size_t PPContainer::getAmount() const
     {
         return _actualAmount;
     }
     size_t PPContainer::getTotalAmount() const
     {
-        _totalAmount;
+        return _totalAmount;
     }
     
     void PPContainer::add(amount_t addon)
@@ -19,7 +28,7 @@ namespace rat
         _totalAmount += addon;
     }
     void PPContainer::remove(amount_t sub)
-    {
+    {       
         if(_totalAmount < sub)
         {
             LOG_ERROR(this, "Trying to remove not existing pps.");
@@ -35,7 +44,7 @@ namespace rat
     }
 
     void PPContainer::takeFrom(amount_t takenAmount)
-    {
+    {      
         if(_actualAmount < takenAmount)
         {
             LOG_ERROR(this, "Trying to take not existing pps..");

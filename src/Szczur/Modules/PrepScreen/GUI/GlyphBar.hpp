@@ -7,23 +7,26 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
+#include "../GlyphTypes.hpp"  
+
 namespace rat
 {
     class GlyphContainer;
-    class GUI;
+    class GrayPPArea;
     class GlyphBar : public BaseBar
     {
     public:
-        GlyphBar();
-        GlyphBar(const std::string& type);
+        GlyphBar(GrayPPArea& source);
 
+        void setType(GlyphID glyph);
         void setStartAmount(int amount);
         int getUsedAmount() const;
         void initAssetsViaGUI(GUI& gui);
-        void setType(const std::string& type);
         
     private:    
-        std::string _type;
+        GrayPPArea& _source;
+
+        GlyphID _type;
         int _amount{0};
         int _takenAmount{0};
 

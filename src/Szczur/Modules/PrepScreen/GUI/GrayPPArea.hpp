@@ -8,7 +8,7 @@
 
 namespace rat
 {
-    class ResourcesContainer;
+    struct ResourcesContainer;
 
     class GrayPPArea : public BaseBar
     {
