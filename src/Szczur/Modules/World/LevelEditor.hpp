@@ -54,6 +54,7 @@ namespace rat {
         bool _ifRenderComponentsManager{false};
         size_t _focusedObject{static_cast<size_t>(-1)};
         FreeCamera _freeCamera;
+        std::string _currentFilePath;
         
     };
 

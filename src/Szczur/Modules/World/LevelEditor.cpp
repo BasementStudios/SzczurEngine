@@ -87,6 +87,13 @@ namespace rat {
 			view.setCenter(_freeCamera.position);
 		}
 		camera.setView(view);
+
+		if(input.isReleased(Keyboard::F1)) {
+			try {
+				_scenes.saveToFile(_currentFilePath);
+			}
+			catch(...) {}
+		}
     }
 
 	void FreeCamera::processEvents(InputManager& input) {
@@ -162,16 +169,37 @@ namespace rat {
 							_scenes.loadFromFile(relative);
                             _focusedObject = -1;
                             _anySelected = false;
+							_currentFilePath = relative;
 						}
 						catch(...) {}
 					}
 				}
 				if(ImGui::MenuItem("Save")) {
+					if(_currentFilePath == "") {
+						std::string relative = _getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+						// std::cout<<"--s-"<<relative<<std::endl;
+						if(relative != "") {
+							try {
+								_scenes.saveToFile(relative);
+								_currentFilePath = relative;
+							}
+							catch(...) {}
+						}
+					}
+					else {
+						try {
+							_scenes.saveToFile(_currentFilePath);
+						}
+						catch(...) {}
+					}
+				}
+				if(ImGui::MenuItem("Save As")) {
 					std::string relative = _getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
 					// std::cout<<"--s-"<<relative<<std::endl;
 					if(relative != "") {
 						try {
 							_scenes.saveToFile(relative);
+							_currentFilePath = relative;
 						}
 						catch(...) {}
 					}
@@ -323,7 +351,7 @@ namespace rat {
 					}
 				}
 
-				if(auto* object = focusedObject->getComponentAs<ScriptableComponent>(); object != nullptr) {
+				/*if(auto* object = focusedObject->getComponentAs<ScriptableComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Scriptable Component")) {
 						if(ImGui::Button("Load")) {
 							std::string file = _getRelativePathFromExplorer("Select script file", ".\\Assets");
@@ -338,7 +366,7 @@ namespace rat {
 							}
 						}
 					}
-				}
+				}*/
 
 				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Armature Component")) {
