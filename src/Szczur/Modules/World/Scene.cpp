@@ -14,8 +14,12 @@ namespace rat
 Scene::Scene()
 	: _id { getUniqueID<Scene>() }
 	, _name { "unnamed_" + std::to_string(_id) }
-	, _collectingHolder { { "background", {} }, { "foreground", {} }, { "path", {} }, { "single", {} } }
 {
+	_collectingHolder.emplace("background", EntitiesHolder_t{});
+	_collectingHolder.emplace("foreground", EntitiesHolder_t{});
+	_collectingHolder.emplace("path", EntitiesHolder_t{});
+	_collectingHolder.emplace("single", EntitiesHolder_t{});
+
 	for (auto& holder : getAllEntities())
 	{
 		holder.second.reserve(100);
@@ -31,7 +35,7 @@ void Scene::update(float deltaTime)
 	{
 		for (auto& entity : holder.second)
 		{
-			entity.update(deltaTime);
+			entity->update(deltaTime);
 		}
 	}
 }
@@ -42,7 +46,7 @@ void Scene::render()
 	{
 		for (auto& entity : holder.second)
 		{
-			entity.render();
+			entity->render();
 		}
 	}
 }
@@ -64,14 +68,14 @@ const std::string& Scene::getName() const
 
 Entity* Scene::addEntity(const std::string& group)
 {
-	return &getEntities(group).emplace_back(this, group);
+	return getEntities(group).emplace_back(std::make_unique<Entity>(this, group)).get();
 }
 
 Entity* Scene::duplicateEntity(size_t id)
 {
 	if (auto ptr = getEntity(id); ptr != nullptr)
 	{
-		return &getEntities(ptr->getGroup()).emplace_back(*ptr);
+		return getEntities(ptr->getGroup()).emplace_back(std::make_unique<Entity>(*ptr)).get();
 	}
 
 	return nullptr;
@@ -139,22 +143,22 @@ Entity* Scene::getEntity(size_t id)
 {
 	if (auto it = _find("single", id); it != getEntities("single").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	if (auto it = _find("path", id); it != getEntities("path").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	if (auto it = _find("background", id); it != getEntities("background").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	return nullptr;
@@ -164,22 +168,22 @@ const Entity* Scene::getEntity(size_t id) const
 {
 	if (auto it = _find("single", id); it != getEntities("single").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	if (auto it = _find("path", id); it != getEntities("path").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	if (auto it = _find("background", id); it != getEntities("background").end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	return nullptr;
@@ -189,7 +193,7 @@ Entity* Scene::getEntity(const std::string& group, size_t id)
 {
 	if (auto it = _find(group, id); it != getEntities(group).end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	return nullptr;
@@ -199,7 +203,7 @@ const Entity* Scene::getEntity(const std::string& group, size_t id) const
 {
 	if (auto it = _find(group, id); it != getEntities(group).end())
 	{
-		return &(*it);
+		return it->get();
 	}
 
 	return nullptr;
@@ -301,13 +305,13 @@ void Scene::loadFromConfig(const Json& config)
 		}
 	}
 
-	const auto finder = [](const auto& first, const auto& second) { return first.getID() < second.getID(); };
+	const auto finder = [](const auto& first, const auto& second) { return first->getID() < second->getID(); };
 
 	size_t max[] = {
-		std::max_element(getEntities("single").begin(), getEntities("single").end(), finder)->getID(),
-		std::max_element(getEntities("path").begin(), getEntities("path").end(), finder)->getID(),
-		std::max_element(getEntities("foreground").begin(), getEntities("foreground").end(), finder)->getID(),
-		std::max_element(getEntities("background").begin(), getEntities("background").end(), finder)->getID()
+		std::max_element(getEntities("single").begin(), getEntities("single").end(), finder)->get()->getID(),
+		std::max_element(getEntities("path").begin(), getEntities("path").end(), finder)->get()->getID(),
+		std::max_element(getEntities("foreground").begin(), getEntities("foreground").end(), finder)->get()->getID(),
+		std::max_element(getEntities("background").begin(), getEntities("background").end(), finder)->get()->getID()
 	};
 
 	setInitialUniqueID<Entity>(1u + *std::max_element(std::begin(max), std::end(max)));
@@ -330,7 +334,7 @@ void Scene::saveToConfig(Json& config) const
 			group.push_back(Json::object());
 			Json& current = group.back();
 
-			entity.saveToConfig(current);
+			entity->saveToConfig(current);
 		}
 	}
 }
@@ -340,7 +344,7 @@ typename Scene::EntitiesHolder_t::iterator Scene::_find(const std::string& group
 	auto& subHolder = getEntities(group);
 
 	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
-		return arg.getID() == id;
+		return arg->getID() == id;
 	});
 }
 
@@ -349,7 +353,7 @@ typename Scene::EntitiesHolder_t::const_iterator Scene::_find(const std::string&
 	const auto& subHolder = getEntities(group);
 
 	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
-		return arg.getID() == id;
+		return arg->getID() == id;
 	});
 }
 

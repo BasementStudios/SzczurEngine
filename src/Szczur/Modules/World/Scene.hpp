@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <memory>
 
 #include <boost/container/flat_map.hpp>
 
@@ -13,7 +14,7 @@ class Scene
 {
 public:
 
-	using EntitiesHolder_t            = std::vector<Entity>;
+	using EntitiesHolder_t            = std::vector<std::unique_ptr<Entity>>;
 	using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>;
 	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
 	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
@@ -131,7 +132,7 @@ public:
 		{
 			for (auto& entity : group.second)
 			{
-				std::invoke(std::forward<F>(function), group.first, entity);
+				std::invoke(std::forward<F>(function), group.first, *entity);
 			}
 		}
 	}

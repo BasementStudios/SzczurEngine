@@ -392,7 +392,7 @@ namespace rat {
 									object->setCallbacks();
 								}
 								catch(const std::exception& exc) {
-									
+
 								}
 							}
 						}
@@ -449,7 +449,7 @@ namespace rat {
 							ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
 						}
 
-						
+
 					}
 				}
 			}
@@ -482,7 +482,7 @@ namespace rat {
 						}
 
 						for(int i2 = 0; i2<group.second.size(); ++i2) {
-							Entity& object = group.second[i2];
+							Entity& object = *group.second[i2];
 							bool temp = object.getID() == _focusedObject && _anySelected;
 							ImGui::PushID(i2);
 							if(ImGui::Selectable(object.getName().c_str(), temp)) {
@@ -510,7 +510,7 @@ namespace rat {
 							if(group.first != "single") {
 								if(ImGui::BeginPopupContextItem("Object context menu")) {
 									if(ImGui::Selectable("Duplicate##object_context_menu")) {
-										Entity* ent = scene->duplicateEntity(group.second[i2].getID());
+										Entity* ent = scene->duplicateEntity(group.second[i2]->getID());
 										if(ent) {
 											_focusedObject = ent->getID();
 										}

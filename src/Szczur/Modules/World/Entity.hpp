@@ -26,10 +26,10 @@ public:
 	Entity& operator = (const Entity& rhs);
 
 	///
-	Entity(Entity&&) = default;
+	Entity(Entity&&) = delete;
 
 	///
-	Entity& operator = (Entity&&) = default;
+	Entity& operator = (Entity&&) = delete;
 
 	///
 	virtual ~Entity() = default;
