@@ -320,11 +320,9 @@ namespace rat {
 					ImGui::DragFloat3("Origin", reinterpret_cast<float*>(&origin));
 					ImGui::DragFloat3("Rotation", reinterpret_cast<float*>(&rotation));
 					static bool lockRatio{false};
-					if(ImGui::Checkbox("##CheckboxLockRatio", &lockRatio)) {
-						
-					}
-					ImGui::SameLine();
-					ImGui::DragFloat2("Scale", reinterpret_cast<float*>(&scale), 0.01f);
+					ImGui::DragFloat2("", reinterpret_cast<float*>(&scale), 0.01f);
+					ImGui::SameLine(0.f, 0.f);
+					ImGui::Checkbox("Scale##CheckboxLockRatio", &lockRatio);
 					//ImGui::Checkbox("Locked", &(_focusedObject->locked));
 					focusedObject->setPosition(position);
 					focusedObject->setOrigin(origin);
