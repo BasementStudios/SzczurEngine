@@ -451,29 +451,6 @@ namespace rat {
 
 						
 					}
-
-					// if(ImGui::CollapsingHeader("Armature Component")) {
-					// 	if(ImGui::BeginCombo(
-					// 		"DisplayData",
-					// 		( object->getArmatureDisplayData() )?object->getArmatureDisplayData()->getName().c_str() : "None"
-					// 	)) {
-					// 		if(ImGui::MenuItem("None", nullptr, object->getArmatureDisplayData() == nullptr))
-					// 			object->setArmatureDisplayData(nullptr);
-					// 		for(auto& it : scene->getArmatureDisplayData()) {
-					// 			if(ImGui::MenuItem(it.getName().c_str(), nullptr, object->getArmatureDisplayData() == &it))
-					// 				object->setArmatureDisplayData(&it);
-					// 		}
-					// 		ImGui::EndCombo();
-					// 	}
-					// 	if(auto* arm = object->getArmature(); arm) {
-					// 		auto names = arm->getAnimation()->getAnimationNames();
-					// 		for(auto& it : names) {
-					// 			if(ImGui::Button(it.c_str())) {
-					// 				arm->getAnimation()->play(it);
-					// 			}
-					// 		}
-					// 	}
-					// }
 				}
 			}
 		}
@@ -493,7 +470,7 @@ namespace rat {
 						ImGui::PopStyleColor();
 
 						// Context menu for group. Options: Add object
-						if(ImGui::BeginPopupContextItem("Group context menu")) {
+						if(group.first != "single" && ImGui::BeginPopupContextItem("Group context menu")) {
 							if(ImGui::Selectable("Add object##group_context_menu")) {
 								Entity* ent = scene->addEntity(group.first);
 								if(ent) {
@@ -514,6 +491,20 @@ namespace rat {
 								}
 								_anySelected = !temp;
 							}
+
+							// Swapping objects in list
+							if(ImGui::IsItemActive() && !ImGui::IsItemHovered()) {
+						        float dragDeltaY = ImGui::GetMouseDragDelta(0).y;
+						        if(dragDeltaY < 0.0f && i2 > 0) {
+						            // Swap
+						        	std::swap(group.second[i2], group.second[i2-1]);
+						            ImGui::ResetMouseDragDelta();
+						        }
+						        else if (dragDeltaY > 0.0f && i2 < group.second.size()-1) {
+						        	std::swap(group.second[i2], group.second[i2+1]);
+						            ImGui::ResetMouseDragDelta();
+						        }
+						    }
 
 							// Context menu for object. Options: Duplicate|Remove
 							if(group.first != "single") {
@@ -545,7 +536,7 @@ namespace rat {
 						ImGui::PopStyleColor();
 
 						// Context menu for group. Options: Add object
-						if(ImGui::BeginPopupContextItem("Group context menu")) {
+						if(group.first != "single" && ImGui::BeginPopupContextItem("Group context menu")) {
 							if(ImGui::Selectable("Add object##group_context_menu")) {
 								Entity* ent = scene->addEntity(group.first);
 								if(ent) {
