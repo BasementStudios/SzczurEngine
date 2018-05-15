@@ -6,6 +6,7 @@
 #include "Scene.hpp"
 #include "Components/ArmatureComponent.hpp"
 #include "Components/SpriteComponent.hpp"
+#include "Components/ScriptableComponent.hpp"
 #include "data/SpriteDisplayData.hpp"
 #include "data/ArmatureDisplayData.hpp"
 

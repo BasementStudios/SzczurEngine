@@ -323,6 +323,23 @@ namespace rat {
 					}
 				}
 
+				if(auto* object = focusedObject->getComponentAs<ScriptableComponent>(); object != nullptr) {
+					if(ImGui::CollapsingHeader("Scriptable Component")) {
+						if(ImGui::Button("Load")) {
+							std::string file = _getRelativePathFromExplorer("Select script file", ".\\Assets");
+
+							if(file != "") {
+								try {
+									object->setCallbacks();
+								}
+								catch(const std::exception& exc) {
+									
+								}
+							}
+						}
+					}
+				}
+
 				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Armature Component")) {
 
@@ -372,6 +389,8 @@ namespace rat {
 
 							ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
 						}
+
+						
 					}
 
 					// if(ImGui::CollapsingHeader("Armature Component")) {
