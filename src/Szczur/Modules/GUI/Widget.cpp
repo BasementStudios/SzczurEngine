@@ -7,6 +7,8 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
+//#undef GUI_DEBUG
+
 namespace rat {
     Widget::Widget() :
     _parent(nullptr),
@@ -72,74 +74,108 @@ namespace rat {
         return object;
     }
 
-    void Widget::input(sf::Event event) {
-        if(isActivated()) {
-            _input(event);
-            switch(event.type) {
-                case sf::Event::MouseMoved: {
-                    auto thisSize = getSize();
+    void Widget::invokeInput(const sf::Event& event)
+    {
+        switch(event.type)
+        {
+            case sf::Event::MouseMoved: _onMoved(event); break;
+            case sf::Event::MouseButtonPressed: _onPressed(); break;
+            case sf::Event::MouseButtonReleased: _onRealesed(); break;
+        }
+    }
+
+    bool Widget::_onPressed()
+    {
+        if(!_isActivated) return false;
+        if(!_isHovered) return false;
+        
+        bool isAnyPressed = false;
+        for(auto i = _children.rbegin(); i < _children.rend(); ++i)
+        {
+            auto* child = *i;
+            isAnyPressed |= child->_onPressed();
+            if(isAnyPressed) break;
+        }
+        if(isAnyPressed) return true;
+        _isPressed = true;
+        _callback(CallbackType::onPress);
+        return true;
+    }
+    void Widget::_onRealesed()
+    {
+        if(!_isActivated) return;        
+        if(!_isPressed) return;
+
+        for(auto* child : _children)
+        {
+            child->_onRealesed();
+        }
+        _isPressed = false;
+        _callback(CallbackType::onRelease);    
+    }
+	void Widget::_onMoved(sf::Event event)
+    {
+        if(!_isActivated) return;
+
+        auto thisSize = getSize();
                     
-                    event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
-                    event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
-                    if(
-                        event.mouseMove.x >= 0 &&
-                        event.mouseMove.x <= thisSize.x * _winProp.x &&
-                        event.mouseMove.y >= 0 &&
-                        event.mouseMove.y <= thisSize.y * _winProp.y
-                    ) 
-                    {
-                        if(!_isHovered) 
-                        {
-                            _callback(CallbackType::onHoverIn);
-                            _isHovered = true;
-                        }
-                    }
-                    else 
-                    {
-                        if(_isHovered) 
-                        {
-                            _callback(CallbackType::onHoverOut);
-                            _isHovered = false;
-                        }
-                    }
-                    break;
-                }
+        event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
+        event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
 
-                case sf::Event::MouseButtonPressed: {
-                    if(_isHovered) {
-                        _callback(CallbackType::onPress);
-                        _isPressed = true;
-                    }
-                    break;
-                }
+        bool isMouseOverlap = event.mouseMove.x >= 0 &&
+            event.mouseMove.x <= thisSize.x * _winProp.x &&
+            event.mouseMove.y >= 0 &&
+            event.mouseMove.y <= thisSize.y * _winProp.y;
 
-                case sf::Event::MouseButtonReleased: {
-                    if(_isPressed) {
-                        _isPressed = false;
-                        _callback(CallbackType::onRelease);         
-                    }
-                    break;
-                }
-
-                default: break;
+        if(isMouseOverlap)
+        {
+            if(!_isHovered) 
+            {
+                _callback(CallbackType::onHoverIn);
+                _isHovered = true;
             }
+        }
+        else 
+        {
+            if(_isHovered) 
+            {
+                _callback(CallbackType::onHoverOut);
+                _isHovered = false;
+            }
+        }
+
+        for(auto* child : _children)
+        {
+            auto childPos = child->getPosition();
+            sf::Event tempEvent(event);
+            tempEvent.mouseMove.x -= int(childPos.x * _winProp.x);
+            tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
+
+            child->_onMoved(tempEvent);
+        }
+    }
+
+    void Widget::input(sf::Event event) {
+        if(isActivated()) 
+        {
+            _input(event);
             _inputChildren(event);
         }
     }
 
 	void Widget::_inputChildren(sf::Event event)
     {
-        for(auto it : _children) 
+        for(auto child : _children) 
         {
             if(event.type == sf::Event::MouseMoved)
             {
-                auto itPosition = it->getPosition();
+                auto childPosition = child->getPosition();
                 sf::Event tempEvent(event);
-                tempEvent.mouseMove.x -= int(itPosition.x * _winProp.x);
-                tempEvent.mouseMove.y -= int(itPosition.y * _winProp.y);
-                it->input(tempEvent);
+                tempEvent.mouseMove.x -= int(childPosition.x * _winProp.x);
+                tempEvent.mouseMove.y -= int(childPosition.y * _winProp.y);
+                child->input(tempEvent);
             }
-            else it->input(event);
+            else child->input(event);
         }
     }
     

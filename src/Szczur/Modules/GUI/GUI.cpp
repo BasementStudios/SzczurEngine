@@ -53,6 +53,7 @@ namespace rat {
             float(event.size.height) / float(_standartWindowSize.y) };
             Widget::setWinProp(winProp);
         }
+        _root.invokeInput(event);
         _root.input(event);
     }
 

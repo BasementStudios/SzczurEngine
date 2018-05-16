@@ -37,6 +37,9 @@ namespace rat
         ScrollAreaWidget* scroll{new ScrollAreaWidget};
         WindowWidget* win{new WindowWidget};
 
+        ImageWidget* blue{nullptr};
+        ImageWidget* red{nullptr};
+
         bool hasBeenChanged{false};
     };
 

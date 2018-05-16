@@ -65,14 +65,14 @@ namespace rat
         win->setPosition(50.f, 50.f);
         win->setScale(0.2f, 0.2f);
         win->setPatchAmount(3, 5);        
-*/
-        /*
+
+        
         widget3 = new Widget;
         widget3->setSize(25, 25);
         widget3->setPosition(0.f, 0.f);
         iWidget->add(widget3);
-        */
-       /*
+        
+       
        std::cout << "Grubosc widgeta: " << sizeof(Widget) << "\n"; 
 
        widget->invisible();
@@ -85,7 +85,24 @@ namespace rat
        stresser.sizeRange = 40;
        stresser.makeBranches(widget);
        std::cout << "Tester stop\n";
-    */
+*/
+
+        blue = new ImageWidget;
+        blue->setCallback(Widget::CallbackType::onPress, [](Widget*){
+            std::cout << "Blue\n";
+        });
+        widget->add(blue);
+        gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
+        blue->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        
+        red = new ImageWidget;
+        red->setCallback(Widget::CallbackType::onPress, [](Widget*){
+            std::cout << "Red\n";
+        });
+        gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
+        red->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Red.png"));
+        widget->add(red);
+        red->setPosition(30.f, 30.f);
 
     }
     
