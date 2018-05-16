@@ -362,7 +362,7 @@ namespace rat {
 					}
 					else {
 						float offset = (scale.x / focusedObject->getScale().x) + (scale.y / focusedObject->getScale().y) - 1;
-						focusedObject->scale( {offset, offset, 0.f} );
+						focusedObject->scale( {offset, offset, 1.f} );
 					}
 				}
 
