@@ -13,13 +13,16 @@
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
-#include "Szczur/modules/FileSystem/FileDialog.hpp"
-#include "Szczur/modules/FileSystem/DirectoryDialog.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
 namespace rat {
     LevelEditor::LevelEditor(SceneManager& scenes) :
 	_scenes(scenes) {
 		_freeCamera.move({1000.f,500.f,2000.f});
+		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
     }
 
     void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -159,14 +162,34 @@ namespace rat {
 	}
 
     void LevelEditor::_renderBar() {
+    	// Create new world
+    	static bool openModalNew = false;
+    	if(openModalNew) {
+    		openModalNew = false;
+            ImGui::OpenPopup("Files/New##popup");
+    	}
+        if(ImGui::BeginPopupModal("Files/New##popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        	ImGui::Text("All those beautiful objects will be deleted.\nAre you sure you want to create a NEW world?\n\n");
+        	if(ImGui::Button("Yup!", ImVec2(120,0))) {        		
+				_currentFilePath = "";
+				_scenes.removeAllScenes();
+				_scenes.setCurrentScene(_scenes.addScene()->getID());
+				_anySelected = false;
+				_focusedObject = static_cast<size_t>(-1);
+				_printMenuInfo(std::string("New world created!"));
+        		ImGui::CloseCurrentPopup(); 
+        	}
+        	ImGui::SameLine();
+        	if(ImGui::Button("Nope", ImVec2(120,0))) {
+        		ImGui::CloseCurrentPopup(); 
+        	}
+        	ImGui::EndPopup();
+        }
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("New")) {
-					_scenes.removeAllScenes();
-					_scenes.setCurrentScene(_scenes.addScene()->getID());
-					_anySelected = false;
-					_focusedObject = static_cast<size_t>(-1);
-				}
+					openModalNew = true;
+				}				
 				if(ImGui::MenuItem("Load")) {
 					std::string relative = _getRelativePathFromExplorer("Load world", ".\\Editor\\Saves", "Worlds (*.world)|*.world");
 					// std::cout<<"--l-"<<relative<<std::endl;
@@ -176,6 +199,7 @@ namespace rat {
                             _focusedObject = -1;
                             _anySelected = false;
 							_currentFilePath = relative;
+							_printMenuInfo(std::string("World loaded from file: ")+_currentFilePath);
 						}
 						catch(...) {}
 					}
@@ -190,6 +214,7 @@ namespace rat {
 						try {
 							_scenes.saveToFile(relative);
 							_currentFilePath = relative;
+							_printMenuInfo(std::string("World saved in file: ")+_currentFilePath);
 						}
 						catch(...) {}
 					}
@@ -218,15 +243,15 @@ namespace rat {
 			}
 
 			// Menu info
-			if(_menuInfoClock.getElapsedTime().asSeconds()<2.0f) {
+			if(_menuInfoClock.getElapsedTime().asSeconds()<6.0f) {
 				ImGui::SameLine(0, 16);
-				ImGui::TextColored({0.75f, 0.30f, 0.63f, 1.0f - _menuInfoClock.getElapsedTime().asSeconds()/2.0f}, _menuInfo.c_str());
+				ImGui::TextColored({0.75f, 0.30f, 0.63f, 1.0f - _menuInfoClock.getElapsedTime().asSeconds()/6.0f}, _menuInfo.c_str());
 			} 
 
-			// ImGui::SameLine(ImGui::GetWindowWidth()-72);
-			// ImGui::Text((std::to_string((int)ImGui::GetIO().Framerate)+" FPS").c_str());
+			ImGui::SameLine(ImGui::GetWindowWidth()-72);
+			ImGui::Text((std::to_string((int)ImGui::GetIO().Framerate)+" FPS").c_str());
 		}
-		ImGui::EndMainMenuBar();
+		ImGui::EndMainMenuBar();	
 	}
 	
 	void LevelEditor::_printMenuInfo(const std::string& info) {
@@ -601,7 +626,7 @@ namespace rat {
 				try {
 					_scenes.saveToFile(relative);
 					_currentFilePath = relative;
-					_printMenuInfo("World saved!");
+					_printMenuInfo(std::string("World saved in file: ")+_currentFilePath);
 				}
 				catch(...) {}
 			}
