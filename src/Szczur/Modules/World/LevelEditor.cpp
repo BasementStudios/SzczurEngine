@@ -98,10 +98,7 @@ namespace rat {
 		camera.setView(view);
 
 		if(input.isReleased(Keyboard::F1)) {
-			try {
-				_scenes.saveToFile(_currentFilePath);
-			}
-			catch(...) {}
+			_menuSave();
 		}
     }
 
@@ -183,24 +180,8 @@ namespace rat {
 						catch(...) {}
 					}
 				}
-				if(ImGui::MenuItem("Save")) {
-					if(_currentFilePath == "") {
-						std::string relative = _getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
-						// std::cout<<"--s-"<<relative<<std::endl;
-						if(relative != "") {
-							try {
-								_scenes.saveToFile(relative);
-								_currentFilePath = relative;
-							}
-							catch(...) {}
-						}
-					}
-					else {
-						try {
-							_scenes.saveToFile(_currentFilePath);
-						}
-						catch(...) {}
-					}
+				if(ImGui::MenuItem("Save", "F1")) {					
+					_menuSave();
 				}
 				if(ImGui::MenuItem("Save As")) {
 					std::string relative = _getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
@@ -235,9 +216,24 @@ namespace rat {
 				ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
 				ImGui::EndMenu();
 			}
+
+			// Menu info
+			if(_menuInfoClock.getElapsedTime().asSeconds()<2.0f) {
+				ImGui::SameLine(0, 16);
+				ImGui::TextColored({0.75f, 0.30f, 0.63f, 1.0f - _menuInfoClock.getElapsedTime().asSeconds()/2.0f}, _menuInfo.c_str());
+			} 
+
+			// ImGui::SameLine(ImGui::GetWindowWidth()-72);
+			// ImGui::Text((std::to_string((int)ImGui::GetIO().Framerate)+" FPS").c_str());
 		}
 		ImGui::EndMainMenuBar();
 	}
+	
+	void LevelEditor::_printMenuInfo(const std::string& info) {
+		_menuInfo = info;
+		_menuInfoClock.restart();
+	}
+
     void LevelEditor::_renderDisplayDataManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Display Data Manager", &_ifRenderDisplayDataManager)) {
@@ -481,6 +477,7 @@ namespace rat {
 							ImGui::EndPopup();
 						}
 
+						
 						for(int i2 = 0; i2<group.second.size(); ++i2) {
 							Entity& object = *group.second[i2];
 							bool temp = object.getID() == _focusedObject && _anySelected;
@@ -493,18 +490,21 @@ namespace rat {
 							}
 
 							// Swapping objects in list
-							if(ImGui::IsItemActive() && !ImGui::IsItemHovered()) {
-						        float dragDeltaY = ImGui::GetMouseDragDelta(0).y;
-						        if(dragDeltaY < 0.0f && i2 > 0) {
-						            // Swap
-						        	std::swap(group.second[i2], group.second[i2-1]);
-						            ImGui::ResetMouseDragDelta();
-						        }
-						        else if (dragDeltaY > 0.0f && i2 < group.second.size()-1) {
-						        	std::swap(group.second[i2], group.second[i2+1]);
-						            ImGui::ResetMouseDragDelta();
-						        }
-						    }
+							static int draggedObject = -1;
+							static std::string draggedCategory;
+							if(ImGui::IsMouseReleased(0)) {
+								draggedObject = -1;
+							}
+							if(ImGui::IsItemClicked()) {
+								draggedObject = i2;
+								draggedCategory = group.first;
+							}
+							if(ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem)) {
+								if(draggedObject != -1 && draggedObject != i2 && draggedCategory == group.first) {
+						        	std::swap(group.second[i2], group.second[draggedObject]);
+						        	draggedObject = i2;
+								}								
+							}
 
 							// Context menu for object. Options: Duplicate|Remove
 							if(group.first != "single") {
@@ -590,6 +590,28 @@ namespace rat {
 			ImGui::Checkbox("ArmatureComponent", &selectedComponents[1]);
 
 			ImGui::EndPopup();
+		}
+	}
+
+	void LevelEditor::_menuSave() {
+		if(_currentFilePath == "") {
+			std::string relative = _getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+			// std::cout<<"--s-"<<relative<<std::endl;
+			if(relative != "") {
+				try {
+					_scenes.saveToFile(relative);
+					_currentFilePath = relative;
+					_printMenuInfo("World saved!");
+				}
+				catch(...) {}
+			}
+		}
+		else {
+			try {
+				_scenes.saveToFile(_currentFilePath);
+				_printMenuInfo("World saved!");
+			}
+			catch(...) {}
 		}
 	}
 

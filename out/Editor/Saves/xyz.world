@@ -1,0 +1,146 @@
+{
+    "currentSceneID": 1,
+    "scenes": [
+        {
+            "groups": {
+                "background": [
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Objects\\zamek\\NIEBO.png"
+                            }
+                        ],
+                        "id": 5,
+                        "name": "unnamed_5",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": -481.000030517578,
+                            "y": 323.000030517578,
+                            "z": -411.000030517578
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.32000005245209,
+                            "y": 1.32000005245209,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Objects\\zamek\\ŚCIEŻKA.png"
+                            }
+                        ],
+                        "id": 2,
+                        "name": "unnamed_2",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Objects\\zamek\\TŁO ZAMKU.png"
+                            }
+                        ],
+                        "id": 8,
+                        "name": "unnamed_2_copy_8",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 1750.00012207031,
+                            "y": 830.000061035156,
+                            "z": 302.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    }
+                ],
+                "foreground": [],
+                "path": [],
+                "single": [
+                    {
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 13209209574413295037,
+                                "locked": false,
+                                "name": "CameraComponent",
+                                "velocity": 50.0
+                            }
+                        ],
+                        "id": 1,
+                        "name": "Camera",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 1160.0,
+                            "z": 3085.0
+                        },
+                        "rotation": {
+                            "x": 15.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ]
+            },
+            "id": 1,
+            "name": "unnamed_1"
+        }
+    ]
+}
