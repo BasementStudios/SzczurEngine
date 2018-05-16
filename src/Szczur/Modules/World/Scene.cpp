@@ -8,6 +8,9 @@
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 
+// Components
+#include "Components/ScriptableComponent.hpp"
+
 namespace rat
 {
 
@@ -36,6 +39,8 @@ void Scene::update(float deltaTime)
 		for (auto& entity : holder.second)
 		{
 			entity->update(deltaTime);
+			if(auto* comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr)
+				comp->update(deltaTime);
 		}
 	}
 }

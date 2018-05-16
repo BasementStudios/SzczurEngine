@@ -8,6 +8,9 @@ _levelEditor(_scenes)
 {
 	LOG_INFO("Initializing World module");
 
+	ComponentTraits::initScript(getModule<Script>());
+	Entity::initScript(getModule<Script>());
+
 	_scenes.setCurrentScene(_scenes.addScene()->getID());
 
 	#ifdef EDITOR

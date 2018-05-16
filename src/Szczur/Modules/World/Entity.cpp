@@ -48,7 +48,7 @@ Entity& Entity::operator = (const Entity& rhs)
 	return *this;
 }
 
-void Entity::update(float /*deltaTime*/)
+void Entity::update(float deltaTime)
 {
 
 }
@@ -244,6 +244,13 @@ typename Entity::ComponentsHolder_t::const_iterator Entity::_findByFeature(Compo
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
 		return arg->getFeatures() & feature;
 	});
+}
+
+void Entity::initScript(Script& script) {
+	auto object = script.newClass<Entity>("Entity", "World");
+	object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
+	// object.set("getScriptable", [](Entity& obj){return "Hehe xD";});
+	object.init();
 }
 
 }

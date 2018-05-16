@@ -4,6 +4,8 @@
 
 #include "Components.hpp"
 
+#include <Szczur/Modules/Script/Script.hpp>
+
 namespace rat
 {
 
@@ -153,6 +155,9 @@ public:
 
 	///
 	virtual void saveToConfig(Json& config) const;
+
+	///
+	static void initScript(Script& script);
 
 private:
 
