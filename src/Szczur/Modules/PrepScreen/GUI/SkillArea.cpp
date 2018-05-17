@@ -22,12 +22,13 @@ namespace rat
     _chosenColors({}),
     _curentProfession("Mele")
     {
-        _base = new WindowWidget;
-        _base->setPadding(11.f, 11.f);
+        _border = new WindowWidget;
+        _addWidget(_border);
+        _border->setPadding(11.f, 11.f);
 
         _skillsScroller = new ScrollAreaWidget;
         _skillsScroller->setSize(300.f, 400.f);
-        _base->add(_skillsScroller);
+        _border->add(_skillsScroller);
     }
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
@@ -38,7 +39,7 @@ namespace rat
         _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         _skillsScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
-        _base->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
+        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
 
         for(auto& skillBar : _skillBars)
         {
@@ -62,12 +63,6 @@ namespace rat
         deactivate();
     }
     
-
-    void SkillArea::setParent(Widget* parent)
-    {
-        parent->add(_base);
-    }
-
     void SkillArea::activate(const std::string& profession, const std::set<GlyphID>& colors)
     {
         _curentProfession = profession;

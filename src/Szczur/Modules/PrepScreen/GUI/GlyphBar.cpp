@@ -23,7 +23,7 @@ namespace rat
         _container->setSize(100, 100);
         float padding = float(100 - 14) * _circleShiftProp;
         _container->setPadding(padding, padding);
-        _container->setCallback(Widget::CallbackType::onRelease, [&](Widget* owner){
+        _glyph->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
         });
         _container->add(_glyph);
@@ -63,6 +63,7 @@ namespace rat
 
     void GlyphBar::_onClick()
     {
+        std::cout << "HEHEHEH\n";
         if(_takenAmount < _amount)
         {
             if(_takenAmount == 0)

@@ -93,7 +93,7 @@ namespace rat
         _testBar->setPosition(1111.f, 350.f);
         _testBar->setPatchAmount(4, 0);
 
-        _testGlyphBar.setPosition(300.f, 300.f);
+        _testGlyphBar.setPosition(1280.f/2.f, 10.f);
         _testGlyphBar.setParent(_base);
         _testGlyphBar.initAssetsViaGUI(gui);
     }
@@ -102,6 +102,7 @@ namespace rat
     {
         _skillArea.initChosenSkillArea(_chosenSkillArea);
         _skillArea.setParent(_base);
+        _skillArea.setPosition(200.f, 120.f);
         _skillArea.initViaSkillCodex(_codex); //traitor
         _skillArea.initAssetsViaGUI(getModule<GUI>());
         _skillArea.activate("Mele", {});

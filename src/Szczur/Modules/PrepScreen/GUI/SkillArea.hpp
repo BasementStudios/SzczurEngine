@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BaseBar.hpp"
+
 #include "SkillBar.hpp"
 #include "../Skill/SortedSkillsContainer.hpp"
 #include "../GlyphTypes.hpp"
@@ -15,7 +17,7 @@ namespace rat
     class SkillCodex; class GrayPPArea;
     class ChosenSkillArea;
 
-    class SkillArea
+    class SkillArea : public BaseBar
     {
         using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
     public:
@@ -23,8 +25,6 @@ namespace rat
 
         void initAssetsViaGUI(GUI& gui);
         void initViaSkillCodex(SkillCodex& skillCodex);
-
-        void setParent(Widget* parent);
 
         void activate();
         void activate(const std::string& profession, const std::set<GlyphID>& colors);
@@ -50,7 +50,7 @@ namespace rat
         sf::Texture* _textureLocked{nullptr};
         sf::Font* _font{nullptr};
 
-        WindowWidget* _base{nullptr};
+        WindowWidget* _border{nullptr};
         ScrollAreaWidget* _skillsScroller{nullptr};
 
 
