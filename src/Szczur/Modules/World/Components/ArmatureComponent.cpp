@@ -27,8 +27,10 @@ namespace rat
         _armatureDisplayData = armatureDisplayData;
         if(armatureDisplayData) {
             auto dbFactory = dragonBones::SF3DFactory::get();
+
             if(_armature)
-            delete _armature;
+				delete _armature;
+
             _armature = dbFactory->buildArmatureDisplay(armatureDisplayData->getName());
         }
         else if(_armature) {
@@ -51,6 +53,10 @@ namespace rat
 
     std::unique_ptr<Component> ArmatureComponent::copy(Entity* newParent) const {
         auto ptr = std::make_unique<ArmatureComponent>(*this);
+		
+		// prevent deleting
+		ptr->_armature = nullptr;
+		ptr->setArmatureDisplayData(this->_armatureDisplayData);
 
         ptr->setEntity(newParent);
 

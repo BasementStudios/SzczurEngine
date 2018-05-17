@@ -14,7 +14,6 @@ namespace rat
     class ArmatureComponent : public Component, public sf3d::Drawable
     {
     private:
-
         dragonBones::SF3DArmatureDisplay* _armature = nullptr;
         ArmatureDisplayData* _armatureDisplayData = nullptr;
 
