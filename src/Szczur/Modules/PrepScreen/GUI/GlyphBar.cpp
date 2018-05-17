@@ -37,15 +37,10 @@ namespace rat
         _amountState->setColor(sf::Color::White);
     }
 
-    void GlyphBar::setStartAmount(int amount)
-    {
-        _amount = std::min(amount, int(_glyphTextures.size()));
-        _updateText();
-    }
-    //int GlyphBar::getUsedAmount() const;
     void GlyphBar::setType(GlyphID glyph)
     {
         _type = glyph;
+        _updateText();
     }
     void GlyphBar::initAssetsViaGUI(GUI& gui)
     {
@@ -63,23 +58,32 @@ namespace rat
 
     void GlyphBar::_onClick()
     {
-        std::cout << "HEHEHEH\n";
-        if(_takenAmount < _amount)
+        auto& glyphContainer = _source.getSource().glyphContainer;
+        auto glyphAmount = glyphContainer.getGlyphAmount(_type);
+        auto glyphTotal = glyphContainer.getGlyphTotalAmount(_type);
+
+        std::cout << "Type: " << GlyphesConverter().toString(_type) << " amount: " << glyphAmount << " total: " << glyphTotal << "\n";
+        
+            std::cout << "Heheszki\n";
+        if(glyphAmount < glyphTotal)
         {
-            if(_takenAmount == 0)
+            if(glyphAmount == 0)
             {
                 auto& ppContainer = _source.getSource().ppContainer;
-                ppContainer.add(1);
+                ppContainer.add();
                 _source.recalculate();
             }
-            _takenAmount++;
+            glyphContainer.activeGlyph(_type);
             _updateText();
-            _glyph->setTexture(_glyphTextures[_takenAmount]);
+            _glyph->setTexture(_glyphTextures[glyphAmount + 1]);
         }
     }
     void GlyphBar::_updateText()
     {
-        _amountState->setString(std::to_string(_takenAmount) + "/" + std::to_string(_amount));
+        auto& glyphContainer = _source.getSource().glyphContainer;
+        auto glyphAmount = glyphContainer.getGlyphAmount(_type);
+        auto glyphTotal = glyphContainer.getGlyphTotalAmount(_type);
+        _amountState->setString(std::to_string(glyphAmount) + "/" + std::to_string(glyphTotal));
     }
 
 }

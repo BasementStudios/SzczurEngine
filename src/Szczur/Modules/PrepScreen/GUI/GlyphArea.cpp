@@ -25,7 +25,6 @@ namespace rat
             glyphBar = std::make_unique<GlyphBar>(source);
             glyphBar->setType(converter.toEnum(type));
             glyphBar->setPosition(float(i) * 120.f, 0.f);
-            glyphBar->setStartAmount(_container.getGlyphAmount(converter.toEnum(type)));
             _addBar(glyphBar);
             i++;
         }
