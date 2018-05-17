@@ -104,12 +104,13 @@ namespace rat {
     void Widget::_onRealesed()
     {
         if(!_isActivated) return;        
-        if(!_isPressed) return;
 
         for(auto* child : _children)
         {
             child->_onRealesed();
         }
+        
+        if(!_isPressed) return;
         _isPressed = false;
         _callback(CallbackType::onRelease);    
     }
