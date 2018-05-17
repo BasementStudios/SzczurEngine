@@ -36,6 +36,7 @@ namespace rat
         _addWidget(_iconWindow);
         
         
+        
         _icon->setSize(_size.y - 2 * round(_iconWindow->getPadding().x), _size.y - 2 * round(_iconWindow->getPadding().x));
         _iconWindow->add(_icon);
 
@@ -50,6 +51,10 @@ namespace rat
 
         _name->setCharacterSize(20);
         _infoBar->add(_name);
+
+        _costBar.setParent(_infoBar);
+        _costBar.setPosition(0.f, 30.f);
+        _costBar.setWidth(_infoBar->getMinimalSize().x);
     }
 
     void SkillBar::setSkill(Skill* skill)
@@ -69,18 +74,23 @@ namespace rat
     void SkillBar::_onClick()
     {      
         auto& source = _sourceArea.getSource();
-        if(!isBought())
-        {
-            if(_skill->canBeBoughtFrom(source) && _chosenArea.hasFreeSpace())
-            {
-                _skill->buyFrom(source);
+        std::cout << "Clicked\n";
 
-                _chosenArea.addSkill(_skill);
+        if(isBought()) return;
+        
+        std::cout << "Not bought\n";
+        if(!_skill->canBeBoughtFrom(source)) return;
+        std::cout << "Enough\n";
+        if(!_chosenArea.hasFreeSpace()) return;
 
-                _parentArea.recalculate();
-                _sourceArea.recalculate();
-            }
-        }
+        std::cout << "Cyk Kupione\n";
+        _skill->buyFrom(source);
+
+        _chosenArea.addSkill(_skill);
+
+        _parentArea.recalculate();
+        _sourceArea.recalculate();
+            
     }
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)

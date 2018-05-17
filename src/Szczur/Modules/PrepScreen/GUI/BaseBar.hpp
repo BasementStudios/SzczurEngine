@@ -33,6 +33,7 @@ namespace rat
     protected:
         void _addWidget(Widget* addon);
         void _setWidgetSize(ImageWidget* widget, float x, float y);
+        void _addBar(BaseBar& addon);
         template<typename B>
         void _addBar(std::unique_ptr<B>& bar);
     private:

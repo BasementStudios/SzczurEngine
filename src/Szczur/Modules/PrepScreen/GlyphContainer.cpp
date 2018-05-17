@@ -56,8 +56,9 @@ namespace rat
     {
         for(auto& [glyph, amount] : requirements)
         {
+            std::cout << "Glyph Type: " << GlyphesConverter().toString(glyph) << "\n";
             if(_glyphs.find(glyph)->second < amount) return false;
         }
-        return false;
+        return true;
     }
 }

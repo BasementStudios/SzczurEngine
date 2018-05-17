@@ -48,6 +48,11 @@ namespace rat
     {
         _base->add(addon);
     }
+    void BaseBar::_addBar(BaseBar& addon)
+    {
+        addon.setParent(_base);
+    }
+    
     void BaseBar::_setWidgetSize(ImageWidget* widget, float x, float y)
     {
         auto* texture = widget->getTexture();

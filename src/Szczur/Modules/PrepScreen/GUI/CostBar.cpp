@@ -19,7 +19,9 @@ namespace rat
         _addWidget(_costPP);
 
         _costAmount = new TextWidget;
+        _costAmount->setPropOrigin(1.f, 0.f);
         _addWidget(_costAmount);
+
         GlyphTypes glyphs;
         GlyphesConverter converter;
         for(auto& glyph : glyphs)
@@ -84,7 +86,7 @@ namespace rat
         auto ppSize = getPPSize();
         auto ppPos = _costPP->getPosition();
 
-        auto newTextPos = ((ppSize - textSize)/2.f) + ppPos;
+        auto newTextPos = ppPos - ((ppSize - textSize)/2.f);
 
         _costAmount->setPosition(newTextPos);
     }
@@ -132,7 +134,8 @@ namespace rat
                 i++;
             }
         }
-        _costPP->setPosition(0.f, _width);
+        _costPP->setPosition(_width, 0.f);
+        _recalculateCostAmount();
     }
     
     

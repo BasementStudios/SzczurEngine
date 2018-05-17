@@ -68,7 +68,7 @@ namespace rat
 
         _grayPPArea.setParent(_base);
         _grayPPArea.initAssetsViaGUI(gui);
-        _grayPPArea.setPosition(1280.f/2.f, 0);
+        _grayPPArea.setPosition(1280.f/2.f, 120);
 
         _grayPPArea.recalculate();
 
@@ -102,7 +102,7 @@ namespace rat
     {
         _skillArea.initChosenSkillArea(_chosenSkillArea);
         _skillArea.setParent(_base);
-        _skillArea.setPosition(200.f, 120.f);
+        _skillArea.setPosition(200.f, 150.f);
         _skillArea.initViaSkillCodex(_codex); //traitor
         _skillArea.initAssetsViaGUI(getModule<GUI>());
         _skillArea.activate("Mele", {});
@@ -111,7 +111,7 @@ namespace rat
     void PrepScreen::_initProfArea()
     {
         _profArea.setParent(_base);
-        _profArea.setPosition(40.f, 120.f);
+        _profArea.setPosition(40.f, 150.f);
         _profArea.initAssetsViaGUI(getModule<GUI>());
     }
     
