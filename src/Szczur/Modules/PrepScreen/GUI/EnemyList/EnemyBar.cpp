@@ -1,4 +1,5 @@
 #include "EnemyBar.hpp"
+#include "EnemyArea.hpp"
 
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
@@ -10,7 +11,9 @@
 
 namespace rat
 {
-    EnemyBar::EnemyBar()
+    EnemyBar::EnemyBar(EnemyArea& parentArea)
+    :
+    _parentArea(parentArea)
     {
         sf::Vector2u size = {240, 72};
         setSize(size);
@@ -22,10 +25,18 @@ namespace rat
 
         _addWidget(_border);
         _border->setScale(0.2f, 0.2f);
-        _border->setPadding(2.f, 2.f);
+        _border->setPadding(5.f, 2.f);
+
+        _border->setCallback(Widget::CallbackType::onHoverIn, [&](Widget*){
+            _onHoverIn();
+        });
+        _border->setCallback(Widget::CallbackType::onHoverOut, [&](Widget*){
+            _onHoverOut();
+        });
 
         _border->add(_icon);
-        _icon->setSize(size - sf::Vector2u{4, 4});
+        unsigned int dim = size.y - 4;
+        _icon->setSize(dim, dim);
 
         _border->add(_name);
         _name->setCharacterSize(20);
@@ -43,6 +54,7 @@ namespace rat
         _icon->setTexture(enemy->getTexture());
         _hp->setString("HP: " + std::to_string(enemy->getMaxHP()));
         _name->setString(enemy->getName());
+        _enemy = enemy;
     }
 
     void EnemyBar::initAssetsViaGUI(GUI& gui)
@@ -51,5 +63,16 @@ namespace rat
         _border->setTexture(barTex, 6);
         _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
         _hp->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
+    }
+
+    void EnemyBar::_onHoverIn()
+    {
+        if(!_enemy) return;    
+        _parentArea.setEnemyInfo(_enemy, {0.f, getPosition().y});
+    }
+    void EnemyBar::_onHoverOut()
+    {
+        if(!_enemy) return;
+        if(_parentArea.isEnemyInInfo(_enemy) || true) _parentArea.deactivateInfo();
     }
 }

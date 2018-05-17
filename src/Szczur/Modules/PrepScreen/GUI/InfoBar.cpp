@@ -33,6 +33,10 @@ namespace rat
     {
         _name->setString(name);
     }
+    const std::string InfoBar::getName() const
+    {
+        _name->getString();
+    }
     void InfoBar::setInfo(const std::string& info)
     {
         auto wordBegin = info.begin();

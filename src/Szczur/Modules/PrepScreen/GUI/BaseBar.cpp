@@ -25,6 +25,11 @@ namespace rat
     {
         _base->setPosition(x, y);
     }
+    sf::Vector2f BaseBar::getPosition() const
+    {
+        return _base->getPosition();
+    }
+    
     void BaseBar::setParent(Widget* parent)
     {
         parent->add(_base);

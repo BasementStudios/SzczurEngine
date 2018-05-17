@@ -79,7 +79,7 @@ namespace rat
         if(isBought()) return;
         
         std::cout << "Not bought\n";
-        if(!_skill->canBeBoughtFrom(source)) return;
+        //if(!_skill->canBeBoughtFrom(source)) return;
         std::cout << "Enough\n";
         if(!_chosenArea.hasFreeSpace()) return;
 

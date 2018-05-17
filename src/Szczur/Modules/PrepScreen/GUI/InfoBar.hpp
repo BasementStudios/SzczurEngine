@@ -19,6 +19,8 @@ namespace rat
         void setName(const std::string& name);
         void setInfo(const std::string& info);
         void initAssetsViaGUI(GUI& gui);
+
+        const std::string getName() const;
     private:
         WindowWidget* _window{nullptr};
         TextWidget* _name{nullptr};

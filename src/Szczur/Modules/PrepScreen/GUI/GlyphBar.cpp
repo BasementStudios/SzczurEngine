@@ -63,8 +63,11 @@ namespace rat
         auto glyphTotal = glyphContainer.getGlyphTotalAmount(_type);
 
         std::cout << "Type: " << GlyphesConverter().toString(_type) << " amount: " << glyphAmount << " total: " << glyphTotal << "\n";
-        
-            std::cout << "Heheszki\n";
+
+        auto& ppContainer = _source.getSource().ppContainer;
+                ppContainer.add();
+                _source.recalculate();
+
         if(glyphAmount < glyphTotal)
         {
             if(glyphAmount == 0)

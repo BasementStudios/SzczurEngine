@@ -10,7 +10,7 @@ namespace rat
 {
     class GUI;
     class Widget; class ImageWidget; class WindowWidget; class TextWidget;
-    class TextAreaWidget; 
+    class TextAreaWidget;
 
     class BaseBar
     {
@@ -18,6 +18,7 @@ namespace rat
         BaseBar();
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& position);
+        sf::Vector2f getPosition() const;
         void setSize(const sf::Vector2u& size);
         void setSize(unsigned int width, unsigned int height);
         sf::Vector2u getSize() const;

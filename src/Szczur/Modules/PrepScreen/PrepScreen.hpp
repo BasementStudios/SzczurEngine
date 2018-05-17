@@ -16,8 +16,12 @@
 #include "GUI/ChosenSkillArea.hpp"
 #include "GUI/ColorFilterArea.hpp"
 
+#include "GUI/EnemyList/EnemyArea.hpp"
+
 #include "GUI/InfoBar.hpp"
 #include "GUI/GlyphArea.hpp"
+
+#include "Enemy/EnemyCodex.hpp"
 
 namespace rat
 {
@@ -58,11 +62,16 @@ namespace rat
         WindowWidget* _testBar{nullptr};
         GlyphArea _testGlyphBar;
 
+        EnemyArea _enemyArea;
+        EnemyCodex _enemyCodex;
+
         void _initProfessionBar(GUI& gui);
         void _initSkillArea();
         void _initProfArea();
         void _initChosenSkillArea();
         void _initColorFilterArea();
+
+        void _initEnemyArea();
 
         void _loadAssetsFromGUI();
     };
