@@ -457,8 +457,23 @@ namespace rat {
 							directory = std::experimental::filesystem::path(directory).parent_path().string();
 							if(directory != "") {
 								try {
-									auto& it = armatureDisplayDataHolder.emplace_back(directory);
-									object->setArmatureDisplayData(&it);
+
+									auto item = std::find_if(armatureDisplayDataHolder.begin(), armatureDisplayDataHolder.end(), [directory] (auto& item) { return item.getFolderPath() == directory; });
+
+									ArmatureDisplayData* it = nullptr;
+
+									if (item == armatureDisplayDataHolder.end())
+									{
+										// create new
+										it = &armatureDisplayDataHolder.emplace_back(directory);
+									}
+									else
+									{
+										// use exisiting
+										it = item._Ptr;
+									}
+
+									object->setArmatureDisplayData(it);
 								}
 								catch(const std::exception& exc) {
 									object->setArmatureDisplayData(nullptr);
