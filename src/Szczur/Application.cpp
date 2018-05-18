@@ -14,9 +14,7 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
-
-	// For testing `Script`
-	initModule<BattleField>();
+	initModule<BattleScene>();
 
 	LOG_INFO("Modules initialized");
 
@@ -43,6 +41,11 @@ void Application::input()
 		}
 		#endif
 
+		/*
+			Put other inputs here
+		*/		
+		getModule<BattleScene>().input(event);
+
 		if (event.type == sf::Event::Closed) {
 			getModule<Window>().getWindow().close();
 		}
@@ -56,7 +59,7 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-	_modules.getModule<BattleField>().update();
+	getModule<BattleScene>().update(deltaTime);
 	
 	#ifdef EDITOR
 	{
@@ -75,8 +78,10 @@ void Application::render()
 {
 	getModule<Window>().clear();
 
-	// For testing `Script`
-	_modules.getModule<BattleField>().render();
+	/*
+		Put other renders here
+	*/
+	getModule<BattleScene>().render();
 
 	#ifdef EDITOR
 	{
