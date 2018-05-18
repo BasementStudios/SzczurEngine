@@ -470,7 +470,7 @@ namespace rat {
 									else
 									{
 										// use exisiting
-										it = item._Ptr;
+										it = &(*item);
 									}
 
 									object->setArmatureDisplayData(it);
