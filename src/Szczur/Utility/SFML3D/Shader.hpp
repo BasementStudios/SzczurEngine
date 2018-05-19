@@ -97,7 +97,7 @@ namespace sf3d
 			return true;
 		}
 
-		GLuint _shader;
+		GLuint _shader{0u};
 
 	};
 

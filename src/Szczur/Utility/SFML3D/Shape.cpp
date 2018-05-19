@@ -3,10 +3,14 @@
 namespace sf3d {
 	Shape::Shape(size_t vertexSize) :
 		_vertices(vertexSize) {
-		for(size_t i = 0; i < vertexSize; ++i) {
-			_vertices.setPosition(i, getPointPosition(i));
-			_vertices.setColor(i, getPointColor(i));
-			_vertices.setTexCoord(i, getPointCoord(i));
+		_update();
+	}
+
+	void Shape::_update() {
+		for(size_t i = 0; i < _vertices.getSize(); ++i) {
+			_vertices[i].setPosition(getPointPosition(i));
+			_vertices[i].setColor(getPointColor(i));
+			_vertices[i].setTexCoord(getPointCoord(i));
 		}
 		_vertices.setPrimitveType(GL_TRIANGLE_FAN);
 	}
