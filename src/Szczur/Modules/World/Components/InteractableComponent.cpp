@@ -22,6 +22,13 @@ namespace rat {
         return _distance;
     }
 
+    void InteractableComponent::setHeight(float height) {
+        _height = height;
+    }
+    float InteractableComponent::getHeight() const {
+        return _height;
+    }
+
     bool InteractableComponent::checkForInteraction(const glm::vec3& position) const {
         auto* entity = getEntity();
         auto delta = position - entity->getPosition();

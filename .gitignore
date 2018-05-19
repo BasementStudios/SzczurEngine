@@ -6,6 +6,7 @@ out/*
  
 # Configurations
 settings.mk
+.gitignore
  
 # Projects and sessions 
 .clang_complete

@@ -11,6 +11,7 @@
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
+#include "Szczur/Utility/SFML3D/CircleShape.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
 #include "Szczur/Modules/Window/Window.hpp"
@@ -39,6 +40,9 @@ namespace rat {
 				_renderDisplayDataManager();
 
 			sf3d::RectangleShape rect({100.f, 100.f});
+			sf3d::CircleShape circ;
+			circ.rotate({-90.f, 0.f, 0.f});
+			circ.setColor({1.f, 0.f, 1.f, 0.2f});
 			rect.setColor({1.f, 1.f, 0.f, 0.2f});
 			rect.setOrigin({50.f, 50.f, 0.f});
 
@@ -67,6 +71,13 @@ namespace rat {
 					rect.setColor({1.f, 1.f, 0.f, 0.4f});
 					target.draw(rect);
 					// rect.setOutlineThickness(0.f);
+				}
+				if(auto* comp = entity.getComponentAs<InteractableComponent>(); comp != nullptr) {
+					circ.setPosition(entity.getPosition() + glm::vec3{0.f, comp->getHeight(), 0.f});
+					float r = comp->getDistance();
+					circ.setRadius(r);
+					circ.setOrigin({r, r, 0.f});
+					target.draw(circ);
 				}
 			});
 			glEnable(GL_DEPTH_TEST);
@@ -516,9 +527,14 @@ namespace rat {
 				}
 
 				if(auto* object = focusedObject->getComponentAs<InteractableComponent>(); object != nullptr) {
-					float distance = object->getDistance();
-					ImGui::SliderFloat("Distance", &distance, 0.f, 200.f);
-					object->setDistance(distance);
+					if(ImGui::CollapsingHeader("Interactable Component")) {
+						float distance = object->getDistance();
+						float height = object->getHeight();
+						ImGui::DragFloat("Distance", &distance);
+						ImGui::DragFloat("Height", &height);
+						object->setDistance(distance);
+						object->setHeight(height);
+					}
 				}
 			}
 		}

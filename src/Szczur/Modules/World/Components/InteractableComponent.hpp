@@ -22,6 +22,9 @@ namespace rat {
         void setDistance(float distance);
         float getDistance() const;
 
+        void setHeight(float height);
+        float getHeight() const;
+
         virtual void loadFromConfig(const Json& config) override;
 
 	    virtual void saveToConfig(Json& config) const override;
@@ -30,6 +33,7 @@ namespace rat {
     private:
         sol::function _interactionCallback;
         float _distance{50.f};
+        float _height{0.f};
 
     };
 }
