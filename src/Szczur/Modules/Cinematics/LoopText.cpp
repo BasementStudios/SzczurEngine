@@ -41,7 +41,11 @@ void LoopText::setPosition(const sf::Vector2i &vec)
 
 void LoopText::draw()
 {
-    getModule<rat::Window>().getWindow().draw(m_text);
+    //getModule<rat::Window>().getWindow().draw(m_text);
+    auto& w = getModule<rat::Window>();
+    w.pushGLStates();
+    w.draw(m_text);
+    w.popGLStates();
 }
 
 void LoopText::setColor(const sf::Color &color)

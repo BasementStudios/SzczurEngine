@@ -15,7 +15,7 @@ public:
     /* callback */
     typedef void(*callme)();
 
-    MoviePlayer() = default;
+    MoviePlayer();
 
 
 /*
@@ -42,6 +42,8 @@ public:
     Don't forget to set your font if you create a video loop with "addLoop"
 */
     void setFont(sf::Font &font);
+    void setFontPath(const char *filename);
+    
 
 /* 
     Call it if you want add video loop like when main character have to make a decision and video should not play without this decision
@@ -94,7 +96,8 @@ private:
     bool                m_isInit = false;
     sf::Font            m_font;
 
-     std::vector<AVPacket*> m_audioSyncBuffer;
+    sf::RenderTexture canvas;
+    std::vector<AVPacket*> m_audioSyncBuffer;
     std::vector<std::shared_ptr<VideoLoop> > m_loops;
   
 };

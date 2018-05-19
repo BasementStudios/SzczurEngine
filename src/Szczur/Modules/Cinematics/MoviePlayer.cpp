@@ -1,5 +1,12 @@
 #include "Szczur/Modules/Cinematics/MoviePlayer.hpp"
-
+#include "Szczur/Application.hpp"
+MoviePlayer::MoviePlayer()
+{
+    auto& w = getModule<rat::Window>();
+    w.pushGLStates();
+    canvas.create(w.getWindow().getSize().x, w.getWindow().getSize().y);
+    w.popGLStates();
+}
 bool MoviePlayer::loadFromFile(const char * filename)
 {
     av_register_all();
@@ -94,34 +101,36 @@ void MoviePlayer::jumpTo(const unsigned int &seekTarget)
 
 void MoviePlayer::play()
 {
+    
     auto &window = getModule<rat::Window>().getWindow(); 
+    auto& w = getModule<rat::Window>();
     for(auto p : m_loops)
     {
         p->setFont(m_font);
         if(!m_isInit) p->init(window.getSize());
     }
-
-    if(m_loops[m_ICurrentLoop])
+   
+    if(!m_loops.empty())
     {
         m_loops[m_ICurrentLoop]->change();
         m_jump = m_loops[m_ICurrentLoop]->change();
     }
-
+ 
     int64_t duration = m_pFormatCtx->duration;
     const int FrameSize = m_pCodecCtx->width * m_pCodecCtx->height * 3;
 
      sf::Uint8* Data = new sf::Uint8[m_pCodecCtx->width * m_pCodecCtx->height * 4];
     
-
+   
     m_im_video.create(m_pCodecCtx->width, m_pCodecCtx->height);
     m_im_video.setSmooth(false);
 
     sf::Sprite sprite(m_im_video);
-
+    
     float x = window.getSize().x;
     float y = window.getSize().y;
     sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
-
+  
     m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
     m_sound->play();
     m_VClock = new sf::Clock;
@@ -129,11 +138,12 @@ void MoviePlayer::play()
     int IstartTime;
 
     size_t count =  m_loops.size();
-    
+   
     int ISmax = 0;
   
     while (window.isOpen())
     {
+       
         sf::sleep(sf::milliseconds(1));
         if((ISmax>m_sound->timeElapsed()*1000 && !m_syncAV&& ISmax>duration-4000000)||(m_sound->g_audioPkts.empty()&&ISmax>duration-4000000))
         {
@@ -158,13 +168,18 @@ void MoviePlayer::play()
                 }
                 
                 m_im_video.update(Data);
+               // 
+                w.pushGLStates();
+                canvas.clear({0,0,0,0});
+        
+                canvas.draw(sprite);
                 
-                window.clear();
-                    
-                window.draw(sprite);
+                w.draw(sf::Sprite(canvas.getTexture()));
+                w.popGLStates();
+          
                 m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
                 if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw();
-                window.display();
+    
                 IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - IstartTime;
                 sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-IdeltaTime));
             }
@@ -185,8 +200,7 @@ void MoviePlayer::play()
             avcodec_close(m_pCodecCtx);
             avcodec_close(m_paCodecCtx);
             avformat_close_input(&m_pFormatCtx);
-            window.clear();
-            window.display();
+            canvas.display();
             delete [] Data;
             return;
         }
@@ -313,11 +327,16 @@ void MoviePlayer::play()
                     Data[j + 3] = 255;
                 }
                 m_im_video.update(Data);
-                
-                window.clear();
-                
-                window.draw(sprite);
-                
+
+                w.pushGLStates();
+                canvas.clear({0,0,0,0});
+
+                canvas.draw(sprite);
+            
+                canvas.display();
+                w.draw(sf::Sprite(canvas.getTexture()));
+                w.popGLStates();
+
                 if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw();
                 window.display();
                 
@@ -378,6 +397,11 @@ void MoviePlayer::play()
 void MoviePlayer::setFont(sf::Font &font)
 {
     m_font = font;
+}
+
+void MoviePlayer::setFontPath(const char *filename)
+{
+    m_font.loadFromFile(filename);
 }
 
 void MoviePlayer::addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
