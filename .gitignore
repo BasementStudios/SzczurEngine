@@ -1,0 +1,13 @@
+# Compiling results
+obj/
+out/*
+!out/Assets/*
+!out/Editor/*
+ 
+# Configurations
+settings.mk
+ 
+# Projects and sessions 
+.clang_complete
+.vscode/
+*.npp
