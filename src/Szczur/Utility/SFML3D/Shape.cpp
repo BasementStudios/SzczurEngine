@@ -15,6 +15,10 @@ namespace sf3d {
 		_vertices.setPrimitveType(GL_TRIANGLE_FAN);
 	}
 
+	size_t Shape::getVerticesCount() const {
+		return _vertices.getSize();
+	}
+
 	void Shape::draw(RenderTarget & target, RenderStates states) const {
 		states.transform *= getTransform();
 		target.draw(_vertices, states);
