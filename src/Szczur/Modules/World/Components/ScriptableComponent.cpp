@@ -43,6 +43,9 @@ namespace rat {
 			script.scriptFile(_scriptFilePath);
 			script.get()["THIS"] = sol::nil;
 		}
+		else {
+			_updateCallback = sol::function();
+		}
 	}
 
 	/// Run any script for object
