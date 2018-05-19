@@ -50,8 +50,18 @@ public:
 	///
 	void moveRaw(const sf::Vector2f& vector);
 
+	///
+	float getAngleTo();
+
+	///
+	float getAngleToPointer();
+
+	/// 
+	void moveInDirection(float angle, float distance);
+
 	/// Load pawn from folder
 	void loadPawn(const std::string& dirPath);
+
 
 // Controller
 
@@ -61,7 +71,24 @@ public:
 	///
 	void updateController();
 
+// Skills
+
+	///
+	BattleSkill* newSkill(const std::string& skillName);
+
+	///
+	BattleSkill* getSkill(const std::string& skillName);
+
+// Scripts
+
+	///
+	static void initScript(Script& script);
+	
+	/// Run script for this pawn
+	void runScript(const std::string& filePath);
+
 private:
+
 	// Main
 	BattleScene& battleScene;
 	sf::Vector2f pos{0,0};
@@ -74,6 +101,11 @@ private:
 
 	// Controller
 	Input& input;
+
+	// Skills
+	std::vector<std::unique_ptr<BattleSkill>> skills;
+	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
+
 };
 
 }

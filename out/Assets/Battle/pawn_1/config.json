@@ -1,4 +1,7 @@
 {
 	"texture": "texture.png",
-	"frameSize": [102,125]
+	"frameSize": [102,125],
+	"skills": [
+		"skill_1.lua"
+	]
 }

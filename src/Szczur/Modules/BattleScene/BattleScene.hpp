@@ -11,7 +11,6 @@
 
 #include "BattlePawn.hpp"
 
-
 namespace rat {
 
 class BattleScene : public Module<Window, Input, Script> {
@@ -54,10 +53,17 @@ public:
 	BattlePawn* addPawn(const std::string& dirPath, const sf::Vector2f& position={0,0});
 
 	/// Set pawn to controll
-	void setController(BattlePawn* pawn);
+	void changePawn(BattlePawn* pawn);
+
+	/// Set skill to use (if pawn is set)
+	void changeSkill(const std::string& skillName);
 
 	/// Update position for pawn (remove overlaps)
 	void fixPosition(BattlePawn& pawn);
+
+// Scripts
+
+	void initScript();
 
 private:
 	// Render
@@ -68,6 +74,7 @@ private:
 	sf::Vector2f fieldSize{800, 600};
 	sf::Vector2f fieldPos{0, 0};
 	BattlePawn* controlledPawn = nullptr;
+	BattleSkill* controlledSkill = nullptr;
 
 // Main
 

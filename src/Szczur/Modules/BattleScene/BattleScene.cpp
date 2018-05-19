@@ -18,7 +18,9 @@ BattleScene::BattleScene() {
 	auto& window = getModule<Window>().getWindow();
 	fieldPos.x = (window.getSize().x-fieldSize.x)/2.f;
 	fieldPos.y = window.getSize().y-fieldSize.y-100;
-	setController(addPawn("Assets/Battle/pawn_1"));
+	BattlePawn* pawn = addPawn("Assets/Battle/pawn_1");
+	changeSkill("Dash in right");
+	setPawn(pawn);
 
 	LOG_INFO("Module BattleScene initialized");
 }
@@ -44,6 +46,14 @@ void BattleScene::update(float deltaTime) {
 		addPawn("Assets/Battle/pawn_1", sf::Vector2f(input.getMousePosition()));
 	}
 
+	if(controlledPawn != nullptr) {
+		controlledPawn->updateController(deltaTime);
+	}
+
+	if(controlledSkill != nullptr) {
+		controlledSkill->updateController(deltaTime);
+	}
+
 }
 
 void BattleScene::render() {	
@@ -64,8 +74,12 @@ void BattleScene::render() {
 		obj->render(canvas);
 	}
 
+	// Controllers
 	if(controlledPawn != nullptr) {
 		controlledPawn->renderController(canvas);
+	}
+	if(controlledSkill != nullptr) {
+		controlledSkill->renderController(canvas);
 	}
 
 	canvas.display();
@@ -86,8 +100,15 @@ BattlePawn* BattleScene::addPawn(const std::string& dirPath, const sf::Vector2f&
 	return pawn;
 }
 
-void BattleScene::setController(BattlePawn* pawn) {
+void BattleScene::changePawn(BattlePawn* pawn) {
 	controlledPawn = pawn;
+	controlledSkill = nullptr;
+}
+
+void BattleScene::changeSkill(const std::string& skillName) {
+	if(controlledPawn != nullptr) {
+		controlledSkill = controlledPawn->getSkill(skillName);
+	}
 }
 
 void BattleScene::fixPosition(BattlePawn& pawn) {
@@ -135,6 +156,10 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 		--tries;
 	} 
 	while(checkAllAgain);
+}
+
+void BattleScene::initScript() {
+
 }
 
 }

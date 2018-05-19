@@ -4,6 +4,7 @@
 using Json = nlohmann::json;
 
 #include <Szczur/Modules/Input/Input.hpp>
+#include <Szczur/Modules/Script/Script.hpp>
 
 #include "BattleScene.hpp"
 
@@ -18,9 +19,10 @@ BattlePawn::BattlePawn(BattleScene& battleScene)
 // ========== Main ========== 
 
 void BattlePawn::update(float deltaTime) {
-
+	for(auto& obj : skills) {
+		obj->update(deltaTime);
+	}
 }
-
 
 void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
 
@@ -86,12 +88,28 @@ void BattlePawn::moveRaw(const sf::Vector2f& vector) {
 	pos += vector;
 }
 
+float BattlePawn::getAngleTo(const sf::Vector2f& pos) {
+	sf::Vector2f delta = pos - this->pos;
+	return std::atan2(delta.y, delta.x);
+}
+
+float BattlePawn::getAngleToPointer() {
+	sf::Vector2f delta = sf::Vector2f(input.getManager().getMousePosition()) - this->pos;
+	return std::atan2(delta.y, delta.x);
+}
+ 
+void BattlePawn::moveInDirection(float angle, float distance) {
+	pos.x += std::cos(angle)*distance;
+	pos.y += std::sin(angle)*distance;
+}
+
+
 void BattlePawn::loadPawn(const std::string& dirPath) {
 	Json config;
 	std::ifstream(dirPath+"/config.json") >> config;
 	frameSize.x = config["frameSize"][0];
 	frameSize.y = config["frameSize"][1];
-	isTexture = texture.loadFromFile(dirPath+"/"+std::string(config["texture"]));
+	isTexture = texture.loadFromFile(dirPath+"/"+config["texture"].get<std::string>());
 }
 
 // ========== Controller ========== 
@@ -108,7 +126,50 @@ void BattlePawn::renderController(RenderTarget& canvas) {
 }
 
 void BattlePawn::updateController() {
+	
+}
 
+// ========== Skills ========== 
+
+BattleSkill* BattlePawn::newSkill(const std::string& skillName) {
+	return skills.emplace_back(new BattleSkill(this, skillName)).get();
+}
+
+BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
+	auto& result = std::find(skills.begin(), skills.end(), 
+		[&skillName](const auto& obj){ return obj->getName()==skillName; }
+	);
+	if(result != skills.end()) {
+		return result->get();
+	}
+	else {
+		return nullptr;
+	}
+}
+
+// ========== Skills ========== 
+
+void BattlePawn::initScript(Script& script) {
+	auto object = script.newClass<BattlePawn>("BattlePawn", "BattleScene");
+
+	object.set("newSkill", &BattlePawn::newSkill);
+	object.set("getAngleTo", &BattlePawn::getAngleTo);
+	object.set("getAngleToPointer", &BattlePawn::getAngleToPointer);
+	object.set("moveInDirection", &BattlePawn::moveInDirection);
+	
+	object.init();
+}
+
+void BattlePawn::runScript(const std::string& filePath) {
+	auto& script = *detail::globalPtr<Script>;
+	try {
+		script.get()["THIS"] = this;
+		script.scriptFile(filePath);
+		script.get()["THIS"] = sol::nil;
+	}
+	catch(std::exception& exc) {
+		LOG_INFO(exc.what());
+	}
 }
 
 }
