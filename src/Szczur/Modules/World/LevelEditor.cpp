@@ -405,11 +405,14 @@ namespace rat {
 					if(ImGui::CollapsingHeader("Camera Component")) {
 						float velocity = object->getVelocity();
 						bool locked = object->getLock();
+						bool stickToPlayer = object->getStickToPlayer();
 						ImGui::DragFloat("Velocity", &velocity);
 						ImGui::Checkbox("Locked", &locked);
+						ImGui::Checkbox("Stick To Player", &stickToPlayer);
 
 						object->setVelocity(velocity);
 						object->setLock(locked);
+						object->setStickToPlayer(stickToPlayer);
 
 					}
 				}

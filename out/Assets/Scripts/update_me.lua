@@ -1,11 +1,3 @@
--- print(THIS:getScriptable():onUpdate())
-
--- print("X")
-
--- function THIS:getScriptable():onUpdate(dt)
-	-- print("+3")
-	-- end
-
 print("yyy")
 
 local this = THIS
@@ -20,11 +12,13 @@ function scriptable:onUpdate(dt)
 	a = dt
 end
 
-function interactable:onInteraction()
-	print(a)
+if(interactable) then
+	function interactable:onInteraction()
+		print(a)
+	end
 end
 
---if(inputController) then
+if(inputController) then
 	function inputController:onUpdate(input, dt)
 		if(input:isKept(Input.Key_W)) then
 			this:move(0, 0, -velocity)
@@ -39,12 +33,4 @@ end
 			this:move(velocity, 0, 0)
 		end
 	end
---end
-
--- THIS:getScriptable().onUpdate = function(self, dt)
-	-- print("+c")
-	-- end
-
--- THIS:getScriptable():onUpdate = function(self, dt)
-	-- print("+2")
-	-- end
+end

@@ -35,19 +35,21 @@ namespace rat {
 				0.f,
 				velocity * glm::cos(glm::radians(rotation.y))
 			});
-		if(input.isKept(Keyboard::D)) {
-			object->move(glm::vec3{
-				velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::sin(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::A)) {
-			object->move(glm::vec3{
-				-velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::sin(glm::radians(rotation.y))
-			});
+		if(!_stickToPlayer) {
+			if(input.isKept(Keyboard::D)) {
+				object->move(glm::vec3{
+					velocity * glm::cos(glm::radians(rotation.y)),
+					0.f,
+					velocity * glm::sin(glm::radians(rotation.y))
+				});
+			}
+			if(input.isKept(Keyboard::A)) {
+				object->move(glm::vec3{
+					-velocity * glm::cos(glm::radians(rotation.y)),
+					0.f,
+					-velocity * glm::sin(glm::radians(rotation.y))
+				});
+			}
 		}
 		if(input.isKept(Keyboard::Space))
 			object->move({0.f, velocity, 0.f});
@@ -91,6 +93,14 @@ namespace rat {
 	}
 	bool CameraComponent::getLock() const {
 		return _locked;
+	}
+
+	
+	void CameraComponent::setStickToPlayer(bool value) {
+		_stickToPlayer = value;
+	}
+	bool CameraComponent::getStickToPlayer() const {
+		return _stickToPlayer;
 	}
 
 	void CameraComponent::loadFromConfig(const Json& config) {

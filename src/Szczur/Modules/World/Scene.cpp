@@ -53,6 +53,13 @@ void Scene::update(float deltaTime)
 						if(comp->checkForInteraction(player->getPosition()))
 							comp->callback();
 			}
+			if(auto* comp = entity->getComponentAs<CameraComponent>(); comp != nullptr) {
+				if(comp->getStickToPlayer()) {
+					auto curPos = entity->getPosition();
+					curPos.x = player->getPosition().x;
+					entity->setPosition(curPos);
+				}
+			}
 		}
 	}
 }

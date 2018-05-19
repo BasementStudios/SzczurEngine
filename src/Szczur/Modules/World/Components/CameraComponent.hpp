@@ -26,9 +26,13 @@ namespace rat {
         void setLock(bool lock);
         bool getLock() const;
 
+        void setStickToPlayer(bool value);
+        bool getStickToPlayer() const;
+
     private:
         bool _rotating{false};
         bool _locked{false};
+        bool _stickToPlayer{false};
         float _velocity{50.f};
         sf::Vector2i _previousMouse;
     };
