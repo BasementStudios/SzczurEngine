@@ -12,8 +12,8 @@ void Application::init()
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
-	initModule<Input>();
 	initModule<Script>();
+	initModule<Input>();
 	initModule<DragonBones>();
 	initModule<Camera>();
 	initModule<World>();

@@ -113,10 +113,10 @@ public:
 	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
 
 	///
-	//void setCameraID(size_t id);
+	void setPlayerID(size_t id);
 
 	///
-	//size_t getCameraID() const;
+	size_t getPlayerID() const;
 
 	///
 	void loadFromConfig(const Json& config);
@@ -150,7 +150,7 @@ private:
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
-	//size_t _cameraID{ 0 };
+	size_t _playerID{ 0u };
 
 };
 

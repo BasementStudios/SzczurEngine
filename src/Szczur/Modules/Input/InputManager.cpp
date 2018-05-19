@@ -1,5 +1,6 @@
 #include "InputManager.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
 namespace rat
 {
 
@@ -229,6 +230,16 @@ void InputManager::_moveWheel(int which, int delta)
 			_recentlyReleased = Scroll::Right;
 		}
 	}
+}
+
+void InputManager::initScript(Script& script) {
+	auto object = script.newClass<InputManager>("InputManager", "Input");
+	
+	object.set("isUnkept", [](InputManager& self, Keyboard::Code_e key){return self.isUnkept(key);});
+	object.set("isKept", [](InputManager& self, Keyboard::Code_e key){return self.isKept(key);});
+	object.set("isPressed", [](InputManager& self, Keyboard::Code_e key){return self.isPressed(key);});
+	object.set("isReleased", [](InputManager& self, Keyboard::Code_e key){return self.isReleased(key);});
+	object.init();
 }
 
 }

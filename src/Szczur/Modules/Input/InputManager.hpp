@@ -7,8 +7,8 @@
 namespace rat
 {
 
+class Script;
 enum InputStatus_e { Unkept = 0x0, Pressed = 0x1, Kept = 0x2, Released = 0x3 };
-
 class InputManager
 {
 public:
@@ -82,6 +82,7 @@ public:
 	///
 	sf::Vector2i getMousePosition() const;
 
+	static void initScript(Script& script);
 private:
 
 	///
@@ -109,6 +110,7 @@ private:
 	unsigned _enteredCharacter = 0u;
 
 	sf::Vector2i _mousePosition = { 0, 0 };
+
 
 };
 

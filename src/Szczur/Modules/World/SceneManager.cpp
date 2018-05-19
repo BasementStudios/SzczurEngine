@@ -9,12 +9,16 @@ namespace rat
 Scene* SceneManager::addScene()
 {
     Scene* scene = _holder.emplace_back(std::make_unique<Scene>()).get();
+    Entity* player = scene->addEntity("single");
     Entity* camera = scene->addEntity("single");
+
     camera->addComponent<CameraComponent>();
     camera->setName("Camera");
     camera->setPosition({ 0.f, 1160.f, 3085.f });
     camera->setRotation({ 15.f, 0.f, 0.f });
-    //scene->setCameraID(camera->getID());
+
+    player->setName("Player");
+    scene->setPlayerID(player->getID());
     return scene;
 }
 

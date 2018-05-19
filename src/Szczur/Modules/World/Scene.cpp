@@ -10,6 +10,9 @@
 
 // Components
 #include "Components/ScriptableComponent.hpp"
+#include "Components/InputControllerComponent.hpp"
+
+#include "Szczur/Modules/Input/Input.hpp"
 
 namespace rat
 {
@@ -34,13 +37,22 @@ Scene::Scene()
 
 void Scene::update(float deltaTime)
 {
+	auto& input = detail::globalPtr<Input>->getManager();
+	auto* player = getEntity(getPlayerID());
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
 			entity->update(deltaTime);
-			if(auto* comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr)
+			if(auto* comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr) {
 				comp->update(deltaTime);
+				if(auto* comp = entity->getComponentAs<InputControllerComponent>(); comp != nullptr)
+					comp->update(input, deltaTime);
+				if(input.isReleased(Keyboard::LShift))
+					if(auto* comp = entity->getComponentAs<InteractableComponent>(); comp != nullptr)
+						if(comp->checkForInteraction(player->getPosition()))
+							comp->callback();
+			}
 		}
 	}
 }
@@ -284,21 +296,21 @@ const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() 
 	return _armatureDisplayDataHolder;
 }
 
-/*void Scene::setCameraID(size_t id)
+void Scene::setPlayerID(size_t id)
 {
-	_cameraID = id;
+	_playerID = id;
 }
 
-size_t Scene::getCameraID() const
+size_t Scene::getPlayerID() const
 {
-	return _cameraID;
+	return _playerID;
 }
-*/
+
 void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
-	//_cameraID = config["camera"];
+	_playerID = config["player"];
 
 	const Json& groups = config["groups"];
 
@@ -326,7 +338,7 @@ void Scene::saveToConfig(Json& config) const
 {
 	config["id"] = getID();
 	config["name"] = getName();
-	//config["camera"] = getCameraID();
+	config["player"] = getPlayerID();
 
 	Json& groups = config["groups"] = Json::object();
 

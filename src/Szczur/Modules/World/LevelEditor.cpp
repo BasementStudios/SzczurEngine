@@ -403,48 +403,6 @@ namespace rat {
 					}
 				}
 
-				if(auto* object = focusedObject->getComponentAs<ScriptableComponent>(); object != nullptr) {
-					if(ImGui::CollapsingHeader("Scriptable Component")) {
-						static bool onceType = false;
-						if(ImGui::Button("Load")) {
-							std::string file = _getRelativePathFromExplorer("Select script file", ".\\Assets");
-
-							if(file != "") {
-								try {
-									if(onceType) {
-										object->loadAnyScript(file);
-									}
-									else {
-										object->loadScript(file);
-									}
-								}
-								catch(const std::exception& exc) {
-									LOG_INFO(exc.what());
-								}
-							}
-						}
-						if(object->getFilePath()!="") {
-							ImGui::SameLine();
-							if(ImGui::Button("Reload##scriptable_component")) {
-								try {
-									object->reloadScript();
-								}
-								catch(const std::exception& exc) {
-									LOG_INFO(exc.what());
-								}
-							}
-							ImGui::SameLine();
-							if(ImGui::Button("Remove##scriptable_component")) {
-								object->loadScript("");
-							}
-						}
-						ImGui::Text("Path:");
-						ImGui::SameLine();
-						ImGui::Text(object->getFilePath()!="" ? mapWindows1250ToUtf8(object->getFilePath()).c_str() : "None");
-					
-						ImGui::Checkbox("Once type##scriptable_component", &onceType);
-					}
-				}
 
 				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Armature Component")) {
@@ -513,6 +471,54 @@ namespace rat {
 
 
 					}
+				}
+				if(auto* object = focusedObject->getComponentAs<ScriptableComponent>(); object != nullptr) {
+					if(ImGui::CollapsingHeader("Scriptable Component")) {
+						static bool onceType = false;
+						if(ImGui::Button("Load")) {
+							std::string file = _getRelativePathFromExplorer("Select script file", ".\\Assets");
+
+							if(file != "") {
+								try {
+									if(onceType) {
+										object->loadAnyScript(file);
+									}
+									else {
+										object->loadScript(file);
+									}
+								}
+								catch(const std::exception& exc) {
+									LOG_INFO(exc.what());
+								}
+							}
+						}
+						if(object->getFilePath()!="") {
+							ImGui::SameLine();
+							if(ImGui::Button("Reload##scriptable_component")) {
+								try {
+									object->reloadScript();
+								}
+								catch(const std::exception& exc) {
+									LOG_INFO(exc.what());
+								}
+							}
+							ImGui::SameLine();
+							if(ImGui::Button("Remove##scriptable_component")) {
+								object->loadScript("");
+							}
+						}
+						ImGui::Text("Path:");
+						ImGui::SameLine();
+						ImGui::Text(object->getFilePath()!="" ? mapWindows1250ToUtf8(object->getFilePath()).c_str() : "None");
+					
+						ImGui::Checkbox("Once type##scriptable_component", &onceType);
+					}
+				}
+
+				if(auto* object = focusedObject->getComponentAs<InteractableComponent>(); object != nullptr) {
+					float distance = object->getDistance();
+					ImGui::SliderFloat("Distance", &distance, 0.f, 200.f);
+					object->setDistance(distance);
 				}
 			}
 		}
@@ -629,11 +635,13 @@ namespace rat {
 
 			auto* focusedObject = _scenes.getCurrentScene()->getEntity(_focusedObject);
 
-			static bool selectedComponents[3]{};
+			static bool selectedComponents[5]{};
 			if(ImGui::IsWindowAppearing()) {
 				selectedComponents[0] = focusedObject->hasComponent<SpriteComponent>();
 				selectedComponents[1] = focusedObject->hasComponent<ArmatureComponent>();
 				selectedComponents[2] = focusedObject->hasComponent<ScriptableComponent>();
+				selectedComponents[3] = focusedObject->hasComponent<InputControllerComponent>();
+				selectedComponents[4] = focusedObject->hasComponent<InteractableComponent>();
 			}
 			if(ImGui::Button("Accept", ImVec2(70,0))) {
 
@@ -649,6 +657,14 @@ namespace rat {
 					if(selectedComponents[2]) focusedObject->addComponent<ScriptableComponent>();
 					else focusedObject->removeComponent<ScriptableComponent>();
 				}
+				if(focusedObject->hasComponent<InputControllerComponent>()!=selectedComponents[3]) {
+					if(selectedComponents[3]) focusedObject->addComponent<InputControllerComponent>();
+					else focusedObject->removeComponent<InputControllerComponent>();
+				}
+				if(focusedObject->hasComponent<InteractableComponent>()!=selectedComponents[4]) {
+					if(selectedComponents[4]) focusedObject->addComponent<InteractableComponent>();
+					else focusedObject->removeComponent<InteractableComponent>();
+				}
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -660,6 +676,8 @@ namespace rat {
 			ImGui::Checkbox("Sprite##components_manager", &selectedComponents[0]);
 			ImGui::Checkbox("Armature##components_manager", &selectedComponents[1]);
 			ImGui::Checkbox("Scriptable##components_manager", &selectedComponents[2]);
+			ImGui::Checkbox("InputController##components_manager", &selectedComponents[3]);
+			ImGui::Checkbox("InteractableComponent##components_manager", &selectedComponents[4]);
 
 			ImGui::EndPopup();
 		}
