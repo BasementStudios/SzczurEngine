@@ -6,6 +6,10 @@
 
 #include "Szczur/Utility/MsgBox.hpp"
 
+#ifdef OS_WINDOWS 
+#include <shellapi.h> 
+#endif
+
 namespace fs = std::experimental::filesystem;
 
 namespace rat
