@@ -8,6 +8,9 @@
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
+#include "Szczur/Modules/DIalogEditor/DialogEditor.hpp"
 namespace rat
 {
 
@@ -48,8 +51,9 @@ public:
 
 private:
 
+	
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, DragonBones, World, Camera> _modules;
+	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor> _modules;
 
 };
 

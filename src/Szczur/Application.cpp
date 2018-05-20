@@ -1,5 +1,7 @@
 #include "Application.hpp"
 
+#include "Utility/MsgBox.hpp"
+
 namespace rat
 {
 
@@ -17,6 +19,11 @@ void Application::init()
 	initModule<DragonBones>();
 	initModule<Camera>();
 	initModule<World>();
+	initModule<GUI>();
+	initModule<Dialog>();
+	initModule<DialogEditor>();
+
+	getModule<Script>().scriptFile("dialogs/config/_dialog.lua");
 
 	LOG_INFO("Modules initialized");
 
@@ -38,6 +45,7 @@ bool Application::input()
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
 		getModule<Input>().getManager().processEvent(event);
+		getModule<GUI>().input(event);
 
 		#ifdef EDITOR
 		{
@@ -56,6 +64,8 @@ bool Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+	getModule<Dialog>().update();
+	getModule<GUI>().update(deltaTime);
 
 	/*
 		Put other updates here
@@ -64,6 +74,7 @@ void Application::update()
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
+		getModule<DialogEditor>().update();
 	}
 	#endif
 
@@ -77,6 +88,7 @@ void Application::render()
 {	
 	glEnable(GL_DEPTH_TEST);
 	getModule<Window>().getWindow().clear(37.f, 37.f, 37.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	getModule<GUI>().render();
 
 	getModule<World>().render();
 
@@ -85,8 +97,7 @@ void Application::render()
 		ImGui::SFML::Render(getModule<Window>().getWindow());
 	}
 	#endif
-
-
+	
 	getModule<Window>().render();
 }
 int Application::run()
