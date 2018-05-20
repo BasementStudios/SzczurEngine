@@ -10,6 +10,7 @@
 #include <Szczur/Modules/Script/Script.hpp>
 
 #include "BattlePawn.hpp"
+#include "BattleSkill.hpp"
 
 namespace rat {
 
@@ -60,6 +61,10 @@ public:
 
 	/// Update position for pawn (remove overlaps)
 	void fixPosition(BattlePawn& pawn);
+
+// Controller
+
+	void updateController();
 
 // Scripts
 

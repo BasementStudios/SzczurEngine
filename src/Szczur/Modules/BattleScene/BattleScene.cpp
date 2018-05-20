@@ -12,6 +12,7 @@ namespace rat {
 
 BattleScene::BattleScene() {
 	LOG_INFO("Initializing BattleScene module");
+	initScript();
 	init();
 
 	// Test
@@ -19,8 +20,8 @@ BattleScene::BattleScene() {
 	fieldPos.x = (window.getSize().x-fieldSize.x)/2.f;
 	fieldPos.y = window.getSize().y-fieldSize.y-100;
 	BattlePawn* pawn = addPawn("Assets/Battle/pawn_1");
+	changePawn(pawn);
 	changeSkill("Dash in right");
-	setPawn(pawn);
 
 	LOG_INFO("Module BattleScene initialized");
 }
@@ -46,14 +47,11 @@ void BattleScene::update(float deltaTime) {
 		addPawn("Assets/Battle/pawn_1", sf::Vector2f(input.getMousePosition()));
 	}
 
-	if(controlledPawn != nullptr) {
-		controlledPawn->updateController(deltaTime);
+	for(auto& obj : pawns) {
+		obj->update(deltaTime);
 	}
 
-	if(controlledSkill != nullptr) {
-		controlledSkill->updateController(deltaTime);
-	}
-
+	updateController();
 }
 
 void BattleScene::render() {	
@@ -156,10 +154,42 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 		--tries;
 	} 
 	while(checkAllAgain);
+}	
+// ========== Controller ========== 
+
+void BattleScene::updateController() {
+
+	BattlePawn* selectedPawn = nullptr;
+	auto& input = getModule<Input>().getManager();
+	for(auto itr = pawns.rbegin(); itr<pawns.rend(); ++itr) {
+		if((*itr)->hitTest(sf::Vector2f(input.getMousePosition()))) {
+			selectedPawn = itr->get();
+			break;
+		}
+	}
+
+	if(controlledPawn != nullptr) {
+		controlledPawn->updateController();
+	}
+	if(controlledSkill != nullptr) {
+		controlledSkill->updateController(selectedPawn);
+	}
 }
 
-void BattleScene::initScript() {
+// ========== Scripts ========== 
 
+void BattleScene::initScript() {
+	auto& script = getModule<Script>();
+	auto module = script.newModule("BattleScene");
+	script.initClasses<BattlePawn, BattleSkill>(); 
+
+	// TEMPORARY	
+	auto moduleUtility = script.newModule("Utility");
+	auto classClock = script.newClass<sf::Clock>("Clock", "Utility");
+	classClock.set("new", sol::constructors<sf::Clock()>());
+	classClock.set("restart", &sf::Clock::restart);
+	classClock.set("elapsed", [](sf::Clock& clock){return clock.getElapsedTime().asSeconds();});
+	classClock.init();
 }
 
 }

@@ -1,18 +1,49 @@
 -- Skill: Move
 local skill = THIS:newSkill("Dash in right")
 
-skill:setType("CURSOR")
+skill:setType("SPACE")
 
-function skill:onActive() 
-	skill:renderCircle(30)
+function skill:onProvide(canvas) 
+	self:renderCircle(canvas, 20)
+end
+
+function skill:onInit()
+	self.angle = self:getPawn():getAngleToPointer()
+	self.clock = Utility.Clock:new()
+	self:getPawn():setFlip(self:getPawn():getDirection(self.angle))
 end
 
 function skill:onUpdate(dt)
-	local angle = self:getPawn():getAngleToPoiner()
-	self:getPawn():moveInDirection(angle, dt*100)
+	self:getPawn():moveInDirection(self.angle, dt*700)
+	if(self.clock:elapsed()>0.20) then
+		self:getPawn():setFrame(0)
+		self:kill()
+		local skill_1 = self:getPawn():useSkill("Dash in right : hit")
+	elseif(self.clock:elapsed()>0.10) then
+		self:getPawn():setFrame(3)
+	else
+		self:getPawn():setFrame(2)
+	end
 end
 
+-- hit
+local hit = THIS:newSkill("Dash in right : hit")
 
+function hit:onInit()
+	self.clock = Utility.Clock.new()
+end
+
+function hit:onUpdate(dt)
+	-- print("value:", self.base)
+	if self.clock:elapsed()>0.20 then
+		self:getPawn():setFrame(0)
+		self:kill()
+	elseif self.clock:elapsed()>0.10 then
+		self:getPawn():setFrame(5)
+	else
+		self:getPawn():setFrame(4)
+	end
+end
 
 -- -- Skill: Move
 -- local skill = THIS:newSkill("Dash")

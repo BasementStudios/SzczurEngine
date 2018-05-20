@@ -2,31 +2,33 @@
 
 #include <Szczur/Modules/Input/Input.hpp>
 
+#include "BattlePawn.hpp"
+
 namespace rat {
 
 // ========== Constructors ==========
 
 BattleSkill::BattleSkill(BattlePawn* pawn, const std::string& name) 
-	: pawn(pawn), name(name), input(*detail::globalPtr<Input>) {
+	: pawn(pawn), name(name), input(detail::globalPtr<Input>->getManager()) {
 }
 
 // ========== Main ==========
 
 void BattleSkill::init() {
 	if(onInit.valid()) {
-		onInit(this*);
+		onInit(*this);
 	}
 }
 
 void BattleSkill::update(float deltaTime) {
 	if(onUpdate.valid()) {
-		onUpdate(this*, deltaTime);
+		onUpdate(*this, deltaTime);
 	}
 }
 
 // ========== Getters ==========
 
-void BattleSkill::getPawn() {
+BattlePawn* BattleSkill::getPawn() {
 	return pawn;
 }
 
@@ -39,6 +41,10 @@ const std::string& BattleSkill::getName() const {
 	return name;
 }
 
+size_t BattleSkill::getType() const {
+	return selectType;
+}
+
 // ========== Manipulations ==========
 
 void BattleSkill::kill() {
@@ -46,18 +52,31 @@ void BattleSkill::kill() {
 }
 
 void BattleSkill::setType(size_t type) {
-	this->type = type;
+	selectType = type;
 }
 
 // ========== Controller ==========
 
-void BattleSkill::renderCircle(float radius) {
+void BattleSkill::renderCircle(sf::RenderTarget& canvas, float radius) {
 	sf::CircleShape shape(radius);
 	shape.setFillColor({0,0,0,0});
 	shape.setOutlineColor({255,0,150,150});
 	shape.setOutlineThickness(-2);
 	shape.setOrigin(radius, radius);
-	shape.setPosition(sf::Vector2f(input.getManager().getMousePosition()));
+	shape.setPosition(sf::Vector2f(input.getMousePosition()));
+	canvas.draw(shape);
+}
+
+void BattleSkill::renderController(sf::RenderTarget& canvas) {
+	if(onProvide.valid()) {
+		onProvide(this, canvas);
+	}
+}
+
+void BattleSkill::updateController(BattlePawn* selectedPawn) {
+	if(selectType & SELECT_SPACE && input.isPressed(Mouse::Left)) {
+		getPawn()->useSkill(this);
+	}
 }
 
 // ========== Scripts ==========
@@ -67,35 +86,55 @@ void BattleSkill::initScript(Script& script) {
 
 	object.set("setType", [](BattleSkill& skill, sol::variadic_args args){
 		size_t type = 0;
-		for(auto& obj : args) {
-			if(obj.get<std::string>() == "AUTO") {
-				type |= SELECT_AUTO;
+		for(const std::string& obj : args) {
+
+			if(obj == "SPACE") {
+				type |= SELECT_SPACE;
 			}
-			else if(obj.get<std::string>() == "CURSOR") {
-				type |= SELECT_CURSOR;
-			}
-			else if(obj.get<std::string>() == "ENEMY") {
+			else if(obj == "ENEMY") {
 				type |= SELECT_ENEMY;
 			}
-			else if(obj.get<std::string>() == "FRIEND") {
+			else if(obj == "FRIEND") {
 				type |= SELECT_FRIEND;
 			}
-			else if(obj.get<std::string>() == "OBJECT") {
+			else if(obj == "OBJECT") {
 				type |= SELECT_OBJECT;
 			}
-			else if(obj.get<std::string>() == "ANY") {
-				type |= SELECT_ANY;
+			else if(obj == "SELF") {
+				type |= SELECT_SELF;
 			}
 		}
 		skill.setType(type);
 	});
+	object.set("getName", &BattleSkill::getName);
 	object.set("onUpdate", &BattleSkill::onUpdate);
 	object.set("onInit", &BattleSkill::onInit);
-	object.set("onActive", &BattleSkill::onActive);
+	object.set("onProvide", &BattleSkill::onProvide);
 	object.set("getPawn", &BattleSkill::getPawn);
 	object.set("renderCircle", &BattleSkill::renderCircle);
+	object.set("kill", &BattleSkill::kill);
+	object.set(sol::meta_function::index, &BattleSkill::getVariable);
+	object.set(sol::meta_function::new_index, &BattleSkill::setVariable);
 
 	object.init();
+}
+
+void BattleSkill::setVariable(std::string key, sol::stack_object object) {
+	auto itr = data.find(key);
+	if(itr == data.end()) {
+		data.insert(itr, {std::move(key), std::move(object)});
+	}
+	else {
+		itr->second = sol::object(std::move(object));
+	}
+}
+
+sol::object BattleSkill::getVariable(const std::string& key) {
+	auto itr = data.find(key);
+	if(itr == data.end()) {
+		return sol::lua_nil;
+	}
+	return itr->second;
 }
 
 // ========== BattleSkillMove ==========

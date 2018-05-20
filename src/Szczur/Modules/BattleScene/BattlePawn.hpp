@@ -6,6 +6,8 @@ namespace rat {
 
 class Input;
 class BattleScene;
+class BattleSkill;
+class Script;
 
 class BattlePawn {
 	using RenderTarget = sf::RenderTarget;
@@ -32,6 +34,12 @@ public:
 	///
 	float getColliderRadius() const;
 
+	/// Check collision with point
+	bool hitTest(const sf::Vector2f& point) const;
+	
+	/// (angle in format -pi..pi), 1:left, 0:right
+	bool getDirection(float angle);
+
 // Manipulations
 
 	/// Set position with collision callculation
@@ -51,7 +59,7 @@ public:
 	void moveRaw(const sf::Vector2f& vector);
 
 	///
-	float getAngleTo();
+	float getAngleTo(const sf::Vector2f& pos);
 
 	///
 	float getAngleToPointer();
@@ -73,11 +81,28 @@ public:
 
 // Skills
 
-	///
+	/// Add new skill for pawn
 	BattleSkill* newSkill(const std::string& skillName);
+	
+	/// Create and use skill wihout name
+	BattleSkill* newInstaSkill();
+
+	/// Get skill by name
+	BattleSkill* getSkill(const std::string& skillName);
+
+	/// Use skill 
+	BattleSkill* useSkill(BattleSkill* skill);
+
+	/// Use skill by name
+	BattleSkill* useSkill(const std::string& skillName);
+
+// Visual
 
 	///
-	BattleSkill* getSkill(const std::string& skillName);
+	void setFrame(int frame);
+
+	///
+	void setFlip(bool flag);
 
 // Scripts
 
@@ -87,25 +112,39 @@ public:
 	/// Run script for this pawn
 	void runScript(const std::string& filePath);
 
+
 private:
 
-	// Main
+// Visual
+
+	/// Get texture rect by frame
+	sf::IntRect calculateTextureRect(int frame);
+
+private:
+
+// Main
+
 	BattleScene& battleScene;
 	sf::Vector2f pos{0,0};
 	float colliderRadius = 20.f;
 
-	// Visual
+// Visual
+	
 	sf::Texture texture;
 	sf::Vector2i frameSize;
+	int frame = 0;
+	int framesInRow = 1;
+	bool flip = false;
 	bool isTexture = false;
 
-	// Controller
+// Controller
+	
 	Input& input;
 
-	// Skills
+// Skills
+	
 	std::vector<std::unique_ptr<BattleSkill>> skills;
 	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
-
 };
 
 }

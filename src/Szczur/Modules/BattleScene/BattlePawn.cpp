@@ -1,5 +1,7 @@
 #include "BattlePawn.hpp"
 
+#include <cmath>
+
 #include <json.hpp>
 using Json = nlohmann::json;
 
@@ -7,6 +9,7 @@ using Json = nlohmann::json;
 #include <Szczur/Modules/Script/Script.hpp>
 
 #include "BattleScene.hpp"
+#include "BattleSkill.hpp"
 
 namespace rat {
 
@@ -19,8 +22,16 @@ BattlePawn::BattlePawn(BattleScene& battleScene)
 // ========== Main ========== 
 
 void BattlePawn::update(float deltaTime) {
-	for(auto& obj : skills) {
+	for(auto& obj : activeSkills) {
 		obj->update(deltaTime);
+	}
+	for(auto itr = activeSkills.begin(); itr<activeSkills.end(); ) {
+		if((*itr)->isFinished()) {
+			activeSkills.erase(itr);
+		}
+		else {
+			++itr;
+		}
 	}
 }
 
@@ -30,7 +41,8 @@ void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
 	if(isTexture) {
 		sf::Sprite sprite;
 		sprite.setTexture(texture);
-		sprite.setTextureRect({0, 0, frameSize.x, frameSize.y});
+		sprite.setTextureRect(calculateTextureRect(frame));
+		sprite.setScale(1-2*flip, 1);
 		sprite.setOrigin(frameSize.x/2.f, frameSize.y);
 		sprite.setPosition(pos);
 		canvas.draw(sprite);
@@ -52,6 +64,15 @@ const sf::Vector2f& BattlePawn::getPosition() const {
 }
 float BattlePawn::getColliderRadius() const {
 	return colliderRadius;
+}
+
+bool BattlePawn::hitTest(const sf::Vector2f& point) const {
+	sf::Vector2f d = pos - point;
+	return std::sqrt(d.x*d.x+d.y*d.y)<colliderRadius;
+}
+
+bool BattlePawn::getDirection(float angle) {
+	return std::fabs(angle)>3.14159f/2.f;
 }
 
 // ========== Manipulations ========== 
@@ -101,28 +122,27 @@ float BattlePawn::getAngleToPointer() {
 void BattlePawn::moveInDirection(float angle, float distance) {
 	pos.x += std::cos(angle)*distance;
 	pos.y += std::sin(angle)*distance;
+	battleScene.fixPosition(*this);
 }
-
 
 void BattlePawn::loadPawn(const std::string& dirPath) {
 	Json config;
 	std::ifstream(dirPath+"/config.json") >> config;
 	frameSize.x = config["frameSize"][0];
 	frameSize.y = config["frameSize"][1];
+	framesInRow = config["framesInRow"];
 	isTexture = texture.loadFromFile(dirPath+"/"+config["texture"].get<std::string>());
+	if(config["skills"].is_null() == false) {
+		for(auto& obj : config["skills"]) {
+			runScript(dirPath+"/"+obj.get<std::string>());
+		}
+	}
 }
 
 // ========== Controller ========== 
 
 void BattlePawn::renderController(RenderTarget& canvas) {
 
-	sf::CircleShape cursor(colliderRadius);
-	cursor.setOrigin(colliderRadius, colliderRadius);
-	cursor.setFillColor({0,0,0,0});
-	cursor.setOutlineThickness(-2);
-	cursor.setOutlineColor({255,0,150,200});
-	cursor.setPosition(sf::Vector2f(input.getManager().getMousePosition()));
-	canvas.draw(cursor);
 }
 
 void BattlePawn::updateController() {
@@ -135,9 +155,15 @@ BattleSkill* BattlePawn::newSkill(const std::string& skillName) {
 	return skills.emplace_back(new BattleSkill(this, skillName)).get();
 }
 
+BattleSkill* BattlePawn::newInstaSkill() {
+	BattleSkill* ret = activeSkills.emplace_back(new BattleSkill(this, "")).get();
+	ret->init();
+	return ret;
+}
+
 BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
-	auto& result = std::find(skills.begin(), skills.end(), 
-		[&skillName](const auto& obj){ return obj->getName()==skillName; }
+	auto result = std::find_if(skills.begin(), skills.end(), 
+		[&](const auto& obj){ return obj->getName()==skillName; }
 	);
 	if(result != skills.end()) {
 		return result->get();
@@ -147,16 +173,51 @@ BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
 	}
 }
 
-// ========== Skills ========== 
+BattleSkill* BattlePawn::useSkill(BattleSkill* skill) {
+	BattleSkill* ret = activeSkills.emplace_back(new BattleSkill(*skill)).get();
+	ret->init();
+	return ret;
+}
+
+BattleSkill* BattlePawn::useSkill(const std::string& skillName) {
+	return useSkill(getSkill(skillName));
+}
+
+// ========== Visual ========== 
+
+void BattlePawn::setFrame(int frame) {
+	this->frame = frame;
+}
+
+void BattlePawn::setFlip(bool flag) {
+	flip = flag;
+}
+
+sf::IntRect BattlePawn::calculateTextureRect(int frame) {
+	int x = frame % framesInRow;
+	int y = frame / framesInRow;
+	return sf::IntRect(frameSize.x*x+x, frameSize.y*y+y, frameSize.x, frameSize.y);
+}
+
+// ========== Scripts ========== 
 
 void BattlePawn::initScript(Script& script) {
 	auto object = script.newClass<BattlePawn>("BattlePawn", "BattleScene");
 
 	object.set("newSkill", &BattlePawn::newSkill);
+	object.set("newInstaSkill", &BattlePawn::newInstaSkill);
+	object.setOverload("useSkill", 
+		sol::resolve<BattleSkill*(BattleSkill*)>(&BattlePawn::useSkill), 
+		sol::resolve<BattleSkill*(const std::string&)>(&BattlePawn::useSkill)
+	);
+	object.set("getSkill", &BattlePawn::getSkill);
 	object.set("getAngleTo", &BattlePawn::getAngleTo);
 	object.set("getAngleToPointer", &BattlePawn::getAngleToPointer);
 	object.set("moveInDirection", &BattlePawn::moveInDirection);
-	
+	object.set("setFrame", &BattlePawn::setFrame);
+	object.set("setFlip", &BattlePawn::setFlip);
+	object.set("getDirection", &BattlePawn::getDirection);
+
 	object.init();
 }
 

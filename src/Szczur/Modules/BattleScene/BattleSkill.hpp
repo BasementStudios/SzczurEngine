@@ -9,6 +9,7 @@
 namespace rat {
 
 class BattlePawn;
+class InputManager;
 
 class BattleSkill {
 public:
@@ -32,10 +33,13 @@ public:
 	bool isFinished();
 
 	///
-	void getPawn();
+	BattlePawn* getPawn();
 
 	///
 	const std::string& getName() const;
+
+	///
+	size_t getType() const;
 	
 // Manipulations
 
@@ -48,9 +52,21 @@ public:
 // Controller
 
 	///
-	void renderCircle(float radius);
+	void renderCircle(sf::RenderTarget& canvas, float radius);
+
+	///
+	void renderController(sf::RenderTarget& canvas);
+
+	///
+	void updateController(BattlePawn* selectedPawn);
 
 // Scripts
+
+	///
+	void setVariable(std::string key, sol::stack_object object);
+
+	/// 
+	sol::object getVariable(const std::string& key);
 
 	///
 	static void initScript(Script& script);
@@ -60,27 +76,31 @@ protected:
 	BattlePawn* pawn = nullptr;
 
 	/// Binary mask
-	size_t selectType = SELECT_AUTO;
+	size_t selectType = SELECT_SPACE;
 
 	bool updateStatus = false;
 	bool killed = false;
 	std::string name;
 
-	Input& input;
+	InputManager& input;
+
+// Scripts
+
+	/// Non-C++ variables
+	std::unordered_map<std::string, sol::object> data;
 
 public:
 
 	sol::function onInit;
 	sol::function onUpdate;
-	sol::function onActive;
+	sol::function onProvide;
 
 	enum SELECT_ {
-		SELECT_AUTO = 1,
-		SELECT_CURSOR = 1<<1,
+		SELECT_SPACE = 1,
 		SELECT_ENEMY = 1<<2,
 		SELECT_FRIEND = 1<<3,
 		SELECT_OBJECT = 1<<4,
-		SELECT_ANY = SELECT_ENEMY | SELECT_FRIEND | SELECT_OBJECT
+		SELECT_SELF = 1<<5
 	};
 
 };
