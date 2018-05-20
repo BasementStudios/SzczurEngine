@@ -36,7 +36,7 @@ namespace rat {
 
     private:
         DialogGUI _dialogGUI;
-        DialogManager* _dialogManager;
+        DialogManager* _dialogManager = nullptr;
 
         void _initScript();
     };
