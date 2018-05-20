@@ -28,7 +28,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         
-        scroller.setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        scroller.setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"), 140u);
         scroller.setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         scroller.setBoundTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
@@ -45,7 +45,7 @@ namespace rat
 
 
         scroll->setSize(100, 200);
-        scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"), 139u);
         scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
         scroll->setPosition(100.f, 100.f);

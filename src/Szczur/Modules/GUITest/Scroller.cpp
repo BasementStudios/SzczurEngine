@@ -37,10 +37,12 @@ namespace rat
         _path.setTexture(*texture);
         _recalcAll();
     }
-    void Scroller::setScrollerTexture(const sf::Texture* texture)
+    void Scroller::setScrollerTexture(sf::Texture* texture, int boundHeight)
     {
         _isScrollerSet = true;
-        _scroller.setTexture(*texture);
+        auto texWidth = float(texture->getSize().x);
+        auto halfWidth = (int)(round(texWidth/2.f));
+        _scroller.setTexture(texture, halfWidth, boundHeight);
         _recalcAll();
     }
 
@@ -60,6 +62,15 @@ namespace rat
         _proportion = proportion;
         if(_isScrollerSet) _recalcScrollerPosByProp();
     }
+
+    void Scroller::setScrollerPropHeight(float propY)
+    {
+        if(propY < 1.f) propY = 1.f;
+        _scrollerHeightProp = propY;
+        _recalcScrollerSize();
+        _recalcScrollerPosByProp();
+    }
+
     void Scroller::moveProportion(float proportionOffset)
     {
         setProportion(_proportion + proportionOffset);
@@ -123,16 +134,21 @@ namespace rat
 
     void Scroller::_recalcScrollerSize()
     {
-        sf::Vector2f newScale = _scroller.getScale();
-        auto texSize = sf::Vector2f{float(_scroller.getTextureRect().width), float(_scroller.getTextureRect().height)};
-        newScale.x = float(_size.x)/texSize.x;
-        if(_widthProp < 1.f) 
-        {
-            newScale.x *= _widthProp;
-        }
-        newScale.y = float(_scrollerLength) / texSize.y;
+        auto innerTexSize = _scroller.getInnerTextureRect();
+        auto texSize = sf::Vector2i{innerTexSize.left * 2, innerTexSize.top * 2};
+        float scale = float(_size.x)/float(texSize.x);
+        auto newScale = sf::Vector2f{scale, scale};
 
         _scroller.setScale(newScale);
+
+        auto newSize = _size;
+        if(_widthProp < 1.f) 
+        {
+            newSize.x = _widthProp * _size.x;
+        }
+        newSize.y = _getRealPathLength() / _scrollerHeightProp;
+
+        _scroller.setSize(newSize);
     }
     
     void Scroller::_recalcScrollerPos()
@@ -148,7 +164,7 @@ namespace rat
         if(newY < maxTop) newY = maxTop;
         if(newY > maxBottom) newY = maxBottom;
 
-        float scrollerWidth = _scroller.getGlobalBounds().width;
+        float scrollerWidth = _scroller.getSize().x;
         float width = float(_size.x);
 
         float xShift = (width - scrollerWidth) / 2.f;
@@ -170,9 +186,8 @@ namespace rat
 
     void Scroller::_recalcBoundPos()
     {
-        /*_upperBound.setPosition(_position);*/
         float boundHeight = _bottomBound.getGlobalBounds().height;
-        _bottomBound.setPosition(0.f/* + _position.x*/, /*_position.y + */float(_size.y));
+        _bottomBound.setPosition(0.f, float(_size.y));
     }
     void Scroller::_recalcBoundSize()
     {
@@ -185,7 +200,7 @@ namespace rat
     float Scroller::_getRealPathLength() const
     {
         //if(!_isPathSet) return 0.f;
-        return _path.getGlobalBounds().height - _scroller.getGlobalBounds().height;
+        return _path.getGlobalBounds().height - _scroller.getSize().y;
     }
     float Scroller::_getRealBoundLength() const
     {

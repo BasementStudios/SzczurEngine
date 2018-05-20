@@ -15,7 +15,7 @@ namespace rat {
 /*
         void setSize(size_t x, size_t y);
         void setSize(sf::Vector2u size);*/
-        void setScrollerTexture(sf::Texture* texture);
+        void setScrollerTexture(sf::Texture* texture, int boundsHeight);
         void setPathTexture(sf::Texture* texture);
         void setBoundsTexture(sf::Texture* texture);        
 
