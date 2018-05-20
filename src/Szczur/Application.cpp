@@ -14,16 +14,16 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
-	initModule<MoviePlayer>();
+	initModule<Cinematics>();
 	// For testing `Script`
-/*	getModule<MoviePlayer>().setFontPath("Assets/Movies/font.otf");
-	getModule<MoviePlayer>().loadFromFile("Assets/Movies/movie.mp4");
-	getModule<MoviePlayer>().addLoop(10000000,15000000, [](){LOG_INFO("text1");}, "text1", 25000000, [](){LOG_INFO("text2");},"text2", 40000000);
-	getModule<MoviePlayer>().play();*/
+/*	getModule<Cinematics>().setFontPath("Assets/Movies/font.otf");
+	getModule<Cinematics>().loadFromFile("Assets/Movies/movie.mp4");
+	getModule<Cinematics>().addLoop(10000000,15000000, [](){LOG_INFO("text1");}, "text1", 25000000, [](){LOG_INFO("text2");},"text2", 40000000);
+	getModule<Cinematics>().play();*/
 
 	LOG_INFO("Modules initialized");
 
-	getModule<Script>().scriptFile("Assets/Movies/MoviePlayerTest.lua");
+	getModule<Script>().scriptFile("Assets/Movies/CinematicsTest.lua");
 
 	
 
@@ -63,7 +63,7 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-	getModule<MoviePlayer>().update();
+	getModule<Cinematics>().update();
 
 	#ifdef EDITOR
 	{
@@ -84,7 +84,7 @@ void Application::render()
 	getModule<Window>().clear();
 	// For testing `Script`
 	//_modules.getModule<BattleField>().render();
-	getModule<MoviePlayer>().render();
+	getModule<Cinematics>().render();
 
 	
 	#ifdef EDITOR

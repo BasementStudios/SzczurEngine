@@ -5,7 +5,7 @@
 #include <Szczur/Modules/Input/Input.hpp>
 #include <Szczur/Modules/Window/Window.hpp>
 #include <Szczur/Modules/Script/Script.hpp>
-#include <Szczur/Modules/Cinematics/MoviePlayer.hpp>
+#include <Szczur/Modules/Cinematics/Cinematics.hpp>
 
 #include <Szczur/Utility/Modules/ModulesHolder.hpp>
 
@@ -48,7 +48,7 @@ public:
 private:
 
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, MoviePlayer> _modules;
+	ModulesHolder<Window, Input, Script, Cinematics> _modules;
 
 };
 

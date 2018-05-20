@@ -1,23 +1,23 @@
-#include "MoviePlayer.hpp"
+#include "Cinematics.hpp"
 
 namespace rat
 {
-MoviePlayer::MoviePlayer()
+Cinematics::Cinematics()
 {
-    LOG_INFO("Initializing MoviePlayer module");
+    LOG_INFO("Initializing Cinematics module");
     initScript();
     auto& w = getModule<Window>();
     w.pushGLStates();
     canvas.create(w.getWindow().getSize().x, w.getWindow().getSize().y);
     w.popGLStates();
-    LOG_INFO("Module MoviePlayer initialized");
+    LOG_INFO("Module Cinematics initialized");
     
 }
-MoviePlayer::~MoviePlayer()
+Cinematics::~Cinematics()
 {
-    LOG_INFO("Module MoviePlayer destructed");
+    LOG_INFO("Module Cinematics destructed");
 }
-bool MoviePlayer::loadFromFile(const char * filename)
+bool Cinematics::loadFromFile(const char * filename)
 {
     av_register_all();
 
@@ -79,7 +79,7 @@ bool MoviePlayer::loadFromFile(const char * filename)
     return true;
 }
 
-void MoviePlayer::jumpTo(const unsigned int &seekTarget)
+void Cinematics::jumpTo(const unsigned int &seekTarget)
 {
     if(m_sound)
     {
@@ -109,7 +109,7 @@ void MoviePlayer::jumpTo(const unsigned int &seekTarget)
     }
 }
 
-void MoviePlayer::play()
+void Cinematics::play()
 {
     m_play = true;
     auto &window = getModule<Window>().getWindow(); 
@@ -147,22 +147,22 @@ void MoviePlayer::play()
 
 }
 
-void MoviePlayer::setFont(sf::Font &font)
+void Cinematics::setFont(sf::Font &font)
 {
     m_font = font;
 }
 
-void MoviePlayer::setFontPath(const char *filename)
+void Cinematics::setFontPath(const char *filename)
 {
     m_font.loadFromFile(filename);
 }
 
-void MoviePlayer::addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
+void Cinematics::addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
 {
     std::shared_ptr<VideoLoop> loop = std::make_shared<VideoLoop>(startTime,endTime,fevent1,text1,jump1,fevent2,text2,jump2);
     m_loops.push_back(loop);
 }
-void MoviePlayer::setTextOnePosition(int x,int y)
+void Cinematics::setTextOnePosition(int x,int y)
 {
     m_isInit = true;
     for(auto p : m_loops)
@@ -171,7 +171,7 @@ void MoviePlayer::setTextOnePosition(int x,int y)
     }
 }
 
-void MoviePlayer::setTextTwoPosition(int x,int y)
+void Cinematics::setTextTwoPosition(int x,int y)
 {
     m_isInit = true;
     for(auto p : m_loops)
@@ -180,7 +180,7 @@ void MoviePlayer::setTextTwoPosition(int x,int y)
     }
 }
 
-void MoviePlayer::setTextScale(float x,float y)
+void Cinematics::setTextScale(float x,float y)
 {
     for(auto p: m_loops)
     {
@@ -188,23 +188,23 @@ void MoviePlayer::setTextScale(float x,float y)
     }
 }
 
-void MoviePlayer::initScript()
+void Cinematics::initScript()
 {
     Script& script = getModule<Script>();
-    auto module = script.newModule("MoviePlayer");
-   // module.set("addLoop", &MoviePlayer::addLoop, this);
+    auto module = script.newModule("Cinematics");
+   // module.set("addLoop", &Cinematics::addLoop, this);
     module.set_function("addLoop", [this](int startTime, int endTime, sol::function fevent1, const std::string& text1, int jump1, sol::function fevent2, const std::string& text2, int jump2) {
         this->addLoop(startTime, endTime, std::function<void()>(fevent1), text1.c_str(), jump1, std::function<void()>(fevent2), text2.c_str(), jump2);
     });
 
-    module.set_function("play", &MoviePlayer::play, this);
-    module.set_function("loadFromFile", &MoviePlayer::loadFromFile, this);
-    module.set_function("setFontPath", &MoviePlayer::setFontPath, this);
-    module.set_function("stop", &MoviePlayer::stop, this);
+    module.set_function("play", &Cinematics::play, this);
+    module.set_function("loadFromFile", &Cinematics::loadFromFile, this);
+    module.set_function("setFontPath", &Cinematics::setFontPath, this);
+    module.set_function("stop", &Cinematics::stop, this);
 
 }
 
-void MoviePlayer::update()
+void Cinematics::update()
 {
     if(!m_play) return;
     
@@ -410,7 +410,7 @@ void MoviePlayer::update()
 
 }
 
-void MoviePlayer::render()
+void Cinematics::render()
 {
     if(m_play)
     {
@@ -427,7 +427,7 @@ void MoviePlayer::render()
     }
 }
 
-void MoviePlayer::stop()
+void Cinematics::stop()
 {
     if(m_play)
     {

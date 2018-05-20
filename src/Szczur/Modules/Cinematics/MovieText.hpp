@@ -7,16 +7,16 @@
 
 namespace rat
 {
-class LoopText
+class MovieText
 {
     public:
         //typedef void(*callme)();
          //using callme = std::function<void()>;
          typedef std::function<void()> callme;
 
-        LoopText(callme callback,const char * text,int jump,unsigned int size = 50u);
+        MovieText(callme callback,const char * text,int jump,unsigned int size = 50u);
         
-        ~LoopText();
+        ~MovieText();
 
         bool isSet();
 

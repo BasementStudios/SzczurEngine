@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "LoopText.hpp"
+#include "MovieText.hpp"
 
 
 namespace rat
@@ -37,7 +37,7 @@ private:
     int m_currentTime;
     int m_timeStart;
     int m_timeEnd;
-    LoopText *m_reply1;
-    LoopText *m_reply2;
+    MovieText *m_reply1;
+    MovieText *m_reply2;
 };
 }
