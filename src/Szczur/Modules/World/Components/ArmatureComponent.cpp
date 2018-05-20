@@ -5,6 +5,7 @@
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
 namespace rat
@@ -109,5 +110,48 @@ namespace rat
             _armature->draw(target, states);
         }
     }
+
+	void ArmatureComponent::playAnim(const std::string& animationName, int playTimes)
+	{
+		if (_armature)
+		{
+			_armature->getAnimation()->play(animationName, playTimes);
+		}
+	}
+
+	void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTime, int playTimes)
+	{
+		if (_armature)
+		{
+			_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
+		}
+	}
+
+	void ArmatureComponent::setFlipX(bool flipX)
+	{
+		if (_armature)
+		{
+			_armature->getArmature()->setFlipX(flipX);
+		}
+	}
+
+	void ArmatureComponent::setSpeed(float speed)
+	{
+		if (_armature)
+		{
+			_armature->getAnimation()->timeScale = speed;
+		}
+	}
+
+	void ArmatureComponent::initScript(Script& script)
+	{
+		auto object = script.newClass<ArmatureComponent>("ArmatureComponent", "World");
+		object.set("play", &ArmatureComponent::playAnim);
+		object.set("fadeIn", &ArmatureComponent::fadeIn);
+		object.set("setFlipX", &ArmatureComponent::setFlipX);
+		object.set("setSpeed", &ArmatureComponent::setSpeed);
+		object.init();
+
+	}
 
 }

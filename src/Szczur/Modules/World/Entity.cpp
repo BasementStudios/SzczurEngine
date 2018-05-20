@@ -251,6 +251,7 @@ void Entity::initScript(Script& script) {
 	object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
 	object.set("getInteractable", &Entity::getComponentAs<InteractableComponent>);
 	object.set("getInputController", &Entity::getComponentAs<InputControllerComponent>);
+	object.set("getArmature", &Entity::getComponentAs<ArmatureComponent>);
 	object.set("move", [](Entity& entity, float x, float y, float z){entity.move({x,y,z});});
 	object.set("setPosition", [](Entity& entity, float x, float y, float z){entity.setPosition({x,y,z});});
 	object.set("rotate", [](Entity& entity, float x, float y, float z){entity.rotate({x,y,z});});

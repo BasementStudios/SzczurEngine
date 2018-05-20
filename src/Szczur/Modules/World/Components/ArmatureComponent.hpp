@@ -10,8 +10,9 @@
 
 namespace rat
 {
+	class Script;
 
-    class ArmatureComponent : public Component, public sf3d::Drawable
+	class ArmatureComponent : public Component, public sf3d::Drawable
     {
     private:
         dragonBones::SF3DArmatureDisplay* _armature = nullptr;
@@ -41,6 +42,14 @@ namespace rat
         virtual void saveToConfig(Json& config) const;
 
         void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+
+		// Scripts
+		void playAnim(const std::string& animationName, int playTimes = -1);
+		void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
+		void setFlipX(bool flipX);
+		void setSpeed(float speed);
+
+		static void initScript(Script& script);
     };
 
 }

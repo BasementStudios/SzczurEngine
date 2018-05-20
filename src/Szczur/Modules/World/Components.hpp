@@ -106,6 +106,7 @@ struct ComponentTraits
 		script.initClasses<ScriptableComponent>();
 		script.initClasses<InputControllerComponent>();
 		script.initClasses<InteractableComponent>();
+		script.initClasses<ArmatureComponent>();
 	}
 };
 
