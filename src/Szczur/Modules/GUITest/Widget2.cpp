@@ -31,9 +31,11 @@ namespace rat
 
     Widget2* Widget2::add(Widget2* child)
     {
-        _children.emplace_back(child);
+       auto result = _children.emplace_back(child);
         child->setParent(this);
         _recalcSize();
+
+		return result;
     }
     void Widget2::setParent(Widget2* parent)
     {
