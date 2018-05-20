@@ -1,23 +1,38 @@
 #pragma once
-#include "Szczur/Modules/Cinematics/MovieSound.hpp"
-#include "Szczur/Modules/Cinematics/VideoLoop.hpp"
-#include "Szczur/Application.hpp"
+#include <functional>
 
-class VideoLoop;
+#include <Szczur/Modules/Window/Window.hpp>
+#include <Szczur/Modules/Script/Script.hpp>
+#include <Szczur/Modules/Input/Input.hpp>
+#include <Szczur/Utility/Logger.hpp>
+
+#include "MovieSound.hpp"
+#include "VideoLoop.hpp"
 
 /*
  Main class of playing movies.  
  Just call loadFromFile(<filepath>) and play()
 */
-class MoviePlayer :public rat::Module<rat::Window>
+namespace rat
+{
+
+class MoviePlayer :public Module<Input,Window,Script>
 {
 public:
     /* callback */
-    typedef void(*callme)();
+    //typedef void(*callme)();
+    typedef std::function<void()> callme;
 
     MoviePlayer();
+    ~MoviePlayer();
 
+    // Disable coping
+	MoviePlayer(const MoviePlayer&) = delete;
+	MoviePlayer& operator = (const MoviePlayer&) = delete;
 
+	// Disable moving
+	MoviePlayer(MoviePlayer&&) = delete;
+	MoviePlayer& operator = (MoviePlayer&&) = delete;
 /*
     Simple method to load a movie. Type path to file and if everything will be ok function return true.
 */
@@ -30,10 +45,10 @@ public:
 */
     void play();
 
-
+  
 /*
     Method for video seeking. Better don't use it if you already used "addLoop"
-    "seekTarget" is time expressed with microseconds. 
+    "seekTarget" is a time expressed with microseconds. 
 */
     void jumpTo(const unsigned int &seekTarget);
 
@@ -65,7 +80,13 @@ public:
     void setTextScale(float x,float y);
 
 
+    void initScript();
 
+    void render();
+
+    void update();
+    
+    void stop();
 private:
     MovieSound          *m_sound = nullptr;
     AVFormatContext     *m_pFormatCtx = nullptr;
@@ -90,14 +111,22 @@ private:
     sf::Clock           *m_VClock;
     int                 m_videoStream;
     int                 m_audioStream;
-
+    int                 m_ISmax = 0;
     int                 m_jump =0;
     int                 m_lastDecodedTimeStamp=0;
     bool                m_isInit = false;
     sf::Font            m_font;
-
+    int                 m_IdeltaTime;
+    int                 m_IstartTime;
+    size_t              m_count;
+    int64_t             m_duration;
+    int                 m_FrameSize;
+    bool                m_play = true;
+    sf::Uint8*          m_data;
+    sf::Sprite          m_sprite;
     sf::RenderTexture canvas;
     std::vector<AVPacket*> m_audioSyncBuffer;
     std::vector<std::shared_ptr<VideoLoop> > m_loops;
   
 };
+}

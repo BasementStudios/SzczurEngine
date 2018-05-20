@@ -1,11 +1,21 @@
-#include "Szczur/Modules/Cinematics/MoviePlayer.hpp"
-#include "Szczur/Application.hpp"
+#include "MoviePlayer.hpp"
+
+namespace rat
+{
 MoviePlayer::MoviePlayer()
 {
-    auto& w = getModule<rat::Window>();
+    LOG_INFO("Initializing MoviePlayer module");
+    initScript();
+    auto& w = getModule<Window>();
     w.pushGLStates();
     canvas.create(w.getWindow().getSize().x, w.getWindow().getSize().y);
     w.popGLStates();
+    LOG_INFO("Module MoviePlayer initialized");
+    
+}
+MoviePlayer::~MoviePlayer()
+{
+    LOG_INFO("Module MoviePlayer destructed");
 }
 bool MoviePlayer::loadFromFile(const char * filename)
 {
@@ -101,9 +111,8 @@ void MoviePlayer::jumpTo(const unsigned int &seekTarget)
 
 void MoviePlayer::play()
 {
-    
-    auto &window = getModule<rat::Window>().getWindow(); 
-    auto& w = getModule<rat::Window>();
+    m_play = true;
+    auto &window = getModule<Window>().getWindow(); 
     for(auto p : m_loops)
     {
         p->setFont(m_font);
@@ -116,138 +125,165 @@ void MoviePlayer::play()
         m_jump = m_loops[m_ICurrentLoop]->change();
     }
  
-    int64_t duration = m_pFormatCtx->duration;
-    const int FrameSize = m_pCodecCtx->width * m_pCodecCtx->height * 3;
+    m_duration = m_pFormatCtx->duration;
+    m_FrameSize = m_pCodecCtx->width * m_pCodecCtx->height * 3;
 
-     sf::Uint8* Data = new sf::Uint8[m_pCodecCtx->width * m_pCodecCtx->height * 4];
+    m_data = new sf::Uint8[m_pCodecCtx->width * m_pCodecCtx->height * 4];
     
    
     m_im_video.create(m_pCodecCtx->width, m_pCodecCtx->height);
     m_im_video.setSmooth(false);
 
-    sf::Sprite sprite(m_im_video);
-    
+    m_sprite.setTexture(m_im_video);
     float x = window.getSize().x;
     float y = window.getSize().y;
-    sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
+    m_sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
   
     m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
     m_sound->play();
     m_VClock = new sf::Clock;
-    int IdeltaTime;
-    int IstartTime;
+ 
+    m_count =  m_loops.size();
 
-    size_t count =  m_loops.size();
-   
-    int ISmax = 0;
-  
-    while (window.isOpen())
+}
+
+void MoviePlayer::setFont(sf::Font &font)
+{
+    m_font = font;
+}
+
+void MoviePlayer::setFontPath(const char *filename)
+{
+    m_font.loadFromFile(filename);
+}
+
+void MoviePlayer::addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
+{
+    std::shared_ptr<VideoLoop> loop = std::make_shared<VideoLoop>(startTime,endTime,fevent1,text1,jump1,fevent2,text2,jump2);
+    m_loops.push_back(loop);
+}
+void MoviePlayer::setTextOnePosition(int x,int y)
+{
+    m_isInit = true;
+    for(auto p : m_loops)
     {
-       
-        sf::sleep(sf::milliseconds(1));
-        if((ISmax>m_sound->timeElapsed()*1000 && !m_syncAV&& ISmax>duration-4000000)||(m_sound->g_audioPkts.empty()&&ISmax>duration-4000000))
+        p->setPositionOne(sf::Vector2i(x,y));
+    }
+}
+
+void MoviePlayer::setTextTwoPosition(int x,int y)
+{
+    m_isInit = true;
+    for(auto p : m_loops)
+    {
+        p->setPositionTwo(sf::Vector2i(x,y));
+    }
+}
+
+void MoviePlayer::setTextScale(float x,float y)
+{
+    for(auto p: m_loops)
+    {
+        p->setScale(sf::Vector2f(x,y));
+    }
+}
+
+void MoviePlayer::initScript()
+{
+    Script& script = getModule<Script>();
+    auto module = script.newModule("MoviePlayer");
+   // module.set("addLoop", &MoviePlayer::addLoop, this);
+    module.set_function("addLoop", [this](int startTime, int endTime, sol::function fevent1, const std::string& text1, int jump1, sol::function fevent2, const std::string& text2, int jump2) {
+        this->addLoop(startTime, endTime, std::function<void()>(fevent1), text1.c_str(), jump1, std::function<void()>(fevent2), text2.c_str(), jump2);
+    });
+
+    module.set_function("play", &MoviePlayer::play, this);
+    module.set_function("loadFromFile", &MoviePlayer::loadFromFile, this);
+    module.set_function("setFontPath", &MoviePlayer::setFontPath, this);
+    module.set_function("stop", &MoviePlayer::stop, this);
+
+}
+
+void MoviePlayer::update()
+{
+    if(!m_play) return;
+    
+    auto &window = getModule<Window>().getWindow(); 
+    auto& w = getModule<Window>();
+
+    bool isDraw = false;
+
+    for(int i=0;i<3;i++)
+    {
+        if((m_ISmax>m_sound->timeElapsed()*1000 && !m_syncAV&& m_ISmax>m_duration-4000000)||(m_sound->g_audioPkts.empty()&&m_ISmax>m_duration-4000000))
         {
-            while(window.isOpen()&&!m_sound->g_videoPkts.empty())
+            if(!m_sound->g_videoPkts.empty())
             {
-                IstartTime = m_VClock->getElapsedTime().asMilliseconds();
+                m_IstartTime = m_VClock->getElapsedTime().asMilliseconds();
                 AVPacket *packet_ptr = m_sound->g_videoPkts.front();
 
                 auto decodedLength = avcodec_decode_video2(m_pCodecCtx, m_pFrame, &m_frameFinished, packet_ptr);
     
                 if(!sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize))
                 {
-                    break;
+                    stop();
                 }
                             
-                for (int i = 0, j = 0; i < FrameSize; i += 3, j += 4)
+                for (int i = 0, j = 0; i < m_FrameSize; i += 3, j += 4)
                 {
-                    Data[j + 0] = m_pFrameRGB->data[0][i + 0];
-                    Data[j + 1] = m_pFrameRGB->data[0][i + 1];
-                    Data[j + 2] = m_pFrameRGB->data[0][i + 2];
-                    Data[j + 3] = 255;
+                    m_data[j + 0] = m_pFrameRGB->data[0][i + 0];
+                    m_data[j + 1] = m_pFrameRGB->data[0][i + 1];
+                    m_data[j + 2] = m_pFrameRGB->data[0][i + 2];
+                    m_data[j + 3] = 255;
                 }
                 
-                m_im_video.update(Data);
-               // 
-                w.pushGLStates();
-                canvas.clear({0,0,0,0});
-        
-                canvas.draw(sprite);
+                m_im_video.update(m_data);
                 
-                w.draw(sf::Sprite(canvas.getTexture()));
-                w.popGLStates();
-          
-                m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
-                if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw();
-    
-                IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - IstartTime;
-                sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-IdeltaTime));
+                m_IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - m_IstartTime;
+                sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime));
+                return;
             }
-            for(auto p : m_sound->g_videoPkts)
+            else
             {
-                av_free_packet(p);
-               // av_free(p);
+                stop();
+                return;
             }
-            for(auto p : m_sound->g_audioPkts)
-            {
-                av_free_packet(p);
-                av_free(p);
-            }
-            sws_freeContext(m_sws_ctx);
-            av_free(m_buffer);
-            av_free(m_pFrameRGB);
-            av_free(m_pFrame);
-            avcodec_close(m_pCodecCtx);
-            avcodec_close(m_paCodecCtx);
-            avformat_close_input(&m_pFormatCtx);
-            canvas.display();
-            delete [] Data;
-            return;
         }
 
-        if(ISmax<m_sound->timeElapsed()*1000)
+        if(m_ISmax<m_sound->timeElapsed()*1000)
         {
-            ISmax = m_sound->timeElapsed()*1000;
+            m_ISmax = m_sound->timeElapsed()*1000;
         }
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
+        if(!m_loops.empty()) 
+        { 
+            if(m_loops[m_ICurrentLoop] && getModule<Input>().getManager().isPressed(Keyboard::Up)||getModule<Input>().getManager().isPressed(Keyboard::Down))
             {
-                window.close();
+                m_jump = m_loops[m_ICurrentLoop]->change();
             }
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+            if(m_loops[m_ICurrentLoop] && m_loops[m_ICurrentLoop]->getStartTime()<= m_ISmax && getModule<Input>().getManager().isPressed(Keyboard::Return))
             {
-                window.close();
-            }
-            if(!m_loops.empty()) 
-            {
-                if(m_loops[m_ICurrentLoop] && event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::Down))
+                m_loops[m_ICurrentLoop]->setDraw(false);
+                m_loops[m_ICurrentLoop] = nullptr;
+                if(m_play == false) return;
+                if(m_jump!=0) 
                 {
-                    m_jump = m_loops[m_ICurrentLoop]->change();
+                    jumpTo(m_jump);
                 }
-                if( m_loops[m_ICurrentLoop] && m_loops[m_ICurrentLoop]->getStartTime()<= ISmax &&event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Return)
+                m_jump =0;
+                m_ICurrentLoop++;
+                if(m_ICurrentLoop==m_count)
                 {
-                    m_loops[m_ICurrentLoop]->setDraw(false);
-                    m_loops[m_ICurrentLoop] = nullptr;
-                    if(m_jump!=0) 
-                    {
-                        jumpTo(m_jump);
-                    }
-                    m_jump =0;
-                    m_ICurrentLoop++;
-                    if(m_ICurrentLoop==count)
-                    {
-                        m_ICurrentLoop--;
-                    }
-                    else
-                    {
-                        m_jump = m_loops[m_ICurrentLoop]->startJump;
-                    }
-                    if(m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->setTime(ISmax);
+                    m_ICurrentLoop--;
                 }
+                else
+                {
+                    m_jump = m_loops[m_ICurrentLoop]->startJump;
+                }
+                if(m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->setTime(m_ISmax);
             }
+            
         }
+        
         AVPacket* packet_ptr = nullptr;
         
         if(m_sound->g_videoPkts.size() < 150)
@@ -306,9 +342,8 @@ void MoviePlayer::play()
             }
    
         }
-
         const auto pStream = m_pFormatCtx->streams[m_videoStream];
-        if(m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady() && !m_sound->g_videoPkts.empty())
+        if(!isDraw && m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady() && !m_sound->g_videoPkts.empty())
         {
             packet_ptr = m_sound->g_videoPkts.front();
             m_sound->g_videoPkts.pop_front();
@@ -319,27 +354,17 @@ void MoviePlayer::play()
             {
                 sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize);
                 
-                for (int i = 0, j = 0; i < FrameSize; i += 3, j += 4)
+                for (int i = 0, j = 0; i < m_FrameSize; i += 3, j += 4)
                 {
-                    Data[j + 0] = m_pFrameRGB->data[0][i + 0];
-                    Data[j + 1] = m_pFrameRGB->data[0][i + 1];
-                    Data[j + 2] = m_pFrameRGB->data[0][i + 2];
-                    Data[j + 3] = 255;
+                    m_data[j + 0] = m_pFrameRGB->data[0][i + 0];
+                    m_data[j + 1] = m_pFrameRGB->data[0][i + 1];
+                    m_data[j + 2] = m_pFrameRGB->data[0][i + 2];
+                    m_data[j + 3] = 255;
                 }
-                m_im_video.update(Data);
-
-                w.pushGLStates();
-                canvas.clear({0,0,0,0});
-
-                canvas.draw(sprite);
-            
-                canvas.display();
-                w.draw(sf::Sprite(canvas.getTexture()));
-                w.popGLStates();
-
-                if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw();
-                window.display();
-                
+                m_im_video.update(m_data);
+               
+                isDraw = true;
+        
                 int64_t timestamp = av_frame_get_best_effort_timestamp(m_pFrame);
                 int64_t startTime = pStream->start_time != AV_NOPTS_VALUE ? pStream->start_time : 0;
                 int64_t ms = 1000 * (timestamp - startTime) * av_q2d(pStream->time_base);
@@ -348,10 +373,11 @@ void MoviePlayer::play()
                 {
                     m_blockPts = ms;
                     m_sound->setPlayingOffset(sf::milliseconds(m_blockPts));
-                    ISmax = m_sound->timeElapsed()*1000;
-                    if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->setTime(ISmax);
+                    m_ISmax = m_sound->timeElapsed()*1000;
+                    if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->setTime(m_ISmax);
                     m_syncAV = false;
                 }
+              
                 
             }
            
@@ -369,68 +395,65 @@ void MoviePlayer::play()
             }
         }
         
+        
+       
+
         if(!m_loops.empty() && m_loops[m_ICurrentLoop]) 
         {
-            int result = m_loops[m_ICurrentLoop]->update(ISmax);
+            int result = m_loops[m_ICurrentLoop]->update(m_ISmax);
             if(result>=0&&!m_syncAV)
             {
                 jumpTo(result);
             }
         }
-    
     }
-    
-    
-    sws_freeContext(m_sws_ctx);
-    av_free(m_buffer);
-    av_free(m_pFrameRGB);
-    av_free(m_pFrame);
-    avcodec_close(m_pCodecCtx);
-    avcodec_close(m_paCodecCtx);
-    avformat_close_input(&m_pFormatCtx);
-    
-    delete [] Data;
 
-    return;
 }
 
-void MoviePlayer::setFont(sf::Font &font)
+void MoviePlayer::render()
 {
-    m_font = font;
-}
-
-void MoviePlayer::setFontPath(const char *filename)
-{
-    m_font.loadFromFile(filename);
-}
-
-void MoviePlayer::addLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
-{
-    std::shared_ptr<VideoLoop> loop = std::make_shared<VideoLoop>(startTime,endTime,fevent1,text1,jump1,fevent2,text2,jump2);
-    m_loops.push_back(loop);
-}
-void MoviePlayer::setTextOnePosition(int x,int y)
-{
-    m_isInit = true;
-    for(auto p : m_loops)
+    if(m_play)
     {
-        p->setPositionOne(sf::Vector2i(x,y));
+        auto& w = getModule<Window>();
+        w.pushGLStates();
+        canvas.clear({0,0,0,0});
+                    
+        canvas.draw(m_sprite);
+        if(!m_loops.empty() && m_loops[m_ICurrentLoop]) m_loops[m_ICurrentLoop]->draw(canvas);
+                    
+        canvas.display();
+        w.draw(sf::Sprite(canvas.getTexture()));
+        w.popGLStates();
     }
 }
 
-void MoviePlayer::setTextTwoPosition(int x,int y)
+void MoviePlayer::stop()
 {
-    m_isInit = true;
-    for(auto p : m_loops)
+    if(m_play)
     {
-        p->setPositionTwo(sf::Vector2i(x,y));
+        m_sound->stop();
+        for(auto p : m_sound->g_videoPkts)
+        {
+            av_free_packet(p);
+        // av_free(p);
+        }
+        for(auto p : m_sound->g_audioPkts)
+        {
+            av_free_packet(p);
+            av_free(p);
+        }
+        sws_freeContext(m_sws_ctx);
+        av_free(m_buffer);
+        av_free(m_pFrameRGB);
+        av_free(m_pFrame);
+        avcodec_close(m_pCodecCtx);
+        avcodec_close(m_paCodecCtx);
+        avformat_close_input(&m_pFormatCtx);
+        
+        delete [] m_data;
+        m_play = false;
+
     }
 }
 
-void MoviePlayer::setTextScale(float x,float y)
-{
-    for(auto p: m_loops)
-    {
-        p->setScale(sf::Vector2f(x,y));
-    }
 }

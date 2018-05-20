@@ -1,6 +1,7 @@
-#include "Szczur/Modules/Cinematics/MovieSound.hpp"
+#include "MovieSound.hpp"
 
-
+namespace rat
+{
 MovieSound::MovieSound(AVFormatContext* ctx, int index)
 : m_formatCtx(ctx)
 , m_audioStreamIndex(index)
@@ -151,4 +152,5 @@ void MovieSound::onSeek(sf::Time timeOffset)
     g_audioPkts.clear();
     avcodec_flush_buffers(m_codecCtx);
   //  g_newPktCondition.notify_one();
+}
 }

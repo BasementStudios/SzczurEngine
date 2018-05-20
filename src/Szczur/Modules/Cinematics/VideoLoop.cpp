@@ -1,5 +1,7 @@
-#include "Szczur/Modules/Cinematics/VideoLoop.hpp"
+#include "VideoLoop.hpp"
 
+namespace rat
+{
 VideoLoop::VideoLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
 :   m_timeEnd(endTime),
     m_timeStart(startTime),
@@ -23,7 +25,7 @@ VideoLoop::~VideoLoop()
     else m_reply2->callEvent();
 }
 
-void VideoLoop::draw()
+void VideoLoop::draw(sf::RenderTarget& window)
 {
     if(m_currentTime>=m_timeStart)
     {
@@ -31,8 +33,8 @@ void VideoLoop::draw()
     }
     if(m_draw)
     {
-        m_reply1->draw();
-        m_reply2->draw();
+        m_reply1->draw(window);
+        m_reply2->draw(window);
     }
 }
 
@@ -111,4 +113,5 @@ void VideoLoop::setScale(sf::Vector2f scale)
 {
     m_reply1->setSize(scale);
     m_reply2->setSize(scale);
+}
 }

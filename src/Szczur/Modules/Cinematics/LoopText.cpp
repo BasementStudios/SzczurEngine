@@ -1,5 +1,9 @@
-#include "Szczur/Modules/Cinematics/LoopText.hpp"
+#include "LoopText.hpp"
 
+
+
+namespace rat
+{
 LoopText::LoopText(callme callback,const char * text,int jump,unsigned int size)
 {  
     func = callback;
@@ -39,13 +43,9 @@ void LoopText::setPosition(const sf::Vector2i &vec)
     m_text.setPosition(vec.x,vec.y);
 }
 
-void LoopText::draw()
+void LoopText::draw(sf::RenderTarget& window)
 {
-    //getModule<rat::Window>().getWindow().draw(m_text);
-    auto& w = getModule<rat::Window>();
-    w.pushGLStates();
-    w.draw(m_text);
-    w.popGLStates();
+    window.draw(m_text);
 }
 
 void LoopText::setColor(const sf::Color &color)
@@ -61,4 +61,5 @@ void LoopText::callEvent()
 int LoopText::getJump()
 {
     return m_jump;
+}
 }

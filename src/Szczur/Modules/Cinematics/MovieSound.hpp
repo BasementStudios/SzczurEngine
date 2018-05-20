@@ -1,7 +1,14 @@
 #pragma once
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+
 #include <cstring>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <deque>
+#include <chrono>
+#include <algorithm>
+#include <assert.h>
+#include <memory>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -13,15 +20,11 @@ extern "C" {
 #include <libavutil/channel_layout.h>
 }
 
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <deque>
-#include <chrono>
-#include <algorithm>
-#include <assert.h>
-#include <memory>
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 
+namespace rat
+{
 class MovieSound : public sf::SoundStream
 {
 public:
@@ -70,3 +73,4 @@ private:
     
     sf::Time initialTime;
 };
+}

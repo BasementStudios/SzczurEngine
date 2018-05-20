@@ -1,11 +1,18 @@
 #pragma once
+#include <functional>
+
+#include <Szczur/Modules/Window/Window.hpp>
+
 #include <SFML/Graphics.hpp>
-#include "Szczur/Application.hpp"
+
+namespace rat
+{
 class LoopText
-    : public rat::Module<rat::Window>
 {
     public:
-        typedef void(*callme)();
+        //typedef void(*callme)();
+         //using callme = std::function<void()>;
+         typedef std::function<void()> callme;
 
         LoopText(callme callback,const char * text,int jump,unsigned int size = 50u);
         
@@ -23,7 +30,7 @@ class LoopText
 
         void setPosition(const sf::Vector2i &vec);
 
-        void draw();
+        void draw(sf::RenderTarget& window);
 
         void setColor(const sf::Color &color);
 
@@ -38,3 +45,4 @@ class LoopText
         bool m_set;
         int m_jump;
 };
+}

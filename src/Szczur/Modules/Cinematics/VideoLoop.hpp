@@ -1,15 +1,24 @@
 #pragma once
-#include "Szczur/Modules/Cinematics/LoopText.hpp"
-class LoopText;
+#include <functional>
+
+#include <SFML/Graphics.hpp>
+
+#include "LoopText.hpp"
+
+
+namespace rat
+{
 
 class VideoLoop
 {
 public:
 
-    typedef void(* callme)();
+   // typedef void(* callme)();
+    typedef std::function<void()> callme;
+
     VideoLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2);
     ~VideoLoop();
-    void draw();
+    void draw(sf::RenderTarget& window);
     int update(const int &deltaTime);
     void setTime(const int time);
     void setFont(sf::Font &font);
@@ -31,3 +40,4 @@ private:
     LoopText *m_reply1;
     LoopText *m_reply2;
 };
+}

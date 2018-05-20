@@ -14,11 +14,18 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
-
+	initModule<MoviePlayer>();
 	// For testing `Script`
-	initModule<BattleField>();
+/*	getModule<MoviePlayer>().setFontPath("Assets/Movies/font.otf");
+	getModule<MoviePlayer>().loadFromFile("Assets/Movies/movie.mp4");
+	getModule<MoviePlayer>().addLoop(10000000,15000000, [](){LOG_INFO("text1");}, "text1", 25000000, [](){LOG_INFO("text2");},"text2", 40000000);
+	getModule<MoviePlayer>().play();*/
 
 	LOG_INFO("Modules initialized");
+
+	getModule<Script>().scriptFile("Assets/Movies/MoviePlayerTest.lua");
+
+	
 
 	#ifdef EDITOR
 	{
@@ -56,8 +63,8 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-	_modules.getModule<BattleField>().update();
-	
+	getModule<MoviePlayer>().update();
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -73,11 +80,13 @@ void Application::update()
 
 void Application::render()
 {
+	
 	getModule<Window>().clear();
-
 	// For testing `Script`
-	_modules.getModule<BattleField>().render();
+	//_modules.getModule<BattleField>().render();
+	getModule<MoviePlayer>().render();
 
+	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
@@ -85,6 +94,7 @@ void Application::render()
 	#endif
 
 	getModule<Window>().render();
+	
 }
 int Application::run()
 {
