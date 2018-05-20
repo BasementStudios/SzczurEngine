@@ -201,6 +201,8 @@ void Cinematics::initScript()
     module.set_function("loadFromFile", &Cinematics::loadFromFile, this);
     module.set_function("setFontPath", &Cinematics::setFontPath, this);
     module.set_function("stop", &Cinematics::stop, this);
+    module.set_function("setVolume",&Cinematics::setVolume,this);
+    module.set_function("isPlaying",&Cinematics::isPlaying,this);
 
 }
 
@@ -454,6 +456,16 @@ void Cinematics::stop()
         m_play = false;
 
     }
+}
+
+void Cinematics::setVolume(float vol)
+{
+    m_sound->setVolume(vol);
+}
+
+bool Cinematics::isPlaying()
+{
+    return m_play;
 }
 
 }

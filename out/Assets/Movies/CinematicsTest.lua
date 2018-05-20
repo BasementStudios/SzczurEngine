@@ -7,4 +7,4 @@ Cinematics.addLoop(10000000,15000000,
     "text2", 0
 )
 Cinematics.play()
-
+Cinematics.setVolume(10);

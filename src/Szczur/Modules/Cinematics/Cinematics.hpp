@@ -95,7 +95,9 @@ public:
 */
     void stop();
 
+    void setVolume(float vol);
 
+    bool isPlaying();
 private:
 
     void initScript();
