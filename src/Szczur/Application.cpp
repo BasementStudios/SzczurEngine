@@ -23,8 +23,6 @@ void Application::init()
 	initModule<Dialog>();
 	initModule<DialogEditor>();
 
-	getModule<Script>().scriptFile("dialogs/config/_dialog.lua");
-
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR
@@ -74,7 +72,6 @@ void Application::update()
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
-		getModule<DialogEditor>().update();
 	}
 	#endif
 
@@ -88,7 +85,10 @@ void Application::render()
 {	
 	glEnable(GL_DEPTH_TEST);
 	getModule<Window>().getWindow().clear(37.f, 37.f, 37.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
+	getModule<Window>().popGLStates();
 
 	getModule<World>().render();
 

@@ -17,6 +17,8 @@
 #include "SceneManager.hpp"
 
 namespace rat {
+	class DialogEditor;
+
 	struct FreeCamera {
 		glm::vec3 position{0.f, 0.f, 0.f};
 		glm::vec3 rotation{0.f, 0.f, 0.f};
@@ -56,12 +58,14 @@ namespace rat {
 		bool _ifRenderObjectsList{true};
 		bool _ifRenderDisplayDataManager{false};
 		bool _ifRenderArmatureDisplayManager{false};
+		bool _ifRenderDialogEditor{false};
 		bool _anySelected{false};
 		bool _ifRenderComponentsManager{false};
 		size_t _focusedObject{static_cast<size_t>(-1)};
 		FreeCamera _freeCamera;
 		std::string _currentFilePath;
 		
+		DialogEditor* _dialogEditor = nullptr;
 	};
 
 	

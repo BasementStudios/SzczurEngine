@@ -20,6 +20,7 @@ DialogEditor::DialogEditor()
 	  _dlgEditor(_characters, getModule<Input>().getManager()), _nodeEditor(this), _CharactersManager(_dlgEditor.getContainer())
 {
 	LOG_INFO("Initializing DialogEditor module");
+	getModule<Script>().scriptFile("Assets/Dialogs/config/_dialog.lua");
 	refreshDialogsList();
 	LOG_INFO("Module DialogEditor initialized");
 }

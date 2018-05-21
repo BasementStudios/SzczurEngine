@@ -8,6 +8,7 @@
 #endif
 
 #include <ImGui/imgui.h>
+#include <NodeEditor.h>
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
@@ -19,11 +20,14 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
+#include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
+
 namespace rat {
     LevelEditor::LevelEditor(SceneManager& scenes) :
 	_scenes(scenes) {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
+		_dialogEditor = detail::globalPtr<DialogEditor>;
     }
 
     void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -38,6 +42,8 @@ namespace rat {
 				_renderArmatureDisplayManager();
 			if(_ifRenderDisplayDataManager)
 				_renderDisplayDataManager();
+			if (_ifRenderDialogEditor)
+				_dialogEditor->update();
 
 			sf3d::RectangleShape rect({100.f, 100.f});
 			sf3d::CircleShape circ;
@@ -163,12 +169,18 @@ namespace rat {
 			});
 			previousMouse = mouse;
 		}
-		if(input.isPressed(Mouse::Right)) {
-			rotating = true;
-			previousMouse = input.getMousePosition();
-		}
-		if(input.isReleased(Mouse::Right)) {
-			rotating = false;
+
+		if (!ax::NodeEditor::IsActive())
+		{
+			if (input.isPressed(Mouse::Right))
+			{
+				rotating = true;
+				previousMouse = input.getMousePosition();
+			}
+			if (input.isReleased(Mouse::Right))
+			{
+				rotating = false;
+			}
 		}
 	}
 
@@ -250,6 +262,7 @@ namespace rat {
 				ImGui::MenuItem("Objects List", nullptr, &_ifRenderObjectsList);
 				ImGui::MenuItem("Display Data Manager", nullptr, &_ifRenderDisplayDataManager);
 				ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
+				ImGui::MenuItem("Dialog Editor", nullptr, &_ifRenderDialogEditor);
 				ImGui::EndMenu();
 			}
 
