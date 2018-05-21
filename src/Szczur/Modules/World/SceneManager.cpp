@@ -30,7 +30,10 @@ bool SceneManager::removeScene(size_t id)
 
         if (_currentSceneID == id)
         {
-            _currentSceneID = 0u;
+            if(_holder.size())
+                _currentSceneID = (*_holder.begin())->getID();
+            else
+                _currentSceneID = addScene()->getID();
         }
 
         return true;

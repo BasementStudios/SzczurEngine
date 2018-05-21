@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <fstream>
 
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 #include <NodeEditor.h>
 
 #include "Szczur/Utility/Logger.hpp"

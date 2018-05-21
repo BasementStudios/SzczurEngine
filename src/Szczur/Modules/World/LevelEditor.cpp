@@ -47,6 +47,7 @@ namespace rat {
 			if (_ifRenderDialogEditor)
 				_dialogEditor->update();
 
+			scene = _scenes.getCurrentScene();
 			sf3d::RectangleShape rect({100.f, 100.f});
 			sf3d::CircleShape circ;
 			circ.rotate({-90.f, 0.f, 0.f});
@@ -192,6 +193,7 @@ namespace rat {
     void LevelEditor::_renderBar() {
     	// Create new world
     	static bool openModalNew = false;
+		static bool openScenesManager = false;
     	if(openModalNew) {
     		openModalNew = false;
             ImGui::OpenPopup("Files/New##popup");
@@ -213,6 +215,39 @@ namespace rat {
         	}
         	ImGui::EndPopup();
         }
+		if(openScenesManager) {
+			openScenesManager = false;
+			ImGui::OpenPopup("Scenes Manager##popup");
+		}
+		if(ImGui::BeginPopupModal("Scenes Manager##popup")) {
+			static char name[255];
+
+			std::strcpy(&name[0], _scenes.getCurrentScene()->getName().c_str());
+			ImGui::InputText("", name, 255u);
+			_scenes.getCurrentScene()->setName(std::string{name});
+			if(ImGui::Button("Add")) {
+				_scenes.addScene();
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Remove")) {
+				_scenes.removeScene(_scenes.getCurrentSceneID());
+				_anySelected = false;
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Ok")) {
+				ImGui::CloseCurrentPopup();
+			}
+			if(ImGui::BeginChild("Scenes")) {
+				for(auto& it : _scenes.getScenes()) {
+					if(ImGui::Selectable(it->getName().c_str(), it->getID() == _scenes.getCurrentSceneID())) {
+						_scenes.setCurrentScene(it->getID());
+						_anySelected = false;
+					}
+				}
+			}
+			ImGui::EndChild();
+			ImGui::EndPopup();
+		}
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("New")) {
@@ -254,6 +289,9 @@ namespace rat {
 #ifdef OS_WINDOWS
 					ShellExecute(NULL, "open", current.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 #endif
+				}
+				if(ImGui::MenuItem("Scenes Manager", "")) {
+					openScenesManager = true;
 				}
 
 				ImGui::Separator();

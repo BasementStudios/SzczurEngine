@@ -51,7 +51,6 @@ void World::update(float deltaTime)
 void World::render()
 {
 	auto& window = getModule<Window>().getWindow();
-
 	if (_getScenes().isCurrentSceneValid())
 	{
 		_getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
