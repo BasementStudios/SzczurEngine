@@ -34,9 +34,13 @@ namespace rat {
 
         void unload();
 
+		bool isDialogPlaying();
+
     private:
         DialogGUI _dialogGUI;
         DialogManager* _dialogManager = nullptr;
+
+		bool _isDialogPlaying = false;
 
         void _initScript();
     };
