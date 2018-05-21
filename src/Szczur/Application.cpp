@@ -86,11 +86,11 @@ void Application::render()
 	glEnable(GL_DEPTH_TEST);
 	getModule<Window>().getWindow().clear(37.f, 37.f, 37.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	getModule<World>().render();
+
 	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
 	getModule<Window>().popGLStates();
-
-	getModule<World>().render();
 
 	#ifdef EDITOR
 	{
