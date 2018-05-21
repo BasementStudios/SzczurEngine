@@ -20,6 +20,8 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
+#include "Szczur/Modules/Dialog/Dialog.hpp"
+
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
 namespace rat {
@@ -123,6 +125,9 @@ namespace rat {
     }
 
 	void FreeCamera::processEvents(InputManager& input) {
+
+		if (detail::globalPtr<Dialog>->isDialogPlaying())
+			return;
 
 		velocity = 50.f;
 		if(input.isKept(Keyboard::LShift)) {
