@@ -45,7 +45,7 @@ void BattleScene::update(float deltaTime) {
 
 	// Test
 	if(InputManager& input = getModule<Input>().getManager(); input.isPressed(Mouse::Right)) {
-		addPawn("Assets/Battle/karion", sf::Vector2f(input.getMousePosition()));
+		addPawn("Assets/Battle/slime", sf::Vector2f(input.getMousePosition()));
 	}
 
 	for(auto& obj : pawns) {
@@ -70,7 +70,12 @@ void BattleScene::render() {
 
 	// Pawns
 	for(auto& obj : pawns) {
-		obj->renderController(canvas);
+		if(obj.get()!=controlledPawn) {
+			obj->renderController(canvas, false);
+		}
+		else {			
+			obj->renderController(canvas, true);
+		}
 	}
 	for(auto& obj : pawns) {
 		obj->render(canvas);
@@ -163,6 +168,14 @@ void BattleScene::updateController() {
 	}
 	else if(getModule<Input>().getManager().isPressed(Keyboard::Num2)) {
 		controlledSkill = controlledPawn->getSkills()[1].get();
+	}
+	else if(getModule<Input>().getManager().isPressed(Keyboard::Q)) {
+		changePawn(pawns[0].get());
+		changeSkill("Dash and hit");
+	}
+	else if(getModule<Input>().getManager().isPressed(Keyboard::E)) {
+		changePawn(pawns[1].get());
+		changeSkill("Dash and hit");
 	}
 
 	BattlePawn* selectedPawn = nullptr;

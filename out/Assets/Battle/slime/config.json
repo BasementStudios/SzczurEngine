@@ -1,8 +1,9 @@
 {
-	"texture": "texture.png",
-	"frameSize": [102,125],
-	"framesInRow": 6,
-	"skills": [
+	"textures": {
+		"pose": ["texture.png", 0, 0, 102, 90, 6],
+		"skill_icons": ["skills.png", 0, 0, 80, 80, 2]
+	},
+	"scripts": [
 		"skill_1.lua"
 	]
 }

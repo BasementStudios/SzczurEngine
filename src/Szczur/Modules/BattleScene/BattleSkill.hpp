@@ -18,6 +18,9 @@ public:
 
 	///
 	BattleSkill(BattlePawn* pawn, const std::string& name);
+	
+	///
+	BattleSkill(const BattleSkill& obj);
 
 // Main
 
@@ -87,7 +90,6 @@ protected:
 	/// Binary mask
 	size_t selectType = SELECT_SPACE;
 
-	bool updateStatus = false;
 	bool killed = false;
 	std::string name;
 	bool usable = false;

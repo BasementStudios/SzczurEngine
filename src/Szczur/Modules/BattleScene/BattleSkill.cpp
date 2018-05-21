@@ -12,6 +12,19 @@ BattleSkill::BattleSkill(BattlePawn* pawn, const std::string& name)
 	: pawn(pawn), name(name), input(detail::globalPtr<Input>->getManager()) {
 }
 
+
+BattleSkill::BattleSkill(const BattleSkill& obj) 
+	: pawn(obj.pawn), name(obj.name), input(detail::globalPtr<Input>->getManager()) {
+
+	onInit = obj.onInit;
+	onUpdate = obj.onUpdate;
+	onProvide = obj.onProvide;
+	data = obj.data;
+	selectType = obj.selectType;
+	killed = obj.killed;
+	icon = obj.icon;
+}
+
 // ========== Main ==========
 
 void BattleSkill::init() {

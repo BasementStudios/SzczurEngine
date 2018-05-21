@@ -83,8 +83,8 @@ public:
 	/// Add new skill for pawn
 	BattleSkill* newSkill(const std::string& skillName);
 	
-	/// Create and use skill wihout name
-	BattleSkill* newInstaSkill();
+	/// [NEED FIX!] Create and use skill wihout name
+	// BattleSkill* newInstaSkill();
 
 	/// Get skill by name
 	BattleSkill* getSkill(const std::string& skillName);
@@ -92,12 +92,12 @@ public:
 	/// Use skill 
 	BattleSkill* useSkill(BattleSkill* skill);
 
-	/// Use skill by name
+	/// Use skill by name (add skill to queue)
 	BattleSkill* useSkill(const std::string& skillName);
 
 // Controller
 
-	void renderController(BattlePawn::RenderTarget& canvas) const;
+	void renderController(BattlePawn::RenderTarget& canvas, bool selected) const;
 
 // Visual
 
@@ -138,6 +138,16 @@ private:
 	
 	std::vector<std::unique_ptr<BattleSkill>> skills;
 	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
+
+	/// Skills to use after update
+	std::vector<std::unique_ptr<BattleSkill>> skillsInQueue;
+
+private:
+
+// Skills
+
+	void useAllSkillsInQueue();
+
 };
 
 }

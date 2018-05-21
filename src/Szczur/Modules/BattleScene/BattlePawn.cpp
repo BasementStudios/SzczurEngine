@@ -23,23 +23,8 @@ BattlePawn::BattlePawn(BattleScene& battleScene)
 
 void BattlePawn::update(float deltaTime) {
 
-	LOG_INFO("Size AS: ", activeSkills.size());
-	
-	LOG_INFO("A")
-	int i = 0;
 	for(auto& obj : activeSkills) {
-
-		if(obj->getName()=="Dash and hit : hit") {
-			LOG_INFO(i, ". ", obj->getName())
-		}
-		++i;
-	}
-	LOG_INFO("X", "\n")
-
-	for(auto& obj : activeSkills) {
-		// LOG_INFO(obj->getName());
 		obj->update(deltaTime);
-		// LOG_INFO("B");
 	}
 	for(auto itr = activeSkills.begin(); itr<activeSkills.end(); ) {
 		if((*itr)->isFinished()) {
@@ -49,6 +34,7 @@ void BattlePawn::update(float deltaTime) {
 			++itr;
 		}
 	}
+	useAllSkillsInQueue();
 }
 
 void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
@@ -162,12 +148,6 @@ BattleSkill* BattlePawn::newSkill(const std::string& skillName) {
 	return skills.emplace_back(new BattleSkill(this, skillName)).get();
 }
 
-BattleSkill* BattlePawn::newInstaSkill() {
-	BattleSkill* ret = activeSkills.emplace_back(new BattleSkill(this, "")).get();
-	ret->init();
-	return ret;
-}
-
 BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
 	auto result = std::find_if(skills.begin(), skills.end(), 
 		[&](const auto& obj){ return obj->getName()==skillName; }
@@ -181,14 +161,8 @@ BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
 }
 
 BattleSkill* BattlePawn::useSkill(BattleSkill* skill) {
-	BattleSkill* ret = activeSkills.emplace_back(new BattleSkill(*skill)).get();
+	BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
 	ret->init();
-
-	LOG_INFO("Init -> ", ret->getName());
-	for(auto& obj : activeSkills) {
-		LOG_INFO("   >", obj->getName());
-	}
-	LOG_INFO("\n")
 	return ret;
 }
 
@@ -196,14 +170,29 @@ BattleSkill* BattlePawn::useSkill(const std::string& skillName) {
 	return useSkill(getSkill(skillName));
 }
 
+void BattlePawn::useAllSkillsInQueue() {
+	if(skillsInQueue.empty()) return;
+	activeSkills.insert(activeSkills.end(),
+		std::make_move_iterator(skillsInQueue.begin()), 
+		std::make_move_iterator(skillsInQueue.end())
+	);
+	skillsInQueue.clear();
+}
+
 // ========== Controller ========== 
 
-void BattlePawn::renderController(BattlePawn::RenderTarget& canvas) const {
+void BattlePawn::renderController(BattlePawn::RenderTarget& canvas, bool selected) const {
 	sf::CircleShape collider(colliderRadius);
 	collider.setOrigin(colliderRadius, colliderRadius);
 	collider.setPosition(pos);
-	collider.setFillColor({150,0,255,100});
-	collider.setOutlineColor({150,0,255,200});
+	if(!selected) {
+		collider.setFillColor({150,0,255,100});
+		collider.setOutlineColor({150,0,255,200});
+	}
+	else {
+		collider.setFillColor({0,150,255,100});
+		collider.setOutlineColor({0,150,255,200});
+	}
 	collider.setOutlineThickness(-2);
 	canvas.draw(collider);
 }
@@ -224,7 +213,6 @@ void BattlePawn::initScript(Script& script) {
 	auto object = script.newClass<BattlePawn>("BattlePawn", "BattleScene");
 
 	object.set("newSkill", &BattlePawn::newSkill);
-	object.set("newInstaSkill", &BattlePawn::newInstaSkill);
 	object.setOverload("useSkill", 
 		sol::resolve<BattleSkill*(BattleSkill*)>(&BattlePawn::useSkill), 
 		sol::resolve<BattleSkill*(const std::string&)>(&BattlePawn::useSkill)
