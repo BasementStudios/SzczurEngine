@@ -1,0 +1,47 @@
+[0][0][00:00-00:42][Zarządca]{
+	[00:00][Zarządca]Jesteś wreszcie, dotarła już do nas informacja o incydencie na zamku Kalhara. 
+	[00:08][Zarządca]Słyszałem, że całe pomieszczenie było zachlapane. Nie cackasz się co?
+	[00:15][Zarządca]Ale to dobrze, mój pan jest zadowolony. Należy ci się sowita zapłata.
+	[00:22][Karion]Gdzie Sarrera?
+	[00:23][Zarządca]Nie zostałem upoważniony do podania ci tej informacji. Mój pan...
+	[00:29][Karion]To z nim miałem się spotkać.
+	[00:32][Zarządca]Miałeś, niestety plany uległy zmianie. Mojego Pana już tu nie ma. Bierz nagrodę, należy ci się, a teraz już idź
+}
+[1][0][00:42-01:16][Groźba]{
+	[00:42][Karion]Zapytam jeszcze raz, gdzie on jest?
+	[00:46][Zarządca]Przecież już mówiłem, wyjechał. Za samo powiedzenie ci o tym będę miał kłopoty. 
+	[00:53][Zarządca]Wyjdź na trakt, może jeszcze uda ci się go dogonić.
+	[00:57][Karion]Ostatni raz powtórzę, zaprowadź mnie do niego.
+	[01:01][Zarządca]Dobra już dobra,  puść mnie!
+	[01:04][Zarządca]Pan jest w rezydencji, ma ważnych gości. Kazał sobie nie przeszkadzać
+	[01:08][Zarządca]Przyprowadzę go, ale nie ręczę, co się wydarzy dalej. Zrozumiałeś?
+	[01:13][Karion]Tak, idź już.
+}
+[2][0][01:17-01:36][Przekup]{
+	[01:17][Karion]Tyle wystarczy?
+	[01:19][Zarządca]Oooo Panie, nie wiedziałem, że jesteś taki hojny. 
+	[01:23][Zarządca]Sarrera ma gości. Bardzo nie chciał, żeby mu przeszkadzano. 
+	[01:28][Zarządca]Przyprowadzę go, ale nie ręczę, co się wydarzy dalej. Zrozumiałeś?
+	[01:34][Karion]Tak, idź już.
+}
+[3][0][01:39-02:04][Sarera przychodzi]{
+	[01:39][Sarera]Wzywałeś mnie Maginie.
+	[01:41][Sarera]Z twojego powodu musiałem opuścić ucztę, mam nadzieje, że twoja sprawa jest pilna. Czego ode mnie chcesz?
+	[01:49][Karion ]Przyszedłem w sprawie Kalhara.
+	[01:51][Sarera]Mów więc.
+	[01:52][Karion ]To poufne.
+	[01:53][Sarera]Doprawdy? A nie jest przypadkiem może tak…  To tylko drobna sugestia, ale nie przyszedłeś może tutaj? Mnie zabić...
+}
+[4][0][02:04-02:23][Przemilcz]{
+	[02:04][Karion ]...
+	[02:04][Sarera]Chyba mnie nie doceniłeś. Wiedziałem od początku. Kolejny prostak, który chce się mścić. Nie ty pierwszy Karionie, 
+	[02:13][Sarera]Nywia, tak miała na imię? Nie zapominam takich kobiet. Prawdziwa piękność.
+	[02:20][Zarządca ]A wy co tak stoicie? BRAĆ GO!!!
+}
+[5][0][02:23-02:48][Blef]{
+	[02:23][Karion ]Niby z jakiego powodu?
+	[02:26][Sarera]Z tego, co wszyscy. Dla moich pieniędzy lub władzy. A i jest oczywiście jeszcze ZEMSTA.
+	[02:33][Sarera]Niestety jestem mądrzejszy niż przypuszczałeś Karionie.
+	[02:37][Sarera]Nywia, tak miała na imię ta kobieta? Niezwykle bystra. Czasem żałuje, że muszę mordować takie talenty.
+	[02:45][Zarządca ]A wy co tak stoicie? BRAĆ GO!!!
+}
