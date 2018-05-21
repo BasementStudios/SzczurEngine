@@ -28,7 +28,9 @@ struct BattleField : public Module<Script, Input, Window>
 		LOG_INFO(this, " : Module BattleField constructed");
 		initScript();
 		auto& window = getModule<Window>().getWindow();
+		getModule<Window>().pushGLStates();
 		canvas.create(window.getSize().x, window.getSize().y);
+		getModule<Window>().popGLStates();
 		reset();
 	}
 	
@@ -46,7 +48,7 @@ struct BattleField : public Module<Script, Input, Window>
 	}
 	
 	void render() {
-		canvas.clear();
+		canvas.clear({0,0,0,0});
 		if(board) board->render(canvas);
 		canvas.display();
 		getModule<Window>().getWindow().draw(sf::Sprite(canvas.getTexture()));
