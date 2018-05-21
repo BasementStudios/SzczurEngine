@@ -40,7 +40,9 @@ namespace rat
     void Scroller::setScrollerTexture(const sf::Texture* texture)
     {
         _isScrollerSet = true;
-        _scroller.setTexture(*texture);
+        auto texSize = texture->getSize();
+        auto texHalfWidth = int(round(float(texSize.x) * 0.5f));
+        _scroller.setTexture(texture, texHalfWidth, 139);
         _recalcAll();
     }
 
@@ -123,16 +125,19 @@ namespace rat
 
     void Scroller::_recalcScrollerSize()
     {
-        sf::Vector2f newScale = _scroller.getScale();
-        auto texSize = sf::Vector2f{float(_scroller.getTextureRect().width), float(_scroller.getTextureRect().height)};
-        newScale.x = float(_size.x)/texSize.x;
+        auto innerTexSize = _scroller.getInnerTextureRect();
+        sf::Vector2i texSize = {innerTexSize.left * 2, innerTexSize.top * 2};
+        float scale = float(_size.x) / float(texSize.x);
+        _scroller.setScale(scale, scale);
+
+        auto newSize = _size;
         if(_widthProp < 1.f) 
         {
-            newScale.x *= _widthProp;
+            newSize.x = _size.x * _widthProp;
         }
-        newScale.y = float(_scrollerLength) / texSize.y;
+        newSize.y = _getRealPathLength() / _scrollerHeightProp;
+        _scroller.setSize(newSize);
 
-        _scroller.setScale(newScale);
     }
     
     void Scroller::_recalcScrollerPos()
@@ -148,7 +153,7 @@ namespace rat
         if(newY < maxTop) newY = maxTop;
         if(newY > maxBottom) newY = maxBottom;
 
-        float scrollerWidth = _scroller.getGlobalBounds().width;
+        float scrollerWidth = _scroller.getSize().x;
         float width = float(_size.x);
 
         float xShift = (width - scrollerWidth) / 2.f;
@@ -185,7 +190,9 @@ namespace rat
     float Scroller::_getRealPathLength() const
     {
         //if(!_isPathSet) return 0.f;
-        return _path.getGlobalBounds().height - _scroller.getGlobalBounds().height;
+        auto length =  _path.getGlobalBounds().height - _scroller.getSize().y;
+        if(length < 0.f) length = 0.f;
+        return length;
     }
     float Scroller::_getRealBoundLength() const
     {

@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "NinePatch.hpp"
+
 namespace rat
 {
     class Scroller : public sf::Drawable, public sf::Transformable
@@ -28,7 +30,7 @@ namespace rat
     private:
 
         sf::Sprite _path;
-        sf::Sprite _scroller;
+        NinePatch _scroller;
 
         sf::Sprite _upperBound;
         sf::Sprite _bottomBound;
@@ -39,6 +41,7 @@ namespace rat
         bool _isPathSet{false};
 
         float _widthProp{1.f};
+        float _scrollerHeightProp{1.f};
         int _scrollerLength{60};
 
         sf::Vector2i _size{0, 0};

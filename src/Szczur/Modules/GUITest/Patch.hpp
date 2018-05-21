@@ -18,7 +18,7 @@ namespace rat
         void setSize(sf::Vector2i size);
         void setWidth(int width);
         void setHeight(int height);
-        void setTexture(sf::Texture* texture);
+        void setTexture(const sf::Texture* texture);
         void setTextureRect(const sf::IntRect& rect);
         void setScale(float x, float y);
         void setScale(const sf::Vector2f& scale);
@@ -32,7 +32,7 @@ namespace rat
         Direction _direction{Direction::Horizontal};
 
         mutable sf::Sprite _sprite;
-        sf::Texture* _texture{nullptr}; 
+        const sf::Texture* _texture{nullptr}; 
         sf::Vector2i _size{0, 0};
         sf::Vector2u _textureRect;
         sf::Vector2i _elementAmount{1, 1};

@@ -47,7 +47,7 @@ namespace rat
     }
     
     
-    void Patch::setTexture(sf::Texture* texture)
+    void Patch::setTexture(const sf::Texture* texture)
     {
         _texture = nullptr;
 

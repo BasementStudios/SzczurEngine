@@ -15,10 +15,10 @@ namespace rat
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-        void setTexture(sf::Texture* texture);
-        void setTexture(sf::Texture* texture, int padding);
-        void setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight);
-        void setTexture(sf::Texture* texture, const sf::IntRect& rect);
+        void setTexture(const sf::Texture* texture);
+        void setTexture(const sf::Texture* texture, int padding);
+        void setTexture(const sf::Texture* texture, int paddingWidth, int paddingHeight);
+        void setTexture(const sf::Texture* texture, const sf::IntRect& rect);
 
         void setSize(const sf::Vector2i& size);
         void setSize(int x, int y);
@@ -41,7 +41,7 @@ namespace rat
         sf::Vector2i _size{0, 0};
         bool _isSizeSet{false};
 
-        sf::Texture* _texture{nullptr};
+        const sf::Texture* _texture{nullptr};
         sf::IntRect _innerRect{0, 0, 0, 0};
         bool _isInnerRectSet{false};
 

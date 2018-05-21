@@ -42,7 +42,7 @@ namespace rat
         }
     }
 
-    void NinePatch::setTexture(sf::Texture* texture)
+    void NinePatch::setTexture(const sf::Texture* texture)
     {
         _texture = texture;
 
@@ -58,20 +58,20 @@ namespace rat
 
         _recalcTexturesAreas();
     }
-    void NinePatch::setTexture(sf::Texture* texture, const sf::IntRect& rect)
+    void NinePatch::setTexture(const sf::Texture* texture, const sf::IntRect& rect)
     {
         _texture = nullptr;
         setInnerSize(rect);
         setTexture(texture);
     }
-    void NinePatch::setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight)
+    void NinePatch::setTexture(const sf::Texture* texture, int paddingWidth, int paddingHeight)
     {
         auto textureSize = static_cast<sf::Vector2i>(texture->getSize());
         auto paddingSize = sf::Vector2i(2*paddingWidth, 2*paddingHeight);
         sf::IntRect rect = {{paddingWidth, paddingHeight}, textureSize - paddingSize};
         setTexture(texture, rect);
     }
-    void NinePatch::setTexture(sf::Texture* texture, int padding)
+    void NinePatch::setTexture(const sf::Texture* texture, int padding)
     {
         setTexture(texture, padding, padding);
     }
