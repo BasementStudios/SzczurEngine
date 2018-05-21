@@ -48,7 +48,10 @@ public:
 	///
 	void input(sf::Event& event);
 
-// Pawns manipulations
+// Battle
+
+	///
+	void changeBattleFieldSize(const sf::Vector2f& size);
 
 	/// Add new pawn to battle field
 	BattlePawn* addPawn(const std::string& dirPath, const sf::Vector2f& position={0,0});
@@ -58,6 +61,15 @@ public:
 
 	/// Set skill to use (if pawn is set)
 	void changeSkill(const std::string& skillName);
+
+	/// Set skill to use (if pawn is set)
+	void changeSkill(int index);
+
+	/// 
+	void loadBattle(const std::string& configPath);
+
+	///
+	void closeBattle();
 
 	/// Update position for pawn (remove overlaps)
 	void fixPosition(BattlePawn& pawn);
@@ -82,6 +94,7 @@ private:
 	sf::Vector2f fieldPos{0, 0};
 	BattlePawn* controlledPawn = nullptr;
 	BattleSkill* controlledSkill = nullptr;
+	bool battleRunning = false;
 
 // Main
 

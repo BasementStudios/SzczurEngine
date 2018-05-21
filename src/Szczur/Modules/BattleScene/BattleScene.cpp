@@ -1,10 +1,15 @@
 #include "BattleScene.hpp"
 
+#include <cmath>
+#include <fstream>
+#include <experimental/filesystem>
+
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/Logger.hpp"
+#include <json.hpp>
+using Json = nlohmann::json;
 
-#include <cmath>
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat {
 
@@ -16,13 +21,15 @@ BattleScene::BattleScene() {
 	init();
 
 	// Test
-	auto& window = getModule<Window>().getWindow();
-	fieldSize = sf::Vector2f(900, 500);
-	fieldPos.x = (window.getSize().x-fieldSize.x)/2.f;
-	fieldPos.y = window.getSize().y-fieldSize.y-100;
-	BattlePawn* pawn = addPawn("Assets/Battle/karion");
-	changePawn(pawn);
-	changeSkill("Dash and hit");
+	// loadBattle("Assets/Battles/battle_1.json");
+
+	// auto& window = getModule<Window>().getWindow();
+	// fieldSize = sf::Vector2f(900, 500);
+	// fieldPos.x = (window.getSize().x-fieldSize.x)/2.f;
+	// fieldPos.y = window.getSize().y-fieldSize.y-100;
+	// BattlePawn* pawn = addPawn("Assets/Pawns/karion");
+	// changePawn(pawn);
+	// changeSkill("Dash and hit");
 
 	LOG_INFO("Module BattleScene initialized");
 }
@@ -42,10 +49,11 @@ void BattleScene::init() {
 }
 
 void BattleScene::update(float deltaTime) {
+	if(!battleRunning) return;
 
 	// Test
 	if(InputManager& input = getModule<Input>().getManager(); input.isPressed(Mouse::Right)) {
-		addPawn("Assets/Battle/slime", sf::Vector2f(input.getMousePosition()));
+		addPawn("Assets/Pawns/slime", sf::Vector2f(input.getMousePosition()));
 	}
 
 	for(auto& obj : pawns) {
@@ -56,6 +64,7 @@ void BattleScene::update(float deltaTime) {
 }
 
 void BattleScene::render() {	
+	if(!battleRunning) return;
 	auto& window = getModule<Window>();
 	window.pushGLStates();
 	canvas.clear();
@@ -90,10 +99,17 @@ void BattleScene::render() {
 }
 
 void BattleScene::input(sf::Event& event) {
-
+	if(!battleRunning) return;
 }
 
-// ========== Pawns manipulations ========== 
+// ========== Battle ========== 
+
+void BattleScene::changeBattleFieldSize(const sf::Vector2f& size) {
+	auto& window = getModule<Window>().getWindow();
+	fieldSize = size;
+	fieldPos.x = (window.getSize().x-fieldSize.x)/2.f;
+	fieldPos.y = window.getSize().y-fieldSize.y-100;
+}
 
 BattlePawn* BattleScene::addPawn(const std::string& dirPath, const sf::Vector2f& position) {
 	BattlePawn* pawn =  pawns.emplace_back(new BattlePawn(*this)).get();
@@ -111,6 +127,50 @@ void BattleScene::changeSkill(const std::string& skillName) {
 	if(controlledPawn != nullptr) {
 		controlledSkill = controlledPawn->getSkill(skillName);
 	}
+}
+
+void BattleScene::changeSkill(int index) {
+	if(controlledPawn != nullptr) {
+		if(index<0) index = 0;
+		auto& skills = controlledPawn->getUsableSkills();
+		if(index<skills.size()) {
+			controlledSkill = skills[index].first;
+			return;
+		}
+		controlledSkill = nullptr;
+	}
+}
+
+void BattleScene::loadBattle(const std::string& configPath) {
+	namespace fs = std::experimental::filesystem;
+
+	closeBattle();
+
+	Json json;
+	std::ifstream(configPath) >> json;
+	if(!json["script"].is_null()) {
+		std::string dir = fs::path(configPath).parent_path().string();
+		getModule<Script>().scriptFile(dir+"/"+json["script"].get<std::string>());
+	}
+
+	changeBattleFieldSize({json["size"][0].get<float>(), json["size"][1].get<float>()});
+
+	// Player
+	changePawn(addPawn(json["player"][0].get<std::string>(), sf::Vector2f(json["player"][1].get<float>()+fieldPos.x, json["player"][2].get<float>()+fieldPos.y)));
+
+	// Enemies
+	for(auto& obj : json["enemies"]) {
+		addPawn(obj[0].get<std::string>(),{obj[1].get<float>()+fieldPos.x, obj[2].get<float>()+fieldPos.y});
+	}
+
+	battleRunning = true;
+}
+
+void BattleScene::closeBattle() {
+	pawns.clear();
+	controlledPawn = nullptr;
+	controlledSkill = nullptr;
+	battleRunning = false;
 }
 
 void BattleScene::fixPosition(BattlePawn& pawn) {
@@ -164,18 +224,18 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 void BattleScene::updateController() {
 
 	if(getModule<Input>().getManager().isPressed(Keyboard::Num1)) {
-		controlledSkill = controlledPawn->getSkills()[0].get();
+		controlledSkill = controlledPawn->getUsableSkills()[0].first;
 	}
 	else if(getModule<Input>().getManager().isPressed(Keyboard::Num2)) {
-		controlledSkill = controlledPawn->getSkills()[1].get();
+		controlledSkill = controlledPawn->getUsableSkills()[1].first;
 	}
 	else if(getModule<Input>().getManager().isPressed(Keyboard::Q)) {
 		changePawn(pawns[0].get());
-		changeSkill("Dash and hit");
+		changeSkill(0);
 	}
 	else if(getModule<Input>().getManager().isPressed(Keyboard::E)) {
 		changePawn(pawns[1].get());
-		changeSkill("Dash and hit");
+		changeSkill(0);
 	}
 
 	BattlePawn* selectedPawn = nullptr;
@@ -200,27 +260,25 @@ void BattleScene::renderController() {
 		shape.setFillColor({100,0,50,100});
 		auto& skills = controlledPawn->getSkills();
 		int i = 0;
-		for(auto& obj : skills) {
-			if(obj->isUsable()) {
-				sf::Sprite icon(obj->getIconSprite());
-				icon.setPosition(300+i*90,50);
-				shape.setPosition(icon.getPosition());
-				if(obj.get() != controlledSkill) {			
-					canvas.draw(shape);
-					canvas.draw(icon);
-				}
-				else {
-					icon.setColor({255,255,255,255});
-					shape.setOutlineColor({255,0,150,255});	
-					shape.setFillColor({100,0,50,150});				
-					canvas.draw(shape);
-					canvas.draw(icon);
-					shape.setFillColor({100,0,50,100});				
-					shape.setOutlineColor({255,0,150,150});	
-					icon.setColor({255,255,255,150});	
-				}
-				++i;
+		for(auto& obj : controlledPawn->getUsableSkills()) {
+			sf::Sprite icon(obj.first->getPawn()->getIconSprite(obj.second));
+			icon.setPosition(300+i*90,50);
+			shape.setPosition(icon.getPosition());
+			if(obj.first != controlledSkill) {			
+				canvas.draw(shape);
+				canvas.draw(icon);
 			}
+			else {
+				icon.setColor({255,255,255,255});
+				shape.setOutlineColor({255,0,150,255});	
+				shape.setFillColor({100,0,50,150});				
+				canvas.draw(shape);
+				canvas.draw(icon);
+				shape.setFillColor({100,0,50,100});				
+				shape.setOutlineColor({255,0,150,150});	
+				icon.setColor({255,255,255,150});	
+			}
+			++i;
 		}
 		// shape.setOutlineColor({255,0,150,255});
 	}

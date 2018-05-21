@@ -26,6 +26,9 @@ void Application::init()
 		ImGui::SFML::Init(getModule<Window>().getWindow());
 	}
 	#endif
+
+	getModule<BattleScene>().loadBattle("Assets/Battles/battle_1.json");
+
 }
 
 void Application::input()

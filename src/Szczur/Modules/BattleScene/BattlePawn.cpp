@@ -74,6 +74,10 @@ sf::Sprite BattlePawn::getIconSprite(int iconFrame) const {
 	return textureSkillIcons.getSprite(iconFrame);
 }
 
+const std::vector<std::pair<BattleSkill*, int>>& BattlePawn::getUsableSkills() const {
+	return usableSkills;
+}
+
 // ========== Manipulations ========== 
 
 void BattlePawn::setPosition(const sf::Vector2f& position) {
@@ -179,6 +183,28 @@ void BattlePawn::useAllSkillsInQueue() {
 	skillsInQueue.clear();
 }
 
+void BattlePawn::addUsable(BattleSkill* skill, int icon) {
+	if(skill == nullptr) return;
+	for(auto& obj : usableSkills) {
+		if(obj.first == skill) return;
+	}
+	usableSkills.emplace_back(skill, icon);
+}
+
+void BattlePawn::removeUsable(BattleSkill* skill) {
+	if(skill == nullptr) return;
+	for(auto itr  = usableSkills.begin(); itr!=usableSkills.end(); ++itr) {
+		if(itr->first == skill) {
+			usableSkills.erase(itr);
+			return;
+		}
+	}
+}
+
+void BattlePawn::clearUsable() {
+	usableSkills.clear();
+}
+
 // ========== Controller ========== 
 
 void BattlePawn::renderController(BattlePawn::RenderTarget& canvas, bool selected) const {
@@ -224,6 +250,9 @@ void BattlePawn::initScript(Script& script) {
 	object.set("setFrame", &BattlePawn::setFrame);
 	object.set("setFlip", &BattlePawn::setFlip);
 	object.set("getDirection", &BattlePawn::getDirection);
+	object.set("addUsable", &BattlePawn::addUsable);
+	object.set("removeUsable", &BattlePawn::removeUsable);
+	object.set("clearUsable", &BattlePawn::removeUsable);
 
 	object.init();
 }

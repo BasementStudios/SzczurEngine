@@ -57,14 +57,6 @@ size_t BattleSkill::getType() const {
 	return selectType;
 }
 
-bool BattleSkill::isUsable() const {
-	return usable;
-}
-
-sf::Sprite BattleSkill::getIconSprite() const {
-	return pawn->getIconSprite(icon);
-}
-
 // ========== Manipulations ==========
 
 void BattleSkill::kill() {
@@ -97,11 +89,6 @@ void BattleSkill::updateController(BattlePawn* selectedPawn) {
 	if(selectType & SELECT_SPACE && input.isPressed(Mouse::Left)) {
 		getPawn()->useSkill(this);
 	}
-}
-
-void BattleSkill::setUsable(int icon) {
-	this->icon = icon;
-	usable = true;
 }
 
 // ========== Scripts ==========
@@ -138,7 +125,6 @@ void BattleSkill::initScript(Script& script) {
 	object.set("getPawn", &BattleSkill::getPawn);
 	object.set("renderCircle", &BattleSkill::renderCircle);
 	object.set("kill", &BattleSkill::kill);
-	object.set("setUsable", &BattleSkill::setUsable);
 	object.set(sol::meta_function::index, &BattleSkill::getVariable);
 	object.set(sol::meta_function::new_index, &BattleSkill::setVariable);
 

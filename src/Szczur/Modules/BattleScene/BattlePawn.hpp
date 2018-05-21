@@ -48,6 +48,9 @@ public:
 	///
 	sf::Sprite getIconSprite(int iconFrame) const;
 
+	///
+	const std::vector<std::pair<BattleSkill*, int>>& getUsableSkills() const;
+
 // Manipulations
 
 	/// Set position with collision callculation
@@ -95,6 +98,15 @@ public:
 	/// Use skill by name (add skill to queue)
 	BattleSkill* useSkill(const std::string& skillName);
 
+	///
+	void addUsable(BattleSkill* skill, int icon);
+
+	///
+	void removeUsable(BattleSkill* skill);
+
+	/// 
+	void clearUsable();
+
 // Controller
 
 	void renderController(BattlePawn::RenderTarget& canvas, bool selected) const;
@@ -136,6 +148,7 @@ private:
 
 // Skills
 	
+	std::vector<std::pair<BattleSkill*, int>> usableSkills;
 	std::vector<std::unique_ptr<BattleSkill>> skills;
 	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
 

@@ -1,7 +1,7 @@
 -- Skill: Move
 local skill = THIS:newSkill("Dash and hit")
+THIS:addUsable(skill, 0)
 
-skill:setUsable(0)
 skill:setType("SPACE")
 
 function skill:onProvide(canvas) 
@@ -29,7 +29,7 @@ end
 
 -- hit
 local hit = THIS:newSkill("Dash and hit : hit")
-hit:setUsable(1)
+THIS:addUsable(hit, 1)
 
 function hit:onInit()
 	self.clock = Utility.Clock.new()
