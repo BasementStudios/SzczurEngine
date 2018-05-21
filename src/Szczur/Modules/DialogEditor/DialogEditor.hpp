@@ -62,6 +62,9 @@ private:
 	Directory* _newDialogPopupCurrentDir = nullptr;
 
 public:
+	constexpr static auto MainDirectory = "Assets/Dialogs/";
+
+public:
 	DialogEditor();
 	~DialogEditor();
 

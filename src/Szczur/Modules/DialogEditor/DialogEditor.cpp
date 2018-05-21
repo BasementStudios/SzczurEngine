@@ -20,7 +20,7 @@ DialogEditor::DialogEditor()
 	  _dlgEditor(_characters, getModule<Input>().getManager()), _nodeEditor(this), _CharactersManager(_dlgEditor.getContainer())
 {
 	LOG_INFO("Initializing DialogEditor module");
-	getModule<Script>().scriptFile("Assets/Dialogs/config/_dialog.lua");
+	getModule<Script>().scriptFile(std::string(MainDirectory) + "config/_dialog.lua");
 	refreshDialogsList();
 	LOG_INFO("Module DialogEditor initialized");
 }
@@ -150,7 +150,7 @@ void DialogEditor::update()
 
 		if (ImGui::Button("Ok"))
 		{
-			fs::create_directory("dialogs/" + std::string(mapName));
+			fs::create_directory(MainDirectory + std::string(mapName));
 			refreshDialogsList();
 
 			ImGui::CloseCurrentPopup();
@@ -224,7 +224,7 @@ void DialogEditor::createProject(const std::string& path)
 	_CharactersManager.clear();
 	_CharactersManager.save(_projectPath + "/characters.json");
 
-	fs::copy("dialogs/dialog.flac", path + "/dialog.flac");
+	fs::copy(std::string(MainDirectory) + "dialog.flac", path + "/dialog.flac");
 
 	_projectLoaded = true;
 	_showDialogEditor = true;
@@ -307,13 +307,13 @@ void DialogEditor::showDirectory(Directory& directory)
 void DialogEditor::refreshDialogsList()
 {
 	_dialogsDirectory.Type = Directory::DialogsDir;
-	_dialogsDirectory.Name = "dialogs";
-	_dialogsDirectory.Path = "dialogs";
+	_dialogsDirectory.Name = MainDirectory;
+	_dialogsDirectory.Path = MainDirectory;
 	_dialogsDirectory.Root = true;
 
 	_dialogsDirectory.Childs.clear();
 
-	for (auto& mapDirPath : fs::directory_iterator("dialogs"))
+	for (auto& mapDirPath : fs::directory_iterator(MainDirectory))
 	{
 		if (mapDirPath.path().filename() == "config")
 			continue;
