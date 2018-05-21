@@ -44,7 +44,7 @@ namespace rat
         widget->setPadding(10.f, 10.f);
 
 
-        scroll->setSize(100, 200);
+        scroll->setSize(100, 500);
         scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
@@ -101,8 +101,8 @@ namespace rat
         });
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
         red->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Red.png"));
-        widget->add(red);
-        red->setPosition(30.f, 30.f);
+        scroll->add(red);
+        red->setPosition(30.f, 500.f);
 
     }
     

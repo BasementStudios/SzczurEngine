@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 #include "NinePatch.hpp"
 
@@ -20,14 +21,25 @@ namespace rat
         void setSize(const sf::Vector2i& size);
         void setSize(int width, int height);
         void setWidthProportion(float proportion);
+        void setScrollerHeightProp(float prop);
         void setBoundShiftProportion(float proportion);
 
         sf::Vector2u getSize() const;
+        sf::Vector2i getScrollerSize() const;
+        sf::Vector2f getScrollerPosition() const;
 
         void setProportion(float proportion);
         void moveProportion(float proportionOffset);
+        float getProportion() const;
+
         void setScrollerPosition(const sf::Vector2f& position);
+
+        void input(sf::Event event);
     private:
+        bool _isClicked{false};
+        bool _hasBeenClicked{false};
+        bool _isHovered{false};
+        sf::Vector2f _clickedShift;
 
         sf::Sprite _path;
         NinePatch _scroller;

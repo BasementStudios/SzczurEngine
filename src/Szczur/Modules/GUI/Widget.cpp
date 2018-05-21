@@ -118,7 +118,7 @@ namespace rat {
         if(!_isActivated) return;
 
         auto thisSize = getSize();
-                    
+        
         event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
         event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
 

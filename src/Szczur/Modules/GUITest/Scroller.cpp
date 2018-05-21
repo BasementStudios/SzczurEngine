@@ -28,6 +28,17 @@ namespace rat
         _scroller.setPosition(position);
         _recalcScrollerPos();
     }
+    void Scroller::setScrollerHeightProp(float prop)
+    {
+        if(prop < 1.f) prop = 1.f;
+        _scrollerHeightProp = prop;
+        if(_isScrollerSet)
+        {
+            _recalcScrollerSize();
+            _recalcScrollerSize();
+        }
+    }
+    
     
     
 
@@ -66,6 +77,11 @@ namespace rat
     {
         setProportion(_proportion + proportionOffset);
     }
+    float Scroller::getProportion() const
+    {
+        return _proportion;
+    }
+    
     
 
     void Scroller::setSize(int width, int height)
@@ -97,6 +113,66 @@ namespace rat
         return sf::Vector2u(_size);
     }
 
+    sf::Vector2i Scroller::getScrollerSize() const
+    {
+        return _scroller.getSize();
+    }
+    sf::Vector2f Scroller::getScrollerPosition() const
+    {
+        return _scroller.getPosition();
+    }
+    
+    
+
+    void Scroller::input(sf::Event event)
+    {
+        
+        switch (event.type)
+        {
+            case sf::Event::MouseMoved:
+            {
+                event.mouseMove.x -= ((_size.x - _scroller.getSize().x)/2) + _scroller.getPosition().x;
+                event.mouseMove.y -= (_scroller.getPosition().y);
+
+                bool isMouseOverlap = event.mouseMove.x >= 0 &&
+                    event.mouseMove.x <= _scroller.getSize().x /* * _winProp.x */&&
+                    event.mouseMove.y >= 0 &&
+                    event.mouseMove.y <= _scroller.getSize().y /* * _winProp.y*/;
+
+                if(isMouseOverlap)
+                {
+                    _isHovered = true;
+                }
+                else _isHovered = false;
+
+                if(_hasBeenClicked)
+                {
+                    _clickedShift = sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _scroller.getPosition();
+                    _hasBeenClicked = false;
+                }
+                if(_isClicked)
+                {
+                    setScrollerPosition(sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _clickedShift);
+                }
+            } break;
+
+            case sf::Event::MouseButtonPressed:
+            {
+                if(_isHovered) 
+                {
+                    std::cout << "kajko\n";
+                    _isClicked = true;
+                    _hasBeenClicked = true;
+                }
+            } break;
+
+            case sf::Event::MouseButtonReleased:
+            {
+                _isClicked = false;
+            }
+        }
+    }
+
     void Scroller::_recalcPathSize()
     {
         float widthProp = 1.f/_widthProp;
@@ -118,9 +194,9 @@ namespace rat
         float width = float(_size.x);
 
         float xShift = (width - pathWidth) / 2.f;
-        float newX = /*_position.x + */xShift;
+        float newX = xShift;
 
-        _path.setPosition(newX, /*_position.y + */_getRealBoundLength());
+        _path.setPosition(newX, _getRealBoundLength());
     }
 
     void Scroller::_recalcScrollerSize()

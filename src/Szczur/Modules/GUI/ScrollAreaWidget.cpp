@@ -13,6 +13,7 @@ namespace rat {
     {
         _scroller.setWidthProportion(2.1f);
         setSize(10 + _minScrollSize.x, _minScrollSize.y);
+        _aboutToRecalculate = true;
     }
 
     void ScrollAreaWidget::initScript(Script& script) {
@@ -85,7 +86,9 @@ namespace rat {
     void ScrollAreaWidget::_update(float deltaTime) {
     }
 
-    void ScrollAreaWidget::_input(const sf::Event& event) {
+    void ScrollAreaWidget::_input(const sf::Event& event) 
+    {
+        float maxOffset = -(_childrenHeight - float(_getSize().y));
         if(_isHovered && event.type == sf::Event::MouseWheelScrolled) {
             float offset = _scrollSpeed*static_cast<float>(event.mouseWheelScroll.delta);
 
@@ -95,7 +98,6 @@ namespace rat {
                 offset = offset -_offset;
                 _offset = 0;
             }
-            float maxOffset = -(_childrenHeight - float(_getSize().y));
             if(_offset < maxOffset)
             {
                 offset = offset - (_offset - maxOffset);
@@ -107,6 +109,18 @@ namespace rat {
             float offsetProp = _offset/maxOffset;
             _scroller.setProportion(offsetProp);
         }
+        sf::Event tempEvent(event);
+        if(event.type == sf::Event::MouseMoved)
+        {
+            tempEvent.mouseMove.x -= (_scroller.getPosition().x) * _winProp.x;
+            tempEvent.mouseMove.y -= (_scroller.getPosition().y) * _winProp.y;
+        }
+        _scroller.input(tempEvent);
+        /*
+        _childrenTransform.translate(0.f, -_offset);
+        _offset = maxOffset * _scroller.getProportion();
+        _childrenTransform.translate(0.f, _offset);
+        */
     }
 
     void ScrollAreaWidget::_inputChildren(sf::Event event)
@@ -148,6 +162,7 @@ namespace rat {
         _renderTexture.create(size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f));
 
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
+        _scroller.setScrollerHeightProp(_childrenHeight/float(size.y));
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) {
