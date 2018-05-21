@@ -46,4 +46,13 @@ namespace rat {
         _dialogManager = nullptr;
         _dialogGUI.hide();
     }
+	bool Dialog::isDialogPlaying()
+	{
+		if (_dialogManager)
+		{
+			return _dialogManager->isDialogPlaying();
+		}
+
+		return false;
+	}
 }

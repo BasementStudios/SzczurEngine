@@ -46,6 +46,8 @@ namespace rat {
             (_options.push_back(options), ...);
         }
 
+		bool isDialogPlaying();
+
     private:
         TextManager _textManager;
         SoundManager _soundManager;
@@ -62,6 +64,8 @@ namespace rat {
         bool _paused;
         bool _clearButtons;
         bool _destroyed{false};
+
+		bool _isDialogPlaying = false;
 
         //bool _nextMinor();
 
