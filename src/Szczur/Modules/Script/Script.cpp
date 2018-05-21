@@ -17,7 +17,7 @@ namespace rat {
 	}
 	void Script::initMainFunctions() {
 		auto script = _lua.create_table("Script");
-		script.set_function("scriptFile", &Script::scriptFile);
+		script.set_function("scriptFile", &Script::scriptFile, this);
 	}
 	void Script::initSFML() {
 		sol::table sfml = _lua.create_table("SFML");
