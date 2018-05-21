@@ -8,6 +8,7 @@
 #include "Components/ScriptableComponent.hpp"
 #include "Components/InputControllerComponent.hpp"
 #include "Components/InteractableComponent.hpp"
+#include "Components/TriggerComponent.hpp"
 
 #include <memory>
 
@@ -28,6 +29,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("ScriptableComponent")) return std::make_unique<ScriptableComponent>(parent);
 		if (id == fnv1a_64("InputControllerComponent")) return std::make_unique<InputControllerComponent>(parent);
 		if (id == fnv1a_64("InteractableComponent")) return std::make_unique<InteractableComponent>(parent);
+		if (id == fnv1a_64("TriggerComponent")) return std::make_unique<TriggerComponent>(parent);
 
 		return nullptr;
 	}
@@ -41,6 +43,7 @@ struct ComponentTraits
 		if (name == "ScriptableComponent") return std::make_unique<ScriptableComponent>(parent);
 		if (name == "InputControllerComponent") return std::make_unique<InputControllerComponent>(parent);
 		if (name == "InteractableComponent") return std::make_unique<InteractableComponent>(parent);
+		if (name == "TriggerComponent") return std::make_unique<TriggerComponent>(parent);
 
 		return nullptr;
 	}
@@ -61,6 +64,7 @@ struct ComponentTraits
 		if (name == "ScriptableComponent") return fnv1a_64("ScriptableComponent");
 		if (name == "InputControllerComponent") return fnv1a_64("InputControllerComponent");
 		if (name == "InteractableComponent") return fnv1a_64("InteractableComponent");
+		if (name == "TriggerComponent") return fnv1a_64("TriggerComponent");
 
 		return 0;
 	}
@@ -74,6 +78,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("ScriptableComponent")) return "ScriptableComponent";
 		if (id == fnv1a_64("InputControllerComponent")) return "InputControllerComponent";
 		if (id == fnv1a_64("InteractableComponent")) return "InteractableComponent";
+		if (id == fnv1a_64("TriggerComponent")) return "TriggerComponent";
 
 		return "";
 	}
@@ -88,6 +93,7 @@ struct ComponentTraits
 		if (std::is_same_v<T, ScriptableComponent>) return fnv1a_64("ScriptableComponent");
 		if (std::is_same_v<T, InputControllerComponent>) return fnv1a_64("InputControllerComponent");
 		if (std::is_same_v<T, InteractableComponent>) return fnv1a_64("InteractableComponent");
+		if (std::is_same_v<T, TriggerComponent>) return fnv1a_64("TriggerComponent");
 
 		return 0;
 	}

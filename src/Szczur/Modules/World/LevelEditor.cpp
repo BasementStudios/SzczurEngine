@@ -88,6 +88,13 @@ namespace rat {
 					circ.setOrigin({r, r, 0.f});
 					target.draw(circ);
 				}
+				if(auto* comp = entity.getComponentAs<TriggerComponent>(); comp != nullptr) {
+					circ.setPosition(entity.getPosition());
+					float r = comp->getRadius();
+					circ.setRadius(r);
+					circ.setOrigin({r, r, 0.f});
+					target.draw(circ);
+				}
 			});
 			glEnable(GL_DEPTH_TEST);
 		}
@@ -593,6 +600,19 @@ namespace rat {
 						ImGui::DragFloat("Height", &height);
 						object->setDistance(distance);
 						object->setHeight(height);
+				
+					}
+				}
+				if(auto* object = focusedObject->getComponentAs<TriggerComponent>(); object != nullptr) {
+					if(ImGui::CollapsingHeader("Trigger Component")) {
+						float radius = object->getRadius();
+						for(size_t i = 0; i<TriggerComponent::TypesCount; ++i) {
+							if(ImGui::Selectable(TriggerComponent::enumToString(i).c_str(), object->type == i)) {
+								object->type = TriggerComponent::uintToEnum(i);
+							}
+						}
+						ImGui::DragFloat("Radius", &radius);
+						object->setRadius(radius);
 					}
 				}
 			}
@@ -710,13 +730,14 @@ namespace rat {
 
 			auto* focusedObject = _scenes.getCurrentScene()->getEntity(_focusedObject);
 
-			static bool selectedComponents[5]{};
+			static bool selectedComponents[6]{};
 			if(ImGui::IsWindowAppearing()) {
 				selectedComponents[0] = focusedObject->hasComponent<SpriteComponent>();
 				selectedComponents[1] = focusedObject->hasComponent<ArmatureComponent>();
 				selectedComponents[2] = focusedObject->hasComponent<ScriptableComponent>();
 				selectedComponents[3] = focusedObject->hasComponent<InputControllerComponent>();
 				selectedComponents[4] = focusedObject->hasComponent<InteractableComponent>();
+				selectedComponents[5] = focusedObject->hasComponent<TriggerComponent>();
 			}
 			if(ImGui::Button("Accept", ImVec2(70,0))) {
 
@@ -740,6 +761,10 @@ namespace rat {
 					if(selectedComponents[4]) focusedObject->addComponent<InteractableComponent>();
 					else focusedObject->removeComponent<InteractableComponent>();
 				}
+				if(focusedObject->hasComponent<TriggerComponent>()!=selectedComponents[5]) {
+					if(selectedComponents[5]) focusedObject->addComponent<TriggerComponent>();
+					else focusedObject->removeComponent<TriggerComponent>();
+				}
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -753,6 +778,7 @@ namespace rat {
 			ImGui::Checkbox("Scriptable##components_manager", &selectedComponents[2]);
 			ImGui::Checkbox("InputController##components_manager", &selectedComponents[3]);
 			ImGui::Checkbox("InteractableComponent##components_manager", &selectedComponents[4]);
+			ImGui::Checkbox("TriggerComponent##components_manager", &selectedComponents[5]);
 
 			ImGui::EndPopup();
 		}
