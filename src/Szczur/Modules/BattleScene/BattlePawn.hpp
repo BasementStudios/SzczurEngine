@@ -31,6 +31,9 @@ public:
 // Getters
 
 	///
+	BattleScene* getScene();
+
+	///
 	const sf::Vector2f& getPosition() const;
 
 	///
@@ -150,16 +153,6 @@ private:
 	
 	std::vector<std::pair<BattleSkill*, int>> usableSkills;
 	std::vector<std::unique_ptr<BattleSkill>> skills;
-	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
-
-	/// Skills to use after update
-	std::vector<std::unique_ptr<BattleSkill>> skillsInQueue;
-
-private:
-
-// Skills
-
-	void useAllSkillsInQueue();
 
 };
 

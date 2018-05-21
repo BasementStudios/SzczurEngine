@@ -74,6 +74,11 @@ public:
 	/// Update position for pawn (remove overlaps)
 	void fixPosition(BattlePawn& pawn);
 
+// Skills
+
+	BattleSkill* useSkill(BattleSkill* skill);
+
+
 // Controller
 
 	void updateController();
@@ -85,7 +90,9 @@ public:
 	void initScript();
 
 private:
-	// Render
+
+// Render
+
 	sf::RenderTexture canvas;
 
 	// Battle field
@@ -96,10 +103,29 @@ private:
 	BattleSkill* controlledSkill = nullptr;
 	bool battleRunning = false;
 
+// Skills
+
+	/// List of used activated skills
+	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
+
+	/// Skills to use after update
+	std::vector<std::unique_ptr<BattleSkill>> skillsInQueue;
+
+
+private:
+
 // Main
 
 	///
 	void init();
+
+// Skills
+
+	///
+	void updateSkills(float deltaTime);
+
+	///	
+	void useAllSkillsInQueue();
 };
 
 }

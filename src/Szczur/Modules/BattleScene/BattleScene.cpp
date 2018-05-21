@@ -56,9 +56,11 @@ void BattleScene::update(float deltaTime) {
 		addPawn("Assets/Pawns/slime", sf::Vector2f(input.getMousePosition()));
 	}
 
-	for(auto& obj : pawns) {
-		obj->update(deltaTime);
-	}
+	updateSkills(deltaTime);
+
+	// for(auto& obj : pawns) {
+	// 	obj->update(deltaTime);
+	// }
 
 	updateController();
 }
@@ -219,6 +221,39 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 	} 
 	while(checkAllAgain);
 }	
+
+// ========== Skills ========== 
+
+void BattleScene::updateSkills(float deltaTime) {
+	for(auto& obj : activeSkills) {
+		obj->update(deltaTime);
+	}
+	for(auto itr = activeSkills.begin(); itr<activeSkills.end(); ) {
+		if((*itr)->isFinished()) {
+			activeSkills.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+	useAllSkillsInQueue();
+}
+
+BattleSkill* BattleScene::useSkill(BattleSkill* skill) {
+	BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
+	ret->init();
+	return ret;
+}
+
+void BattleScene::useAllSkillsInQueue() {
+	if(skillsInQueue.empty()) return;
+	activeSkills.insert(activeSkills.end(),
+		std::make_move_iterator(skillsInQueue.begin()), 
+		std::make_move_iterator(skillsInQueue.end())
+	);
+	skillsInQueue.clear();
+}
+
 // ========== Controller ========== 
 
 void BattleScene::updateController() {

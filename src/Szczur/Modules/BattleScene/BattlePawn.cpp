@@ -23,18 +23,6 @@ BattlePawn::BattlePawn(BattleScene& battleScene)
 
 void BattlePawn::update(float deltaTime) {
 
-	for(auto& obj : activeSkills) {
-		obj->update(deltaTime);
-	}
-	for(auto itr = activeSkills.begin(); itr<activeSkills.end(); ) {
-		if((*itr)->isFinished()) {
-			activeSkills.erase(itr);
-		}
-		else {
-			++itr;
-		}
-	}
-	useAllSkillsInQueue();
 }
 
 void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
@@ -49,6 +37,10 @@ void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
 }
 
 // ========== Getters ========== 
+
+BattleScene* BattlePawn::getScene() {
+	return &battleScene;
+}
 
 const sf::Vector2f& BattlePawn::getPosition() const {
 	return pos;
@@ -165,22 +157,11 @@ BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
 }
 
 BattleSkill* BattlePawn::useSkill(BattleSkill* skill) {
-	BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
-	ret->init();
-	return ret;
+	battleScene.useSkill(skill);
 }
 
 BattleSkill* BattlePawn::useSkill(const std::string& skillName) {
 	return useSkill(getSkill(skillName));
-}
-
-void BattlePawn::useAllSkillsInQueue() {
-	if(skillsInQueue.empty()) return;
-	activeSkills.insert(activeSkills.end(),
-		std::make_move_iterator(skillsInQueue.begin()), 
-		std::make_move_iterator(skillsInQueue.end())
-	);
-	skillsInQueue.clear();
 }
 
 void BattlePawn::addUsable(BattleSkill* skill, int icon) {
