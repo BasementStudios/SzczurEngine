@@ -22,8 +22,24 @@ BattlePawn::BattlePawn(BattleScene& battleScene)
 // ========== Main ========== 
 
 void BattlePawn::update(float deltaTime) {
+
+	LOG_INFO("Size AS: ", activeSkills.size());
+	
+	LOG_INFO("A")
+	int i = 0;
 	for(auto& obj : activeSkills) {
+
+		if(obj->getName()=="Dash and hit : hit") {
+			LOG_INFO(i, ". ", obj->getName())
+		}
+		++i;
+	}
+	LOG_INFO("X", "\n")
+
+	for(auto& obj : activeSkills) {
+		// LOG_INFO(obj->getName());
 		obj->update(deltaTime);
+		// LOG_INFO("B");
 	}
 	for(auto itr = activeSkills.begin(); itr<activeSkills.end(); ) {
 		if((*itr)->isFinished()) {
@@ -36,25 +52,14 @@ void BattlePawn::update(float deltaTime) {
 }
 
 void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
-
-	//Visual
-	if(isTexture) {
-		sf::Sprite sprite;
-		sprite.setTexture(texture);
-		sprite.setTextureRect(calculateTextureRect(frame));
+	// Pose
+	if(texturePose.good()) {
+		sf::Sprite sprite(texturePose.getSprite(frame));
 		sprite.setScale(1-2*flip, 1);
-		sprite.setOrigin(frameSize.x/2.f, frameSize.y);
-		sprite.setPosition(pos);
-		canvas.draw(sprite);
+		sprite.setOrigin(sprite.getTextureRect().width/2.f, sprite.getTextureRect().height);
+		sprite.setPosition(pos);	
+		canvas.draw(sprite);	
 	}
-
-	sf::CircleShape collider(colliderRadius);
-	collider.setOrigin(colliderRadius, colliderRadius);
-	collider.setPosition(pos);
-	collider.setFillColor({150,0,255,100});
-	collider.setOutlineColor({150,0,255,200});
-	collider.setOutlineThickness(-2);
-	canvas.draw(collider);
 }
 
 // ========== Getters ========== 
@@ -71,8 +76,16 @@ bool BattlePawn::hitTest(const sf::Vector2f& point) const {
 	return std::sqrt(d.x*d.x+d.y*d.y)<colliderRadius;
 }
 
-bool BattlePawn::getDirection(float angle) {
+bool BattlePawn::getDirection(float angle) const {
 	return std::fabs(angle)>3.14159f/2.f;
+}
+
+const std::vector<std::unique_ptr<BattleSkill>>& BattlePawn::getSkills() const {
+	return skills;
+}
+
+sf::Sprite BattlePawn::getIconSprite(int iconFrame) const {
+	return textureSkillIcons.getSprite(iconFrame);
 }
 
 // ========== Manipulations ========== 
@@ -128,25 +141,19 @@ void BattlePawn::moveInDirection(float angle, float distance) {
 void BattlePawn::loadPawn(const std::string& dirPath) {
 	Json config;
 	std::ifstream(dirPath+"/config.json") >> config;
-	frameSize.x = config["frameSize"][0];
-	frameSize.y = config["frameSize"][1];
-	framesInRow = config["framesInRow"];
-	isTexture = texture.loadFromFile(dirPath+"/"+config["texture"].get<std::string>());
-	if(config["skills"].is_null() == false) {
-		for(auto& obj : config["skills"]) {
+
+	if(auto& pose = config["textures"]["pose"]; !pose.is_null()) {
+		texturePose.load(dirPath+"/"+pose[0].get<std::string>(), pose[1], pose[2], pose[3], pose[4], pose[5]);
+	}
+	if(auto& icons = config["textures"]["skill_icons"]; !icons.is_null()) {
+		textureSkillIcons.load(dirPath+"/"+icons[0].get<std::string>(), icons[1], icons[2], icons[3], icons[4], icons[5]);
+	}
+
+	if(!config["scripts"].is_null()) {
+		for(auto& obj : config["scripts"]) {
 			runScript(dirPath+"/"+obj.get<std::string>());
 		}
 	}
-}
-
-// ========== Controller ========== 
-
-void BattlePawn::renderController(RenderTarget& canvas) {
-
-}
-
-void BattlePawn::updateController() {
-	
 }
 
 // ========== Skills ========== 
@@ -176,11 +183,29 @@ BattleSkill* BattlePawn::getSkill(const std::string& skillName) {
 BattleSkill* BattlePawn::useSkill(BattleSkill* skill) {
 	BattleSkill* ret = activeSkills.emplace_back(new BattleSkill(*skill)).get();
 	ret->init();
+
+	LOG_INFO("Init -> ", ret->getName());
+	for(auto& obj : activeSkills) {
+		LOG_INFO("   >", obj->getName());
+	}
+	LOG_INFO("\n")
 	return ret;
 }
 
 BattleSkill* BattlePawn::useSkill(const std::string& skillName) {
 	return useSkill(getSkill(skillName));
+}
+
+// ========== Controller ========== 
+
+void BattlePawn::renderController(BattlePawn::RenderTarget& canvas) const {
+	sf::CircleShape collider(colliderRadius);
+	collider.setOrigin(colliderRadius, colliderRadius);
+	collider.setPosition(pos);
+	collider.setFillColor({150,0,255,100});
+	collider.setOutlineColor({150,0,255,200});
+	collider.setOutlineThickness(-2);
+	canvas.draw(collider);
 }
 
 // ========== Visual ========== 
@@ -191,12 +216,6 @@ void BattlePawn::setFrame(int frame) {
 
 void BattlePawn::setFlip(bool flag) {
 	flip = flag;
-}
-
-sf::IntRect BattlePawn::calculateTextureRect(int frame) {
-	int x = frame % framesInRow;
-	int y = frame / framesInRow;
-	return sf::IntRect(frameSize.x*x+x, frameSize.y*y+y, frameSize.x, frameSize.y);
 }
 
 // ========== Scripts ========== 

@@ -16,13 +16,13 @@ BattleSkill::BattleSkill(BattlePawn* pawn, const std::string& name)
 
 void BattleSkill::init() {
 	if(onInit.valid()) {
-		onInit(*this);
+		onInit(this);
 	}
 }
 
 void BattleSkill::update(float deltaTime) {
 	if(onUpdate.valid()) {
-		onUpdate(*this, deltaTime);
+		onUpdate(this, deltaTime);
 	}
 }
 
@@ -31,7 +31,6 @@ void BattleSkill::update(float deltaTime) {
 BattlePawn* BattleSkill::getPawn() {
 	return pawn;
 }
-
 
 bool BattleSkill::isFinished() {
 	return killed;
@@ -43,6 +42,14 @@ const std::string& BattleSkill::getName() const {
 
 size_t BattleSkill::getType() const {
 	return selectType;
+}
+
+bool BattleSkill::isUsable() const {
+	return usable;
+}
+
+sf::Sprite BattleSkill::getIconSprite() const {
+	return pawn->getIconSprite(icon);
 }
 
 // ========== Manipulations ==========
@@ -79,6 +86,11 @@ void BattleSkill::updateController(BattlePawn* selectedPawn) {
 	}
 }
 
+void BattleSkill::setUsable(int icon) {
+	this->icon = icon;
+	usable = true;
+}
+
 // ========== Scripts ==========
 
 void BattleSkill::initScript(Script& script) {
@@ -113,6 +125,7 @@ void BattleSkill::initScript(Script& script) {
 	object.set("getPawn", &BattleSkill::getPawn);
 	object.set("renderCircle", &BattleSkill::renderCircle);
 	object.set("kill", &BattleSkill::kill);
+	object.set("setUsable", &BattleSkill::setUsable);
 	object.set(sol::meta_function::index, &BattleSkill::getVariable);
 	object.set(sol::meta_function::new_index, &BattleSkill::setVariable);
 

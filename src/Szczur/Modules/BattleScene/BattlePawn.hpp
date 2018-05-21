@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "BattleTexture.hpp"
+
 namespace rat {
 
 class Input;
@@ -38,7 +40,13 @@ public:
 	bool hitTest(const sf::Vector2f& point) const;
 	
 	/// (angle in format -pi..pi), 1:left, 0:right
-	bool getDirection(float angle);
+	bool getDirection(float angle) const;
+
+	///
+	const std::vector<std::unique_ptr<BattleSkill>>& getSkills() const;
+
+	///
+	sf::Sprite getIconSprite(int iconFrame) const;
 
 // Manipulations
 
@@ -70,15 +78,6 @@ public:
 	/// Load pawn from folder
 	void loadPawn(const std::string& dirPath);
 
-
-// Controller
-
-	///
-	void renderController(RenderTarget& canvas);
-
-	///
-	void updateController();
-
 // Skills
 
 	/// Add new skill for pawn
@@ -96,6 +95,10 @@ public:
 	/// Use skill by name
 	BattleSkill* useSkill(const std::string& skillName);
 
+// Controller
+
+	void renderController(BattlePawn::RenderTarget& canvas) const;
+
 // Visual
 
 	///
@@ -112,14 +115,6 @@ public:
 	/// Run script for this pawn
 	void runScript(const std::string& filePath);
 
-
-private:
-
-// Visual
-
-	/// Get texture rect by frame
-	sf::IntRect calculateTextureRect(int frame);
-
 private:
 
 // Main
@@ -130,12 +125,10 @@ private:
 
 // Visual
 	
-	sf::Texture texture;
-	sf::Vector2i frameSize;
+	BattleTexture texturePose;
+	BattleTexture textureSkillIcons;
 	int frame = 0;
-	int framesInRow = 1;
 	bool flip = false;
-	bool isTexture = false;
 
 // Controller
 	

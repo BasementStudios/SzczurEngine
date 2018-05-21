@@ -1,6 +1,7 @@
 -- Skill: Move
-local skill = THIS:newSkill("Dash in right")
+local skill = THIS:newSkill("Dash and hit")
 
+skill:setUsable(0)
 skill:setType("SPACE")
 
 function skill:onProvide(canvas) 
@@ -14,20 +15,23 @@ function skill:onInit()
 end
 
 function skill:onUpdate(dt)
+	-- print("x")
 	self:getPawn():moveInDirection(self.angle, dt*700)
-	if(self.clock:elapsed()>0.20) then
+	if self.clock:elapsed()>0.20 then
 		self:getPawn():setFrame(0)
 		self:kill()
-		local skill_1 = self:getPawn():useSkill("Dash in right : hit")
-	elseif(self.clock:elapsed()>0.10) then
+		self:getPawn():useSkill("Dash and hit : hit")
+	elseif self.clock:elapsed()>0.10 then
 		self:getPawn():setFrame(3)
 	else
 		self:getPawn():setFrame(2)
 	end
+	-- print("y")
 end
 
 -- hit
-local hit = THIS:newSkill("Dash in right : hit")
+local hit = THIS:newSkill("Dash and hit : hit")
+-- hit:setUsable(1)
 
 function hit:onInit()
 	self.clock = Utility.Clock.new()

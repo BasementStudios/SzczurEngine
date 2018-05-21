@@ -40,7 +40,13 @@ public:
 
 	///
 	size_t getType() const;
+
+	///
+	bool isUsable() const;
 	
+	///
+	sf::Sprite getIconSprite() const;
+
 // Manipulations
 
 	///
@@ -59,6 +65,9 @@ public:
 
 	///
 	void updateController(BattlePawn* selectedPawn);
+
+	///
+	void setUsable(int icon);
 
 // Scripts
 
@@ -81,6 +90,8 @@ protected:
 	bool updateStatus = false;
 	bool killed = false;
 	std::string name;
+	bool usable = false;
+	int icon = 0;
 
 	InputManager& input;
 

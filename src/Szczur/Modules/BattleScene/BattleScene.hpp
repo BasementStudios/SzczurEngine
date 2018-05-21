@@ -66,6 +66,8 @@ public:
 
 	void updateController();
 
+	void renderController();
+
 // Scripts
 
 	void initScript();

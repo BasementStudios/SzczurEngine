@@ -1,0 +1,9 @@
+{
+	"textures": {
+		"pose": ["texture.png", 0, 0, 102, 125, 6],
+		"skill_icons": ["skills.png", 0, 0, 80, 80, 2]
+	},
+	"scripts": [
+		"skill_1.lua"
+	]
+}

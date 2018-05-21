@@ -17,11 +17,12 @@ BattleScene::BattleScene() {
 
 	// Test
 	auto& window = getModule<Window>().getWindow();
+	fieldSize = sf::Vector2f(900, 500);
 	fieldPos.x = (window.getSize().x-fieldSize.x)/2.f;
 	fieldPos.y = window.getSize().y-fieldSize.y-100;
-	BattlePawn* pawn = addPawn("Assets/Battle/pawn_1");
+	BattlePawn* pawn = addPawn("Assets/Battle/karion");
 	changePawn(pawn);
-	changeSkill("Dash in right");
+	changeSkill("Dash and hit");
 
 	LOG_INFO("Module BattleScene initialized");
 }
@@ -44,7 +45,7 @@ void BattleScene::update(float deltaTime) {
 
 	// Test
 	if(InputManager& input = getModule<Input>().getManager(); input.isPressed(Mouse::Right)) {
-		addPawn("Assets/Battle/pawn_1", sf::Vector2f(input.getMousePosition()));
+		addPawn("Assets/Battle/karion", sf::Vector2f(input.getMousePosition()));
 	}
 
 	for(auto& obj : pawns) {
@@ -69,16 +70,14 @@ void BattleScene::render() {
 
 	// Pawns
 	for(auto& obj : pawns) {
+		obj->renderController(canvas);
+	}
+	for(auto& obj : pawns) {
 		obj->render(canvas);
 	}
 
-	// Controllers
-	if(controlledPawn != nullptr) {
-		controlledPawn->renderController(canvas);
-	}
-	if(controlledSkill != nullptr) {
-		controlledSkill->renderController(canvas);
-	}
+	// Controller
+	renderController();
 
 	canvas.display();
 	window.draw(sf::Sprite(canvas.getTexture()));
@@ -159,6 +158,13 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 
 void BattleScene::updateController() {
 
+	if(getModule<Input>().getManager().isPressed(Keyboard::Num1)) {
+		controlledSkill = controlledPawn->getSkills()[0].get();
+	}
+	else if(getModule<Input>().getManager().isPressed(Keyboard::Num2)) {
+		controlledSkill = controlledPawn->getSkills()[1].get();
+	}
+
 	BattlePawn* selectedPawn = nullptr;
 	auto& input = getModule<Input>().getManager();
 	for(auto itr = pawns.rbegin(); itr<pawns.rend(); ++itr) {
@@ -168,11 +174,45 @@ void BattleScene::updateController() {
 		}
 	}
 
-	if(controlledPawn != nullptr) {
-		controlledPawn->updateController();
-	}
 	if(controlledSkill != nullptr) {
 		controlledSkill->updateController(selectedPawn);
+	}
+}
+
+void BattleScene::renderController() {
+	if(controlledPawn != nullptr) {
+		sf::RectangleShape shape({80, 80});
+		shape.setOutlineColor({255,0,150,150});
+		shape.setOutlineThickness(2);
+		shape.setFillColor({100,0,50,100});
+		auto& skills = controlledPawn->getSkills();
+		int i = 0;
+		for(auto& obj : skills) {
+			if(obj->isUsable()) {
+				sf::Sprite icon(obj->getIconSprite());
+				icon.setPosition(300+i*90,50);
+				shape.setPosition(icon.getPosition());
+				if(obj.get() != controlledSkill) {			
+					canvas.draw(shape);
+					canvas.draw(icon);
+				}
+				else {
+					icon.setColor({255,255,255,255});
+					shape.setOutlineColor({255,0,150,255});	
+					shape.setFillColor({100,0,50,150});				
+					canvas.draw(shape);
+					canvas.draw(icon);
+					shape.setFillColor({100,0,50,100});				
+					shape.setOutlineColor({255,0,150,150});	
+					icon.setColor({255,255,255,150});	
+				}
+				++i;
+			}
+		}
+		// shape.setOutlineColor({255,0,150,255});
+	}
+	if(controlledSkill != nullptr) {
+		controlledSkill->renderController(canvas);
 	}
 }
 
