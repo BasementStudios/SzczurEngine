@@ -138,6 +138,47 @@ void BattlePawn::loadPawn(const std::string& dirPath) {
 		}
 	}
 }
+ 
+void BattlePawn::setCollisionStatus(bool flag) {
+	collision = flag;
+}
+
+bool BattlePawn::isCollision() {
+	return collision;
+}
+
+// ========== Battle ========== 
+
+
+	 
+void BattlePawn::addHp(float value) {
+	setHp(health+value);
+}
+
+	 
+void BattlePawn::setHp(float value) {
+	if(value<0) value = 0;
+	else if(value>maxHealth) value = maxHealth;
+	health = value;
+}
+
+	 
+void BattlePawn::setMaxHp(float value) {	
+	if(value<1) value = 1;
+	maxHealth = value;
+	setHp(maxHealth);
+}
+
+	 
+float BattlePawn::getHp() const {
+	return health;
+}
+
+	 
+float BattlePawn::getMaxHp() const {
+	return maxHealth;
+}
+
 
 // ========== Skills ========== 
 
@@ -273,6 +314,15 @@ void BattlePawn::initScript(Script& script) {
 	object.set("addUsable", &BattlePawn::addUsable);
 	object.set("removeUsable", &BattlePawn::removeUsable);
 	object.set("clearUsable", &BattlePawn::removeUsable);
+	object.set("setCollisionStatus", &BattlePawn::setCollisionStatus);
+	object.set("isCollision", &BattlePawn::isCollision);
+	
+	// Health
+	object.set("addHp", &BattlePawn::addHp);
+	object.set("setHp", &BattlePawn::setHp);
+	object.set("setMaxHp", &BattlePawn::setMaxHp);
+	object.set("getHp", &BattlePawn::getHp);
+	object.set("getMaxHp", &BattlePawn::getMaxHp);
 
 	object.init();
 }

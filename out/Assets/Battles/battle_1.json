@@ -3,7 +3,7 @@
 	"size": [1000, 400],
 	"player": ["Assets/Pawns/karion", 50, 50],
 	"enemies": [
-		["Assets/Pawns/slime", 50, 100],
-		["Assets/Pawns/slime", 150, 100]
+		["Assets/Pawns/slime", 200, 200],
+		["Assets/Pawns/slime", 400, 250]
 	]
 }

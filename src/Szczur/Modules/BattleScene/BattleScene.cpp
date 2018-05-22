@@ -59,9 +59,15 @@ void BattleScene::update(float deltaTime) {
 	updateSkills(deltaTime);
 	updateTriggers(deltaTime);
 
-	// for(auto& obj : pawns) {
-	// 	obj->update(deltaTime);
-	// }
+	for(auto itr = pawns.begin(); itr != pawns.end();) {
+		(*itr)->setCollisionStatus(false);
+		// if((*itr)->getHp() == 0) {
+		// 	pawns.erase(itr);
+		// }
+		// else {
+			++itr;
+		// }
+	}
 
 	updateController();
 }
@@ -221,6 +227,8 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 			if(float d = obj->getColliderRadius()+pawn.getColliderRadius()-dis; d>=0) {
 				pawn.moveRaw({std::cos(ang)*d, std::sin(ang)*d});
 				checkAllAgain = true;
+				pawn.setCollisionStatus(true);
+				obj->setCollisionStatus(true);
 			}
 		}
 		--tries;

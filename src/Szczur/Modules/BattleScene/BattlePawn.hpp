@@ -84,6 +84,29 @@ public:
 	/// Load pawn from folder
 	void loadPawn(const std::string& dirPath);
 
+	/// 
+	void setCollisionStatus(bool flag);
+
+	/// 
+	bool isCollision();
+
+// Battle
+
+	/// 
+	void addHp(float value);
+
+	/// 
+	void setHp(float value);
+
+	/// 
+	void setMaxHp(float value);
+
+	/// 
+	float getHp() const;
+
+	/// 
+	float getMaxHp() const;
+
 // Skills
 
 	/// Add new skill for pawn
@@ -140,6 +163,7 @@ private:
 	BattleScene& battleScene;
 	sf::Vector2f pos{0,0};
 	float colliderRadius = 20.f;
+	bool collision = false;
 
 // Stats
 

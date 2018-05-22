@@ -31,9 +31,14 @@ public:
 
 // Gettters
 
+	///
 	bool isFinished() const;
 
+	///
 	BattlePawn* getCaster();
+
+	///
+	const sf::Vector2f& getPosition() const;
 
 // Manipulations
 
@@ -45,6 +50,9 @@ public:
 
 	///
 	void setPosition(const sf::Vector2f& pos);
+
+	///
+	void setDuration(float time);
 
 // Targeting 
 
@@ -85,6 +93,7 @@ public:
 public:
 
 	sol::function onInit;
+	sol::function onUpdate;
 
 private:
 
@@ -96,6 +105,7 @@ private:
 // Main
 
 	sf::Clock clock;
+	float duration = 0.5f;
 	BattlePawn* caster = nullptr;
 	BattleScene* scene = nullptr;
 	bool killed = false;

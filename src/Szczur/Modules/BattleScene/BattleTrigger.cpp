@@ -27,6 +27,10 @@ BattlePawn* BattleTrigger::getCaster() {
 	return caster;
 }
 
+const sf::Vector2f& BattleTrigger::getPosition() const {
+	return position;
+}
+
 // ========== Main ========== 
 
 void BattleTrigger::render(sf::RenderTarget& canvas) {
@@ -41,11 +45,11 @@ void BattleTrigger::render(sf::RenderTarget& canvas) {
 	}
 
 	sf::Color color = shape.getOutlineColor();
-	color.a = 180.f*(1-clock.getElapsedTime().asSeconds()/0.5f);
+	color.a = 180.f*(1-clock.getElapsedTime().asSeconds()/duration);
 	shape.setOutlineColor(color);
-	if(float elapsed = clock.getElapsedTime().asSeconds()<=0.25f) {
+	if(float elapsed = clock.getElapsedTime().asSeconds()<=duration*0.5f) {
 		color = shape.getFillColor();
-		color.a = 180.f*(1-clock.getElapsedTime().asSeconds()/0.25f);
+		color.a = 180.f*(1-clock.getElapsedTime().asSeconds()/(duration*0.5f));
 		shape.setFillColor(color);
 	}
 	else {
@@ -56,8 +60,11 @@ void BattleTrigger::render(sf::RenderTarget& canvas) {
 
 
 void BattleTrigger::update(float deltaTime) {
-	if(clock.getElapsedTime().asSeconds()>0.5f) {
+	if(clock.getElapsedTime().asSeconds()>duration) {
 		killed = true;
+	}
+	if(!targets.empty() && onUpdate.valid()) {
+		onUpdate(this, deltaTime);
 	}
 }
 
@@ -92,6 +99,13 @@ void BattleTrigger::setPosition(const sf::Vector2f& pos) {
 	shape.setPosition(position);
 }
 
+
+void BattleTrigger::setDuration(float time) {
+	if(time<0.001) time = 0.001;
+	duration = time;
+}
+
+
 // ========== Targeting ========== 
 
 void BattleTrigger::updateTargets() {
@@ -109,7 +123,7 @@ void BattleTrigger::targetNearest() {
 
 	float dis;
 	for(auto& obj : pawns) {
-		dis = getSemiDistanceTo(obj->getPosition());
+		dis = getDistanceTo(obj->getPosition())-obj->getColliderRadius();
 		if(min>dis && obj.get() != caster) {
 			min = dis;
 			target = obj.get();
@@ -117,7 +131,7 @@ void BattleTrigger::targetNearest() {
 	}
 
 	if(target != nullptr) {
-		if(sqrt(min)<=radius) {
+		if(min<=radius) {
 			targets.emplace_back(target);
 		}
 	}
@@ -171,12 +185,15 @@ BattleTrigger::initScript(Script& script) {
 	object.set("getCaster", &BattleTrigger::getCaster);
 	object.set("setRadius", &BattleTrigger::setRadius);
 	object.set("nearestOnly", &BattleTrigger::nearestOnly);
+	object.set("getPosition", &BattleTrigger::getPosition);
 	object.set("getTarget", &BattleTrigger::getTarget);
+	object.set("setDuration", &BattleTrigger::setDuration);
 	object.setOverload("setPosition", 
 		sol::resolve<void(float,float)>(&BattleTrigger::setPosition),
 		sol::resolve<void(const sf::Vector2f&)>(&BattleTrigger::setPosition)
 	);
 	object.set("onInit", &BattleTrigger::onInit);
+	object.set("onUpdate", &BattleTrigger::onUpdate);
 	object.set(sol::meta_function::index, &BattleTrigger::getVariable);
 	object.set(sol::meta_function::new_index, &BattleTrigger::setVariable);
 	object.init();
