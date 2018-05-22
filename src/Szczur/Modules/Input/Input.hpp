@@ -10,19 +10,28 @@ class Input : public Module<>
 {
 public:
 
+	///
 	Input();
 
+	///
 	Input(const Input&) = delete;
 
+	///
 	Input& operator = (const Input&) = delete;
 
+	///
 	Input(Input&&) = delete;
 
+	///
 	Input& operator = (Input&&) = delete;
 
+	///
 	~Input();
 
+	///
 	InputManager& getManager();
+
+	///
 	const InputManager& getManager() const;
 
 private:

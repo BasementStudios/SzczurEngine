@@ -8,8 +8,8 @@ Clock::TimePoint_t Clock::now()
 	return Clock_t::now();
 }
 
-Clock::Clock() :
-	_refPoint(now())
+Clock::Clock()
+	: _refPoint { now() }
 {
 
 }
@@ -21,8 +21,10 @@ Time Clock::getElapsedTime() const
 
 Time Clock::restart()
 {
-	Time ret = getElapsedTime();
+	auto ret = getElapsedTime();
+
 	_refPoint = now();
+
 	return ret;
 }
 
@@ -33,10 +35,13 @@ bool Clock::hasPassed(const Duration_t& duration) const
 
 bool Clock::checkStep(const Duration_t& duration)
 {
-	if(hasPassed(duration)) {
+	if (hasPassed(duration))
+	{
 		restart();
+
 		return true;
 	}
+
 	return false;
 }
 
