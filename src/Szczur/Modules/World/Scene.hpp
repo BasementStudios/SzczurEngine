@@ -10,25 +10,29 @@
 
 namespace rat
 {
+
+// FWD
 class SceneManager;
+
 class Scene
 {
 public:
+
+	struct Entrance
+	{
+		size_t ID;
+		std::string name;
+		glm::vec3 position;
+	};
 
 	using EntitiesHolder_t            = std::vector<std::unique_ptr<Entity>>;
 	using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>;
 	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
 	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
-
-	struct Entrance {
-		size_t ID;
-		std::string name;
-		glm::vec3 position;
-	};
-	using EntrancesHolder_t = std::vector<Entrance>;
+	using EntrancesHolder_t           = std::vector<Entrance>;
 
 	///
-	Scene();
+	Scene(SceneManager* _parent);
 
 	///
 	Scene(const Scene&) = delete;
@@ -46,7 +50,7 @@ public:
 	~Scene() = default;
 
 	///
-	void update(float deltaTime, SceneManager& scenes);
+	void update(float deltaTime);
 
 	///
 	void render();
@@ -59,6 +63,12 @@ public:
 
 	///
 	const std::string& getName() const;
+
+	///
+	SceneManager* getScenes();
+
+	///
+	const SceneManager* getScenes() const;
 
 	///
 	Entity* addEntity(const std::string& group);
@@ -157,6 +167,7 @@ private:
 
     size_t _id;
     std::string _name;
+	SceneManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;

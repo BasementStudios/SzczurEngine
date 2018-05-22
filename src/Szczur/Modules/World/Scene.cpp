@@ -1,4 +1,4 @@
-#include "Scene.hpp"
+#include "SceneManager.hpp"
 
 #include <functional>
 
@@ -14,16 +14,15 @@
 
 #include "Szczur/Modules/Input/Input.hpp"
 
-#include "SceneManager.hpp"
-
 #include "UniqueID.hpp"
 
 namespace rat
 {
 
-Scene::Scene()
+Scene::Scene(SceneManager* parent)
 	: _id { getUniqueID<Scene>() }
 	, _name { "unnamed_" + std::to_string(_id) }
+	, _parent { parent }
 {
 	_collectingHolder.emplace("background", EntitiesHolder_t{});
 	_collectingHolder.emplace("foreground", EntitiesHolder_t{});
@@ -39,7 +38,7 @@ Scene::Scene()
 	_armatureDisplayDataHolder.reserve(100);
 }
 
-void Scene::update(float deltaTime, SceneManager& scenes)
+void Scene::update(float deltaTime)
 {
 	auto& input = detail::globalPtr<Input>->getManager();
 	auto* player = getEntity(getPlayerID());
@@ -68,14 +67,13 @@ void Scene::update(float deltaTime, SceneManager& scenes)
 				if(input.isReleased(Keyboard::LShift)) {
 					if(comp->checkForTrigger(player->getPosition())) {
 						if(comp->type == TriggerComponent::ChangeScene) {
-							scenes.setCurrentScene(comp->sceneId);
-							auto* scene = scenes.getCurrentScene();
+							getScenes()->setCurrentScene(comp->sceneId);
+							auto* scene = getScenes()->getCurrentScene();
 							for(auto& it : scene->getEntrances()) {
 								if(it.ID == comp->entranceId) {
 									scene->getEntity(scene->getPlayerID())->setPosition(it.position);
 								}
 							}
-
 						}
 					}
 				}
@@ -108,6 +106,16 @@ void Scene::setName(const std::string& name)
 const std::string& Scene::getName() const
 {
 	return _name;
+}
+
+SceneManager* Scene::getScenes()
+{
+	return _parent;
+}
+
+const SceneManager* Scene::getScenes() const
+{
+	return _parent;
 }
 
 Entity* Scene::addEntity(const std::string& group)

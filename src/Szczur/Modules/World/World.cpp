@@ -40,7 +40,7 @@ void World::update(float deltaTime)
 {
 	if (_getScenes().isCurrentSceneValid())
 	{
-		_getScenes().getCurrentScene()->update(deltaTime, _scenes);
+		_getScenes().getCurrentScene()->update(deltaTime);
 	}
 
 	#ifdef EDITOR

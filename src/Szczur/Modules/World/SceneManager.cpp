@@ -8,7 +8,7 @@ namespace rat
 
 Scene* SceneManager::addScene()
 {
-    Scene* scene = _holder.emplace_back(std::make_unique<Scene>()).get();
+    Scene* scene = _holder.emplace_back(std::make_unique<Scene>(this)).get();
     Entity* player = scene->addEntity("single");
     Entity* camera = scene->addEntity("single");
 
