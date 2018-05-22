@@ -519,7 +519,7 @@ namespace rat {
 									object->setArmatureDisplayData(it);
 								}
 								catch(const std::exception& exc) {
-									object->setArmatureDisplayData(nullptr);
+									object->setArmatureDisplayData(nullptr, false);
 								}
 							}
 						}

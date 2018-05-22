@@ -24,7 +24,7 @@ namespace rat
 
         ~ArmatureComponent();
 
-        void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData);
+        void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData, bool deleteOld = true);
 
         ArmatureDisplayData* getArmatureDisplayData();
 

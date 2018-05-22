@@ -23,19 +23,21 @@ namespace rat
             delete _armature;
     }
 
-    void ArmatureComponent::setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData)
+    void ArmatureComponent::setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData, bool deleteOld)
     {
         _armatureDisplayData = armatureDisplayData;
         if(armatureDisplayData) {
             auto dbFactory = dragonBones::SF3DFactory::get();
 
-            if(_armature)
+            if(_armature && deleteOld)
 				delete _armature;
 
             _armature = dbFactory->buildArmatureDisplay(armatureDisplayData->getName());
         }
         else if(_armature) {
-            delete _armature;
+			if (deleteOld)
+				delete _armature;
+
             _armature = nullptr;
         }
     }
