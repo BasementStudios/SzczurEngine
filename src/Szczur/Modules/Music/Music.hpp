@@ -36,6 +36,8 @@ namespace rat
 
 		void initScript();
 
+		MusicAssets* getAssetsManager() { return &_assets; };
+
 		void update(float deltaTime);
 
 		void loadPlaylistFromJson(const std::string& fileName);

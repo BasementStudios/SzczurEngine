@@ -44,6 +44,10 @@ namespace rat
         bool _addingPlaylist{false};
 
         PlaylistHolder _playlistHolder;
+        MusicAssets* musicAssets;
+
+        std::string currentEditingMusicFile = "";
+
 
     public:
         AudioEditor();

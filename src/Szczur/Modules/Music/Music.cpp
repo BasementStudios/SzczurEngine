@@ -92,7 +92,7 @@ namespace rat
 	void Music::addToPlaylist(const std::string& key, const std::string& fileName)
 	{
 		_assets.load(fileName);
-		auto&& base = MusicBase(fileName, _assets.get(fileName));
+		auto&& base = MusicBase(_assets.get(fileName));
 		_playlists[fnv1a_32(key.begin())]->add(std::move(base));
 
 		LOG_INFO("Added ", fileName, " to playlist ", key);

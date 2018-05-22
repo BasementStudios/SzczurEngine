@@ -19,6 +19,7 @@ namespace rat
                 LOG_INFO("Music Assets Error: Problem with loading asset:", path);
             }
         }
+        _musicHolder[fileName].init(fileName);
         _musicHolder[fileName].incrementCounter();
 	}
 
