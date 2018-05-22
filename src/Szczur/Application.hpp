@@ -52,7 +52,7 @@ private:
 
 	
 	Clock _mainClock;
-	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script> _modules;
+	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script, DragDrop> _modules;
 
 };
 
