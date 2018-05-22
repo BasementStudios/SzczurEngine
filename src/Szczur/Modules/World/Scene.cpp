@@ -14,6 +14,8 @@
 
 #include "Szczur/Modules/Input/Input.hpp"
 
+#include "SceneManager.hpp"
+
 namespace rat
 {
 
@@ -35,7 +37,7 @@ Scene::Scene()
 	_armatureDisplayDataHolder.reserve(100);
 }
 
-void Scene::update(float deltaTime)
+void Scene::update(float deltaTime, SceneManager& scenes)
 {
 	auto& input = detail::globalPtr<Input>->getManager();
 	auto* player = getEntity(getPlayerID());
@@ -58,6 +60,15 @@ void Scene::update(float deltaTime)
 					auto curPos = entity->getPosition();
 					curPos.x = player->getPosition().x;
 					entity->setPosition(curPos);
+				}
+			}
+			if(auto* comp = entity->getComponentAs<TriggerComponent>(); comp != nullptr) {
+				if(input.isReleased(Keyboard::LShift)) {
+					if(comp->checkForTrigger(player->getPosition())) {
+						if(comp->type == TriggerComponent::ChangeScene) {
+							scenes.setCurrentScene(comp->sceneId);
+						}
+					}
 				}
 			}
 		}

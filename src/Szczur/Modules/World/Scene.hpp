@@ -9,7 +9,7 @@
 
 namespace rat
 {
-
+class SceneManager;
 class Scene
 {
 public:
@@ -38,7 +38,7 @@ public:
 	~Scene() = default;
 
 	///
-	void update(float deltaTime);
+	void update(float deltaTime, SceneManager& scenes);
 
 	///
 	void render();

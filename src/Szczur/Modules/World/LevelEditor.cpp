@@ -88,6 +88,7 @@ namespace rat {
 			});
 			scene->forEach([&](const std::string& group, Entity& entity){
 				if(auto* comp = entity.getComponentAs<InteractableComponent>(); comp != nullptr) {
+					circ.setColor({1.f, 0.f, 1.f, 0.2f});
 					circ.setPosition(entity.getPosition() + glm::vec3{0.f, comp->getHeight(), 0.f});
 					float r = comp->getDistance();
 					circ.setRadius(r);
@@ -95,6 +96,7 @@ namespace rat {
 					target.draw(circ);
 				}
 				if(auto* comp = entity.getComponentAs<TriggerComponent>(); comp != nullptr) {
+					circ.setColor({1.f, 1.f, 0.f, 0.2f});
 					circ.setPosition(entity.getPosition());
 					float r = comp->getRadius();
 					circ.setRadius(r);
@@ -612,13 +614,34 @@ namespace rat {
 				if(auto* object = focusedObject->getComponentAs<TriggerComponent>(); object != nullptr) {
 					if(ImGui::CollapsingHeader("Trigger Component")) {
 						float radius = object->getRadius();
-						for(size_t i = 0; i<TriggerComponent::TypesCount; ++i) {
-							if(ImGui::Selectable(TriggerComponent::enumToString(i).c_str(), object->type == i)) {
-								object->type = TriggerComponent::uintToEnum(i);
+						if(ImGui::BeginCombo("Types", TriggerComponent::enumToString(object->type).c_str())) {
+							if(ImGui::Selectable(TriggerComponent::enumToString(TriggerComponent::None).c_str(), object->type == TriggerComponent::None)) {
+								object->type = TriggerComponent::None;
 							}
+							if(
+								ImGui::Selectable(TriggerComponent::enumToString(
+									TriggerComponent::ChangeScene).c_str(), 
+									object->type == TriggerComponent::ChangeScene)
+								) {
+								object->type = TriggerComponent::ChangeScene;
+								object->sceneId = 0u;
+							}
+							ImGui::EndCombo();
 						}
 						ImGui::DragFloat("Radius", &radius);
 						object->setRadius(radius);
+						if(object->type == TriggerComponent::ChangeScene) {
+							auto* temp = _scenes.getScene(object->sceneId);
+							if(ImGui::BeginCombo("Scene", temp?temp->getName().c_str():"None")) {
+								for(auto& it : _scenes.getScenes()) {
+									if(ImGui::Selectable( it->getName().c_str(), object->sceneId == it->getID() )) {
+										object->sceneId = it->getID();
+									}
+								}
+
+								ImGui::EndCombo();
+							}
+						}
 					}
 				}
 			}
