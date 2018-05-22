@@ -1,7 +1,5 @@
 #include "Application.hpp"
 
-#include "Szczur/Utility/Container/AssetManager.hpp"
-
 namespace rat
 {
 
@@ -11,9 +9,6 @@ namespace rat
 
 void Application::init()
 {
-	AssetManager<sf::Texture> am;
-	std::cout << (am.getPtr(std::string{"lel"}) == nullptr) << std::endl;
-
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
@@ -30,7 +25,7 @@ void Application::init()
 		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(builtinFontData, builtinFontSize, 16.0f, nullptr, ranges);
 		ImGui::SFML::Init(getModule<Window>().getWindow());
 
-	    ImGuiStyle& style = ImGui::GetStyle();
+		ImGuiStyle& style = ImGui::GetStyle();
 
 		style.FramePadding = { 5.0f, 5.0f };
 		style.FrameRounding = 4.0f;
