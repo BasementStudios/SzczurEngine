@@ -38,7 +38,10 @@ namespace rat
 
 		void update(float deltaTime);
 
+		void loadPlaylistFromJson(const std::string& fileName);
+
 		void addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist);
+		const Playlist::Container_t& getPlaylist(const std::string& key) { return _playlists[fnv1a_32(key.begin())]->getContainerRef(); };
 
 		void addToPlaylist(const std::string& key, const std::string& fileName);
 		void removeFromPlaylist(const std::string& key, const std::string& fileName = "");

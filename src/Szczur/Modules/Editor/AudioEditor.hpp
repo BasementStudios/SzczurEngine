@@ -3,6 +3,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Sound/SoundManager.hpp"
+#include "Szczur/Modules/Music/Music.hpp"
 #include "SoundEditor.hpp"
 
 
@@ -11,7 +12,23 @@
 #include <fstream>
 namespace rat
 {
-    class AudioEditor : public Module <Window, Input>
+    struct PlaylistHolder 
+    {
+        std::vector<std::string> playlistsNames;
+        
+        Music* music;
+
+        void savePlaylists();
+        void loadPlaylist();
+        void addMusic(const std::string& playlistName);
+
+        void addPlaylist(const std::string& name) {
+            playlistsNames.push_back(name);
+            music->addPlaylist(name, {});  
+        };
+    };
+
+    class AudioEditor : public Module <Window, Input, Music>
     {
         const int BUFFER=256;      
         SoundEditor _soundEditor;
@@ -20,6 +37,14 @@ namespace rat
         char soundName[256]={};
         char saveFileName[256]={};
         char loadFileName[256]={};
+
+        bool _showSoundEditor{false};
+        bool _showMusicEditor{false};
+
+        bool _addingPlaylist{false};
+
+        PlaylistHolder _playlistHolder;
+
     public:
         AudioEditor();
         void render();
@@ -30,4 +55,5 @@ namespace rat
         void load(const std::string& fileName);
     
     };
+
 }

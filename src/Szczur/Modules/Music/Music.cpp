@@ -1,5 +1,7 @@
 #include "Music.hpp"
 
+#include <json.hpp>
+
 namespace rat 
 {
 
@@ -21,7 +23,7 @@ namespace rat
 		auto module = script.newModule("Music");
 
 		SCRIPT_SET_MODULE(Music, play, pause, stop, includes, cleanEffects, setPlayingMode) 
-		SCRIPT_SET_MODULE(Music, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects);
+		SCRIPT_SET_MODULE(Music, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects, loadPlaylistFromJson);
 
 
 		module.set_function("addPlaylist",
@@ -58,7 +60,22 @@ namespace rat
 		module.set_function("cleanEcho", &Music::cleanEffect<Echo>, this);
 	}
 
-	void Music::update(float deltaTime) 
+	void Music::loadPlaylistFromJson(const std::string& filePath)
+	{
+		json j;
+
+		std::ifstream file("music/" + filePath + ".json");
+        if (file.is_open()) {
+            file >> j;
+        }
+        file.close();
+
+        for (auto it = j.begin(); it != j.end(); ++it) {
+                addPlaylist(it.key(), it.value());
+        }
+	}
+
+	void Music::update(float deltaTime)
 	{
 		if (_currentPlaylistKey != 0)
 			_playlists[_currentPlaylistKey]->update(deltaTime);
