@@ -16,7 +16,9 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<AudioEditor>();
-	//getModule<AudioEditor>().init();
+	initModule<Script>();
+	initModule<Music>("music/");
+	initModule<AudioEffects>();
 
 	LOG_INFO("Modules initialized");
 

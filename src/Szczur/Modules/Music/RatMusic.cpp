@@ -1,5 +1,7 @@
 #include "RatMusic.hpp"
 
+#include "Szczur/Utility/Logger.hpp"
+
 namespace rat
 {
 

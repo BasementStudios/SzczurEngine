@@ -4,7 +4,7 @@
 
 #include <SFML/System.hpp>
 
-#include <Szczur/Json.hpp>
+#include <json.hpp>
 
 namespace rat
 { 
@@ -65,6 +65,8 @@ namespace rat
 
 	void MusicBase::getJsonData() 
 	{
+		using Json = nlohmann::json;
+
 		Json json;
 		std::ifstream file("res/Music/Music.json");
 		

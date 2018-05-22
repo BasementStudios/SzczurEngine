@@ -4,8 +4,6 @@
 
 #include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
 
-#include "Szczur/Debug.hpp"
-
 namespace rat
 {
 	class RatMusic : public sf::Music, public AudioEffect
