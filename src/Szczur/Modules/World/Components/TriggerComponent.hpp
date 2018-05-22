@@ -13,7 +13,10 @@ namespace rat {
         } type{None};
 
         union {
-            size_t sceneId;
+            struct{
+                size_t sceneId;
+                size_t entranceId;
+            };
         };
 
         TriggerComponent(Entity* parent);
@@ -22,9 +25,9 @@ namespace rat {
 
         virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
-        virtual void loadFromConfig(const Json& config) override{}
+        virtual void loadFromConfig(const Json& config) override;
 
-	    virtual void saveToConfig(Json& config) const override{}
+	    virtual void saveToConfig(Json& config) const override;
 
         void setRadius(float radius);
         float getRadius() const;

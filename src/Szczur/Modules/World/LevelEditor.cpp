@@ -10,6 +10,9 @@
 #include <ImGui/imgui.h>
 #include <NodeEditor.h>
 
+#include "UniqueID.hpp"
+
+
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/SFML3D/CircleShape.hpp"
@@ -50,8 +53,12 @@ namespace rat {
 			scene = _scenes.getCurrentScene();
 			sf3d::RectangleShape rect({100.f, 100.f});
 			sf3d::CircleShape circ;
+			sf3d::CircleShape circ2;
 			circ.rotate({-90.f, 0.f, 0.f});
 			circ.setColor({1.f, 0.f, 1.f, 0.2f});
+			circ2.setColor({0.f, 1.f, 0.f, 0.2f});
+			circ2.setRadius(50.f);
+			circ2.setOrigin({50.f, 50.f, 0.f});
 			rect.setColor({1.f, 1.f, 0.f, 0.2f});
 			rect.setOrigin({50.f, 50.f, 0.f});
 
@@ -104,6 +111,10 @@ namespace rat {
 					target.draw(circ);
 				}
 			});
+			for(auto& it : _scenes.getCurrentScene()->getEntrances()) {
+				circ2.setPosition(it.position);
+				target.draw(circ2);
+			}
 			//glEnable(GL_DEPTH_TEST);
 		}
     }
@@ -209,6 +220,7 @@ namespace rat {
     	// Create new world
     	static bool openModalNew = false;
 		static bool openScenesManager = false;
+		static bool openSceneSettings = false;
     	if(openModalNew) {
     		openModalNew = false;
             ImGui::OpenPopup("Files/New##popup");
@@ -263,6 +275,45 @@ namespace rat {
 			ImGui::EndChild();
 			ImGui::EndPopup();
 		}
+		if(openSceneSettings) {
+			openSceneSettings = false;
+			ImGui::OpenPopup("Scene Settings##popup");
+		}
+		if(ImGui::BeginPopupModal("Scene Settings##popup")) {
+			auto& holder = _scenes.getCurrentScene()->getEntrances();
+			if(ImGui::Button("Add")) {
+			
+				//holder.push_back(std::make_pair(std::string{""}, glm::vec3{0.f, 0.f, 0.f}));
+				holder.push_back(Scene::Entrance{getUniqueID<Scene::Entrance>(), "", glm::vec3(0.f, 0.f, 0.f)});
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Ok")) {
+				ImGui::CloseCurrentPopup();
+			}
+
+			if(ImGui::BeginChild("List##list")) {
+				int i = 0;
+				holder.erase(
+					std::remove_if(holder.begin(), holder.end(), [&i](Scene::Entrance& it){
+						if(ImGui::Button( (std::string{"-##"}+std::to_string(i++)).c_str() ))
+							return true;
+						ImGui::SameLine();
+						char name[255];
+						std::strcpy(&name[0], it.name.c_str());
+						ImGui::InputText((std::string{"##"}+std::to_string(i++)).c_str(), name, 255);
+						it.name = std::string{name};
+						ImGui::DragFloat3((std::string{"##"}+std::to_string(i++)).c_str(), (float*)(&(it.position)));
+						ImGui::Separator();
+						return false;
+
+					}), holder.end()
+				);
+
+			}
+			ImGui::EndChild();
+
+			ImGui::EndPopup();
+		}
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("New")) {
@@ -307,6 +358,9 @@ namespace rat {
 				}
 				if(ImGui::MenuItem("Scenes Manager", "")) {
 					openScenesManager = true;
+				}
+				if(ImGui::MenuItem("Scenes Settings", "")) {
+					openSceneSettings = true;
 				}
 
 				ImGui::Separator();
@@ -625,6 +679,7 @@ namespace rat {
 								) {
 								object->type = TriggerComponent::ChangeScene;
 								object->sceneId = 0u;
+								object->entranceId = 0u;
 							}
 							ImGui::EndCombo();
 						}
@@ -640,6 +695,25 @@ namespace rat {
 								}
 
 								ImGui::EndCombo();
+							}
+							if(object->sceneId) {
+								auto& holder = _scenes.getScene(object->sceneId)->getEntrances();
+								std::string name="None";
+								for(auto& it : holder) {
+									if(it.ID == object->entranceId) {
+										name = it.name;
+										break;
+									}
+								}
+								if(ImGui::BeginCombo("Entrance", name.c_str())) {
+									for(auto& it : holder) {
+										if(ImGui::Selectable( it.name.c_str(), it.ID == object->entranceId )) {
+											object->entranceId = it.ID;
+										}
+									}
+
+									ImGui::EndCombo();
+								}
 							}
 						}
 					}

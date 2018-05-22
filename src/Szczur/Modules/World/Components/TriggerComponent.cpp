@@ -44,4 +44,27 @@ namespace rat {
             case 1: return ChangeScene;
         }
     }
+
+    void TriggerComponent::loadFromConfig(const Json& config) {
+        Component::loadFromConfig(config);
+        _radius = config["radius"];
+        std::cout << "ID: " << config["type"].get<size_t>() << '\n';
+        std::cout << "asdasdasd\n";
+        type = uintToEnum(config["type"].get<size_t>());
+        if(type == ChangeScene) {
+            std::cout << "Passed\n";
+            sceneId = config["sceneId"];
+            entranceId = config["enranceId"];
+        }
+    }
+
+    void TriggerComponent::saveToConfig(Json& config) const {
+        Component::saveToConfig(config);
+        config["type"] = static_cast<size_t>(type);
+        config["radius"] = _radius;
+        if(type == ChangeScene) {
+            config["sceneId"] = sceneId;
+            config["enranceId"] = entranceId;
+        }
+    }
 }

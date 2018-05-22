@@ -1,0 +1,140 @@
+{
+    "currentSceneID": 1,
+    "scenes": [
+        {
+            "entrances": [
+                {
+                    "id": 1,
+                    "name": "1",
+                    "position": {
+                        "x": 64.0,
+                        "y": 52.0000038146973,
+                        "z": 0.0
+                    }
+                },
+                {
+                    "id": 2,
+                    "name": "2",
+                    "position": {
+                        "x": -29.0000019073486,
+                        "y": -15.0000009536743,
+                        "z": 18.0
+                    }
+                },
+                {
+                    "id": 3,
+                    "name": "3",
+                    "position": {
+                        "x": 45.0000038146973,
+                        "y": 11.0000009536743,
+                        "z": 11.0000009536743
+                    }
+                }
+            ],
+            "groups": {
+                "background": [
+                    {
+                        "components": [
+                            {
+                                "enranceId": 2,
+                                "features": 0,
+                                "id": 4016926418570948222,
+                                "name": "TriggerComponent",
+                                "radius": 94.0000076293945,
+                                "sceneId": 1,
+                                "type": 1
+                            }
+                        ],
+                        "id": 3,
+                        "name": "unnamed_3",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ],
+                "foreground": [],
+                "path": [],
+                "single": [
+                    {
+                        "components": [],
+                        "id": 1,
+                        "name": "Player",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 13209209574413295037,
+                                "locked": false,
+                                "name": "CameraComponent",
+                                "velocity": 50.0
+                            }
+                        ],
+                        "id": 2,
+                        "name": "Camera",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 1160.0,
+                            "z": 3085.0
+                        },
+                        "rotation": {
+                            "x": 15.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ]
+            },
+            "id": 1,
+            "name": "unnamed_1",
+            "player": 1
+        }
+    ]
+}

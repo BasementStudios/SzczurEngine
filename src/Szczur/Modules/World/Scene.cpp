@@ -16,6 +16,8 @@
 
 #include "SceneManager.hpp"
 
+#include "UniqueID.hpp"
+
 namespace rat
 {
 
@@ -67,6 +69,13 @@ void Scene::update(float deltaTime, SceneManager& scenes)
 					if(comp->checkForTrigger(player->getPosition())) {
 						if(comp->type == TriggerComponent::ChangeScene) {
 							scenes.setCurrentScene(comp->sceneId);
+							auto* scene = scenes.getCurrentScene();
+							for(auto& it : scene->getEntrances()) {
+								if(it.ID == comp->entranceId) {
+									scene->getEntity(scene->getPlayerID())->setPosition(it.position);
+								}
+							}
+
 						}
 					}
 				}
@@ -274,6 +283,10 @@ bool Scene::hasEntity(const std::string& group, size_t id)
 	return _find(group, id) != getEntities(group).end();
 }
 
+Scene::EntrancesHolder_t& Scene::getEntrances() {
+	return _entrancesHolder;
+}
+
 Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group)
 {
 	return getAllEntities().at(group);
@@ -330,6 +343,21 @@ void Scene::loadFromConfig(const Json& config)
 	_name = config["name"].get<std::string>();
 	_playerID = config["player"];
 
+	size_t maxId = 0u;
+	for(auto& obj : config["entrances"]) {
+		if(obj["id"].get<size_t>() > maxId) {
+			maxId = obj["id"].get<size_t>();
+		}
+		_entrancesHolder.push_back(
+			Entrance{
+				obj["id"].get<size_t>(),
+				obj["name"].get<std::string>(),
+				glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
+			}
+		);
+	}
+	setInitialUniqueID<Entrance>(maxId);
+
 	const Json& groups = config["groups"];
 
 	for (auto it = groups.begin(); it != groups.end(); ++it)
@@ -357,6 +385,17 @@ void Scene::saveToConfig(Json& config) const
 	config["id"] = getID();
 	config["name"] = getName();
 	config["player"] = getPlayerID();
+	Json& entrances = config["entrances"] = Json::array();
+	for(auto& it : _entrancesHolder) {
+		entrances.push_back(Json::object());
+		Json& current = entrances.back();
+
+		current["name"] = it.name;
+		current["id"] = it.ID;
+		current["position"]["x"] = it.position.x;
+		current["position"]["y"] = it.position.y;
+		current["position"]["z"] = it.position.z;
+	}
 
 	Json& groups = config["groups"] = Json::object();
 

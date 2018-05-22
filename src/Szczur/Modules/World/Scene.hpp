@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <memory>
+#include <utility>
 
 #include <boost/container/flat_map.hpp>
 
@@ -18,6 +19,13 @@ public:
 	using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>;
 	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
 	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
+
+	struct Entrance {
+		size_t ID;
+		std::string name;
+		glm::vec3 position;
+	};
+	using EntrancesHolder_t = std::vector<Entrance>;
 
 	///
 	Scene();
@@ -88,6 +96,8 @@ public:
 	///
 	bool hasEntity(const std::string& group, size_t id);
 
+	EntrancesHolder_t& getEntrances();
+
 	///
 	EntitiesHolder_t& getEntities(const std::string& group);
 
@@ -151,6 +161,8 @@ private:
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
 	size_t _playerID{ 0u };
+
+	EntrancesHolder_t _entrancesHolder;
 
 };
 
