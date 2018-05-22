@@ -34,7 +34,7 @@ namespace rat
         void init();
         void render();
 
-        void addSound(const std::string& soundName,const std::string& soundFileName);
+        bool addSound(const std::string& soundName,const std::string& soundFileName);
         void clear();
 
         void save(const std::string& fileName);

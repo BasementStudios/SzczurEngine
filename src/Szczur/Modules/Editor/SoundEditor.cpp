@@ -10,7 +10,9 @@ namespace rat
   { 
     ImGui::Begin("Hello, world!");
       for(int i=0; i<_soundManager.getSize(); ++i){
-            
+        
+        ImGui::Separator();
+        
         if(ImGui::Button(_soundManager.getName(i).c_str())){
           _soundManager.play( _soundManager.getName(i));
         }
@@ -48,10 +50,17 @@ namespace rat
     ImGui::End();
   }
 
-  void SoundEditor::addSound(const std::string& soundName,const std::string& soundFileName)
+  bool SoundEditor::addSound(const std::string& soundName,const std::string& soundFileName)
   {
+
+    for(int i= 0; i<_soundsInfo.size(); ++i){
+      if(_soundsInfo[i]->name == soundName)
+        return false;
+     }  
+
     if(!_soundManager.newSound(soundName,soundFileName))
-      return;
+      return false;
+   
     std::unique_ptr<SoundInfo> soundInfo(new SoundInfo);
     soundInfo->enable=false;
     soundInfo->toDelete=false;
@@ -62,6 +71,7 @@ namespace rat
     soundInfo->volume=100;         
     soundInfo->pitch=1;         
     _soundsInfo.push_back(std::move(soundInfo));
+    return true;
   }
 
  void SoundEditor::save(const std::string& fileName)
@@ -90,7 +100,8 @@ namespace rat
 
     while(file >> name){ 
       file >> soundFileName;
-      addSound(name,soundFileName);
+      if(!addSound(name,soundFileName))
+        continue;
       file >> _soundsInfo[_soundsInfo.size()-1]->offsetTime[0];
       file >> _soundsInfo[_soundsInfo.size()-1]->offsetTime[1];
       file >> _soundsInfo[_soundsInfo.size()-1]->volume;
