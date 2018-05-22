@@ -146,7 +146,7 @@ namespace rat
 		}
 	}
 
-	inline bool Playlist::includes(const std::string& fileName) const 
+	bool Playlist::includes(const std::string& fileName) const 
 	{
 		return (getID(fileName) != _playlist.size());
 	}

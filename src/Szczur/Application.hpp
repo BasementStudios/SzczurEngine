@@ -40,8 +40,6 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, Music> _modules;
-	Clock _mainClock;
 	ModulesHolder<Window, Input, Script, Music, AudioEffects> _modules;
 	sf::Clock _mainClock;
 
