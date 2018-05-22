@@ -8,7 +8,6 @@
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/FileSystem/DragDrop.hpp"
 
 namespace rat
 {
@@ -52,7 +51,7 @@ private:
 
 	
 	Clock _mainClock;
-	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script, DragDrop> _modules;
+	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script> _modules;
 
 };
 

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 #include "Szczur/Config.hpp"
 
 #ifdef OS_WINDOWS

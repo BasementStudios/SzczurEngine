@@ -1,5 +1,5 @@
 #include "DragDrop.hpp"
-
+#include <Shellapi.h>
 namespace rat
 {
 
