@@ -55,7 +55,7 @@ namespace rat {
 			rect.setColor({1.f, 1.f, 0.f, 0.2f});
 			rect.setOrigin({50.f, 50.f, 0.f});
 
-			glDisable(GL_DEPTH_TEST);
+			//glDisable(GL_DEPTH_TEST);
 			scene->forEach([&](const std::string& group, Entity& entity){
 				rect.setPosition(entity.getPosition());
 				if(_focusedObject == entity.getID() && _anySelected) {
@@ -63,10 +63,12 @@ namespace rat {
 					rect.setOrigin({50.f, 50.f, 0.f});
 					rect.setColor({1.f, 0.3f, 1.f, 0.4f});
 					target.draw(rect);
+					rect.move({0.f, 0.f, 0.1f});
 					rect.setSize({80.f, 80.f});
 					rect.setOrigin({40.f, 40.f, 0.f});
 					rect.setColor({0.f, 1.f, 1.f, 0.4f});
 					target.draw(rect);
+					rect.move({0.f, 0.f, -0.1f});
 					// rect.setOutlineColor({1.f, 1.f, 0.f, 0.8f})
 					// rect.setOutlineThickness(2.f);
 				}
@@ -75,12 +77,16 @@ namespace rat {
 					rect.setOrigin({50.f, 50.f, 0.f});
 					rect.setColor({0.7f, 0.f, 0.8f, 0.4f});
 					target.draw(rect);
+					rect.move({0.f, 0.f, 0.1f});
 					rect.setSize({80.f, 80.f});
 					rect.setOrigin({40.f, 40.f, 0.f});
 					rect.setColor({1.f, 1.f, 0.f, 0.4f});
 					target.draw(rect);
+					rect.move({0.f, 0.f, -0.1f});
 					// rect.setOutlineThickness(0.f);
 				}
+			});
+			scene->forEach([&](const std::string& group, Entity& entity){
 				if(auto* comp = entity.getComponentAs<InteractableComponent>(); comp != nullptr) {
 					circ.setPosition(entity.getPosition() + glm::vec3{0.f, comp->getHeight(), 0.f});
 					float r = comp->getDistance();
@@ -96,7 +102,7 @@ namespace rat {
 					target.draw(circ);
 				}
 			});
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
 		}
     }
 
