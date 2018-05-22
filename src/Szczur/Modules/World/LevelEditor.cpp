@@ -60,19 +60,19 @@ namespace rat {
 			circ2.setRadius(50.f);
 			circ2.setOrigin({50.f, 50.f, 0.f});
 			rect.setColor({1.f, 1.f, 0.f, 0.2f});
-			rect.setOrigin({50.f, 50.f, 0.f});
+			rect.setOrigin({50.f, 50.f, -10.f});
 
 			//glDisable(GL_DEPTH_TEST);
 			scene->forEach([&](const std::string& group, Entity& entity){
 				rect.setPosition(entity.getPosition());
 				if(_focusedObject == entity.getID() && _anySelected) {
 					rect.setSize({100.f, 100.f});
-					rect.setOrigin({50.f, 50.f, 0.f});
+					rect.setOrigin({50.f, 50.f, -10.f});
 					rect.setColor({1.f, 0.3f, 1.f, 0.4f});
 					target.draw(rect);
 					rect.move({0.f, 0.f, 0.1f});
 					rect.setSize({80.f, 80.f});
-					rect.setOrigin({40.f, 40.f, 0.f});
+					rect.setOrigin({40.f, 40.f, -10.f});
 					rect.setColor({0.f, 1.f, 1.f, 0.4f});
 					target.draw(rect);
 					rect.move({0.f, 0.f, -0.1f});
@@ -81,12 +81,12 @@ namespace rat {
 				}
 				else {
 					rect.setSize({100.f, 100.f});
-					rect.setOrigin({50.f, 50.f, 0.f});
+					rect.setOrigin({50.f, 50.f, -10.f});
 					rect.setColor({0.7f, 0.f, 0.8f, 0.4f});
 					target.draw(rect);
 					rect.move({0.f, 0.f, 0.1f});
 					rect.setSize({80.f, 80.f});
-					rect.setOrigin({40.f, 40.f, 0.f});
+					rect.setOrigin({40.f, 40.f, -10.f});
 					rect.setColor({1.f, 1.f, 0.f, 0.4f});
 					target.draw(rect);
 					rect.move({0.f, 0.f, -0.1f});
