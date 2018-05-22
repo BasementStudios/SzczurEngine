@@ -22,7 +22,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 class SF3DArmatureDisplay : public IArmatureProxy, public sf3d::Drawable
 {
 protected:
-	Armature*									_armature;
+	Armature*									_armature = nullptr;
 	SFMLEventDispatcher							_dispatcher;
 
 public:

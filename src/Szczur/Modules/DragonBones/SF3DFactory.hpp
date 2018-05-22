@@ -25,9 +25,6 @@ protected:
 
 	std::unique_ptr<SFMLEventDispatcher>						_soundEventDispatcher;
 
-	mutable std::vector<std::unique_ptr<SF3DSlot>>				_wrapperSlots;
-	mutable std::vector<std::unique_ptr<SF3DTextureData>>		_wrapperTexturesData;
-
 public:
 	SF3DFactory();
 	~SF3DFactory();
