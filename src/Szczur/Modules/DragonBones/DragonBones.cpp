@@ -6,49 +6,24 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-//#include <dragonBones/SF3DFactory.h>
-
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat 
 {
 
-/* Properties */
-/// Factory
-// DragonBones::Factory_t& DragonBones::getFactory()
-// {
-// 	return this->factory;
-// }
-// const DragonBones::Factory_t& DragonBones::getFactory() const
-// {
-// 	return this->factory;
-// }
-
-
-
 /* Operators */
 // Module constructor/destructor
 DragonBones::DragonBones()
 {
-	LOG_INFO(this, ": DragonBones module initializing");
-	this->init();
-	LOG_INFO(this, ": DragonBones module initialized");
+	LOG_INFO("Initializing DragonBones module");
+	LOG_INFO("Module DragonBones initialized");
 }
 DragonBones::~DragonBones()
 {
-	LOG_INFO(this, ": DragonBones module destructed");
+	LOG_INFO("Module DragonBones destructed");
 }
 
-
-
-/* Methods */
-/// init
-void DragonBones::init()
-{
-
-}
-
-/// update
+// update
 void DragonBones::update(float deltaTime)
 {
 	this->factory.update(deltaTime);

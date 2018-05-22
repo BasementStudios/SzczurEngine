@@ -8,14 +8,9 @@
 
 #include <memory>
 
-//#include <dragonBones/parser/JSONDataParser.h>
-//#include <dragonBones/parser/BinaryDataParser.h>
-//#include <dragonBones/SF3DFactory.h>
-
 #include "Szczur/Utility/Modules/Module.hpp"
 
 #include "SF3DFactory.hpp"
-#include "SF3DArmatureDisplay.hpp"
 
 namespace rat 
 {
@@ -25,27 +20,9 @@ namespace rat
  **/
 class DragonBones : public Module<>
 { 
-	/* Types */
-public:
-	//dragonBones::JSONDataParser   jsonParser;
-	//dragonBones::BinaryDataParser binaryParser; 
-	using Factory_t = dragonBones::SF3DFactory;
-	
 	/* Fields */
 public:
-	// @info Factory use statics inside.
-	Factory_t factory; // @todo ...
-
-	/* Properties */
-public:
-	/** @property Factory
-	 ** @description Provides access to armature factory.
-	 ** @access referecne get
-	 **/
-	//Factory_t& getFactory();
-	//const Factory_t& getFactory() const;
-
-
+	dragonBones::SF3DFactory factory;
 
 	/* Operators */
 public:
@@ -61,12 +38,9 @@ public:
 	DragonBones(DragonBones&&) = delete;
 	DragonBones& operator = (DragonBones&&) = delete;
 
-
-
 	/* Methods */
 public:
 	// Module system
-	void init();
 	void update(float deltaTime);
 };
 
