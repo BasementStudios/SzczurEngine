@@ -92,6 +92,7 @@ Window::Window()
 Window::~Window()
 {
 	LOG_INFO("Module Window destructed");
+	delete program;
 }
 
 
@@ -111,9 +112,10 @@ void Window::init()
 	sf3d::VShader vert;
 	vert.loadFromFile("Assets/Shaders/default.vert");
 
-	sf3d::ShaderProgram* program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić.
+	program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić. POJEBAŁO SIE PSYCHO. TAKICH RZECZY SIE KURWA NIE ROBI.
 	program->linkShaders(frag, vert);
 	this->getWindow().setProgram(program);
+	glEnable(GL_DEPTH_TEST);
 }
 
 /// render
@@ -125,7 +127,7 @@ void Window::render()
 /// clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear((float)color.r, (float)color.g, (float)color.b , (float)color.a, GL_COLOR_BUFFER_BIT);
+	this->getWindow().clear((float)color.r, (float)color.g, (float)color.b , (float)color.a, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//@todo: Fix it.
 }
 

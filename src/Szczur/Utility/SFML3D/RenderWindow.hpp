@@ -15,7 +15,7 @@ namespace sf3d {
 			sf::VideoMode mode, 
 			const std::string& title, 
 			ShaderProgram* program = nullptr,
-			UINT32 style = sf::Style::Default,
+			UINT32 style = sf::Style::Default, 
 			const sf::ContextSettings& settings = sf::ContextSettings{24u, 0u, 0u, 3u, 3u}
 		);
 

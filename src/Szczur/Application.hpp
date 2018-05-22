@@ -1,10 +1,10 @@
 #pragma once
-
+ 
 #include "Szczur/Utility/Time/Clock.hpp"
-#include "Szczur/Modules/Input/Input.hpp"
-#include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/Editor/AudioEditor.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Editor/AudioEditor.hpp"
 
 namespace rat
 {
@@ -27,22 +27,26 @@ public:
 
 	void init();
 
-	void input();
+	bool input();
 
 	void update();
 
 	void render();
+
+	void setupImGuiStyle();
 
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
 
 	template <typename U>
 	U& getModule();
+
 	template <typename U>
 	const U& getModule() const;
 
 private:
 
+	
 	Clock _mainClock;
 	ModulesHolder<Window, Input, AudioEditor> _modules;
 

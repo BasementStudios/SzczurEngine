@@ -20,7 +20,7 @@ namespace sf3d {
 		_halfFOVyTan = glm::tan(glm::radians(_FOVy / 2.f));
 		_view.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
 		_defaultView.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
-		_projection = glm::perspective(glm::radians(_FOVy), (float)_windowSize.x / (float)_windowSize.y, 0.1f, 100.f);
+		setRenderDistance(100.f);
 	}
 
 	RenderTarget::RenderTarget() {
@@ -51,6 +51,15 @@ namespace sf3d {
 		_states.shader = program;
 	}
 
+	
+	void RenderTarget::setRenderDistance(float renderDistance) {
+		_renderDistance = renderDistance;
+		_projection = glm::perspective(glm::radians(_FOVy), (float)_windowSize.x / (float)_windowSize.y, 0.1f, _renderDistance);
+	}
+	float RenderTarget::getRenderDistance() const {
+		return _renderDistance;
+	}
+
 	void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags) {
 		if(_setActive()) {
 			glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
@@ -65,6 +74,10 @@ namespace sf3d {
 			glClear(flags);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
+	}
+
+	RenderStates RenderTarget::getDefaultRenderStates() const {
+		return _states;
 	}
 
 	void RenderTarget::draw(const Drawable & drawable, RenderStates states) {
