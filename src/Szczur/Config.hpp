@@ -44,7 +44,7 @@
 #endif
 
 // Editor specification
-#if defined(DEBUG) && defined(OS_WINDOWS)
+#if defined(DEBUG) || defined(OS_WINDOWS)
 #	define EDITOR
 #	include <boost/lexical_cast.hpp>
 #	include <ImGui/imgui.h>
@@ -53,4 +53,4 @@
 #endif
 
 // Global helper for modules system
-namespace rat::detail { template <typename T> inline T* globalPtr = nullptr; }
+namespace rat::detail { template <typename T> inline T* globalPtr_v = nullptr; }
