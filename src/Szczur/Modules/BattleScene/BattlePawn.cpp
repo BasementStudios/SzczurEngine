@@ -33,6 +33,7 @@ void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
 		sprite.setOrigin(sprite.getTextureRect().width/2.f, sprite.getTextureRect().height);
 		sprite.setPosition(pos);	
 		canvas.draw(sprite);	
+		renderHpBar(canvas, 30.f);
 	}
 }
 
@@ -214,6 +215,43 @@ void BattlePawn::setFlip(bool flag) {
 	flip = flag;
 }
 
+void BattlePawn::renderHpBar(sf::RenderTarget& canvas, float oy) {
+	sf::CircleShape shape(13.f);
+	shape.setOrigin(13.f, 13.f);
+	shape.setFillColor({0,0,0,0});
+	shape.setOutlineColor({107,29,52,200});
+	shape.setOutlineThickness(-3);
+
+	shape.setPosition(pos.x-28, pos.y+oy);
+	int orbs = std::ceil(maxHealth/30.f);
+
+	for(int i=0; i<orbs; ++i) {
+		shape.move(28,0);
+		canvas.draw(shape);
+	}
+
+	shape.setOutlineColor({0,0,0,0});
+	shape.setFillColor({224,31,113,200});
+	shape.setPosition(pos.x, pos.y+oy);
+	shape.setRadius(7.f);
+	shape.setOrigin(7.f,7.f);
+	float temp = health;
+	while(true) {
+		if(temp>=30) {
+			canvas.draw(shape);
+		}
+		else break;
+		temp-=30;
+		shape.move(28,0);
+	}
+	if(temp>0) {
+		float radius = 7.f*(temp/30.f);
+		shape.setRadius(radius);
+		shape.setOrigin(radius, radius);
+		canvas.draw(shape);
+	}
+}
+
 // ========== Scripts ========== 
 
 void BattlePawn::initScript(Script& script) {
@@ -227,6 +265,7 @@ void BattlePawn::initScript(Script& script) {
 	object.set("getSkill", &BattlePawn::getSkill);
 	object.set("getAngleTo", &BattlePawn::getAngleTo);
 	object.set("getAngleToPointer", &BattlePawn::getAngleToPointer);
+	object.set("getPosition", &BattlePawn::getPosition);
 	object.set("moveInDirection", &BattlePawn::moveInDirection);
 	object.set("setFrame", &BattlePawn::setFrame);
 	object.set("setFlip", &BattlePawn::setFlip);

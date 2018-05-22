@@ -3,6 +3,8 @@
 #include <Szczur/Modules/Input/Input.hpp>
 
 #include "BattlePawn.hpp"
+#include "BattleTrigger.hpp"
+#include "BattleScene.hpp"
 
 namespace rat {
 
@@ -22,13 +24,13 @@ BattleSkill::BattleSkill(const BattleSkill& obj)
 	data = obj.data;
 	selectType = obj.selectType;
 	killed = obj.killed;
-	icon = obj.icon;
 }
 
 // ========== Main ==========
 
 void BattleSkill::init() {
 	if(onInit.valid()) {
+		killed = false;
 		onInit(this);
 	}
 }
@@ -36,6 +38,9 @@ void BattleSkill::init() {
 void BattleSkill::update(float deltaTime) {
 	if(onUpdate.valid()) {
 		onUpdate(this, deltaTime);
+	} 
+	else {
+		killed = true;
 	}
 }
 
@@ -65,6 +70,12 @@ void BattleSkill::kill() {
 
 void BattleSkill::setType(size_t type) {
 	selectType = type;
+}
+
+BattleTrigger* BattleSkill::makeTrigger() {
+	BattleTrigger* ret = new BattleTrigger(pawn);
+	pawn->getScene()->addTrigger(ret);
+	return ret;
 }
 
 // ========== Controller ==========
@@ -125,6 +136,7 @@ void BattleSkill::initScript(Script& script) {
 	object.set("getPawn", &BattleSkill::getPawn);
 	object.set("renderCircle", &BattleSkill::renderCircle);
 	object.set("kill", &BattleSkill::kill);
+	object.set("makeTrigger", &BattleSkill::makeTrigger);
 	object.set(sol::meta_function::index, &BattleSkill::getVariable);
 	object.set(sol::meta_function::new_index, &BattleSkill::setVariable);
 

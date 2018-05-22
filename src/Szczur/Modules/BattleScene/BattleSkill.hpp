@@ -9,6 +9,7 @@
 namespace rat {
 
 class BattlePawn;
+class BattleTrigger;
 class InputManager;
 
 class BattleSkill {
@@ -43,9 +44,6 @@ public:
 
 	///
 	size_t getType() const;
-	
-	///
-	sf::Sprite getIconSprite() const;
 
 // Manipulations
 
@@ -54,6 +52,9 @@ public:
 
 	/// Example: SELECT_ENEMY|SELECT_OBJECT
 	void setType(size_t type);
+
+	///
+	BattleTrigger* makeTrigger();
 
 // Controller
 
@@ -84,9 +85,8 @@ protected:
 	/// Binary mask
 	size_t selectType = SELECT_SPACE;
 
-	bool killed = false;
+	bool killed = true;
 	std::string name;
-	int icon = 0;
 
 	InputManager& input;
 

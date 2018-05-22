@@ -11,6 +11,7 @@
 
 #include "BattlePawn.hpp"
 #include "BattleSkill.hpp"
+#include "BattleTrigger.hpp"
 
 namespace rat {
 
@@ -74,15 +75,23 @@ public:
 	/// Update position for pawn (remove overlaps)
 	void fixPosition(BattlePawn& pawn);
 
+	///
+	std::vector<std::unique_ptr<BattlePawn>>& getPawns();
+
 // Skills
 
+	///
 	BattleSkill* useSkill(BattleSkill* skill);
 
+	///
+	BattleTrigger* addTrigger(BattleTrigger* trigger);
 
 // Controller
 
+	///
 	void updateController();
 
+	///
 	void renderController();
 
 // Scripts
@@ -107,9 +116,15 @@ private:
 
 	/// List of used activated skills
 	std::vector<std::unique_ptr<BattleSkill>> activeSkills;
+	
+	/// List of used activated triggers
+	std::vector<std::unique_ptr<BattleTrigger>> activeTriggers;
 
 	/// Skills to use after update
 	std::vector<std::unique_ptr<BattleSkill>> skillsInQueue;
+
+	/// Trigger to use after update
+	std::vector<std::unique_ptr<BattleTrigger>> triggersInQueue;
 
 
 private:
@@ -124,8 +139,9 @@ private:
 	///
 	void updateSkills(float deltaTime);
 
-	///	
-	void useAllSkillsInQueue();
+	///
+	void updateTriggers(float deltaTime);
+
 };
 
 }

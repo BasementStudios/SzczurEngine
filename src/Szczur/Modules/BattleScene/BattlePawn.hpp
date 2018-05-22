@@ -122,6 +122,9 @@ public:
 	///
 	void setFlip(bool flag);
 
+	/// (offset y)
+	void renderHpBar(sf::RenderTarget& canvas, float oy);
+
 // Scripts
 
 	///
@@ -137,6 +140,11 @@ private:
 	BattleScene& battleScene;
 	sf::Vector2f pos{0,0};
 	float colliderRadius = 20.f;
+
+// Stats
+
+	float health = 50;
+	float maxHealth = 100;
 
 // Visual
 	

@@ -57,6 +57,7 @@ void BattleScene::update(float deltaTime) {
 	}
 
 	updateSkills(deltaTime);
+	updateTriggers(deltaTime);
 
 	// for(auto& obj : pawns) {
 	// 	obj->update(deltaTime);
@@ -78,6 +79,11 @@ void BattleScene::render() {
 	battleField.setOutlineThickness(2);
 	battleField.setOutlineColor({255,0,150,255});
 	canvas.draw(battleField);
+
+	// Triggers
+	for(auto& obj : activeTriggers) {
+		obj->render(canvas);
+	}
 
 	// Pawns
 	for(auto& obj : pawns) {
@@ -224,6 +230,12 @@ void BattleScene::fixPosition(BattlePawn& pawn) {
 
 // ========== Skills ========== 
 
+std::vector<std::unique_ptr<BattlePawn>>& BattleScene::getPawns() {
+	return pawns;
+}
+
+// ========== Skills ========== 
+
 void BattleScene::updateSkills(float deltaTime) {
 	for(auto& obj : activeSkills) {
 		obj->update(deltaTime);
@@ -236,22 +248,50 @@ void BattleScene::updateSkills(float deltaTime) {
 			++itr;
 		}
 	}
-	useAllSkillsInQueue();
-}
-
-BattleSkill* BattleScene::useSkill(BattleSkill* skill) {
-	BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
-	ret->init();
-	return ret;
-}
-
-void BattleScene::useAllSkillsInQueue() {
 	if(skillsInQueue.empty()) return;
 	activeSkills.insert(activeSkills.end(),
 		std::make_move_iterator(skillsInQueue.begin()), 
 		std::make_move_iterator(skillsInQueue.end())
 	);
 	skillsInQueue.clear();
+}
+
+void BattleScene::updateTriggers(float deltaTime) {
+	for(auto& obj : triggersInQueue) {
+		obj->init();
+	}
+
+	for(auto& obj : activeTriggers) {
+		obj->update(deltaTime);
+	}	
+
+	for(auto itr = activeTriggers.begin(); itr<activeTriggers.end(); ) {
+		if((*itr)->isFinished()) {
+			activeTriggers.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+
+	if(triggersInQueue.empty()) return;
+	activeTriggers.insert(activeTriggers.end(),
+		std::make_move_iterator(triggersInQueue.begin()), 
+		std::make_move_iterator(triggersInQueue.end())
+	);
+	triggersInQueue.clear();
+}
+
+BattleSkill* BattleScene::useSkill(BattleSkill* skill) {
+	if(skill == nullptr) return nullptr;
+	BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
+	ret->init();
+	return ret;
+}
+
+BattleTrigger* BattleScene::addTrigger(BattleTrigger* trigger) {
+	if(trigger == nullptr) return nullptr;
+	return triggersInQueue.emplace_back(trigger).get();
 }
 
 // ========== Controller ========== 
@@ -327,7 +367,7 @@ void BattleScene::renderController() {
 void BattleScene::initScript() {
 	auto& script = getModule<Script>();
 	auto module = script.newModule("BattleScene");
-	script.initClasses<BattlePawn, BattleSkill>(); 
+	script.initClasses<BattlePawn, BattleSkill, BattleTrigger>(); 
 
 	// TEMPORARY	
 	auto moduleUtility = script.newModule("Utility");

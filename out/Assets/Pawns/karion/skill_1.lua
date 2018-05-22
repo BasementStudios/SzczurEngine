@@ -33,6 +33,13 @@ THIS:addUsable(hit, 1)
 
 function hit:onInit()
 	self.clock = Utility.Clock.new()
+	local trigger = self:makeTrigger()
+	trigger:nearestOnly()
+	trigger:setRadius(50)
+	trigger:setPosition(self:getPawn():getPosition())
+	function trigger:onInit() 
+		print("yey");
+	end
 end
 
 function hit:onUpdate(dt)
