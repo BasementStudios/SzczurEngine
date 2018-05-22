@@ -15,6 +15,7 @@ void Application::init()
 
 	initModule<Window>();
 	initModule<Input>();
+	initModule<DragDrop>();
 	initModule<AudioEditor>();
 	initModule<Script>();
 	initModule<Music>("music/");
@@ -52,6 +53,27 @@ bool Application::input()
 			return false;
 		}
 	}
+
+	#ifdef EDITOR
+	{
+		auto& dragDrop = _modules.getModule<DragDrop>();
+
+		if (dragDrop.areFilesDropped())
+		{
+			auto files = dragDrop.getDroppedFiles();
+
+			auto pos = dragDrop.getLastDropPos();
+			LOG_INFO("Mouse pos: ", pos.x, " ", pos.y);
+			
+			dragDrop.clearDroppedFiles();
+
+			for (auto& file : files)
+			{
+				LOG_INFO("File: ", file);
+			}
+		}
+	}
+	#endif
 	return true;
 }
 

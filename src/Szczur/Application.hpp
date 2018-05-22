@@ -8,6 +8,7 @@
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/FileSystem/DragDrop.hpp"
 
 namespace rat
 {
