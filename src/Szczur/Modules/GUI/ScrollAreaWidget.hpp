@@ -40,6 +40,7 @@ namespace rat {
         sf::Vector2u _minScrollSize{30, 50};
 
         float _childrenHeight{0.f};
+        float _childrenHeightProp{1.f};
 
         virtual void _callback(CallbackType type) override;
     };

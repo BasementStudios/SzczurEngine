@@ -75,7 +75,7 @@ namespace rat
     }
     void Scroller::moveProportion(float proportionOffset)
     {
-        setProportion(_proportion + proportionOffset);
+        setProportion(_proportion + proportionOffset/_scrollerHeightProp);
     }
     float Scroller::getProportion() const
     {
@@ -131,6 +131,15 @@ namespace rat
         {
             case sf::Event::MouseMoved:
             {
+                if(_hasBeenClicked)
+                {
+                    _clickedShift = sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _scroller.getPosition();
+                    _hasBeenClicked = false;
+                }
+                if(_isClicked)
+                {
+                    setScrollerPosition(sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _clickedShift);
+                }
                 event.mouseMove.x -= ((_size.x - _scroller.getSize().x)/2) + _scroller.getPosition().x;
                 event.mouseMove.y -= (_scroller.getPosition().y);
 
@@ -145,22 +154,12 @@ namespace rat
                 }
                 else _isHovered = false;
 
-                if(_hasBeenClicked)
-                {
-                    _clickedShift = sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _scroller.getPosition();
-                    _hasBeenClicked = false;
-                }
-                if(_isClicked)
-                {
-                    setScrollerPosition(sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _clickedShift);
-                }
             } break;
 
             case sf::Event::MouseButtonPressed:
             {
                 if(_isHovered) 
                 {
-                    std::cout << "kajko\n";
                     _isClicked = true;
                     _hasBeenClicked = true;
                 }
@@ -211,7 +210,7 @@ namespace rat
         {
             newSize.x = _size.x * _widthProp;
         }
-        newSize.y = _getRealPathLength() / _scrollerHeightProp;
+        newSize.y = _path.getGlobalBounds().height / _scrollerHeightProp;
         _scroller.setSize(newSize);
 
     }
@@ -233,11 +232,13 @@ namespace rat
         float width = float(_size.x);
 
         float xShift = (width - scrollerWidth) / 2.f;
-        newX = /*_position.x + */xShift;
+        newX = xShift;
 
         _scroller.setPosition(newX, newY);
 
-        _proportion = (maxBottom - scrollerPos.y) / realPathLength;
+        float prop = (newY - maxTop) / realPathLength;
+
+        _proportion = std::max(0.f, std::min(1.f, prop));
     }
     
     void Scroller::_recalcScrollerPosByProp()

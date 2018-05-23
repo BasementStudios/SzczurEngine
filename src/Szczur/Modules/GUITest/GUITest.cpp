@@ -37,9 +37,9 @@ namespace rat
 
         widget = gui.addInterface();
         widget->setSize(100, 100);
-        widget->setPosition(250.f, 250.f);
+        widget->setPosition(0.f, 0.f);
         widget->setCallback(Widget::CallbackType::onHoverIn, [](Widget* self){
-            std::cout << "Beng\n";
+            //std::cout << "Beng\n";
         });
         widget->setPadding(10.f, 10.f);
 
@@ -102,7 +102,6 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
         red->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Red.png"));
         scroll->add(red);
-        red->setPosition(30.f, 500.f);
 
     }
     
@@ -177,7 +176,7 @@ namespace rat
         //win->setSize(float(mousePos.x - 50), float(mousePos.y - 50));
 
         widget->setPropOrigin(_prop, _prop);
-        widget->setPosition(_size.x, _size.y);
+        //widget->setPosition(_size.x, _size.y);
         //iWidget->setSize(_size.x, _size.y);
 
         
@@ -192,6 +191,8 @@ namespace rat
         scroller.setWidthProportion(_scale); 
         //scroller.setProportion(_prop); 
         scroller.setBoundShiftProportion(_shift);*/
+
+        //red->setPosition(_size);
     }
     void GUITest::render()
     {

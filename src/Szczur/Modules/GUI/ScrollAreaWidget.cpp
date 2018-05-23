@@ -89,26 +89,13 @@ namespace rat {
     void ScrollAreaWidget::_input(const sf::Event& event) 
     {
         float maxOffset = -(_childrenHeight - float(_getSize().y));
-        if(_isHovered && event.type == sf::Event::MouseWheelScrolled) {
-            float offset = _scrollSpeed*static_cast<float>(event.mouseWheelScroll.delta);
-
-            _offset += offset;
-            if(_offset > 0) 
-            {
-                offset = offset -_offset;
-                _offset = 0;
-            }
-            if(_offset < maxOffset)
-            {
-                offset = offset - (_offset - maxOffset);
-                _offset = maxOffset;
-            }
-
-            _childrenTransform.translate(0.f, offset);
-
-            float offsetProp = _offset/maxOffset;
-            _scroller.setProportion(offsetProp);
+        float oldProp = _scroller.getProportion();
+        if(_isHovered && event.type == sf::Event::MouseWheelScrolled) 
+        {
+           float propOffset = static_cast<float>(event.mouseWheelScroll.delta) * 0.07f;
+           _scroller.moveProportion(propOffset);
         }
+        
         sf::Event tempEvent(event);
         if(event.type == sf::Event::MouseMoved)
         {
@@ -116,11 +103,16 @@ namespace rat {
             tempEvent.mouseMove.y -= (_scroller.getPosition().y) * _winProp.y;
         }
         _scroller.input(tempEvent);
-        /*
-        _childrenTransform.translate(0.f, -_offset);
-        _offset = maxOffset * _scroller.getProportion();
-        _childrenTransform.translate(0.f, _offset);
-        */
+        
+
+        if(oldProp != _scroller.getProportion())
+        {
+            _childrenTransform.translate(0.f, -_offset);
+            _offset = maxOffset * _scroller.getProportion();
+            _childrenTransform.translate(0.f, _offset);
+
+        }
+        
     }
 
     void ScrollAreaWidget::_inputChildren(sf::Event event)
@@ -162,7 +154,8 @@ namespace rat {
         _renderTexture.create(size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f));
 
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
-        _scroller.setScrollerHeightProp(_childrenHeight/float(size.y));
+        _childrenHeightProp = _childrenHeight/float(size.y);
+        _scroller.setScrollerHeightProp(_childrenHeightProp);
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) {
