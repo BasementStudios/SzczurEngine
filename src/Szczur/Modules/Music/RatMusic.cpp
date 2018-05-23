@@ -61,14 +61,14 @@ namespace rat
 			}
 		}
 
-		json j;
+		nlohmann::json j;
 
 		j[_name]["BPM"] = _bpm;
 		j[_name]["FadeTime"] = _fadeTime;
 		j[_name]["Volume"] = getVolume();
 		j[_name]["Effects"] = effects;
 
-		std::ofstream file("music/" + _name + ".json", std::ios::trunc);
+		std::ofstream file("Assets/Music/" + _name + ".json", std::ios::trunc);
         if (file.is_open()) {
             file << j;
         }
@@ -77,8 +77,8 @@ namespace rat
 	
 	void RatMusic::getJsonData()
 	{
-		json j;
-		auto path = "music/" + _name + ".json";
+		nlohmann::json j;
+		auto path = "Assets/Music/" + _name + ".json";
 		std::ifstream file(path);
 
 		float numberOfBars;

@@ -17,7 +17,7 @@ void Application::init()
 	initModule<Script>();
 	initModule<Input>();
 	initModule<AudioEditor>();
-	initModule<Music>("music/");
+	initModule<Music>("Assets/Music/");
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
 	initModule<Camera>();
@@ -130,6 +130,8 @@ void Application::update()
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
+	getModule<Music>().update(deltaTime);
+
 
 	/*
 		Put other updates here
@@ -267,4 +269,5 @@ void Application::setupImGuiStyle() {
 
 	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 0.80f, 0.00f, 0.43f);
 	style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.08f, 0.07f, 0.10f, 0.73f);
+}
 }

@@ -16,8 +16,8 @@ namespace rat
 	public:
 	
 		std::string _name;
-		float _bpm;
-		float _fadeTime;
+		float _bpm = 60;
+		float _fadeTime = 0;
 
 		RatMusic();
 

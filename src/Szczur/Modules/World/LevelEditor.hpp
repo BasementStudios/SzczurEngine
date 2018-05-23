@@ -13,6 +13,7 @@
 
 #include <boost/container/flat_map.hpp>
 #include "Szczur/Modules/Input/InputManager.hpp"
+#include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
 #include "SceneManager.hpp"
 
@@ -59,6 +60,7 @@ namespace rat {
 		bool _ifRenderDisplayDataManager{false};
 		bool _ifRenderArmatureDisplayManager{false};
 		bool _ifRenderDialogEditor{false};
+		bool _ifRenderAudioEditor{false};
 		bool _anySelected{false};
 		bool _ifRenderComponentsManager{false};
 		size_t _focusedObject{static_cast<size_t>(-1)};
@@ -66,6 +68,7 @@ namespace rat {
 		std::string _currentFilePath;
 		
 		DialogEditor* _dialogEditor = nullptr;
+		AudioEditor* _audioEditor = nullptr;
 	};
 
 	

@@ -6,7 +6,7 @@
 
 #include "Options.hpp"
 
-#include "SoundManager.hpp"
+#include "DialogSoundManager.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
@@ -50,7 +50,7 @@ namespace rat {
 
     private:
         TextManager _textManager;
-        SoundManager _soundManager;
+        DialogSoundManager _soundManager;
 
         DialogGUI& _dialogGUI;
 

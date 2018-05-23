@@ -72,18 +72,18 @@ namespace rat
         {
             int i = getSound(fileName);
                 if(_sounds[i]->getLoop())
-                        _sounds[i]->setLoop(false);
+                    _sounds[i]->setLoop(false);
                 else
-                        _sounds[i]->setLoop(true);
+                    _sounds[i]->setLoop(true);
         }
 
        void SoundManager::changeLoop()
         {
             for(unsigned int i=0; i<_sounds.size(); ++i){
                 if(_sounds[i]->getLoop())
-                        _sounds[i]->setLoop(false);
+                    _sounds[i]->setLoop(false);
                 else
-                        _sounds[i]->setLoop(true);
+                    _sounds[i]->setLoop(true);
             }
         }
 

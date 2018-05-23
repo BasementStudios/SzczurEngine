@@ -62,9 +62,9 @@ namespace rat
 
 	void Music::loadPlaylistFromJson(const std::string& filePath)
 	{
-		json j;
+		nlohmann::json j;
 
-		std::ifstream file("music/" + filePath + ".json");
+		std::ifstream file("Assets/Music/" + filePath + ".json");
         if (file.is_open()) {
             file >> j;
         }
