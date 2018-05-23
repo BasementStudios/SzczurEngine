@@ -31,6 +31,10 @@ const sf::Vector2f& BattleTrigger::getPosition() const {
 	return position;
 }
 
+bool BattleTrigger::isInited() const {
+	return inited;
+}
+
 // ========== Main ========== 
 
 void BattleTrigger::render(sf::RenderTarget& canvas) {
@@ -75,6 +79,7 @@ void BattleTrigger::init() {
 	if(onInit.valid() && !targets.empty()) {
 		onInit(this);
 	}
+	inited = true;
 }
 
 // ========== Manipulations ========== 
@@ -105,6 +110,9 @@ void BattleTrigger::setDuration(float time) {
 	duration = time;
 }
 
+void BattleTrigger::setCaster(BattlePawn* caster) {
+	this->caster = caster;
+}
 
 // ========== Targeting ========== 
 
@@ -144,6 +152,26 @@ void BattleTrigger::nearestOnly() {
 BattlePawn* BattleTrigger::getTarget() {
 	if(targets.empty()) return nullptr;
 	return targets.front();
+}
+
+
+void BattleTrigger::removeFromTargets(BattlePawn* pawn) {
+	for(auto itr = targets.begin(); itr != targets.end();) {
+		if(*itr == pawn) {
+			targets.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+}
+
+void BattleTrigger::replaceTargets(BattlePawn* pawn, BattlePawn* newPawn) {
+	for(auto itr = targets.begin(); itr != targets.end(); ++itr) {
+		if(*itr == pawn) {
+			*itr = newPawn;
+		}
+	}
 }
 
 // ========== Math ========== 
@@ -187,6 +215,7 @@ BattleTrigger::initScript(Script& script) {
 	object.set("nearestOnly", &BattleTrigger::nearestOnly);
 	object.set("getPosition", &BattleTrigger::getPosition);
 	object.set("getTarget", &BattleTrigger::getTarget);
+	object.set("getCaster", &BattleTrigger::getCaster);
 	object.set("setDuration", &BattleTrigger::setDuration);
 	object.setOverload("setPosition", 
 		sol::resolve<void(float,float)>(&BattleTrigger::setPosition),

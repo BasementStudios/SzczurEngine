@@ -22,7 +22,7 @@ BattleSkill::BattleSkill(const BattleSkill& obj)
 	onUpdate = obj.onUpdate;
 	onProvide = obj.onProvide;
 	data = obj.data;
-	selectType = obj.selectType;
+	selectType = obj.selectType;	
 	killed = obj.killed;
 }
 
@@ -33,6 +33,7 @@ void BattleSkill::init() {
 		killed = false;
 		onInit(this);
 	}
+	inited = true;
 }
 
 void BattleSkill::update(float deltaTime) {
@@ -62,6 +63,10 @@ size_t BattleSkill::getType() const {
 	return selectType;
 }
 
+bool BattleSkill::isInited() const {
+	return inited;
+}
+
 // ========== Manipulations ==========
 
 void BattleSkill::kill() {
@@ -76,6 +81,10 @@ BattleTrigger* BattleSkill::makeTrigger() {
 	BattleTrigger* ret = new BattleTrigger(pawn);
 	pawn->getScene()->addTrigger(ret);
 	return ret;
+}
+
+void BattleSkill::setPawn(BattlePawn* pawn) {
+	this->pawn = pawn;
 }
 
 // ========== Controller ==========

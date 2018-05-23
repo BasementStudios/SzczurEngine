@@ -142,6 +142,12 @@ private:
 	///
 	void updateTriggers(float deltaTime);
 
+public:
+
+// Helper
+
+	std::unique_ptr<BattlePawn> dumpPawn;
+
 };
 
 }

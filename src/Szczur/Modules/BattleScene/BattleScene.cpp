@@ -17,6 +17,7 @@ namespace rat {
 
 BattleScene::BattleScene() {
 	LOG_INFO("Initializing BattleScene module");
+	dumpPawn.reset(new BattlePawn(*this));
 	initScript();
 	init();
 
@@ -56,19 +57,41 @@ void BattleScene::update(float deltaTime) {
 		addPawn("Assets/Pawns/slime", sf::Vector2f(input.getMousePosition()));
 	}
 
+	for(auto& obj : skillsInQueue) {
+		obj->init();
+	}
+	for(auto& obj : triggersInQueue) {
+		obj->init();
+	}
+
 	updateSkills(deltaTime);
 	updateTriggers(deltaTime);
 
 	for(auto itr = pawns.begin(); itr != pawns.end();) {
 		(*itr)->setCollisionStatus(false);
-		// if((*itr)->getHp() == 0) {
-		// 	pawns.erase(itr);
-		// }
-		// else {
+		if((*itr)->getHp() == 0) {
+			for(auto& obj : activeSkills) {
+				if(obj->getPawn()==itr->get()) {
+					obj->setPawn(dumpPawn.get());
+				}
+			}
+			for(auto& obj : activeTriggers) {
+				if(obj->getCaster()==itr->get()) {
+					obj->setCaster(dumpPawn.get());
+				}
+				obj->replaceTargets(itr->get(), dumpPawn.get());
+			}
+			if(itr->get() == controlledPawn) {
+				controlledPawn = nullptr;
+				controlledSkill= nullptr;
+			}
+			pawns.erase(itr);
+		}
+		else {
 			++itr;
-		// }
+		}
 	}
-
+	
 	updateController();
 }
 
@@ -257,21 +280,27 @@ void BattleScene::updateSkills(float deltaTime) {
 		}
 	}
 	if(skillsInQueue.empty()) return;
-	activeSkills.insert(activeSkills.end(),
-		std::make_move_iterator(skillsInQueue.begin()), 
-		std::make_move_iterator(skillsInQueue.end())
-	);
-	skillsInQueue.clear();
+	for(auto itr = skillsInQueue.begin(); itr != skillsInQueue.end();) {
+		if((*itr)->isInited()) {
+			activeSkills.emplace_back(std::move(*itr));
+			skillsInQueue.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+	
+	// activeSkills.insert(activeSkills.end(),
+	// 	std::make_move_iterator(skillsInQueue.begin()), 
+	// 	std::make_move_iterator(skillsInQueue.end())
+	// );
+	// skillsInQueue.clear();
 }
 
-void BattleScene::updateTriggers(float deltaTime) {
-	for(auto& obj : triggersInQueue) {
-		obj->init();
-	}
-
+void BattleScene::updateTriggers(float deltaTime) {	
 	for(auto& obj : activeTriggers) {
 		obj->update(deltaTime);
-	}	
+	}
 
 	for(auto itr = activeTriggers.begin(); itr<activeTriggers.end(); ) {
 		if((*itr)->isFinished()) {
@@ -283,18 +312,30 @@ void BattleScene::updateTriggers(float deltaTime) {
 	}
 
 	if(triggersInQueue.empty()) return;
-	activeTriggers.insert(activeTriggers.end(),
-		std::make_move_iterator(triggersInQueue.begin()), 
-		std::make_move_iterator(triggersInQueue.end())
-	);
-	triggersInQueue.clear();
+	for(auto itr = triggersInQueue.begin(); itr != triggersInQueue.end();) {
+		if((*itr)->isInited()) {
+			activeTriggers.emplace_back(std::move(*itr));
+			triggersInQueue.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+
+	// if(triggersInQueue.empty()) return;
+	// activeTriggers.insert(activeTriggers.end(),
+	// 	std::make_move_iterator(triggersInQueue.begin()), 
+	// 	std::make_move_iterator(triggersInQueue.end())
+	// );
+	// triggersInQueue.clear();
 }
 
 BattleSkill* BattleScene::useSkill(BattleSkill* skill) {
 	if(skill == nullptr) return nullptr;
-	BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
-	ret->init();
-	return ret;
+	// BattleSkill* ret = skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
+	// ret->init();
+	// return ret;
+	return skillsInQueue.emplace_back(new BattleSkill(*skill)).get();
 }
 
 BattleTrigger* BattleScene::addTrigger(BattleTrigger* trigger) {

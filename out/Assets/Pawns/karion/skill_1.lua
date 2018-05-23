@@ -34,17 +34,17 @@ THIS:addUsable(hit, 1)
 function hit:onInit()
 	self.clock = Utility.Clock.new()
 	local trigger = self:makeTrigger()
-	trigger:setDuration(0.1)
+	trigger:setDuration(0.2)
 	trigger:nearestOnly()
 	trigger:setRadius(50)
 	trigger:setPosition(self:getPawn():getPosition())
 	function trigger:onInit()
-		self:getTarget():addHp(-15)
-		self.target = self:getTarget()
+		self:getCaster():addHp(-15)
+		self.angle = self:getTarget():getAngleTo(self:getPosition())
 	end
 	function trigger:onUpdate(dt) 
-		local angle = self.target:getAngleTo(self:getPosition())-3.14159
-		self.target:moveInDirection(angle, dt*500);
+		self:getTarget():moveInDirection(self.angle-3.14159, dt*300);
+		self:getCaster():moveInDirection(self.angle, dt*300);
 	end
 end
 

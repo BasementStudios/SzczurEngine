@@ -45,6 +45,8 @@ public:
 	///
 	size_t getType() const;
 
+	bool isInited() const;
+
 // Manipulations
 
 	///
@@ -55,6 +57,9 @@ public:
 
 	///
 	BattleTrigger* makeTrigger();
+
+	///
+	void setPawn(BattlePawn* pawn);
 
 // Controller
 
@@ -74,7 +79,7 @@ public:
 
 	/// 
 	sol::object getVariable(const std::string& key);
-
+ 
 	///
 	static void initScript(Script& script);
 
@@ -86,6 +91,7 @@ protected:
 	size_t selectType = SELECT_SPACE;
 
 	bool killed = true;
+	bool inited = false;
 	std::string name;
 
 	InputManager& input;

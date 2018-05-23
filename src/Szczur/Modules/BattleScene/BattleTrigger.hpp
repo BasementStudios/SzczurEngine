@@ -40,6 +40,9 @@ public:
 	///
 	const sf::Vector2f& getPosition() const;
 
+	///
+	bool isInited() const;
+
 // Manipulations
 
 	///
@@ -53,6 +56,9 @@ public:
 
 	///
 	void setDuration(float time);
+
+	///
+	void setCaster(BattlePawn* caster);
 
 // Targeting 
 
@@ -70,6 +76,12 @@ public:
 
 	///
 	void nearestOnly();
+
+	///
+	void removeFromTargets(BattlePawn* pawn);
+
+	///
+	void replaceTargets(BattlePawn* pawn, BattlePawn* newPawn);
 
 // Math
 
@@ -109,6 +121,7 @@ private:
 	BattlePawn* caster = nullptr;
 	BattleScene* scene = nullptr;
 	bool killed = false;
+	bool inited = false;
 
 // Visual
 
