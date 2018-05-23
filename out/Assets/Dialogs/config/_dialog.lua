@@ -1,4 +1,3 @@
-GUI.addFont("Assets/Dialogs/config/ANTQUAB.TTF")
 GUI.addFont("Assets/Dialogs/config/BKANT.TTF")
 GUI.addTexture("Assets/Dialogs/config/background.png")
 
