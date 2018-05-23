@@ -22,8 +22,18 @@ namespace rat
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
-		SCRIPT_SET_MODULE(Music, play, pause, stop, includes, cleanEffects, setPlayingMode) 
-		SCRIPT_SET_MODULE(Music, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects, loadPlaylistFromJson);
+		module.set_function("play", &Music::play, this);
+		module.set_function("pause", &Music::pause, this);
+		module.set_function("stop", &Music::stop, this);
+		module.set_function("includes", &Music::includes, this);
+		module.set_function("cleanEffects", &Music::cleanEffects, this);
+		module.set_function("setPlayingMode", &Music::setPlayingMode, this);
+		module.set_function("setVolume", &Music::setVolume, this);
+		module.set_function("getVolume", &Music::getVolume, this);
+		module.set_function("get", &Music::get, this);
+		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
+		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
 
 		module.set_function("addPlaylist",

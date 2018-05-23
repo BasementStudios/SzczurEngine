@@ -12,8 +12,21 @@ namespace rat
     void Equalizer::initScript(Script& script)
 	{
 		auto object = script.newClass<Equalizer>("Equalizer", "AudioEffects");
-		SCRIPT_SET_CLASS(Equalizer, low, lowMid, highMid, high, lowCutoff, lowGain, lowMidCenter, lowMidWidth, lowMidGain, 
-                        highMidCenter, highMidWidth, highCutoff, highGain);
+
+		object.set("low", &Equalizer::low);
+		object.set("lowMid", &Equalizer::lowMid);
+		object.set("highMid", &Equalizer::highMid);
+		object.set("high", &Equalizer::high);
+		object.set("lowCutoff", &Equalizer::lowCutoff);
+		object.set("lowGain", &Equalizer::lowGain);
+		object.set("lowMidCenter", &Equalizer::lowMidCenter);
+		object.set("lowMidWidth", &Equalizer::lowMidWidth);
+		object.set("lowMidGain", &Equalizer::lowMidGain);
+		object.set("highMidCenter", &Equalizer::highMidCenter);
+		object.set("highMidWidth", &Equalizer::highMidWidth);
+		object.set("highCutoff", &Equalizer::highCutoff);
+		object.set("highGain", &Equalizer::highGain);
+
 		object.init();
 	} 
 
