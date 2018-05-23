@@ -24,7 +24,17 @@ namespace rat {
         return ptr;
 	}
 
-    void InputControllerComponent::initScript(Script& script) {
+	void InputControllerComponent::loadFromConfig(const Json& config)
+	{
+		Component::loadFromConfig(config);
+	}
+
+	void InputControllerComponent::saveToConfig(Json& config) const
+	{
+		Component::saveToConfig(config);
+	}
+
+	void InputControllerComponent::initScript(Script& script) {
         auto object = script.newClass<InputControllerComponent>("InputControllerComponent", "World");
 		object.set("onUpdate", &InputControllerComponent::_updateCallback);
 		object.init();

@@ -16,9 +16,9 @@ namespace rat {
 
         virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
-        virtual void loadFromConfig(const Json& config) override{}
+		virtual void loadFromConfig(const Json& config) override;
 
-	    virtual void saveToConfig(Json& config) const override{}
+		virtual void saveToConfig(Json& config) const override;
 
         static void initScript(Script& script);
     private:

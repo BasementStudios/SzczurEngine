@@ -71,6 +71,8 @@ public:
 	///
 	void loadScenesFromFile(const std::string& filepath);
 
+	void addPlayer();
+
 private:
 
 	///

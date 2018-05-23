@@ -35,7 +35,7 @@ void Application::init()
 		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(builtinFontData, builtinFontSize, 16.0f, nullptr, ranges);
 		ImGui::SFML::Init(getModule<Window>().getWindow());
 
-		ImGuiStyle& style = ImGui::GetStyle();
+		/*ImGuiStyle& style = ImGui::GetStyle();
 
 		style.FramePadding = { 5.0f, 5.0f };
 		style.FrameRounding = 4.0f;
@@ -96,7 +96,7 @@ void Application::init()
 		style.Colors[ImGuiCol_PlotHistogramHovered] = { 0.25f, 1.00f, 0.00f, 1.00f };
 
 		style.Colors[ImGuiCol_TextSelectedBg] = { 0.25f, 0.80f, 0.00f, 0.43f };
-		style.Colors[ImGuiCol_ModalWindowDarkening] = { 0.08f, 0.07f, 0.10f, 0.73f };
+		style.Colors[ImGuiCol_ModalWindowDarkening] = { 0.08f, 0.07f, 0.10f, 0.73f };*/
 
 		LOG_INFO("ImGui initialized");
 	}

@@ -158,6 +158,16 @@ void SceneManager::loadScenesFromFile(const std::string& filepath)
 	}
 }
 
+void SceneManager::addPlayer()
+{
+	auto scene = getCurrentScene();
+
+	Entity* player = scene->addEntity("single");
+	player->setName("Player");
+	scene->setPlayerID(player->getID());
+
+}
+
 typename SceneManager::ScenesHolder_t::iterator SceneManager::_find(size_t id)
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {

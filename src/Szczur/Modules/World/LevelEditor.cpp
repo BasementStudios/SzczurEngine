@@ -8,14 +8,12 @@
 #endif
 
 #include <ImGui/imgui.h>
-#include <NodeEditor/NodeEditor.h>
-
-#include "UniqueID.hpp"
-
+#include <NodeEditor.h>
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/SFML3D/CircleShape.hpp"
+
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
 #include "Szczur/Modules/Window/Window.hpp"
@@ -25,6 +23,10 @@
 
 #include "Szczur/Modules/Dialog/Dialog.hpp"
 
+#include "Szczur/Modules/Trace/Timeline.hpp"
+#include "Szczur/Modules/Trace/Actions/AnimAction.hpp"
+#include "Szczur/Modules/Trace/Actions/MoveAction.hpp"
+
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
 namespace rat {
@@ -33,7 +35,6 @@ namespace rat {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
-		_audioEditor = detail::globalPtr<AudioEditor>;
 	}
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -50,8 +51,6 @@ namespace rat {
 				_renderDisplayDataManager();
 			if (_ifRenderDialogEditor)
 				_dialogEditor->update();
-			if (_ifRenderAudioEditor)
-				_audioEditor->render();
 
 			scene = _scenes.getCurrentScene();
 			sf3d::RectangleShape rect({100.f, 100.f});
@@ -278,6 +277,7 @@ namespace rat {
 			ImGui::EndChild();
 			ImGui::EndPopup();
 		}
+
 		if(openSceneSettings) {
 			openSceneSettings = false;
 			ImGui::OpenPopup("Scene Settings##popup");
@@ -333,7 +333,10 @@ namespace rat {
 							_currentFilePath = relative;
 							_printMenuInfo(std::string("World loaded from file: ")+_currentFilePath);
 						}
-						catch(...) {}
+						catch (const std::exception& exc)
+						{
+							LOG_EXCEPTION(exc);
+						}
 					}
 				}
 				if(ImGui::MenuItem("Save", "F1")) {
@@ -348,7 +351,10 @@ namespace rat {
 							_currentFilePath = relative;
 							_printMenuInfo(std::string("World saved in file: ")+_currentFilePath);
 						}
-						catch(...) {}
+						catch (const std::exception& exc)
+						{
+							LOG_EXCEPTION(exc);
+						}
 					}
 				}
 
@@ -378,7 +384,16 @@ namespace rat {
 				ImGui::MenuItem("Display Data Manager", nullptr, &_ifRenderDisplayDataManager);
 				ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
 				ImGui::MenuItem("Dialog Editor", nullptr, &_ifRenderDialogEditor);
-				ImGui::MenuItem("Audio Editor", nullptr, &_ifRenderAudioEditor);
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Debug"))
+			{
+				if (ImGui::MenuItem("Add player", nullptr))
+				{
+					_scenes.addPlayer();
+				}
+
 				ImGui::EndMenu();
 			}
 
@@ -410,7 +425,9 @@ namespace rat {
 				try{
 					spriteDisplayDataHolder.emplace_back(enteredText);
 				}
-				catch(const std::exception& exc) {
+				catch (const std::exception& exc)
+				{
+					LOG_EXCEPTION(exc);
 				}
 				for(int i = 0; i<255; ++i)
 					enteredText[i] = '\0';
@@ -442,7 +459,9 @@ namespace rat {
 				try{
 					armatureDisplayDataHolder.emplace_back(enteredText);
 				}
-				catch(const std::exception& exc) {
+				catch (const std::exception& exc)
+				{
+					LOG_EXCEPTION(exc);
 				}
 				for(int i = 0; i<255; ++i)
 					enteredText[i] = '\0';
@@ -452,8 +471,9 @@ namespace rat {
 				for(auto it = armatureDisplayDataHolder.begin(); it!=armatureDisplayDataHolder.end(); ++it) {
 					if(ImGui::SmallButton("-")) {
 						armatureDisplayDataHolder.erase(it);
-						--it;
-						continue;
+						//--it;
+
+						break;
 					}
 					ImGui::SameLine();
 					ImGui::Text(mapWindows1250ToUtf8(it->getName()).c_str());
@@ -521,6 +541,8 @@ namespace rat {
 								}
 								catch(const std::exception& exc) {
 									object->setSpriteDisplayData(nullptr);
+
+									LOG_EXCEPTION(exc);
 								}
 							}
 						}
@@ -578,6 +600,8 @@ namespace rat {
 								}
 								catch(const std::exception& exc) {
 									object->setArmatureDisplayData(nullptr, false);
+
+									LOG_EXCEPTION(exc);
 								}
 							}
 						}
@@ -631,7 +655,7 @@ namespace rat {
 									}
 								}
 								catch(const std::exception& exc) {
-									LOG_INFO(exc.what());
+									LOG_EXCEPTION(exc);
 								}
 							}
 						}
@@ -641,8 +665,9 @@ namespace rat {
 								try {
 									object->reloadScript();
 								}
-								catch(const std::exception& exc) {
-									LOG_INFO(exc.what());
+								catch (const std::exception& exc)
+								{
+									LOG_EXCEPTION(exc);
 								}
 							}
 							ImGui::SameLine();
@@ -700,27 +725,131 @@ namespace rat {
 
 								ImGui::EndCombo();
 							}
-							if(object->sceneId) {
-								auto& holder = _scenes.getScene(object->sceneId)->getEntrances();
-								std::string name="None";
-								for(auto& it : holder) {
-									if(it.ID == object->entranceId) {
-										name = it.name;
-										break;
-									}
-								}
-								if(ImGui::BeginCombo("Entrance", name.c_str())) {
-									for(auto& it : holder) {
-										if(ImGui::Selectable( it.name.c_str(), it.ID == object->entranceId )) {
-											object->entranceId = it.ID;
-										}
-									}
-
-									ImGui::EndCombo();
-								}
-							}
 						}
 					}
+				}
+
+				if (auto* object = focusedObject->getComponentAs<TraceComponent>(); object != nullptr)
+				{
+					if (ImGui::CollapsingHeader("Trace Component"))
+					{
+						if (ImGui::TreeNode("Traces"))
+						{
+							for (auto& timeline : object->getTrace()->getTimelines())
+							{
+								std::string id = std::to_string(reinterpret_cast<uintptr_t>(timeline.get()));
+
+								if (ImGui::TreeNode(("Timeline##" + id).c_str()))
+								{
+									ImGui::SameLine();
+
+									if (ImGui::SmallButton(("Use##" + id).c_str()))
+									{
+										object->getTrace()->setCurrentTimeline(timeline.get());
+									}
+
+									ImGui::Checkbox("Loop", &timeline->Loop);
+									ImGui::Checkbox("Show lines in editor", &timeline->ShowLines);
+
+									ImGui::Separator();
+
+									for (auto& action : timeline->getActions())
+									{
+										std::string actionId = std::to_string(reinterpret_cast<uintptr_t>(action.get()));
+
+										switch (action->getType())
+										{
+											case Action::Move:
+											{
+												auto moveAction = static_cast<MoveAction*>(action.get());
+
+												if (ImGui::TreeNode(("Move##" + actionId).c_str()))
+												{
+													ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
+
+													if (!moveAction->UseCurrentPosition)
+														ImGui::DragFloat3(("Start##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->Start));
+
+													ImGui::DragFloat3(("End##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->End));
+													ImGui::DragFloat(("Speed##" + actionId).c_str(), &moveAction->Speed, 0.25f);
+													ImGui::Checkbox(("Teleport##" + actionId).c_str(), &moveAction->Teleport);
+
+													ImGui::TreePop();
+												}
+											} break;
+											case Action::Anim:
+											{
+												auto animAction = static_cast<AnimAction*>(action.get());
+
+												if (ImGui::TreeNode(("Anim##" + actionId).c_str()))
+												{
+													static char animName[64] = { 0 };
+													strcpy(animName, animAction->AnimationName.c_str());
+
+													if (ImGui::InputText(("Animation name##" + actionId).c_str(), animName, 64))
+													{
+														animAction->AnimationName = animName;
+													}
+													ImGui::DragFloat(("Fade in time##" + actionId).c_str(), &animAction->FadeInTime, 0.01f);
+
+													ImGui::Checkbox(("Play once##" + actionId).c_str(), &animAction->PlayOnce);
+
+													if (animAction->PlayOnce)
+														ImGui::Checkbox(("Wait to the end of animation##" + actionId).c_str(), &animAction->WaitToEnd);
+
+													ImGui::Checkbox(("Flip X##" + actionId).c_str(), &animAction->FlipX);
+
+													ImGui::TreePop();
+												}
+											} break;
+										
+										}
+
+									}
+
+									static int currentAction = -1;
+
+									ImGui::PushItemWidth(100.f);
+									ImGui::Combo(("##Action" + id).c_str(), &currentAction, "Move\0Anim\0Wait\0");
+
+									ImGui::SameLine();
+
+									if (ImGui::Button(("Add action##" + id).c_str()))
+									{
+										if (currentAction == 0)
+										{
+											timeline->addAction(new MoveAction(focusedObject));
+										}
+										else if (currentAction == 1)
+										{
+											if (focusedObject->hasComponent<ArmatureComponent>())
+												timeline->addAction(new AnimAction(focusedObject));
+										}
+										
+									}
+
+									ImGui::TreePop();
+								}
+							}
+							ImGui::TreePop();
+						}
+
+						ImGui::Separator();
+
+						if (ImGui::Button("Add timeline"))
+						{
+							object->getTrace()->addTimeline(new Timeline());
+						}
+
+						ImGui::SameLine();
+
+						if (ImGui::Button("Stop##trace_component"))
+						{
+							object->getTrace()->setCurrentTimeline(nullptr);
+						}
+					}
+
+
 				}
 			}
 		}
@@ -837,7 +966,7 @@ namespace rat {
 
 			auto* focusedObject = _scenes.getCurrentScene()->getEntity(_focusedObject);
 
-			static bool selectedComponents[6]{};
+			static bool selectedComponents[7]{};
 			if(ImGui::IsWindowAppearing()) {
 				selectedComponents[0] = focusedObject->hasComponent<SpriteComponent>();
 				selectedComponents[1] = focusedObject->hasComponent<ArmatureComponent>();
@@ -845,6 +974,7 @@ namespace rat {
 				selectedComponents[3] = focusedObject->hasComponent<InputControllerComponent>();
 				selectedComponents[4] = focusedObject->hasComponent<InteractableComponent>();
 				selectedComponents[5] = focusedObject->hasComponent<TriggerComponent>();
+				selectedComponents[6] = focusedObject->hasComponent<TraceComponent>();
 			}
 			if(ImGui::Button("Accept", ImVec2(70,0))) {
 
@@ -872,6 +1002,10 @@ namespace rat {
 					if(selectedComponents[5]) focusedObject->addComponent<TriggerComponent>();
 					else focusedObject->removeComponent<TriggerComponent>();
 				}
+				if(focusedObject->hasComponent<TraceComponent>()!=selectedComponents[6]) {
+					if(selectedComponents[6]) focusedObject->addComponent<TraceComponent>();
+					else focusedObject->removeComponent<TraceComponent>();
+				}
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -886,6 +1020,7 @@ namespace rat {
 			ImGui::Checkbox("InputController##components_manager", &selectedComponents[3]);
 			ImGui::Checkbox("InteractableComponent##components_manager", &selectedComponents[4]);
 			ImGui::Checkbox("TriggerComponent##components_manager", &selectedComponents[5]);
+			ImGui::Checkbox("TraceComponent##components_manager", &selectedComponents[6]);
 
 			ImGui::EndPopup();
 		}
@@ -901,7 +1036,10 @@ namespace rat {
 					_currentFilePath = relative;
 					_printMenuInfo(std::string("World saved in file: ")+_currentFilePath);
 				}
-				catch(...) {}
+				catch (const std::exception& exc)
+				{
+					LOG_EXCEPTION(exc);
+				}
 			}
 		}
 		else {
@@ -909,7 +1047,10 @@ namespace rat {
 				_scenes.saveToFile(_currentFilePath);
 				_printMenuInfo("World saved!");
 			}
-			catch(...) {}
+			catch (const std::exception& exc)
+			{
+				LOG_EXCEPTION(exc);
+			}
 		}
 	}
 
