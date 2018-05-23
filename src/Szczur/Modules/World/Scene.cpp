@@ -279,6 +279,7 @@ void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
+	_playerID = config["player"];
 
 	const Json& groups = config["groups"];
 
@@ -290,16 +291,7 @@ void Scene::loadFromConfig(const Json& config)
 		}
 	}
 
-	const auto finder = [](const auto& first, const auto& second) { return first.getID() < second.getID(); };
-
-	size_t max[] = {
-		std::max_element(getEntities("single").begin(), getEntities("single").end(), finder)->getID(),
-		std::max_element(getEntities("path").begin(), getEntities("path").end(), finder)->getID(),
-		std::max_element(getEntities("foreground").begin(), getEntities("foreground").end(), finder)->getID(),
-		std::max_element(getEntities("background").begin(), getEntities("background").end(), finder)->getID()
-	};
-
-	setInitialUniqueID<Entity>(1u + *std::max_element(std::begin(max), std::end(max)));
+	trySettingInitialUniqueID<Scene>(_id);
 }
 
 void Scene::saveToConfig(Json& config) const

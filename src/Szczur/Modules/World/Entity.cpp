@@ -164,9 +164,7 @@ void Entity::loadFromConfig(const Json& config)
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
 	}
 
-	setInitialUniqueID<Component>(1u + std::max_element(getComponents().begin(), getComponents().end(), [](const auto& first, const auto& second) {
-        return first->getComponentID() < second->getComponentID();
-    })->get()->getComponentID());
+	trySettingInitialUniqueID<Entity>(_id);
 }
 
 void Entity::saveToConfig(Json& config) const
