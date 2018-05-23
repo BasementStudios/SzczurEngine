@@ -18,16 +18,16 @@ namespace rat
     }
     sf::Color ColorAnim::getActualColor() const
     {
-        ColorArray_t diff;
+        std::array<float, 3u> diff;
         for(size_t i = 0; i < 3; i++)
         {
-            diff[i] = _end[i] - _start[i];
+            diff[i] = float(_end[i]) - float(_start[i]);
         }
         ColorArray_t c;
         for(size_t i = 0; i < 3; i++)
         {
             auto addon = sf::Uint8(_getTimeProp() * float(diff[i]));
-            c[i] = _start[i] + addon;
+            c[i] = sf::Uint8(float(_start[i]) + addon);
         }
         return fromArrayToColor(c);
     }

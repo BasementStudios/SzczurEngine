@@ -3,7 +3,11 @@
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "Test.hpp"
+
 #include <iostream>
+#include <algorithm>
+
+#include "TransformAnimBasics/ColorAnim.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -97,7 +101,7 @@ namespace rat {
             isAnyPressed |= child->_onPressed();
             if(isAnyPressed) break;
         }
-        if(isAnyPressed) return true;
+        if(isAnyPressed && !_areChildrenPenetrable) return true;
         _isPressed = true;
         _callback(CallbackType::onPress);
         return true;
@@ -184,6 +188,7 @@ namespace rat {
     void Widget::update(float deltaTime) {
         if(isActivated()) {
             _update(deltaTime);
+            _updateAnimations(deltaTime);
 
             if(_isHovered) 
                 _callback(CallbackType::onHover);
@@ -336,6 +341,13 @@ namespace rat {
             child->setColor(color);
         }
     }
+	void Widget::setColor(const sf::Color& color, float inTime)
+    {
+        auto animCol = std::make_unique<ColorAnim>();
+        animCol->setAnim(getColor(), color, inTime);
+        _addAnimation(std::move(animCol));
+    }
+    
     
     void Widget::resetColor()
     {
@@ -434,7 +446,67 @@ namespace rat {
     {
         setSize(getSize());
     }
+
+	void Widget::_addAnimation(Animation_t animation)
+    {
+        auto type = animation->getType();
+        if(_currentAnimations & type)
+        {
+            auto found = std::find_if(_animations.begin(), _animations.end(), [&type](const Animation_t& anim){
+                return anim->getType() == type;
+            });
+            *found = std::move(animation);
+        }
+        else
+        {
+            _animations.emplace_back(std::move(animation));
+            _currentAnimations |= type;
+        }
+    }
+	void Widget::_updateAnimations(float dt)
+    {
+        for(auto& anim : _animations)
+        {
+            anim->update(dt);
+        }
+        for(auto& anim : _animations)
+        {
+            auto type = anim->getType();
+            auto* animPtr = anim.get();
+            
+            switch (type)
+            {
+                case TransformAnimationBase::Types::Color:
+                {
+                    auto* animCol = static_cast<ColorAnim*>(animPtr);
+                    setColor(animCol->getActualColor());
+                } break;
+            
+                default:
+                    break;
+            }
+        }
+        for(auto& anim : _animations)
+        {
+            if(anim->isAnimationOver())
+            {
+                auto type = anim->getType();
+                _currentAnimations &= (~type);
+            }
+        }        
+        auto newEnd = std::remove_if(_animations.begin(), _animations.end(), [](Animation_t& anim){
+
+            return anim->isAnimationOver();
+        });
+        _animations.erase(newEnd, _animations.end());
+    }
     
+	void Widget::makeChildrenPenetrable()
+    {
+        _areChildrenPenetrable = true;
+    }
+    
+
     sf::Vector2f Widget::_winProp{1.f, 1.f};
 
 	void Widget::setWinProp(sf::Vector2f prop)

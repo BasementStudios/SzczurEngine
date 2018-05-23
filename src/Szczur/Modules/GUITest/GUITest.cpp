@@ -94,7 +94,8 @@ namespace rat
         widget->add(blue);
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         blue->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        blue->setColor({0, 0, 0, 255});
+        blue->setColor({0, 0, 0});
+        blue->setColor({255, 255, 255}, 12.f);
         
         red = new ImageWidget;
         red->setCallback(Widget::CallbackType::onPress, [](Widget*){
@@ -106,9 +107,6 @@ namespace rat
 
         shape.setSize({100.f, 100.f});
         shape.setPosition(100.f, 100.f);
-
-        static_cast<ColorAnim*>(_animColor)->setAnim({0, 0, 0}, {200, 0, 0}, 12.f);
-
     }
     
     
