@@ -455,7 +455,7 @@ namespace rat {
 	void LevelEditor::_renderArmatureDisplayManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Armature Data Manager", &_ifRenderArmatureDisplayManager)) {
-			auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayDataHolder();
+			auto& armatureDisplayDataHolder = _scenes.getArmatureDisplayDataHolder();
 			if(ImGui::InputText("", enteredText, 255)) {
 			}
 			ImGui::SameLine();
@@ -577,7 +577,7 @@ namespace rat {
 					if(ImGui::CollapsingHeader("Armature Component")) {
 
 						//Load armature button
-						auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayDataHolder();
+						auto& armatureDisplayDataHolder = _scenes.getArmatureDisplayDataHolder();
 						if(ImGui::Button("Load armature...##armature_component")) {
 							// std::string directory = _getRelativeDirectoryPathFromExplorer("Select armature folder", "Assets");
 							std::string directory = _getRelativePathFromExplorer("Select armature file", ".\\Assets");

@@ -35,7 +35,6 @@ Scene::Scene(SceneManager* parent)
 	}
 
 	_spriteDisplayDataHolder.reserve(100);
-	_armatureDisplayDataHolder.reserve(100);
 }
 
 void Scene::update(float deltaTime)
@@ -328,15 +327,7 @@ const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() cons
 	return _spriteDisplayDataHolder;
 }
 
-Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder()
-{
-	return _armatureDisplayDataHolder;
-}
 
-const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() const
-{
-	return _armatureDisplayDataHolder;
-}
 
 void Scene::setPlayerID(size_t id)
 {

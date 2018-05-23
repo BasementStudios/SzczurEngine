@@ -6,6 +6,10 @@
 namespace rat
 {
 
+SceneManager::SceneManager() {
+	_armatureDisplayDataHolder.reserve(100);
+}
+
 Scene* SceneManager::addScene()
 {
 	Scene* scene = _holder.emplace_back(std::make_unique<Scene>(this)).get();
@@ -139,6 +143,16 @@ void SceneManager::saveToFile(const std::string& filepath) const
 	}
 
 	file << std::setw(4) << config << std::endl;
+}
+
+SceneManager::ArmatureDisplayDataHolder_t& SceneManager::getArmatureDisplayDataHolder()
+{
+	return _armatureDisplayDataHolder;
+}
+
+const SceneManager::ArmatureDisplayDataHolder_t& SceneManager::getArmatureDisplayDataHolder() const
+{
+	return _armatureDisplayDataHolder;
 }
 
 void SceneManager::loadScenesFromFile(const std::string& filepath)

@@ -28,7 +28,6 @@ public:
 	using EntitiesHolder_t            = std::vector<std::unique_ptr<Entity>>;
 	using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>;
 	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
-	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
 	using EntrancesHolder_t           = std::vector<Entrance>;
 
 	///
@@ -127,12 +126,6 @@ public:
 	const SpriteDisplayDataHolder_t& getSpriteDisplayDataHolder() const;
 
 	///
-	ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder();
-
-	///
-	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
-
-	///
 	void setPlayerID(size_t id);
 
 	///
@@ -173,7 +166,6 @@ private:
 	SceneManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
-	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
 	size_t _playerID{ 0u };
 
 	EntrancesHolder_t _entrancesHolder;

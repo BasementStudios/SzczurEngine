@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 
+#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
+
 #include "Scene.hpp"
 
 namespace rat
@@ -13,9 +15,11 @@ class SceneManager
 public:
 
 	using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
+	
+	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
 
 	///
-	SceneManager() = default;
+	SceneManager();
 
 	///
 	SceneManager(const SceneManager&) = delete;
@@ -63,6 +67,12 @@ public:
 	bool isCurrentSceneValid() const;
 
 	///
+	ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder();
+
+	///
+	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
+
+	///
 	void loadFromFile(const std::string& filepath);
 
 	///
@@ -83,6 +93,9 @@ private:
 
 	ScenesHolder_t _holder;
 	size_t _currentSceneID = 0u;
+
+	
+	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
 
 };
 

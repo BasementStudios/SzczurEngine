@@ -4,6 +4,7 @@
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
+#include "../SceneManager.hpp"
 
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
@@ -79,7 +80,7 @@ namespace rat
     }
     void ArmatureComponent::loadFromConfig(const Json& config) {
         Component::loadFromConfig(config);
-		auto& armatureDisplayDataHolder = getEntity()->getScene()->getArmatureDisplayDataHolder();
+		auto& armatureDisplayDataHolder = getEntity()->getScene()->getScenes()->getArmatureDisplayDataHolder();
 		auto name = mapUtf8ToWindows1250(config["armatureDisplayData"].get<std::string>());
 		if(name != "") {
 			bool found{false};
