@@ -184,6 +184,8 @@ void Entity::loadFromConfig(const Json& config)
 	{
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
 	}
+
+	trySettingInitialUniqueID<Entity>(_id);
 }
 
 void Entity::saveToConfig(Json& config) const

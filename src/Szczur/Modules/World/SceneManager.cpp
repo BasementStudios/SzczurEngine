@@ -120,10 +120,6 @@ void SceneManager::loadFromFile(const std::string& filepath)
         scene->removeAllEntities();
         scene->loadFromConfig(current);
     }
-
-    setInitialUniqueID<Scene>(1u + std::max_element(getScenes().begin(), getScenes().end(), [](const auto& first, const auto& second) {
-        return first->getID() < second->getID();
-    })->get()->getID());
 }
 
 void SceneManager::saveToFile(const std::string& filepath) const

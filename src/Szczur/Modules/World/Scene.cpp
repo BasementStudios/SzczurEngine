@@ -351,20 +351,21 @@ void Scene::loadFromConfig(const Json& config)
 	_name = config["name"].get<std::string>();
 	_playerID = config["player"];
 
-	size_t maxId = 0u;
-	for(auto& obj : config["entrances"]) {
-		if(obj["id"].get<size_t>() > maxId) {
-			maxId = obj["id"].get<size_t>();
-		}
-		_entrancesHolder.push_back(
-			Entrance{
-				obj["id"].get<size_t>(),
-				obj["name"].get<std::string>(),
-				glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
-			}
-		);
-	}
-	setInitialUniqueID<Entrance>(maxId);
+	// size_t maxId = 0u;
+	// for(auto& obj : config["entrances"]) {
+	// 	if(obj["id"].get<size_t>() > maxId) {
+	// 		maxId = obj["id"].get<size_t>();
+	// 	}
+	// 	_entrancesHolder.push_back(
+	// 		Entrance{
+	// 			obj["id"].get<size_t>(),
+	// 			obj["name"].get<std::string>(),
+	// 			glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
+	// 		}
+	// 	);
+	// }
+	//
+	// trySettingInitialUniqueID<Entrance>(maxId);
 
 	const Json& groups = config["groups"];
 
@@ -376,16 +377,7 @@ void Scene::loadFromConfig(const Json& config)
 		}
 	}
 
-	const auto finder = [](const auto& first, const auto& second) { return first->getID() < second->getID(); };
-
-	size_t max[] = {
-		std::max_element(getEntities("single").begin(), getEntities("single").end(), finder)->get()->getID(),
-		std::max_element(getEntities("path").begin(), getEntities("path").end(), finder)->get()->getID(),
-		std::max_element(getEntities("foreground").begin(), getEntities("foreground").end(), finder)->get()->getID(),
-		std::max_element(getEntities("background").begin(), getEntities("background").end(), finder)->get()->getID()
-	};
-
-	setInitialUniqueID<Entity>(1u + *std::max_element(std::begin(max), std::end(max)));
+	trySettingInitialUniqueID<Scene>(_id);
 }
 
 void Scene::saveToConfig(Json& config) const
