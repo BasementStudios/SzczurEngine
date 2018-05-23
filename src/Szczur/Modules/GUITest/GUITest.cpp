@@ -103,6 +103,11 @@ namespace rat
         red->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Red.png"));
         scroll->add(red);
 
+        shape.setSize({100.f, 100.f});
+        shape.setPosition(100.f, 100.f);
+
+        static_cast<ColorAnim*>(_animColor)->setAnim({0, 0, 0}, {200, 0, 0}, 12.f);
+
     }
     
     
@@ -193,10 +198,17 @@ namespace rat
         scroller.setBoundShiftProportion(_shift);*/
 
         //red->setPosition(_size);
+        _animColor->update(deltaTime);
+        shape.setFillColor(static_cast<ColorAnim*>(_animColor)->getActualColor());
+
+
     }
     void GUITest::render()
     {
        _canvas.clear(sf::Color::Transparent);
+
+
+       _canvas.draw(shape);
         
         //testPatch.draw(_canvas);
         //_canvas.draw(testPatch);

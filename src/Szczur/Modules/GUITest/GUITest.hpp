@@ -3,6 +3,8 @@
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 
+#include "Szczur/Modules/GUI/TransformAnimBasics/ColorAnim.hpp"
+
 #include "NinePatch.hpp"
 #include "Patch.hpp"
 #include "Scroller.hpp"
@@ -15,6 +17,7 @@ namespace rat
 {
     class GUITest : public Module<Input, Window, GUI> 
     {
+        using Tab_t = TransformAnimationBase;
     public:
         GUITest();
         void init();
@@ -39,6 +42,9 @@ namespace rat
 
         ImageWidget* blue{nullptr};
         ImageWidget* red{nullptr};
+
+        Tab_t*_animColor{new ColorAnim};
+        sf::RectangleShape shape;
 
         bool hasBeenChanged{false};
     };
