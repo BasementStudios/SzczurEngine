@@ -42,6 +42,7 @@ namespace rat
         bool _showMusicEditor{false};
 
         bool _addingPlaylist{false};
+        bool _addingEffect{false};
 
         PlaylistHolder _playlistHolder;
         MusicAssets* musicAssets;
