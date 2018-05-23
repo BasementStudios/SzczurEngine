@@ -27,13 +27,20 @@ World::~World()
 
 void World::update(float deltaTime)
 {
+	if(getModule<Input>().getManager().isReleased(Keyboard::F10)) {
+		if(_doEditor)
+			_doEditor = false;
+		else
+			_doEditor = true;
+	}
 	if (_getScenes().isCurrentSceneValid())
 	{
 		_getScenes().getCurrentScene()->update(deltaTime);
 	}
 
 	#ifdef EDITOR
-		_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
+		if(_doEditor)
+			_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
 	#endif
 }
 
@@ -52,7 +59,8 @@ void World::render()
 	}
 
 	#ifdef EDITOR
-		_levelEditor.render(window);
+		if(_doEditor)
+			_levelEditor.render(window);
 	#endif
 }
 
