@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include <NodeEditor.h>
+#include <NodeEditor/NodeEditor.h>
 #include <json.hpp>
 
 #include "DialogData.hpp"

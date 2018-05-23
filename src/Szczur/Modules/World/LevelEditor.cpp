@@ -8,7 +8,7 @@
 #endif
 
 #include <ImGui/imgui.h>
-#include <NodeEditor.h>
+#include <NodeEditor/NodeEditor.h>
 
 #include "UniqueID.hpp"
 

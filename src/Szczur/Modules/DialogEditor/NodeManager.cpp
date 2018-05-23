@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include <json.hpp>
-#include <NodeEditor.h>
+#include <NodeEditor/NodeEditor.h>
 
 #include "Szczur/Utility/Logger.hpp"
 
