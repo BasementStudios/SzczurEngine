@@ -37,14 +37,14 @@ namespace rat
 
         widget = gui.addInterface();
         widget->setSize(100, 100);
-        widget->setPosition(250.f, 250.f);
+        widget->setPosition(0.f, 0.f);
         widget->setCallback(Widget::CallbackType::onHoverIn, [](Widget* self){
-            std::cout << "Beng\n";
+            //std::cout << "Beng\n";
         });
         widget->setPadding(10.f, 10.f);
 
 
-        scroll->setSize(100, 200);
+        scroll->setSize(100, 500);
         scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
@@ -94,6 +94,8 @@ namespace rat
         widget->add(blue);
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         blue->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        blue->setColor({0, 0, 0});
+        blue->setColor({255, 255, 255}, 12.f);
         
         red = new ImageWidget;
         red->setCallback(Widget::CallbackType::onPress, [](Widget*){
@@ -101,9 +103,10 @@ namespace rat
         });
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
         red->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Red.png"));
-        widget->add(red);
-        red->setPosition(30.f, 30.f);
+        scroll->add(red);
 
+        shape.setSize({100.f, 100.f});
+        shape.setPosition(100.f, 100.f);
     }
     
     
@@ -177,7 +180,7 @@ namespace rat
         //win->setSize(float(mousePos.x - 50), float(mousePos.y - 50));
 
         widget->setPropOrigin(_prop, _prop);
-        widget->setPosition(_size.x, _size.y);
+        //widget->setPosition(_size.x, _size.y);
         //iWidget->setSize(_size.x, _size.y);
 
         
@@ -192,10 +195,19 @@ namespace rat
         scroller.setWidthProportion(_scale); 
         //scroller.setProportion(_prop); 
         scroller.setBoundShiftProportion(_shift);*/
+
+        //red->setPosition(_size);
+        _animColor->update(deltaTime);
+        shape.setFillColor(static_cast<ColorAnim*>(_animColor)->getActualColor());
+
+
     }
     void GUITest::render()
     {
        _canvas.clear(sf::Color::Transparent);
+
+
+       _canvas.draw(shape);
         
         //testPatch.draw(_canvas);
         //_canvas.draw(testPatch);

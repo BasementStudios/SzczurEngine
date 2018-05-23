@@ -47,7 +47,7 @@ namespace rat
     }
     
     
-    void Patch::setTexture(sf::Texture* texture)
+    void Patch::setTexture(const sf::Texture* texture)
     {
         _texture = nullptr;
 
@@ -89,6 +89,12 @@ namespace rat
         _isTextureRectSet = true;
         if(_texture) _recalcRecurrence();
     }
+
+    void Patch::setColor(const sf::Color& color)
+    {
+        _sprite.setColor(color);
+    }
+    
     
     void Patch::_recalcSpriteSize()
     {}

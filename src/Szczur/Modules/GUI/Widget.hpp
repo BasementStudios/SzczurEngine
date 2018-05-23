@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <functional>
+#include <memory>
+#include <vector>
 
 #include <boost/container/flat_map.hpp>
 
@@ -12,7 +14,9 @@
 
 #define GUI_DEBUG 1
 
-namespace rat {
+namespace rat 
+{
+	class TransformAnimationBase;
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
 		Widget();
@@ -32,6 +36,9 @@ namespace rat {
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 		using CallbacksLuaContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 		using Children_t = std::vector<Widget*>;
+
+		using Animation_t = std::unique_ptr<TransformAnimationBase>;
+		using AnimationsContainer_t = std::vector<Animation_t>;
 
 		void setParent(Widget* parent);
 
@@ -62,6 +69,11 @@ namespace rat {
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
 
+		void setColor(const sf::Color& color);
+		void setColor(const sf::Color& color, float inTime);
+		void resetColor();
+		sf::Color getColor() const; 
+		
 		void setOrigin(const sf::Vector2f& origin);
 		void setOrigin(float x, float y);
 
@@ -80,6 +92,8 @@ namespace rat {
 		void invisible();
 		bool isVisible() const;
 
+		void makeChildrenPenetrable();
+
 		static void setWinProp(sf::Vector2f prop);
 
 	protected:
@@ -88,6 +102,7 @@ namespace rat {
 		virtual void _input(const sf::Event& event) {}
 		virtual sf::Vector2u _getSize() const;
 		virtual void _calculateSize() {}
+		virtual void _setColor(const sf::Color& color) {}
 
 		virtual void _inputChildren(sf::Event event);
 
@@ -131,6 +146,15 @@ namespace rat {
 		void _onMoved(sf::Event event);
 
 		void _recalcOrigin();
+
+		AnimationsContainer_t _animations;
+		size_t _currentAnimations{0};
+		void _addAnimation(Animation_t animation);
+		void _updateAnimations(float dt);
+
+		sf::Color _color;
+
+		bool _areChildrenPenetrable{false}; //lenny
 
 	protected:
 		static sf::Vector2f _winProp;

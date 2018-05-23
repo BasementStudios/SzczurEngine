@@ -3,7 +3,11 @@
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "Test.hpp"
+
 #include <iostream>
+#include <algorithm>
+
+#include "TransformAnimBasics/ColorAnim.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -17,6 +21,7 @@ namespace rat {
     _isActivated(true),
     _isVisible(true),
     _aboutToRecalculate(false),
+    _color(255, 255, 255),
     _size(0u,0u) {
 
     }
@@ -96,7 +101,7 @@ namespace rat {
             isAnyPressed |= child->_onPressed();
             if(isAnyPressed) break;
         }
-        if(isAnyPressed) return true;
+        if(isAnyPressed && !_areChildrenPenetrable) return true;
         _isPressed = true;
         _callback(CallbackType::onPress);
         return true;
@@ -119,7 +124,7 @@ namespace rat {
         if(!_isActivated) return;
 
         auto thisSize = getSize();
-                    
+        
         event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
         event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
 
@@ -184,6 +189,7 @@ namespace rat {
     void Widget::update(float deltaTime) {
         if(isActivated()) {
             _update(deltaTime);
+            _updateAnimations(deltaTime);
 
             if(_isHovered) 
                 _callback(CallbackType::onHover);
@@ -326,7 +332,33 @@ namespace rat {
         if(!_isMinSizeSet) return {};
         return _minSize;
     }
+
+	void Widget::setColor(const sf::Color& color)
+    {
+        _color = color;
+        _setColor(color);
+        for(auto* child : _children)
+        {
+            child->setColor(color);
+        }
+    }
+	void Widget::setColor(const sf::Color& color, float inTime)
+    {
+        auto animCol = std::make_unique<ColorAnim>();
+        animCol->setAnim(getColor(), color, inTime);
+        _addAnimation(std::move(animCol));
+    }
     
+    
+    void Widget::resetColor()
+    {
+        setColor({255, 255, 255});
+    }
+    sf::Color Widget::getColor() const
+    {
+        return _color;
+    }
+
 
     void Widget::activate() {
         _isActivated = true;
@@ -415,7 +447,67 @@ namespace rat {
     {
         setSize(getSize());
     }
+
+	void Widget::_addAnimation(Animation_t animation)
+    {
+        auto type = animation->getType();
+        if(_currentAnimations & type)
+        {
+            auto found = std::find_if(_animations.begin(), _animations.end(), [&type](const Animation_t& anim){
+                return anim->getType() == type;
+            });
+            *found = std::move(animation);
+        }
+        else
+        {
+            _animations.emplace_back(std::move(animation));
+            _currentAnimations |= type;
+        }
+    }
+	void Widget::_updateAnimations(float dt)
+    {
+        for(auto& anim : _animations)
+        {
+            anim->update(dt);
+        }
+        for(auto& anim : _animations)
+        {
+            auto type = anim->getType();
+            auto* animPtr = anim.get();
+            
+            switch (type)
+            {
+                case TransformAnimationBase::Types::Color:
+                {
+                    auto* animCol = static_cast<ColorAnim*>(animPtr);
+                    setColor(animCol->getActualColor());
+                } break;
+            
+                default:
+                    break;
+            }
+        }
+        for(auto& anim : _animations)
+        {
+            if(anim->isAnimationOver())
+            {
+                auto type = anim->getType();
+                _currentAnimations &= (~type);
+            }
+        }        
+        auto newEnd = std::remove_if(_animations.begin(), _animations.end(), [](Animation_t& anim){
+
+            return anim->isAnimationOver();
+        });
+        _animations.erase(newEnd, _animations.end());
+    }
     
+	void Widget::makeChildrenPenetrable()
+    {
+        _areChildrenPenetrable = true;
+    }
+    
+
     sf::Vector2f Widget::_winProp{1.f, 1.f};
 
 	void Widget::setWinProp(sf::Vector2f prop)
