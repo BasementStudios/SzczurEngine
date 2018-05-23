@@ -35,6 +35,7 @@ namespace rat {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
+		_audioEditor = detail::globalPtr<AudioEditor>;
 	}
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -51,6 +52,8 @@ namespace rat {
 				_renderDisplayDataManager();
 			if (_ifRenderDialogEditor)
 				_dialogEditor->update();
+			if (_ifRenderAudioEditor)
+				_audioEditor->render();
 
 			scene = _scenes.getCurrentScene();
 			sf3d::RectangleShape rect({100.f, 100.f});
@@ -384,6 +387,7 @@ namespace rat {
 				ImGui::MenuItem("Display Data Manager", nullptr, &_ifRenderDisplayDataManager);
 				ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
 				ImGui::MenuItem("Dialog Editor", nullptr, &_ifRenderDialogEditor);
+				ImGui::MenuItem("Audio Editor", nullptr, &_ifRenderAudioEditor);
 				ImGui::EndMenu();
 			}
 
@@ -714,16 +718,45 @@ namespace rat {
 						}
 						ImGui::DragFloat("Radius", &radius);
 						object->setRadius(radius);
-						if(object->type == TriggerComponent::ChangeScene) {
+						if (object->type == TriggerComponent::ChangeScene)
+						{
 							auto* temp = _scenes.getScene(object->sceneId);
-							if(ImGui::BeginCombo("Scene", temp?temp->getName().c_str():"None")) {
-								for(auto& it : _scenes.getScenes()) {
-									if(ImGui::Selectable( it->getName().c_str(), object->sceneId == it->getID() )) {
+							if (ImGui::BeginCombo("Scene", temp ? temp->getName().c_str() : "None"))
+							{
+								for (auto& it : _scenes.getScenes())
+								{
+									if (ImGui::Selectable(it->getName().c_str(), object->sceneId == it->getID()))
+									{
 										object->sceneId = it->getID();
 									}
 								}
 
 								ImGui::EndCombo();
+							}
+							if (object->sceneId)
+							{
+								auto& holder = _scenes.getScene(object->sceneId)->getEntrances();
+								std::string name = "None";
+								for (auto& it : holder)
+								{
+									if (it.ID == object->entranceId)
+									{
+										name = it.name;
+										break;
+
+									}
+									if (ImGui::BeginCombo("Entrance", name.c_str()))
+									{
+										for (auto& it : holder)
+										{
+											if (ImGui::Selectable(it.name.c_str(), it.ID == object->entranceId))
+											{
+												object->entranceId = it.ID;
+												ImGui::EndCombo();
+											}
+										}
+									}
+								}
 							}
 						}
 					}
