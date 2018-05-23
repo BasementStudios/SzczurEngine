@@ -385,6 +385,7 @@ void Scene::saveToConfig(Json& config) const
 	config["id"] = getID();
 	config["name"] = getName();
 	config["player"] = getPlayerID();
+
 	Json& entrances = config["entrances"] = Json::array();
 	for(auto& it : _entrancesHolder) {
 		entrances.push_back(Json::object());
@@ -409,6 +410,19 @@ void Scene::saveToConfig(Json& config) const
 			Json& current = group.back();
 
 			entity->saveToConfig(current);
+		}
+	}
+}
+
+void Scene::updateIDs()
+{
+	_id = getUniqueID<Scene>();
+
+	for (auto& group : _collectingHolder)
+	{
+		for (auto& entity : group.second)
+		{
+			entity->updateIDs();
 		}
 	}
 }

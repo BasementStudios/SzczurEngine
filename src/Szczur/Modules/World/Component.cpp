@@ -68,4 +68,9 @@ void Component::saveToConfig(Json& config) const
 	config["name"] = getName();
 }
 
+void Component::updateIDs()
+{
+	_id = getUniqueID<Component>();
+}
+
 }

@@ -91,13 +91,13 @@ public:
 	///
 	Entity* getEntity(size_t id);
 
-    ///
+	///
 	const Entity* getEntity(size_t id) const;
 
 	///
 	Entity* getEntity(const std::string& group, size_t id);
 
-    ///
+	///
 	const Entity* getEntity(const std::string& group, size_t id) const;
 
 	///
@@ -157,16 +157,19 @@ public:
 		}
 	}
 
+	///
+	void updateIDs();
+
 private:
 
-    ///
+	///
 	typename EntitiesHolder_t::iterator _find(const std::string& group, size_t id);
 
-    ///
+	///
 	typename EntitiesHolder_t::const_iterator _find(const std::string& group, size_t id) const;
 
-    size_t _id;
-    std::string _name;
+	size_t _id;
+	std::string _name;
 	SceneManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;

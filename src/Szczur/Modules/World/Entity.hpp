@@ -159,6 +159,9 @@ public:
 	///
 	static void initScript(Script& script);
 
+	///
+	void updateIDs();
+
 private:
 
 	///

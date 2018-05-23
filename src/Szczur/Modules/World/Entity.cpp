@@ -220,6 +220,32 @@ void Entity::saveToConfig(Json& config) const
 	}
 }
 
+void Entity::initScript(Script& script)
+{
+	auto object = script.newClass<Entity>("Entity", "World");
+	object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
+	object.set("getInteractable", &Entity::getComponentAs<InteractableComponent>);
+	object.set("getInputController", &Entity::getComponentAs<InputControllerComponent>);
+	object.set("getArmature", &Entity::getComponentAs<ArmatureComponent>);
+	object.set("move", [](Entity& entity, float x, float y, float z){entity.move({x,y,z});});
+	object.set("setPosition", [](Entity& entity, float x, float y, float z){entity.setPosition({x,y,z});});
+	object.set("rotate", [](Entity& entity, float x, float y, float z){entity.rotate({x,y,z});});
+	object.set("setRotation", [](Entity& entity, float x, float y, float z){entity.setRotation({x,y,z});});
+	object.set("scale", [](Entity& entity, float x, float y, float z){entity.scale({x,y,z});});
+	object.set("setScale", [](Entity& entity, float x, float y, float z){entity.setScale({x,y,z});});
+	object.init();
+}
+
+void Entity::updateIDs()
+{
+	_id = getUniqueID<Entity>();
+
+	for (const auto& component : _holder)
+	{
+		component->updateIDs();
+	}
+}
+
 typename Entity::ComponentsHolder_t::iterator Entity::_findByComponentID(size_t id)
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
@@ -246,22 +272,6 @@ typename Entity::ComponentsHolder_t::const_iterator Entity::_findByFeature(Compo
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
 		return arg->getFeatures() & feature;
 	});
-}
-
-void Entity::initScript(Script& script) {
-	auto object = script.newClass<Entity>("Entity", "World");
-	object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
-	object.set("getInteractable", &Entity::getComponentAs<InteractableComponent>);
-	object.set("getInputController", &Entity::getComponentAs<InputControllerComponent>);
-	object.set("getArmature", &Entity::getComponentAs<ArmatureComponent>);
-	object.set("move", [](Entity& entity, float x, float y, float z){entity.move({x,y,z});});
-	object.set("setPosition", [](Entity& entity, float x, float y, float z){entity.setPosition({x,y,z});});
-	object.set("rotate", [](Entity& entity, float x, float y, float z){entity.rotate({x,y,z});});
-	object.set("setRotation", [](Entity& entity, float x, float y, float z){entity.setRotation({x,y,z});});
-	object.set("scale", [](Entity& entity, float x, float y, float z){entity.scale({x,y,z});});
-	object.set("setScale", [](Entity& entity, float x, float y, float z){entity.setScale({x,y,z});});
-	// object.set("getScriptable", [](Entity& obj){return "Hehe xD";});
-	object.init();
 }
 
 }

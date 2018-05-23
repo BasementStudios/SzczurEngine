@@ -12,72 +12,75 @@ class SceneManager
 {
 public:
 
-    using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
+	using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
 
-    ///
-    SceneManager() = default;
+	///
+	SceneManager() = default;
 
-    ///
-    SceneManager(const SceneManager&) = delete;
+	///
+	SceneManager(const SceneManager&) = delete;
 
-    ///
-    SceneManager& operator = (const SceneManager&) = delete;
+	///
+	SceneManager& operator = (const SceneManager&) = delete;
 
-    ///
-    SceneManager(SceneManager&&) = delete;
+	///
+	SceneManager(SceneManager&&) = delete;
 
-    ///
-    SceneManager& operator = (SceneManager&&) = delete;
+	///
+	SceneManager& operator = (SceneManager&&) = delete;
 
-    ///
-    Scene* addScene();
+	///
+	Scene* addScene();
 
-    ///
-    bool removeScene(size_t id);
+	///
+	bool removeScene(size_t id);
 
-    ///
-    void removeAllScenes();
+	///
+	void removeAllScenes();
 
-    ///
-    Scene* getScene(size_t id) const;
+	///
+	Scene* getScene(size_t id) const;
 
-    ///
-    ScenesHolder_t& getScenes();
+	///
+	ScenesHolder_t& getScenes();
 
-    ///
-    const ScenesHolder_t& getScenes() const;
+	///
+	const ScenesHolder_t& getScenes() const;
 
-    ///
-    bool hasScene(size_t id) const;
+	///
+	bool hasScene(size_t id) const;
 
-    ///
-    bool setCurrentScene(size_t id);
+	///
+	bool setCurrentScene(size_t id);
 
-    ///
-    Scene* getCurrentScene() const;
+	///
+	Scene* getCurrentScene() const;
 
-    ///
-    size_t getCurrentSceneID() const;
+	///
+	size_t getCurrentSceneID() const;
 
-    ///
-    bool isCurrentSceneValid() const;
+	///
+	bool isCurrentSceneValid() const;
 
-    ///
-    void loadFromFile(const std::string& filepath);
+	///
+	void loadFromFile(const std::string& filepath);
 
-    ///
-    void saveToFile(const std::string& filepath) const;
+	///
+	void saveToFile(const std::string& filepath) const;
+
+	///
+	void loadScenesFromFile(const std::string& filepath);
 
 private:
 
-    ///
-    typename ScenesHolder_t::iterator _find(size_t id);
+	///
+	typename ScenesHolder_t::iterator _find(size_t id);
 
-    ///
-    typename ScenesHolder_t::const_iterator _find(size_t id) const;
+	///
+	typename ScenesHolder_t::const_iterator _find(size_t id) const;
 
-    ScenesHolder_t _holder;
-    size_t _currentSceneID = 0u;
+	ScenesHolder_t _holder;
+	size_t _currentSceneID = 0u;
 
 };
 

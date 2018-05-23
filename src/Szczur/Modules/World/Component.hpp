@@ -75,6 +75,9 @@ public:
 	///
 	virtual void saveToConfig(Json& config) const;
 
+	///
+	void updateIDs();
+
 private:
 
 	Hash64_t _id;

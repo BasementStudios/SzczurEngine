@@ -3,8 +3,8 @@
 namespace rat
 {
 
-World::World() :
-_levelEditor(_scenes)
+World::World()
+	: _levelEditor { _scenes }
 {
 	LOG_INFO("Initializing World module");
 
@@ -16,17 +16,6 @@ _levelEditor(_scenes)
 	#ifdef EDITOR
 		//_levelEditor.setScene(_scenes.getCurrentScene(), camera->getID());
 	#endif
-
-	//getCurrentScene()->addEntity("single")->setName("Cedmin");
-	//auto* ptr = getCurrentScene()->getEntity(1)->addComponent<SpriteComponent>();
-	//ptr->getEntity()->setName("Karion");
-	//getCurrentScene()->addEntity("background")->setName("Tlo");
-	//getCurrentScene()->addEntity("foreground")->setName("Kamyk");
-	//getCurrentScene()->addEntity("path")->setName("Droga");
-	//getCurrentScene()->removeEntity(1);
-
-	// loadFromFile("test.json");
-	//saveToFile("test.json");
 
 	LOG_INFO("Module World initialized");
 }
@@ -51,6 +40,7 @@ void World::update(float deltaTime)
 void World::render()
 {
 	auto& window = getModule<Window>().getWindow();
+
 	if (_getScenes().isCurrentSceneValid())
 	{
 		_getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {

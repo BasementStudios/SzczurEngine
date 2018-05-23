@@ -28,14 +28,14 @@
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
 namespace rat {
-    LevelEditor::LevelEditor(SceneManager& scenes) :
+	LevelEditor::LevelEditor(SceneManager& scenes) :
 	_scenes(scenes) {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
-    }
+	}
 
-    void LevelEditor::render(sf3d::RenderTarget& target) {
+	void LevelEditor::render(sf3d::RenderTarget& target) {
 		auto* scene = _scenes.getCurrentScene();
 		if(scene) {
 			_renderBar();
@@ -117,9 +117,9 @@ namespace rat {
 			}
 			//glEnable(GL_DEPTH_TEST);
 		}
-    }
+	}
 
-    void LevelEditor::update(InputManager& input, Camera& camera) {
+	void LevelEditor::update(InputManager& input, Camera& camera) {
 		auto* scene = _scenes.getCurrentScene();
 		sf3d::View view;
 		Entity* currentCamera{nullptr};
@@ -149,7 +149,7 @@ namespace rat {
 		if(input.isReleased(Keyboard::F1)) {
 			_menuSave();
 		}
-    }
+	}
 
 	void FreeCamera::processEvents(InputManager& input) {
 
@@ -216,32 +216,32 @@ namespace rat {
 		}
 	}
 
-    void LevelEditor::_renderBar() {
-    	// Create new world
-    	static bool openModalNew = false;
+	void LevelEditor::_renderBar() {
+		// Create new world
+		static bool openModalNew = false;
 		static bool openScenesManager = false;
 		static bool openSceneSettings = false;
-    	if(openModalNew) {
-    		openModalNew = false;
-            ImGui::OpenPopup("Files/New##popup");
-    	}
-        if(ImGui::BeginPopupModal("Files/New##popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        	ImGui::Text("All those beautiful objects will be deleted.\nAre you sure you want to create a NEW world?\n\n");
-        	if(ImGui::Button("Yup!", ImVec2(120,0))) {        		
+		if(openModalNew) {
+			openModalNew = false;
+			ImGui::OpenPopup("Files/New##popup");
+		}
+		if(ImGui::BeginPopupModal("Files/New##popup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			ImGui::Text("All those beautiful objects will be deleted.\nAre you sure you want to create a NEW world?\n\n");
+			if(ImGui::Button("Yup!", ImVec2(120,0))) {
 				_currentFilePath = "";
 				_scenes.removeAllScenes();
 				_scenes.setCurrentScene(_scenes.addScene()->getID());
 				_anySelected = false;
 				_focusedObject = static_cast<size_t>(-1);
 				_printMenuInfo(std::string("New world created!"));
-        		ImGui::CloseCurrentPopup(); 
-        	}
-        	ImGui::SameLine();
-        	if(ImGui::Button("Nope", ImVec2(120,0))) {
-        		ImGui::CloseCurrentPopup(); 
-        	}
-        	ImGui::EndPopup();
-        }
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Nope", ImVec2(120,0))) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
+		}
 		if(openScenesManager) {
 			openScenesManager = false;
 			ImGui::OpenPopup("Scenes Manager##popup");
@@ -282,7 +282,7 @@ namespace rat {
 		if(ImGui::BeginPopupModal("Scene Settings##popup")) {
 			auto& holder = _scenes.getCurrentScene()->getEntrances();
 			if(ImGui::Button("Add")) {
-			
+
 				//holder.push_back(std::make_pair(std::string{""}, glm::vec3{0.f, 0.f, 0.f}));
 				holder.push_back(Scene::Entrance{getUniqueID<Scene::Entrance>(), "", glm::vec3(0.f, 0.f, 0.f)});
 			}
@@ -318,22 +318,22 @@ namespace rat {
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("New")) {
 					openModalNew = true;
-				}				
+				}
 				if(ImGui::MenuItem("Load")) {
 					std::string relative = _getRelativePathFromExplorer("Load world", ".\\Editor\\Saves", "Worlds (*.world)|*.world");
 					// std::cout<<"--l-"<<relative<<std::endl;
 					if(relative != "") {
 						try {
 							_scenes.loadFromFile(relative);
-                            _focusedObject = -1;
-                            _anySelected = false;
+							_focusedObject = -1;
+							_anySelected = false;
 							_currentFilePath = relative;
 							_printMenuInfo(std::string("World loaded from file: ")+_currentFilePath);
 						}
 						catch(...) {}
 					}
 				}
-				if(ImGui::MenuItem("Save", "F1")) {					
+				if(ImGui::MenuItem("Save", "F1")) {
 					_menuSave();
 				}
 				if(ImGui::MenuItem("Save As")) {
@@ -382,20 +382,20 @@ namespace rat {
 			if(_menuInfoClock.getElapsedTime().asSeconds()<6.0f) {
 				ImGui::SameLine(0, 16);
 				ImGui::TextColored({0.75f, 0.30f, 0.63f, 1.0f - _menuInfoClock.getElapsedTime().asSeconds()/6.0f}, _menuInfo.c_str());
-			} 
+			}
 
 			ImGui::SameLine(ImGui::GetWindowWidth()-72);
 			ImGui::Text((std::to_string((int)ImGui::GetIO().Framerate)+" FPS").c_str());
 		}
-		ImGui::EndMainMenuBar();	
+		ImGui::EndMainMenuBar();
 	}
-	
+
 	void LevelEditor::_printMenuInfo(const std::string& info) {
 		_menuInfo = info;
 		_menuInfoClock.restart();
 	}
 
-    void LevelEditor::_renderDisplayDataManager() {
+	void LevelEditor::_renderDisplayDataManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Display Data Manager", &_ifRenderDisplayDataManager)) {
 			auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayDataHolder();
@@ -427,7 +427,7 @@ namespace rat {
 		}
 		ImGui::End();
 	}
-    void LevelEditor::_renderArmatureDisplayManager() {
+	void LevelEditor::_renderArmatureDisplayManager() {
 		static char enteredText[255];
 		if(ImGui::Begin("Armature Data Manager", &_ifRenderArmatureDisplayManager)) {
 			auto& armatureDisplayDataHolder = _scenes.getCurrentScene()->getArmatureDisplayDataHolder();
@@ -459,7 +459,7 @@ namespace rat {
 		}
 		ImGui::End();
 	}
-    void LevelEditor::_renderFocusedObjectsParams() {
+	void LevelEditor::_renderFocusedObjectsParams() {
 		if(ImGui::Begin("Object Parameters", &_anySelected)) {
 			auto* scene = _scenes.getCurrentScene();
 			Entity* focusedObject = scene->getEntity(_focusedObject);
@@ -649,7 +649,7 @@ namespace rat {
 						ImGui::Text("Path:");
 						ImGui::SameLine();
 						ImGui::Text(object->getFilePath()!="" ? mapWindows1250ToUtf8(object->getFilePath()).c_str() : "None");
-					
+
 						ImGui::Checkbox("Once type##scriptable_component", &onceType);
 					}
 				}
@@ -662,7 +662,7 @@ namespace rat {
 						ImGui::DragFloat("Height", &height);
 						object->setDistance(distance);
 						object->setHeight(height);
-				
+
 					}
 				}
 				if(auto* object = focusedObject->getComponentAs<TriggerComponent>(); object != nullptr) {
@@ -674,7 +674,7 @@ namespace rat {
 							}
 							if(
 								ImGui::Selectable(TriggerComponent::enumToString(
-									TriggerComponent::ChangeScene).c_str(), 
+									TriggerComponent::ChangeScene).c_str(),
 									object->type == TriggerComponent::ChangeScene)
 								) {
 								object->type = TriggerComponent::ChangeScene;
@@ -722,7 +722,7 @@ namespace rat {
 		}
 		ImGui::End();
 	}
-    void LevelEditor::_renderObjectsList() {
+	void LevelEditor::_renderObjectsList() {
 		if(ImGui::Begin("Objects", &_ifRenderObjectsList)) {
 			ImGui::Separator();
 			if(ImGui::BeginChild("Objects")) {
@@ -747,7 +747,7 @@ namespace rat {
 							ImGui::EndPopup();
 						}
 
-						
+
 						for(int i2 = 0; i2<group.second.size(); ++i2) {
 							Entity& object = *group.second[i2];
 							bool temp = object.getID() == _focusedObject && _anySelected;
@@ -771,9 +771,9 @@ namespace rat {
 							}
 							if(ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem)) {
 								if(draggedObject != -1 && draggedObject != i2 && draggedCategory == group.first) {
-						        	std::swap(group.second[i2], group.second[draggedObject]);
-						        	draggedObject = i2;
-								}								
+									std::swap(group.second[i2], group.second[draggedObject]);
+									draggedObject = i2;
+								}
 							}
 
 							// Context menu for object. Options: Duplicate|Remove
@@ -909,8 +909,8 @@ namespace rat {
 		}
 	}
 
-    std::string LevelEditor::_getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
-    	namespace filesystem = std::experimental::filesystem;
+	std::string LevelEditor::_getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
+		namespace filesystem = std::experimental::filesystem;
 
 		std::string file;
 		if(saveButton) file = FileDialog::getSaveFileName(title, directory, filter);
@@ -924,7 +924,7 @@ namespace rat {
 		}
 
 		return "";
-    }
+	}
   //   std::string LevelEditor::_getRelativeDirectoryPathFromExplorer(const std::string& title, const std::string& directory) {
   //   	namespace filesystem = std::experimental::filesystem;
 
