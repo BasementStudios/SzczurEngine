@@ -147,9 +147,18 @@ namespace rat
                             for(auto it : _playlistHolder.music->getPlaylist(playlist)) {
                                 if(ImGui::Button(it->getName().c_str())){
                                     currentEditingMusicFile = it->getName();
+                                    currentPlaylist = playlist;
                                 }
                                 ImGui::SameLine();
-                                auto name = " - ##" + playlist + it->getName();
+                                auto name = "PLAY##" + playlist + it->getName();
+                                if(ImGui::Button(name.c_str())){
+                                    currentEditingMusicFile = it->getName();
+                                    currentPlaylist = playlist;
+                                    getModule<Music>().setPlayingMode(currentPlaylist, Music::PlayingMode::Random);
+                                    getModule<Music>().play(currentPlaylist, currentEditingMusicFile);
+                                }
+                                ImGui::SameLine();
+                                name = " - ##" + playlist + it->getName();
                                 if(ImGui::Button(name.c_str())){
                                     _playlistHolder.music->removeFromPlaylist(playlist, it->getName());
                                     ImGui::TreePop();
@@ -236,8 +245,6 @@ namespace rat
                 RRF = song.RRF;
                 DHL = song.DHL;
 
-
-
                 auto nameText = "Name: " + currentEditingMusicFile;
                 ImGui::Text(nameText.c_str());
                 ImGui::SameLine();
@@ -246,15 +253,16 @@ namespace rat
                 }
                 ImGui::Separator();
                 if (ImGui::Button("PLAY##MUSIC")) {
-                    song.play();
+                    getModule<Music>().setPlayingMode(currentPlaylist, Music::PlayingMode::Single);
+                    getModule<Music>().play(currentPlaylist, currentEditingMusicFile);
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("PAUSE##MUSIC")) {
-                    song.pause();
+                    getModule<Music>().pause();
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("STOP##MUSIC")) {
-                    song.stop();
+                    getModule<Music>().stop();
                 }   
                 ImGui::Separator();
                 if(ImGui::InputInt("BPM", &bpm)) {
@@ -263,8 +271,8 @@ namespace rat
                 if(ImGui::InputInt("Fade Time", &fadeTime)) {
                     song._fadeTime = fadeTime;
                 }
-                if(ImGui::SliderFloat(" Volume", &volume, 0, 100)) {
-                    song.setVolume(volume);
+                if(ImGui::SliderFloat("Volume", &volume, 0, 100)) {
+                    getModule<Music>().setVolume(currentPlaylist, volume, currentEditingMusicFile);
                 }
                 for(auto i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {
                     if(song.effectsTypes[i] != AudioEffect::EffectType::None) {
@@ -444,7 +452,7 @@ namespace rat
                     }
                 }
                 ImGui::Separator();
-                if(song.lastFreeSlot() != -1) {
+                if(song.lastFreeSlot() > -1) {
                     if (ImGui::Button("Add Effect##MUSIC")) {
                         _addingEffect = true;
                     } 
