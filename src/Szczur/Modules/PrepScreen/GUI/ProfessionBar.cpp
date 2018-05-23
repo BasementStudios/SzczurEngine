@@ -13,7 +13,13 @@ namespace rat
     _skillArea(skillArea)
     {
         _window = new WindowWidget;
-
+        _window->makeChildrenPenetrable();
+        _window->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner){
+            owner->setColor({180, 180, 180}, 0.3f);
+        });
+        _window->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner){
+            owner->setColor({255, 255, 255}, 0.3f);
+        });
         _icon = new ImageWidget;
         auto click = [&](Widget* owner){
             _onClick();

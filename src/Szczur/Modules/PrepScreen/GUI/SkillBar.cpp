@@ -33,8 +33,7 @@ namespace rat
 
         _iconWindow->setSize(_size.y, _size.y);
         _iconWindow->setScale(0.3f, 0.3f);
-        _addWidget(_iconWindow);
-        
+        _addWidget(_iconWindow);        
         
         
         _icon->setSize(_size.y - 2 * round(_iconWindow->getPadding().x), _size.y - 2 * round(_iconWindow->getPadding().x));
@@ -44,8 +43,15 @@ namespace rat
         _infoBar->setPosition(_size.y, 0);
         _infoBar->setScale(0.3f, 0.3f);
         _infoBar->setPadding(10, 10);
+        _infoBar->makeChildrenPenetrable();
         _infoBar->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
+        });
+        _infoBar->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner){
+            owner->setColor({180, 180, 180}, 0.3f);
+        });
+        _infoBar->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner){
+            owner->setColor({255, 255, 255}, 0.3f);
         });
         _addWidget(_infoBar);
 

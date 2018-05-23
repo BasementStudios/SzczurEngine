@@ -136,7 +136,7 @@ namespace rat
     void PrepScreen::_initEnemyArea()
     {
         _enemyArea.setParent(_base);
-        _enemyArea.setPosition(1000.f, 150.f);
+        _enemyArea.setPosition(900.f, 150.f);
         _enemyArea.initEnemiesViaCodex(_enemyCodex);
         _enemyArea.initAssetsViaGUI(getModule<GUI>());
     }
