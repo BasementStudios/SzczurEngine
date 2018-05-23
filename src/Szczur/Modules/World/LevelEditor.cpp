@@ -698,18 +698,23 @@ namespace rat {
 
 					}
 				}
-				if(auto* object = focusedObject->getComponentAs<TriggerComponent>(); object != nullptr) {
-					if(ImGui::CollapsingHeader("Trigger Component")) {
+				if (auto* object = focusedObject->getComponentAs<TriggerComponent>(); object != nullptr)
+				{
+					if (ImGui::CollapsingHeader("Trigger Component"))
+					{
 						float radius = object->getRadius();
-						if(ImGui::BeginCombo("Types", TriggerComponent::enumToString(object->type).c_str())) {
-							if(ImGui::Selectable(TriggerComponent::enumToString(TriggerComponent::None).c_str(), object->type == TriggerComponent::None)) {
+						if (ImGui::BeginCombo("Types", TriggerComponent::enumToString(object->type).c_str()))
+						{
+							if (ImGui::Selectable(TriggerComponent::enumToString(TriggerComponent::None).c_str(), object->type == TriggerComponent::None))
+							{
 								object->type = TriggerComponent::None;
 							}
-							if(
+							if (
 								ImGui::Selectable(TriggerComponent::enumToString(
 									TriggerComponent::ChangeScene).c_str(),
 									object->type == TriggerComponent::ChangeScene)
-								) {
+								)
+							{
 								object->type = TriggerComponent::ChangeScene;
 								object->sceneId = 0u;
 								object->entranceId = 0u;
@@ -743,19 +748,19 @@ namespace rat {
 									{
 										name = it.name;
 										break;
-
 									}
-									if (ImGui::BeginCombo("Entrance", name.c_str()))
+								}
+								if (ImGui::BeginCombo("Entrance", name.c_str()))
+								{
+									for (auto& it : holder)
 									{
-										for (auto& it : holder)
+										if (ImGui::Selectable(it.name.c_str(), it.ID == object->entranceId))
 										{
-											if (ImGui::Selectable(it.name.c_str(), it.ID == object->entranceId))
-											{
-												object->entranceId = it.ID;
-												ImGui::EndCombo();
-											}
+											object->entranceId = it.ID;
 										}
 									}
+
+									ImGui::EndCombo();
 								}
 							}
 						}

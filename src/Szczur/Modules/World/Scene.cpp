@@ -345,21 +345,21 @@ void Scene::loadFromConfig(const Json& config)
 	_name = config["name"].get<std::string>();
 	_playerID = config["player"];
 
-	// size_t maxId = 0u;
-	// for(auto& obj : config["entrances"]) {
-	// 	if(obj["id"].get<size_t>() > maxId) {
-	// 		maxId = obj["id"].get<size_t>();
-	// 	}
-	// 	_entrancesHolder.push_back(
-	// 		Entrance{
-	// 			obj["id"].get<size_t>(),
-	// 			obj["name"].get<std::string>(),
-	// 			glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
-	// 		}
-	// 	);
-	// }
-	//
-	// trySettingInitialUniqueID<Entrance>(maxId);
+	 size_t maxId = 0u;
+	 for(auto& obj : config["entrances"]) {
+	 	if(obj["id"].get<size_t>() > maxId) {
+	 		maxId = obj["id"].get<size_t>();
+	 	}
+	 	_entrancesHolder.push_back(
+	 		Entrance{
+	 			obj["id"].get<size_t>(),
+	 			obj["name"].get<std::string>(),
+	 			glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
+	 		}
+	 	);
+	 }
+	
+	trySettingInitialUniqueID<Entrance>(maxId);
 
 	const Json& groups = config["groups"];
 
