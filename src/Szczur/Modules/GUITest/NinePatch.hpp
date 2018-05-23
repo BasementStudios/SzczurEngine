@@ -35,6 +35,8 @@ namespace rat
         sf::Vector2i getInnerPathSize() const;
         sf::Vector2i getInnerSize() const;
 
+        void setColor(const sf::Color& color);
+
         sf::Vector2i getCornersCombinedSize() const;
 
     private:

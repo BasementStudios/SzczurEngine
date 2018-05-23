@@ -23,6 +23,7 @@ namespace rat
         void setScale(float x, float y);
         void setScale(const sf::Vector2f& scale);
         void setDirection(Direction direction);
+        void setColor(const sf::Color& color);
 
         const sf::Vector2i& getSize() const;
         sf::Vector2i getElementSize() const;

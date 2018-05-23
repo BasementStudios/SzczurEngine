@@ -53,6 +53,11 @@ namespace rat
     {
         target.draw(_ninePatch, states);
     }
+    void WindowWidget::_setColor(const sf::Color& color)
+    {
+        _ninePatch.setColor(color);
+    }
+    
 	sf::Vector2u WindowWidget::_getSize() const
     {
         return _minWinSize;

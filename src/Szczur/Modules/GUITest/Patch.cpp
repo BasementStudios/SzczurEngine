@@ -89,6 +89,12 @@ namespace rat
         _isTextureRectSet = true;
         if(_texture) _recalcRecurrence();
     }
+
+    void Patch::setColor(const sf::Color& color)
+    {
+        _sprite.setColor(color);
+    }
+    
     
     void Patch::_recalcSpriteSize()
     {}

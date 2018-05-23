@@ -62,6 +62,10 @@ namespace rat {
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
 
+		void setColor(const sf::Color& color);
+		void resetColor();
+		sf::Color getColor() const; 
+		
 		void setOrigin(const sf::Vector2f& origin);
 		void setOrigin(float x, float y);
 
@@ -88,6 +92,7 @@ namespace rat {
 		virtual void _input(const sf::Event& event) {}
 		virtual sf::Vector2u _getSize() const;
 		virtual void _calculateSize() {}
+		virtual void _setColor(const sf::Color& color) {}
 
 		virtual void _inputChildren(sf::Event event);
 
@@ -131,6 +136,8 @@ namespace rat {
 		void _onMoved(sf::Event event);
 
 		void _recalcOrigin();
+
+		sf::Color _color;
 
 	protected:
 		static sf::Vector2f _winProp;

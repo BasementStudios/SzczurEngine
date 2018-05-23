@@ -88,6 +88,22 @@ namespace rat
         setInnerSize({{x, y}, {width, height}});
     }
 
+    void NinePatch::setColor(const sf::Color& color)
+    {
+        _topBar.setColor(color);
+        _bottomBar.setColor(color);
+        _leftBar.setColor(color);
+        _rightBar.setColor(color);
+
+        _topLeftCorner.setColor(color);
+        _topRightCorner.setColor(color);
+        _bottomLeftCorner.setColor(color);
+        _bottomRightCorner.setColor(color);
+
+        _inner.setColor(color);
+    }
+    
+
     void NinePatch::_recalcTexturesAreas()
     {
         if(!_texture) LOG_ERROR("Trying recalculating nullptr texture");

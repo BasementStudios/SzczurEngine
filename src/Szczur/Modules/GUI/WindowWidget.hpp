@@ -23,6 +23,7 @@ namespace rat
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual sf::Vector2u _getSize() const override;
 		virtual void _calculateSize() override;
+        virtual void _setColor(const sf::Color& color) override;
     private:
         NinePatch _ninePatch;
         bool _isPaddingSet{false};

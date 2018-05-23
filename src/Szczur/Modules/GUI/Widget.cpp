@@ -17,6 +17,7 @@ namespace rat {
     _isActivated(true),
     _isVisible(true),
     _aboutToRecalculate(false),
+    _color(255, 255, 255),
     _size(0u,0u) {
 
     }
@@ -325,7 +326,26 @@ namespace rat {
         if(!_isMinSizeSet) return {};
         return _minSize;
     }
+
+	void Widget::setColor(const sf::Color& color)
+    {
+        _color = color;
+        _setColor(color);
+        for(auto* child : _children)
+        {
+            child->setColor(color);
+        }
+    }
     
+    void Widget::resetColor()
+    {
+        setColor({255, 255, 255});
+    }
+    sf::Color Widget::getColor() const
+    {
+        return _color;
+    }
+
 
     void Widget::activate() {
         _isActivated = true;

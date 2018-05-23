@@ -94,6 +94,7 @@ namespace rat
         widget->add(blue);
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         blue->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        blue->setColor({0, 0, 0, 255});
         
         red = new ImageWidget;
         red->setCallback(Widget::CallbackType::onPress, [](Widget*){

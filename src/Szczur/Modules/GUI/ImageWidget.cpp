@@ -74,5 +74,11 @@ namespace rat {
         }
         _sprite.setScale(scale);
     }
+
+    void ImageWidget::_setColor(const sf::Color& color)
+    {
+        _sprite.setColor(color);
+    }
+    
     
 }
