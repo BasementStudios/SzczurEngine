@@ -134,7 +134,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 			reset();
 
 			json j;
-			j << file;
+			file >> j;
 			file.close();
 
 			if (_nodeManager->read(j))
