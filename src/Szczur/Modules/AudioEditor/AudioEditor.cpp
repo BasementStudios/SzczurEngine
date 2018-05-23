@@ -156,6 +156,49 @@ namespace rat
                                     currentPlaylist = playlist;
                                     getModule<Music>().setPlayingMode(currentPlaylist, Music::PlayingMode::Random);
                                     getModule<Music>().play(currentPlaylist, currentEditingMusicFile);
+                                    auto& song = musicAssets->get(currentEditingMusicFile);
+                                    for (unsigned int i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {
+                                        if(song.effectsTypes[i] != AudioEffect::EffectType::None) {
+                                            switch(song.effectsTypes[i]) {
+                                                case AudioEffect::EffectType::Reverb:
+                                                    song.getEffect<Reverb>().density(song.DEN);
+                                                    song.getEffect<Reverb>().diffusion(song.DIFF);
+                                                    song.getEffect<Reverb>().gain(song.G);
+                                                    song.getEffect<Reverb>().gainHf(song.RGH);
+                                                    song.getEffect<Reverb>().decayTime(song.DT);
+                                                    song.getEffect<Reverb>().decayHfRatio(song.DHF);
+                                                    song.getEffect<Reverb>().reflectionsGain(song.RG);
+                                                    song.getEffect<Reverb>().reflectionsDelay(song.RD);
+                                                    song.getEffect<Reverb>().lateReverbGain(song.LRG);
+                                                    song.getEffect<Reverb>().lateReverbDelay(song.LRD);
+                                                    song.getEffect<Reverb>().airAbsorptionGainHf(song.AAGH);
+                                                    song.getEffect<Reverb>().roomRolloffFactor(song.RRF);
+                                                    song.getEffect<Reverb>().decayHfLimit(song.DHL);
+                                                    break;
+                                                case AudioEffect::EffectType::Echo:
+                                                    song.getEffect<Echo>().delay(song.DL);
+                                                    song.getEffect<Echo>().lrDelay(song.LDL);
+                                                    song.getEffect<Echo>().damping(song.DG);
+                                                    song.getEffect<Echo>().feedback(song.FB);
+                                                    song.getEffect<Echo>().spread(song.SP);
+                                                    break;
+                                                case AudioEffect::EffectType::Equalizer: 
+                                                    song.getEffect<Equalizer>().lowGain(song.LG);
+                                                    song.getEffect<Equalizer>().lowCutoff(song.LC);
+                                                    song.getEffect<Equalizer>().lowMidGain(song.M1G);
+                                                    song.getEffect<Equalizer>().lowMidCenter(song.M1C);
+                                                    song.getEffect<Equalizer>().lowMidWidth(song.M1W);
+                                                    song.getEffect<Equalizer>().highMidGain(song.M2G);
+                                                    song.getEffect<Equalizer>().highMidCenter(song.M2C);
+                                                    song.getEffect<Equalizer>().highMidWidth(song.M2W);
+                                                    song.getEffect<Equalizer>().highGain(song.HG);
+                                                    song.getEffect<Equalizer>().highCutoff(song.HC);
+                                                    break;
+                                                default: 
+                                                    break;
+                                            }
+                                        }
+                                    }
                                 }
                                 ImGui::SameLine();
                                 name = " - ##" + playlist + it->getName();
