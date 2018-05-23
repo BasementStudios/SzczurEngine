@@ -342,7 +342,7 @@ namespace rat
             _parts[_currentMajor][_currentMinor]->audioStartTime = _sliderTimeString;
         } 
         ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 16); 
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 19); 
         if (ImGui::Button("##DialogTimeSelectorStart-FromSliderToEndTime", ImVec2(50, 10))) {
            _endTestPlayerOffset = _sliderTime;
            _parts[_currentMajor][_currentMinor]->audioEndTime = _sliderTimeString;
@@ -371,7 +371,7 @@ namespace rat
         ImGui::PopItemWidth();
         ImGui::SameLine();
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 14); 
-        if (ImGui::Button("TEST##DialogTimeSelector", ImVec2(ImGui::GetWindowWidth() - 152, 36))) {
+        if (ImGui::Button("TEST##DialogTimeSelector", ImVec2(ImGui::GetWindowWidth() - 160, 36))) {
             _playTest = true;
             _playing  = true;
             _startPlayerOffset = _startTestPlayerOffset;
@@ -406,8 +406,8 @@ namespace rat
                 }
                 ImGui::PopItemWidth();
                 ImGui::SameLine();
-                if (ImGui::GetWindowWidth() - 332 > 0) {
-                    ImGui::PushItemWidth(ImGui::GetWindowWidth() - 332); 
+                if (ImGui::GetWindowWidth() - 348 > 0) {
+                    ImGui::PushItemWidth(ImGui::GetWindowWidth() - 348); 
                     if (ImGui::InputText("##DLGDialogTextInput", newText, size)) {
                         _parts[_currentMajor][_currentMinor]->dialogs[i] = newText;
                     }; 
