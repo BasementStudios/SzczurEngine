@@ -60,7 +60,7 @@ unsigned int Window::getFramerateLimit() const
 void Window::setFramerateLimit(const unsigned int limit)
 {
 	this->framerateLimit = limit;
-	LOG_INFO("framerateLimit: " + this->framerateLimit);
+	LOG_INFO("framerateLimit: ", this->framerateLimit);
 
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
