@@ -33,7 +33,8 @@ namespace rat {
 	LevelEditor::LevelEditor(ScenesManager& scenes) :
 	_scenes(scenes),
 	_objectsList{scenes},
-	_bar{scenes, _objectsList.getBool()} {
+	_bar{scenes, _objectsList.getBool()},
+	_objectParameters{scenes} {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
@@ -42,6 +43,7 @@ namespace rat {
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
 		_bar.render();
+		_objectParameters.render();
 		_objectsList.render();
 		/*
 		auto* scene = _scenes.getCurrentScene();

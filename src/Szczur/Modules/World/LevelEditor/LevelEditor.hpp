@@ -19,6 +19,7 @@
 
 #include "ObjectsList.hpp"
 #include "Bar.hpp"
+#include "ObjectParameters.hpp"
 
 namespace rat {
 	class DialogEditor;
@@ -77,6 +78,7 @@ namespace rat {
 
 		ObjectsList _objectsList;
 		Bar _bar;
+		ObjectParameters _objectParameters;
 
 	};
 
