@@ -1,4 +1,4 @@
-/*#include "LevelEditor.hpp"
+#include "LevelEditor.hpp"
 
 #include <iostream>
 #include <experimental/filesystem>
@@ -30,8 +30,10 @@
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
 namespace rat {
-	LevelEditor::LevelEditor(SceneManager& scenes) :
-	_scenes(scenes) {
+	LevelEditor::LevelEditor(ScenesManager& scenes) :
+	_scenes(scenes),
+	_objectsList{scenes},
+	_bar{scenes, _objectsList.getBool()} {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
@@ -39,6 +41,9 @@ namespace rat {
 	}
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
+		_bar.render();
+		_objectsList.render();
+		/*
 		auto* scene = _scenes.getCurrentScene();
 		if(scene) {
 			_renderBar();
@@ -122,6 +127,7 @@ namespace rat {
 			}
 			//glEnable(GL_DEPTH_TEST);
 		}
+		*/
 	}
 
 	void LevelEditor::update(InputManager& input, Camera& camera) {
@@ -1124,4 +1130,3 @@ namespace rat {
 		// return "";
   //   }
 }
-*/

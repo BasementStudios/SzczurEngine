@@ -10,7 +10,7 @@
 namespace rat
 {
 
-class SceneManager
+class ScenesManager
 {
 public:
 
@@ -19,19 +19,19 @@ public:
 	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
 
 	///
-	SceneManager();
+	ScenesManager();
 
 	///
-	SceneManager(const SceneManager&) = delete;
+	ScenesManager(const ScenesManager&) = delete;
 
 	///
-	SceneManager& operator = (const SceneManager&) = delete;
+	ScenesManager& operator = (const ScenesManager&) = delete;
 
 	///
-	SceneManager(SceneManager&&) = delete;
+	ScenesManager(ScenesManager&&) = delete;
 
 	///
-	SceneManager& operator = (SceneManager&&) = delete;
+	ScenesManager& operator = (ScenesManager&&) = delete;
 
 	///
 	Scene* addScene();
@@ -82,6 +82,12 @@ public:
 	void loadScenesFromFile(const std::string& filepath);
 
 	void addPlayer();
+
+	#ifdef EDITOR
+		std::string currentFilePath;
+		std::string getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter="", bool saveButton = false);
+		void menuSave();
+	#endif
 
 private:
 

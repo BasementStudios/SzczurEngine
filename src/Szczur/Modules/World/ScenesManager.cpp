@@ -1,4 +1,9 @@
-#include "SceneManager.hpp"
+#include "ScenesManager.hpp"
+
+#include <experimental/filesystem>
+
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
 #include <algorithm>
 
@@ -6,11 +11,11 @@
 namespace rat
 {
 
-SceneManager::SceneManager() {
+ScenesManager::ScenesManager() {
 	_armatureDisplayDataHolder.reserve(100);
 }
 
-Scene* SceneManager::addScene()
+Scene* ScenesManager::addScene()
 {
 	Scene* scene = _holder.emplace_back(std::make_unique<Scene>(this)).get();
 	Entity* player = scene->addEntity("single");
@@ -26,7 +31,7 @@ Scene* SceneManager::addScene()
 	return scene;
 }
 
-bool SceneManager::removeScene(size_t id)
+bool ScenesManager::removeScene(size_t id)
 {
 	if (auto it = _find(id); it != _holder.end())
 	{
@@ -46,14 +51,14 @@ bool SceneManager::removeScene(size_t id)
 	return false;
 }
 
-void SceneManager::removeAllScenes()
+void ScenesManager::removeAllScenes()
 {
 	_holder.clear();
 
 	_currentSceneID = 0u;
 }
 
-Scene* SceneManager::getScene(size_t id) const
+Scene* ScenesManager::getScene(size_t id) const
 {
 	if (auto it = _find(id); it != _holder.end())
 	{
@@ -63,22 +68,22 @@ Scene* SceneManager::getScene(size_t id) const
 	return nullptr;
 }
 
-SceneManager::ScenesHolder_t& SceneManager::getScenes()
+ScenesManager::ScenesHolder_t& ScenesManager::getScenes()
 {
 	return _holder;
 }
 
-const SceneManager::ScenesHolder_t& SceneManager::getScenes() const
+const ScenesManager::ScenesHolder_t& ScenesManager::getScenes() const
 {
 	return _holder;
 }
 
-bool SceneManager::hasScene(size_t id) const
+bool ScenesManager::hasScene(size_t id) const
 {
 	return _find(id) != _holder.end();
 }
 
-bool SceneManager::setCurrentScene(size_t id)
+bool ScenesManager::setCurrentScene(size_t id)
 {
 	if (hasScene(id))
 	{
@@ -90,22 +95,22 @@ bool SceneManager::setCurrentScene(size_t id)
 	return false;
 }
 
-Scene* SceneManager::getCurrentScene() const
+Scene* ScenesManager::getCurrentScene() const
 {
 	return getScene(_currentSceneID);
 }
 
-size_t SceneManager::getCurrentSceneID() const
+size_t ScenesManager::getCurrentSceneID() const
 {
 	return _currentSceneID;
 }
 
-bool SceneManager::isCurrentSceneValid() const
+bool ScenesManager::isCurrentSceneValid() const
 {
 	return _currentSceneID != 0u;
 }
 
-void SceneManager::loadFromFile(const std::string& filepath)
+void ScenesManager::loadFromFile(const std::string& filepath)
 {
 	removeAllScenes();
 
@@ -126,7 +131,7 @@ void SceneManager::loadFromFile(const std::string& filepath)
 	}
 }
 
-void SceneManager::saveToFile(const std::string& filepath) const
+void ScenesManager::saveToFile(const std::string& filepath) const
 {
 	std::ofstream file{ filepath };
 	Json config;
@@ -145,17 +150,17 @@ void SceneManager::saveToFile(const std::string& filepath) const
 	file << std::setw(4) << config << std::endl;
 }
 
-SceneManager::ArmatureDisplayDataHolder_t& SceneManager::getArmatureDisplayDataHolder()
+ScenesManager::ArmatureDisplayDataHolder_t& ScenesManager::getArmatureDisplayDataHolder()
 {
 	return _armatureDisplayDataHolder;
 }
 
-const SceneManager::ArmatureDisplayDataHolder_t& SceneManager::getArmatureDisplayDataHolder() const
+const ScenesManager::ArmatureDisplayDataHolder_t& ScenesManager::getArmatureDisplayDataHolder() const
 {
 	return _armatureDisplayDataHolder;
 }
 
-void SceneManager::loadScenesFromFile(const std::string& filepath)
+void ScenesManager::loadScenesFromFile(const std::string& filepath)
 {
 	std::ifstream file{ filepath };
 	Json config;
@@ -172,7 +177,7 @@ void SceneManager::loadScenesFromFile(const std::string& filepath)
 	}
 }
 
-void SceneManager::addPlayer()
+void ScenesManager::addPlayer()
 {
 	auto scene = getCurrentScene();
 
@@ -182,18 +187,66 @@ void SceneManager::addPlayer()
 
 }
 
-typename SceneManager::ScenesHolder_t::iterator SceneManager::_find(size_t id)
+typename ScenesManager::ScenesHolder_t::iterator ScenesManager::_find(size_t id)
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
 		return arg->getID() == id;
 	});
 }
 
-typename SceneManager::ScenesHolder_t::const_iterator SceneManager::_find(size_t id) const
+typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size_t id) const
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
 		return arg->getID() == id;
 	});
 }
+
+#ifdef EDITOR
+	void ScenesManager::menuSave() {
+		if(currentFilePath == "") {
+			std::string relative = getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+			// std::cout<<"--s-"<<relative<<std::endl;
+			if(relative != "") {
+				try {
+					saveToFile(relative);
+					currentFilePath = relative;
+				}
+				catch (const std::exception& exc)
+				{
+					LOG_EXCEPTION(exc);
+				}
+			}
+		}
+		else {
+			try {
+				saveToFile(currentFilePath);
+			}
+			catch (const std::exception& exc)
+			{
+				LOG_EXCEPTION(exc);
+			}
+		}
+	}
+
+	std::string ScenesManager::getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
+		namespace filesystem = std::experimental::filesystem;
+
+		std::string file;
+		if(saveButton) 
+            file = FileDialog::getSaveFileName(title, directory, filter);
+		else 
+            file = FileDialog::getOpenFileName(title, directory, filter);
+
+		if(file == "") 
+            return "";
+
+		std::string current = filesystem::current_path().string();
+
+		if(current == file.substr(0, current.size()))
+			return file.substr(current.size()+1);
+
+		return "";
+	}
+#endif
 
 }

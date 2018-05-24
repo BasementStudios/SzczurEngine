@@ -1,4 +1,4 @@
-#include "SceneManager.hpp"
+#include "ScenesManager.hpp"
 
 #include <functional>
 
@@ -19,7 +19,7 @@
 namespace rat
 {
 
-Scene::Scene(SceneManager* parent)
+Scene::Scene(ScenesManager* parent)
 	: _id { getUniqueID<Scene>() }
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
@@ -110,12 +110,12 @@ const std::string& Scene::getName() const
 	return _name;
 }
 
-SceneManager* Scene::getScenes()
+ScenesManager* Scene::getScenes()
 {
 	return _parent;
 }
 
-const SceneManager* Scene::getScenes() const
+const ScenesManager* Scene::getScenes() const
 {
 	return _parent;
 }

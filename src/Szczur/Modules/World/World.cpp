@@ -64,12 +64,12 @@ void World::render()
 	#endif
 }
 
-SceneManager& World::_getScenes()
+ScenesManager& World::_getScenes()
 {
 	return _scenes;
 }
 
-const SceneManager& World::_getScenes() const
+const ScenesManager& World::_getScenes() const
 {
 	return _scenes;
 }

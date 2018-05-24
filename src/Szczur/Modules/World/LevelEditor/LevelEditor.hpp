@@ -1,21 +1,24 @@
-/*
+
 //#ifdef EDITOR
 #pragma once
 
-#include "Entity.hpp"
-#include "Scene.hpp"
-#include "Components/ArmatureComponent.hpp"
-#include "Components/SpriteComponent.hpp"
-#include "Components/ScriptableComponent.hpp"
-#include "Components/CameraComponent.hpp"
-#include "data/SpriteDisplayData.hpp"
-#include "data/ArmatureDisplayData.hpp"
+#include "../Entity.hpp"
+#include "../Scene.hpp"
+#include "../Components/ArmatureComponent.hpp"
+#include "../Components/SpriteComponent.hpp"
+#include "../Components/ScriptableComponent.hpp"
+#include "../Components/CameraComponent.hpp"
+#include "../Data/SpriteDisplayData.hpp"
+#include "../Data/ArmatureDisplayData.hpp"
+#include "../ScenesManager.hpp"
 
 #include <boost/container/flat_map.hpp>
 #include "Szczur/Modules/Input/InputManager.hpp"
 #include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
-#include "SceneManager.hpp"
+
+#include "ObjectsList.hpp"
+#include "Bar.hpp"
 
 namespace rat {
 	class DialogEditor;
@@ -33,12 +36,12 @@ namespace rat {
 
 	class LevelEditor {
 	public:
-		LevelEditor(SceneManager& scenes);
+		LevelEditor(ScenesManager& scenes);
 
 		void render(sf3d::RenderTarget& target);
 		void update(InputManager& input, Camera& camera);
 	private:
-		SceneManager& _scenes;
+		ScenesManager& _scenes;
 
 		void _processEventsForFreeCamera(InputManager& input);
 
@@ -69,10 +72,15 @@ namespace rat {
 		
 		DialogEditor* _dialogEditor = nullptr;
 		AudioEditor* _audioEditor = nullptr;
+
+
+
+		ObjectsList _objectsList;
+		Bar _bar;
+
 	};
 
 	
 }
 
 //#endif
-*/

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "SceneManager.hpp"
+#include "ScenesManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 #ifdef EDITOR
-	#include "LevelEditor.hpp"
+	#include "LevelEditor/LevelEditor.hpp"
 #endif
 
 namespace rat
@@ -44,14 +44,14 @@ public:
 private:
 
 	///
-	SceneManager& _getScenes();
+	ScenesManager& _getScenes();
 
 	///
-	const SceneManager& _getScenes() const;
+	const ScenesManager& _getScenes() const;
 
 	bool _doEditor{true};
 
-	SceneManager _scenes;
+	ScenesManager _scenes;
 	#ifdef EDITOR
 	LevelEditor _levelEditor;
 	#endif

@@ -12,7 +12,7 @@ namespace rat
 {
 
 // FWD
-class SceneManager;
+class ScenesManager;
 
 class Scene
 {
@@ -31,7 +31,7 @@ public:
 	using EntrancesHolder_t           = std::vector<Entrance>;
 
 	///
-	Scene(SceneManager* _parent);
+	Scene(ScenesManager* _parent);
 
 	///
 	Scene(const Scene&) = delete;
@@ -64,10 +64,10 @@ public:
 	const std::string& getName() const;
 
 	///
-	SceneManager* getScenes();
+	ScenesManager* getScenes();
 
 	///
-	const SceneManager* getScenes() const;
+	const ScenesManager* getScenes() const;
 
 	///
 	Entity* addEntity(const std::string& group);
@@ -152,6 +152,10 @@ public:
 
 	///
 	void updateIDs();
+	#ifdef EDITOR
+		size_t focusedObject{0u};
+		bool anySelected{false};
+	#endif
 
 private:
 
@@ -163,7 +167,7 @@ private:
 
 	size_t _id;
 	std::string _name;
-	SceneManager* _parent;
+	ScenesManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	size_t _playerID{ 0u };

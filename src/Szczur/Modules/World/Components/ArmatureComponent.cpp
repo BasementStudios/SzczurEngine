@@ -4,7 +4,7 @@
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
-#include "../SceneManager.hpp"
+#include "../ScenesManager.hpp"
 
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
