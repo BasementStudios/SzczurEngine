@@ -1,11 +1,13 @@
 #include "Application.hpp"
 
-namespace rat
-{
-
 #ifdef EDITOR
+#	include <ImGui/imgui.h>
+#	include <ImGui/imgui-SFML.h>
 #   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 #endif
+
+namespace rat
+{
 
 void Application::init()
 {
