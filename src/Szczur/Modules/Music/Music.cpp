@@ -2,6 +2,8 @@
 
 #include <json.hpp>
 
+using Json = nlohmann::json;
+
 namespace rat 
 {
 
@@ -62,7 +64,7 @@ namespace rat
 
 	void Music::loadPlaylistFromJson(const std::string& filePath)
 	{
-		json j;
+		Json j;
 
 		std::ifstream file("music/" + filePath + ".json");
         if (file.is_open()) {

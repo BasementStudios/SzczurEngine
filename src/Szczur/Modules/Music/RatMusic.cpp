@@ -3,6 +3,7 @@
 #include "Szczur/Utility/Logger.hpp"
 
 #include <json.hpp>
+using Json = nlohmann::json;
 
 namespace rat
 {
@@ -61,7 +62,7 @@ namespace rat
 			}
 		}
 
-		json j;
+		Json j;
 
 		j[_name]["BPM"] = _bpm;
 		j[_name]["FadeTime"] = _fadeTime;
@@ -77,7 +78,7 @@ namespace rat
 	
 	void RatMusic::getJsonData()
 	{
-		json j;
+		Json j;
 		auto path = "music/" + _name + ".json";
 		std::ifstream file(path);
 

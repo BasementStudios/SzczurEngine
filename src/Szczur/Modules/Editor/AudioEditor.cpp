@@ -2,6 +2,8 @@
 
 #include <json.hpp>
 
+using Json = nlohmann::json;
+
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>
 
@@ -10,6 +12,7 @@ namespace rat
 	void PlaylistHolder::loadPlaylist()
 	{
         Json j;
+
 
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "JSON files (*.json)|*.json");
@@ -42,7 +45,7 @@ namespace rat
     void PlaylistHolder::savePlaylists()
 	{
         auto path = "music/";
-        json j;
+        Json j;
 
         for(auto& playlist : playlistsNames) {
             std::vector<std::string> songs;
