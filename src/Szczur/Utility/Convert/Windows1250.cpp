@@ -1,5 +1,8 @@
 #include "Windows1250.hpp"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverflow"
+
 namespace rat
 {
 
@@ -16,7 +19,7 @@ std::string mapWindows1250ToUtf8(const std::string& src)
     {
         if (src[v] < 0)
         {
-            switch (static_cast<unsigned char>(src[v]))
+            switch (static_cast<unsigned>(src[v]))
             {
                 case 0xA5: out += 0xC4; out += 0x84; break; // Ą
                 case 0xB9: out += 0xC4; out += 0x85; break; // ą
@@ -46,7 +49,7 @@ std::string mapWindows1250ToUtf8(const std::string& src)
     }
 
     return out;
-};
+}
 
 std::string mapUtf8ToWindows1250(const std::string& src)
 {
@@ -61,16 +64,16 @@ std::string mapUtf8ToWindows1250(const std::string& src)
     {
         if (src[v] < 0)
         {
-            switch (static_cast<unsigned char>(src[v]))
+            switch (static_cast<unsigned>(src[v]))
             {
-                case 0xC3: switch (static_cast<unsigned char>(src[v + 1u]))
+                case 0xC3: switch (static_cast<unsigned>(src[v + 1u]))
                 {
                     case 0x93: out += 0xD3; break; // Ó
                     case 0xB3: out += 0xF3; break; // ó
                 }
                 break;
 
-                case 0xC4: switch (static_cast<unsigned char>(src[v + 1u]))
+                case 0xC4: switch (static_cast<unsigned>(src[v + 1u]))
                 {
                     case 0x84: out += 0xA5; break; // Ą
                     case 0x85: out += 0xB9; break; // ą
@@ -81,7 +84,7 @@ std::string mapUtf8ToWindows1250(const std::string& src)
                 }
                 break;
 
-                case 0xC5: switch (static_cast<unsigned char>(src[v + 1u]))
+                case 0xC5: switch (static_cast<unsigned>(src[v + 1u]))
                 {
                     case 0x81: out += 0xA3; break; // Ł
                     case 0x82: out += 0xB3; break; // ł
@@ -108,6 +111,8 @@ std::string mapUtf8ToWindows1250(const std::string& src)
     }
 
     return out;
-};
+}
 
 }
+
+#pragma GCC diagnostic pop

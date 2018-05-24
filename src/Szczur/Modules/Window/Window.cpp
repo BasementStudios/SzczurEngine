@@ -73,7 +73,7 @@ const std::string& Window::getTitle() const
 void Window::setTitle(const std::string& title)
 {
 	this->title = title;
-	LOG_INFO("Window title: " + this->title);
+	LOG_INFO("Window title: ", this->title);
 
 	this->getWindow().setTitle(this->title);
 }

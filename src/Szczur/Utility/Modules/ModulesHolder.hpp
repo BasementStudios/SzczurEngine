@@ -37,8 +37,7 @@ constexpr size_t StorageSizeFor()
 {
 	size_t size = 0u;
 
-	using Swallow_t = int[];
-	Swallow_t{ ((size += sizeof(Ts)), 0)... };
+	using Swallow_t = int[]; (void)Swallow_t{ ((size += sizeof(Ts)), 0)... };
 
 	return size;
 }
@@ -48,8 +47,7 @@ constexpr size_t StorageAlignFor()
 {
 	size_t align = 0u;
 
-	using Swallow_t = int[];
-	Swallow_t{ ((align = alignof(Ts) > align ? alignof(Ts) : align), 0)... };
+	using Swallow_t = int[]; (void)Swallow_t{ ((align = alignof(Ts) > align ? alignof(Ts) : align), 0)... };
 
 	return align;
 }
