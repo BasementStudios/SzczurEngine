@@ -5,8 +5,9 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
-#include "Szczur/Modules/GUITest/GUITest.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/QuestLog/QuestLog.hpp"
 namespace rat
 {
 
@@ -44,7 +45,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI, GUITest> _modules;
+	ModulesHolder<Window, Input, Script, GUI, QuestLog> _modules;
 	Clock _mainClock;
 };
 
