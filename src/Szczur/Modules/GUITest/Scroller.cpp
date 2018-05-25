@@ -48,7 +48,7 @@ namespace rat
         _path.setTexture(*texture);
         _recalcAll();
     }
-    void Scroller::setScrollerTexture(const sf::Texture* texture)
+    void Scroller::setScrollerTexture(sf::Texture* texture, int boundHeight)
     {
         _isScrollerSet = true;
         auto texSize = texture->getSize();
@@ -73,6 +73,15 @@ namespace rat
         _proportion = proportion;
         if(_isScrollerSet) _recalcScrollerPosByProp();
     }
+
+    void Scroller::setScrollerPropHeight(float propY)
+    {
+        if(propY < 1.f) propY = 1.f;
+        _scrollerHeightProp = propY;
+        _recalcScrollerSize();
+        _recalcScrollerPosByProp();
+    }
+
     void Scroller::moveProportion(float proportionOffset)
     {
         setProportion(_proportion + proportionOffset/_scrollerHeightProp);
@@ -252,9 +261,8 @@ namespace rat
 
     void Scroller::_recalcBoundPos()
     {
-        /*_upperBound.setPosition(_position);*/
         float boundHeight = _bottomBound.getGlobalBounds().height;
-        _bottomBound.setPosition(0.f/* + _position.x*/, /*_position.y + */float(_size.y));
+        _bottomBound.setPosition(0.f, float(_size.y));
     }
     void Scroller::_recalcBoundSize()
     {

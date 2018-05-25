@@ -14,9 +14,12 @@ namespace rat
 
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& position);
+
         void setPathTexture(const sf::Texture* texture);
-        void setScrollerTexture(const sf::Texture* texture);
+        void setScrollerTexture(sf::Texture* texture, int boundHeight);
         void setBoundTexture(const sf::Texture* texture);
+
+        void setScrollerPropHeight(float propY);
 
         void setSize(const sf::Vector2i& size);
         void setSize(int width, int height);
