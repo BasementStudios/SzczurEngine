@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <tuple>
+#include <utility>
 #include <vector>
 
 #include "AssetTraits.hpp"
@@ -11,16 +11,16 @@
 namespace rat
 {
 
-template <typename T, typename Allocator = std::allocator<std::tuple<Hash64_t, std::unique_ptr<T>>>>
+template <typename T>
 class AssetManager
 {
 public:
 
 	using Key_t                  = Hash64_t;
 	using Underlying_t           = T;
-	using Mapped_t               = std::unique_ptr<T>;
-	using Container_t            = std::vector<std::tuple<Hash64_t, std::unique_ptr<T>>, Allocator>;
-	using Compare_t              = std::less<Hash64_t>;
+	using MappedPtr_t            = std::shared_ptr<Underlying_t>;
+	using Container_t            = std::vector<std::pair<Key_t, MappedPtr_t>>;
+	using Compare_t              = std::less<Key_t>;
 	using Allocator_t            = typename Container_t::allocator_type;
 	using Value_t                = typename Container_t::value_type;
 	using Reference_t            = typename Container_t::reference;
@@ -36,34 +36,32 @@ public:
 
 	using OperationStruct_t      = struct
 	{
-		Value_t& getValue() { return *iterator; }
-		Key_t& getKey() { return std::get<0>(*iterator); }
-		Mapped_t& getMapped() { return std::get<1>(*iterator); }
-		Underlying_t& getUnderlying() { return *std::get<1>(*iterator); }
+		Key_t& getKey() { return iterator->first; }
+		MappedPtr_t getPtr() const { return iterator->second; }
+		Underlying_t& getUnderlying() { return *iterator->second; }
 
 		Iterator_t iterator;
-		bool success;
+		const bool success;
 
 	};
 
 	using ConstOperationStruct_t  = struct
 	{
-		const Value_t& getValue() const { return *iterator; }
-		const Key_t& getKey() const { return std::get<0>(*iterator); }
-		const Mapped_t& getMapped() const { return std::get<1>(*iterator); }
-		const Underlying_t& getUnderlying() const { return *std::get<1>(*iterator); }
+		const Key_t& getKey() const { return iterator->first; }
+		MappedPtr_t getPtr() const { return iterator->second; }
+		const Underlying_t& getUnderlying() const { return *iterator->second; }
 
 		ConstIterator_t iterator;
-		bool success;
+		const bool success;
 
 	};
 
 	using Finder_t                = struct
 	{
 		template <typename U1, typename U2>
-		auto operator () (const U1& first, const U2& second)
+		auto operator () (const U1& a, const U2& b)
 		{
-			return Compare_t{}(std::get<0>(first), second);
+			return Compare_t{}(a.first, b);
 		}
 
 	};
@@ -71,15 +69,15 @@ public:
 	using ExtFinder_t             = struct
 	{
 		template <typename U1, typename U2>
-		auto operator () (const U1& first, const U2& second)
+		auto operator () (const U1& a, const U2& b)
 		{
 			if constexpr (std::is_same_v<std::decay_t<U2>, Key_t>)
 			{
-				return Compare_t{}(std::get<0>(first), second);
+				return Compare_t{}(a.first, b);
 			}
 			else
 			{
-				return Compare_t{}(first, std::get<0>(second));
+				return Compare_t{}(a, b.first);
 			}
 		}
 
@@ -110,51 +108,43 @@ public:
 	}
 
 	///
-	Mapped_t& emplace(Key_t key)
+	OperationStruct_t emplace(const std::string& path)
 	{
-		auto hint = getLowerBound(key);
-
-		return std::get<1>(*_container.emplace(hint, key, Traits_t::create()));
+		return emplace(_getKeyFromPath(path));
 	}
 
 	///
-	OperationStruct_t tryEmplace(Key_t key)
+	OperationStruct_t emplace(Key_t key)
 	{
-		auto hint = find(key);
-
-		if (hint == _container.end())
+		if (auto it = find(key); it == _container.end())
 		{
-			return { _container.emplace(getLowerBound(key), key, Traits_t::create()), true };
-		}
+			auto hint = getLowerBound(key);
 
-		return { hint, false };
+			return { _container.emplace(hint, key, Traits_t::create()), true };
+		}
+		else
+		{
+			return { it, false };
+		}
 	}
 
 	///
-	Size_t erase(const std::string& path)
+	bool erase(const std::string& path)
 	{
 		return erase(_getKeyFromPath(path));
 	}
 
 	///
-	Size_t erase(Key_t key)
+	bool erase(Key_t key)
 	{
-		Size_t count = 0u;
+		if (auto it = find(key); it != _container.end())
+		{
+			_container.erase(it);
 
-		_container.erase(std::remove_if(_container.begin(), _container.end(), [key, &count](const auto& value) {
-			if (std::get<0>(value) == key)
-			{
-				++count;
+			return true;
+		}
 
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}), _container.end());
-
-		return count;
+		return false;
 	}
 
 	///
@@ -167,18 +157,6 @@ public:
 	void clear()
 	{
 		_container.clear();
-	}
-
-	///
-	Iterator_t getLowerBound(const std::string& path)
-	{
-		return getLowerBound(_getKeyFromPath(path));
-	}
-
-	///
-	ConstIterator_t getLowerBound(const std::string& path) const
-	{
-		return getLowerBound(_getKeyFromPath(path));
 	}
 
 	///
@@ -198,31 +176,7 @@ public:
 	{
 		auto key = _getKeyFromPath(path);
 
-		if (auto it = binarySearch(_container.begin(), _container.end(), key, ExtFinder_t{}); it != _container.end())
-		{
-			return it;
-		}
-
-		auto hint = getLowerBound(key);
-
-		auto ptr = Traits_t::create();
-
-		if (Traits_t::loadFromFile(*ptr, path))
-		{
-			return _container.emplace(hint, key, ptr);
-		}
-		else
-		{
-			return _container.end();
-		}
-	}
-
-	///
-	ConstIterator_t find(const std::string& path) const
-	{
-		auto key = _getKeyFromPath(path);
-
-		if (auto it = binarySearch(_container.begin(), _container.end(), key, ExtFinder_t{}); it != _container.end())
+		if (auto it = find(key); it != _container.end())
 		{
 			return it;
 		}
@@ -254,71 +208,33 @@ public:
 	}
 
 	///
-	Underlying_t* getPtr(const std::string& path)
+	MappedPtr_t getPtr(const std::string& path)
 	{
-		if (auto it = find(path); it != _container.end())
-		{
-			return std::get<1>(*it).get();
-		}
-
-		return nullptr;
+		return find(path)->second;
 	}
 
 	///
-	const Underlying_t* getPtr(const std::string& path) const
+	MappedPtr_t getPtr(Key_t key) const
 	{
-		if (auto it = find(path); it != _container.end())
-		{
-			return std::get<1>(*it).get();
-		}
-
-		return nullptr;
-	}
-
-	///
-	Underlying_t* getPtr(Key_t key)
-	{
-		if (auto it = find(key); it != _container.end())
-		{
-			return std::get<1>(*it).get();
-		}
-
-		return nullptr;
-	}
-
-	///
-	const Underlying_t* getPtr(Key_t key) const
-	{
-		if (auto it = find(key); it != _container.end())
-		{
-			return std::get<1>(*it).get();
-		}
-
-		return nullptr;
+		return find(key)->second;
 	}
 
 	///
 	Underlying_t& get(const std::string& path)
 	{
-		return std::get<1>(*find(path)->get());
-	}
-
-	///
-	const Underlying_t& get(const std::string& path) const
-	{
-		return std::get<1>(*find(path)->get());
+		return *find(path)->second;
 	}
 
 	///
 	Underlying_t& get(Key_t key)
 	{
-		return std::get<1>(*find(key)->get());
+		return *find(key)->second;
 	}
 
 	///
 	const Underlying_t& get(Key_t key) const
 	{
-		return std::get<1>(*find(key)->get());
+		return *find(key)->second;
 	}
 
 	///
@@ -334,17 +250,20 @@ public:
 	}
 
 	///
-	size_t count(const std::string& path) const
+	Size_t getUseCount(const std::string& path) const
 	{
-		return count(_getKeyFromPath(path));
+		return getUseCount(_getKeyFromPath(path));
 	}
 
 	///
-	size_t count(Key_t key) const
+	Size_t getUseCount(Key_t key) const
 	{
-		return std::count_if(_container.begin(), _container.end(), [key](const auto& value) { // TODO with lowerBound
-			return std::get<0>(value) == key;
-		});
+		if (auto it = find(key); it != _container.end())
+		{
+			return it->second.use_count();
+		}
+
+		return 0u;
 	}
 
 	///
