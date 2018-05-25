@@ -32,11 +32,7 @@ Dział programistów
 * Jakub (Deflin) Gonera
 * Jakub (Mapet) Sordyl
 * Jakub (MetRiko) Majewski
-<<<<<<< HEAD
 * Kamil (Sajko) Sajdak
-=======
-* Kamil (Sajko)
->>>>>>> b1cc39e332c27fbb8b257d05f8a6843985edf3d4
 * Mateusz (Zetiar)
 * Patryk (PsychoX) Ludwikowski
 * Patryk (Stritch) Kośmider
