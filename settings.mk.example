@@ -69,7 +69,7 @@ HEADER_LIB_LIST := GLM JSON RAPIDJSON SOL OPENAL
 HEADER_INC_GLM := $(LIBS_DIR)/glm-0.9.9/include
 
 # Json
-HEADER_INC_JSON := $(LIBS_DIR)/Json-2.1.1/include
+HEADER_INC_JSON := $(LIBS_DIR)/Json-3.1.2/include
 
 # RapidJson
 HEADER_INC_RAPIDJSON := $(LIBS_DIR)/RapidJson-1.1.0/include
