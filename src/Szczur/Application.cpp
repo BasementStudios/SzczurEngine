@@ -20,8 +20,6 @@ void Application::init()
 	initModule<Dialog>();
 	initModule<DialogEditor>();
 
-	getModule<Script>().scriptFile("dialogs/config/_dialog.lua");
-
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR

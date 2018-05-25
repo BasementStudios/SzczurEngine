@@ -3,14 +3,13 @@
 #include <iostream>
 #include <fstream>
 
-#include <Shared/Math2D.h>
-#include <Shared/Interop.h>
+#include <NodeEditor/Shared/Interop.h>
 
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/MsgBox.hpp"
 
-#include "DialogEditor.hpp"
+#include "../DialogEditor.hpp"
 
 namespace rat
 {
@@ -98,7 +97,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 
 		if (file.good())
 		{
-			json j;
+			Json j;
 
 			_nodeManager->write(j);
 
@@ -133,7 +132,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 		{
 			reset();
 
-			json j;
+			Json j;
 			file >> j;
 			file.close();
 

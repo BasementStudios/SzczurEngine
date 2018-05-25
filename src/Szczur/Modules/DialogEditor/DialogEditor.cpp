@@ -20,6 +20,7 @@ DialogEditor::DialogEditor()
 	  _dlgEditor(_characters, getModule<Input>().getManager()), _nodeEditor(this), _CharactersManager(_dlgEditor.getContainer())
 {
 	LOG_INFO("Initializing DialogEditor module");
+	getModule<Script>().scriptFile(std::string(MainDirectory) + "config/_dialog.lua");
 	refreshDialogsList();
 	LOG_INFO("Module DialogEditor initialized");
 }
@@ -52,7 +53,7 @@ void DialogEditor::update()
 			{
 				getModule<Dialog>().unload();
 				saveProject();
-				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::Lua);
+				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
 				_showCharactersManager = false;
 				_showDlgEditor = false;
 				_showNodeEditor = false;
@@ -149,7 +150,7 @@ void DialogEditor::update()
 
 		if (ImGui::Button("Ok"))
 		{
-			fs::create_directory("dialogs/" + std::string(mapName));
+			fs::create_directory(MainDirectory + std::string(mapName));
 			refreshDialogsList();
 
 			ImGui::CloseCurrentPopup();
@@ -209,7 +210,7 @@ void DialogEditor::update()
 void DialogEditor::saveProject()
 {
 	_dlgEditor.save();
-	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
 	_CharactersManager.save(_projectPath + "/characters.json");
 }
 
@@ -219,11 +220,11 @@ void DialogEditor::createProject(const std::string& path)
 
 	_dlgEditor.load(_projectPath);
 	_nodeEditor.createNew();
-	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
 	_CharactersManager.clear();
 	_CharactersManager.save(_projectPath + "/characters.json");
 
-	fs::copy("dialogs/dialog.flac", path + "/dialog.flac");
+	fs::copy(std::string(MainDirectory) + "dialog.flac", path + "/dialog.flac");
 
 	_projectLoaded = true;
 	_showDialogEditor = true;
@@ -249,7 +250,7 @@ void DialogEditor::openProject(const std::string& path)
 
 		_CharactersManager.load(_projectPath + "/characters.json");
 		_dlgEditor.load(_projectPath);
-		_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
+		_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
 		_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
 
 		_projectLoaded = true;
@@ -306,13 +307,13 @@ void DialogEditor::showDirectory(Directory& directory)
 void DialogEditor::refreshDialogsList()
 {
 	_dialogsDirectory.Type = Directory::DialogsDir;
-	_dialogsDirectory.Name = "dialogs";
-	_dialogsDirectory.Path = "dialogs";
+	_dialogsDirectory.Name = MainDirectory;
+	_dialogsDirectory.Path = MainDirectory;
 	_dialogsDirectory.Root = true;
 
 	_dialogsDirectory.Childs.clear();
 
-	for (auto& mapDirPath : fs::directory_iterator("dialogs"))
+	for (auto& mapDirPath : fs::directory_iterator(MainDirectory))
 	{
 		if (mapDirPath.path().filename() == "config")
 			continue;

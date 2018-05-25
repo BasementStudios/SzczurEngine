@@ -1,9 +1,9 @@
 #pragma once
 
-#include <NodeEditor.h>
+#include <NodeEditor/NodeEditor.h>
 
 #include "NodeManager.hpp"
-#include "DLGEditor.hpp"
+#include "../DLGEditor/DLGEditor.hpp"
 
 namespace ed = ax::NodeEditor;
 
@@ -14,7 +14,7 @@ class DialogEditor;
 class NodeEditor
 {
 public:
-	enum FileFormat
+	enum class FileFormat
 	{
 		Lua,
 		Json
