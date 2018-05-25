@@ -275,9 +275,9 @@ const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() 
 	return _armatureDisplayDataHolder;
 }
 
-void Scene::loadFromConfig(const Json& config)
+void Scene::loadFromConfig(const Json& config, bool withNewID)
 {
-	_id = config["id"];
+	_id = withNewID ? getUniqueID<Scene>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
 	const Json& groups = config["groups"];
@@ -286,7 +286,7 @@ void Scene::loadFromConfig(const Json& config)
 	{
 		for (const Json& current : it.value())
 		{
-			addEntity(it.key())->loadFromConfig(current);
+			addEntity(it.key())->loadFromConfig(current, true);
 		}
 	}
 

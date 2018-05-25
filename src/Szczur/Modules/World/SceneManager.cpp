@@ -105,6 +105,21 @@ void SceneManager::loadFromFile(const std::string& filepath)
     }
 }
 
+void SceneManager::appendScenesFromFile(const std::string &filepath)
+{
+    std::ifstream file{ filepath };
+    Json config;
+
+    file >> config;
+
+    const Json& scenes = config["scenes"];
+
+    for (auto& current : scenes)
+    {
+        addScene()->loadFromConfig(current, true);
+    }
+}
+
 void SceneManager::saveToFile(const std::string& filepath) const
 {
     std::ofstream file{ filepath };

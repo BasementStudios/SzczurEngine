@@ -152,9 +152,9 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 	return _holder;
 }
 
-void Entity::loadFromConfig(const Json& config)
+void Entity::loadFromConfig(const Json& config, bool withNewID)
 {
-	_id = config["id"];
+	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
 	const Json& components = config["components"];

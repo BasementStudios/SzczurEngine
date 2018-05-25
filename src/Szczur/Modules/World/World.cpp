@@ -7,6 +7,24 @@ World::World()
 {
 	LOG_INFO("Initializing World module");
 	LOG_INFO("Module World initialized");
+
+	// test1.world
+	// _scenes.addScene()->addEntity("single")->setName("Karion");
+	// _scenes.saveToFile("test1.world");
+
+	// test2.world
+	// _scenes.addScene()->addEntity("path")->setName("Droga");
+	// _scenes.saveToFile("test2.world");
+
+	// test3.world
+	// _scenes.addScene()->addEntity("background")->setName("Domek");
+	// _scenes.saveToFile("test3.world");
+
+	// _scenes.loadFromFile("test1.world");
+	// _scenes.appendScenesFromFile("test2.world");
+	// _scenes.appendScenesFromFile("test3.world");
+
+	// _scenes.saveToFile("out.world");
 }
 
 World::~World()

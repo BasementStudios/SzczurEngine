@@ -112,7 +112,7 @@ public:
 	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
 
 	///
-	void loadFromConfig(const Json& config);
+	void loadFromConfig(const Json& config, bool withNewID = false);
 
 	///
 	void saveToConfig(Json& config) const;

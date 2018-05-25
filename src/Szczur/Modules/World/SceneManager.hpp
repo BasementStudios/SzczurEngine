@@ -66,6 +66,9 @@ public:
     void loadFromFile(const std::string& filepath);
 
     ///
+    void appendScenesFromFile(const std::string& filepath);
+
+    ///
     void saveToFile(const std::string& filepath) const;
 
 private:
