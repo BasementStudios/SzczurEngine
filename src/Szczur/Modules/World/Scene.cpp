@@ -279,7 +279,6 @@ void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
-	_playerID = config["player"];
 
 	const Json& groups = config["groups"];
 
