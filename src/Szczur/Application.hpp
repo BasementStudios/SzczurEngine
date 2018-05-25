@@ -62,6 +62,10 @@ private:
 	Clock _mainClock;
 	ModulesHolder<Window, Input> _modules;
 
+	#ifdef EDITOR
+	bool _isImGuiInitialized = false;
+	#endif
+
 };
 
 }

@@ -90,6 +90,8 @@ void Application::init()
 		style.Colors[ImGuiCol_TextSelectedBg] = { 0.25f, 0.80f, 0.00f, 0.43f };
 		style.Colors[ImGuiCol_ModalWindowDarkening] = { 0.08f, 0.07f, 0.10f, 0.73f };
 
+		_isImGuiInitialized = true;
+
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
@@ -171,7 +173,10 @@ int Application::run()
 
 	#ifdef EDITOR
 	{
-		ImGui::SFML::Shutdown();
+		if (_isImGuiInitialized)
+		{
+			ImGui::SFML::Shutdown();
+		}
 	}
 	#endif
 
