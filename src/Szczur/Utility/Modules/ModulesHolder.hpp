@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <tuple>
 
 #include "Szczur/Utility/Logger.hpp"
