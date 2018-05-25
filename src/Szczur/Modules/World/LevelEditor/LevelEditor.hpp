@@ -13,16 +13,18 @@
 #include "../ScenesManager.hpp"
 
 #include <boost/container/flat_map.hpp>
-#include "Szczur/Modules/Input/InputManager.hpp"
 #include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
 
 #include "ObjectsList.hpp"
 #include "Bar.hpp"
 #include "ObjectParameters.hpp"
+#include "SpriteDisplayDataManager.hpp"
+#include "ArmatureDisplayDataManager.hpp"
 
 namespace rat {
 	class DialogEditor;
+	class InputManager;
 
 	struct FreeCamera {
 		glm::vec3 position{0.f, 0.f, 0.f};
@@ -46,39 +48,20 @@ namespace rat {
 
 		void _processEventsForFreeCamera(InputManager& input);
 
-		void _renderBar();
-		void _renderDisplayDataManager();
-		void _renderArmatureDisplayManager();
-		void _renderFocusedObjectsParams();
-		void _renderObjectsList();
-		void _renderComponentsManager();
-
-		void _menuSave();
-		void _printMenuInfo(const std::string& info);
-		sf::Clock _menuInfoClock;
-		std::string _menuInfo;
-
-		std::string _getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter="", bool saveButton = false); 
-
-		bool _ifRenderObjectsList{true};
-		bool _ifRenderDisplayDataManager{false};
-		bool _ifRenderArmatureDisplayManager{false};
-		bool _ifRenderDialogEditor{false};
-		bool _ifRenderAudioEditor{false};
-		bool _anySelected{false};
-		bool _ifRenderComponentsManager{false};
-		size_t _focusedObject{static_cast<size_t>(-1)};
 		FreeCamera _freeCamera;
-		std::string _currentFilePath;
 		
 		DialogEditor* _dialogEditor = nullptr;
 		AudioEditor* _audioEditor = nullptr;
+		bool _ifRenderDialogEditor{false};
+		bool _ifRenderAudioEditor{false};
 
 
 
 		ObjectsList _objectsList;
 		Bar _bar;
 		ObjectParameters _objectParameters;
+		SpriteDisplayDataManager _spriteDisplayDataManager;
+		ArmatureDisplayDataManager _armatureDisplayDataManager;
 
 	};
 

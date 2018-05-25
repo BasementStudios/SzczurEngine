@@ -42,7 +42,7 @@ namespace rat {
                     ImGui::OpenPopup("Change components...##modal");
                     ImGui::SetNextWindowSize(ImVec2(300,300));
                 }
-                //_renderComponentsManager();
+                _renderComponentsManager();
 
                 if(focusedObject) {
                     if(ImGui::CollapsingHeader("Base", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -439,4 +439,69 @@ namespace rat {
             ImGui::End();
         }
     }
+
+    void ObjectParameters::_renderComponentsManager() {
+		if (ImGui::BeginPopupModal("Change components...##modal", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+
+			auto* focusedObject = _scenes.getCurrentScene()->getEntity(_scenes.getCurrentScene()->focusedObject);
+
+			static bool selectedComponents[7]{};
+			if(ImGui::IsWindowAppearing()) {
+				selectedComponents[0] = focusedObject->hasComponent<SpriteComponent>();
+				selectedComponents[1] = focusedObject->hasComponent<ArmatureComponent>();
+				selectedComponents[2] = focusedObject->hasComponent<ScriptableComponent>();
+				selectedComponents[3] = focusedObject->hasComponent<InputControllerComponent>();
+				selectedComponents[4] = focusedObject->hasComponent<InteractableComponent>();
+				selectedComponents[5] = focusedObject->hasComponent<TriggerComponent>();
+				selectedComponents[6] = focusedObject->hasComponent<TraceComponent>();
+			}
+			if(ImGui::Button("Accept", ImVec2(70,0))) {
+
+				if(focusedObject->hasComponent<SpriteComponent>()!=selectedComponents[0]) {
+					if(selectedComponents[0]) focusedObject->addComponent<SpriteComponent>();
+					else focusedObject->removeComponent<SpriteComponent>();
+				}
+				if(focusedObject->hasComponent<ArmatureComponent>()!=selectedComponents[1]) {
+					if(selectedComponents[1]) focusedObject->addComponent<ArmatureComponent>();
+					else focusedObject->removeComponent<ArmatureComponent>();
+				}
+				if(focusedObject->hasComponent<ScriptableComponent>()!=selectedComponents[2]) {
+					if(selectedComponents[2]) focusedObject->addComponent<ScriptableComponent>();
+					else focusedObject->removeComponent<ScriptableComponent>();
+				}
+				if(focusedObject->hasComponent<InputControllerComponent>()!=selectedComponents[3]) {
+					if(selectedComponents[3]) focusedObject->addComponent<InputControllerComponent>();
+					else focusedObject->removeComponent<InputControllerComponent>();
+				}
+				if(focusedObject->hasComponent<InteractableComponent>()!=selectedComponents[4]) {
+					if(selectedComponents[4]) focusedObject->addComponent<InteractableComponent>();
+					else focusedObject->removeComponent<InteractableComponent>();
+				}
+				if(focusedObject->hasComponent<TriggerComponent>()!=selectedComponents[5]) {
+					if(selectedComponents[5]) focusedObject->addComponent<TriggerComponent>();
+					else focusedObject->removeComponent<TriggerComponent>();
+				}
+				if(focusedObject->hasComponent<TraceComponent>()!=selectedComponents[6]) {
+					if(selectedComponents[6]) focusedObject->addComponent<TraceComponent>();
+					else focusedObject->removeComponent<TraceComponent>();
+				}
+
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Close", ImVec2(70,0))) {
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::Checkbox("Sprite##components_manager", &selectedComponents[0]);
+			ImGui::Checkbox("Armature##components_manager", &selectedComponents[1]);
+			ImGui::Checkbox("Scriptable##components_manager", &selectedComponents[2]);
+			ImGui::Checkbox("InputController##components_manager", &selectedComponents[3]);
+			ImGui::Checkbox("InteractableComponent##components_manager", &selectedComponents[4]);
+			ImGui::Checkbox("TriggerComponent##components_manager", &selectedComponents[5]);
+			ImGui::Checkbox("TraceComponent##components_manager", &selectedComponents[6]);
+
+			ImGui::EndPopup();
+		}
+	}
 }

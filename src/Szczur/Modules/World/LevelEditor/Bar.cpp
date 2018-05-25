@@ -10,9 +10,20 @@
 #include "../ScenesManager.hpp"
 
 namespace rat {
-    Bar::Bar(ScenesManager& scenes, bool& ifRenderObjectsList) :
+    Bar::Bar(
+            ScenesManager& scenes,
+            bool& ifRenderObjectsList,
+            bool& ifRenderSpriteDisplayDataManager,
+			bool& ifRenderArmatureDisplayDataManager,
+            bool& ifRenderDialogEditor,
+            bool& ifRenderAudioEditor
+        ) :
     _scenes{scenes},
-    _ifRenderObjectsList{ifRenderObjectsList} {
+    _ifRenderObjectsList{ifRenderObjectsList},
+	_ifRenderSpriteDisplayDataManager{ifRenderSpriteDisplayDataManager},
+	_ifRenderArmatureDisplayDataManager{ifRenderArmatureDisplayDataManager},
+	_ifRenderDialogEditor{ifRenderDialogEditor},
+	_ifRenderAudioEditor{ifRenderAudioEditor} {
 
     }
 
@@ -176,10 +187,10 @@ namespace rat {
 			}
 			if(ImGui::BeginMenu("Tools")) {
 				ImGui::MenuItem("Objects List", nullptr, &_ifRenderObjectsList);
-				//ImGui::MenuItem("Display Data Manager", nullptr, &_ifRenderDisplayDataManager);
-				//ImGui::MenuItem("Armature Data Manager", nullptr, &_ifRenderArmatureDisplayManager);
-				//ImGui::MenuItem("Dialog Editor", nullptr, &_ifRenderDialogEditor);
-				//ImGui::MenuItem("Audio Editor", nullptr, &_ifRenderAudioEditor);
+				ImGui::MenuItem("Sprite Display Data Manager", nullptr, &_ifRenderSpriteDisplayDataManager);
+				ImGui::MenuItem("Armature Display Data Manager", nullptr, &_ifRenderArmatureDisplayDataManager);
+				ImGui::MenuItem("Dialog Editor", nullptr, &_ifRenderDialogEditor);
+				ImGui::MenuItem("Audio Editor", nullptr, &_ifRenderAudioEditor);
 				ImGui::EndMenu();
 			}
 

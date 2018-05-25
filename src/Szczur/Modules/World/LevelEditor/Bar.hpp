@@ -6,12 +6,23 @@ namespace rat {
     class ScenesManager;
     class Bar {
     public:
-        Bar(ScenesManager& scenes, bool& ifRenderObjectsList);
+        Bar(
+            ScenesManager& scenes,
+            bool& ifRenderObjectsList,
+            bool& ifRenderSpriteDisplayDataManager,
+            bool& ifRenderArmatureDisplayDataManager,
+            bool& ifRenderDialogEditor,
+            bool& ifRenderAudioEditor
+        );
         void render();
         void update();
         void printMenuInfo(const std::string& text);
     private:
         bool& _ifRenderObjectsList;
+        bool& _ifRenderSpriteDisplayDataManager;
+        bool& _ifRenderArmatureDisplayDataManager;
+        bool& _ifRenderDialogEditor;
+        bool& _ifRenderAudioEditor;
 
         ScenesManager& _scenes;
 

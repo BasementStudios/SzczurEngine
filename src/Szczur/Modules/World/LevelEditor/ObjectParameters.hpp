@@ -8,5 +8,7 @@ namespace rat {
         void render();
     private:
         ScenesManager& _scenes;
+
+        void _renderComponentsManager();
     };
 }
