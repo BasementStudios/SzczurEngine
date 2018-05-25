@@ -47,10 +47,12 @@ namespace rat
         _infoBar->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
         });
-        _infoBar->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner){
+        _infoBar->setCallback(Widget::CallbackType::onHoverIn, [&](Widget* owner){
+            _onHoverIn();
             owner->setColor({180, 180, 180}, 0.3f);
         });
-        _infoBar->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner){
+        _infoBar->setCallback(Widget::CallbackType::onHoverOut, [&](Widget* owner){
+            _onHoverOut();
             owner->setColor({255, 255, 255}, 0.3f);
         });
         _addWidget(_infoBar);
@@ -97,6 +99,17 @@ namespace rat
         _parentArea.recalculate();
         _sourceArea.recalculate();
             
+    }
+
+    void SkillBar::_onHoverIn()
+    {
+        if(!_skill) return;    
+        _parentArea.setSkillInfo(_skill, {float(getSize().x) + 40.f, getPosition().y});
+    }
+    void SkillBar::_onHoverOut()
+    {
+        if(!_skill) return;
+        if(_parentArea.isSkillInInfo(_skill) || true) _parentArea.deactivateInfo();
     }
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)

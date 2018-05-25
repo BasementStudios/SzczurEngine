@@ -33,6 +33,9 @@ namespace rat
         bool _isActivate{true};
 
         void _onClick();
+        void _onHoverIn();
+        void _onHoverOut();
+
 
         CostBar _costBar;
 

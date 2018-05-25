@@ -29,6 +29,9 @@ namespace rat
         _skillsScroller = new ScrollAreaWidget;
         _skillsScroller->setSize(300.f, 400.f);
         _border->add(_skillsScroller);
+
+        _addBar(_infoBar);
+        _infoBar.deactivate();
     }
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
@@ -38,6 +41,8 @@ namespace rat
         _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         _skillsScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+
+        _infoBar.initAssetsViaGUI(gui);
 
         _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
 
@@ -142,6 +147,22 @@ namespace rat
     ChosenSkillArea& SkillArea::getChosenSkillArea() const
     {
         return *_chosenSkillArea;
+    }
+
+    void SkillArea::setSkillInfo(Skill* skill, const sf::Vector2f& pos)
+    {
+        _infoBar.setPosition(pos);
+        _infoBar.setName(skill->getName());
+        _infoBar.activate();
+    }
+    bool SkillArea::isSkillInInfo(Skill* skill)
+    {
+        return _chosenSkill == skill;
+    }
+    void SkillArea::deactivateInfo()
+    {
+        _chosenSkill = nullptr;
+        _infoBar.deactivate();
     }
 
     

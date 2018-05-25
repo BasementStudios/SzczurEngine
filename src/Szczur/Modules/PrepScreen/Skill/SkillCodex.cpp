@@ -58,7 +58,7 @@ namespace rat
         _skills.emplace(skill->getName(), std::move(skill));
 
         skill = std::make_unique<Skill>("Fire Shards");
-        skill->setProfession("Range");
+        skill->setProfession("Mele");
         skill->setTexturePath("assets/PrepScreen/test5.png");
         skill->setPPCost(2);
         skill->setRequirements({
@@ -67,7 +67,7 @@ namespace rat
         _skills.emplace(skill->getName(), std::move(skill));
 
         skill = std::make_unique<Skill>("Zanger");
-        skill->setProfession("Range");
+        skill->setProfession("Mele");
         skill->setTexturePath("assets/PrepScreen/test8.png");
         skill->setPPCost(5);
         skill->setRequirements({

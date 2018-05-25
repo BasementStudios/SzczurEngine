@@ -11,6 +11,8 @@
 #include <vector>
 #include <memory>
 
+#include "InfoBar.hpp"
+
 namespace rat
 {
     class GUI; class ScrollAreaWidget;
@@ -39,6 +41,10 @@ namespace rat
 
         GrayPPArea& getSourceArea();
 
+        void setSkillInfo(Skill* skill, const sf::Vector2f& pos = {});
+        bool isSkillInInfo(Skill* enemy);
+        void deactivateInfo();
+
     private:
         GrayPPArea& _sourceBar;
         ChosenSkillArea* _chosenSkillArea{nullptr};
@@ -52,6 +58,9 @@ namespace rat
 
         WindowWidget* _border{nullptr};
         ScrollAreaWidget* _skillsScroller{nullptr};
+
+        InfoBar _infoBar;
+        Skill* _chosenSkill{nullptr};
 
 
         void _initNewSkillBarsAmount(size_t newAmount);
