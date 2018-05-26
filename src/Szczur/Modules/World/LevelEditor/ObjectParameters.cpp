@@ -15,6 +15,7 @@
 #include "Szczur/Modules/Trace/Timeline.hpp"
 #include "Szczur/Modules/Trace/Actions/AnimAction.hpp"
 #include "Szczur/Modules/Trace/Actions/MoveAction.hpp"
+#include "Szczur/Modules/Trace/Actions/WaitAction.hpp"
 
 #include <experimental/filesystem>
 
@@ -385,9 +386,17 @@ namespace rat {
                                                         ImGui::TreePop();
                                                     }
                                                 } break;
-                                            
-                                            }
+												case Action::Wait:
+												{
+													auto waitAction = static_cast<WaitAction*>(action.get());
 
+													if (ImGui::TreeNode(("Wait##" + actionId).c_str()))
+													{
+														ImGui::DragFloat(("Time to wait##" + actionId).c_str(), &waitAction->TimeToWait, 0.1f);
+														ImGui::TreePop();
+													}
+												} break;
+                                            }
                                         }
 
                                         static int currentAction = -1;
@@ -408,6 +417,10 @@ namespace rat {
                                                 if (focusedObject->hasComponent<ArmatureComponent>())
                                                     timeline->addAction(new AnimAction(focusedObject));
                                             }
+											else if (currentAction == 2)
+											{
+												timeline->addAction(new WaitAction(focusedObject));
+											}
                                             
                                         }
 
