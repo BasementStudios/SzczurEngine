@@ -78,6 +78,9 @@ public:
 	///
 	float getAngleToPointer();
 
+	///
+	float getDistanceToPointer();
+
 	/// 
 	void moveInDirection(float angle, float distance);
 
@@ -107,6 +110,21 @@ public:
 	/// 
 	float getMaxHp() const;
 
+	/// 
+	void addCooldown(float value);
+
+	/// 
+	void setCooldown(float value);
+
+	/// 
+	void setMaxCooldown(float value);
+
+	/// 
+	float getCooldown() const;
+
+	/// 
+	float getMaxCooldown() const;
+
 // Skills
 
 	/// Add new skill for pawn
@@ -132,8 +150,8 @@ public:
 
 	/// 
 	void clearUsable();
-
 // Controller
+
 
 	void renderController(BattlePawn::RenderTarget& canvas, bool selected) const;
 
@@ -147,6 +165,9 @@ public:
 
 	/// (offset y)
 	void renderHpBar(sf::RenderTarget& canvas, float oy);
+	
+	/// (offset y)
+	void renderCooldownBar(sf::RenderTarget& canvas, float oy);
 
 // Scripts
 
@@ -169,6 +190,8 @@ private:
 
 	float health = 50;
 	float maxHealth = 100;
+	float cooldown = 0;
+	float maxCooldown = 100;
 
 // Visual
 	

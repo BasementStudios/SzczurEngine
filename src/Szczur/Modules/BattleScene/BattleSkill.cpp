@@ -5,6 +5,7 @@
 #include "BattlePawn.hpp"
 #include "BattleTrigger.hpp"
 #include "BattleScene.hpp"
+#include "BattleProvider.hpp"
 
 namespace rat {
 
@@ -89,19 +90,9 @@ void BattleSkill::setPawn(BattlePawn* pawn) {
 
 // ========== Controller ==========
 
-void BattleSkill::renderCircle(sf::RenderTarget& canvas, float radius) {
-	sf::CircleShape shape(radius);
-	shape.setFillColor({0,0,0,0});
-	shape.setOutlineColor({255,0,150,150});
-	shape.setOutlineThickness(-2);
-	shape.setOrigin(radius, radius);
-	shape.setPosition(sf::Vector2f(input.getMousePosition()));
-	canvas.draw(shape);
-}
-
 void BattleSkill::renderController(sf::RenderTarget& canvas) {
 	if(onProvide.valid()) {
-		onProvide(this, canvas);
+		onProvide(this, BattleProvider(canvas));
 	}
 }
 
@@ -143,7 +134,6 @@ void BattleSkill::initScript(Script& script) {
 	object.set("onInit", &BattleSkill::onInit);
 	object.set("onProvide", &BattleSkill::onProvide);
 	object.set("getPawn", &BattleSkill::getPawn);
-	object.set("renderCircle", &BattleSkill::renderCircle);
 	object.set("kill", &BattleSkill::kill);
 	object.set("makeTrigger", &BattleSkill::makeTrigger);
 	object.set(sol::meta_function::index, &BattleSkill::getVariable);

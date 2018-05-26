@@ -22,7 +22,7 @@ BattlePawn::BattlePawn(BattleScene& battleScene)
 // ========== Main ========== 
 
 void BattlePawn::update(float deltaTime) {
-
+	addCooldown(10.f*deltaTime);
 }
 
 void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
@@ -34,6 +34,7 @@ void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
 		sprite.setPosition(pos);	
 		canvas.draw(sprite);	
 		renderHpBar(canvas, 30.f);
+		renderCooldownBar(canvas, 70.f);
 	}
 }
 
@@ -46,6 +47,7 @@ BattleScene* BattlePawn::getScene() {
 const sf::Vector2f& BattlePawn::getPosition() const {
 	return pos;
 }
+
 float BattlePawn::getColliderRadius() const {
 	return colliderRadius;
 }
@@ -147,10 +149,15 @@ bool BattlePawn::isCollision() {
 	return collision;
 }
 
+float BattlePawn::getDistanceToPointer() {
+	sf::Vector2f d = pos - sf::Vector2f(input.getManager().getMousePosition());
+	return std::sqrt(d.x*d.x+d.y*d.y);
+}
+
 // ========== Battle ========== 
 
+// Health
 
-	 
 void BattlePawn::addHp(float value) {
 	setHp(health+value);
 }
@@ -174,11 +181,39 @@ float BattlePawn::getHp() const {
 	return health;
 }
 
-	 
 float BattlePawn::getMaxHp() const {
 	return maxHealth;
 }
 
+// Cooldown
+
+void BattlePawn::addCooldown(float value) {
+	setCooldown(cooldown+value);
+}
+
+	 
+void BattlePawn::setCooldown(float value) {
+	if(value<0) value = 0;
+	else if(value>maxCooldown) value = maxCooldown;
+	cooldown = value;
+}
+
+	 
+void BattlePawn::setMaxCooldown(float value) {	
+	if(value<1) value = 1;
+	maxCooldown = value;
+	setCooldown(maxCooldown);
+}
+
+	 
+float BattlePawn::getCooldown() const {
+	return cooldown;
+}
+
+	 
+float BattlePawn::getMaxCooldown() const {
+	return maxCooldown;
+}
 
 // ========== Skills ========== 
 
@@ -256,41 +291,74 @@ void BattlePawn::setFlip(bool flag) {
 	flip = flag;
 }
 
-void BattlePawn::renderHpBar(sf::RenderTarget& canvas, float oy) {
-	sf::CircleShape shape(13.f);
-	shape.setOrigin(13.f, 13.f);
+void BattlePawn::renderCooldownBar(sf::RenderTarget& canvas, float oy) {
+	sf::CircleShape shape(8.f);
+	shape.setOrigin(8.f, 8.f);
 	shape.setFillColor({0,0,0,0});
-	shape.setOutlineColor({107,29,52,200});
-	shape.setOutlineThickness(-3);
+	shape.setOutlineColor({130,130,90,200});
+	shape.setOutlineThickness(-2);
 
-	shape.setPosition(pos.x-28, pos.y+oy);
-	int orbs = std::ceil(maxHealth/30.f);
+	shape.setPosition(pos.x-(8.f*2.f+2.f)+8.f, pos.y+oy);
+	int orbs = std::ceil(maxCooldown/20.f);
 
 	for(int i=0; i<orbs; ++i) {
-		shape.move(28,0);
+		shape.move((8.f*2.f+2.f),0);
 		canvas.draw(shape);
 	}
 
-	shape.setOutlineColor({0,0,0,0});
-	shape.setFillColor({224,31,113,200});
-	shape.setPosition(pos.x, pos.y+oy);
-	shape.setRadius(7.f);
-	shape.setOrigin(7.f,7.f);
-	float temp = health;
-	while(true) {
-		if(temp>=30) {
-			canvas.draw(shape);
-		}
-		else break;
-		temp-=30;
-		shape.move(28,0);
+	shape.setOutlineColor({50,50,30,180});
+	shape.setOutlineThickness(1);
+	shape.setFillColor({220,220,170,240});
+	shape.setPosition(pos.x+8.f, pos.y+oy);
+	shape.setRadius(6.f);
+	shape.setOrigin(6.f,6.f);
+	float temp = cooldown;
+	while(temp>=20) {
+		canvas.draw(shape);
+		temp-=20;
+		shape.move((8.f*2.f+2.f),0);
 	}
 	if(temp>0) {
-		float radius = 7.f*(temp/30.f);
+		float radius = (6.f)*(temp/20.f);
+		shape.setFillColor({200,200,150,200});
 		shape.setRadius(radius);
 		shape.setOrigin(radius, radius);
 		canvas.draw(shape);
 	}
+}
+
+
+void BattlePawn::renderHpBar(sf::RenderTarget& canvas, float oy) {
+	sf::RectangleShape shape;
+
+	float maxWidth = 100.f;
+	float width = maxWidth*health/maxHealth;
+	float segmentWidth = maxWidth*30.f/maxHealth;
+
+	int amountLines = std::floor(maxHealth/30.f);
+
+	shape.setSize({maxWidth, 10.f});
+	shape.setFillColor({224,31,113,80});
+	shape.setOutlineThickness(2); 
+	shape.setOutlineColor({107,29,52,200}); 
+	shape.setOrigin(0.f, 0.f);
+	shape.setPosition(pos.x, pos.y+oy);
+	canvas.draw(shape);
+
+	shape.setOutlineThickness(0);
+	shape.setFillColor({224,31,113,200});
+	shape.setSize({width, 10.f});
+	canvas.draw(shape);
+
+	shape.setSize({1.f,5.f});
+	shape.setOrigin({0.f,0.f});
+	shape.setOutlineThickness(1);
+	shape.setFillColor({224,31,113,200});
+	for(int i=0; i<amountLines; ++i) {
+		shape.move(segmentWidth, 0);
+		canvas.draw(shape);
+	}
+
 }
 
 // ========== Scripts ========== 
@@ -306,7 +374,8 @@ void BattlePawn::initScript(Script& script) {
 	object.set("getSkill", &BattlePawn::getSkill);
 	object.set("getAngleTo", &BattlePawn::getAngleTo);
 	object.set("getAngleToPointer", &BattlePawn::getAngleToPointer);
-	object.set("getPosition", &BattlePawn::getPosition);
+	object.set("getPosition", [](BattlePawn& o){return o.getPosition();});
+	object.set("getDistanceToPointer", &BattlePawn::getDistanceToPointer);
 	object.set("moveInDirection", &BattlePawn::moveInDirection);
 	object.set("setFrame", &BattlePawn::setFrame);
 	object.set("setFlip", &BattlePawn::setFlip);

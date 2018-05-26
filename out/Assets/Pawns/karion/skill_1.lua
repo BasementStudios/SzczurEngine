@@ -4,8 +4,9 @@ THIS:addUsable(skill, 0)
 
 skill:setType("SPACE")
 
-function skill:onProvide(canvas) 
-	self:renderCircle(canvas, 20)
+function skill:onProvide(provider) 
+	-- self:renderCircle(canvas, 20)
+	provider:drawCircle(Input.getMousePosition(), 20)
 end
 
 function skill:onInit()
@@ -39,7 +40,7 @@ function hit:onInit()
 	trigger:setRadius(50)
 	trigger:setPosition(self:getPawn():getPosition())
 	function trigger:onInit()
-		self:getCaster():addHp(-15)
+		self:getTarget():addHp(-15)
 		self.angle = self:getTarget():getAngleTo(self:getPosition())
 	end
 	function trigger:onUpdate(dt) 

@@ -11,6 +11,10 @@ using Json = nlohmann::json;
 
 #include "Szczur/Utility/Logger.hpp"
 
+#include "BattleProvider.hpp"
+
+#include <glad/glad.h>
+
 namespace rat {
 
 // ========== Constructors ========== 
@@ -69,6 +73,7 @@ void BattleScene::update(float deltaTime) {
 
 	for(auto itr = pawns.begin(); itr != pawns.end();) {
 		(*itr)->setCollisionStatus(false);
+		(*itr)->update(deltaTime);
 		if((*itr)->getHp() == 0) {
 			for(auto& obj : activeSkills) {
 				if(obj->getPawn()==itr->get()) {
@@ -416,7 +421,7 @@ void BattleScene::renderController() {
 void BattleScene::initScript() {
 	auto& script = getModule<Script>();
 	auto module = script.newModule("BattleScene");
-	script.initClasses<BattlePawn, BattleSkill, BattleTrigger>(); 
+	script.initClasses<BattlePawn, BattleSkill, BattleTrigger, BattleProvider>(); 
 
 	// TEMPORARY	
 	auto moduleUtility = script.newModule("Utility");
@@ -425,6 +430,24 @@ void BattleScene::initScript() {
 	classClock.set("restart", &sf::Clock::restart);
 	classClock.set("elapsed", [](sf::Clock& clock){return clock.getElapsedTime().asSeconds();});
 	classClock.init();
+
+	auto moduleInput = script.newModule("Input");
+	moduleInput.set_function("getMousePosition", [&](){return sf::Vector2f(getModule<Input>().getManager().getMousePosition());});
+
+	auto moduleMath = script.get().get<sol::table>("Math");
+	moduleMath.set_function("distance", [](const sf::Vector2f& a, const sf::Vector2f& b) {
+		sf::Vector2f d = a-b;
+		return float(std::sqrt(d.x*d.x+d.y*d.y));
+	});
+	moduleMath.set_function("angle", [](const sf::Vector2f& from, const sf::Vector2f& to) {
+		sf::Vector2f d = to-from;
+		return float(std::atan2(d.y, d.x));
+	});
+	moduleMath.set_function("move", [](sf::Vector2f pos, float angle, float distance) {
+		pos.x += std::cos(angle)*distance;
+		pos.y += std::sin(angle)*distance;
+		return pos;
+	});
 }
 
 }

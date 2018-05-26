@@ -64,9 +64,6 @@ public:
 // Controller
 
 	///
-	void renderCircle(sf::RenderTarget& canvas, float radius);
-
-	///
 	void renderController(sf::RenderTarget& canvas);
 
 	///
