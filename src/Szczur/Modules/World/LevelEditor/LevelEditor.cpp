@@ -31,6 +31,8 @@
 
 #include "Szczur/Modules/Input/InputManager.hpp"
 
+#include "Szczur/Modules/Window/Window.hpp"
+
 namespace rat {
 	LevelEditor::LevelEditor(ScenesManager& scenes) :
 	_scenes(scenes),
@@ -136,8 +138,22 @@ namespace rat {
 	}
 
 	void LevelEditor::update(InputManager& input, Camera& camera) {
-		
 		auto* scene = _scenes.getCurrentScene();
+		auto& window = detail::globalPtr<Window>->getWindow();
+		
+		auto mouse = input.getMousePosition();
+
+		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
+		
+		if(input.isReleased(Mouse::Left)) {
+			_scenes.getCurrentScene()->forEach([&linear, scene](const std::string&, Entity& entity){
+				if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
+					scene->focusedObject = entity.getID();
+					scene->anySelected = true;
+				}
+			});
+		}
+
 		sf3d::View view;
 		Entity* currentCamera{nullptr};
 		_scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
