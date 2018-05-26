@@ -354,8 +354,12 @@ namespace rat {
                                                         if (!moveAction->UseCurrentPosition)
                                                             ImGui::DragFloat3(("Start##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->Start));
 
+														ImGui::Spacing();
+														ImGui::Checkbox(("Relative to Start##" + actionId).c_str(), &moveAction->EndRelativeToStart);
                                                         ImGui::DragFloat3(("End##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->End));
-                                                        ImGui::DragFloat(("Speed##" + actionId).c_str(), &moveAction->Speed, 0.25f);
+														ImGui::Spacing();
+
+														ImGui::DragFloat(("Speed##" + actionId).c_str(), &moveAction->Speed, 0.25f);
                                                         ImGui::Checkbox(("Teleport##" + actionId).c_str(), &moveAction->Teleport);
 
                                                         ImGui::TreePop();
