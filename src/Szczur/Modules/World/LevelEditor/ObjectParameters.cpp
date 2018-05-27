@@ -337,9 +337,32 @@ namespace rat {
 
                                         ImGui::Separator();
 
-                                        for (auto& action : timeline->getActions())
+										auto& actions = timeline->getActions();
+
+										for (int i = 0; i < actions.size(); i++)
                                         {
+											auto& action = actions[i];
+
                                             std::string actionId = std::to_string(reinterpret_cast<uintptr_t>(action.get()));
+
+											if (ImGui::SmallButton(("U##" + actionId).c_str()))
+											{
+												if (i > 0)
+												{
+													std::swap(actions[i], actions[i - 1]);
+												}
+											}
+
+											ImGui::SameLine();
+											if (ImGui::SmallButton(("D##" + actionId).c_str()))
+											{
+												if (i < actions.size() - 1)
+												{
+													std::swap(actions[i], actions[i + 1]);
+												}
+											}
+
+											ImGui::SameLine();
 
                                             switch (action->getType())
                                             {
