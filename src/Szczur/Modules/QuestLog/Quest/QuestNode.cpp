@@ -66,24 +66,31 @@ namespace rat
 
     void QuestNode::nextStep()
     {
-        if(_isFinished()) return;
+        if(_isFinished() || _state == State::Blocked) return;
         if(!_canBeFinished()) return;
 
         if(_type == Type::Step)
         {
             _state = State::Finished;
             _onFinished();
+            _invokeParentToBlockNeighbours();
         }
         if(_nextNodes.size() == 0)
         {
-            for(auto* starting : _startingNodes)
+            if(_type == Type::Step)
             {
-                starting->finish();
+                for(auto* starting : _startingNodes)
+                {
+                    starting->finish();
+                }
+            }
+            else
+            {
+                finish();
             }
         }
         else
         {
-            _invokeParentToBlockNeighbours();            
             _activateNextNodes();
         }
     }
@@ -101,7 +108,7 @@ namespace rat
             {
                 for(auto* parent : _parentNodes)
                 {
-                    parent->finish();
+                    parent->nextStep();
                 }
             }
             else
@@ -138,7 +145,7 @@ namespace rat
             nextNode->_activate();
             std::cout << nextNode->_title << "\n";
             i++;
-            if(i > 1 && i != _nextNodes.size())
+            if(i != _nextNodes.size() && _nextNodes.size() > 1)
                 std::cout << "OR\n";
         }
         std::cout << "\n";
