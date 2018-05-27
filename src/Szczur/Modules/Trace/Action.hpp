@@ -17,9 +17,9 @@ public:
 
 protected:
 	Type _type;
-	Entity* _entity;
+	Entity* _entity = nullptr;
 
-	bool _finished;
+	bool _finished = false;
 
 public:
 	Action(Entity* entity, Type type)

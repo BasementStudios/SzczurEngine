@@ -12,14 +12,13 @@ namespace rat
 class MoveAction : public Action
 {
 public:
+	bool UseCurrentPosition = true;
 	glm::vec3 Start;
 
 	bool EndRelativeToStart = true;
 	glm::vec3 End;
 
 	float Speed = 1.f;
-
-	bool UseCurrentPosition = true;
 
 	bool Teleport = false;
 

@@ -461,7 +461,7 @@ namespace rat {
 
                             if (ImGui::Button("Add timeline"))
                             {
-                                object->getTrace()->addTimeline(new Timeline());
+                                object->getTrace()->addTimeline();
                             }
 
                             ImGui::SameLine();

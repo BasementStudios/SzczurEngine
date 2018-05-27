@@ -26,6 +26,20 @@ const void* TraceComponent::getFeature(Component::Feature_e feature) const
 	return nullptr;
 }
 
+void TraceComponent::loadFromConfig(const Json& config)
+{
+	Component::loadFromConfig(config);
+	
+	_trace->loadFromConfig(config, this->getEntity());
+}
+
+void TraceComponent::saveToConfig(Json& config) const
+{
+	Component::saveToConfig(config);
+
+	_trace->saveToConfig(config);
+}
+
 void TraceComponent::update(float deltaTime)
 {
 	if (_trace)
