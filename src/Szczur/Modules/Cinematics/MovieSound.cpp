@@ -151,6 +151,5 @@ void MovieSound::onSeek(sf::Time timeOffset)
     }
     g_audioPkts.clear();
     avcodec_flush_buffers(m_codecCtx);
-  //  g_newPktCondition.notify_one();
 }
 }

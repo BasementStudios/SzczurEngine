@@ -86,7 +86,6 @@ void Cinematics::jumpTo(const unsigned int &seekTarget)
         for(auto p : m_sound->g_videoPkts)
         {
             av_free_packet(p);
-           // av_free(p);
         }
         m_sound->g_videoPkts.clear();
         double fps = av_q2d(m_pFormatCtx->streams[m_videoStream]->r_frame_rate);
@@ -192,7 +191,6 @@ void Cinematics::initScript()
 {
     Script& script = getModule<Script>();
     auto module = script.newModule("Cinematics");
-   // module.set("addLoop", &Cinematics::addLoop, this);
     module.set_function("addLoop", [this](int startTime, int endTime, sol::function fevent1, const std::string& text1, int jump1, sol::function fevent2, const std::string& text2, int jump2) {
         this->addLoop(startTime, endTime, std::function<void()>(fevent1), text1.c_str(), jump1, std::function<void()>(fevent2), text2.c_str(), jump2);
     });
@@ -215,7 +213,7 @@ void Cinematics::update()
 
     bool isDraw = false;
 
-    for(int i=0;i<3;i++)
+    for(int i=0;i<7;i++)
     {
         if((m_ISmax>m_sound->timeElapsed()*1000 && !m_syncAV&& m_ISmax>m_duration-4000000)||(m_sound->g_audioPkts.empty()&&m_ISmax>m_duration-4000000))
         {
@@ -437,7 +435,6 @@ void Cinematics::stop()
         for(auto p : m_sound->g_videoPkts)
         {
             av_free_packet(p);
-        // av_free(p);
         }
         for(auto p : m_sound->g_audioPkts)
         {
