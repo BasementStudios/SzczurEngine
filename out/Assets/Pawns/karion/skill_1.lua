@@ -10,13 +10,15 @@ function skill:onProvide(provider)
 end
 
 function skill:onInit()
-	self.angle = self:getPawn():getAngleToPointer()
-	self.clock = Utility.Clock:new()
+	-- self.angle = self:getPawn():getAngleToPointer()
+	self.angle = Math.angle(self:getPawn():getPosition(), Input.getMousePosition())
+	self.clock = Utility.Clock.new()
+
 	self:getPawn():setFlip(self:getPawn():getDirection(self.angle))
 end
 
 function skill:onUpdate(dt)
-	self:getPawn():moveInDirection(self.angle, dt*700)
+	self:getPawn():move(self.angle, dt*700)
 	if self.clock:elapsed()>0.20 or self:getPawn():isCollision() then
 		self:getPawn():setFrame(0)
 		self:kill()
@@ -30,7 +32,7 @@ end
 
 -- hit
 local hit = THIS:newSkill("Dash and hit : hit")
-THIS:addUsable(hit, 1)
+-- THIS:addUsable(hit, 1)
 
 function hit:onInit()
 	self.clock = Utility.Clock.new()
@@ -44,8 +46,8 @@ function hit:onInit()
 		self.angle = self:getTarget():getAngleTo(self:getPosition())
 	end
 	function trigger:onUpdate(dt) 
-		self:getTarget():moveInDirection(self.angle-3.14159, dt*300);
-		self:getCaster():moveInDirection(self.angle, dt*300);
+		self:getTarget():move(self.angle-3.14159, dt*300);
+		self:getCaster():move(self.angle, dt*300);
 	end
 end
 

@@ -81,6 +81,9 @@ public:
 	///
 	float getDistanceToPointer();
 
+	///
+	float getDistanceTo(const sf::Vector2f& pos);
+
 	/// 
 	void moveInDirection(float angle, float distance);
 

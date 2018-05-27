@@ -32,7 +32,13 @@ void BattlePawn::render(BattlePawn::RenderTarget& canvas) {
 		sprite.setScale(1-2*flip, 1);
 		sprite.setOrigin(sprite.getTextureRect().width/2.f, sprite.getTextureRect().height);
 		sprite.setPosition(pos);	
+
+		// OPENGL
+
 		canvas.draw(sprite);	
+		
+		// --OPENGL
+
 		renderHpBar(canvas, 30.f);
 		renderCooldownBar(canvas, 70.f);
 	}
@@ -152,6 +158,11 @@ bool BattlePawn::isCollision() {
 float BattlePawn::getDistanceToPointer() {
 	sf::Vector2f d = pos - sf::Vector2f(input.getManager().getMousePosition());
 	return std::sqrt(d.x*d.x+d.y*d.y);
+}
+
+float BattlePawn::getDistanceTo(const sf::Vector2f& pos) {
+	sf::Vector2f d = this->pos - pos;
+	return std::sqrt(d.x*d.x+d.y*d.y); 
 }
 
 // ========== Battle ========== 
@@ -376,7 +387,8 @@ void BattlePawn::initScript(Script& script) {
 	object.set("getAngleToPointer", &BattlePawn::getAngleToPointer);
 	object.set("getPosition", [](BattlePawn& o){return o.getPosition();});
 	object.set("getDistanceToPointer", &BattlePawn::getDistanceToPointer);
-	object.set("moveInDirection", &BattlePawn::moveInDirection);
+	object.set("getDistanceTo", &BattlePawn::getDistanceTo);
+	object.set("move", &BattlePawn::moveInDirection);
 	object.set("setFrame", &BattlePawn::setFrame);
 	object.set("setFlip", &BattlePawn::setFlip);
 	object.set("getDirection", &BattlePawn::getDirection);
