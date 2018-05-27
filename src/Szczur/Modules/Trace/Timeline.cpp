@@ -6,7 +6,8 @@
 namespace rat
 {
 
-Timeline::Timeline()
+Timeline::Timeline(int id)
+	: _id(id)
 {
 	_vertexArray.setPrimitveType(GL_LINE_STRIP);
 }

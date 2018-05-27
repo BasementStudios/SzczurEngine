@@ -22,6 +22,8 @@ public:
 	bool ShowLines = true;
 
 private:
+	int _id;
+
 	Container_t _actions;
 
 	int _currentActionIndex = 0;
@@ -31,7 +33,7 @@ private:
 	sf3d::VertexArray _vertexArray{ 0 };
 
 public:
-	Timeline();
+	Timeline(int id);
 	~Timeline();
 
 	void addAction(Action* action);
@@ -44,6 +46,8 @@ public:
 	bool finished() { return _finished; }
 
 	auto& getActions() { return _actions; }
+
+	const auto getId() { return _id; }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
 };
