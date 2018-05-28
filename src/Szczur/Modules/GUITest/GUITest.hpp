@@ -8,13 +8,10 @@
 #include "NinePatch.hpp"
 #include "Patch.hpp"
 #include "Scroller.hpp"
-#include "Szczur/Modules/GUI/Widget.hpp"
-#include "Szczur/Modules/GUI/ImageWidget.hpp"
-#include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
-#include "Szczur/Modules/GUI/WindowWidget.hpp"
 
 namespace rat
 {
+    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
         using Tab_t = TransformAnimationBase;
@@ -32,21 +29,8 @@ namespace rat
         float _shift{0.7f};
         sf::Vector2f _size{30, 30.f};
 
-        NinePatch testPatch; 
-        Scroller scroller;
-        Widget* widget{nullptr};
-        Widget* widget3{nullptr};
-        ImageWidget* iWidget{nullptr};
-        ScrollAreaWidget* scroll{new ScrollAreaWidget};
-        WindowWidget* win{new WindowWidget};
-
-        ImageWidget* blue{nullptr};
-        ImageWidget* red{nullptr};
-
-        Tab_t*_animColor{new ColorAnim};
-        sf::RectangleShape shape;
-
-        bool hasBeenChanged{false};
+        Widget* _widget{nullptr};
+        ImageWidget* _imageWidget{nullptr};
     };
 
 }

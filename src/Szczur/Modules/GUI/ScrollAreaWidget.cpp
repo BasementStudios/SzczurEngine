@@ -41,9 +41,9 @@ namespace rat {
         _renderTexture.create(size.x, size.y);
         _aboutToRecalculate = true;
     }*/
-    void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture)
+    void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture, int boundsHeight)
     {
-        _scroller.setScrollerTexture(texture);
+        _scroller.setScrollerTexture(texture, boundsHeight);
     }
     void ScrollAreaWidget::setPathTexture(sf::Texture* texture)
     {

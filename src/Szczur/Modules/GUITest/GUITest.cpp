@@ -2,6 +2,12 @@
 
 #include "StressTester.hpp"
 
+#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
+
+
 namespace rat
 {
     GUITest::GUITest()
@@ -17,96 +23,28 @@ namespace rat
 
 
         gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
-        testPatch.setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
-        //testPatch.setTextureRect({{0, 200}, {248, 248}});
-        testPatch.setPosition(50.f, 50.f);
-        testPatch.setSize(1200, 700);
-        testPatch.setScale(0.2f, 0.2f);
-        //testPatch.setRotation(20.f);
-        //testPatch.setDirection(Patch::Direction::None);
         gui.addAsset<sf::Texture>("Assets/Test/Scroller.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
-        
-        scroller.setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        scroller.setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        scroller.setBoundTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-
-        scroller.setSize({30, 300});
-        scroller.setPosition(200.f, 200.f);
-
-        widget = gui.addInterface();
-        widget->setSize(100, 100);
-        widget->setPosition(0.f, 0.f);
-        widget->setCallback(Widget::CallbackType::onHoverIn, [](Widget* self){
-            //std::cout << "Beng\n";
-        });
-        widget->setPadding(10.f, 10.f);
+        gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
 
 
-        scroll->setSize(100, 500);
-        scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-        scroll->setPosition(100.f, 100.f);
-        widget->add(scroll);
-/*
-        iWidget = new ImageWidget;
-        iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        iWidget->setPosition(0.f, 200.f);
-        iWidget->setSize(50, 50);
-        scroll->add(iWidget);
-        iWidget->setCallback(Widget::CallbackType::onPress, [](Widget* owner){
-            std::cout << "Oddej mi tyn rower!!!111!11!\n";
-        });
+        _widget = gui.addInterface();
+        _widget->setSize(100, 100);
 
-        win->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
-        widget->add(win);
-        win->setPosition(50.f, 50.f);
-        win->setScale(0.2f, 0.2f);
-        win->setPatchAmount(3, 5);        
+        _imageWidget = new ImageWidget;
+        _widget->add(_imageWidget);
 
-        
-        widget3 = new Widget;
-        widget3->setSize(25, 25);
-        widget3->setPosition(0.f, 0.f);
-        iWidget->add(widget3);
-        
-       
-       std::cout << "Grubosc widgeta: " << sizeof(Widget) << "\n"; 
+        //_imageWidget->setSize(20, 20);
+        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        _imageWidget->setPosition(100.f, 100.f);
 
-       widget->invisible();
+        auto* _patch = new WindowWidget;
+        _patch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
+        _widget->add(_patch);
+        _patch->setSize(600, 200);
+        _patch->setScale(0.2f, 0.2f);
 
-       std::cout << "Tester start\n";
-       StressTester stresser;
-       stresser.level = 10;
-       stresser.branchAmount = 4;
-       stresser.posRange = 80;
-       stresser.sizeRange = 40;
-       stresser.makeBranches(widget);
-       std::cout << "Tester stop\n";
-*/
-
-        blue = new ImageWidget;
-        blue->setCallback(Widget::CallbackType::onPress, [](Widget*){
-            std::cout << "Blue\n";
-        });
-        widget->add(blue);
-        gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
-        blue->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        blue->setColor({0, 0, 0});
-        blue->setColor({255, 255, 255}, 12.f);
-        
-        red = new ImageWidget;
-        red->setCallback(Widget::CallbackType::onPress, [](Widget*){
-            std::cout << "Red\n";
-        });
-        gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
-        red->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Red.png"));
-        scroll->add(red);
-
-        shape.setSize({100.f, 100.f});
-        shape.setPosition(100.f, 100.f);
     }
     
     
@@ -167,39 +105,8 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
-        {
-            if(!hasBeenChanged)
-            {
-                hasBeenChanged = true;
-                auto& gui = getModule<GUI>();
-                iWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-            }
-        }
 
-        //win->setSize(float(mousePos.x - 50), float(mousePos.y - 50));
-
-        widget->setPropOrigin(_prop, _prop);
-        //widget->setPosition(_size.x, _size.y);
-        //iWidget->setSize(_size.x, _size.y);
-
-        
-        win->setScale(_scale, _scale);
-        win->setSize(mousePos.x - 75, mousePos.y - 75);
-        
-
-        //scroller.setSize(static_cast<sf::Vector2i>(_size));
-        scroller.setSize(sf::Vector2i(mousePos.x - 200, mousePos.y - 200));
-        /*
-        scroller.setScrollerPosition(static_cast<sf::Vector2f>(mousePos));
-        scroller.setWidthProportion(_scale); 
-        //scroller.setProportion(_prop); 
-        scroller.setBoundShiftProportion(_shift);*/
-
-        //red->setPosition(_size);
-        _animColor->update(deltaTime);
-        shape.setFillColor(static_cast<ColorAnim*>(_animColor)->getActualColor());
-
+        _imageWidget->setPosition(_size);
 
     }
     void GUITest::render()
@@ -207,14 +114,6 @@ namespace rat
        _canvas.clear(sf::Color::Transparent);
 
 
-       _canvas.draw(shape);
-        
-        //testPatch.draw(_canvas);
-        //_canvas.draw(testPatch);
-        //_canvas.draw(scroller);
-        //_canvas.draw(testPatch);
-
-        //_canvas.draw(*widget);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
