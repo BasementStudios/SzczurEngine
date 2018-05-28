@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "BaseBar.hpp"
+#include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
 namespace rat
 {

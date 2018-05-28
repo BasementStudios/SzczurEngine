@@ -1,7 +1,7 @@
 /*
 #pragma once
 
-#include "BaseBar.hpp"
+#include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
 #include <vector>
 #include <memory>
