@@ -17,13 +17,13 @@ namespace rat
         enum class Type { Starting, Step };
         enum class State { Inactivated, Activated, Chosen, Blocked, Finished};
 
-        QuestNode(Quest* parentQuest, Type type);
-        QuestNode(Quest* parentQuest);
+        QuestNode(Quest* parentQuest, Type type, const std::string& name = "");
+        QuestNode(Quest* parentQuest, const std::string& name = "");
         
         void setParent(QuestNode* parent);
 
-        QuestNode* addStep(const std::string name = "");
-        QuestNode* addSubNode(const std::string name = "");
+        QuestNode* addStep(const std::string& name = "");
+        QuestNode* addSubNode(const std::string& name = "");
         QuestNode* addNode(QuestNode* node);
 
         void start();

@@ -18,13 +18,12 @@ namespace rat
 
         QuestNode* getNode(const std::string& nodeName);
         QuestNode* getRoot();
-        void addNode(const std::string& nodeName, Node_t node);
+        void addNode(std::string nodeName, Node_t node); //specjalnie bez refa ;-;
 
         void start();
         void finish();
     private:
-        std::unordered_map<std::string, QuestNode*> _namedNodes;
-        std::vector<Node_t> _wholeNodes;
+        std::unordered_map<std::string, Node_t> _nodes;
         QuestNode* _rootNode;
     };
 }

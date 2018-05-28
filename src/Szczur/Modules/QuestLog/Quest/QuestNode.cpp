@@ -7,15 +7,17 @@
 namespace rat
 {
     using Node_t = std::unique_ptr<QuestNode>;
-    QuestNode::QuestNode(Quest* parentQuest) 
+    QuestNode::QuestNode(Quest* parentQuest, const std::string& name) 
     :
-    QuestNode(parentQuest, Type::Starting)
+    QuestNode(parentQuest, Type::Starting, name)
     {}
-    QuestNode::QuestNode(Quest* parentQuest, Type type) 
+    QuestNode::QuestNode(Quest* parentQuest, Type type, const std::string& name) 
     :
     _parentQuest(parentQuest),
     _type(type)
-    {}
+    {
+        _parentQuest->addNode(name, std::move(std::unique_ptr<QuestNode>(this)));
+    }
     
     void QuestNode::setParent(QuestNode* parent)
     {
@@ -32,16 +34,17 @@ namespace rat
         return _startingNodes;
     }
 
-    QuestNode* QuestNode::addStep(const std::string name)
+    QuestNode* QuestNode::addStep(const std::string& name)
     {
-        auto step = new QuestNode(_parentQuest, Type::Step);
-        _parentQuest->addNode(name, std::move(std::unique_ptr<QuestNode>(step)) );
+        std::cout << "TestingTTTTTTTTTTTTTT\n";
+        auto step = new QuestNode(_parentQuest, Type::Step, name);
+
         return addNode(step);
     }
-    QuestNode* QuestNode::addSubNode(const std::string name)
+    QuestNode* QuestNode::addSubNode(const std::string& name)
     {
-        auto* subNode = new QuestNode(_parentQuest, Type::Starting);
-        _parentQuest->addNode(name, std::move(std::unique_ptr<QuestNode>(subNode)) );
+        auto* subNode = new QuestNode(_parentQuest, Type::Starting, name);
+
         return addNode(subNode);
     }
 

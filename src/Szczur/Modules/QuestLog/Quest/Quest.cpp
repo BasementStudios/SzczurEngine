@@ -6,26 +6,30 @@ namespace rat
 {
     Quest::Quest()
     {
-        auto root = std::make_unique<QuestNode>(this);
-        _rootNode = root.get(); 
-        addNode("root", std::move(root));
+        _rootNode = new QuestNode(this, "Root");
     }
     QuestNode* Quest::getNode(const std::string& nodeName)
     {
-        auto found = _namedNodes.find(nodeName);
-        if(found == _namedNodes.end()) return nullptr;
-        return found->second;
+        auto found = _nodes.find(nodeName);
+        if(found == _nodes.end()) return nullptr;
+        return found->second.get();
     }
-    void Quest::addNode(const std::string& nodeName, Node_t node)
+    void Quest::addNode(std::string nodeName, Node_t node)
     {
-        if(nodeName != "")
+        bool needDefaultName = false;
+        if(nodeName == "") needDefaultName = true;
+        if(getNode(nodeName) != nullptr)
         {
-            if(getNode(nodeName) != nullptr)
-            {
-                _namedNodes.emplace(nodeName, node.get());
-            }
+            needDefaultName = true;
+            LOG_INFO("Node with name \"", nodeName, "\" already exist, default name is set.");
         }
-        _wholeNodes.emplace_back(std::move(node));
+
+        if(needDefaultName)
+        {
+            nodeName = "N" + std::to_string(_nodes.size());
+        }
+        
+        _nodes.emplace(nodeName, std::move(node));
     }
     QuestNode* Quest::getRoot()
     {

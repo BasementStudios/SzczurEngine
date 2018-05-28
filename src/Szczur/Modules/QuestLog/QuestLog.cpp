@@ -27,6 +27,7 @@ namespace rat
         _widget->setPosition(100, 100);
 
 
+
         auto& gui = getModule<GUI>();
         gui.addAsset<sf::Texture>("Assets/Quest/Left.png");
         gui.addAsset<sf::Texture>("Assets/Quest/LeftOpen.png");
@@ -55,9 +56,7 @@ namespace rat
             w[i]->setPosition(100 + i *200, 100);
             
         }
-
-
-        auto* n1 = node->addStep();
+        auto* n1 = node->addStep(); //Traitor
         auto* n2 = node->addStep();
 
         node->setTitle("Wejdz do Ktorychs ze dzrwi");
@@ -72,6 +71,7 @@ namespace rat
         n1->_onFinished = [](){
             std::cout << "Wszedles w lewe drzwi\n";
         };
+
         n1->setBlockedCallback([w, &gui](){
             w[0]->setCallback(CALL, [](Widget*){});
             w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));            
@@ -93,6 +93,7 @@ namespace rat
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
             std::cout << "Prawe drzwi sie zamknely\n";
         });
+
 
 
         //n1->setTitle("Zniszcz wszystkie tarcze\n");
