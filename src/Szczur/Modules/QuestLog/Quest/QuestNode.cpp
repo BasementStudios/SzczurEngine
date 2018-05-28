@@ -36,7 +36,6 @@ namespace rat
 
     QuestNode* QuestNode::addStep(const std::string& name)
     {
-        std::cout << "TestingTTTTTTTTTTTTTT\n";
         auto step = new QuestNode(_parentQuest, Type::Step, name);
 
         return addNode(step);
@@ -69,6 +68,7 @@ namespace rat
 
     void QuestNode::nextStep()
     {
+        if(!isFullySuited()) return;
         if(_isFinished() || _state == State::Blocked) return;
         if(!_canBeFinished()) return;
 
@@ -152,6 +152,18 @@ namespace rat
                 std::cout << "OR\n";
         }
         std::cout << "\n";
+    }
+
+    void QuestNode::advanceCounter(const std::string& name, int value)
+    {
+        Requirements::advanceCounter(name, value);
+        if(isFullySuited()) nextStep();
+    }
+
+    void QuestNode::suitReq(const std::string& name)
+    {
+        Requirements::suitReq(name);
+        if(isFullySuited()) nextStep();
     }
 
     void QuestNode::_activate()

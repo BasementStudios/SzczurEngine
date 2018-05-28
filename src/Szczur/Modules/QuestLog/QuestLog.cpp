@@ -8,8 +8,6 @@
 
 #define CALL Widget::CallbackType::onRelease
 
-//#define GET(name) gui.getAsset<sf::Texture>("Assets/Quest/" + name + ".png")
-
 namespace rat
 {
     QuestLog::QuestLog()
@@ -56,7 +54,7 @@ namespace rat
             w[i]->setPosition(100 + i *200, 100);
             
         }
-        auto* n1 = node->addStep(); //Traitor
+        auto* n1 = node->addStep();
         auto* n2 = node->addStep();
 
         node->setTitle("Wejdz do Ktorychs ze dzrwi");
@@ -138,6 +136,7 @@ namespace rat
         }
 
         auto* shieldLoot = tarcze->addStep();
+        shieldLoot->addCounter("Shields", 3);
         
         shieldLoot->_onActivate = [w, shieldLoot, &gui](){
             for(auto* wid : w)
@@ -147,7 +146,7 @@ namespace rat
             }
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/BetterShield.png"));
             w[1]->setCallback(CALL, [shieldLoot](Widget*){
-                shieldLoot->nextStep();
+                shieldLoot->advanceCounter("Shields");
             });
         };
         shieldLoot->setTitle("Podnies lepsza tarcze");
@@ -265,3 +264,5 @@ namespace rat
     }
     
 }
+
+#undef CALL

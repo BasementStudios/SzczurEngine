@@ -6,10 +6,12 @@
 #include <string>
 #include <set>
 
+#include "Requirements.hpp"
+
 namespace rat
 {
     class Quest;
-    class QuestNode
+    class QuestNode : public Requirements
     {
         using Function_t = std::function<void()>;
         using Node_t = std::unique_ptr<QuestNode>;
@@ -35,6 +37,9 @@ namespace rat
         void setFinishedCallback(Function_t onFinished);
 
         void setTitle(const std::string& title);
+
+        virtual void advanceCounter(const std::string& name, int value = 1) override;
+        virtual void suitReq(const std::string& name) override;        
 
 
         Function_t _onActivate = [](){};

@@ -9,7 +9,7 @@ namespace rat
     {
     public:
         void addCounter(const std::string& name, int maxValue);
-        void advanceCounter(const std::string& name, int value = 1);
+        virtual void advanceCounter(const std::string& name, int value = 1);
         int getValueFromCounter(const std::string& name) const;
         bool isCounterFull(const std::string& name);
 
@@ -17,7 +17,7 @@ namespace rat
 
         void addReq(const std::string& name);
         bool isReqSuited(const std::string& name) const;
-        void suitReq(const std::string& name);
+        virtual void suitReq(const std::string& name);
 
         bool areAllReqsSuited() const;
 
