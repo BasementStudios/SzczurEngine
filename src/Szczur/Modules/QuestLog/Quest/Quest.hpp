@@ -6,12 +6,13 @@
 #include <memory>
 
 #include "QuestNode.hpp"
+#include "Requirements.hpp"
 
 namespace rat
 {
-    using Node_t = std::unique_ptr<QuestNode>;
-    class Quest
+    class Quest : public Requirements
     {
+        using Node_t = std::unique_ptr<QuestNode>;
     public:
         Quest();
 
