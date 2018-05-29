@@ -76,6 +76,7 @@ namespace rat
         {
             _state = State::Finished;
             _onFinished();
+            _onFinishedGUISet();
             _invokeParentToBlockNeighbours();
         }
         if(_nextNodes.size() == 0)
@@ -106,6 +107,7 @@ namespace rat
         {
             _state = State::Finished;
             _onFinished();
+            _onFinishedGUISet();
 
             if(_parentNodes.size() > 0)
             {
@@ -145,7 +147,7 @@ namespace rat
         size_t i = 0;
         for(auto& nextNode : _nextNodes)
         {
-            nextNode->_activate();
+            nextNode->_activate(i, _level);
             std::cout << nextNode->_title << "\n";
             i++;
             if(i != _nextNodes.size() && _nextNodes.size() > 1)
@@ -166,13 +168,20 @@ namespace rat
         if(isFullySuited()) nextStep();
     }
 
-    void QuestNode::_activate()
+    void QuestNode::_activate(size_t localIndex, size_t parentLevel)
     {
         _state = State::Activated;
+
+        _localIndex = localIndex;
+        _level = _type == Type::Starting ? parentLevel+1 : parentLevel;
+
+        _onActivateGUISet();
+
         _onActivate();
+        size_t index = 0;
         for(auto* req : _requirmentNodes)
         {
-            req->_activate();
+            req->_activate(index++, _level);
         }
     }
 
@@ -195,6 +204,24 @@ namespace rat
                     nextNode->_block();
                 }
             }
+        }
+    }
+    void QuestNode::_onActivateGUISet()
+    {   
+        if(_type == Type::Step)
+        {
+            _parentQuest->setTitle(_title);
+        }
+        else
+        {
+            _titleGUI = _parentQuest->addSubtitle(_title, false);
+        }
+    }
+    void QuestNode::_onFinishedGUISet()
+    {
+        if(_type == Type::Starting)
+        {
+            _titleGUI->setReq(_title, true);
         }
     }
 

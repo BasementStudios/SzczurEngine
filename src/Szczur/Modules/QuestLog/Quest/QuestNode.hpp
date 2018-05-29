@@ -10,7 +10,7 @@
 
 namespace rat
 {
-    class Quest;
+    class Quest; class QuestTitle;
     class QuestNode : public Requirements
     {
         using Function_t = std::function<void()>;
@@ -65,10 +65,17 @@ namespace rat
         bool _canBeFinished() const;
 
         void _block();
-        void _activate();
+        void _activate(size_t localIndex = 0, size_t parentLevel = 0);
         bool _isFinished() const;
 
         std::set<QuestNode*> _getStartingNodes();
+
+        size_t _localIndex = 0;
+        size_t _level = 0;
+
+        void _onActivateGUISet();
+        void _onFinishedGUISet();
+        QuestTitle* _titleGUI{nullptr};
 
 
         std::string _title{""};

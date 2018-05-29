@@ -7,14 +7,16 @@
 
 #include "QuestNode.hpp"
 #include "Requirements.hpp"
+#include "Szczur/Modules/QuestLog/GUI/QuestInfoBar/QuestTitle.hpp"
 
 namespace rat
 {
+    class QuestLog;
     class Quest : public Requirements
     {
         using Node_t = std::unique_ptr<QuestNode>;
     public:
-        Quest();
+        Quest(QuestLog& owner);
 
         QuestNode* getNode(const std::string& nodeName);
         QuestNode* getRoot();
@@ -22,8 +24,16 @@ namespace rat
 
         void start();
         void finish();
+
+        void setTitle(const std::string& name);
+        
+        QuestTitle* addSubtitle(const std::string& name);
+        QuestTitle* addSubtitle(const std::string& name, int current, int maximum);
+        QuestTitle* addSubtitle(const std::string& name, bool isSuited);
     private:
         std::unordered_map<std::string, Node_t> _nodes;
         QuestNode* _rootNode;
+        
+        QuestLog& _owner;
     };
 }

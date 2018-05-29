@@ -2,9 +2,13 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
+#include "Szczur/Modules/QuestLog/QuestLog.hpp"
+
 namespace rat
 {
-    Quest::Quest()
+    Quest::Quest(QuestLog& owner)
+    :
+    _owner(owner)
     {
         _rootNode = new QuestNode(this, "Root");
     }
@@ -43,5 +47,28 @@ namespace rat
     void Quest::finish()
     {
         std::cout << "Jo Jo, you finished Quest\n";
+    }
+
+    void Quest::setTitle(const std::string& name)
+    {
+        auto* gui = _owner.getGUI();
+        gui->resetSubtitles();
+        gui->setTitle(name);
+    }
+        
+    QuestTitle* Quest::addSubtitle(const std::string& name)
+    {
+        auto* gui = _owner.getGUI();
+        return gui->addSubtitle(name);
+    }
+    QuestTitle* Quest::addSubtitle(const std::string& name, int current, int maximum)
+    {
+        auto* gui = _owner.getGUI();
+        return gui->addSubtitle(name, current, maximum);
+    }
+    QuestTitle* Quest::addSubtitle(const std::string& name, bool isSuited)
+    {
+        auto* gui = _owner.getGUI();
+        return gui->addSubtitle(name, isSuited);
     }
 }

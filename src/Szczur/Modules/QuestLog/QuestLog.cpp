@@ -5,6 +5,7 @@
 #include "Szczur/Utility/Logger.hpp"
 
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "GUI/QuestInfoBar/QuestTitle.hpp"
 
 #define CALL Widget::CallbackType::onRelease
 
@@ -18,13 +19,13 @@ namespace rat
     }
     void QuestLog::init()
     {
-        _quest = std::make_unique<Quest>();
+        _quest = std::make_unique<Quest>(*this);
         auto* node = _quest->getRoot();
         _widget = getModule<GUI>().addInterface();
         _widget->setSize(40.f, 50.f);
         _widget->setPosition(100, 100);
-
-
+        
+        
 
         auto& gui = getModule<GUI>();
         gui.addAsset<sf::Texture>("Assets/Quest/Left.png");
@@ -43,7 +44,23 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Quest/Wizard.png");
         gui.addAsset<sf::Texture>("Assets/Quest/DeadWizard.png");
         gui.addAsset<sf::Texture>("Assets/Quest/Pied.png");
+        gui.addAsset<sf::Font>("Assets/Fonts/Base.ttf");
 
+        _title = std::make_unique<QuestGUI>();
+        _title->setParent(_widget);
+        _title->setFont(gui.getAsset<sf::Font>("Assets/Fonts/Base.ttf"));
+        //_title->setSize(200, 20);
+        _title->setTitle("Wez mydlo");
+        auto* sub = _title->addSubtitle("Hash");
+        sub->setReq("Great", 2, 3);
+        _title->resetSubtitles();
+        /*
+        auto* subT = _title->getSubReq(0);
+        subT->setReq("Zebrane mydla", 0, 3);
+        auto* subT2 = _title->getSubReq(0);
+        subT2->setReq("Wziales prysznic", false);
+        */
+        
         std::vector<ImageWidget*> w;
 
         for(int i = 0; i < 3; i++)
@@ -261,6 +278,11 @@ namespace rat
     void _resetWidget(Widget* w)
     {
         w->setCallback(CALL, [](Widget*){});
+    }
+
+    QuestGUI* QuestLog::getGUI()
+    {
+        return _title.get();
     }
     
 }

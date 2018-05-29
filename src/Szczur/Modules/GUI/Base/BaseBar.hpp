@@ -19,8 +19,8 @@ namespace rat
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& position);
         sf::Vector2f getPosition() const;
-        void setSize(const sf::Vector2u& size);
-        void setSize(unsigned int width, unsigned int height);
+        virtual void setSize(const sf::Vector2u& size);
+        virtual void setSize(unsigned int width, unsigned int height);
         sf::Vector2u getSize() const;
         void move(float offsetX, float offsetY);
         void move(const sf::Vector2f& offset);

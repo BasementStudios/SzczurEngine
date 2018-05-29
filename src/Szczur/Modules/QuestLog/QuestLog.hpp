@@ -9,6 +9,7 @@
 #include <memory>
 
 #include "Quest/Quest.hpp"
+#include "GUI/QuestGUI.hpp"
 
 
 namespace rat 
@@ -23,11 +24,15 @@ namespace rat
         void update(float dt);
         void render();
 
+        void setTitle(const std::string& name);
+
         void _resetWidget(Widget*);
+
+        QuestGUI* getGUI();
     private:
         std::unique_ptr<Quest> _quest;
         Widget* _widget{nullptr};
-
+        std::unique_ptr<QuestGUI> _title;
     };
 
 }
