@@ -1,5 +1,7 @@
 #include "TraceComponent.hpp"
 
+#include "Szczur/Modules/Trace/Trace.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
@@ -61,6 +63,13 @@ void TraceComponent::update(float deltaTime)
 void TraceComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
 	_trace->draw(target, states);
+}
+
+void TraceComponent::initScript(Script& script)
+{
+	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
+	object.set("pause", &TraceComponent::pause);
+	object.set("resume", &TraceComponent::resume);
 }
 
 std::unique_ptr<Component> TraceComponent::copy(Entity* newParent) const

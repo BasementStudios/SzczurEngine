@@ -4,14 +4,13 @@
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 
-#include "Szczur/Modules/Trace/Trace.hpp"
-
 #include "../Component.hpp"
 
 namespace rat
 {
 class Trace;
 class Timeline;
+class Script;
 
 class TraceComponent : public Component, public sf3d::Drawable
 {
@@ -38,6 +37,8 @@ public:
 	void update(float deltaTime);
 
 	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+
+	static void initScript(Script& script);
 };
 
 }

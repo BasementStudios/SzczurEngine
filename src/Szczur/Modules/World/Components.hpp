@@ -119,6 +119,7 @@ struct ComponentTraits
 		script.initClasses<InputControllerComponent>();
 		script.initClasses<InteractableComponent>();
 		script.initClasses<ArmatureComponent>();
+		script.initClasses<TraceComponent>();
 	}
 };
 
