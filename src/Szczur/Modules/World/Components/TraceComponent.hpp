@@ -29,6 +29,9 @@ public:
 
 	virtual const void* getFeature(Component::Feature_e feature) const override;
 
+	void pause();
+	void resume();
+
 	virtual void loadFromConfig(const Json& config);
 	virtual void saveToConfig(Json& config) const;
 

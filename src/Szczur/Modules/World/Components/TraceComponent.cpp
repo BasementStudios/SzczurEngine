@@ -26,6 +26,16 @@ const void* TraceComponent::getFeature(Component::Feature_e feature) const
 	return nullptr;
 }
 
+void TraceComponent::pause()
+{
+	_trace->pause();
+}
+
+void TraceComponent::resume()
+{
+	_trace->resume();
+}
+
 void TraceComponent::loadFromConfig(const Json& config)
 {
 	Component::loadFromConfig(config);

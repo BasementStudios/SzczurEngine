@@ -42,6 +42,16 @@ void Trace::setCurrentTimeline(Timeline* timeline)
 		_currentTimeline->start();
 }
 
+void Trace::pause()
+{
+	_pause = true;
+}
+
+void Trace::resume()
+{
+	_pause = false;
+}
+
 void Trace::loadFromConfig(const Json& config, Entity* entity)
 {
 	Json::array_t jsonTimelines = config["timelines"];
@@ -175,7 +185,7 @@ void Trace::saveToConfig(Json& config) const
 
 void Trace::update(float deltaTime)
 {
-	if (_currentTimeline)
+	if (_currentTimeline && !_pause)
 	{
 		_currentTimeline->update(deltaTime);
 	}

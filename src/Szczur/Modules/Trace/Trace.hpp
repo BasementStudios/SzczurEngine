@@ -25,6 +25,8 @@ private:
 
 	int _lastId = -1;
 
+	bool _pause = false;
+
 	Timeline* _currentTimeline = nullptr;
 
 public:
@@ -42,6 +44,9 @@ public:
 	void setCurrentTimeline(Timeline* timeline);
 
 	auto& getTimelines() { return _timelines; }
+
+	void pause();
+	void resume();
 
 	void loadFromConfig(const Json& config, Entity* entity);
 	void saveToConfig(Json& config) const;

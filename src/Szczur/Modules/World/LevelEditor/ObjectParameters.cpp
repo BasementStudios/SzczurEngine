@@ -522,6 +522,19 @@ namespace rat {
                             {
                                 object->getTrace()->setCurrentTimeline(nullptr);
                             }
+
+							
+							if (ImGui::Button("Pause##trace_component"))
+							{
+								object->pause();
+							}
+
+							ImGui::SameLine();
+
+							if (ImGui::Button("Resume##trace_component"))
+							{
+								object->resume();
+							}
                         }
 
 
