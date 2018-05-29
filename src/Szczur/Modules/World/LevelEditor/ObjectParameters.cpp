@@ -394,7 +394,7 @@ namespace rat {
 
 														if (!moveAction->UseCurrentPosition)
 														{
-															if (ImGui::Button(("C##" + actionId).c_str()))
+															if (ImGui::Button(("C##Start" + actionId).c_str()))
 															{
 																moveAction->Start = focusedObject->getPosition();
 															}
@@ -414,7 +414,7 @@ namespace rat {
 														ImGui::Spacing();
 														ImGui::Checkbox(("Relative to Start##" + actionId).c_str(), &moveAction->EndRelativeToStart);
 
-														if (ImGui::Button(("C##" + actionId).c_str()))
+														if (ImGui::Button(("C##End" + actionId).c_str()))
 														{
 															moveAction->End = focusedObject->getPosition();
 														}
