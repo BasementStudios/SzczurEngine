@@ -374,11 +374,42 @@ namespace rat {
                                                     {
                                                         ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
 
-                                                        if (!moveAction->UseCurrentPosition)
-                                                            ImGui::DragFloat3(("Start##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->Start));
+														if (!moveAction->UseCurrentPosition)
+														{
+															if (ImGui::Button(("C##" + actionId).c_str()))
+															{
+																moveAction->Start = focusedObject->getPosition();
+															}
+
+															if (ImGui::IsItemHovered())
+															{
+																ImGui::BeginTooltip();
+																ImGui::Text("Set current position");
+																ImGui::EndTooltip();
+															}
+
+															ImGui::SameLine();
+
+															ImGui::DragFloat3(("Start##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->Start));
+														}
 
 														ImGui::Spacing();
 														ImGui::Checkbox(("Relative to Start##" + actionId).c_str(), &moveAction->EndRelativeToStart);
+
+														if (ImGui::Button(("C##" + actionId).c_str()))
+														{
+															moveAction->End = focusedObject->getPosition();
+														}
+
+														if (ImGui::IsItemHovered())
+														{
+															ImGui::BeginTooltip();
+															ImGui::Text("Set current position");
+															ImGui::EndTooltip();
+														}
+
+														ImGui::SameLine();
+
                                                         ImGui::DragFloat3(("End##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->End));
 														ImGui::Spacing();
 
