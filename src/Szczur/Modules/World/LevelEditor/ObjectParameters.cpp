@@ -1,5 +1,10 @@
 #include "ObjectParameters.hpp"
 
+#include <experimental/filesystem>
+
+#include <ImGui/imgui.h>
+#include <glm/glm.hpp>
+
 #include "../ScenesManager.hpp"
 #include "../Entity.hpp"
 #include "../Scene.hpp"
@@ -17,14 +22,7 @@
 #include "Szczur/Modules/Trace/Actions/MoveAction.hpp"
 #include "Szczur/Modules/Trace/Actions/WaitAction.hpp"
 
-#include <experimental/filesystem>
-
 #include "Szczur/Utility/Convert/Windows1250.hpp"
-
-
-#include <ImGui/imgui.h>
-
-#include <glm/glm.hpp>
 
 namespace rat {
     ObjectParameters::ObjectParameters(ScenesManager& scenes) :
@@ -431,7 +429,7 @@ namespace rat {
                                                         ImGui::DragFloat3(("End##" + actionId).c_str(), reinterpret_cast<float*>(&moveAction->End));
 														ImGui::Spacing();
 
-														ImGui::DragFloat(("Speed##" + actionId).c_str(), &moveAction->Speed, 0.25f);
+														ImGui::DragFloat(("Speed##" + actionId).c_str(), &moveAction->Speed, 0.01f, 0.f, 50.f);
                                                         ImGui::Checkbox(("Teleport##" + actionId).c_str(), &moveAction->Teleport);
 
                                                         ImGui::TreePop();
@@ -450,7 +448,7 @@ namespace rat {
                                                         {
                                                             animAction->AnimationName = animName;
                                                         }
-                                                        ImGui::DragFloat(("Fade in time##" + actionId).c_str(), &animAction->FadeInTime, 0.01f);
+                                                        ImGui::DragFloat(("Fade in time##" + actionId).c_str(), &animAction->FadeInTime, 0.01f, 0.01f, 1.f);
 
                                                         ImGui::Checkbox(("Play once##" + actionId).c_str(), &animAction->PlayOnce);
 
@@ -468,7 +466,7 @@ namespace rat {
 
 													if (ImGui::TreeNode(("Wait##" + actionId).c_str()))
 													{
-														ImGui::DragFloat(("Time to wait##" + actionId).c_str(), &waitAction->TimeToWait, 0.1f);
+														ImGui::DragFloat(("Time to wait##" + actionId).c_str(), &waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
 														ImGui::TreePop();
 													}
 												} break;
