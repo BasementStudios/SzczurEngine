@@ -25,7 +25,7 @@ private:
 
 	int _lastId = -1;
 
-	Timeline *_currentTimeline = nullptr;
+	Timeline* _currentTimeline = nullptr;
 
 public:
 	Trace();

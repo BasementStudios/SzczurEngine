@@ -332,10 +332,19 @@ namespace rat {
                                             object->getTrace()->setCurrentTimeline(timeline.get());
                                         }
 
+										ImGui::SameLine();
+
+										if (ImGui::SmallButton(("Delete##" + id).c_str()))
+										{
+											object->getTrace()->removeTimeline(timeline.get());
+											ImGui::TreePop();
+											break;
+										}
+
                                         ImGui::Checkbox("Loop", &timeline->Loop);
                                         ImGui::Checkbox("Show lines in editor", &timeline->ShowLines);
 
-                                        ImGui::Separator();
+                                        ImGui::Spacing();
 
 										auto& actions = timeline->getActions();
 
@@ -354,12 +363,21 @@ namespace rat {
 											}
 
 											ImGui::SameLine();
+
 											if (ImGui::SmallButton(("D##" + actionId).c_str()))
 											{
 												if (i < actions.size() - 1)
 												{
 													std::swap(actions[i], actions[i + 1]);
 												}
+											}
+
+											ImGui::SameLine();
+											
+											if (ImGui::SmallButton(("X##" + actionId).c_str()))
+											{
+												timeline->removeAction(action.get());
+												break;
 											}
 
 											ImGui::SameLine();
@@ -455,6 +473,7 @@ namespace rat {
 													}
 												} break;
                                             }
+
                                         }
 
                                         static int currentAction = -1;
@@ -483,6 +502,8 @@ namespace rat {
                                         }
 
                                         ImGui::TreePop();
+
+										ImGui::Separator();
                                     }
                                 }
                                 ImGui::TreePop();

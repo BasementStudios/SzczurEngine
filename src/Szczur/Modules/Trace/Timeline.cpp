@@ -24,12 +24,13 @@ void Timeline::addAction(Action* action)
 	}
 
 	_actions.push_back(std::unique_ptr<Action>(action));
-
 }
 
 void Timeline::removeAction(Action* action)
 {
-	// TOOD
+	_actions.erase(std::remove_if(_actions.begin(), _actions.end(), [action] (auto& it) { return action == it.get(); }));
+	_currentActionIndex = 0;
+	_finished = false;
 }
 
 void Timeline::update(float deltaTime)

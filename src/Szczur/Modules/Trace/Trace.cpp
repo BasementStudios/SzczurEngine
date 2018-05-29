@@ -26,7 +26,12 @@ void Trace::addTimeline()
 
 void Trace::removeTimeline(Timeline* timeline)
 {
-	// TODO
+	if (timeline == _currentTimeline)
+	{
+		_currentTimeline = nullptr;
+	}
+
+	_timelines.erase(std::remove_if(_timelines.begin(), _timelines.end(), [timeline] (auto& it) { return timeline == it.get(); }));
 }
 
 void Trace::setCurrentTimeline(Timeline* timeline)
