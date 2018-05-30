@@ -337,12 +337,14 @@ size_t Scene::getPlayerID() const
 {
 	return _playerID;
 }
-
+//170
 void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
-	_playerID = config["player"];
+	if(!config["player"].is_null()) {
+		_playerID = config["player"];
+	}
 
 	 size_t maxId = 0u;
 	 for(auto& obj : config["entrances"]) {

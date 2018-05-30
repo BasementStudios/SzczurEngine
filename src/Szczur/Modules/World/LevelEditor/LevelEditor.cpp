@@ -182,6 +182,7 @@ namespace rat {
 		if(input.isReleased(Keyboard::F1)) {
 			_scenes.menuSave();
 		}
+		_bar.update();
 	}
 
 	void FreeCamera::processEvents(InputManager& input) {

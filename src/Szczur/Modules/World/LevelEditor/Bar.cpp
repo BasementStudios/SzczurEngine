@@ -26,7 +26,7 @@ namespace rat {
 	_ifRenderArmatureDisplayDataManager{ifRenderArmatureDisplayDataManager},
 	_ifRenderDialogEditor{ifRenderDialogEditor},
 	_ifRenderAudioEditor{ifRenderAudioEditor} {
-
+		_ifShowImGuiDemoWindow = false;
     }
 
     void Bar::render() {
@@ -206,6 +206,10 @@ namespace rat {
 				{
 					_scenes.addPlayer();
 				}
+				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) {
+					_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
+					LOG_INFO(_ifShowImGuiDemoWindow)
+				}
 
 				ImGui::EndMenu();
 			}
@@ -223,7 +227,9 @@ namespace rat {
     }
 
     void Bar::update() {
-
+    	if(_ifShowImGuiDemoWindow) {
+    		ImGui::ShowDemoWindow();
+    	}
     }
 
     void Bar::printMenuInfo(const std::string& text) {

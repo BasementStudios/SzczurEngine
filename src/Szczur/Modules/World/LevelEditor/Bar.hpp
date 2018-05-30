@@ -23,6 +23,7 @@ namespace rat {
         bool& _ifRenderArmatureDisplayDataManager;
         bool& _ifRenderDialogEditor;
         bool& _ifRenderAudioEditor;
+        bool _ifShowImGuiDemoWindow;
 
         ScenesManager& _scenes;
 
