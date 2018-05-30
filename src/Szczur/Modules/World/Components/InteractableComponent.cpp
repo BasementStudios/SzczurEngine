@@ -12,7 +12,7 @@ namespace rat {
 
     void InteractableComponent::callback() {
         if(_interactionCallback.valid())
-            _interactionCallback();
+            _interactionCallback(this);
     }
 
     void InteractableComponent::setDistance(float distance) {
@@ -58,6 +58,7 @@ namespace rat {
     void InteractableComponent::initScript(Script& script) {
         auto object = script.newClass<InteractableComponent>("InteractableComponent", "World");
 		object.set("onInteraction", &InteractableComponent::_interactionCallback);
+        object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 		object.init();
     }
 }

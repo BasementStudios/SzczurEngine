@@ -37,6 +37,15 @@ public:
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
 	/// Set script and run
+
+	/// Set all values on default and remove script [unused]
+	void reset();
+
+	///
+	const std::string& getFilePath();
+
+// Scripts
+
 	void loadScript(const std::string& path);
 
 	/// Run script if is set
@@ -45,16 +54,19 @@ public:
 	/// Run any script for object
 	void loadAnyScript(const std::string& path);
 
-	/// Set all values on default and remove script [unused]
-	void reset();
+	///
+	virtual void loadFromConfig(const Json& config) override;
 
 	///
-	const std::string& getFilePath();
+	virtual void saveToConfig(Json& config) const override;
 
 	///
 	static void initScript(Script& script);
 
 private:
+
+	
+
 	sol::function _updateCallback;
 	std::string _scriptFilePath;
 };

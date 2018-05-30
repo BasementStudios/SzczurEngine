@@ -8,12 +8,12 @@ namespace rat {
 	ScriptableComponent::ScriptableComponent(Entity* parent) :
 	Component { parent, fnv1a_64("ScriptableComponent"), "ScriptableComponent"} {
 
-	}   
+	}
 
 	///
 	void ScriptableComponent::update(float deltaTime) {
 		if(_updateCallback.valid()) {
-			_updateCallback(getEntity(), deltaTime);
+			_updateCallback(this, deltaTime);
 		}
 	}
 
@@ -57,6 +57,38 @@ namespace rat {
 		script.get()["THIS"] = sol::nil;
 	}
 
+	///
+	void ScriptableComponent::loadFromConfig(const Json& config)
+	{
+		// Component::loadFromConfig(config);
+		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
+		// auto name = mapUtf8ToWindows1250(config["spriteDisplayData"].get<std::string>());
+		// if(name != "") {
+		// 	bool found{false};
+		// 	for(auto& it : spriteDisplayDataHolder) {
+		// 		if(name == it.getName()) {
+		// 			setSpriteDisplayData(&it);
+		// 			found = true;
+		// 		}
+		// 	}
+		// 	if(!found) {
+		// 		try {
+		// 			setSpriteDisplayData(&(spriteDisplayDataHolder.emplace_back(name)));
+		// 		}
+		// 		catch(const std::exception& exc) {
+
+		// 		}
+		// 	}
+		// }
+	}
+
+	///
+	void ScriptableComponent::saveToConfig(Json& config) const
+	{
+		// Component::saveToConfig(config);
+		// config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
+	}
+
 	/// Set all values on default and remove script
 	void ScriptableComponent::reset() {
 		_updateCallback = sol::function();
@@ -70,6 +102,7 @@ namespace rat {
 		auto object = script.newClass<ScriptableComponent>("ScriptableComponent", "World");
 		// object.set("onUpdate", [](ScriptableComponent& obj){return "SCRIPT!";});
 		object.set("onUpdate", &ScriptableComponent::_updateCallback);
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 		object.init();
 	}
 }
