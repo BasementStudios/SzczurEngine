@@ -30,6 +30,8 @@ namespace rat
         QuestTitle* addSubtitle(const std::string& name);
         QuestTitle* addSubtitle(const std::string& name, int current, int maximum);
         QuestTitle* addSubtitle(const std::string& name, bool isSuited);
+
+        void setCurrentNode(QuestNode* current);
     private:
         std::unordered_map<std::string, Node_t> _nodes;
         QuestNode* _rootNode;

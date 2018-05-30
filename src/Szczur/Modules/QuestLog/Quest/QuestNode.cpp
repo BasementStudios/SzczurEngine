@@ -18,21 +18,6 @@ namespace rat
     {
         _parentQuest->addNode(name, std::move(std::unique_ptr<QuestNode>(this)));
     }
-    
-    void QuestNode::setParent(QuestNode* parent)
-    {
-        _parentNodes.emplace(parent);
-        auto parentStartingNodes = parent->_getStartingNodes();
-        for(auto* startingNode : parentStartingNodes)
-        {
-            _startingNodes.emplace(startingNode);
-        }
-    }
-    std::set<QuestNode*> QuestNode::_getStartingNodes()
-    {
-        if(_type == Type::Starting) return {this};
-        return _startingNodes;
-    }
 
     QuestNode* QuestNode::addStep(const std::string& name)
     {
@@ -46,13 +31,29 @@ namespace rat
 
         return addNode(subNode);
     }
+    QuestNode* QuestNode::addBrancher(const std::string& name)
+    {
+        auto* brancher = new QuestNode(_parentQuest, Type::Brancher, name);
+
+        return addNode(brancher);
+    }
 
     QuestNode* QuestNode::addNode(QuestNode* node)
     {
-        node->setParent(this);
 
-        if(node->_type == Type::Step) _nextNodes.emplace_back(node);
-        else _requirmentNodes.emplace_back(node);
+        if(node->_type == Type::Starting)
+        {
+            _requirmentNodes.emplace_back(node);
+        }
+        else if(_type == Type::Brancher) 
+        {
+            _nextNodes.emplace_back(node);
+        }
+        else
+        {
+            if(_nextNodes.size() == 0) _nextNodes.emplace_back(node);
+            else _nextNodes.back() = node;
+        } 
 
         return node;
     }
@@ -66,7 +67,7 @@ namespace rat
         _onActivate();
     }
 
-    void QuestNode::nextStep()
+    void QuestNode::nextStep(size_t nextNodeIndex)
     {
         if(!isFullySuited()) return;
         if(_isFinished() || _state == State::Blocked) return;
@@ -77,16 +78,13 @@ namespace rat
             _state = State::Finished;
             _onFinished();
             _onFinishedGUISet();
-            _invokeParentToBlockNeighbours();
+            //_invokeParentToBlockNeighbours();
         }
         if(_nextNodes.size() == 0)
         {
             if(_type == Type::Step)
             {
-                for(auto* starting : _startingNodes)
-                {
-                    starting->finish();
-                }
+                _startingNode->finish();
             }
             else
             {
@@ -95,7 +93,7 @@ namespace rat
         }
         else
         {
-            _activateNextNodes();
+            _activateNextNode(nextNodeIndex);
         }
     }
     
@@ -109,24 +107,20 @@ namespace rat
             _onFinished();
             _onFinishedGUISet();
 
-            if(_parentNodes.size() > 0)
+            if(_parentNode)
             {
-                for(auto* parent : _parentNodes)
-                {
-                    parent->nextStep();
-                }
+                _parentNode->nextStep();
             }
             else
             {
+                std::cout << "Before\n";
                 _parentQuest->finish();
+                std::cout << "After\n";
             }
         }
         else
         {
-            for(auto* starting : _startingNodes)
-            {
-                starting->finish();
-            }
+            _startingNode->finish();
         }
     }
     bool QuestNode::_canBeFinished() const
@@ -142,18 +136,58 @@ namespace rat
         return _state == State::Finished;
     }
 
-    void QuestNode::_activateNextNodes()
+    void QuestNode::_activateNextNode(size_t nextNodeIndex)
     {
-        size_t i = 0;
-        for(auto& nextNode : _nextNodes)
+        if(_nextNodes.size() <= nextNodeIndex) nextNodeIndex = 0;
+
+        for(size_t i = 0; i < _nextNodes.size(); i++)
         {
-            nextNode->_activate(i, _level);
-            std::cout << nextNode->_title << "\n";
-            i++;
-            if(i != _nextNodes.size() && _nextNodes.size() > 1)
-                std::cout << "OR\n";
+            if(i == nextNodeIndex) break;
+            _nextNodes[i]->_block();
         }
-        std::cout << "\n";
+
+        auto* nextNode = _nextNodes[nextNodeIndex];
+
+        _fillChildWithLove(nextNode);
+        nextNode->_activate();
+        std::cout << nextNode->_title << "\n";
+    }
+    void QuestNode::_fillChildWithLove(QuestNode* child)
+    {
+        if(_type == Type::Starting)
+        {
+            child->_startingNode = this;
+        }
+        else 
+        {
+            child->_startingNode = _startingNode;
+        }
+
+        if(child->_type == Type::Starting)
+        {
+            _parentNode = this;
+        }
+    }
+
+    void QuestNode::_activate(QuestNode* parent)
+    {
+        if(parent) _parentNode = parent;
+
+        _state = State::Activated;
+
+        if(_type != Type::Starting)
+        {
+            _startingNode->_currentChildNode = this;
+        }
+
+        _onActivateGUISet();
+        _onActivate();
+
+        size_t index = 0;
+        for(auto* req : _requirmentNodes)
+        {
+            req->_activate(this);
+        }
     }
 
     void QuestNode::advanceCounter(const std::string& name, int value)
@@ -168,44 +202,9 @@ namespace rat
         if(isFullySuited()) nextStep();
     }
 
-    void QuestNode::_activate(size_t localIndex, size_t parentLevel)
-    {
-        _state = State::Activated;
 
-        _localIndex = localIndex;
-        _level = _type == Type::Starting ? parentLevel+1 : parentLevel;
 
-        _onActivateGUISet();
 
-        _onActivate();
-        size_t index = 0;
-        for(auto* req : _requirmentNodes)
-        {
-            req->_activate(index++, _level);
-        }
-    }
-
-    void QuestNode::_invokeParentToBlockNeighbours()
-    {
-        for(auto* parent : _parentNodes)
-        {
-            parent->_blockNotChosenNodes();
-        }
-    }
-    void QuestNode::_blockNotChosenNodes()
-    {
-        for(auto& nextNode : _nextNodes)
-        {
-            auto& state = nextNode->_state;
-            if(state != State::Finished)
-            {
-                if(nextNode->_type != Type::Starting)
-                {
-                    nextNode->_block();
-                }
-            }
-        }
-    }
     void QuestNode::_onActivateGUISet()
     {   
         if(_type == Type::Step)
@@ -247,6 +246,10 @@ namespace rat
     void QuestNode::setTitle(const std::string& title)
     {
         _title = title;
+    }
+    void QuestNode::setName(const std::string& name)
+    {
+        _name = name;
     }
     
 }

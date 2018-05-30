@@ -20,6 +20,7 @@ namespace rat
     void QuestLog::init()
     {
         _quest = std::make_unique<Quest>(*this);
+        auto* quest = _quest.get();
         auto* node = _quest->getRoot();
         _widget = getModule<GUI>().addInterface();
         _widget->setSize(40.f, 50.f);
@@ -71,20 +72,23 @@ namespace rat
             w[i]->setPosition(100 + i *200, 100);
             
         }
-        auto* n1 = node->addStep();
-        auto* n2 = node->addStep();
-
-        node->setTitle("Wejdz do Ktorychs ze dzrwi");
-
-        n1->setTitle("Wejdz &w lewe");
-        n1->_onActivate = [&w, n1, &gui](){
+        auto* choice = node->addBrancher();
+        choice->setTitle("Wejdz do ktorychs z drzwi");
+        auto* n1 = choice->addStep();
+        auto* n2 = choice->addStep();
+        choice->_onActivate = [=, &gui](){
             w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/LeftOpen.png"));
-            w[0]->setCallback(CALL, [n1](Widget*){
-                n1->nextStep();
+            w[0]->setCallback(CALL, [=](Widget*){
+                choice->nextStep(0);
+            });
+            w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/RightOpen.png"));
+            w[1]->setCallback(CALL, [=](Widget*){
+                choice->nextStep(1);              
             });
         };
-        n1->_onFinished = [](){
-            std::cout << "Wszedles w lewe drzwi\n";
+
+        n1->_onActivate = [n1](){
+            n1->nextStep();
         };
 
         n1->setBlockedCallback([w, &gui](){
@@ -93,15 +97,8 @@ namespace rat
             std::cout << "Lewe drzwi sie zamknely\n";
         });
 
-        n2->setTitle("Wejdz w prawe");
-        n2->_onActivate = [&w, n2, &gui](){
-            w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/RightOpen.png"));
-            w[1]->setCallback(CALL, [n2](Widget*){
-                n2->nextStep();              
-            });
-        };
-        n2->_onFinished = [](){
-            std::cout << "Wszedles w prawe drzwi\n";
+        n2->_onActivate = [n2](){
+            n2->nextStep();
         };
         n2->setBlockedCallback([w, &gui](){
             w[1]->setCallback(CALL, [](Widget*){});
@@ -173,47 +170,48 @@ namespace rat
         
         auto* exitt = shieldLoot->addStep();
         exitt->setTitle("Opusc krypte");
-        exitt->_onActivate = [w, &gui, exitt](){
+        exitt->_onActivate = [=, &gui](){
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Exit.png"));
-            w[1]->setCallback(CALL, [exitt](auto*){
-                exitt->nextStep();
+            w[1]->setCallback(CALL, [=](auto*){
+                if(quest->isReqSuited("IsRingTaken"))
+                {
+                    std::cout << "Masz przeklety pierscien, nie mozesz wyjsc\n";
+                }
+                else
+                {
+                    exitt->nextStep();
+                }
             });
         };
         exitt->_onFinished = [](){
             std::cout << "Opusciles krypte\n";
         };
+
+        _quest->addReq("IsRingTaken");
         
-        auto* pied = n2->addStep();
-        pied->setTitle("Podejdz do piedestalow");
-        pied->_onActivate = [w, &gui, pied](){
-            w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Pied.png"));
-            w[1]->setCallback(CALL, [pied](auto*){
-                pied->nextStep();
+        auto* pied = n2->addBrancher();
+        auto* wizard  = pied->addStep();
+        auto* knight  = pied->addStep();
+        pied->setTitle("Wez miecz lub pierscien");
+        pied->_onActivate = [=, &gui](){
+            w[2]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Sword.png"));
+            w[2]->setCallback(CALL, [=](auto*){
+                pied->nextStep(1);
+            });
+
+            w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Ring.png"));
+            w[0]->setCallback(CALL, [=](auto*){
+                pied->nextStep(0);
+                quest->suitReq("IsRingTaken");
             });
         };
-        pied->_onFinished = [w, &gui, pied](){
-            w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
-            w[1]->setCallback(CALL, [pied](auto*){});
+        pied->_onFinished = [=, &gui](){
+            w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
+            w[0]->setCallback(CALL, [](auto*){});
+            w[2]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
+            w[2]->setCallback(CALL, [](auto*){});
         };
 
-        auto* ring = pied->addStep();
-        ring->setTitle("Wez pierscien");
-        ring->_onActivate = [w, &gui, ring](){
-            w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Ring.png"));
-            w[0]->setCallback(CALL, [ring](auto*){
-                ring->nextStep();
-            });
-        };
-        ring->_onFinished = [w, &gui, ring](){
-            w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
-            w[0]->setCallback(CALL, [](auto*){});
-        };
-        ring->_onBlocked = [w, &gui](){
-            w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
-            w[0]->setCallback(CALL, [](auto*){});
-            std::cout << "Pierscien znika lol\n";
-        };
-        auto* wizard  = ring->addStep();
         wizard->setTitle("Pokonaj czarodzieja");
         wizard->_onActivate = [w, &gui, wizard](){
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Wizard.png"));
@@ -229,25 +227,6 @@ namespace rat
         };
         wizard->addNode(exitt);
 
-        auto* sword = pied->addStep();
-        sword->setTitle("Wez miecz");
-        sword->_onActivate = [w, &gui, sword](){
-            w[2]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Sword.png"));
-            w[2]->setCallback(CALL, [sword](auto*){
-                sword->nextStep();
-            });
-        };
-        sword->_onFinished = [w, &gui, sword](){
-            w[2]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
-            w[2]->setCallback(CALL, [](auto*){});
-        };
-        sword->_onBlocked = [w, &gui](){
-            w[2]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));
-            w[2]->setCallback(CALL, [](auto*){});
-            std::cout << "Miecz znika lol\n";
-        };
-
-        auto* knight  = sword->addStep();
         knight->setTitle("Pokonaj rycerza");
         knight->_onActivate = [w, &gui, knight](){
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Knight.png"));

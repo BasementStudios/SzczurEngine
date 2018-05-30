@@ -4,7 +4,7 @@ namespace rat
 {
     QuestGUI::QuestGUI()
     {
-        _title.setSize({100u, 25u});
+        _title.setSize({200u, 25u});
         _title.setReq("None");
         _addBar(_title);
     }
@@ -54,7 +54,7 @@ namespace rat
         }
         auto& sub = _subTitles[index];
         sub->activate();
-        sub->setSize({100u, 25u});
+        sub->setSize({200u, 25u});
         sub->setPosition(_titlePadding, (25.f + _titlePadding) * float(index + 1));
         sub->setFont(_font);
         
