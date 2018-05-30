@@ -3,12 +3,8 @@
 #include <algorithm>
 #include <fstream>
 
-<<<<<<< HEAD:src/Szczur/Modules/DialogEditor/NodeManager.cpp
-#include <json.hpp>
 #include <NodeEditor/NodeEditor.h>
-=======
 #include <Json/json.hpp>
->>>>>>> DialogEditor:src/Szczur/Modules/DialogEditor/NodeEditor/NodeManager.cpp
 
 #include "Szczur/Utility/Logger.hpp"
 

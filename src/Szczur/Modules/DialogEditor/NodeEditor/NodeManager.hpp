@@ -6,11 +6,7 @@
 #include <string>
 
 #include <NodeEditor/NodeEditor.h>
-<<<<<<< HEAD:src/Szczur/Modules/DialogEditor/NodeManager.hpp
-#include <json.hpp>
-=======
 #include <Json/json.hpp>
->>>>>>> DialogEditor:src/Szczur/Modules/DialogEditor/NodeEditor/NodeManager.hpp
 
 #include "../DLGEditor/DialogData.hpp"
 

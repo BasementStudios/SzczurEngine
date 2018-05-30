@@ -3,10 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-<<<<<<< HEAD:src/Szczur/Modules/DialogEditor/NodeEditor.cpp
 #include <NodeEditor/Shared/Math2D.h>
-=======
->>>>>>> DialogEditor:src/Szczur/Modules/DialogEditor/NodeEditor/NodeEditor.cpp
 #include <NodeEditor/Shared/Interop.h>
 
 #include "Szczur/Config.hpp"
