@@ -53,7 +53,7 @@ void DialogEditor::update()
 			{
 				getModule<Dialog>().unload();
 				saveProject();
-				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::Lua);
+				_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
 				_showCharactersManager = false;
 				_showDlgEditor = false;
 				_showNodeEditor = false;
@@ -210,7 +210,7 @@ void DialogEditor::update()
 void DialogEditor::saveProject()
 {
 	_dlgEditor.save();
-	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
 	_CharactersManager.save(_projectPath + "/characters.json");
 }
 
@@ -220,7 +220,7 @@ void DialogEditor::createProject(const std::string& path)
 
 	_dlgEditor.load(_projectPath);
 	_nodeEditor.createNew();
-	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::Json);
+	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
 	_CharactersManager.clear();
 	_CharactersManager.save(_projectPath + "/characters.json");
 
@@ -250,7 +250,7 @@ void DialogEditor::openProject(const std::string& path)
 
 		_CharactersManager.load(_projectPath + "/characters.json");
 		_dlgEditor.load(_projectPath);
-		_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::Json);
+		_nodeEditor.load(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
 		_nodeEditor.setTextContainer(&_dlgEditor.getContainer());
 
 		_projectLoaded = true;

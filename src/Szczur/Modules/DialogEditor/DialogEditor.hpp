@@ -6,9 +6,9 @@
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Dialog/Dialog.hpp"
 
-#include "NodeEditor.hpp"
-#include "DLGEditor.hpp"
-#include "CharactersManager.hpp"
+#include "NodeEditor/NodeEditor.hpp"
+#include "DLGEditor/DLGEditor.hpp"
+#include "CharactersManager/CharactersManager.hpp"
 
 namespace rat
 {

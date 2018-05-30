@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "CharacterData.hpp"
+#include "../CharactersManager//CharacterData.hpp"
 
 namespace rat 
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DLGEditor.hpp"
+#include "../DLGEditor/DLGEditor.hpp"
 
 namespace rat
 {

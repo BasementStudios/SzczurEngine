@@ -3,7 +3,11 @@
 #include <fstream>
 #include <experimental/filesystem>
 
+<<<<<<< HEAD:src/Szczur/Modules/DialogEditor/CharactersManager.cpp
 #include <json.hpp>
+=======
+#include <Json/json.hpp>
+>>>>>>> DialogEditor:src/Szczur/Modules/DialogEditor/CharactersManager/CharactersManager.cpp
 
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Utility/Logger.hpp"

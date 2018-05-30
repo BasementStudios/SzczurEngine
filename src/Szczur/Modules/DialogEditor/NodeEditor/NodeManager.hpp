@@ -6,12 +6,16 @@
 #include <string>
 
 #include <NodeEditor/NodeEditor.h>
+<<<<<<< HEAD:src/Szczur/Modules/DialogEditor/NodeManager.hpp
 #include <json.hpp>
+=======
+#include <Json/json.hpp>
+>>>>>>> DialogEditor:src/Szczur/Modules/DialogEditor/NodeEditor/NodeManager.hpp
 
-#include "DialogData.hpp"
+#include "../DLGEditor/DialogData.hpp"
 
 namespace ed = ax::NodeEditor;
-using json = nlohmann::json;
+using Json = nlohmann::json;
 
 namespace rat
 {
@@ -118,8 +122,8 @@ public:
 	NodeManager() = default;
 	~NodeManager() = default;
 
-	bool read(const json& j);
-	void write(json& j);
+	bool read(const Json& j);
+	void write(Json& j);
 
 	void reset();
 
