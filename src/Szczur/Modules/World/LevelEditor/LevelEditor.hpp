@@ -13,7 +13,6 @@
 #include "../ScenesManager.hpp"
 
 #include <boost/container/flat_map.hpp>
-#include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
 
 #include "ObjectsList.hpp"
@@ -23,7 +22,6 @@
 #include "ArmatureDisplayDataManager.hpp"
 
 namespace rat {
-	class DialogEditor;
 	class InputManager;
 
 	struct FreeCamera {
@@ -50,8 +48,8 @@ namespace rat {
 
 		FreeCamera _freeCamera;
 		
-		DialogEditor* _dialogEditor = nullptr;
-		AudioEditor* _audioEditor = nullptr;
+		// DialogEditor* _dialogEditor = nullptr;
+		// AudioEditor* _audioEditor = nullptr;
 		bool _ifRenderDialogEditor{false};
 		bool _ifRenderAudioEditor{false};
 
