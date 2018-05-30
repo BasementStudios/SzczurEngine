@@ -6,7 +6,6 @@
 #include "Components/ArmatureComponent.hpp"
 #include "Components/CameraComponent.hpp"
 #include "Components/ScriptableComponent.hpp"
-#include "Components/InputControllerComponent.hpp"
 #include "Components/InteractableComponent.hpp"
 #include "Components/TriggerComponent.hpp"
 #include "Components/TraceComponent.hpp"
@@ -28,7 +27,6 @@ struct ComponentTraits
 		if (id == fnv1a_64("ArmatureComponent")) return std::make_unique<ArmatureComponent>(parent);
 		if (id == fnv1a_64("CameraComponent")) return std::make_unique<CameraComponent>(parent);
 		if (id == fnv1a_64("ScriptableComponent")) return std::make_unique<ScriptableComponent>(parent);
-		if (id == fnv1a_64("InputControllerComponent")) return std::make_unique<InputControllerComponent>(parent);
 		if (id == fnv1a_64("InteractableComponent")) return std::make_unique<InteractableComponent>(parent);
 		if (id == fnv1a_64("TriggerComponent")) return std::make_unique<TriggerComponent>(parent);
 		if (id == fnv1a_64("TraceComponent")) return std::make_unique<TraceComponent>(parent);
@@ -43,7 +41,6 @@ struct ComponentTraits
 		if (name == "ArmatureComponent") return std::make_unique<ArmatureComponent>(parent);
 		if (name == "CameraComponent") return std::make_unique<CameraComponent>(parent);
 		if (name == "ScriptableComponent") return std::make_unique<ScriptableComponent>(parent);
-		if (name == "InputControllerComponent") return std::make_unique<InputControllerComponent>(parent);
 		if (name == "InteractableComponent") return std::make_unique<InteractableComponent>(parent);
 		if (name == "TriggerComponent") return std::make_unique<TriggerComponent>(parent);
 		if (name == "TraceComponent") return std::make_unique<TraceComponent>(parent);
@@ -65,7 +62,6 @@ struct ComponentTraits
 		if (name == "ArmatureComponent") return fnv1a_64("ArmatureComponent");
 		if (name == "CameraComponent") return fnv1a_64("CameraComponent");
 		if (name == "ScriptableComponent") return fnv1a_64("ScriptableComponent");
-		if (name == "InputControllerComponent") return fnv1a_64("InputControllerComponent");
 		if (name == "InteractableComponent") return fnv1a_64("InteractableComponent");
 		if (name == "TriggerComponent") return fnv1a_64("TriggerComponent");
 		if (name == "TraceComponent") return fnv1a_64("TraceComponent");
@@ -80,7 +76,6 @@ struct ComponentTraits
 		if (id == fnv1a_64("ArmatureComponent")) return "ArmatureComponent";
 		if (id == fnv1a_64("CameraComponent")) return "CameraComponent";
 		if (id == fnv1a_64("ScriptableComponent")) return "ScriptableComponent";
-		if (id == fnv1a_64("InputControllerComponent")) return "InputControllerComponent";
 		if (id == fnv1a_64("InteractableComponent")) return "InteractableComponent";
 		if (id == fnv1a_64("TriggerComponent")) return "TriggerComponent";
 		if (id == fnv1a_64("TraceComponent")) return "TraceComponent";
@@ -96,7 +91,6 @@ struct ComponentTraits
 		if (std::is_same_v<T, ArmatureComponent>) return fnv1a_64("ArmatureComponent");
 		if (std::is_same_v<T, CameraComponent>) return fnv1a_64("CameraComponent");
 		if (std::is_same_v<T, ScriptableComponent>) return fnv1a_64("ScriptableComponent");
-		if (std::is_same_v<T, InputControllerComponent>) return fnv1a_64("InputControllerComponent");
 		if (std::is_same_v<T, InteractableComponent>) return fnv1a_64("InteractableComponent");
 		if (std::is_same_v<T, TriggerComponent>) return fnv1a_64("TriggerComponent");
 		if (std::is_same_v<T, TraceComponent>) return fnv1a_64("TraceComponent");
@@ -116,7 +110,6 @@ struct ComponentTraits
 	static void initScript(Script& script) {
 		auto module = script.newModule("World");
 		script.initClasses<ScriptableComponent>();
-		script.initClasses<InputControllerComponent>();
 		script.initClasses<InteractableComponent>();
 		script.initClasses<ArmatureComponent>();
 		script.initClasses<TraceComponent>();

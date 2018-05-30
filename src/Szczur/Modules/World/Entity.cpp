@@ -225,7 +225,6 @@ void Entity::initScript(Script& script)
 	auto object = script.newClass<Entity>("Entity", "World");
 	object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
 	object.set("getInteractable", &Entity::getComponentAs<InteractableComponent>);
-	object.set("getInputController", &Entity::getComponentAs<InputControllerComponent>);
 	object.set("getArmature", &Entity::getComponentAs<ArmatureComponent>);
 	object.set("move", [](Entity& entity, float x, float y, float z){entity.move({x,y,z});});
 	object.set("setPosition", [](Entity& entity, float x, float y, float z){entity.setPosition({x,y,z});});

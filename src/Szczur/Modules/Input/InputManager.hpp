@@ -82,7 +82,6 @@ public:
 	///
 	sf::Vector2i getMousePosition() const;
 
-	static void initScript(Script& script);
 private:
 
 	///

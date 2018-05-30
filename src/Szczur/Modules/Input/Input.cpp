@@ -16,8 +16,10 @@ Input::Input()
 	module.set("Key_S", Keyboard::Down);
 	module.set("Key_D", Keyboard::Right);
 	module.set("Key_Space", Keyboard::Space);
-
-	script.initClasses<InputManager>();
+	
+	module.set_function("isKept", [&](Keyboard::Code_e key){return _inputManager.isKept(key);});
+	module.set_function("isPressed", [&](Keyboard::Code_e key){return _inputManager.isPressed(key);});
+	module.set_function("isUnkept", [&](Keyboard::Code_e key){return _inputManager.isUnkept(key);});
 
 	LOG_INFO("Module Input initialized");
 }

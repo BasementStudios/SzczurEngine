@@ -10,7 +10,6 @@
 
 // Components
 #include "Components/ScriptableComponent.hpp"
-#include "Components/InputControllerComponent.hpp"
 
 #include "Szczur/Modules/Input/Input.hpp"
 
@@ -48,8 +47,8 @@ void Scene::update(float deltaTime)
 			entity->update(deltaTime);
 			if(auto* comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr) {
 				comp->update(deltaTime);
-				if(auto* comp = entity->getComponentAs<InputControllerComponent>(); comp != nullptr)
-					comp->update(input, deltaTime);
+				// if(auto* comp = entity->getComponentAs<InputControllerComponent>(); comp != nullptr)
+				// 	comp->update(input, deltaTime);
 				if(input.isReleased(Keyboard::LShift))
 					if(auto* comp = entity->getComponentAs<InteractableComponent>(); comp != nullptr)
 						if(comp->checkForInteraction(player->getPosition()))
