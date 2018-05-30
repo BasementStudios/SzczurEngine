@@ -5,6 +5,8 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
+#include <Szczur/ImGuiStyler.hpp>
+
 #include <ImGui/imgui.h>
 
 #include "../ScenesManager.hpp"
@@ -196,6 +198,10 @@ namespace rat {
 
 			if (ImGui::BeginMenu("Debug"))
 			{
+				if (ImGui::MenuItem("Reload style", nullptr))
+				{
+					ImGuiStyler::get().reload();
+				}
 				if (ImGui::MenuItem("Add player", nullptr))
 				{
 					_scenes.addPlayer();

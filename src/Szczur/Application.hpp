@@ -15,6 +15,8 @@
 #include "Szczur/Modules/Dialog/Dialog.hpp"
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
+#include "ImGuiStyler.hpp"
+
 namespace rat
 {
 
@@ -42,8 +44,6 @@ public:
 
 	void render();
 
-	void setupImGuiStyle();
-
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
 
@@ -55,7 +55,7 @@ public:
 
 private:
 
-
+	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
 	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor, Music, AudioEditor, AudioEffects> _modules;
 
