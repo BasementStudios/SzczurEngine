@@ -157,33 +157,30 @@ namespace rat {
                             ImGui::Text(object->getArmatureDisplayData() ? mapWindows1250ToUtf8(object->getArmatureDisplayData()->getName()).c_str() : "None");
 
                             // Select animation button
-                            if(auto* arm = object->getArmature(); arm && arm->getAnimation()) {
-                                ImGui::Button("Select animation##armature_component");
+							if (auto* arm = object->getArmature(); arm && arm->getAnimation()) {
+								if (ImGui::BeginCombo("Animation", arm->getAnimation()->getLastAnimationName().c_str())) {
+									for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames()) {
+										bool isSelected = (arm->getAnimation()->getLastAnimationName() == anim);
 
-                                ImGui::SetNextWindowSize({300.f, 200.f});
-                                if(ImGui::BeginPopupContextItem(NULL, 0)) {
-                                    auto names = arm->getAnimation()->getAnimationNames();
-                                    for(auto& it : names) {
-                                        ImGui::PushID(it.c_str());
-                                        if(ImGui::Selectable(it.c_str())) {
-                                            arm->getAnimation()->play(it);
-                                        }
-                                        ImGui::PopID();
-                                    }
-                                    ImGui::EndPopup();
-                                }
-                                if(arm->getAnimation()->isPlaying()) {
-                                    ImGui::SameLine();
-                                    if(ImGui::Button("Stop##armature_component")) {
-                                        arm->getAnimation()->play(arm->getAnimation()->getLastAnimationName());
-                                        arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
-                                    }
-                                }
+										if (ImGui::Selectable(anim.c_str(), isSelected))
+											arm->getAnimation()->play(anim);
+										else
+											ImGui::SetItemDefaultFocus();
+									}
 
-                                ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
-                            }
+									ImGui::EndCombo();
+								}
 
+								if (arm->getAnimation()->isPlaying()) {
+									ImGui::SameLine();
+									if (ImGui::Button("Stop##armature_component")) {
+										arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
+										arm->getAnimation()->reset();
+									}
+								}
 
+								ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
+							}
                         }
                     }
                     if(auto* object = focusedObject->getComponentAs<ScriptableComponent>(); object != nullptr) {
@@ -457,7 +454,6 @@ namespace rat {
 
 																}
 															}
-
 
 															ImGui::EndCombo();
 														}
