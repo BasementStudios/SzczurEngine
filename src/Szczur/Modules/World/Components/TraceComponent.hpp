@@ -31,6 +31,9 @@ public:
 	void pause();
 	void resume();
 
+	void setTimeline(int id);
+	void stop();
+
 	virtual void loadFromConfig(const Json& config);
 	virtual void saveToConfig(Json& config) const;
 

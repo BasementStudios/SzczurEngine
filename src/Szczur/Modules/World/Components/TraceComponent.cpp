@@ -1,6 +1,7 @@
 #include "TraceComponent.hpp"
 
 #include "Szczur/Modules/Trace/Trace.hpp"
+#include "Szczur/Modules/Trace/Timeline.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
@@ -38,6 +39,21 @@ void TraceComponent::resume()
 	_trace->resume();
 }
 
+void TraceComponent::setTimeline(int id)
+{
+	auto& timelines = _trace->getTimelines();
+
+	auto timeline = std::find_if(timelines.begin(), timelines.end(), [id] (auto& timeline) { return id == timeline->getId(); });
+
+	if (*timeline)
+		_trace->setCurrentTimeline((*timeline).get());
+}
+
+void TraceComponent::stop()
+{
+	_trace->setCurrentTimeline(nullptr);
+}
+
 void TraceComponent::loadFromConfig(const Json& config)
 {
 	Component::loadFromConfig(config);
@@ -70,6 +86,8 @@ void TraceComponent::initScript(Script& script)
 	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
 	object.set("pause", &TraceComponent::pause);
 	object.set("resume", &TraceComponent::resume);
+	object.set("setTimeline", &TraceComponent::setTimeline);
+	object.set("stop", &TraceComponent::stop);
 	object.init();
 }
 
