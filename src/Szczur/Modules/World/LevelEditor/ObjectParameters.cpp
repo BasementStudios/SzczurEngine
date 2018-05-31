@@ -320,7 +320,7 @@ namespace rat {
                                 {
                                     std::string id = std::to_string(reinterpret_cast<uintptr_t>(timeline.get()));
 
-                                    if (ImGui::TreeNode(("Timeline##" + id).c_str()))
+                                    if (ImGui::TreeNode(("Timeline " + std::to_string(timeline->getId())).c_str()))
                                     {
                                         ImGui::SameLine();
 
