@@ -524,14 +524,17 @@ namespace rat {
                                 object->getTrace()->addTimeline();
                             }
 
-                            ImGui::SameLine();
+							ImGui::Separator();
+
+							ImGui::Text("Current timeline: %d\n", object->getTrace()->getCurrentTimeline() ? object->getTrace()->getCurrentTimeline()->getId() : -1);
 
                             if (ImGui::Button("Stop##trace_component"))
                             {
                                 object->getTrace()->setCurrentTimeline(nullptr);
                             }
 
-							
+							ImGui::SameLine();
+
 							if (ImGui::Button("Pause##trace_component"))
 							{
 								object->pause();
