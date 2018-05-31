@@ -441,12 +441,27 @@ namespace rat {
                                                     if (ImGui::TreeNode(("Anim##" + actionId).c_str()))
                                                     {
                                                         static char animName[64] = { 0 };
-                                                        strcpy(animName, animAction->AnimationName.c_str());
+                                                        
+														if (ImGui::BeginCombo("Animation", animAction->AnimationName.c_str()))
+														{
+															if (auto arm = focusedObject->getComponentAs<ArmatureComponent>())
+															{
+																for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames())
+																{
+																	bool isSelected = (animAction->AnimationName == anim);
 
-                                                        if (ImGui::InputText(("Animation name##" + actionId).c_str(), animName, 64))
-                                                        {
-                                                            animAction->AnimationName = animName;
-                                                        }
+																	if (ImGui::Selectable(anim.c_str(), isSelected))
+																		animAction->AnimationName = anim;
+																	else
+																		ImGui::SetItemDefaultFocus();
+
+																}
+															}
+
+
+															ImGui::EndCombo();
+														}
+
                                                         ImGui::DragFloat(("Fade in time##" + actionId).c_str(), &animAction->FadeInTime, 0.01f, 0.01f, 1.f);
 
                                                         ImGui::Checkbox(("Play once##" + actionId).c_str(), &animAction->PlayOnce);
