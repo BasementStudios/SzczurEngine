@@ -70,6 +70,7 @@ void TraceComponent::initScript(Script& script)
 	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
 	object.set("pause", &TraceComponent::pause);
 	object.set("resume", &TraceComponent::resume);
+	object.init();
 }
 
 std::unique_ptr<Component> TraceComponent::copy(Entity* newParent) const
