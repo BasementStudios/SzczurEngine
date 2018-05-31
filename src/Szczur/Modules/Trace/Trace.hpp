@@ -42,6 +42,7 @@ public:
 	void removeTimeline(Timeline* timeline);
 
 	void setCurrentTimeline(Timeline* timeline);
+	auto getCurrentTimeline() { return _currentTimeline; }
 
 	auto& getTimelines() { return _timelines; }
 
