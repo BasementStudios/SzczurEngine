@@ -96,7 +96,7 @@ void Timeline::update(float deltaTime)
 				if (moveAction->EndRelativeToStart)
 					end += moveAction->Start;
 
-				vertex.position = moveAction->End;
+				vertex.position = end;
 				_vertexArray.set(i, vertex);
 
 				lastPosition = end;
