@@ -181,7 +181,6 @@ private:
 	std::string _name;
 	Scene* _parent;
 	ComponentsHolder_t _holder;
-
 };
 
 }

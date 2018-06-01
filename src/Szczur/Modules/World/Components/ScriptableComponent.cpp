@@ -1,8 +1,11 @@
 #include "ScriptableComponent.hpp"
 
 #include "../Entity.hpp"
+#include "../ScenesManager.hpp"
 
 #include <Szczur/Modules/Script/Script.hpp>
+
+#include "Szczur/Utility/Convert/Windows1250.hpp"
 
 namespace rat {
 	ScriptableComponent::ScriptableComponent(Entity* parent) :
@@ -21,11 +24,11 @@ namespace rat {
 	{
 		auto ptr = std::make_unique<ScriptableComponent>(*this);
 
-        ptr->setEntity(newParent);
-        ptr->_scriptFilePath = _scriptFilePath;
-        ptr->_updateCallback = _updateCallback;
+		ptr->setEntity(newParent);
+		ptr->_scriptFilePath = _scriptFilePath;
+		ptr->_updateCallback = _updateCallback;
 
-        return ptr;
+		return ptr;
 	}
 
 	/// Set script and run
@@ -105,4 +108,63 @@ namespace rat {
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 		object.init();
 	}
+
+	void ScriptableComponent::renderHeader(ScenesManager& scenes, Entity* object) {
+		if(ImGui::CollapsingHeader("Scriptable##scriptable_component")) {
+			static bool onceType = false;
+
+			// Load script button
+			if(ImGui::Button("Load##scriptable_component")) {
+
+				// Path to script
+				std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets");
+
+				// Loading script
+				if(file != "") {
+					try {
+						if(onceType) {
+							loadAnyScript(file);
+						}
+						else {
+							loadScript(file);
+						}
+					}
+					catch(const std::exception& exc) {
+						LOG_EXCEPTION(exc);
+					}
+				}
+			}
+
+			// Some options for selected script
+			if(getFilePath()!="") {
+
+				// Reload current script button
+				ImGui::SameLine();
+				if(ImGui::Button("Reload##scriptable_component")) {
+					try {
+						reloadScript();
+					}
+					catch (const std::exception& exc)
+					{
+						LOG_EXCEPTION(exc);
+					}
+				}
+
+				// Remove script from object
+				ImGui::SameLine();
+				if(ImGui::Button("Remove##scriptable_component")) {
+					loadScript("");
+				}
+			}
+
+			// Show path to current script
+			ImGui::Text("Path:");
+			ImGui::SameLine();
+			ImGui::Text(getFilePath()!="" ? mapWindows1250ToUtf8(getFilePath()).c_str() : "None");
+
+			// Once type checkbox
+			ImGui::Checkbox("Once type##scriptable_component", &onceType);
+		}
+	}
+
 }

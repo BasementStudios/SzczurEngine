@@ -16,52 +16,98 @@
 #include "Szczur/Modules/Camera/Camera.hpp"
 
 #include "ObjectsList.hpp"
-#include "Bar.hpp"
-#include "ObjectParameters.hpp"
 #include "SpriteDisplayDataManager.hpp"
 #include "ArmatureDisplayDataManager.hpp"
 
 namespace rat {
-	class InputManager;
 
-	struct FreeCamera {
-		glm::vec3 position{0.f, 0.f, 0.f};
-		glm::vec3 rotation{0.f, 0.f, 0.f};
-		bool rotating{false};
-		float velocity{50.f};
-		sf::Vector2i previousMouse{0, 0};
-		void move(const glm::vec3& offset) {position += offset;}
-		void rotate(const glm::vec3& offset) {rotation += offset;}
-		void processEvents(InputManager& input);
-	};
+class InputManager;
 
-	class LevelEditor {
-	public:
-		LevelEditor(ScenesManager& scenes);
+struct FreeCamera {
+public:
+	
+	///
+	void move(const glm::vec3& offset) {position += offset;}
 
-		void render(sf3d::RenderTarget& target);
-		void update(InputManager& input, Camera& camera);
-	private:
-		ScenesManager& _scenes;
+	///
+	void rotate(const glm::vec3& offset) {rotation += offset;}
 
-		void _processEventsForFreeCamera(InputManager& input);
+	///
+	void processEvents(InputManager& input);
 
-		FreeCamera _freeCamera;
-		
-		// DialogEditor* _dialogEditor = nullptr;
-		// AudioEditor* _audioEditor = nullptr;
-		bool _ifRenderDialogEditor{false};
-		bool _ifRenderAudioEditor{false};
+public:
 
+	glm::vec3 position{0.f, 0.f, 0.f};
+	glm::vec3 rotation{0.f, 0.f, 0.f};
+	bool rotating{false};
+	float velocity{50.f};
+	sf::Vector2i previousMouse{0, 0};
+};
 
+class LevelEditor {
+public:
 
-		ObjectsList _objectsList;
-		Bar _bar;
-		ObjectParameters _objectParameters;
-		SpriteDisplayDataManager _spriteDisplayDataManager;
-		ArmatureDisplayDataManager _armatureDisplayDataManager;
+// Constructors
 
-	};
+	///
+	LevelEditor(ScenesManager& scenes);
+
+// Main
+
+	///
+	void render(sf3d::RenderTarget& target);
+
+	///
+	void update(InputManager& input, Camera& camera);
+
+	///
+	void printMenuBarInfo(const std::string& text);
+
+private:
+
+	///
+	void _processEventsForFreeCamera(InputManager& input);
+	
+	///
+	void _renderMenuBar();
+
+	///
+	void _renderProperties();
+
+	///
+	void _renderComponentsManager();
+
+private:
+
+// World
+
+	ScenesManager& _scenes;
+
+// Parts of editor
+
+	FreeCamera _freeCamera;
+	ObjectsList _objectsList;
+	SpriteDisplayDataManager _spriteDisplayDataManager;
+	ArmatureDisplayDataManager _armatureDisplayDataManager;
+	// DialogEditor* _dialogEditor = nullptr;
+	// AudioEditor* _audioEditor = nullptr;
+
+// Menu info
+
+	std::string _menuInfo;
+	sf::Clock _menuInfoClock;
+
+// Ifs
+
+	bool _ifRenderDialogEditor{false};
+	bool _ifRenderAudioEditor{false};
+	bool _ifRenderObjectsList{true};
+	bool _ifRenderSpriteDisplayDataManager{false};
+	bool _ifRenderArmatureDisplayDataManager{false};
+	bool _ifRenderProperties{false};
+	bool _ifShowImGuiDemoWindow{false};
+
+};
 
 	
 }

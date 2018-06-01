@@ -1,4 +1,4 @@
-#include "Bar.hpp"
+#include "LevelEditor.hpp"
 
 #include <experimental/filesystem>
 
@@ -9,27 +9,13 @@
 
 #include <ImGui/imgui.h>
 
-#include "../ScenesManager.hpp"
+#include <shellapi.h>
 
 namespace rat {
-    Bar::Bar(
-            ScenesManager& scenes,
-            bool& ifRenderObjectsList,
-            bool& ifRenderSpriteDisplayDataManager,
-			bool& ifRenderArmatureDisplayDataManager,
-            bool& ifRenderDialogEditor,
-            bool& ifRenderAudioEditor
-        ) :
-    _scenes{scenes},
-    _ifRenderObjectsList{ifRenderObjectsList},
-	_ifRenderSpriteDisplayDataManager{ifRenderSpriteDisplayDataManager},
-	_ifRenderArmatureDisplayDataManager{ifRenderArmatureDisplayDataManager},
-	_ifRenderDialogEditor{ifRenderDialogEditor},
-	_ifRenderAudioEditor{ifRenderAudioEditor} {
-		_ifShowImGuiDemoWindow = false;
-    }
 
-    void Bar::render() {
+
+	void LevelEditor::_renderMenuBar() {
+
         // Create new world
 		static bool openModalNew = false;
 		static bool openScenesManager = false;
@@ -44,9 +30,8 @@ namespace rat {
 				_scenes.currentFilePath = "";
 				_scenes.removeAllScenes();
 				_scenes.setCurrentScene(_scenes.addScene()->getID());
-				_scenes.getCurrentScene()->anySelected = false;
-				_scenes.getCurrentScene()->focusedObject = static_cast<size_t>(-1);
-				printMenuInfo(std::string("New world created!"));
+				_objectsList.unselect();
+				printMenuBarInfo(std::string("New world created!"));
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::SameLine();
@@ -138,7 +123,7 @@ namespace rat {
 						try {
 							_scenes.loadFromFile(relative);
 							_scenes.currentFilePath = relative;
-							printMenuInfo(std::string("World loaded from file: ")+_scenes.currentFilePath);
+							printMenuBarInfo(std::string("World loaded from file: ")+_scenes.currentFilePath);
 						}
 						catch (const std::exception& exc)
 						{
@@ -148,7 +133,7 @@ namespace rat {
 				}
 				if(ImGui::MenuItem("Save", "F1")) {
 					_scenes.menuSave();
-                    printMenuInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+                    printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
 				}
 				if(ImGui::MenuItem("Save As")) {
 					std::string relative = _scenes.getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
@@ -157,7 +142,7 @@ namespace rat {
 						try {
 							_scenes.saveToFile(relative);
 							_scenes.currentFilePath = relative;
-							printMenuInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+							printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
 						}
 						catch (const std::exception& exc)
 						{
@@ -226,13 +211,7 @@ namespace rat {
 		ImGui::EndMainMenuBar();
     }
 
-    void Bar::update() {
-    	if(_ifShowImGuiDemoWindow) {
-    		ImGui::ShowDemoWindow();
-    	}
-    }
-
-    void Bar::printMenuInfo(const std::string& text) {
+    void LevelEditor::printMenuBarInfo(const std::string& text) {
 		_menuInfo = text;
 		_menuInfoClock.restart();
 	}

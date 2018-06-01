@@ -6,34 +6,55 @@
 
 
 namespace rat {
-    class InputManager;
-    class Entity;
-    class CameraComponent : public Component {
-    public:
-        CameraComponent(Entity* parent);
 
-        void processEvents(InputManager& input);
+class InputManager;
+class Entity;
 
-        virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
+class CameraComponent : public Component {
+public:
 
-        virtual void loadFromConfig(const Json& config) override;
+    ///
+    CameraComponent(Entity* parent);
 
-	    virtual void saveToConfig(Json& config) const override;
+    ///
+    void processEvents(InputManager& input);
 
-        void setVelocity(float velocity);
-        float getVelocity() const;
+    ///
+    virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
-        void setLock(bool lock);
-        bool getLock() const;
+    ///
+    virtual void loadFromConfig(const Json& config) override;
 
-        void setStickToPlayer(bool value);
-        bool getStickToPlayer() const;
+    ///
+    virtual void saveToConfig(Json& config) const override;
 
-    private:
-        bool _rotating{false};
-        bool _locked{false};
-        bool _stickToPlayer{false};
-        float _velocity{50.f};
-        sf::Vector2i _previousMouse;
-    };
+    ///
+    void setVelocity(float velocity);
+
+    ///
+    float getVelocity() const;
+
+    ///
+    void setLock(bool lock);
+
+    ///
+    bool getLock() const;
+
+    ///
+    void setStickToPlayer(bool value);
+
+    ///
+    bool getStickToPlayer() const;
+
+    ///
+    virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
+private:
+    bool _rotating{false};
+    bool _locked{false};
+    bool _stickToPlayer{false};
+    float _velocity{50.f};
+    sf::Vector2i _previousMouse;
+};
+
 }

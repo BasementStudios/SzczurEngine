@@ -9,18 +9,18 @@
 
 
 namespace rat {
-    CameraComponent::CameraComponent(Entity* parent) :
-    Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"} {
+	CameraComponent::CameraComponent(Entity* parent) :
+	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"} {
 
-    }
+	}
 
-    void CameraComponent::processEvents(InputManager& input) {
-        float velocity = _velocity;
-        auto* object = getEntity();
+	void CameraComponent::processEvents(InputManager& input) {
+		float velocity = _velocity;
+		auto* object = getEntity();
 		if(input.isKept(Keyboard::LShift)) {
 			velocity = 200.f;
 		}
-        auto rotation = object->getRotation();
+		auto rotation = object->getRotation();
 
 		if(input.isKept(Keyboard::W)) {
 			object->move({
@@ -71,14 +71,14 @@ namespace rat {
 		if(input.isReleased(Mouse::Right)) {
 			_rotating = false;
 		}
-    }
+	}
 
 	std::unique_ptr<Component> CameraComponent::copy(Entity* newParent) const {
 		auto ptr = std::make_unique<CameraComponent>(*this);
 
-        ptr->setEntity(newParent);
+		ptr->setEntity(newParent);
 
-        return ptr;
+		return ptr;
 	}
 
 	void CameraComponent::setVelocity(float velocity) {
@@ -114,4 +114,25 @@ namespace rat {
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
 	}
+
+	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
+		if(ImGui::CollapsingHeader("Camera##camera_component")) {
+
+			// Set velocity
+			float velocity = getVelocity();
+			ImGui::DragFloat("Velocity##camera_component", &velocity);
+			setVelocity(velocity);
+
+			// Set lock
+			bool locked = getLock();
+			ImGui::Checkbox("Locked##camera_component", &locked);
+			setLock(locked);
+			
+			// Set lock on player
+			bool stickToPlayer = getStickToPlayer();
+			ImGui::Checkbox("Stick To Player##camera_component", &stickToPlayer);
+			setStickToPlayer(stickToPlayer);
+		}
+	}
+
 }

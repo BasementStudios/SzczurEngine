@@ -3,39 +3,57 @@
 #include "../Component.hpp"
 
 namespace rat {
-    class Entity;
-    class TriggerComponent : public Component {
-    public:
-        enum Type : size_t {
-            None = 0u,
-            ChangeScene = 1u,
-            TypesCount
-        } type{None};
 
-        union {
-            struct{
-                size_t sceneId;
-                size_t entranceId;
-            };
-        };
+class Entity;
 
-        TriggerComponent(Entity* parent);
+class TriggerComponent : public Component {
+public:
 
-        bool checkForTrigger(const glm::vec3& position) const;
+	///
+	enum Type : size_t { 
+		None = 0u, 
+		ChangeScene = 1u, 
+		TypesCount 
+	} type{None};
 
-        virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
+	///
+	union {
+		struct{ size_t sceneId; size_t entranceId; };
+	};
 
-        virtual void loadFromConfig(const Json& config) override;
+	///
+	TriggerComponent(Entity* parent);
 
-	    virtual void saveToConfig(Json& config) const override;
+	///
+	bool checkForTrigger(const glm::vec3& position) const;
 
-        void setRadius(float radius);
-        float getRadius() const;
+	///
+	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
-        static std::string enumToString(size_t en);
-        static Type uintToEnum(size_t s);
+	///
+	virtual void loadFromConfig(const Json& config) override;
 
-    private:
-        float _radius{10.f};
-    };
+	///
+	virtual void saveToConfig(Json& config) const override;
+
+	///
+	void setRadius(float radius);
+
+	///
+	float getRadius() const;
+
+	///
+	static std::string enumToString(size_t en);
+
+	///
+	static Type uintToEnum(size_t s);
+
+	///
+	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
+private:
+
+	float _radius{10.f};
+};
+
 }

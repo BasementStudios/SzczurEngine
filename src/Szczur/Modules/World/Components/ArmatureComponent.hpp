@@ -10,46 +10,83 @@
 
 namespace rat
 {
-	class Script;
 
-	class ArmatureComponent : public Component, public sf3d::Drawable
-    {
-    private:
-        dragonBones::SF3DArmatureDisplay* _armature = nullptr;
-        ArmatureDisplayData* _armatureDisplayData = nullptr;
+class Script;
 
-    public:
+class ArmatureComponent : public Component, public sf3d::Drawable
+{
+public:
 
-        ArmatureComponent(Entity* parent);
+// Constructors
 
-        ~ArmatureComponent();
+	///
+	ArmatureComponent(Entity* parent);
 
-        void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData, bool deleteOld = true);
+	///
+	~ArmatureComponent();
 
-        ArmatureDisplayData* getArmatureDisplayData();
+// Getters
 
-        const ArmatureDisplayData* getArmatureDisplayData() const;
+	///
+	ArmatureDisplayData* getArmatureDisplayData();
 
-        dragonBones::SF3DArmatureDisplay* getArmature();
+	///
+	const ArmatureDisplayData* getArmatureDisplayData() const;
 
-        virtual std::unique_ptr<Component> copy(Entity* newParent) const;
+	///
+	dragonBones::SF3DArmatureDisplay* getArmature();
 
-        virtual void* getFeature(Component::Feature_e feature) override;
+	///
+	virtual void* getFeature(Component::Feature_e feature) override;
 
-        virtual const void* getFeature(Component::Feature_e feature) const override;
+	///
+	virtual const void* getFeature(Component::Feature_e feature) const override;
+	
+	///
+	void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData, bool deleteOld = true);
 
-        virtual void loadFromConfig(const Json& config);
-        virtual void saveToConfig(Json& config) const;
+	///
+	virtual std::unique_ptr<Component> copy(Entity* newParent) const;
 
-        void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+// Saving and loading
 
-		// Scripts
-		void playAnim(const std::string& animationName, int playTimes = -1);
-		void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
-		void setFlipX(bool flipX);
-		void setSpeed(float speed);
+	///
+	virtual void loadFromConfig(const Json& config);
 
-		static void initScript(Script& script);
-    };
+	///
+	virtual void saveToConfig(Json& config) const;
+
+// Manipulations
+
+	///
+	void playAnim(const std::string& animationName, int playTimes = -1);
+
+	///
+	void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
+
+	///
+	void setFlipX(bool flipX);
+
+	///
+	void setSpeed(float speed);
+
+// Scripts
+
+	///
+	static void initScript(Script& script);
+
+// Main
+
+	///
+	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+
+	///
+	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
+private:
+
+	dragonBones::SF3DArmatureDisplay* _armature = nullptr;
+	ArmatureDisplayData* _armatureDisplayData = nullptr;
+};
 
 }

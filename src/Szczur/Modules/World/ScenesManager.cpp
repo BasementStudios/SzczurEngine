@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include "Components/CameraComponent.hpp"
+#include "Components/BaseComponent.hpp"
 namespace rat
 {
 
@@ -18,14 +19,18 @@ ScenesManager::ScenesManager() {
 Scene* ScenesManager::addScene()
 {
 	Scene* scene = _holder.emplace_back(std::make_unique<Scene>(this)).get();
-	Entity* player = scene->addEntity("single");
-	Entity* camera = scene->addEntity("single");
 
+	// Add default camera
+	Entity* camera = scene->addEntity("single");
+	camera->addComponent<BaseComponent>();
 	camera->addComponent<CameraComponent>();
 	camera->setName("Camera");
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
 	camera->setRotation({ 15.f, 0.f, 0.f });
 
+	// Add default player
+	Entity* player = scene->addEntity("single");
+	camera->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
 	return scene;

@@ -152,10 +152,6 @@ public:
 
 	///
 	void updateIDs();
-	#ifdef EDITOR
-		size_t focusedObject{0u};
-		bool anySelected{false};
-	#endif
 
 private:
 

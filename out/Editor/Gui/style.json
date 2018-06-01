@@ -9,7 +9,7 @@
 		"FramePadding": [4, 3],
 		"FrameRounding": 0,
 		"FrameBorderSize": 1,
-		"ItemSpacing": [9, 6],
+		"ItemSpacing": [6, 6],
 		"ItemInnerSpacing": [6, 6],
 		"IndentSpacing": 25,
 		"ScrollbarSize": 20,

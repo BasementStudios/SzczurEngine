@@ -8,44 +8,38 @@ namespace rat {
 
     }
 
-    bool& SpriteDisplayDataManager::getBool() {
-        return _ifRender;
-    }
-
-    void SpriteDisplayDataManager::render() {
-        if(_ifRender) {
-            static char enteredText[255];
-            if(ImGui::Begin("Sprite Display Data Manager", &_ifRender)) {
-                auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayDataHolder();
-                ImGui::InputText("", enteredText, 255);
-                
-                ImGui::SameLine();
-                if(ImGui::Button("Add")) {
-                    try{
-                        spriteDisplayDataHolder.emplace_back(enteredText);
-                    }
-                    catch (const std::exception& exc)
-                    {
-                        LOG_EXCEPTION(exc);
-                    }
-                    for(int i = 0; i<255; ++i)
-                        enteredText[i] = '\0';
+    void SpriteDisplayDataManager::render(bool& ifRender) {
+        static char enteredText[255];
+        if(ImGui::Begin("Sprite Display Data Manager", &ifRender)) {
+            auto& spriteDisplayDataHolder = _scenes.getCurrentScene()->getSpriteDisplayDataHolder();
+            ImGui::InputText("", enteredText, 255);
+            
+            ImGui::SameLine();
+            if(ImGui::Button("Add")) {
+                try{
+                    spriteDisplayDataHolder.emplace_back(enteredText);
                 }
-                ImGui::Separator();
-                if(ImGui::BeginChild("Datas")) {
-                    for(auto it = spriteDisplayDataHolder.begin(); it!=spriteDisplayDataHolder.end(); ++it) {
-                        if(ImGui::SmallButton("-")) {
-                            spriteDisplayDataHolder.erase(it);
-                            --it;
-                            continue;
-                        }
-                        ImGui::SameLine();
-                        ImGui::Text(it->getName().c_str());
-                    }
+                catch (const std::exception& exc)
+                {
+                    LOG_EXCEPTION(exc);
                 }
-                ImGui::EndChild();
+                for(int i = 0; i<255; ++i)
+                    enteredText[i] = '\0';
             }
-            ImGui::End();
+            ImGui::Separator();
+            if(ImGui::BeginChild("Datas")) {
+                for(auto it = spriteDisplayDataHolder.begin(); it!=spriteDisplayDataHolder.end(); ++it) {
+                    if(ImGui::SmallButton("-")) {
+                        spriteDisplayDataHolder.erase(it);
+                        --it;
+                        continue;
+                    }
+                    ImGui::SameLine();
+                    ImGui::Text(it->getName().c_str());
+                }
+            }
+            ImGui::EndChild();
         }
+        ImGui::End();
     }
 }

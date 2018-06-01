@@ -63,6 +63,9 @@ public:
 	///
 	static void initScript(Script& script);
 
+	///
+	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
 private:
 
 	

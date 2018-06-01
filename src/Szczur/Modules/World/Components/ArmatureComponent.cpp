@@ -1,5 +1,7 @@
 #include "ArmatureComponent.hpp"
 
+#include <experimental/filesystem>
+
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"
 
 #include "../Entity.hpp"
@@ -155,6 +157,85 @@ namespace rat
 		object.set("setSpeed", &ArmatureComponent::setSpeed);
 		object.init();
 
+	}
+
+	void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object) {
+		if(ImGui::CollapsingHeader("Armature##armature_component")) {
+
+            // Armature data holder
+            auto& armatures = scenes.getArmatureDisplayDataHolder();
+
+            // Load armature button
+            if(ImGui::Button("Load armature...##armature_component")) {
+
+            	// Path to direcotry with armature files
+                std::string directory = scenes.getRelativePathFromExplorer("Select armature file", ".\\Assets");
+                directory = std::experimental::filesystem::path(directory).parent_path().string();
+
+                // Load armature form directory
+                if(directory != "") {
+                    try {
+
+                        auto armature = std::find_if(armatures.begin(), armatures.end(), [directory] (auto& armature) { return armature.getFolderPath() == directory; });
+
+                        ArmatureDisplayData* it = nullptr;
+                        if (armature == armatures.end())
+                        {
+                            // Create new
+                            it = &armatures.emplace_back(directory);
+                        }
+                        else
+                        {
+                            // Use exisiting
+                            it = &(*armature);
+                        }
+
+                        setArmatureDisplayData(it);
+                    }
+                    catch(const std::exception& exc) {
+                        setArmatureDisplayData(nullptr, false);
+
+                        LOG_EXCEPTION(exc);
+                    }
+                }
+            }
+
+            // Show path to armature directory
+            ImGui::Text("Path:");
+            ImGui::SameLine();
+            ImGui::Text(getArmatureDisplayData() ? mapWindows1250ToUtf8(getArmatureDisplayData()->getName()).c_str() : "None");
+
+            // Select animation button
+            if(auto* arm = getArmature(); arm && arm->getAnimation()) {
+                ImGui::Button("Select animation##armature_component");
+
+                // Context menu with available animations
+                ImGui::SetNextWindowSize({300.f, 200.f});
+                if(ImGui::BeginPopupContextItem(NULL, 0)) {
+                	// Selectables with animations name
+                    auto names = arm->getAnimation()->getAnimationNames();
+                    for(auto& it : names) {
+                        ImGui::PushID(it.c_str());
+                        if(ImGui::Selectable(it.c_str())) arm->getAnimation()->play(it);
+                        ImGui::PopID();
+                    }
+                    ImGui::EndPopup();
+                }
+
+                // Stop animation button
+                if(arm->getAnimation()->isPlaying()) {
+                    ImGui::SameLine();
+                    if(ImGui::Button("Stop##armature_component")) {
+                        arm->getAnimation()->play(arm->getAnimation()->getLastAnimationName());
+                        arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
+                    }
+                }
+
+                // Animation speed
+                ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
+            }
+
+        }
 	}
 
 }
