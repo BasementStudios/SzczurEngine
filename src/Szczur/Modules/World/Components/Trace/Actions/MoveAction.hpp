@@ -52,7 +52,10 @@ public:
 		{
 			_progress += _progressSpeed * deltaTime * 100.f;
 
-			auto pos = Start + _delta * _progress;
+			auto pos = Start; // _delta * _progress;
+			pos.x += _delta.x * std::min(1.f, _progress.x);
+			pos.y += _delta.y * std::min(1.f, _progress.y);
+			pos.z += _delta.z * std::min(1.f, _progress.z);
 
 			_entity->setPosition(pos);
 
