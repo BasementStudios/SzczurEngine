@@ -102,7 +102,7 @@ namespace rat {
 			if(ImGui::Button("Load texture...##sprite_component")) {
 				
 				// Path to .png file
-				std::string file = scenes.getRelativePathFromExplorer("Select texture", ".\\Assets");
+				std::string file = scenes.getRelativePathFromExplorer("Select texture", ".\\Assets", "Images (*.png, *.jpg, *.psd|*.png;*.jpg;*.psd");
 				
 				// Load file to sprite data holder
 				if(file != "") {
