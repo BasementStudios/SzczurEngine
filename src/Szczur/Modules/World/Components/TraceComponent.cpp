@@ -14,25 +14,9 @@ namespace rat
 {
 
 TraceComponent::TraceComponent(Entity* parent)
-  : Component { parent, fnv1a_64("TraceComponent"), "TraceComponent", Component::Drawable}
+  : Component { parent, fnv1a_64("TraceComponent"), "TraceComponent" }
 {
 	_trace = std::make_shared<Trace>();
-}
-
-void* TraceComponent::getFeature(Component::Feature_e feature)
-{
-	if (feature == Component::Drawable) 
-		return static_cast<sf3d::Drawable*>(this);
-
-	return nullptr;
-}
-
-const void* TraceComponent::getFeature(Component::Feature_e feature) const
-{
-	if (feature == Component::Drawable) 
-		return static_cast<const sf3d::Drawable*>(this);
-
-	return nullptr;
 }
 
 void TraceComponent::pause()
@@ -82,9 +66,9 @@ void TraceComponent::update(ScenesManager& scenes, float deltaTime)
 	}
 }
 
-void TraceComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
+void TraceComponent::render(sf3d::RenderTarget& target)
 {
-	_trace->draw(target, states);
+	_trace->draw(target, sf3d::RenderStates());
 }
 
 void TraceComponent::initScript(Script& script)
