@@ -15,7 +15,8 @@ public:
 	{
 		Move,
 		Anim,
-		Wait
+		Wait,
+		Script
 	};
 
 public:

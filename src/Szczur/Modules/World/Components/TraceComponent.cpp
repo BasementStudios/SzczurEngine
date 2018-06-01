@@ -7,6 +7,7 @@
 #include "Trace/Actions/AnimAction.hpp"
 #include "Trace/Actions/MoveAction.hpp"
 #include "Trace/Actions/WaitAction.hpp"
+#include "Trace/Actions/ScriptAction.hpp"
 
 #include "../ScenesManager.hpp"
 
@@ -189,7 +190,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			ImGui::Checkbox("Loop", &currentTimeline->Loop);
 			ImGui::Checkbox("Show lines in editor", &currentTimeline->ShowLines);
 
-			ImGui::DragFloat("Speed multipler", &currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
+			ImGui::DragFloat("Speed multiplier", &currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
 
 			ImGui::Spacing();
 
@@ -199,7 +200,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			static int currentComboItem = -1;
 
 			ImGui::PushItemWidth(100.f);
-			ImGui::Combo("##Action", &currentComboItem, "Move\0Anim\0Wait\0");
+			ImGui::Combo("##Action", &currentComboItem, "Move\0Anim\0Wait\0Script\0");
 
 			ImGui::SameLine();
 
@@ -217,6 +218,11 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 				else if (currentComboItem == 2)
 				{
 					currentTimeline->addAction(new WaitAction(object));
+				}
+				else if (currentComboItem == 3)
+				{
+					if (object->hasComponent<ScriptableComponent>())
+						currentTimeline->addAction(new ScriptAction(object));
 				}
 			}
 
@@ -238,6 +244,9 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 							break;
 						case Action::Wait:
 							buttonName = "W";
+							break;
+						case Action::Script:
+							buttonName = "S";
 							break;
 					}
 
@@ -329,7 +338,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 						ImGui::PushItemWidth(-80);
 
-						ImGui::Text("Move");
+						ImGui::Text("Move Action");
 						ImGui::Spacing();
 
 						ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
@@ -383,7 +392,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					{
 						auto animAction = static_cast<AnimAction*>(currentAction);
 
-						ImGui::Text("Anim");
+						ImGui::Text("Anim Action");
 						ImGui::Spacing();
 
 						static char animName[64] = { 0 };
@@ -419,10 +428,31 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					{
 						auto waitAction = static_cast<WaitAction*>(currentAction);
 
-						ImGui::Text("Wait");
+						ImGui::Text("Wait Action");
 						ImGui::Spacing();
 
 						ImGui::DragFloat("Time to wait", &waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
+					} break;
+					case Action::Script:
+					{
+						auto scriptAction = static_cast<ScriptAction*>(currentAction);
+
+						ImGui::Text("Script Action");
+						ImGui::Spacing();
+
+						if (ImGui::Button("Set script file path"))
+						{
+							// Path to script
+							std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets", "Lua (*.lua)|*.lua");
+
+							// Loading script
+							if (file != "")
+							{
+								scriptAction->ScriptFilePath = file;
+							}
+						}
+
+						ImGui::Text("Path: %s", scriptAction->ScriptFilePath.empty() ? "None" : scriptAction->ScriptFilePath.c_str());
 					} break;
 				}
 			}

@@ -3,10 +3,10 @@
 #include <string>
 
 #include "Szczur/Modules/DragonBones/SF3DArmatureDisplay.hpp"
+#include "Szczur/Modules/World/Entity.hpp"
 
 #include "../Action.hpp"
 
-#include "Szczur/Modules/World/Entity.hpp"
 
 namespace rat
 {

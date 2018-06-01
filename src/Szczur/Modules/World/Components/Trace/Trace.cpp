@@ -5,6 +5,7 @@
 #include "Actions/AnimAction.hpp"
 #include "Actions/MoveAction.hpp"
 #include "Actions/WaitAction.hpp"
+#include "Actions/ScriptAction.hpp"
 
 namespace rat
 {
@@ -107,6 +108,14 @@ void Trace::loadFromConfig(const Json& config, Entity* entity)
 
 					timeline->addAction(waitAction);
 				} break;
+				case Action::Script:
+				{
+					auto scriptAction = new ScriptAction(entity);
+
+					scriptAction->ScriptFilePath = jsonAction["filePath"].get<std::string>();
+
+					timeline->addAction(scriptAction);
+				} break;
 			}
 		}
 
@@ -170,6 +179,12 @@ void Trace::saveToConfig(Json& config) const
 					auto waitAction = static_cast<WaitAction*>(action.get());
 
 					jsonAction["timeToWait"] = waitAction->TimeToWait;
+				} break;
+				case Action::Script:
+				{
+					auto scriptAction = static_cast<ScriptAction*>(action.get());
+
+					jsonAction["filePath"] = scriptAction->ScriptFilePath;
 				} break;
 			}
 
