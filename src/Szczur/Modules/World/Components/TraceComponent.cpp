@@ -1,7 +1,7 @@
 #include "TraceComponent.hpp"
 
-#include "Szczur/Modules/Trace/Trace.hpp"
-#include "Szczur/Modules/Trace/Timeline.hpp"
+#include "Trace/Trace.hpp"
+#include "Trace/Timeline.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat

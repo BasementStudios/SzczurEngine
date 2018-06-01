@@ -9,7 +9,7 @@ namespace rat
 Timeline::Timeline(int id)
 	: _id(id)
 {
-	_vertexArray.setPrimitveType(GL_LINE_STRIP);
+	_vertexArray.setPrimitveType(GL_LINES);
 }
 
 Timeline::~Timeline()
@@ -69,20 +69,37 @@ void Timeline::update(float deltaTime)
 	{
 		int i = 0;
 
+		glm::vec3 lastPosition;
+
 		for (auto& action : _actions)
 		{
 			if (action->getType() == Action::Move)
 			{
 				auto moveAction = static_cast<MoveAction*>(action.get());
 
+				glm::vec3 start = moveAction->Start;
+
+				if (moveAction->UseCurrentPosition)
+				{
+					start = lastPosition;
+				}
+
 				sf3d::Vertex vertex;
-				vertex.position = moveAction->Start;
+				vertex.position = start;
 				_vertexArray.set(i, vertex);
 
 				i++;
 
+
+				glm::vec3 end = moveAction->End;
+
+				if (moveAction->EndRelativeToStart)
+					end += moveAction->Start;
+
 				vertex.position = moveAction->End;
 				_vertexArray.set(i, vertex);
+
+				lastPosition = end;
 
 				i++;
 			}
@@ -104,6 +121,8 @@ void Timeline::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
 	if (ShowLines)
 	{
+		printf("Show ");
+
 		glLineWidth(2.f);
 		target.draw(_vertexArray, states);
 	}

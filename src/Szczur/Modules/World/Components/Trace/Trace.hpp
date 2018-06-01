@@ -5,8 +5,6 @@
 
 #include <Json/json.hpp>
 
-#include "Szczur/Utility/Modules/Module.hpp"
-
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
@@ -18,7 +16,7 @@ namespace rat
 class Entity;
 class Timeline;
 
-class Trace : public Module<>
+class Trace
 {
 private:
 	std::vector<std::unique_ptr<Timeline>> _timelines;
@@ -31,11 +29,6 @@ private:
 
 public:
 	Trace();
-	Trace(const Trace&) = delete;
-	Trace& operator = (const Trace&) = delete;
-	Trace(Trace&&) = delete;
-	Trace& operator = (Trace&&) = delete;
-
 	~Trace();
 
 	void addTimeline();
