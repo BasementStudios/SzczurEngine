@@ -35,7 +35,7 @@ public:
 
 	}
 
-	void update(float deltaTime) override
+	void update(float deltaTime, Timeline* timeline) override
 	{
 		if (_entity->hasComponent<ArmatureComponent>())
 		{

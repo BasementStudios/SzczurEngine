@@ -21,6 +21,8 @@ public:
 
 	bool ShowLines = false;
 
+	float SpeedMultiplier = 1.f;
+
 private:
 	int _id;
 

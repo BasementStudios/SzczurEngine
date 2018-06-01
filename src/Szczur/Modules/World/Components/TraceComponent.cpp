@@ -189,6 +189,8 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			ImGui::Checkbox("Loop", &currentTimeline->Loop);
 			ImGui::Checkbox("Show lines in editor", &currentTimeline->ShowLines);
 
+			ImGui::DragFloat("Speed multipler", &currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
+
 			ImGui::Spacing();
 
 			auto& actions = currentTimeline->getActions();
@@ -218,7 +220,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 				}
 			}
 
-			ImGui::BeginChild("Timeline", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 			{
 				for (int i = 0; i < actions.size(); ++i)
 				{

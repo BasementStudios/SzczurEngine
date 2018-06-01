@@ -6,6 +6,7 @@ namespace rat
 {
 
 class Entity;
+class Timeline;
 
 class Action
 {
@@ -34,7 +35,7 @@ public:
 	}
 	virtual ~Action() = default;
 
-	virtual void update(float deltaTime) = 0;
+	virtual void update(float deltaTime, Timeline* timeline) = 0;
 
 	virtual void start()
 	{

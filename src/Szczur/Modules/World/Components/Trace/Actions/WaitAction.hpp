@@ -27,7 +27,7 @@ public:
 
 	}
 
-	virtual void update(float deltaTime) override
+	virtual void update(float deltaTime, Timeline* timeline) override
 	{
 		if (_clock.getElapsedTime().asSeconds() > TimeToWait)
 		{

@@ -43,7 +43,7 @@ void Timeline::update(float deltaTime)
 	if (!_finished && _currentActionIndex < _actions.size())
 	{
 		auto& currentAction = _actions[_currentActionIndex];
-		currentAction->update(deltaTime);
+		currentAction->update(deltaTime, this);
 
 		if (currentAction->isFinished())
 		{

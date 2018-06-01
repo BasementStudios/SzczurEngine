@@ -42,7 +42,7 @@ public:
 
 	}
 
-	virtual void update(float deltaTime) override
+	virtual void update(float deltaTime, Timeline* timeline) override
 	{
 		if (Teleport)
 		{
@@ -51,7 +51,7 @@ public:
 		}
 		else
 		{
-			_progress += _progressSpeed * deltaTime * 100.f;
+			_progress += _progressSpeed * timeline->SpeedMultiplier * deltaTime * 100.f;
 
 			if (_progress >= 1.f)
 			{
