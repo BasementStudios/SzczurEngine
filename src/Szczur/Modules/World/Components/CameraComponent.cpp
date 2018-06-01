@@ -4,6 +4,7 @@
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
+#include "../ScenesManager.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
@@ -135,4 +136,14 @@ namespace rat {
 		}
 	}
 
+    void CameraComponent::update(ScenesManager& scenes, float deltaTime) {
+		auto* player = getEntity()->getScene()->getPlayer();
+		if(player == nullptr) return;
+
+		if(getStickToPlayer()) {
+			auto curPos = getEntity()->getPosition();
+			curPos.x = player->getPosition().x;
+			getEntity()->setPosition(curPos);
+		}
+    }
 }

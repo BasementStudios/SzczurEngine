@@ -3,9 +3,12 @@
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
+#include "Szczur/Modules/Input/Input.hpp"
+
 namespace rat {
 	TriggerComponent::TriggerComponent(Entity* parent) :
-	Component{parent, fnv1a_64("TriggerComponent"), "TriggerComponent"} {
+    	Component{parent, fnv1a_64("TriggerComponent"), "TriggerComponent"},
+        _input(detail::globalPtr<Input>->getManager()) {
 
 	}
 
@@ -68,6 +71,25 @@ namespace rat {
 			config["enranceId"] = entranceId;
 		}
 	}
+
+    void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
+        auto* player = getEntity()->getScene()->getPlayer();
+        if(player == nullptr) return;
+
+        if(_input.isReleased(Keyboard::LShift)) {
+            if(checkForTrigger(player->getPosition())) {
+                if(type == TriggerComponent::ChangeScene) {
+                    scenes.setCurrentScene(sceneId);
+                    auto* scene = scenes.getCurrentScene();
+                    for(auto& it : scene->getEntrances()) {
+                        if(it.ID == entranceId) {
+                            scene->getEntity(scene->getPlayerID())->setPosition(it.position);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     void TriggerComponent::renderHeader(ScenesManager& scenes, Entity* object) {
     	if (ImGui::CollapsingHeader("Trigger##trigger_component"))

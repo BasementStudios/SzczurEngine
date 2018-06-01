@@ -30,7 +30,7 @@ Scene* ScenesManager::addScene()
 
 	// Add default player
 	Entity* player = scene->addEntity("single");
-	camera->addComponent<BaseComponent>();
+	player->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
 	return scene;
@@ -187,6 +187,7 @@ void ScenesManager::addPlayer()
 	auto scene = getCurrentScene();
 
 	Entity* player = scene->addEntity("single");
+	player->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
 

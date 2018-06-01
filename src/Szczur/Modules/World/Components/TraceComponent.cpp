@@ -9,6 +9,8 @@
 #include "Szczur/Modules/Trace/Actions/MoveAction.hpp"
 #include "Szczur/Modules/Trace/Actions/WaitAction.hpp"
 
+#include "../ScenesManager.hpp"
+
 namespace rat
 {
 
@@ -58,7 +60,7 @@ void TraceComponent::saveToConfig(Json& config) const
 	_trace->saveToConfig(config);
 }
 
-void TraceComponent::update(float deltaTime)
+void TraceComponent::update(ScenesManager& scenes, float deltaTime)
 {
 	if (_trace)
 	{

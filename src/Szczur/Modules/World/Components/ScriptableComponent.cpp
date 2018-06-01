@@ -14,7 +14,7 @@ namespace rat {
 	}
 
 	///
-	void ScriptableComponent::update(float deltaTime) {
+	void ScriptableComponent::update(ScenesManager& scenes, float deltaTime) {
 		if(_updateCallback.valid()) {
 			_updateCallback(this, deltaTime);
 		}

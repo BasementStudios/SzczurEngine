@@ -38,58 +38,22 @@ Scene::Scene(ScenesManager* parent)
 
 void Scene::update(float deltaTime)
 {
-	auto& input = detail::globalPtr<Input>->getManager();
-	auto* player = getEntity(getPlayerID());
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
-			entity->update(deltaTime);
-			if(auto* comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr) {
-				comp->update(deltaTime);
-				// if(auto* comp = entity->getComponentAs<InputControllerComponent>(); comp != nullptr)
-				// 	comp->update(input, deltaTime);
-				if(input.isReleased(Keyboard::LShift))
-					if(auto* comp = entity->getComponentAs<InteractableComponent>(); comp != nullptr)
-						if(comp->checkForInteraction(player->getPosition()))
-							comp->callback();
-			}
-			if (auto* comp = entity->getComponentAs<TraceComponent>(); comp != nullptr) {
-				comp->update(deltaTime);
-			}
-			if(auto* comp = entity->getComponentAs<CameraComponent>(); comp != nullptr) {
-				if(comp->getStickToPlayer()) {
-					auto curPos = entity->getPosition();
-					curPos.x = player->getPosition().x;
-					entity->setPosition(curPos);
-				}
-			}
-			if(auto* comp = entity->getComponentAs<TriggerComponent>(); comp != nullptr) {
-				if(input.isReleased(Keyboard::LShift)) {
-					if(comp->checkForTrigger(player->getPosition())) {
-						if(comp->type == TriggerComponent::ChangeScene) {
-							getScenes()->setCurrentScene(comp->sceneId);
-							auto* scene = getScenes()->getCurrentScene();
-							for(auto& it : scene->getEntrances()) {
-								if(it.ID == comp->entranceId) {
-									scene->getEntity(scene->getPlayerID())->setPosition(it.position);
-								}
-							}
-						}
-					}
-				}
-			}
+			entity->update(*getScenes(), deltaTime);
 		}
 	}
 }
 
-void Scene::render()
+void Scene::render(sf3d::RenderTarget& canvas)
 {
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
-			entity->render();
+			entity->render(canvas);
 		}
 	}
 }
@@ -331,20 +295,24 @@ const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() cons
 void Scene::setPlayerID(size_t id)
 {
 	_playerID = id;
+	_player = getEntity(id);
 }
 
 size_t Scene::getPlayerID() const
 {
 	return _playerID;
 }
+
+Entity* Scene::getPlayer()
+{
+	return _player;
+}
+
 //170
 void Scene::loadFromConfig(const Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
-	if(!config["player"].is_null()) {
-		_playerID = config["player"];
-	}
 
 	 size_t maxId = 0u;
 	 for(auto& obj : config["entrances"]) {
@@ -372,7 +340,12 @@ void Scene::loadFromConfig(const Json& config)
 		}
 	}
 
+	if(!config["player"].is_null()) {
+		setPlayerID(config["player"]);
+	}
+	
 	trySettingInitialUniqueID<Scene>(_id);
+
 }
 
 void Scene::saveToConfig(Json& config) const

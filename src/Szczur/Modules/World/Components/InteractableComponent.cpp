@@ -1,13 +1,15 @@
 #include "InteractableComponent.hpp"
 
 #include "../Entity.hpp"
+#include "../ScenesManager.hpp"
 
 #include <Szczur/Modules/Script/Script.hpp>
+#include <Szczur/Modules/Input/Input.hpp>
 
 namespace rat {
 	InteractableComponent::InteractableComponent(Entity* parent) :
-	Component { parent, fnv1a_64("InteractableComponent"), "InteractableComponent"} {
-
+		Component { parent, fnv1a_64("InteractableComponent"), "InteractableComponent"}, 
+		_input(detail::globalPtr<Input>->getManager()) {
 	}
 
 	void InteractableComponent::callback() {
@@ -74,6 +76,17 @@ namespace rat {
 			float height = getHeight();
 			ImGui::DragFloat("Height", &height);
 			setHeight(height);
+		}
+	}
+
+	void InteractableComponent::update(ScenesManager& scenes, float deltaTime) {
+		auto* player = getEntity()->getScene()->getPlayer();
+		if(player == nullptr) return;
+
+		if(_input.isReleased(Keyboard::LShift)) {
+			if(checkForInteraction(player->getPosition())) {
+				callback();
+			}
 		}
 	}
 }

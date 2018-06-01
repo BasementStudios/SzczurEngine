@@ -31,7 +31,7 @@ public:
 	~ScriptableComponent() = default;
 
 	///
-	void update(float deltaTime);
+	void update(ScenesManager& scenes, float deltaTime);
 
 	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;

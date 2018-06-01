@@ -5,6 +5,7 @@
 namespace rat {
 
 class Entity;
+class InputManager;
 
 class TriggerComponent : public Component {
 public:
@@ -51,9 +52,14 @@ public:
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
 
+    ///
+    void update(ScenesManager& scenes, float deltaTime);
+
 private:
 
+	InputManager& _input;
 	float _radius{10.f};
+
 };
 
 }

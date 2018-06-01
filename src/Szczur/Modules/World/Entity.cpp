@@ -1,6 +1,8 @@
+#include "Entity.hpp"
+
 #include <algorithm>
 
-#include "Scene.hpp"
+#include "ScenesManager.hpp"
 
 namespace rat
 {
@@ -48,14 +50,20 @@ Entity& Entity::operator = (const Entity& rhs)
 	return *this;
 }
 
-void Entity::update(float deltaTime)
+void Entity::update(ScenesManager& scenes, float deltaTime)
 {
-
+	if(auto* comp = getComponentAs<ScriptableComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
 }
 
-void Entity::render()
+void Entity::render(sf3d::RenderTarget& canvas)
 {
-
+	if(auto* ptr = getFeature<sf3d::Drawable>()) {
+		canvas.draw(*ptr);
+	}
 }
 
 size_t Entity::getID() const

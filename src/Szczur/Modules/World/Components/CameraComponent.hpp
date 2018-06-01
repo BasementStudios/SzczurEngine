@@ -48,6 +48,9 @@ public:
 
     ///
     virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+    
+    ///
+    void update(ScenesManager& scenes, float deltaTime);
 
 private:
     bool _rotating{false};

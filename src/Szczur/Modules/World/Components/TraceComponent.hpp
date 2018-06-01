@@ -53,8 +53,8 @@ public:
 	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
-	///
-	void update(float deltaTime);
+    ///
+    void update(ScenesManager& scenes, float deltaTime);
 
 	///
 	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;

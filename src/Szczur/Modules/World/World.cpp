@@ -50,12 +50,13 @@ void World::render()
 
 	if (_getScenes().isCurrentSceneValid())
 	{
-		_getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
-			if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
-			{
-				window.draw(*ptr);
-			}
-		});
+		_getScenes().getCurrentScene()->render(window);
+		// _getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
+		// 	if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
+		// 	{
+		// 		window.draw(*ptr);
+		// 	}
+		// });
 	}
 
 	#ifdef EDITOR
