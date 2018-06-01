@@ -121,8 +121,6 @@ void Timeline::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
 	if (ShowLines)
 	{
-		printf("Show ");
-
 		glLineWidth(2.f);
 		target.draw(_vertexArray, states);
 	}

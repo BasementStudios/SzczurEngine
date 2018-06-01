@@ -15,11 +15,11 @@
 #include "../Components/InteractableComponent.hpp"
 #include "../Components/TriggerComponent.hpp"
 
-#include "Szczur/Modules/Trace/Trace.hpp"
-#include "Szczur/Modules/Trace/Timeline.hpp"
-#include "Szczur/Modules/Trace/Actions/AnimAction.hpp"
-#include "Szczur/Modules/Trace/Actions/MoveAction.hpp"
-#include "Szczur/Modules/Trace/Actions/WaitAction.hpp"
+#include "../Components/Trace/Trace.hpp"
+#include "../Components/Trace/Timeline.hpp"
+#include "../Components/Trace/Actions/AnimAction.hpp"
+#include "../Components/Trace/Actions/MoveAction.hpp"
+#include "../Components/Trace/Actions/WaitAction.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
@@ -519,7 +519,7 @@ namespace rat {
 
                             ImGui::Separator();
 
-                            if (ImGui::Button("Add timeline"))
+                            if (ImGui::Button("Add timeline##trace_component"))
                             {
                                 object->getTrace()->addTimeline();
                             }

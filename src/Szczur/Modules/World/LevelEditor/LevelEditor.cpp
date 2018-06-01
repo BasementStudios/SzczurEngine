@@ -23,10 +23,6 @@
 
 #include "Szczur/Modules/Dialog/Dialog.hpp"
 
-#include "Szczur/Modules/Trace/Timeline.hpp"
-#include "Szczur/Modules/Trace/Actions/AnimAction.hpp"
-#include "Szczur/Modules/Trace/Actions/MoveAction.hpp"
-
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
 #include "Szczur/Modules/Input/InputManager.hpp"
