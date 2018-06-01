@@ -43,7 +43,12 @@ public:
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
 
+	///
+	void positionOnly(bool flag);
+
 private:
+
+	bool _positionOnly;
 
 };
 

@@ -137,7 +137,7 @@ public:
 	Entity* getPlayer();
 
 	///
-	void loadFromConfig(const Json& config);
+	void loadFromConfig(Json& config);
 
 	///
 	void saveToConfig(Json& config) const;

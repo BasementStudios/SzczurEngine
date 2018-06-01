@@ -20,6 +20,12 @@ Scene* ScenesManager::addScene()
 {
 	Scene* scene = _holder.emplace_back(std::make_unique<Scene>(this)).get();
 
+	// Add default player
+	Entity* player = scene->addEntity("single");
+	player->addComponent<BaseComponent>();
+	player->setName("Player");
+	scene->setPlayerID(player->getID());
+	
 	// Add default camera
 	Entity* camera = scene->addEntity("single");
 	camera->addComponent<BaseComponent>();
@@ -28,11 +34,6 @@ Scene* ScenesManager::addScene()
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
 	camera->setRotation({ 15.f, 0.f, 0.f });
 
-	// Add default player
-	Entity* player = scene->addEntity("single");
-	player->addComponent<BaseComponent>();
-	player->setName("Player");
-	scene->setPlayerID(player->getID());
 	return scene;
 }
 
@@ -126,7 +127,7 @@ void ScenesManager::loadFromFile(const std::string& filepath)
 
 	_currentSceneID = config["currentSceneID"];
 
-	const Json& scenes = config["scenes"];
+	Json& scenes = config["scenes"];
 
 	for (auto& current : scenes)
 	{
@@ -172,7 +173,7 @@ void ScenesManager::loadScenesFromFile(const std::string& filepath)
 
 	file >> config;
 
-	const Json& scenes = config["scenes"];
+	Json& scenes = config["scenes"];
 
 	for (auto& current : scenes)
 	{

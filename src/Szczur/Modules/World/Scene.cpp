@@ -27,6 +27,8 @@ Scene::Scene(ScenesManager* parent)
 	_collectingHolder.emplace("foreground", EntitiesHolder_t{});
 	_collectingHolder.emplace("path", EntitiesHolder_t{});
 	_collectingHolder.emplace("single", EntitiesHolder_t{});
+	_collectingHolder.emplace("entries", EntitiesHolder_t{});
+	_collectingHolder.emplace("battles", EntitiesHolder_t{});
 
 	for (auto& holder : getAllEntities())
 	{
@@ -140,6 +142,20 @@ bool Scene::removeEntity(size_t id)
 		return true;
 	}
 
+	if (auto it = _find("entries", id); it != getEntities("entries").end())
+	{
+		getEntities("entries").erase(it);
+
+		return true;
+	}
+
+	if (auto it = _find("battles", id); it != getEntities("battles").end())
+	{
+		getEntities("battles").erase(it);
+
+		return true;
+	}
+
 	return false;
 }
 
@@ -178,6 +194,16 @@ Entity* Scene::getEntity(size_t id)
 		return it->get();
 	}
 
+	if (auto it = _find("entries", id); it != getEntities("entries").end())
+	{
+		return it->get();
+	}
+
+	if (auto it = _find("battles", id); it != getEntities("battles").end())
+	{
+		return it->get();
+	}
+
 	return nullptr;
 }
 
@@ -199,6 +225,16 @@ const Entity* Scene::getEntity(size_t id) const
 	}
 
 	if (auto it = _find("background", id); it != getEntities("background").end())
+	{
+		return it->get();
+	}
+
+	if (auto it = _find("entries", id); it != getEntities("entries").end())
+	{
+		return it->get();
+	}
+
+	if (auto it = _find("battles", id); it != getEntities("battles").end())
 	{
 		return it->get();
 	}
@@ -244,6 +280,16 @@ bool Scene::hasEntity(size_t id)
 	}
 
 	if (_find("background", id) != getEntities("background").end())
+	{
+		return true;
+	}
+
+	if (_find("entries", id) != getEntities("entries").end())
+	{
+		return true;
+	}
+
+	if (_find("battles", id) != getEntities("battles").end())
 	{
 		return true;
 	}
@@ -309,24 +355,26 @@ Entity* Scene::getPlayer()
 }
 
 //170
-void Scene::loadFromConfig(const Json& config)
+void Scene::loadFromConfig(Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
 
-	 size_t maxId = 0u;
-	 for(auto& obj : config["entrances"]) {
-	 	if(obj["id"].get<size_t>() > maxId) {
-	 		maxId = obj["id"].get<size_t>();
-	 	}
-	 	_entrancesHolder.push_back(
-	 		Entrance{
-	 			obj["id"].get<size_t>(),
-	 			obj["name"].get<std::string>(),
-	 			glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
-	 		}
-	 	);
-	 }
+	size_t maxId = 0u;
+	if(!config["entrances"].is_null()) {
+		for(auto& obj : config["entrances"]) {
+			if(obj["id"].get<size_t>() > maxId) {
+				maxId = obj["id"].get<size_t>();
+			}
+			_entrancesHolder.push_back(
+				Entrance{
+					obj["id"].get<size_t>(),
+					obj["name"].get<std::string>(),
+					glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
+				}
+			);
+		}		
+	}
 	
 	trySettingInitialUniqueID<Entrance>(maxId);
 
@@ -341,11 +389,14 @@ void Scene::loadFromConfig(const Json& config)
 	}
 
 	if(!config["player"].is_null()) {
-		setPlayerID(config["player"]);
+		setPlayerID(config["player"].get<int>());
+	}
+	else {
+		_playerID = 0;
+		_player = nullptr;
 	}
 	
 	trySettingInitialUniqueID<Scene>(_id);
-
 }
 
 void Scene::saveToConfig(Json& config) const

@@ -62,6 +62,7 @@ namespace rat {
 			// if (_ifRenderDialogEditor) _dialogEditor->update();
 			// if (_ifRenderAudioEditor) _audioEditor->render();
 
+			scene = _scenes.getCurrentScene();
 			
 			sf3d::RectangleShape rect({100.f, 100.f});
 			sf3d::CircleShape circ;

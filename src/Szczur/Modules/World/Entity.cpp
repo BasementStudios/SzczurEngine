@@ -188,9 +188,15 @@ void Entity::loadFromConfig(const Json& config)
 
 	const Json& components = config["components"];
 
+	bool base = false;
 	for (const Json& component : components)
 	{
+		if(component["name"] == "BaseComponent") base = true;
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
+	}
+
+	if(base == false) {		
+		addComponent<BaseComponent>();
 	}
 
 	trySettingInitialUniqueID<Entity>(_id);

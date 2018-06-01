@@ -24,31 +24,12 @@ namespace rat {
 
 	void BaseComponent::loadFromConfig(const Json& config)
 	{
-		// Component::loadFromConfig(config);
-		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
-		// auto name = mapUtf8ToWindows1250(config["spriteDisplayData"].get<std::string>());
-		// if(name != "") {
-		// 	bool found{false};
-		// 	for(auto& it : spriteDisplayDataHolder) {
-		// 		if(name == it.getName()) {
-		// 			setSpriteDisplayData(&it);
-		// 			found = true;
-		// 		}
-		// 	}
-		// 	if(!found) {
-		// 		try {
-		// 			setSpriteDisplayData(&(spriteDisplayDataHolder.emplace_back(name)));
-		// 		}
-		// 		catch(const std::exception& exc) {
-
-		// 		}
-		// 	}
-		// }
+		Component::loadFromConfig(config);
 	}
 
 	void BaseComponent::saveToConfig(Json& config) const
 	{
-		// Component::saveToConfig(config);
+		Component::saveToConfig(config);
 		// config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
 	}
 
@@ -65,6 +46,9 @@ namespace rat {
 			glm::vec3 position = object->getPosition();
 			ImGui::DragFloat3("Position##base_component", reinterpret_cast<float*>(&position));
 			object->setPosition(position);
+
+			// Position only
+			if(_positionOnly) return;
 
 			// Set origin
 			glm::vec3 origin = object->getOrigin();
@@ -91,5 +75,9 @@ namespace rat {
 				object->scale( {offset, offset, 1.f} );
 			}
 		}
+	}
+
+	void BaseComponent::positionOnly(bool flag) {
+		_positionOnly = flag;
 	}
 }
