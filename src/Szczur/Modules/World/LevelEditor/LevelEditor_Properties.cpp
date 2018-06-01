@@ -36,11 +36,13 @@ namespace rat {
 		if(ImGui::Begin("Properties", &openWindow)) {
 
 			// Change components
-			if(ImGui::Button("Change components...")) {
-				ImGui::OpenPopup("Change components...##modal");
-				ImGui::SetNextWindowSize(ImVec2(300,300));
+			if(focusedObject->getGroup() != "entries") {
+				if(ImGui::Button("Change components...")) {
+					ImGui::OpenPopup("Change components...##modal");
+					ImGui::SetNextWindowSize(ImVec2(300,300));
+				}
+				_renderComponentsManager();
 			}
-			_renderComponentsManager();
 
 			// Render headers for components
 			if(focusedObject) {                

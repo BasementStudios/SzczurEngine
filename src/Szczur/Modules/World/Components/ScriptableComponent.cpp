@@ -61,7 +61,7 @@ namespace rat {
 	}
 
 	///
-	void ScriptableComponent::loadFromConfig(const Json& config)
+	void ScriptableComponent::loadFromConfig(Json& config)
 	{
 		// Component::loadFromConfig(config);
 		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();

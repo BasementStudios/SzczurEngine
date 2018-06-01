@@ -302,10 +302,6 @@ bool Scene::hasEntity(const std::string& group, size_t id)
 	return _find(group, id) != getEntities(group).end();
 }
 
-Scene::EntrancesHolder_t& Scene::getEntrances() {
-	return _entrancesHolder;
-}
-
 Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group)
 {
 	return getAllEntities().at(group);
@@ -336,8 +332,6 @@ const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() cons
 	return _spriteDisplayDataHolder;
 }
 
-
-
 void Scene::setPlayerID(size_t id)
 {
 	_playerID = id;
@@ -361,28 +355,14 @@ void Scene::loadFromConfig(Json& config)
 	_name = config["name"].get<std::string>();
 
 	size_t maxId = 0u;
-	if(!config["entrances"].is_null()) {
-		for(auto& obj : config["entrances"]) {
-			if(obj["id"].get<size_t>() > maxId) {
-				maxId = obj["id"].get<size_t>();
-			}
-			_entrancesHolder.push_back(
-				Entrance{
-					obj["id"].get<size_t>(),
-					obj["name"].get<std::string>(),
-					glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
-				}
-			);
-		}		
-	}
 	
 	trySettingInitialUniqueID<Entrance>(maxId);
 
-	const Json& groups = config["groups"];
+	Json& groups = config["groups"];
 
 	for (auto it = groups.begin(); it != groups.end(); ++it)
 	{
-		for (const Json& current : it.value())
+		for (Json& current : it.value())
 		{
 			addEntity(it.key())->loadFromConfig(current);
 		}
@@ -404,18 +384,6 @@ void Scene::saveToConfig(Json& config) const
 	config["id"] = getID();
 	config["name"] = getName();
 	config["player"] = getPlayerID();
-
-	Json& entrances = config["entrances"] = Json::array();
-	for(auto& it : _entrancesHolder) {
-		entrances.push_back(Json::object());
-		Json& current = entrances.back();
-
-		current["name"] = it.name;
-		current["id"] = it.ID;
-		current["position"]["x"] = it.position.x;
-		current["position"]["y"] = it.position.y;
-		current["position"]["z"] = it.position.z;
-	}
 
 	Json& groups = config["groups"] = Json::object();
 

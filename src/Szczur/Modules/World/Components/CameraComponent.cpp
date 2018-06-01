@@ -104,7 +104,7 @@ namespace rat {
 		return _stickToPlayer;
 	}
 
-	void CameraComponent::loadFromConfig(const Json& config) {
+	void CameraComponent::loadFromConfig(Json& config) {
 		Component::loadFromConfig(config);
 		_velocity = config["velocity"];
 		_locked = config["locked"];

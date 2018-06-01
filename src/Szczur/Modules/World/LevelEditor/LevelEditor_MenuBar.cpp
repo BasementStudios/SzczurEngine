@@ -19,7 +19,8 @@ namespace rat {
         // Create new world
 		static bool openModalNew = false;
 		static bool openScenesManager = false;
-		static bool openSceneSettings = false;
+
+		// Create new project popup
 		if(openModalNew) {
 			openModalNew = false;
 			ImGui::OpenPopup("Files/New##popup");
@@ -40,27 +41,39 @@ namespace rat {
 			}
 			ImGui::EndPopup();
 		}
-		if(openScenesManager) {
-			openScenesManager = false;
-			ImGui::OpenPopup("Scenes Manager##popup");
-		}
-		if(ImGui::BeginPopupModal("Scenes Manager##popup")) {
-			static char name[255];
 
+		// Scenes manager popup
+		if(openScenesManager && ImGui::Begin("Scenes Manager##window", &openScenesManager)) {
+			
+			// Change scene name
+			static char name[255];
 			std::strcpy(&name[0], _scenes.getCurrentScene()->getName().c_str());
-			ImGui::InputText("", name, 255u);
+			ImGui::PushItemWidth(-50);
+			ImGui::InputText("Name##scene_name", name, 255u);
+			ImGui::PopItemWidth();
 			_scenes.getCurrentScene()->setName(std::string{name});
-			if(ImGui::Button("Add")) {
+
+			// Calculate width for 3 buttons
+			float availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
+			
+			// Add button
+			if(ImGui::Button("Add", ImVec2(availWidth, 0.f))) {
 				_scenes.addScene();
 			}
 			ImGui::SameLine();
-			if(ImGui::Button("Remove")) {
+
+			// Remove button
+			if(ImGui::Button("Remove", ImVec2(availWidth, 0.f))) {
 				_scenes.removeScene(_scenes.getCurrentSceneID());
 			}
 			ImGui::SameLine();
-			if(ImGui::Button("Ok")) {
+
+			// Ok button
+			if(ImGui::Button("Ok", ImVec2(availWidth, 0.f))) {
 				ImGui::CloseCurrentPopup();
 			}
+
+			// List of scenes
 			if(ImGui::BeginChild("Scenes")) {
 				for(auto& it : _scenes.getScenes()) {
 					if(ImGui::Selectable(it->getName().c_str(), it->getID() == _scenes.getCurrentSceneID())) {
@@ -69,48 +82,11 @@ namespace rat {
 				}
 			}
 			ImGui::EndChild();
-			ImGui::EndPopup();
+
+			ImGui::End();	
 		}
 
-		if(openSceneSettings) {
-			openSceneSettings = false;
-			ImGui::OpenPopup("Scene Settings##popup");
-		}
-		if(ImGui::BeginPopupModal("Scene Settings##popup")) {
-			auto& holder = _scenes.getCurrentScene()->getEntrances();
-			if(ImGui::Button("Add")) {
-
-				//holder.push_back(std::make_pair(std::string{""}, glm::vec3{0.f, 0.f, 0.f}));
-				holder.push_back(Scene::Entrance{getUniqueID<Scene::Entrance>(), "", glm::vec3(0.f, 0.f, 0.f)});
-			}
-			ImGui::SameLine();
-			if(ImGui::Button("Ok")) {
-				ImGui::CloseCurrentPopup();
-			}
-
-			if(ImGui::BeginChild("List##list")) {
-				int i = 0;
-				holder.erase(
-					std::remove_if(holder.begin(), holder.end(), [&i](Scene::Entrance& it){
-						if(ImGui::Button( (std::string{"-##"}+std::to_string(i++)).c_str() ))
-							return true;
-						ImGui::SameLine();
-						char name[255];
-						std::strcpy(&name[0], it.name.c_str());
-						ImGui::InputText((std::string{"##"}+std::to_string(i++)).c_str(), name, 255);
-						it.name = std::string{name};
-						ImGui::DragFloat3((std::string{"##"}+std::to_string(i++)).c_str(), (float*)(&(it.position)));
-						ImGui::Separator();
-						return false;
-
-					}), holder.end()
-				);
-
-			}
-			ImGui::EndChild();
-
-			ImGui::EndPopup();
-		}
+		// Menu bar
 		if(ImGui::BeginMainMenuBar()) {
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("New")) {
@@ -160,9 +136,6 @@ namespace rat {
 				}
 				if(ImGui::MenuItem("Scenes Manager", "")) {
 					openScenesManager = true;
-				}
-				if(ImGui::MenuItem("Scenes Settings", "")) {
-					openSceneSettings = true;
 				}
 
 				ImGui::Separator();

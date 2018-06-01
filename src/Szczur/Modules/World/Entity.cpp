@@ -160,7 +160,7 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 	return _holder;
 }
 
-void Entity::loadFromConfig(const Json& config)
+void Entity::loadFromConfig(Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
@@ -186,10 +186,10 @@ void Entity::loadFromConfig(const Json& config)
 		config["scale"]["z"].get<float>()
 	});
 
-	const Json& components = config["components"];
+	Json& components = config["components"];
 
 	bool base = false;
-	for (const Json& component : components)
+	for (Json& component : components)
 	{
 		if(component["name"] == "BaseComponent") base = true;
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
@@ -207,7 +207,6 @@ void Entity::saveToConfig(Json& config) const
 	config["id"] = getID();
 	config["name"] = getName();
 	config["components"] = Json::array();
-
 
 	config["position"]["x"] = getPosition().x;
 	config["position"]["y"] = getPosition().y;

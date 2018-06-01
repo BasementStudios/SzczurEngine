@@ -65,7 +65,7 @@ namespace rat {
 				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
 					addObjectToCurrentGroup();
 				}
-				if(isEntitySelected()) {
+				if(isEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
 					ImGui::SameLine();
 					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
 						duplicateObject(_selectedEntityID);
@@ -148,7 +148,10 @@ namespace rat {
 	void ObjectsList::addObject(const std::string& groupName) {
 		Entity* entity = _scenes.getCurrentScene()->addEntity(groupName);
 		if(entity) {
-			entity->addComponent<BaseComponent>();
+			auto* base = entity->addComponent<BaseComponent>();
+			if(groupName == "entries") {
+				dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+			}
 			select(entity);
 		}
 	}

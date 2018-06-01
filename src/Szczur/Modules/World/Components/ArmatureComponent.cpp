@@ -80,7 +80,7 @@ namespace rat
 
         return nullptr;
     }
-    void ArmatureComponent::loadFromConfig(const Json& config) {
+    void ArmatureComponent::loadFromConfig(Json& config) {
         Component::loadFromConfig(config);
 		auto& armatureDisplayDataHolder = getEntity()->getScene()->getScenes()->getArmatureDisplayDataHolder();
 		auto name = mapUtf8ToWindows1250(config["armatureDisplayData"].get<std::string>());

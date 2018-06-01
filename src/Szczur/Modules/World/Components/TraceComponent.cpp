@@ -60,7 +60,7 @@ void TraceComponent::stop()
 	_trace->setCurrentTimeline(nullptr);
 }
 
-void TraceComponent::loadFromConfig(const Json& config)
+void TraceComponent::loadFromConfig(Json& config)
 {
 	Component::loadFromConfig(config);
 	

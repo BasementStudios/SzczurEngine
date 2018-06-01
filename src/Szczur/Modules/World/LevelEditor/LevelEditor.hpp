@@ -77,6 +77,19 @@ private:
 	///
 	void _renderComponentsManager();
 
+	///
+	void _renderOrigins(sf3d::RenderTarget& target);
+
+	///
+	void _renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
+
+	///
+	void _renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
+
+	///
+	void _render();
+
+
 private:
 
 // World

@@ -64,72 +64,177 @@ namespace rat {
 
 			scene = _scenes.getCurrentScene();
 			
-			sf3d::RectangleShape rect({100.f, 100.f});
-			sf3d::CircleShape circ;
-			sf3d::CircleShape circ2;
-			circ.rotate({-90.f, 0.f, 0.f});
-			circ.setColor({1.f, 0.f, 1.f, 0.2f});
-			circ2.setColor({0.f, 1.f, 0.f, 0.2f});
-			circ2.setRadius(50.f);
-			circ2.setOrigin({50.f, 50.f, 0.f});
-			rect.setColor({1.f, 1.f, 0.f, 0.2f});
-			rect.setOrigin({50.f, 50.f, -10.f});
-
-			//glDisable(GL_DEPTH_TEST);
-			scene->forEach([&](const std::string& group, Entity& entity){
-				rect.setPosition(entity.getPosition());
-				if(_objectsList.getSelectedID() == entity.getID()) {
-					rect.setSize({100.f, 100.f});
-					rect.setOrigin({50.f, 50.f, -10.f});
-					rect.setColor({1.f, 0.3f, 1.f, 0.4f});
-					target.draw(rect);
-					rect.move({0.f, 0.f, 0.1f});
-					rect.setSize({80.f, 80.f});
-					rect.setOrigin({40.f, 40.f, -10.f});
-					rect.setColor({0.f, 1.f, 1.f, 0.4f});
-					target.draw(rect);
-					rect.move({0.f, 0.f, -0.1f});
-					// rect.setOutlineColor({1.f, 1.f, 0.f, 0.8f})
-					// rect.setOutlineThickness(2.f);
-				}
-				else {
-					rect.setSize({100.f, 100.f});
-					rect.setOrigin({50.f, 50.f, -10.f});
-					rect.setColor({0.7f, 0.f, 0.8f, 0.4f});
-					target.draw(rect);
-					rect.move({0.f, 0.f, 0.1f});
-					rect.setSize({80.f, 80.f});
-					rect.setOrigin({40.f, 40.f, -10.f});
-					rect.setColor({1.f, 1.f, 0.f, 0.4f});
-					target.draw(rect);
-					rect.move({0.f, 0.f, -0.1f});
-					// rect.setOutlineThickness(0.f);
-				}
-			});
-			scene->forEach([&](const std::string& group, Entity& entity){
-				if(auto* comp = entity.getComponentAs<InteractableComponent>(); comp != nullptr) {
-					circ.setColor({1.f, 0.f, 1.f, 0.2f});
-					circ.setPosition(entity.getPosition() + glm::vec3{0.f, comp->getHeight(), 0.f});
-					float r = comp->getDistance();
-					circ.setRadius(r);
-					circ.setOrigin({r, r, 0.f});
-					target.draw(circ);
-				}
-				if(auto* comp = entity.getComponentAs<TriggerComponent>(); comp != nullptr) {
-					circ.setColor({1.f, 1.f, 0.f, 0.2f});
-					circ.setPosition(entity.getPosition());
-					float r = comp->getRadius();
-					circ.setRadius(r);
-					circ.setOrigin({r, r, 0.f});
-					target.draw(circ);
-				}
-			});
-			for(auto& it : _scenes.getCurrentScene()->getEntrances()) {
-				circ2.setPosition(it.position);
-				target.draw(circ2);
-			}
-			//glEnable(GL_DEPTH_TEST);
+			_renderOrigins(target);
 		}
+	}
+
+	void LevelEditor::_renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target) {
+		sf3d::RectangleShape rect({100.f, 100.f});
+		rect.setPosition(position);
+		rect.setOrigin({50.f, 50.f, -10.f});
+
+		if(selected) {
+			rect.setColor({1.f, 0.3f, 1.f, 0.4f});
+			target.draw(rect);
+
+			rect.move({0.f, 0.f, 0.1f});
+			rect.setSize({80.f, 80.f});
+			rect.setOrigin({40.f, 40.f, -10.f});
+		}
+		else {
+			rect.setColor({0.6f, 0.f, 0.7f, 0.4f});
+			target.draw(rect);
+
+			rect.move({0.f, 0.f, 0.1f});
+			rect.setSize({70.f, 70.f});
+			rect.setOrigin({35.f, 35.f, -10.f});
+		}
+
+		rect.setColor(color);
+		target.draw(rect);
+	}
+
+	void LevelEditor::_renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target) {
+		sf3d::CircleShape cir(50.f);
+		cir.setPosition(position);
+		cir.setOrigin({50.f, 50.f, -10.f});
+
+		if(selected) {
+			cir.setColor({1.f, 0.3f, 1.f, 0.4f});
+			target.draw(cir);
+
+			cir.move({0.f, 0.f, 0.1f});
+			cir.setRadius(40.f);
+			cir.setOrigin({40.f, 40.f, -10.f});
+		}
+		else {
+			cir.setColor({0.6f, 0.f, 0.7f, 0.4f});
+			target.draw(cir);
+
+			cir.move({0.f, 0.f, 0.1f});
+			cir.setRadius(35.f);
+			cir.setOrigin({35.f, 35.f, -10.f});
+		}
+
+		cir.setColor(color);
+		target.draw(cir);
+	}
+
+
+	void LevelEditor::_renderOrigins(sf3d::RenderTarget& target) {
+
+
+		// Render origins for background group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("background")) {
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
+			}
+		}
+
+		// Render origins for path group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("path")) {			
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
+			}
+		}
+
+		// Render origins for foreground group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
+			}
+		}
+
+		// Render origins for single group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
+			}
+		}
+
+		// Render origins for entries group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("entries")) {			
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginCircle(entity->getPosition(), {0.1f, 1.f, 0.4f, 0.6f}, true, target);
+			}
+			else {
+				_renderOriginCircle(entity->getPosition(), {0.05f, 0.7f, 0.4f, 0.6f}, false, target);
+			}
+		}
+
+		// sf3d::RectangleShape rect({100.f, 100.f});
+		// rect.setColor({1.f, 1.f, 0.f, 0.2f});
+		// rect.setOrigin({50.f, 50.f, -10.f});
+
+		// scene->forEach([&](const std::string& group, Entity& entity){
+		// 	rect.setPosition(entity.getPosition());
+		// 	if(_objectsList.getSelectedID() == entity.getID()) {
+		// 		rect.setSize({100.f, 100.f});
+		// 		rect.setOrigin({50.f, 50.f, -10.f});
+		// 		rect.setColor({1.f, 0.3f, 1.f, 0.4f});
+		// 		target.draw(rect);
+		// 		rect.move({0.f, 0.f, 0.1f});
+		// 		rect.setSize({80.f, 80.f});
+		// 		rect.setOrigin({40.f, 40.f, -10.f});
+		// 		rect.setColor({0.f, 1.f, 1.f, 0.4f});
+		// 		target.draw(rect);
+		// 		rect.move({0.f, 0.f, -0.1f});
+		// 		// rect.setOutlineColor({1.f, 1.f, 0.f, 0.8f})
+		// 		// rect.setOutlineThickness(2.f);
+		// 	}
+		// 	else {
+		// 		rect.setSize({100.f, 100.f});
+		// 		rect.setOrigin({50.f, 50.f, -10.f});
+		// 		rect.setColor({0.7f, 0.f, 0.8f, 0.4f});
+		// 		target.draw(rect);
+		// 		rect.move({0.f, 0.f, 0.1f});
+		// 		rect.setSize({80.f, 80.f});
+		// 		rect.setOrigin({40.f, 40.f, -10.f});
+		// 		rect.setColor({1.f, 1.f, 0.f, 0.4f});
+		// 		target.draw(rect);
+		// 		rect.move({0.f, 0.f, -0.1f});
+		// 		// rect.setOutlineThickness(0.f);
+		// 	}
+		// });		
+
+		sf3d::CircleShape circ;
+		sf3d::CircleShape circ2;
+		circ.rotate({-90.f, 0.f, 0.f});
+		circ.setColor({1.f, 0.f, 1.f, 0.2f});
+		circ2.setColor({0.f, 1.f, 0.f, 0.2f});
+		circ2.setRadius(50.f);
+		
+		circ2.setOrigin({50.f, 50.f, 0.f});
+		_scenes.getCurrentScene()->forEach([&](const std::string& group, Entity& entity){
+			if(auto* comp = entity.getComponentAs<InteractableComponent>(); comp != nullptr) {
+				circ.setColor({1.f, 0.f, 1.f, 0.2f});
+				circ.setPosition(entity.getPosition() + glm::vec3{0.f, comp->getHeight(), 0.f});
+				float r = comp->getDistance();
+				circ.setRadius(r);
+				circ.setOrigin({r, r, 0.f});
+				target.draw(circ);
+			}
+			if(auto* comp = entity.getComponentAs<TriggerComponent>(); comp != nullptr) {
+				circ.setColor({1.f, 1.f, 0.f, 0.2f});
+				circ.setPosition(entity.getPosition());
+				float r = comp->getRadius();
+				circ.setRadius(r);
+				circ.setOrigin({r, r, 0.f});
+				target.draw(circ);
+			}
+		});
 	}
 
 	void LevelEditor::update(InputManager& input, Camera& camera) {

@@ -42,7 +42,7 @@ public:
 	void pause();
 	void resume();
 
-	void loadFromConfig(const Json& config, Entity* entity);
+	void loadFromConfig(Json& config, Entity* entity);
 	void saveToConfig(Json& config) const;
 
 	void update(float deltaTime);

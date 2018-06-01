@@ -35,7 +35,7 @@ public:
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
 	///
-	virtual void loadFromConfig(const Json& config) override;
+	virtual void loadFromConfig(Json& config) override;
 
 	///
 	virtual void saveToConfig(Json& config) const override;

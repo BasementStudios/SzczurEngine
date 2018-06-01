@@ -30,7 +30,6 @@ public:
 	using EntitiesHolder_t            = std::vector<std::unique_ptr<Entity>>;
 	using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>;
 	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
-	using EntrancesHolder_t           = std::vector<Entrance>;
 
 	///
 	Scene(ScenesManager* _parent);
@@ -107,8 +106,6 @@ public:
 	///
 	bool hasEntity(const std::string& group, size_t id);
 
-	EntrancesHolder_t& getEntrances();
-
 	///
 	EntitiesHolder_t& getEntities(const std::string& group);
 
@@ -173,8 +170,6 @@ private:
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	size_t _playerID{ 0u };
 	Entity* _player = nullptr;
-
-	EntrancesHolder_t _entrancesHolder;
 
 };
 

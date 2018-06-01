@@ -72,7 +72,7 @@ public:
 	const Entity* getEntity() const;
 
 	///
-	virtual void loadFromConfig(const Json& config);
+	virtual void loadFromConfig(Json& config);
 
 	///
 	virtual void saveToConfig(Json& config) const;

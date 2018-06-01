@@ -22,15 +22,16 @@ namespace rat {
 		return ptr;
 	}
 
-	void BaseComponent::loadFromConfig(const Json& config)
+	void BaseComponent::loadFromConfig(Json& config)
 	{
 		Component::loadFromConfig(config);
+		if(auto& var = config["position_only"]; !var.is_null()) var = _positionOnly;
 	}
 
 	void BaseComponent::saveToConfig(Json& config) const
 	{
 		Component::saveToConfig(config);
-		// config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
+		config["position_only"] = _positionOnly;
 	}
 
 	void BaseComponent::renderHeader(ScenesManager& scenes, Entity* object) {

@@ -55,7 +55,7 @@ public:
 	void loadAnyScript(const std::string& path);
 
 	///
-	virtual void loadFromConfig(const Json& config) override;
+	virtual void loadFromConfig(Json& config) override;
 
 	///
 	virtual void saveToConfig(Json& config) const override;
