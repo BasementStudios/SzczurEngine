@@ -9,6 +9,7 @@
 #include "Components/InteractableComponent.hpp"
 #include "Components/TriggerComponent.hpp"
 #include "Components/TraceComponent.hpp"
+#include "Components/BaseComponent.hpp"
 
 #include <memory>
 
@@ -23,6 +24,8 @@ struct ComponentTraits
 	///
 	static std::unique_ptr<Component> createFromComponentID(Entity* parent, Hash64_t id)
 	{
+		if (id == fnv1a_64("BaseComponent")) return std::make_unique<BaseComponent>(parent);
+		// if (id == fnv1a_64("PositionComponent")) return std::make_unique<PositionComponent>(parent);
 		if (id == fnv1a_64("SpriteComponent")) return std::make_unique<SpriteComponent>(parent);
 		if (id == fnv1a_64("ArmatureComponent")) return std::make_unique<ArmatureComponent>(parent);
 		if (id == fnv1a_64("CameraComponent")) return std::make_unique<CameraComponent>(parent);
@@ -37,6 +40,7 @@ struct ComponentTraits
 	///
 	static std::unique_ptr<Component> createFromName(Entity* parent, const std::string& name)
 	{
+		if (name == "BaseComponent") return std::make_unique<BaseComponent>(parent);
 		if (name == "SpriteComponent") return std::make_unique<SpriteComponent>(parent);
 		if (name == "ArmatureComponent") return std::make_unique<ArmatureComponent>(parent);
 		if (name == "CameraComponent") return std::make_unique<CameraComponent>(parent);
@@ -58,6 +62,7 @@ struct ComponentTraits
 	///
 	static Hash64_t getIdentifierFromName(const std::string& name)
 	{
+		if (name == "BaseComponent") return fnv1a_64("BaseComponent");
 		if (name == "SpriteComponent") return fnv1a_64("SpriteComponent");
 		if (name == "ArmatureComponent") return fnv1a_64("ArmatureComponent");
 		if (name == "CameraComponent") return fnv1a_64("CameraComponent");
@@ -72,6 +77,7 @@ struct ComponentTraits
 	///
 	static std::string getNameFromIdentifier(Hash64_t id)
 	{
+		if (id == fnv1a_64("BaseComponent")) return "BaseComponent";
 		if (id == fnv1a_64("SpriteComponent")) return "SpriteComponent";
 		if (id == fnv1a_64("ArmatureComponent")) return "ArmatureComponent";
 		if (id == fnv1a_64("CameraComponent")) return "CameraComponent";
@@ -87,6 +93,7 @@ struct ComponentTraits
 	template <typename T>
 	static Hash64_t getIdentifierFromType()
 	{
+		if (std::is_same_v<T, BaseComponent>) return fnv1a_64("BaseComponent");
 		if (std::is_same_v<T, SpriteComponent>) return fnv1a_64("SpriteComponent");
 		if (std::is_same_v<T, ArmatureComponent>) return fnv1a_64("ArmatureComponent");
 		if (std::is_same_v<T, CameraComponent>) return fnv1a_64("CameraComponent");

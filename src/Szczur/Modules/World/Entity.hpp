@@ -6,11 +6,14 @@
 
 #include <Szczur/Modules/Script/Script.hpp>
 
+#include <Szczur/Utility/SFML3D/RenderTarget.hpp>
+
 namespace rat
 {
 
 // FWD
 class Scene;
+class ScenesManager;
 
 class Entity : public sf3d::Transformable
 {
@@ -37,10 +40,10 @@ public:
 	virtual ~Entity() = default;
 
 	///
-	void update(float deltaTime);
+	void update(ScenesManager& scenes, float deltaTime);
 
 	///
-	void render();
+	void render(sf3d::RenderTarget& canvas);
 
 	///
 	size_t getID() const;
@@ -181,7 +184,6 @@ private:
 	std::string _name;
 	Scene* _parent;
 	ComponentsHolder_t _holder;
-
 };
 
 }

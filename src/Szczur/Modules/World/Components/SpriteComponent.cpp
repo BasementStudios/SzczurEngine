@@ -5,9 +5,11 @@
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
+#include "../ScenesManager.hpp"
+
 namespace rat {
-    SpriteComponent::SpriteComponent(Entity* parent)
-    : Component { parent, fnv1a_64("SpriteComponent"), "SpriteComponent", Component::Drawable }
+	SpriteComponent::SpriteComponent(Entity* parent)
+	: Component { parent, fnv1a_64("SpriteComponent"), "SpriteComponent", Component::Drawable }
 	{
 
 	}
@@ -16,9 +18,9 @@ namespace rat {
 	{
 		auto ptr = std::make_unique<SpriteComponent>(*this);
 
-        ptr->setEntity(newParent);
+		ptr->setEntity(newParent);
 
-        return ptr;
+		return ptr;
 	}
 
 	///
@@ -85,8 +87,41 @@ namespace rat {
 	void SpriteComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	{
 		if(_spriteDisplayData) {
-            states.transform *= getEntity()->getTransform();
-            target.draw(*_spriteDisplayData, states);
-        }
+			states.transform *= getEntity()->getTransform();
+			target.draw(*_spriteDisplayData, states);
+		}
+	}
+
+	void SpriteComponent::renderHeader(ScenesManager& scenes, Entity* object) {
+		if(ImGui::CollapsingHeader("Sprite##sprite_component")) {
+
+			// Sprite data holder
+			auto& sprites = object->getScene()->getSpriteDisplayDataHolder();
+
+			// Load texture button
+			if(ImGui::Button("Load texture...##sprite_component")) {
+				
+				// Path to .png file
+				std::string file = scenes.getRelativePathFromExplorer("Select texture", ".\\Assets");
+				
+				// Load file to sprite data holder
+				if(file != "") {
+					try {
+						auto& it = sprites.emplace_back(file);
+						setSpriteDisplayData(&it);
+					}
+					catch(const std::exception& exc) {
+						setSpriteDisplayData(nullptr);
+
+						LOG_EXCEPTION(exc);
+					}
+				}
+			}
+
+			// Show path to .png file
+			ImGui::Text("Path:");
+			ImGui::SameLine();
+			ImGui::Text(getSpriteDisplayData() ? mapWindows1250ToUtf8(getSpriteDisplayData()->getName()).c_str() : "None");
+		}
 	}
 }

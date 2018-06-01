@@ -8,7 +8,7 @@
 #endif
 
 #include <ImGui/imgui.h>
-#include <NodeEditor/NodeEditor.h>
+// #include <NodeEditor/NodeEditor.h>
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
@@ -21,7 +21,7 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
-#include "Szczur/Modules/Dialog/Dialog.hpp"
+// #include "Szczur/Modules/Dialog/Dialog.hpp"
 
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 
@@ -33,38 +33,37 @@ namespace rat {
 	LevelEditor::LevelEditor(ScenesManager& scenes) :
 	_scenes(scenes),
 	_objectsList{scenes},
-	_objectParameters{scenes},
 	_spriteDisplayDataManager{scenes},
-	_armatureDisplayDataManager{scenes},
-	_bar{scenes, 
-		_objectsList.getBool(),
-		_spriteDisplayDataManager.getBool(),
-		_armatureDisplayDataManager.getBool(),
-		_ifRenderDialogEditor,
-		_ifRenderAudioEditor
-	} {
+	_armatureDisplayDataManager{scenes} {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
-		_dialogEditor = detail::globalPtr<DialogEditor>;
-		_audioEditor = detail::globalPtr<AudioEditor>;
+		// _dialogEditor = detail::globalPtr<DialogEditor>;
+		// _audioEditor = detail::globalPtr<AudioEditor>;
 	}
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
+
+		// Show ImGui demo window
+    	if(_ifShowImGuiDemoWindow) ImGui::ShowDemoWindow();
+
 		auto* scene = _scenes.getCurrentScene();
 		if(scene) {
-			_bar.render();
-			_objectParameters.render();
-			_objectsList.render();
-			_spriteDisplayDataManager.render();
-			_armatureDisplayDataManager.render();
-			if (_ifRenderDialogEditor) {
-				_dialogEditor->update();
-			}
-			if (_ifRenderAudioEditor) {
-				_audioEditor->render();
-			}
+
+			// Menu bar
+			_renderMenuBar();
+
+			// Object properties
+			_renderProperties();
+
+			// Tools
+			if(_ifRenderObjectsList) _objectsList.render(_ifRenderObjectsList);
+			if(_ifRenderSpriteDisplayDataManager) _spriteDisplayDataManager.render(_ifRenderSpriteDisplayDataManager);
+			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
+			// if (_ifRenderDialogEditor) _dialogEditor->update();
+			// if (_ifRenderAudioEditor) _audioEditor->render();
 
 			scene = _scenes.getCurrentScene();
+			
 			sf3d::RectangleShape rect({100.f, 100.f});
 			sf3d::CircleShape circ;
 			sf3d::CircleShape circ2;
@@ -79,7 +78,7 @@ namespace rat {
 			//glDisable(GL_DEPTH_TEST);
 			scene->forEach([&](const std::string& group, Entity& entity){
 				rect.setPosition(entity.getPosition());
-				if(scene->focusedObject == entity.getID() && scene->anySelected) {
+				if(_objectsList.getSelectedID() == entity.getID()) {
 					rect.setSize({100.f, 100.f});
 					rect.setOrigin({50.f, 50.f, -10.f});
 					rect.setColor({1.f, 0.3f, 1.f, 0.4f});
@@ -154,7 +153,7 @@ namespace rat {
 		Entity* currentCamera{nullptr};
 		_scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
 			if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
-				if((scene->focusedObject == entity.getID() && scene->anySelected) || component->getLock())
+				if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
 					currentCamera = &entity;
 			}
 		});
@@ -182,8 +181,8 @@ namespace rat {
 
 	void FreeCamera::processEvents(InputManager& input) {
 
-		if (detail::globalPtr<Dialog>->isDialogPlaying())
-			return;
+		// if (detail::globalPtr<Dialog>->isDialogPlaying())
+		// 	return;
 
 		velocity = 50.f;
 		if(input.isKept(Keyboard::LShift)) {
@@ -231,17 +230,17 @@ namespace rat {
 			previousMouse = mouse;
 		}
 
-		if (!ax::NodeEditor::IsActive())
+		// if(!ax::NodeEditor::IsActive())
+		// {
+		if (input.isPressed(Mouse::Right))
 		{
-			if (input.isPressed(Mouse::Right))
-			{
-				rotating = true;
-				previousMouse = input.getMousePosition();
-			}
-			if (input.isReleased(Mouse::Right))
-			{
-				rotating = false;
-			}
+			rotating = true;
+			previousMouse = input.getMousePosition();
 		}
+		if (input.isReleased(Mouse::Right))
+		{
+			rotating = false;
+		}
+		// }
 	}
 }

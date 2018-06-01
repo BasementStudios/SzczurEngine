@@ -27,6 +27,8 @@ Scene::Scene(ScenesManager* parent)
 	_collectingHolder.emplace("foreground", EntitiesHolder_t{});
 	_collectingHolder.emplace("path", EntitiesHolder_t{});
 	_collectingHolder.emplace("single", EntitiesHolder_t{});
+	_collectingHolder.emplace("entries", EntitiesHolder_t{});
+	_collectingHolder.emplace("battles", EntitiesHolder_t{});
 
 	for (auto& holder : getAllEntities())
 	{
@@ -38,58 +40,22 @@ Scene::Scene(ScenesManager* parent)
 
 void Scene::update(float deltaTime)
 {
-	auto& input = detail::globalPtr<Input>->getManager();
-	auto* player = getEntity(getPlayerID());
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
-			entity->update(deltaTime);
-			if(auto* comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr) {
-				comp->update(deltaTime);
-				// if(auto* comp = entity->getComponentAs<InputControllerComponent>(); comp != nullptr)
-				// 	comp->update(input, deltaTime);
-				if(input.isReleased(Keyboard::LShift))
-					if(auto* comp = entity->getComponentAs<InteractableComponent>(); comp != nullptr)
-						if(comp->checkForInteraction(player->getPosition()))
-							comp->callback();
-			}
-			if (auto* comp = entity->getComponentAs<TraceComponent>(); comp != nullptr) {
-				comp->update(deltaTime);
-			}
-			if(auto* comp = entity->getComponentAs<CameraComponent>(); comp != nullptr) {
-				if(comp->getStickToPlayer()) {
-					auto curPos = entity->getPosition();
-					curPos.x = player->getPosition().x;
-					entity->setPosition(curPos);
-				}
-			}
-			if(auto* comp = entity->getComponentAs<TriggerComponent>(); comp != nullptr) {
-				if(input.isReleased(Keyboard::LShift)) {
-					if(comp->checkForTrigger(player->getPosition())) {
-						if(comp->type == TriggerComponent::ChangeScene) {
-							getScenes()->setCurrentScene(comp->sceneId);
-							auto* scene = getScenes()->getCurrentScene();
-							for(auto& it : scene->getEntrances()) {
-								if(it.ID == comp->entranceId) {
-									scene->getEntity(scene->getPlayerID())->setPosition(it.position);
-								}
-							}
-						}
-					}
-				}
-			}
+			entity->update(*getScenes(), deltaTime);
 		}
 	}
 }
 
-void Scene::render()
+void Scene::render(sf3d::RenderTarget& canvas)
 {
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
-			entity->render();
+			entity->render(canvas);
 		}
 	}
 }
@@ -176,6 +142,20 @@ bool Scene::removeEntity(size_t id)
 		return true;
 	}
 
+	if (auto it = _find("entries", id); it != getEntities("entries").end())
+	{
+		getEntities("entries").erase(it);
+
+		return true;
+	}
+
+	if (auto it = _find("battles", id); it != getEntities("battles").end())
+	{
+		getEntities("battles").erase(it);
+
+		return true;
+	}
+
 	return false;
 }
 
@@ -214,6 +194,16 @@ Entity* Scene::getEntity(size_t id)
 		return it->get();
 	}
 
+	if (auto it = _find("entries", id); it != getEntities("entries").end())
+	{
+		return it->get();
+	}
+
+	if (auto it = _find("battles", id); it != getEntities("battles").end())
+	{
+		return it->get();
+	}
+
 	return nullptr;
 }
 
@@ -235,6 +225,16 @@ const Entity* Scene::getEntity(size_t id) const
 	}
 
 	if (auto it = _find("background", id); it != getEntities("background").end())
+	{
+		return it->get();
+	}
+
+	if (auto it = _find("entries", id); it != getEntities("entries").end())
+	{
+		return it->get();
+	}
+
+	if (auto it = _find("battles", id); it != getEntities("battles").end())
 	{
 		return it->get();
 	}
@@ -280,6 +280,16 @@ bool Scene::hasEntity(size_t id)
 	}
 
 	if (_find("background", id) != getEntities("background").end())
+	{
+		return true;
+	}
+
+	if (_find("entries", id) != getEntities("entries").end())
+	{
+		return true;
+	}
+
+	if (_find("battles", id) != getEntities("battles").end())
 	{
 		return true;
 	}
@@ -331,6 +341,7 @@ const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() cons
 void Scene::setPlayerID(size_t id)
 {
 	_playerID = id;
+	_player = getEntity(id);
 }
 
 size_t Scene::getPlayerID() const
@@ -338,25 +349,32 @@ size_t Scene::getPlayerID() const
 	return _playerID;
 }
 
-void Scene::loadFromConfig(const Json& config)
+Entity* Scene::getPlayer()
+{
+	return _player;
+}
+
+//170
+void Scene::loadFromConfig(Json& config)
 {
 	_id = config["id"];
 	_name = config["name"].get<std::string>();
-	_playerID = config["player"];
 
-	 size_t maxId = 0u;
-	 for(auto& obj : config["entrances"]) {
-	 	if(obj["id"].get<size_t>() > maxId) {
-	 		maxId = obj["id"].get<size_t>();
-	 	}
-	 	_entrancesHolder.push_back(
-	 		Entrance{
-	 			obj["id"].get<size_t>(),
-	 			obj["name"].get<std::string>(),
-	 			glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
-	 		}
-	 	);
-	 }
+	size_t maxId = 0u;
+	if(!config["entrances"].is_null()) {
+		for(auto& obj : config["entrances"]) {
+			if(obj["id"].get<size_t>() > maxId) {
+				maxId = obj["id"].get<size_t>();
+			}
+			_entrancesHolder.push_back(
+				Entrance{
+					obj["id"].get<size_t>(),
+					obj["name"].get<std::string>(),
+					glm::vec3{obj["position"]["x"].get<float>(), obj["position"]["y"].get<float>(), obj["position"]["z"].get<float>()}
+				}
+			);
+		}		
+	}
 	
 	trySettingInitialUniqueID<Entrance>(maxId);
 
@@ -370,6 +388,14 @@ void Scene::loadFromConfig(const Json& config)
 		}
 	}
 
+	if(!config["player"].is_null()) {
+		setPlayerID(config["player"].get<int>());
+	}
+	else {
+		_playerID = 0;
+		_player = nullptr;
+	}
+	
 	trySettingInitialUniqueID<Scene>(_id);
 }
 

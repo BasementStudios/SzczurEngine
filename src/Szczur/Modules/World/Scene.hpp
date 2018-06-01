@@ -6,6 +6,8 @@
 
 #include <boost/container/flat_map.hpp>
 
+#include <Szczur/Utility/SFML3D/RenderTarget.hpp>
+
 #include "Entity.hpp"
 
 namespace rat
@@ -52,7 +54,7 @@ public:
 	void update(float deltaTime);
 
 	///
-	void render();
+	void render(sf3d::RenderTarget& canvas);
 
 	///
 	size_t getID() const;
@@ -132,7 +134,10 @@ public:
 	size_t getPlayerID() const;
 
 	///
-	void loadFromConfig(const Json& config);
+	Entity* getPlayer();
+
+	///
+	void loadFromConfig(Json& config);
 
 	///
 	void saveToConfig(Json& config) const;
@@ -152,10 +157,6 @@ public:
 
 	///
 	void updateIDs();
-	#ifdef EDITOR
-		size_t focusedObject{0u};
-		bool anySelected{false};
-	#endif
 
 private:
 
@@ -171,6 +172,7 @@ private:
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	size_t _playerID{ 0u };
+	Entity* _player = nullptr;
 
 	EntrancesHolder_t _entrancesHolder;
 

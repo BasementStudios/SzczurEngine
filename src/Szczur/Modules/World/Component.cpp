@@ -1,5 +1,7 @@
 #include "Entity.hpp"
 
+#include "ScenesManager.hpp"
+
 namespace rat
 {
 
@@ -71,6 +73,10 @@ void Component::saveToConfig(Json& config) const
 void Component::updateIDs()
 {
 	_id = getUniqueID<Component>();
+}
+
+void Component::renderHeader(ScenesManager& scenes, Entity* object) {
+
 }
 
 }

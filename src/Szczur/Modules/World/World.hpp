@@ -49,9 +49,12 @@ private:
 	///
 	const ScenesManager& _getScenes() const;
 
+private:
+
 	bool _doEditor{true};
 
 	ScenesManager _scenes;
+
 	#ifdef EDITOR
 	LevelEditor _levelEditor;
 	#endif

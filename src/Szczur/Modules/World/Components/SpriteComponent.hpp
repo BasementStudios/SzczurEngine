@@ -55,6 +55,9 @@ public:
 	///
 	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
+	///
+	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
 private:
 
 	SpriteDisplayData* _spriteDisplayData = nullptr;

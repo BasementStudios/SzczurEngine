@@ -7,125 +7,163 @@
 #include "../Scene.hpp"
 
 namespace rat {
-    ObjectsList::ObjectsList(ScenesManager& scenes) :
-    _scenes{scenes} {
+	ObjectsList::ObjectsList(ScenesManager& scenes) :
+	_scenes{scenes} {
+		_tab = "single";
+	}
 
+	int ObjectsList::getSelectedID() {
+		return _selectedEntityID;
+	}
+
+    Entity* ObjectsList::getSelectedEntity() {
+    	return _scenes.getCurrentScene()->getEntity(_selectedEntityID);
     }
 
-    void ObjectsList::render() {
-        if(_ifRenderObjectsList) {
-            if(ImGui::Begin("Objects", &_ifRenderObjectsList)) {
-                ImGui::Separator();
-                if(ImGui::BeginChild("Objects")) {
-                    int i = 0;
-                    auto* scene = _scenes.getCurrentScene();
-                    for(auto& group : scene->getAllEntities()) {
-                        ImGui::PushID(i);
+	bool ObjectsList::isEntitySelected() {
+		return _selectedEntityID != -1;
+	}
 
-                        ImGui::PushStyleColor(ImGuiCol_Header, {0.f, 0.f, 0.f, 0.f});
-                        if(ImGui::TreeNodeEx(group.first.c_str(), ImGuiTreeNodeFlags_FramePadding|ImGuiTreeNodeFlags_DefaultOpen|ImGuiTreeNodeFlags_Framed)) {
-                            ImGui::PopStyleColor();
+	void ObjectsList::unselect() {
+		_selectedEntityID = -1;
+	}
 
-                            // Context menu for group. Options: Add object
-                            if(group.first != "single" && ImGui::BeginPopupContextItem("Group context menu")) {
-                                if(ImGui::Selectable("Add object##group_context_menu")) {
-                                    Entity* ent = scene->addEntity(group.first);
-                                    if(ent) {
-                                        scene->focusedObject = ent->getID();
-                                    }
-                                    scene->anySelected = static_cast<bool>(ent);
-                                }
-                                ImGui::EndPopup();
-                            }
+	void ObjectsList::render(bool& ifRender) {
 
+		if(ImGui::Begin("Objects", &ifRender)) {
+			ImGui::Separator();
 
-                            for(int i2 = 0; i2<group.second.size(); ++i2) {
-                                Entity& object = *group.second[i2];
-                                bool temp = object.getID() == scene->focusedObject && scene->anySelected;
-                                ImGui::PushID(i2);
-                                if(ImGui::Selectable(object.getName().c_str(), temp)) {
-                                    if(!temp) {
-                                        scene->focusedObject = object.getID();
-                                    }
-                                    scene->anySelected = !temp;
-                                }
+			// Current scene
+			auto* scene = _scenes.getCurrentScene();
 
-                                // Swapping objects in list
-                                static int draggedObject = -1;
-                                static std::string draggedCategory;
-                                if(ImGui::IsMouseReleased(0)) {
-                                    draggedObject = -1;
-                                }
-                                if(ImGui::IsItemClicked()) {
-                                    draggedObject = i2;
-                                    draggedCategory = group.first;
-                                }
-                                if(ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem)) {
-                                    if(draggedObject != -1 && draggedObject != i2 && draggedCategory == group.first) {
-                                        std::swap(group.second[i2], group.second[draggedObject]);
-                                        draggedObject = i2;
-                                    }
-                                }
+			// Group buttons            
+			int id = 0;
+			float availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x)*0.5f;
+			for(auto& group : scene->getAllEntities()) {
 
-                                // Context menu for object. Options: Duplicate|Remove
-                                if(group.first != "single") {
-                                    if(ImGui::BeginPopupContextItem("Object context menu")) {
-                                        if(ImGui::Selectable("Duplicate##object_context_menu")) {
-                                            Entity* ent = scene->duplicateEntity(group.second[i2]->getID());
-                                            if(ent) {
-                                                scene->focusedObject = ent->getID();
-                                            }
-                                            scene->anySelected = static_cast<bool>(ent);
-                                        }
-                                        if(ImGui::Selectable("Remove##object_context_menu")) {
-                                            if(temp)
-                                                scene->anySelected = false;
-                                            group.second.erase(group.second.begin() + i2);
-                                            ImGui::EndPopup();
-                                            ImGui::PopID();
-                                            break;
-                                        }
-                                        ImGui::EndPopup();
-                                    }
-                                }
+				// Colorize button with selected group
+				bool colorize = _tab == group.first;
+				if(colorize) {
+					ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+					ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+				}
+				if(ImGui::Button(group.first.c_str(), ImVec2(availWidth, 0))) {
+					_tab = group.first;
+				}
+				if(colorize) {
+					ImGui::PopStyleColor(2);
+				}
+				if(id%2 == 0) ImGui::SameLine();
+				++id;
+			}
+			ImGui::Separator();
 
-                                ImGui::PopID();
-                            }
-                            ImGui::TreePop();
-                        }
-                        else {
-                            ImGui::PopStyleColor();
+			// Operations buttons
+			if(_tab != "single") {
+				availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
 
-                            // Context menu for group. Options: Add object
-                            if(group.first != "single" && ImGui::BeginPopupContextItem("Group context menu")) {
-                                if(ImGui::Selectable("Add object##group_context_menu")) {
-                                    Entity* ent = scene->addEntity(group.first);
-                                    if(ent) {
-                                        scene->focusedObject = ent->getID();
-                                    }
-                                    scene->anySelected = static_cast<bool>(ent);
-                                }
-                                ImGui::EndPopup();
-                            }
+				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
+					addObjectToCurrentGroup();
+				}
+				if(isEntitySelected()) {
+					ImGui::SameLine();
+					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
+						duplicateObject(_selectedEntityID);
+					}
+					ImGui::SameLine();
+					if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
+						removeObject(_selectedEntityID);
+					}
+				}
+				ImGui::Separator();
+			}
 
-                        }
-                        ImGui::Separator();
-                        ImGui::PopID();
-                        ++i;
-                    }
-                }
-                ImGui::EndChild();
+			// Child for scroll and separate top part
+			ImGui::BeginChild("Objects##list", ImVec2(ImGui::GetContentRegionAvailWidth(), 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+			// List of objects
+			id = 0;
+			auto& entities = scene->getEntities(_tab);
+			for(auto& object : entities) {
+				ImGui::PushID(id);
+				if(ImGui::Selectable(object->getName().c_str(), _selectedEntityID == object->getID())) {
+					if(_selectedEntityID != object->getID()) {
+						_selectedEntityID = object->getID();
+					}
+					else {
+						_selectedEntityID = -1;
+					}
+				}	
 
-            }
-            ImGui::End();
-        }
-    }
+				// Swapping objects in list
+				static int draggedObject = -1;
+				if(ImGui::IsMouseReleased(0)) draggedObject = -1;
+				if(ImGui::IsItemClicked()) draggedObject = id;
+				if(ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && draggedObject != -1 && draggedObject != id) {
+					std::swap(entities[id], entities[draggedObject]);
+					draggedObject = id;
+				}
 
-    void ObjectsList::update() {
+				// Open context menu for object
+				if(_renderObjectPopup(object->getID())) {
+					ImGui::PopID();
+					break;
+				}
 
-    }
+				ImGui::PopID();
+				++id;				
+			}
+			ImGui::EndChild();
+			ImGui::End();
+		}
+	}
 
-    bool& ObjectsList::getBool() {
-        return _ifRenderObjectsList;
-    }
+	bool ObjectsList::_renderObjectPopup(int id) {
+		if(_tab == "single") return false;
+		if(ImGui::BeginPopupContextItem("##object_popup")) {
+			if(ImGui::Selectable("Clone##object_popup")) {
+				duplicateObject(id);
+			}
+			if(ImGui::Selectable("Remove##object_popup")) {
+				removeObject(id);
+				ImGui::EndPopup();
+				return true;
+			}
+			ImGui::EndPopup();
+		}
+		return false;
+	}
+
+	void ObjectsList::update() {
+
+	}
+
+	void ObjectsList::select(Entity* object) {
+		_selectedEntityID = object->getID();
+	}
+
+	void ObjectsList::select(int id) {
+		_selectedEntityID = id;
+	}
+
+	void ObjectsList::addObject(const std::string& groupName) {
+		Entity* entity = _scenes.getCurrentScene()->addEntity(groupName);
+		if(entity) {
+			entity->addComponent<BaseComponent>();
+			select(entity);
+		}
+	}
+
+	void ObjectsList::addObjectToCurrentGroup() {
+		addObject(_tab);
+	}
+
+	void ObjectsList::duplicateObject(int id) {
+		Entity* entity = _scenes.getCurrentScene()->duplicateEntity(id);
+		if(entity) select(entity);
+	}
+
+	void ObjectsList::removeObject(int id) {
+		if(getSelectedID() == id) unselect();
+		_scenes.getCurrentScene()->removeEntity(id);		
+	}
 }

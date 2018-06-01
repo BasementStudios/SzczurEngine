@@ -1,6 +1,8 @@
+#include "Entity.hpp"
+
 #include <algorithm>
 
-#include "Scene.hpp"
+#include "ScenesManager.hpp"
 
 namespace rat
 {
@@ -48,14 +50,20 @@ Entity& Entity::operator = (const Entity& rhs)
 	return *this;
 }
 
-void Entity::update(float deltaTime)
+void Entity::update(ScenesManager& scenes, float deltaTime)
 {
-
+	if(auto* comp = getComponentAs<ScriptableComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
 }
 
-void Entity::render()
+void Entity::render(sf3d::RenderTarget& canvas)
 {
-
+	if(auto* ptr = getFeature<sf3d::Drawable>()) {
+		canvas.draw(*ptr);
+	}
 }
 
 size_t Entity::getID() const
@@ -180,9 +188,15 @@ void Entity::loadFromConfig(const Json& config)
 
 	const Json& components = config["components"];
 
+	bool base = false;
 	for (const Json& component : components)
 	{
+		if(component["name"] == "BaseComponent") base = true;
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
+	}
+
+	if(base == false) {		
+		addComponent<BaseComponent>();
 	}
 
 	trySettingInitialUniqueID<Entity>(_id);

@@ -9,11 +9,13 @@ using Json = nlohmann::json;
 #include "UniqueID.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
+
 namespace rat
 {
 
 // FWD
 class Entity;
+class ScenesManager;
 
 class Component
 {
@@ -77,6 +79,9 @@ public:
 
 	///
 	void updateIDs();
+
+	///
+	virtual void renderHeader(ScenesManager& scenes, Entity* object);
 
 private:
 

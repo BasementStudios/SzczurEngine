@@ -5,11 +5,8 @@ namespace rat {
     class SpriteDisplayDataManager {
     public:
         SpriteDisplayDataManager(ScenesManager& scenes);
-        void render();
-        bool& getBool();
+        void render(bool& ifRender);
     private:
         ScenesManager& _scenes;
-
-        bool _ifRender{false};
     };
 }

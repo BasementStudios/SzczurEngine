@@ -94,7 +94,7 @@ void Timeline::update(float deltaTime)
 				glm::vec3 end = moveAction->End;
 
 				if (moveAction->EndRelativeToStart)
-					end += moveAction->Start;
+					end += start;
 
 				vertex.position = end;
 				_vertexArray.set(i, vertex);
