@@ -189,13 +189,20 @@ void Trace::update(float deltaTime)
 	{
 		_currentTimeline->update(deltaTime);
 	}
+
+	for (auto& timeline : _timelines)
+	{
+		if (timeline->ShowLines)
+			timeline->updateVertexArray();
+	}
 }
 
 void Trace::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
 	for (auto& timeline : _timelines)
 	{
-		timeline->draw(target, states);
+		if (timeline->ShowLines)
+			timeline->draw(target, states);
 	}
 }
 

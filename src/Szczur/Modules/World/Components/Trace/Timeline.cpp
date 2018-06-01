@@ -28,6 +28,11 @@ void Timeline::addAction(Action* action)
 
 void Timeline::removeAction(Action* action)
 {
+	if (action->getType() == Action::Move)
+	{
+		_vertexArray.resize(_vertexArray.getSize() - 2);
+	}
+
 	_actions.erase(std::remove_if(_actions.begin(), _actions.end(), [action] (auto& it) { return action == it.get(); }));
 	_currentActionIndex = 0;
 	_finished = false;
@@ -64,51 +69,56 @@ void Timeline::update(float deltaTime)
 			}
 		}
 	}
+}
 
-	if (ShowLines)
+void Timeline::updateVertexArray()
+{
+	int i = 0;
+
+	glm::vec3 lastPosition = { 0.f, 0.f, 0.f };
+
+	for (auto& action : _actions)
 	{
-		int i = 0;
-
-		glm::vec3 lastPosition;
-
-		for (auto& action : _actions)
+		if (action->getType() == Action::Move)
 		{
-			if (action->getType() == Action::Move)
+			auto moveAction = static_cast<MoveAction*>(action.get());
+
+			glm::vec3 start = moveAction->Start;
+
+			if (moveAction->UseCurrentPosition)
 			{
-				auto moveAction = static_cast<MoveAction*>(action.get());
-
-				glm::vec3 start = moveAction->Start;
-
-				if (moveAction->UseCurrentPosition)
-				{
-					start = lastPosition;
-				}
-
-				sf3d::Vertex vertex;
-				vertex.position = start;
-				_vertexArray.set(i, vertex);
-
-				i++;
-
-
-				glm::vec3 end = moveAction->End;
-
-				if (moveAction->EndRelativeToStart)
-					end += start;
-
-				vertex.position = end;
-				_vertexArray.set(i, vertex);
-
-				lastPosition = end;
-
-				i++;
+				start = lastPosition;
 			}
+
+			sf3d::Vertex vertex;
+			vertex.position = start;
+			vertex.color = glm::vec4(action->Color, 1.f);
+			_vertexArray.set(i, vertex);
+
+			i++;
+
+
+			glm::vec3 end = moveAction->End;
+
+			if (moveAction->EndRelativeToStart)
+				end += start;
+
+			vertex.position = end;
+			vertex.color = glm::vec4(action->Color, 1.f);
+			_vertexArray.set(i, vertex);
+
+			lastPosition = end;
+
+			i++;
 		}
 	}
 }
 
 void Timeline::start()
 {
+	if (_actions.size() == 0)
+		return;
+
 	_finished = false;
 	_currentActionIndex = 0;
 	auto& currentAction = _actions[_currentActionIndex];

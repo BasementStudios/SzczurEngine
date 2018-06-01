@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <glm/glm.hpp>
 
 #include "../Action.hpp"
 
@@ -37,6 +36,7 @@ public:
 	{
 
 	}
+
 	virtual ~MoveAction()
 	{
 
@@ -59,9 +59,7 @@ public:
 				_progress = 1.f;
 			}
 
-			auto pos = Start + _delta * _progress;
-
-			_entity->setPosition(pos);
+			_entity->setPosition(Start + _delta * _progress);
 		}
 	}
 

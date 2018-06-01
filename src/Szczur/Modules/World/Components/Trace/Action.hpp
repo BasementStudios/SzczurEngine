@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace rat
 {
 
@@ -14,6 +16,9 @@ public:
 		Anim,
 		Wait
 	};
+
+public:
+	glm::vec3 Color = { 1.f, 1.f, 1.f };
 
 protected:
 	Type _type;

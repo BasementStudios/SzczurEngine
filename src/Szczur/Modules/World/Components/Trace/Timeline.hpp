@@ -19,7 +19,7 @@ class Timeline
 public:
 	bool Loop = false;
 
-	bool ShowLines = true;
+	bool ShowLines = false;
 
 private:
 	int _id;
@@ -40,6 +40,8 @@ public:
 	void removeAction(Action* action);
 
 	void update(float deltaTime);
+
+	void updateVertexArray();
 
 	void start();
 
