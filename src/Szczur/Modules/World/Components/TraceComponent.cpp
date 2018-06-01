@@ -92,289 +92,11 @@ std::unique_ptr<Component> TraceComponent::copy(Entity* newParent) const
 
 void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object) 
 {
+	static Timeline* currentTimeline = nullptr;
 	static Action* currentAction = nullptr;
 
 	if (ImGui::CollapsingHeader("Trace##trance_component"))
 	{
-		if (ImGui::Button("Add timeline"))
-		{
-			_trace->addTimeline();
-		}
-
-		for (auto& timeline : _trace->getTimelines())
-		{
-			if (ImGui::TreeNodeEx(("Timeline " + std::to_string(timeline->getId())).c_str(), ImGuiTreeNodeFlags_FramePadding))
-			{
-				ImGui::SameLine();
-
-				ImGui::PushID(timeline.get());
-
-				if (ImGui::SmallButton("Play"))
-				{
-					_trace->setCurrentTimeline(timeline.get());
-				}
-
-				ImGui::SameLine();
-
-				if (ImGui::SmallButton("-"))
-				{
-					_trace->removeTimeline(timeline.get());
-					ImGui::PopID();
-					ImGui::TreePop();
-					break;
-				}
-
-				ImGui::Checkbox("Loop", &timeline->Loop);
-				ImGui::Checkbox("Show lines in editor", &timeline->ShowLines);
-
-				ImGui::Spacing();
-
-				auto& actions = timeline->getActions();
-
-				// Select list actions to add
-				static int currentComboItem = -1;
-
-				ImGui::PushItemWidth(100.f);
-				ImGui::Combo("##Action", &currentComboItem, "Move\0Anim\0Wait\0");
-
-				ImGui::SameLine();
-
-				if (ImGui::Button("Add action"))
-				{
-					if (currentComboItem == 0)
-					{
-						timeline->addAction(new MoveAction(object));
-					}
-					else if (currentComboItem == 1)
-					{
-						if (object->hasComponent<ArmatureComponent>())
-							timeline->addAction(new AnimAction(object));
-					}
-					else if (currentComboItem == 2)
-					{
-						timeline->addAction(new WaitAction(object));
-					}
-				}
-
-				auto& style = ImGui::GetStyle();
-
-				ImGui::BeginChild(timeline.get(), ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f),  true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
-				{
-					for (int i = 0; i < actions.size(); ++i)
-					{
-						auto& action = actions[i];
-
-						std::string buttonName;
-
-						switch (action->getType())
-						{
-							case Action::Move:
-								buttonName = "M";
-								break;
-							case Action::Anim:
-								buttonName = "A";
-								break;
-							case Action::Wait:
-								buttonName = "W";
-								break;
-						}
-
-						ImGui::PushID(action.get());
-
-						bool active = action.get() == currentAction;
-
-						if (active)
-						{
-							ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
-							ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
-						}
-							
-						if (ImGui::Button((buttonName).c_str(), { ImGui::GetFrameHeight(), 0.f }))
-						{
-
-							if (currentAction)
-								currentAction->Color = glm::vec3(1.f, 1.f, 1.f);
-
-							if (currentAction == action.get())
-								currentAction = nullptr;
-							else
-							{
-								currentAction = action.get();
-								currentAction->Color = glm::vec3(0.f, 1.f, 0.f);
-							}
-						}
-
-						if (active)
-						{
-							ImGui::PopStyleColor(2);
-						}
-
-						ImGui::PopID();
-
-						ImGui::SameLine();
-					}
-
-					ImGui::SetScrollX(0.5f);
-				}
-				ImGui::EndChild();
-
-				if (currentAction)
-				{
-					ImGui::Separator();
-
-					if (ImGui::Button("<<", { 30.f, 0.f }))
-					{
-						for (int i = 0; i < actions.size(); ++i)
-						{
-							if (i > 0 && actions[i].get() == currentAction)
-							{
-								std::swap(actions[i], actions[i - 1]);
-								break;
-							}
-						}
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button("X", { 30.f, 0.f }))
-					{
-						timeline->removeAction(currentAction);
-						currentAction = nullptr;
-						ImGui::PopID();
-						ImGui::TreePop();
-						break;
-					}
-
-					ImGui::SameLine();
-
-					if (ImGui::Button(">>", { 30.f, 0.f }))
-					{
-						for (int i = 0; i < actions.size(); ++i)
-						{
-							if (i < actions.size() - 1 && actions[i].get() == currentAction)
-							{
-								std::swap(actions[i], actions[i + 1]);
-								break;
-							}
-						}
-					}
-
-					switch (currentAction->getType())
-					{
-						case Action::Move:
-						{
-							auto moveAction = static_cast<MoveAction*>(currentAction);
-
-							ImGui::Text("Move");
-							ImGui::Spacing();
-
-							ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
-
-							if (!moveAction->UseCurrentPosition)
-							{
-								if (ImGui::Button("C##Start"))
-								{
-									moveAction->Start = object->getPosition();
-								}
-
-								if (ImGui::IsItemHovered())
-								{
-									ImGui::BeginTooltip();
-									ImGui::Text("Set current position");
-									ImGui::EndTooltip();
-								}
-
-								ImGui::SameLine();
-
-								ImGui::DragFloat3("Start##", reinterpret_cast<float*>(&moveAction->Start));
-							}
-
-							ImGui::Spacing();
-							ImGui::Checkbox("Relative to Start", &moveAction->EndRelativeToStart);
-
-							if (ImGui::Button("C##End"))
-							{
-								moveAction->End = object->getPosition();
-							}
-
-							if (ImGui::IsItemHovered())
-							{
-								ImGui::BeginTooltip();
-								ImGui::Text("Set current position");
-								ImGui::EndTooltip();
-							}
-
-							ImGui::SameLine();
-
-							ImGui::PushItemWidth(-60.f);
-
-							ImGui::DragFloat3("End", reinterpret_cast<float*>(&moveAction->End));
-							//ImGui::Spacing();
-
-							ImGui::DragFloat("Speed", &moveAction->Speed, 0.01f, 0.f, 50.f);
-
-							ImGui::PopItemWidth();
-
-							ImGui::Checkbox("Teleport", &moveAction->Teleport);
-						} break;
-						case Action::Anim:
-						{
-							auto animAction = static_cast<AnimAction*>(currentAction);
-
-							ImGui::Text("Anim");
-							ImGui::Spacing();
-
-							static char animName[64] = { 0 };
-
-							if (ImGui::BeginCombo("Animation", animAction->AnimationName.c_str()))
-							{
-								if (auto arm = object->getComponentAs<ArmatureComponent>())
-								{
-									for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames())
-									{
-										bool isSelected = (animAction->AnimationName == anim);
-
-										if (ImGui::Selectable(anim.c_str(), isSelected))
-											animAction->AnimationName = anim;
-										else
-											ImGui::SetItemDefaultFocus();
-									}
-								}
-
-								ImGui::EndCombo();
-							}
-
-							ImGui::DragFloat("Fade in time", &animAction->FadeInTime, 0.01f, 0.01f, 1.f);
-
-							ImGui::Checkbox("Play once", &animAction->PlayOnce);
-
-							if (animAction->PlayOnce)
-								ImGui::Checkbox("Wait to the end of animation", &animAction->WaitToEnd);
-
-							ImGui::Checkbox("Flip X", &animAction->FlipX);
-						} break;
-						case Action::Wait:
-						{
-							auto waitAction = static_cast<WaitAction*>(currentAction);
-
-							ImGui::Text("Wait");
-							ImGui::Spacing();
-
-							ImGui::DragFloat("Time to wait", &waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
-						} break;
-					}
-
-					ImGui::Separator();
-				}
-
-				ImGui::PopID();
-				ImGui::TreePop();
-				ImGui::Separator();
-			}
-		}
-
-		ImGui::Separator();
-
 		ImGui::Text("Current timeline: %d\n", _trace->getCurrentTimeline() ? _trace->getCurrentTimeline()->getId() : -1);
 
 		if (ImGui::Button("Stop"))
@@ -394,6 +116,314 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		if (ImGui::Button("Resume"))
 		{
 			resume();
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("+"))
+		{
+			_trace->addTimeline();
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Play"))
+		{
+			if (currentTimeline)
+			{
+				_trace->setCurrentTimeline(currentTimeline);
+			}
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("-"))
+		{
+			if (currentTimeline)
+			{
+				_trace->removeTimeline(currentTimeline);
+				currentTimeline = nullptr;
+			}
+		}
+
+		auto& style = ImGui::GetStyle();
+
+		// Show all timelines
+		ImGui::BeginChild("Timelines", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+		{
+			for (auto& timeline : _trace->getTimelines())
+			{
+				ImGui::PushID(timeline.get());
+
+				bool activeTimeline = timeline.get() == currentTimeline;
+
+				if (activeTimeline)
+				{
+					ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+					ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+				}
+
+				if (ImGui::Button(std::to_string(timeline->getId()).c_str(), { ImGui::GetFrameHeight(), 0.f }))
+				{
+					if (currentTimeline == timeline.get())
+						currentTimeline = nullptr;
+					else
+						currentTimeline = timeline.get();
+				}
+
+				if (activeTimeline)
+				{
+					ImGui::PopStyleColor(2);
+				}
+
+				ImGui::SameLine();
+
+				ImGui::PopID();
+			}
+		}
+		ImGui::EndChild();
+
+		// Show current timeline
+		if (currentTimeline)
+		{
+			ImGui::Checkbox("Loop", &currentTimeline->Loop);
+			ImGui::Checkbox("Show lines in editor", &currentTimeline->ShowLines);
+
+			ImGui::Spacing();
+
+			auto& actions = currentTimeline->getActions();
+
+			// Select list actions to add
+			static int currentComboItem = -1;
+
+			ImGui::PushItemWidth(100.f);
+			ImGui::Combo("##Action", &currentComboItem, "Move\0Anim\0Wait\0");
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Add action"))
+			{
+				if (currentComboItem == 0)
+				{
+					currentTimeline->addAction(new MoveAction(object));
+				}
+				else if (currentComboItem == 1)
+				{
+					if (object->hasComponent<ArmatureComponent>())
+						currentTimeline->addAction(new AnimAction(object));
+				}
+				else if (currentComboItem == 2)
+				{
+					currentTimeline->addAction(new WaitAction(object));
+				}
+			}
+
+			ImGui::BeginChild("Timeline", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+			{
+				for (int i = 0; i < actions.size(); ++i)
+				{
+					auto& action = actions[i];
+
+					std::string buttonName;
+
+					switch (action->getType())
+					{
+						case Action::Move:
+							buttonName = "M";
+							break;
+						case Action::Anim:
+							buttonName = "A";
+							break;
+						case Action::Wait:
+							buttonName = "W";
+							break;
+					}
+
+					ImGui::PushID(action.get());
+
+					bool active = action.get() == currentAction;
+
+					if (active)
+					{
+						ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+						ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+					}
+
+					if (ImGui::Button((buttonName).c_str(), { ImGui::GetFrameHeight(), 0.f }))
+					{
+
+						if (currentAction)
+							currentAction->Color = glm::vec3(1.f, 1.f, 1.f);
+
+						if (currentAction == action.get())
+							currentAction = nullptr;
+						else
+						{
+							currentAction = action.get();
+							currentAction->Color = glm::vec3(0.f, 1.f, 0.f);
+						}
+					}
+
+					if (active)
+					{
+						ImGui::PopStyleColor(2);
+					}
+
+					ImGui::PopID();
+
+					ImGui::SameLine();
+				}
+
+				ImGui::SetScrollX(0.5f);
+			}
+			ImGui::EndChild();
+
+			if (currentAction)
+			{
+				ImGui::Separator();
+
+				if (ImGui::Button("<<", { 30.f, 0.f }))
+				{
+					for (int i = 0; i < actions.size(); ++i)
+					{
+						if (i > 0 && actions[i].get() == currentAction)
+						{
+							std::swap(actions[i], actions[i - 1]);
+							break;
+						}
+					}
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("X", { 30.f, 0.f }))
+				{
+					currentTimeline->removeAction(currentAction);
+					currentAction = nullptr;
+					ImGui::PopID();
+					ImGui::TreePop();
+					return;
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button(">>", { 30.f, 0.f }))
+				{
+					for (int i = 0; i < actions.size(); ++i)
+					{
+						if (i < actions.size() - 1 && actions[i].get() == currentAction)
+						{
+							std::swap(actions[i], actions[i + 1]);
+							break;
+						}
+					}
+				}
+
+				switch (currentAction->getType())
+				{
+					case Action::Move:
+					{
+						auto moveAction = static_cast<MoveAction*>(currentAction);
+
+						ImGui::PushItemWidth(-80);
+
+						ImGui::Text("Move");
+						ImGui::Spacing();
+
+						ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
+
+						if (!moveAction->UseCurrentPosition)
+						{
+							if (ImGui::Button("C##Start"))
+							{
+								moveAction->Start = object->getPosition();
+							}
+
+							if (ImGui::IsItemHovered())
+							{
+								ImGui::BeginTooltip();
+								ImGui::Text("Set current position");
+								ImGui::EndTooltip();
+							}
+
+							ImGui::SameLine();
+
+							ImGui::DragFloat3("Start##", reinterpret_cast<float*>(&moveAction->Start));
+						}
+
+						ImGui::Spacing();
+						ImGui::Checkbox("Relative to Start", &moveAction->EndRelativeToStart);
+
+						if (ImGui::Button("C##End"))
+						{
+							moveAction->End = object->getPosition();
+						}
+
+						if (ImGui::IsItemHovered())
+						{
+							ImGui::BeginTooltip();
+							ImGui::Text("Set current position");
+							ImGui::EndTooltip();
+						}
+
+						ImGui::SameLine();
+
+						ImGui::DragFloat3("End", reinterpret_cast<float*>(&moveAction->End));
+						ImGui::Spacing();
+
+						ImGui::DragFloat("Speed", &moveAction->Speed, 0.01f, 0.f, 50.f);
+
+						ImGui::Checkbox("Teleport", &moveAction->Teleport);
+
+						ImGui::PopItemWidth();
+					} break;
+					case Action::Anim:
+					{
+						auto animAction = static_cast<AnimAction*>(currentAction);
+
+						ImGui::Text("Anim");
+						ImGui::Spacing();
+
+						static char animName[64] = { 0 };
+
+						if (ImGui::BeginCombo("Animation", animAction->AnimationName.c_str()))
+						{
+							if (auto arm = object->getComponentAs<ArmatureComponent>())
+							{
+								for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames())
+								{
+									bool isSelected = (animAction->AnimationName == anim);
+
+									if (ImGui::Selectable(anim.c_str(), isSelected))
+										animAction->AnimationName = anim;
+									else
+										ImGui::SetItemDefaultFocus();
+								}
+							}
+
+							ImGui::EndCombo();
+						}
+
+						ImGui::DragFloat("Fade in time", &animAction->FadeInTime, 0.01f, 0.01f, 1.f);
+
+						ImGui::Checkbox("Play once", &animAction->PlayOnce);
+
+						if (animAction->PlayOnce)
+							ImGui::Checkbox("Wait to the end of animation", &animAction->WaitToEnd);
+
+						ImGui::Checkbox("Flip X", &animAction->FlipX);
+					} break;
+					case Action::Wait:
+					{
+						auto waitAction = static_cast<WaitAction*>(currentAction);
+
+						ImGui::Text("Wait");
+						ImGui::Spacing();
+
+						ImGui::DragFloat("Time to wait", &waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
+					} break;
+				}
+			}
 		}
 	}
 }
