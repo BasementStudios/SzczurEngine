@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <glm/glm.hpp>
 
 #include "../Action.hpp"
@@ -25,8 +26,8 @@ public:
 private:
 	glm::vec3 _endPos;
 
-	glm::vec3 _progress;
-	glm::vec3 _progressSpeed;
+	float _progress;
+	float _progressSpeed;
 
 	glm::vec3 _delta;
 
@@ -52,14 +53,15 @@ public:
 		{
 			_progress += _progressSpeed * deltaTime * 100.f;
 
+			if (_progress >= 1.f)
+			{
+				_finished = true;
+				_progress = 1.f;
+			}
+
 			auto pos = Start + _delta * _progress;
 
 			_entity->setPosition(pos);
-
-			if (_progress.x >= 1.f && _progress.y >= 1.f && _progress.z >= 1.f)
-			{
-				_finished = true;
-			}
 		}
 	}
 
@@ -67,8 +69,11 @@ public:
 	{
 		Action::start();
 
+		// reset progress speed
+		_progressSpeed = 0.f;
+
 		// reset progress
-		_progress = glm::vec3();
+		_progress = 0.f;
 
 		// calc start pos
 		if (UseCurrentPosition)
@@ -86,23 +91,14 @@ public:
 			_endPos = End;
 		}
 
-		// calc progress speed
+		// calc delta
 		_delta = _endPos - Start;
 
-		if (_delta.x != 0.f)
-			_progressSpeed.x = std::abs(Speed / _delta.x);
-		else
-			_progress.x = 1.f;
+		// calc distance
+		float d = sqrt(pow(_delta.x, 2) + pow(_delta.y, 2) + pow(_delta.z, 2));
 
-		if (_delta.y != 0.f)
-			_progressSpeed.y = std::abs(Speed / _delta.y);
-		else
-			_progress.y = 1.f;
-
-		if (_delta.z != 0.f)
-			_progressSpeed.z = std::abs(Speed / _delta.z);
-		else
-			_progress.z = 1.f;
+		// calc speed
+		_progressSpeed = Speed / d;
 	}
 };
 

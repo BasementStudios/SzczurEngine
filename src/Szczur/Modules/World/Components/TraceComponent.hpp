@@ -40,6 +40,12 @@ public:
 	///
 	void resume();
 
+	///
+	void setTimeline(int id);
+
+	///
+	void stop();
+
 // Config
 
 	///
