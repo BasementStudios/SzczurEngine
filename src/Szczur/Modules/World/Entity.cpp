@@ -64,6 +64,8 @@ void Entity::render(sf3d::RenderTarget& canvas)
 	if(auto* ptr = getFeature<sf3d::Drawable>()) {
 		canvas.draw(*ptr);
 	}
+
+	if (auto* comp = getComponentAs<TraceComponent>()) comp->render(canvas);
 }
 
 size_t Entity::getID() const
