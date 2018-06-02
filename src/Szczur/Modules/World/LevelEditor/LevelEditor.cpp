@@ -260,8 +260,17 @@ namespace rat {
 		
 		auto mouse = input.getMousePosition();
 
-		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
-		
+		auto linear = window.getLinerByScreenPos({ (float)mouse.x, (float)mouse.y });
+		if (input.isPressed(Mouse::Left))
+		{
+			_scenes.getCurrentScene()->forEach([&] (const std::string&, Entity& entity) {
+				if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f }))
+				{
+					_objectsList.select(entity.getID());
+				}
+			});
+		}
+
 		// if(input.isReleased(Mouse::Left)) {
 		// 	_scenes.getCurrentScene()->forEach([&linear, scene](const std::string&, Entity& entity){
 		// 		if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
