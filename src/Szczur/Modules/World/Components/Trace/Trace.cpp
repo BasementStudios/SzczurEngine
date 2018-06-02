@@ -63,6 +63,7 @@ void Trace::loadFromConfig(const Json& config, Entity* entity)
 	{
 		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>());
 		timeline->Loop = jsonTimeline["loop"];
+		timeline->SpeedMultiplier = jsonTimeline["speedMultiplier"];
 
 		Json::array_t jsonActions = jsonTimeline["actions"];
 
@@ -138,6 +139,7 @@ void Trace::saveToConfig(Json& config) const
 
 		jsonTimeline["id"] = timeline->getId();
 		jsonTimeline["loop"] = timeline->Loop;
+		jsonTimeline["speedMultiplier"] = timeline->SpeedMultiplier;
 
 		auto jsonActions = Json::array();
 
