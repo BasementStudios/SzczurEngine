@@ -48,7 +48,7 @@ public:
 
 private:
 
-	bool _positionOnly;
+	bool _positionOnly = false;
 
 };
 

@@ -41,6 +41,22 @@ namespace rat {
 		// _audioEditor = detail::globalPtr<AudioEditor>;
 	}
 
+	void LevelEditor::setClipboard(const glm::vec3& value) {
+		_vec3Clipboard = value;
+	}
+
+	void LevelEditor::setClipboard(const glm::vec2& value) {
+		_vec2Clipboard = value;
+	}
+
+	glm::vec3 LevelEditor::getClipboardVec3() {
+		return _vec3Clipboard;
+	}
+
+	glm::vec2 LevelEditor::getClipboardVec2() {
+		return _vec2Clipboard;
+	}
+
 	void LevelEditor::render(sf3d::RenderTarget& target) {
 
 		// Show ImGui demo window

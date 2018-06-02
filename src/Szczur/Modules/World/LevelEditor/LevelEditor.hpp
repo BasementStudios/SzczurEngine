@@ -63,6 +63,18 @@ public:
 	///
 	void printMenuBarInfo(const std::string& text);
 
+	///
+	void setClipboard(const glm::vec3& value);
+
+	///
+	void setClipboard(const glm::vec2& value);
+
+	///
+	glm::vec3 getClipboardVec3();
+
+	///
+	glm::vec2 getClipboardVec2();
+
 private:
 
 	///
@@ -87,8 +99,10 @@ private:
 	void _renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
 
 	///
-	void _render();
+	void _renderPlayBar();
 
+	///
+	void _render();
 
 private:
 
@@ -119,6 +133,11 @@ private:
 	bool _ifRenderArmatureDisplayDataManager{false};
 	bool _ifRenderProperties{false};
 	bool _ifShowImGuiDemoWindow{false};
+
+// Clipboard
+
+	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
+	glm::vec2 _vec2Clipboard{0.f,0.f};
 
 };
 

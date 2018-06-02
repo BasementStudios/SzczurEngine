@@ -88,6 +88,8 @@ namespace rat {
 
 		// Menu bar
 		if(ImGui::BeginMainMenuBar()) {
+
+			// Files
 			if(ImGui::BeginMenu("Files")) {
 				if(ImGui::MenuItem("New")) {
 					openModalNew = true;
@@ -145,6 +147,8 @@ namespace rat {
 				}
 				ImGui::EndMenu();
 			}
+
+			// Tools
 			if(ImGui::BeginMenu("Tools")) {
 				ImGui::MenuItem("Objects List", nullptr, &_ifRenderObjectsList);
 				ImGui::MenuItem("Sprite Display Data Manager", nullptr, &_ifRenderSpriteDisplayDataManager);
@@ -154,6 +158,7 @@ namespace rat {
 				ImGui::EndMenu();
 			}
 
+			// Debug
 			if (ImGui::BeginMenu("Debug"))
 			{
 				if (ImGui::MenuItem("Reload style", nullptr))
@@ -172,6 +177,9 @@ namespace rat {
 				ImGui::EndMenu();
 			}
 
+			// Play bar
+			_renderPlayBar();
+
 			// Menu info
 			if(_menuInfoClock.getElapsedTime().asSeconds()<6.0f) {
 				ImGui::SameLine(0, 16);
@@ -187,5 +195,25 @@ namespace rat {
     void LevelEditor::printMenuBarInfo(const std::string& text) {
 		_menuInfo = text;
 		_menuInfoClock.restart();
+	}
+
+	void LevelEditor::_renderPlayBar() {
+		ImGui::SameLine(0.f, 30);
+		if(_scenes.isGameRunning()) {				
+			ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_Header]);
+			ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+
+			if(ImGui::Button("Stop##play_bar", ImVec2(60, 0))) {
+				_scenes.stopGame();
+			}				
+			
+			ImGui::PopStyleColor(3);
+		}
+		else {
+			if(ImGui::Button("Play##play_bar", ImVec2(60, 0))) {
+				_scenes.runGame();
+			}
+		}
 	}
 }

@@ -8,15 +8,31 @@
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
 namespace rat {
+
+// ========== Constructors ==========
+
 	ScriptableComponent::ScriptableComponent(Entity* parent) :
 	Component { parent, fnv1a_64("ScriptableComponent"), "ScriptableComponent"} {
 
 	}
 
-	///
+// ========== Main ==========
+
 	void ScriptableComponent::update(ScenesManager& scenes, float deltaTime) {
+		if(!_inited) {			
+			_inited = true;
+			if(_initCallback.valid()) {
+				_initCallback(this);
+			}
+		}
 		if(_updateCallback.valid()) {
 			_updateCallback(this, deltaTime);
+		}
+	}
+
+	void ScriptableComponent::sceneChanged() {		
+		if(_sceneChangeCallback.valid()) {
+			_sceneChangeCallback(this);
 		}
 	}
 
@@ -25,145 +41,105 @@ namespace rat {
 		auto ptr = std::make_unique<ScriptableComponent>(*this);
 
 		ptr->setEntity(newParent);
-		ptr->_scriptFilePath = _scriptFilePath;
+		ptr->_scriptPath = _scriptPath;
 		ptr->_updateCallback = _updateCallback;
 
 		return ptr;
 	}
 
-	/// Set script and run
-	void ScriptableComponent::loadScript(const std::string& path) {
-		_scriptFilePath = path;
-		reloadScript();
+// ========== Modifications ==========
+
+	void ScriptableComponent::setScriptPath(const std::string& path) {
+		_scriptPath = path;
 	}
 
-	/// Run script if is set
-	void ScriptableComponent::reloadScript() {
-		if(_scriptFilePath != "") {
-			auto& script = *detail::globalPtr<Script>;
+	const std::string& ScriptableComponent::getFilePath() {
+		return _scriptPath;
+	}
 
-			script.get()["THIS"] = getEntity();
-			script.scriptFile(_scriptFilePath);
-			script.get()["THIS"] = sol::nil;
-		}
-		else {
-			_updateCallback = sol::function();
-		}
+// ========== Scripts ==========
+
+	/// Run script if is set
+	void ScriptableComponent::runScript() {
+		runScript(_scriptPath);
 	}
 
 	/// Run any script for object
-	void ScriptableComponent::loadAnyScript(const std::string& path) {
-		auto& script = *detail::globalPtr<Script>;
+	void ScriptableComponent::runScript(const std::string& path) {
+		if(path != "") {
+			auto& script = *detail::globalPtr<Script>;
 
-		script.get()["THIS"] = getEntity();
-		script.scriptFile(path);
-		script.get()["THIS"] = sol::nil;
+			script.get()["THIS"] = getEntity();
+			script.scriptFile(path);
+			script.get()["THIS"] = sol::nil;
+		}
 	}
 
 	///
 	void ScriptableComponent::loadFromConfig(Json& config)
 	{
-		// Component::loadFromConfig(config);
-		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
-		// auto name = mapUtf8ToWindows1250(config["spriteDisplayData"].get<std::string>());
-		// if(name != "") {
-		// 	bool found{false};
-		// 	for(auto& it : spriteDisplayDataHolder) {
-		// 		if(name == it.getName()) {
-		// 			setSpriteDisplayData(&it);
-		// 			found = true;
-		// 		}
-		// 	}
-		// 	if(!found) {
-		// 		try {
-		// 			setSpriteDisplayData(&(spriteDisplayDataHolder.emplace_back(name)));
-		// 		}
-		// 		catch(const std::exception& exc) {
-
-		// 		}
-		// 	}
-		// }
+		Component::loadFromConfig(config);
+		if(auto& var = config["script"]; !var.is_null()) _scriptPath = var.get<std::string>();
 	}
 
 	///
 	void ScriptableComponent::saveToConfig(Json& config) const
 	{
-		// Component::saveToConfig(config);
-		// config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
-	}
-
-	/// Set all values on default and remove script
-	void ScriptableComponent::reset() {
-		_updateCallback = sol::function();
-	}
-
-	const std::string& ScriptableComponent::getFilePath() {
-		return _scriptFilePath;
+		Component::saveToConfig(config);
+		config["script"] = _scriptPath;
 	}
 
 	void ScriptableComponent::initScript(Script& script) {
 		auto object = script.newClass<ScriptableComponent>("ScriptableComponent", "World");
 		// object.set("onUpdate", [](ScriptableComponent& obj){return "SCRIPT!";});
 		object.set("onUpdate", &ScriptableComponent::_updateCallback);
+		object.set("onInit", &ScriptableComponent::_initCallback);
+		object.set("onSceneChange", &ScriptableComponent::_sceneChangeCallback);
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 		object.init();
 	}
 
 	void ScriptableComponent::renderHeader(ScenesManager& scenes, Entity* object) {
 		if(ImGui::CollapsingHeader("Scriptable##scriptable_component")) {
-			static bool onceType = false;
 
 			// Load script button
 			if(ImGui::Button("Load##scriptable_component")) {
 
 				// Path to script
 				std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets");
-
-				// Loading script
-				if(file != "") {
-					try {
-						if(onceType) {
-							loadAnyScript(file);
-						}
-						else {
-							loadScript(file);
-						}
-					}
-					catch(const std::exception& exc) {
-						LOG_EXCEPTION(exc);
-					}
-				}
+				setScriptPath(file);
+				if(scenes.isGameRunning()) runScript();
 			}
 
 			// Some options for selected script
 			if(getFilePath()!="") {
-
-				// Reload current script button
-				ImGui::SameLine();
-				if(ImGui::Button("Reload##scriptable_component")) {
-					try {
-						reloadScript();
-					}
-					catch (const std::exception& exc)
-					{
-						LOG_EXCEPTION(exc);
-					}
+				// Reload script for object
+				if(scenes.isGameRunning()) {
+					ImGui::SameLine();
+					if(ImGui::Button("Reload##scriptable_component")) {
+						runScript();
+					}					
 				}
-
 				// Remove script from object
 				ImGui::SameLine();
 				if(ImGui::Button("Remove##scriptable_component")) {
-					loadScript("");
+					setScriptPath("");
 				}
+			}
+
+			if(scenes.isGameRunning()) {
+				ImGui::SameLine();
+				if(ImGui::Button("Load once##scriptable_component")) {
+					std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets");
+					runScript(file);
+				}
+			
 			}
 
 			// Show path to current script
 			ImGui::Text("Path:");
 			ImGui::SameLine();
 			ImGui::Text(getFilePath()!="" ? mapWindows1250ToUtf8(getFilePath()).c_str() : "None");
-
-			// Once type checkbox
-			ImGui::Checkbox("Once type##scriptable_component", &onceType);
 		}
 	}
 

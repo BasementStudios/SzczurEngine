@@ -7,6 +7,9 @@
 
 #include "Scene.hpp"
 
+#include <Json/json.hpp>
+using Json = nlohmann::json;
+
 namespace rat
 {
 
@@ -73,15 +76,30 @@ public:
 	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
 
 	///
+	void loadFromConfig(Json& config);
+
+	///
+	void saveToConfig(Json& config);
+
+	///
 	void loadFromFile(const std::string& filepath);
 
 	///
-	void saveToFile(const std::string& filepath) const;
+	void saveToFile(const std::string& filepath);
 
 	///
 	void loadScenesFromFile(const std::string& filepath);
 
+	///
 	void addPlayer();
+
+	/// Run game and save current config
+	void runGame();
+
+	/// Stop game and load saved config
+	void stopGame();
+
+	bool isGameRunning();
 
 	#ifdef EDITOR
 		std::string currentFilePath;
@@ -100,9 +118,10 @@ private:
 	ScenesHolder_t _holder;
 	size_t _currentSceneID = 0u;
 
-	
 	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
 
+	Json _configBeforeRun;
+	bool _gameIsRunning = false;
 };
 
 }

@@ -12,6 +12,8 @@ class Entity;
 class ScriptableComponent : public Component {
 public:
 
+// Constructors
+
 	///
 	ScriptableComponent(Entity* parent);
 
@@ -30,29 +32,32 @@ public:
 	///
 	~ScriptableComponent() = default;
 
+// Main
+
 	///
 	void update(ScenesManager& scenes, float deltaTime);
 
 	///
+	void sceneChanged();
+
+	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
-	/// Set script and run
-
-	/// Set all values on default and remove script [unused]
-	void reset();
+// Modifications
 
 	///
 	const std::string& getFilePath();
 
+	///
+	void setScriptPath(const std::string& path);
+
 // Scripts
 
-	void loadScript(const std::string& path);
-
 	/// Run script if is set
-	void reloadScript();
+	void runScript();
 
 	/// Run any script for object
-	void loadAnyScript(const std::string& path);
+	void runScript(const std::string& path);
 
 	///
 	virtual void loadFromConfig(Json& config) override;
@@ -68,9 +73,10 @@ public:
 
 private:
 
-	
-
 	sol::function _updateCallback;
-	std::string _scriptFilePath;
+	sol::function _initCallback;
+	sol::function _sceneChangeCallback;
+	bool _inited = false;
+	std::string _scriptPath;
 };
 }
