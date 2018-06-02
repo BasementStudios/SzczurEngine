@@ -16,7 +16,10 @@ namespace rat {
         LOG_INFO(this, "Module GUI constructed")
         initScript();
         auto& window = getModule<Window>().getWindow();
+        auto& mainWindow = getModule<Window>();
+        mainWindow.pushGLStates();
         _canvas.create(window.getSize().x, window.getSize().y);
+        mainWindow.popGLStates();
     }
 
     void GUI::initScript() {
@@ -66,11 +69,16 @@ namespace rat {
     }
 
     void GUI::render() {
+        auto& window = getModule<Window>();
+        window.pushGLStates();
+
         _canvas.clear(sf::Color::Transparent);
         
         _canvas.draw(_root);
 
         _canvas.display();
         getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
+
+        window.popGLStates();
     }
 }

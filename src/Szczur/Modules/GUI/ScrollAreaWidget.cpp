@@ -3,6 +3,7 @@
 
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat {
@@ -151,7 +152,11 @@ namespace rat {
         float barX = float(size.x - _minScrollSize.x);
         _scroller.setPosition(barX, 0.f);
         _scroller.setSize(_minScrollSize.x, size.y);
+
+        auto* window = detail::globalPtr<Window>;
+        window->pushGLStates();
         _renderTexture.create(size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f));
+        window->popGLStates();
 
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
         _childrenHeightProp = _childrenHeight/float(size.y);

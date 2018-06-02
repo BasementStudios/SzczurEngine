@@ -1,5 +1,7 @@
 #include "Scroller.hpp"
 
+#include <cmath>
+
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
