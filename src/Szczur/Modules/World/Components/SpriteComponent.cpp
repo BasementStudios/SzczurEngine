@@ -52,27 +52,35 @@ namespace rat {
 	}
 
 	///
-	void SpriteComponent::loadFromConfig(const Json& config)
+	void SpriteComponent::loadFromConfig(Json& config)
 	{
 		Component::loadFromConfig(config);
-		auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
+		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
 		auto name = mapUtf8ToWindows1250(config["spriteDisplayData"].get<std::string>());
 		if(name != "") {
-			bool found{false};
-			for(auto& it : spriteDisplayDataHolder) {
-				if(name == it.getName()) {
-					setSpriteDisplayData(&it);
-					found = true;
-				}
-			}
-			if(!found) {
-				try {
-					setSpriteDisplayData(&(spriteDisplayDataHolder.emplace_back(name)));
-				}
-				catch(const std::exception& exc) {
+			// LOG_INFO("A")
+			auto& textureDataHolder = getEntity()->getScene()->getScenes()->getTextureDataHolder();
+			// LOG_INFO("B")
+			auto* data = textureDataHolder.getData(name);
+			// LOG_INFO("C")
+			setSpriteDisplayData(data);
+			// LOG_INFO("D")
 
-				}
-			}
+			// bool found{false};
+			// for(auto& it : spriteDisplayDataHolder) {
+			// 	if(name == it.getName()) {
+			// 		setSpriteDisplayData(&it);
+			// 		found = true;
+			// 	}
+			// }
+			// if(!found) {
+			// 	try {
+			// 		setSpriteDisplayData(&(spriteDisplayDataHolder.emplace_back(name)));
+			// 	}
+			// 	catch(const std::exception& exc) {
+
+			// 	}
+			// }
 		}
 	}
 
@@ -86,6 +94,7 @@ namespace rat {
 	///
 	void SpriteComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	{
+		// return;
 		if(_spriteDisplayData) {
 			states.transform *= getEntity()->getTransform();
 			target.draw(*_spriteDisplayData, states);
@@ -103,18 +112,20 @@ namespace rat {
 				
 				// Path to .png file
 				std::string file = scenes.getRelativePathFromExplorer("Select texture", ".\\Assets", "Images (*.png, *.jpg, *.psd|*.png;*.jpg;*.psd");
-				
+			
 				// Load file to sprite data holder
 				if(file != "") {
-					try {
-						auto& it = sprites.emplace_back(file);
-						setSpriteDisplayData(&it);
-					}
-					catch(const std::exception& exc) {
-						setSpriteDisplayData(nullptr);
+					auto* data = scenes.getTextureDataHolder().getData(file);
+					setSpriteDisplayData(data);
+					// try {
+					// 	auto& it = sprites.emplace_back(file);
+					// 	setSpriteDisplayData(&it);
+					// }
+					// catch(const std::exception& exc) {
+					// 	setSpriteDisplayData(nullptr);
 
-						LOG_EXCEPTION(exc);
-					}
+					// 	LOG_EXCEPTION(exc);
+					// }
 				}
 			}
 

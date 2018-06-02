@@ -20,8 +20,7 @@
 #include "ArmatureDisplayDataManager.hpp"
 
 namespace rat {
-class AudioEditor;
-class DialogEditor;
+
 class InputManager;
 
 struct FreeCamera {
@@ -64,6 +63,18 @@ public:
 	///
 	void printMenuBarInfo(const std::string& text);
 
+	///
+	void setClipboard(const glm::vec3& value);
+
+	///
+	void setClipboard(const glm::vec2& value);
+
+	///
+	glm::vec3 getClipboardVec3();
+
+	///
+	glm::vec2 getClipboardVec2();
+
 private:
 
 	///
@@ -78,6 +89,21 @@ private:
 	///
 	void _renderComponentsManager();
 
+	///
+	void _renderOrigins(sf3d::RenderTarget& target);
+
+	///
+	void _renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
+
+	///
+	void _renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
+
+	///
+	void _renderPlayBar();
+
+	///
+	void _render();
+
 private:
 
 // World
@@ -90,8 +116,8 @@ private:
 	ObjectsList _objectsList;
 	SpriteDisplayDataManager _spriteDisplayDataManager;
 	ArmatureDisplayDataManager _armatureDisplayDataManager;
-	DialogEditor* _dialogEditor = nullptr;
-	AudioEditor* _audioEditor = nullptr;
+	// DialogEditor* _dialogEditor = nullptr;
+	// AudioEditor* _audioEditor = nullptr;
 
 // Menu info
 
@@ -107,6 +133,11 @@ private:
 	bool _ifRenderArmatureDisplayDataManager{false};
 	bool _ifRenderProperties{false};
 	bool _ifShowImGuiDemoWindow{false};
+
+// Clipboard
+
+	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
+	glm::vec2 _vec2Clipboard{0.f,0.f};
 
 };
 

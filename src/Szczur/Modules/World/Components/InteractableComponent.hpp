@@ -40,7 +40,7 @@ public:
     float getHeight() const;
 
     ///
-    virtual void loadFromConfig(const Json& config) override;
+    virtual void loadFromConfig(Json& config) override;
 
     ///
     virtual void saveToConfig(Json& config) const override;

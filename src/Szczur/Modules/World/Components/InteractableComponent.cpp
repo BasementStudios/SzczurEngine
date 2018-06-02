@@ -47,7 +47,7 @@ namespace rat {
 		return ptr;
 	}
 
-	void InteractableComponent::loadFromConfig(const Json& config) {
+	void InteractableComponent::loadFromConfig(Json& config) {
 		Component::loadFromConfig(config);
 		_distance = config["distance"];
 	}

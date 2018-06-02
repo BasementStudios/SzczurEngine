@@ -9,6 +9,7 @@
 
 #include "Components/CameraComponent.hpp"
 #include "Components/BaseComponent.hpp"
+#include "Components/ScriptableComponent.hpp"
 namespace rat
 {
 
@@ -95,9 +96,16 @@ bool ScenesManager::setCurrentScene(size_t id)
 	{
 		_currentSceneID = id;
 
+		if(isGameRunning()) {
+			auto* scene = getCurrentScene();
+			
+			scene->forEach([](const std::string& group, Entity& entity) {
+					if(auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
+				}
+			);
+		}
 		return true;
 	}
-
 	return false;
 }
 
@@ -116,14 +124,9 @@ bool ScenesManager::isCurrentSceneValid() const
 	return _currentSceneID != 0u;
 }
 
-void ScenesManager::loadFromFile(const std::string& filepath)
-{
+void ScenesManager::loadFromConfig(Json& config) {
+
 	removeAllScenes();
-
-	std::ifstream file{ filepath };
-	Json config;
-
-	file >> config;
 
 	_currentSceneID = config["currentSceneID"];
 
@@ -137,10 +140,7 @@ void ScenesManager::loadFromFile(const std::string& filepath)
 	}
 }
 
-void ScenesManager::saveToFile(const std::string& filepath) const
-{
-	std::ofstream file{ filepath };
-	Json config;
+void ScenesManager::saveToConfig(Json& config) {
 
 	config["currentSceneID"] = getCurrentSceneID();
 	Json& scenes = config["scenes"] = Json::array();
@@ -152,7 +152,24 @@ void ScenesManager::saveToFile(const std::string& filepath) const
 
 		scene->saveToConfig(current);
 	}
+}
 
+void ScenesManager::loadFromFile(const std::string& filepath)
+{
+	std::ifstream file{ filepath };
+	Json config;
+
+	file >> config;
+
+	loadFromConfig(config);
+}
+
+void ScenesManager::saveToFile(const std::string& filepath)
+{
+	std::ofstream file{ filepath };
+	Json config;
+
+	saveToConfig(config);
 	file << std::setw(4) << config << std::endl;
 }
 
@@ -191,7 +208,34 @@ void ScenesManager::addPlayer()
 	player->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
+}
 
+bool ScenesManager::isGameRunning() {
+	return _gameIsRunning;
+}
+
+void ScenesManager::runGame() {
+	if(!_gameIsRunning) {
+		_gameIsRunning = true;
+		saveToConfig(_configBeforeRun);
+
+		for(auto& scene : _holder) {
+			scene->forEach([](const std::string& group, Entity& entity) {
+				if(auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->runScript();
+			});
+		}
+	}
+}
+
+void ScenesManager::stopGame() {
+	if(_gameIsRunning) {
+		_gameIsRunning = false;
+		loadFromConfig(_configBeforeRun);
+	}
+}
+
+TextureDataHolder& ScenesManager::getTextureDataHolder() {
+	return _textureDataHolder;
 }
 
 typename ScenesManager::ScenesHolder_t::iterator ScenesManager::_find(size_t id)

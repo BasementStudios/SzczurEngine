@@ -104,16 +104,18 @@ namespace rat {
 		return _stickToPlayer;
 	}
 
-	void CameraComponent::loadFromConfig(const Json& config) {
+	void CameraComponent::loadFromConfig(Json& config) {
 		Component::loadFromConfig(config);
-		_velocity = config["velocity"];
-		_locked = config["locked"];
+		if(auto& var = config["velocity"]; !var.is_null()) _velocity = var;
+		if(auto& var = config["locked"]; !var.is_null()) _locked = var;
+		if(auto& var = config["stick_to_player"]; !var.is_null()) _stickToPlayer = var;
 	}
 
 	void CameraComponent::saveToConfig(Json& config) const {
 		Component::saveToConfig(config);
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
+		config["stick_to_player"] = _stickToPlayer;
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {

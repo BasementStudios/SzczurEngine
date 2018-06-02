@@ -11,25 +11,42 @@
 namespace rat
 {
 
-    class SpriteDisplayData : public sf3d::Drawable
-    {
-    public:
-        SpriteDisplayData(const std::string& name);
+class SpriteDisplayData : public sf3d::Drawable
+{
+public:
 
-        const sf3d::Texture& getTexture() const;
+	///
+	SpriteDisplayData(const std::string& name);
 
-        const std::string& getName() const;
+	///
+	void loadTexture();
 
-        virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	///
+	void loadTextureWithoutSet();
 
-    protected:
-        constexpr static auto _assetsFolderPath = "";
-        constexpr static auto _textureFilePath = "";
-    private:
-        std::string _name;
-        sf3d::Sprite _sprite;
-        sf3d::Texture _texture;
+	///
+	void setupSprite();
 
-    };
+	///
+	const sf3d::Texture& getTexture() const;
+
+	///
+	const std::string& getName() const;
+
+	///
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+
+protected:
+	
+	constexpr static auto _assetsFolderPath = "";
+	constexpr static auto _textureFilePath = "";
+
+private:
+
+	std::string _name;
+	sf3d::Sprite _sprite;
+	sf3d::Texture _texture;
+
+};
 
 }

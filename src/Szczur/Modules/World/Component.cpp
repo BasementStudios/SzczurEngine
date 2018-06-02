@@ -54,7 +54,7 @@ const Entity* Component::getEntity() const
 	return _parent;
 }
 
-void Component::loadFromConfig(const Json& config)
+void Component::loadFromConfig(Json& config)
 {
 	_id = config["id"];
 	_features = config["features"];

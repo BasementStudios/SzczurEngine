@@ -44,14 +44,15 @@ namespace rat {
 				// Colorize button with selected group
 				bool colorize = _tab == group.first;
 				if(colorize) {
-					ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+					ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_Header]);
 					ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+					ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
 				}
 				if(ImGui::Button(group.first.c_str(), ImVec2(availWidth, 0))) {
 					_tab = group.first;
 				}
 				if(colorize) {
-					ImGui::PopStyleColor(2);
+					ImGui::PopStyleColor(3);
 				}
 				if(id%2 == 0) ImGui::SameLine();
 				++id;
@@ -65,7 +66,7 @@ namespace rat {
 				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
 					addObjectToCurrentGroup();
 				}
-				if(isEntitySelected()) {
+				if(isEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
 					ImGui::SameLine();
 					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
 						duplicateObject(_selectedEntityID);
@@ -148,7 +149,10 @@ namespace rat {
 	void ObjectsList::addObject(const std::string& groupName) {
 		Entity* entity = _scenes.getCurrentScene()->addEntity(groupName);
 		if(entity) {
-			entity->addComponent<BaseComponent>();
+			auto* base = entity->addComponent<BaseComponent>();
+			if(groupName == "entries") {
+				dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+			}
 			select(entity);
 		}
 	}

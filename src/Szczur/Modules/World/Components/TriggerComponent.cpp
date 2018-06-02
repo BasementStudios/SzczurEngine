@@ -22,10 +22,10 @@ namespace rat {
 	}
 
 	bool TriggerComponent::checkForTrigger(const glm::vec3& position) const {
-		auto* entity = getEntity();
-		auto delta = position - entity->getPosition();
-		if(delta.x*delta.x + delta.z*delta.z <= _radius*_radius)
+		auto delta = position - getEntity()->getPosition();
+		if(delta.x*delta.x + delta.z*delta.z <= _radius*_radius) {
 			return true;
+        }
 		return false;
 	}
 
@@ -49,7 +49,7 @@ namespace rat {
 		}
 	}
 
-	void TriggerComponent::loadFromConfig(const Json& config) {
+	void TriggerComponent::loadFromConfig(Json& config) {
 		Component::loadFromConfig(config);
 		_radius = config["radius"];
 		std::cout << "ID: " << config["type"].get<size_t>() << '\n';
@@ -76,15 +76,18 @@ namespace rat {
         auto* player = getEntity()->getScene()->getPlayer();
         if(player == nullptr) return;
 
-        if(_input.isReleased(Keyboard::LShift)) {
+        // Active trigger after [LShift]
+        if(_input.isPressed(Keyboard::LShift)) {
+            // Is player inside trigger
             if(checkForTrigger(player->getPosition())) {
+                // Action for ChangeScene trigger
                 if(type == TriggerComponent::ChangeScene) {
+                    // Change scene after teleport
                     scenes.setCurrentScene(sceneId);
+                    // Set player position equal entry
                     auto* scene = scenes.getCurrentScene();
-                    for(auto& it : scene->getEntrances()) {
-                        if(it.ID == entranceId) {
-                            scene->getEntity(scene->getPlayerID())->setPosition(it.position);
-                        }
+                    if(auto* entry = scene->getEntity("entries", entranceId)) {
+                        scene->getPlayer()->setPosition(entry->getPosition());                        
                     }
                 }
             }
@@ -118,8 +121,10 @@ namespace rat {
             // Options for "Chagne scene" type
             if (type == Type::ChangeScene)
             {
-            	// List of scenes
+                // Selected
                 auto* scene = scenes.getScene(sceneId);
+
+                // List of scenes
                 if (ImGui::BeginCombo("Scene", scene ? scene->getName().c_str() : "None"))
                 {
                     for (auto& it : scenes.getScenes())
@@ -134,27 +139,23 @@ namespace rat {
 
                 // If scene is selected
                 if (sceneId)
-                {
-                	// Find name of selected entrance
-                    auto& entrances = scenes.getScene(sceneId)->getEntrances();
+                {                    
+                    // Find name of selected entry
+                    scene = scenes.getScene(sceneId);
                     std::string name = "None";
-                    for (auto& entrance : entrances)
-                    {
-                        if (entrance.ID == entranceId)
-                        {
-                            name = entrance.name;
-                            break;
-                        }
+                    auto& entries = scene->getEntities("entries");
+                    if(auto* entry = scene->getEntity("entries", entranceId)) {
+                        name = entry->getName();
                     }
-
-                    // Combo box with available entrances in selected scene
-                    if (ImGui::BeginCombo("Entrance", name.c_str()))
+                    
+                    // Combo box with available entries in selected scene
+                    if (ImGui::BeginCombo("Entry", name.c_str()))
                     {
-                        for (auto& entrance : entrances)
+                        for (auto& entry : entries)
                         {
-                            if (ImGui::Selectable(entrance.name.c_str(), entrance.ID == entranceId))
+                            if (ImGui::Selectable(entry->getName().c_str(), entry->getID() == entranceId))
                             {
-                                entranceId = entrance.ID;
+                                entranceId = entry->getID();
                             }
                         }
                         ImGui::EndCombo();
