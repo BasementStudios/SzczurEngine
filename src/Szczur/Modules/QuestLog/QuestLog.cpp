@@ -24,6 +24,8 @@ namespace rat
     {
         //_debugCounterTest();
 
+        initScript();
+
         _quest = std::make_unique<Quest>(*this, "Q0");
         auto* quest = _quest.get();
         auto* node = _quest->getRoot();
