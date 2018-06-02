@@ -1,14 +1,35 @@
 #include "SpriteDisplayData.hpp"
 
 namespace rat {
-    SpriteDisplayData::SpriteDisplayData(const std::string& name) :
-    _name(name) {
-        if (!this->_texture.loadFromFile(_assetsFolderPath + name + _textureFilePath))
-			throw std::runtime_error("Cannot load texture file.");
+    SpriteDisplayData::SpriteDisplayData(const std::string& name) 
+        : _name(name) { 
+    }
+
+    void SpriteDisplayData::loadTexture() {
+        try {
+            if(_texture.loadFromFile(_name)) {
+                _sprite.setTexture(&_texture);
+            }
+        }
+        catch(std::exception e) {
+            LOG_INFO(e.what());
+        }
+    }
+
+    void SpriteDisplayData::loadTextureWithoutSet() {
+        try {
+            _texture.loadFromFile(_name);
+        }
+        catch(std::exception e) {
+            LOG_INFO(e.what());
+        }
+    }
+
+    void SpriteDisplayData::setupSprite() {
         _sprite.setTexture(&_texture);
     }
 
-    const sf3d::Texture& SpriteDisplayData::getTexture() const {
+    const sf3d::Texture& SpriteDisplayData::getTexture() const {    
         return _texture;
     }
 

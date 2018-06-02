@@ -234,6 +234,10 @@ void ScenesManager::stopGame() {
 	}
 }
 
+TextureDataHolder& ScenesManager::getTextureDataHolder() {
+	return _textureDataHolder;
+}
+
 typename ScenesManager::ScenesHolder_t::iterator ScenesManager::_find(size_t id)
 {
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {

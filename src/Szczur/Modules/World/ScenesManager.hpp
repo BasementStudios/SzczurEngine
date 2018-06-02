@@ -6,6 +6,7 @@
 #include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
 
 #include "Scene.hpp"
+#include "Data/TextureDataHolder.hpp"
 
 #include <Json/json.hpp>
 using Json = nlohmann::json;
@@ -99,7 +100,11 @@ public:
 	/// Stop game and load saved config
 	void stopGame();
 
+	///
 	bool isGameRunning();
+
+	///
+	TextureDataHolder& getTextureDataHolder();
 
 	#ifdef EDITOR
 		std::string currentFilePath;
@@ -120,8 +125,14 @@ private:
 
 	ArmatureDisplayDataHolder_t _armatureDisplayDataHolder;
 
+// Running state
+
 	Json _configBeforeRun;
 	bool _gameIsRunning = false;
+
+// Data
+
+	TextureDataHolder _textureDataHolder;
 };
 
 }

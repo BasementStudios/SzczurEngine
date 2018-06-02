@@ -45,6 +45,8 @@ public:
 	LevelEditor& getLevelEditor() {return _levelEditor;}
 	#endif
 
+	// void initScript();
+
 private:
 
 	///

@@ -40,6 +40,7 @@ Scene::Scene(ScenesManager* parent)
 
 void Scene::update(float deltaTime)
 {
+	_parent->getTextureDataHolder().loadAll();
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)

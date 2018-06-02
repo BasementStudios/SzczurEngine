@@ -170,7 +170,6 @@ private:
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
 	size_t _playerID{ 0u };
 	Entity* _player = nullptr;
-
 };
 
 }
