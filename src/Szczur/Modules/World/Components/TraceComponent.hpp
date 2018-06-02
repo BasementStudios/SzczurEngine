@@ -26,12 +26,6 @@ public:
 	///
 	Trace* getTrace() { return _trace.get(); }
 
-	///
-	virtual void* getFeature(Component::Feature_e feature) override;
-
-	///
-	virtual const void* getFeature(Component::Feature_e feature) const override;
-
 // Manipulations
 
 	///
@@ -63,7 +57,7 @@ public:
     void update(ScenesManager& scenes, float deltaTime);
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	void render(sf3d::RenderTarget& target);
 	
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;

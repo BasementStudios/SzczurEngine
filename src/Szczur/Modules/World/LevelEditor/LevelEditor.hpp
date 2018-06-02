@@ -20,7 +20,8 @@
 #include "ArmatureDisplayDataManager.hpp"
 
 namespace rat {
-
+class DialogEditor;
+class AudioEditor;
 class InputManager;
 
 struct FreeCamera {
@@ -111,13 +112,12 @@ private:
 	ScenesManager& _scenes;
 
 // Parts of editor
-
 	FreeCamera _freeCamera;
 	ObjectsList _objectsList;
 	SpriteDisplayDataManager _spriteDisplayDataManager;
 	ArmatureDisplayDataManager _armatureDisplayDataManager;
-	// DialogEditor* _dialogEditor = nullptr;
-	// AudioEditor* _audioEditor = nullptr;
+	DialogEditor* _dialogEditor = nullptr;
+	AudioEditor* _audioEditor = nullptr;
 
 // Menu info
 

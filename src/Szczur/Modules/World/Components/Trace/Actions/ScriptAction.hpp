@@ -37,7 +37,7 @@ public:
 		{
 			try
 			{
-				script->loadAnyScript(ScriptFilePath);
+				script->runScript(ScriptFilePath);
 			}
 			catch (std::exception exc)
 			{

@@ -38,8 +38,8 @@ namespace rat {
 	_armatureDisplayDataManager{scenes} {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
-		// _dialogEditor = detail::globalPtr<DialogEditor>;
-		// _audioEditor = detail::globalPtr<AudioEditor>;
+		_dialogEditor = detail::globalPtr<DialogEditor>;
+		_audioEditor = detail::globalPtr<AudioEditor>;
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -76,8 +76,8 @@ namespace rat {
 			if(_ifRenderObjectsList) _objectsList.render(_ifRenderObjectsList);
 			if(_ifRenderSpriteDisplayDataManager) _spriteDisplayDataManager.render(_ifRenderSpriteDisplayDataManager);
 			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
-			// if (_ifRenderDialogEditor) _dialogEditor->update();
-			// if (_ifRenderAudioEditor) _audioEditor->render();
+			if (_ifRenderDialogEditor) _dialogEditor->update();
+			if (_ifRenderAudioEditor) _audioEditor->render();
 
 			scene = _scenes.getCurrentScene();
 			
@@ -354,13 +354,17 @@ namespace rat {
 
 		if(!ax::NodeEditor::IsActive())
 		{
-			rotating = true;
-			previousMouse = input.getMousePosition();
+			if (input.isPressed(Mouse::Right))
+			{
+				rotating = true;
+				previousMouse = input.getMousePosition();
+			}
+			if (input.isReleased(Mouse::Right))
+			{
+				rotating = false;
+			}
 		}
-		if (input.isReleased(Mouse::Right))
-		{
-			rotating = false;
-		}
+
 		// }
 	}
 }
