@@ -426,8 +426,8 @@ void QuestNode::initScript(Script& script)
 
         // Callbacks
         object.set("onActivate", &QuestNode::_onActivate);
-        object.set("onBlocked", &QuestNode::_onBlocked);
-        object.set("onFinished", &QuestNode::_onFinished);
+        object.set("onBlock", &QuestNode::_onBlocked);
+        object.set("onFinish", &QuestNode::_onFinished);
 
         object.init();
     }
