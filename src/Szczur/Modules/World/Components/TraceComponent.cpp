@@ -98,26 +98,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 	if (ImGui::CollapsingHeader("Trace##trance_component"))
 	{
-		ImGui::Text("Current timeline: %d\n", _trace->getCurrentTimeline() ? _trace->getCurrentTimeline()->getId() : -1);
-
-		if (ImGui::Button("Stop"))
-		{
-			_trace->setCurrentTimeline(nullptr);
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Pause"))
-		{
-			pause();
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Resume"))
-		{
-			resume();
-		}
+		ImGui::Text("Timeline: %d\n", _trace->getCurrentTimeline() ? _trace->getCurrentTimeline()->getId() : -1);
 
 		ImGui::Separator();
 
@@ -128,11 +109,32 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Play"))
+		auto playStopButtonText = _trace->getCurrentTimeline() == nullptr ? "Play" : "Stop";
+
+		if (ImGui::Button(playStopButtonText))
 		{
 			if (currentTimeline)
 			{
-				_trace->setCurrentTimeline(currentTimeline);
+				if (_trace->getCurrentTimeline() == nullptr)
+					_trace->setCurrentTimeline(currentTimeline);
+				else
+					_trace->setCurrentTimeline(nullptr);
+			}
+		}
+
+		ImGui::SameLine();
+
+		auto pauseResumeButtonText = _trace->isPlaying() ? "Pause" : "Resume";
+
+		if (ImGui::Button(pauseResumeButtonText))
+		{
+			if (_trace->isPlaying())
+			{
+				_trace->pause();
+			}
+			else
+			{
+				_trace->resume();
 			}
 		}
 
@@ -150,7 +152,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		auto& style = ImGui::GetStyle();
 
 		// Show all timelines
-		ImGui::BeginChild("Timelines", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+		ImGui::BeginChild("Timelines", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + 12.f), true);
 		{
 			for (auto& timeline : _trace->getTimelines())
 			{
@@ -190,48 +192,47 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			ImGui::Checkbox("Loop", &currentTimeline->Loop);
 			ImGui::Checkbox("Show lines in editor", &currentTimeline->ShowLines);
 
+			ImGui::PushItemWidth(100.f);
 			ImGui::DragFloat("Speed multiplier", &currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
-
+			ImGui::PopItemWidth();
 			ImGui::Spacing();
 
 			auto& actions = currentTimeline->getActions();
 
-			// Select list actions to add
-			static int currentComboItem = -1;
-
-			ImGui::PushItemWidth(100.f);
-			ImGui::Combo("##Action", &currentComboItem, "Move\0Anim\0Wait\0Script\0");
+			if (ImGui::Button("+Move"))
+			{
+				currentTimeline->addAction(new MoveAction(object));
+			}
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Add action"))
+			if (ImGui::Button("+Anim"))
 			{
-				if (currentComboItem == 0)
-				{
-					currentTimeline->addAction(new MoveAction(object));
-				}
-				else if (currentComboItem == 1)
-				{
-					if (object->hasComponent<ArmatureComponent>())
-						currentTimeline->addAction(new AnimAction(object));
-				}
-				else if (currentComboItem == 2)
-				{
-					currentTimeline->addAction(new WaitAction(object));
-				}
-				else if (currentComboItem == 3)
-				{
-					if (object->hasComponent<ScriptableComponent>())
-						currentTimeline->addAction(new ScriptAction(object));
-				}
+				if (object->hasComponent<ArmatureComponent>())
+					currentTimeline->addAction(new AnimAction(object));
 			}
 
-			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
-			{
-				for (int i = 0; i < actions.size(); ++i)
-				{
-					auto& action = actions[i];
+			ImGui::SameLine();
 
+			if (ImGui::Button("+Wait"))
+			{
+				currentTimeline->addAction(new WaitAction(object));
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("+Script"))
+			{
+				if (object->hasComponent<ScriptableComponent>())
+					currentTimeline->addAction(new ScriptAction(object));
+			}
+
+			style.ScrollbarSize = 10;
+
+			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar);
+			{
+				for (auto& action : actions)
+				{
 					std::string buttonName;
 
 					switch (action->getType())
@@ -280,55 +281,58 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						ImGui::PopStyleColor(2);
 					}
 
+					if (ImGui::BeginPopupContextItem("item context menu"))
+					{
+						if (ImGui::Selectable("Remove"))
+						{
+							currentTimeline->removeAction(action.get());
+							ImGui::EndPopup();
+							ImGui::PopID();
+							break;
+						}
+
+						ImGui::Separator();
+
+						if (ImGui::Selectable("Move to left"))
+						{
+							for (int i = 0; i < actions.size(); ++i)
+							{
+								if (i > 0 && actions[i].get() == currentAction)
+								{
+									std::swap(actions[i], actions[i - 1]);
+									break;
+								}
+							}
+						}
+
+						if (ImGui::Selectable("Move to right"))
+						{
+							for (int i = 0; i < actions.size(); ++i)
+							{
+								if (i < actions.size() - 1 && actions[i].get() == currentAction)
+								{
+									std::swap(actions[i], actions[i + 1]);
+									break;
+								}
+							}
+						}
+
+						ImGui::EndPopup();
+					}
+
+
 					ImGui::PopID();
 
 					ImGui::SameLine();
 				}
-
-				ImGui::SetScrollX(0.5f);
 			}
 			ImGui::EndChild();
 
+			style.ScrollbarSize = 20;
+
 			if (currentAction)
 			{
-				ImGui::Separator();
-
-				if (ImGui::Button("<<", { 30.f, 0.f }))
-				{
-					for (int i = 0; i < actions.size(); ++i)
-					{
-						if (i > 0 && actions[i].get() == currentAction)
-						{
-							std::swap(actions[i], actions[i - 1]);
-							break;
-						}
-					}
-				}
-
-				ImGui::SameLine();
-
-				if (ImGui::Button("X", { 30.f, 0.f }))
-				{
-					currentTimeline->removeAction(currentAction);
-					currentAction = nullptr;
-					ImGui::PopID();
-					ImGui::TreePop();
-					return;
-				}
-
-				ImGui::SameLine();
-
-				if (ImGui::Button(">>", { 30.f, 0.f }))
-				{
-					for (int i = 0; i < actions.size(); ++i)
-					{
-						if (i < actions.size() - 1 && actions[i].get() == currentAction)
-						{
-							std::swap(actions[i], actions[i + 1]);
-							break;
-						}
-					}
-				}
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
 				switch (currentAction->getType())
 				{
@@ -338,8 +342,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 						ImGui::PushItemWidth(-80);
 
-						ImGui::Text("Move Action");
-						ImGui::Spacing();
+						ImGui::Text("Action: Move");
+						ImGui::Separator();
+
+						ImGui::Text("Start position");
 
 						ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
 
@@ -363,6 +369,9 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						}
 
 						ImGui::Spacing();
+
+						ImGui::Text("End position");
+
 						ImGui::Checkbox("Relative to Start", &moveAction->EndRelativeToStart);
 
 						if (ImGui::Button("C##End"))
@@ -392,14 +401,14 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					{
 						auto animAction = static_cast<AnimAction*>(currentAction);
 
-						ImGui::Text("Anim Action");
-						ImGui::Spacing();
+						ImGui::Text("Action: Anim");
+						ImGui::Separator();
 
 						static char animName[64] = { 0 };
 
 						if (ImGui::BeginCombo("Animation", animAction->AnimationName.c_str()))
 						{
-							if (auto arm = object->getComponentAs<ArmatureComponent>())
+							if (auto arm = object->getComponentAs<ArmatureComponent>(); arm && arm->getArmature())
 							{
 								for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames())
 								{
@@ -428,8 +437,8 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					{
 						auto waitAction = static_cast<WaitAction*>(currentAction);
 
-						ImGui::Text("Wait Action");
-						ImGui::Spacing();
+						ImGui::Text("Action: Wait");
+						ImGui::Separator();
 
 						ImGui::DragFloat("Time to wait", &waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
 					} break;
@@ -437,8 +446,8 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					{
 						auto scriptAction = static_cast<ScriptAction*>(currentAction);
 
-						ImGui::Text("Script Action");
-						ImGui::Spacing();
+						ImGui::Text("Action: Script");
+						ImGui::Separator();
 
 						if (ImGui::Button("Set script file path"))
 						{
@@ -455,6 +464,8 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						ImGui::Text("Path: %s", scriptAction->ScriptFilePath.empty() ? "None" : scriptAction->ScriptFilePath.c_str());
 					} break;
 				}
+
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 			}
 		}
 	}

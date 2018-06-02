@@ -42,6 +42,8 @@ public:
 	void pause();
 	void resume();
 
+	bool isPlaying() { return !_pause; }
+
 	void loadFromConfig(const Json& config, Entity* entity);
 	void saveToConfig(Json& config) const;
 
