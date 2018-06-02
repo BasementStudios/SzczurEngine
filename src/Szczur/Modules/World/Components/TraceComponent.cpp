@@ -227,7 +227,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					currentTimeline->addAction(new ScriptAction(object));
 			}
 
-			style.ScrollbarSize = 10;
+			ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 10.f);
 
 			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar);
 			{
@@ -328,7 +328,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			}
 			ImGui::EndChild();
 
-			style.ScrollbarSize = 20;
+			ImGui::PopStyleVar();
 
 			if (currentAction)
 			{
