@@ -34,7 +34,7 @@ namespace rat
         auto* saveButton = new Widget;
         _widget->add(saveButton);
         saveButton->setCallback(CALL, [=](auto){
-            save();
+            save("quests/quests.json");
         });
         saveButton->setSize(100, 100);
         saveButton->setPosition(900.f, 0.f);
@@ -44,7 +44,7 @@ namespace rat
         loadButton->setSize(100, 100);
         loadButton->setPosition(1000, 0);
         loadButton->setCallback(CALL, [=](auto){
-            load();
+            load("quests/quests.json");
         });
         
         
@@ -83,6 +83,8 @@ namespace rat
             w[i]->setPosition(100 + i *200, 100);
             
         }
+        
+        /*
         auto* choice = node->addBrancher("Doors");
         choice->setTitle("Wejdz do ktorychs z drzwi");
         //auto* n1 = choice->addStep("Left");
@@ -99,17 +101,7 @@ namespace rat
             });
         };
 
-        /*
-        n1->_onActivate = [n1](){
-            n1->nextStep();
-        };
-
-        n1->setBlockedCallback([w, &gui](){
-            w[0]->setCallback(CALL, [](Widget*){});
-            w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));            
-            std::cout << "Lewe drzwi sie zamknely\n";
-        });
-        */
+ 
 
         n2->_onActivate = [n2](){
             n2->nextStep();
@@ -268,8 +260,15 @@ namespace rat
 
         node->start();
         node->nextStep();
+        */
 
     }
+
+    void QuestLog::addQuest(std::string name)
+    {
+        new Quest(*this, name);
+    }
+
     void QuestLog::update(float dt)
     {
     }
@@ -288,7 +287,7 @@ namespace rat
         return _title.get();
     }
 
-    void QuestLog::addQuest(std::string name, Quest_t quest)
+    void QuestLog::addQuestFrom(std::string name, Quest_t quest)
     {
         bool needDefaultName = false;
         if(name == "") needDefaultName = true;
@@ -371,6 +370,31 @@ namespace rat
             quest->loadFromJson(i.value());
         }
         LOG_INFO("Loaded QuestLog.");
+    }
+
+    Requirements& QuestLog::getReqs()
+    {
+        return _reqs;
+    } 
+
+    void QuestLog::initScript() 
+    {
+        
+        auto& script = getModule<Script>();
+
+        auto module = script.newModule("QuestLog");
+
+        
+        // Main
+        module.set_function("load", &QuestLog::load, this);
+        
+        module.set_function("save", &QuestLog::save, this);
+        module.set_function("addQuest", &QuestLog::addQuest, this);
+        module.set_function("getQuest", &QuestLog::getQuest, this);
+        module.set_function("getReqs", &QuestLog::getReqs, this);
+
+        script.initClasses<Requirements, Quest, QuestNode>();
+        
     }
     
 }

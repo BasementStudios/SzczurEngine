@@ -15,3 +15,5 @@ pawn = BattleField.Pawn.instance()
 board:setPawn(pawn, 4, 2)
 
 player:select(true)
+
+print("xyz")

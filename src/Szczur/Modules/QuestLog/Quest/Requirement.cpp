@@ -147,5 +147,21 @@ namespace rat
             counter.current = 0;
         }
     }
+
+    
+    void Requirements::initScript(Script& script) 
+    {
+            auto object = script.newClass<Requirements>("Requirements", "QuestLog");
+
+            // Main
+            object.set("addCounter", &Requirements::addCounter);
+            object.set("getValueFromCounter", &Requirements::getValueFromCounter);
+            object.set("addReq", &Requirements::addReq);
+            object.set("isReqSuited", &Requirements::isReqSuited);
+            object.set("suitReq", &Requirements::suitReq);
+            object.set("isFullySuited", &Requirements::isFullySuited);
+
+            object.init();
+        }
     
 }

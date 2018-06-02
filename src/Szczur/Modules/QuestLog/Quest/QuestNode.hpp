@@ -6,16 +6,19 @@
 #include <string>
 #include <set>
 
+#include <sol.hpp>
 #include <Json/json.hpp>
+
+#include "Szczur/Modules/QuestLog/GUI/QuestInfoBar/QuestTitle.hpp"
 
 #include "Requirements.hpp"
 
 namespace rat
 {
     class Quest; class QuestTitle;
-    class QuestNode : public Requirements
+    class QuestNode
     {
-        using Function_t = std::function<void()>;
+        using Function_t = sol::function;
         using Node_t = std::unique_ptr<QuestNode>;
     public:
         enum class Type { Starting, Step, Brancher};
@@ -28,9 +31,9 @@ namespace rat
         
         void setParent(QuestNode* parent);
 
-        QuestNode* addStep(const std::string& name = "");
-        QuestNode* addBrancher(const std::string& name = "");
-        QuestNode* addSubNode(const std::string& name = "");
+        QuestNode* addStep(const std::string& name);
+        QuestNode* addBrancher(const std::string& name );
+        QuestNode* addSubNode(const std::string& name);
         QuestNode* addNode(QuestNode* node);
 
         void start();
@@ -45,18 +48,19 @@ namespace rat
         void setTitle(const std::string& title);
         void setName(const std::string& name);
 
-        virtual void advanceCounter(const std::string& name, int value = 1) override;
-        virtual void suitReq(const std::string& name) override;  
-
         nlohmann::json getJson() const;
         void loadFromJson(nlohmann::json& j);
         void resume();
 
         void reset();
 
-        Function_t _onActivate = [](){};
-        Function_t _onBlocked = [](){};
-        Function_t _onFinished = [](){};
+        Requirements& getReqs();
+
+        Function_t _onActivate;
+        Function_t _onBlocked;
+        Function_t _onFinished;
+
+        static void initScript(Script& script);
     private:
         void _blockNotChosenNodes();
         void _invokeParentToBlockNeighbours();
@@ -95,6 +99,8 @@ namespace rat
         nlohmann::json _getRequirmentNodesJson() const;
 
         void _loadRequirmentNodesFromJson(nlohmann::json& j);
+
+        Requirements _reqs;
 
     };
 }

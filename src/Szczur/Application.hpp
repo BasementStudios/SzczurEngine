@@ -6,7 +6,6 @@
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/QuestLog/QuestLog.hpp"
 namespace rat
 {

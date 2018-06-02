@@ -14,10 +14,12 @@
 #include "Quest/Quest.hpp"
 #include "GUI/QuestGUI.hpp"
 
+#include "Quest/Requirements.hpp"
+
 namespace rat 
 {
     class Widget;
-    class QuestLog : public Module<Input, Window, Script, GUI> 
+    class QuestLog : public Module<Input, Window, Script, GUI>
     {
         using Quest_t = std::unique_ptr<Quest>;
     public:
@@ -31,16 +33,22 @@ namespace rat
 
         void _resetWidget(Widget*);
 
-        void addQuest(std::string name, Quest_t quest);
+        void addQuest(std::string name);
         Quest* getQuest(const std::string name);
+
+        void addQuestFrom(std::string name, Quest_t quest);
 
         QuestGUI* getGUI();
 
-        void load(const std::string& path = "quests/quests.json");
-        void save(const std::string& path = "quests/quests.json") const;
+        void load(const std::string& path);
+        void save(const std::string& path) const;
 
         nlohmann::json getJson() const;
         void loadFromJson(nlohmann::json& j);
+
+        Requirements& getReqs();
+
+        void initScript();
 
     private:
 
@@ -49,6 +57,8 @@ namespace rat
         std::unique_ptr<QuestGUI> _title;
 
         std::unordered_map<std::string, Quest_t> _quests;
+
+        Requirements _reqs;
 
         void _debugCounterTest();
     };

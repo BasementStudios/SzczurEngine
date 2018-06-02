@@ -6,6 +6,8 @@
 
 #include <Json/json.hpp>
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat
 {
     class Requirements
@@ -30,6 +32,8 @@ namespace rat
 
         nlohmann::json getJson() const;
         void loadFromJson(nlohmann::json& j);
+
+        static void initScript(Script& script);
 
     private:
         struct Counter 

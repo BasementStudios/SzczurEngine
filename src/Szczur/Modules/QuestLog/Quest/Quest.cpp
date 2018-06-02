@@ -16,7 +16,7 @@ namespace rat
     :
     _owner(owner)
     {
-        _owner.addQuest(name, std::move(std::unique_ptr<Quest>(this)));
+        _owner.addQuestFrom(name, std::move(std::unique_ptr<Quest>(this)));
         _rootNode = new QuestNode(this, "Root");
     }
     QuestNode* Quest::getNode(const std::string& nodeName)
@@ -95,7 +95,7 @@ namespace rat
         json j;
         
         j["state"] = static_cast<int>(_state);
-        j["reqs"] = Requirements::getJson();
+        j["reqs"] = _reqs.getJson();
 
         j["root"] = _rootNode->getJson();
 
@@ -111,8 +111,8 @@ namespace rat
 
     void Quest::_loadReqsFromJson(nlohmann::json& j)
     {
-        Requirements::resetValues();
-        Requirements::loadFromJson(j);
+        _reqs.resetValues();
+        _reqs.loadFromJson(j);
     }
 
     void Quest::_loadRootFromJson(nlohmann::json& j)
@@ -148,4 +148,21 @@ namespace rat
     {
         return _name;
     }
+
+    Requirements& Quest::getReqs()
+    {
+        return _reqs;
+    }
+
+    void Quest::initScript(Script& script) {
+    auto object = script.newClass<Quest>("Quest", "QuestLog");
+
+    // Main
+    object.set("getNode", &Quest::getNode);
+    object.set("setTitle", &Quest::setTitle);
+    object.set("getRoot", &Quest::getRoot);
+    object.set("getReqs", &Quest::getReqs);
+
+    object.init();
+}
 }

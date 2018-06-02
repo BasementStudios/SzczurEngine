@@ -8,6 +8,8 @@
 
 #include <Json/json.hpp>
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 #include "QuestNode.hpp"
 #include "Requirements.hpp"
 #include "Szczur/Modules/QuestLog/GUI/QuestInfoBar/QuestTitle.hpp"
@@ -15,7 +17,7 @@
 namespace rat
 {
     class QuestLog;
-    class Quest : public Requirements
+    class Quest
     {
         using Node_t = std::unique_ptr<QuestNode>;
     public:
@@ -46,6 +48,10 @@ namespace rat
         nlohmann::json getJson() const;
         void loadFromJson(nlohmann::json& j);
 
+        Requirements& getReqs();
+
+        static void initScript(Script& script);
+
     private:
         std::unordered_map<std::string, Node_t> _nodes;
         QuestNode* _rootNode;
@@ -61,5 +67,7 @@ namespace rat
         void _resetNodesReqs();
 
         void _activateRootsGUI();
+
+        Requirements _reqs;
     };
 }
