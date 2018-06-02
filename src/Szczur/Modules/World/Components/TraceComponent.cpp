@@ -297,7 +297,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						{
 							for (int i = 0; i < actions.size(); ++i)
 							{
-								if (i > 0 && actions[i].get() == currentAction)
+								if (i > 0 && actions[i].get() == action.get())
 								{
 									std::swap(actions[i], actions[i - 1]);
 									break;
@@ -309,7 +309,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						{
 							for (int i = 0; i < actions.size(); ++i)
 							{
-								if (i < actions.size() - 1 && actions[i].get() == currentAction)
+								if (i < actions.size() - 1 && actions[i].get() == action.get())
 								{
 									std::swap(actions[i], actions[i + 1]);
 									break;
