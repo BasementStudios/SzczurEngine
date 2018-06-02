@@ -6,6 +6,8 @@
 #include <string>
 #include <set>
 
+#include <Json/json.hpp>
+
 #include "Requirements.hpp"
 
 namespace rat
@@ -21,6 +23,8 @@ namespace rat
 
         QuestNode(Quest* parentQuest, Type type, const std::string& name = "");
         QuestNode(Quest* parentQuest, const std::string& name = "");
+
+        const std::string& getName() const;
         
         void setParent(QuestNode* parent);
 
@@ -42,8 +46,13 @@ namespace rat
         void setName(const std::string& name);
 
         virtual void advanceCounter(const std::string& name, int value = 1) override;
-        virtual void suitReq(const std::string& name) override;        
+        virtual void suitReq(const std::string& name) override;  
 
+        nlohmann::json getJson() const;
+        void loadFromJson(nlohmann::json& j);
+        void resume();
+
+        void reset();
 
         Function_t _onActivate = [](){};
         Function_t _onBlocked = [](){};
@@ -75,15 +84,17 @@ namespace rat
 
         std::set<QuestNode*> _getStartingNodes();
 
-        size_t _localIndex = 0;
-        size_t _level = 0;
-
         void _onActivateGUISet();
         void _onFinishedGUISet();
         QuestTitle* _titleGUI{nullptr};
 
 
-        std::string _title{""};
+        std::string _title{"None"};
         std::string _name{""};
+
+        nlohmann::json _getRequirmentNodesJson() const;
+
+        void _loadRequirmentNodesFromJson(nlohmann::json& j);
+
     };
 }

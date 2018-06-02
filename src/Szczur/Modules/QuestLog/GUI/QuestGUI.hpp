@@ -15,11 +15,10 @@ namespace rat
 
         void setQuestName(const std::string& name);
         void resetSubtitles();
-        void setTitle(const std::string& name);
         
-        QuestTitle* addSubtitle(const std::string& name);
-        QuestTitle* addSubtitle(const std::string& name, int current, int maximum);
-        QuestTitle* addSubtitle(const std::string& name, bool isSuited);
+        void setTitle(const TitleInfo& info);
+        
+        QuestTitle* addSubtitle(const TitleInfo& info);
         void popSubtitle();
 
         void setFont(sf::Font* font);

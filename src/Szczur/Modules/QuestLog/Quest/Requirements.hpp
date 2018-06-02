@@ -2,6 +2,9 @@
 
 #include <unordered_map>
 #include <string>
+#include <fstream>
+
+#include <Json/json.hpp>
 
 namespace rat
 {
@@ -23,6 +26,10 @@ namespace rat
 
         bool isFullySuited() const;
 
+        void resetValues();
+
+        nlohmann::json getJson() const;
+        void loadFromJson(nlohmann::json& j);
 
     private:
         struct Counter 

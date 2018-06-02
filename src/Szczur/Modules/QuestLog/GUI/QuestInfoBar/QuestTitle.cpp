@@ -15,36 +15,38 @@ namespace rat
         _title->setCharacterSize(15);
         _req->setCharacterSize(15);
 
+        _title->setPosition(40, 0);
+
         _title->setColor(sf::Color::White);
         _req->setColor(sf::Color::White);
 
-        _req->setPropOrigin(1.f, 0.f);
     }
 
     void QuestTitle::setSize(const sf::Vector2u& size)
     {
         BaseBar::setSize(size);
-        _req->setPosition(float(size.x), 0.f);
+        //_req->setPosition(float(size.x), 0.f);
     }
     void QuestTitle::setSize(unsigned int width, unsigned int height)
     {
         setSize({width, height});
     }
 
-    void QuestTitle::setReq(const std::string& title)
+    void QuestTitle::setTitle(const TitleInfo& info)
     {
-        _title->setString(title);
-        _req->setString("");
-    }
-    void QuestTitle::setReq(const std::string& title, int current, int maximum)
-    {
-        setReq(title);
-        _req->setString(std::to_string(current) + "/" + std::to_string(maximum));
-    }
-    void QuestTitle::setReq(const std::string& title, bool req)
-    {
-        setReq(title);
-        _req->setString(req ? "[V]" : "[ ]");
+        _title->setString(info.title);
+        if(info.type == TitleInfo::Type::Counter)
+        {
+            _req->setString(std::to_string(info.counter.current) + "/" + std::to_string(info.counter.maximum));
+        }
+        else if(info.type == TitleInfo::Type::Req)
+        {
+            _req->setString(info.req.isSuited ? "[V]" : "[ ]");
+        }
+        else
+        {
+            _req->setString("");
+        }
     }
 
     void QuestTitle::setFont(sf::Font* font)

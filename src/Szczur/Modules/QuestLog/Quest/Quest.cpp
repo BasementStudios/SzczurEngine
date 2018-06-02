@@ -1,21 +1,31 @@
 #include "Quest.hpp"
 
+#include <Json/json.hpp>
+
 #include "Szczur/Utility/Logger.hpp"
 
 #include "Szczur/Modules/QuestLog/QuestLog.hpp"
 
+using namespace nlohmann;
+
+using namespace nlohmann;
+
 namespace rat
 {
-    Quest::Quest(QuestLog& owner)
+    Quest::Quest(QuestLog& owner, const std::string& name)
     :
     _owner(owner)
     {
+        _owner.addQuest(name, std::move(std::unique_ptr<Quest>(this)));
         _rootNode = new QuestNode(this, "Root");
     }
     QuestNode* Quest::getNode(const std::string& nodeName)
     {
         auto found = _nodes.find(nodeName);
         if(found == _nodes.end()) return nullptr;
+
+        std::cout << "Looked for: " << nodeName << " Found: " << found->second->getName() << "\n";
+
         return found->second.get();
     }
     void Quest::addNode(std::string nodeName, Node_t node)
@@ -32,7 +42,7 @@ namespace rat
         {
             nodeName = "N" + std::to_string(_nodes.size());
         }
-        
+        node->setName(nodeName);
         _nodes.emplace(nodeName, std::move(node));
     }
     QuestNode* Quest::getRoot()
@@ -42,33 +52,100 @@ namespace rat
     void Quest::start()
     {
         std::cout << "Quest Started\n";
+        _state = State::Active;
         _rootNode->start();
     }
     void Quest::finish()
     {
+        _state = State::Finished;
         std::cout << "Jo Jo, you finished Quest\n";
     }
 
-    void Quest::setTitle(const std::string& name)
-    {
+    void Quest::setTitle(const TitleInfo& info)
+    {      
         auto* gui = _owner.getGUI();
         gui->resetSubtitles();
-        gui->setTitle(name);
+
+        gui->setTitle(info);
     }
         
-    QuestTitle* Quest::addSubtitle(const std::string& name)
+    QuestTitle* Quest::addSubtitle(const TitleInfo& info)
     {
+        //if(_state != State::Active) return nullptr;
         auto* gui = _owner.getGUI();
-        return gui->addSubtitle(name);
+        return gui->addSubtitle(info);
     }
-    QuestTitle* Quest::addSubtitle(const std::string& name, int current, int maximum)
+
+    void Quest::testLoad(std::ifstream& in)
     {
-        auto* gui = _owner.getGUI();
-        return gui->addSubtitle(name, current, maximum);
+        json j;
+        in >> j;
+        for(auto& node : _nodes)
+        {
+            node.second->reset();
+        }
     }
-    QuestTitle* Quest::addSubtitle(const std::string& name, bool isSuited)
+    void Quest::testSave(std::ofstream& out)
     {
-        auto* gui = _owner.getGUI();
-        return gui->addSubtitle(name, isSuited);
+        out << std::setw(4) << _rootNode->getJson();
+    }
+
+    json Quest::getJson() const
+    {
+        json j;
+        
+        j["state"] = static_cast<int>(_state);
+        j["reqs"] = Requirements::getJson();
+
+        j["root"] = _rootNode->getJson();
+
+        return j;
+    }
+    void Quest::loadFromJson(nlohmann::json& j)
+    {
+        _state = static_cast<State>(j["state"]);
+
+        _loadReqsFromJson(j["reqs"]);
+        _loadRootFromJson(j["root"]);
+    }
+
+    void Quest::_loadReqsFromJson(nlohmann::json& j)
+    {
+        Requirements::resetValues();
+        Requirements::loadFromJson(j);
+    }
+
+    void Quest::_loadRootFromJson(nlohmann::json& j)
+    {
+        _resetNodesReqs();
+        _rootNode->loadFromJson(j); 
+        if(_state == State::Active)
+        {
+            _activateRootsGUI();
+        }
+    }
+
+    void Quest::_resetNodesReqs()
+    {
+        for(auto& [name, node] : _nodes)
+        {
+            node->reset();
+        }
+    }
+
+    void Quest::_activateRootsGUI()
+    {
+        auto gui = _owner.getGUI();
+        gui->resetSubtitles();
+        _rootNode->resume();
+    }
+
+    void Quest::setName(const std::string& name)
+    {
+        _name = name;
+    }
+    const std::string& Quest::getName() const
+    {
+        return _name;
     }
 }

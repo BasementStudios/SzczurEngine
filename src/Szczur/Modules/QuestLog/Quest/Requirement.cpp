@@ -2,6 +2,8 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
+using namespace nlohmann;
+
 namespace rat
 {
     void Requirements::addCounter(const std::string& name, int maxValue)
@@ -93,6 +95,57 @@ namespace rat
     bool Requirements::isFullySuited() const
     {
         return (areAllCountersFull() && areAllReqsSuited());
+    }
+
+    json Requirements::getJson() const
+    {
+        json j;
+
+        json counters;
+        for(auto& [name, count] : _counters)
+        {
+            counters[name] = json::array({count.current, count.maximum});
+        }
+
+        json reqs(_reqs);
+
+        j.emplace_back(std::move(counters));
+        j.emplace_back(std::move(reqs));
+
+        return j;
+    }
+
+    void Requirements::loadFromJson(nlohmann::json& j)
+    {
+        auto& counters = j[0];
+        auto& reqs = j[1];
+
+        
+        _counters.reserve(counters.size());
+        for(auto i = counters.begin(); i != counters.end(); i++)
+        {
+            auto& value = i.value();
+            _counters[i.key()] = {value[0], value[1]};
+        }
+
+        _reqs.reserve(reqs.size());
+        for(auto i = reqs.begin(); i != reqs.end(); i++)
+        {
+            _reqs[i.key()] = i.value();
+        }
+    }
+
+    void Requirements::resetValues()
+    {
+        for(auto& [name, req] : _reqs)
+        {
+            req = false;
+        }
+        for(auto& [name, counter] : _counters)
+        {
+            std::cout << name << " reseted\n";
+            counter.current = 0;
+        }
     }
     
 }

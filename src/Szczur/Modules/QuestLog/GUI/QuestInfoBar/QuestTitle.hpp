@@ -6,6 +6,8 @@
 #include <vector>
 #include <memory>
 
+#include "TitleInfo.hpp"
+
 namespace rat
 {
     class QuestTitle : public BaseBar
@@ -15,9 +17,7 @@ namespace rat
 
         void setFont(sf::Font* font);
 
-        void setReq(const std::string& title);
-        void setReq(const std::string& title, int current, int maximum);
-        void setReq(const std::string& title, bool req);
+        void setTitle(const TitleInfo& info);
 
         virtual void setSize(const sf::Vector2u& size) override;
         virtual void setSize(unsigned int width, unsigned int height) override;

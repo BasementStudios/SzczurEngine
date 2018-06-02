@@ -1,6 +1,7 @@
 #include "QuestLog.hpp"
 
 #include <vector>
+#include <fstream>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -8,6 +9,8 @@
 #include "GUI/QuestInfoBar/QuestTitle.hpp"
 
 #define CALL Widget::CallbackType::onRelease
+
+using namespace nlohmann;
 
 namespace rat
 {
@@ -19,12 +22,30 @@ namespace rat
     }
     void QuestLog::init()
     {
-        _quest = std::make_unique<Quest>(*this);
+        //_debugCounterTest();
+
+        _quest = std::make_unique<Quest>(*this, "Q0");
         auto* quest = _quest.get();
         auto* node = _quest->getRoot();
         _widget = getModule<GUI>().addInterface();
         _widget->setSize(40.f, 50.f);
         _widget->setPosition(100, 100);
+
+        auto* saveButton = new Widget;
+        _widget->add(saveButton);
+        saveButton->setCallback(CALL, [=](auto){
+            save();
+        });
+        saveButton->setSize(100, 100);
+        saveButton->setPosition(900.f, 0.f);
+
+        auto loadButton = new Widget;
+        _widget->add(loadButton);
+        loadButton->setSize(100, 100);
+        loadButton->setPosition(1000, 0);
+        loadButton->setCallback(CALL, [=](auto){
+            load();
+        });
         
         
 
@@ -50,17 +71,7 @@ namespace rat
         _title = std::make_unique<QuestGUI>();
         _title->setParent(_widget);
         _title->setFont(gui.getAsset<sf::Font>("Assets/Fonts/Base.ttf"));
-        //_title->setSize(200, 20);
-        _title->setTitle("Wez mydlo");
-        auto* sub = _title->addSubtitle("Hash");
-        sub->setReq("Great", 2, 3);
-        _title->resetSubtitles();
-        /*
-        auto* subT = _title->getSubReq(0);
-        subT->setReq("Zebrane mydla", 0, 3);
-        auto* subT2 = _title->getSubReq(0);
-        subT2->setReq("Wziales prysznic", false);
-        */
+
         
         std::vector<ImageWidget*> w;
 
@@ -72,10 +83,11 @@ namespace rat
             w[i]->setPosition(100 + i *200, 100);
             
         }
-        auto* choice = node->addBrancher();
+        auto* choice = node->addBrancher("Doors");
         choice->setTitle("Wejdz do ktorychs z drzwi");
-        auto* n1 = choice->addStep();
-        auto* n2 = choice->addStep();
+        //auto* n1 = choice->addStep("Left");
+        auto* tarcze = choice->addStep("Shields");
+        auto* n2 = choice->addStep("Right");
         choice->_onActivate = [=, &gui](){
             w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/LeftOpen.png"));
             w[0]->setCallback(CALL, [=](Widget*){
@@ -83,10 +95,11 @@ namespace rat
             });
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/RightOpen.png"));
             w[1]->setCallback(CALL, [=](Widget*){
-                choice->nextStep(1);              
+                choice->nextStep(1);  
             });
         };
 
+        /*
         n1->_onActivate = [n1](){
             n1->nextStep();
         };
@@ -96,6 +109,7 @@ namespace rat
             w[0]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/None.png"));            
             std::cout << "Lewe drzwi sie zamknely\n";
         });
+        */
 
         n2->_onActivate = [n2](){
             n2->nextStep();
@@ -110,7 +124,7 @@ namespace rat
 
         //n1->setTitle("Zniszcz wszystkie tarcze\n");
         //auto t = n1->addStep();
-        auto* tarcze = n1->addStep();
+        
         tarcze->setTitle("Zniszcz trzy tarcze");
 
         tarcze->_onFinished = [](){
@@ -122,7 +136,7 @@ namespace rat
 
         for(int i = 0; i < 3; i++)
         {
-            t.emplace_back(tarcze->addSubNode());
+            t.emplace_back(tarcze->addSubNode("Shield" + std::to_string(i+1)));
             auto* tar = t[i];
             std::string dopisek;
             if(i == 0) dopisek = "lewa";
@@ -134,7 +148,6 @@ namespace rat
             auto* wid = w[i];
             tar->_onActivate = [tar, wid, &gui](){
                 
-                std::cout << "eiribv\n";
                 wid->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Shield.png"));
                 wid->setCallback(CALL, [tar, wid, &gui](Widget*){
                     tar->nextStep();
@@ -143,14 +156,15 @@ namespace rat
 
             tar->_onFinished = [tar, wid, dopisek, &gui](){
                 wid->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Broken Shield.png"));
-                wid->setCallback(CALL, [tar, wid, dopisek, &gui](Widget*){
+                wid->setCallback(CALL, [=, &gui](Widget*){
+                    tar->setTitle(dopisek + " tarcza zniszczona jej");
                     std::cout << "Ta " + dopisek + " tarcze jest zniszczona...\n";
                 });
             };
         }
 
-        auto* shieldLoot = tarcze->addStep();
-        shieldLoot->addCounter("Shields", 3);
+        auto* shieldLoot = tarcze->addStep("ShieldLoot");
+        shieldLoot->addCounter("ShieldAmount", 3);
         
         shieldLoot->_onActivate = [w, shieldLoot, &gui](){
             for(auto* wid : w)
@@ -160,7 +174,8 @@ namespace rat
             }
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/BetterShield.png"));
             w[1]->setCallback(CALL, [shieldLoot](Widget*){
-                shieldLoot->advanceCounter("Shields");
+                shieldLoot->advanceCounter("ShieldAmount");
+                std::cout << shieldLoot->getValueFromCounter("ShieldAmount") << "\n";
             });
         };
         shieldLoot->setTitle("Podnies lepsza tarcze");
@@ -168,7 +183,7 @@ namespace rat
             std::cout << "Podniesiono lepsza tarcze\n";
         };
         
-        auto* exitt = shieldLoot->addStep();
+        auto* exitt = shieldLoot->addStep("Exit");
         exitt->setTitle("Opusc krypte");
         exitt->_onActivate = [=, &gui](){
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Exit.png"));
@@ -177,9 +192,15 @@ namespace rat
                 {
                     std::cout << "Masz przeklety pierscien, nie mozesz wyjsc\n";
                 }
+                else if(quest->getValueFromCounter("TestCounter") == 13)
+                {
+                    std::cout << "Podniosles miecz, right?\n";
+                }
                 else
                 {
+                    std::cout << "Before Next\n";
                     exitt->nextStep();
+                    std::cout << "After Next\n";
                 }
             });
         };
@@ -188,6 +209,8 @@ namespace rat
         };
 
         _quest->addReq("IsRingTaken");
+
+        _quest->addCounter("TestCounter", 23);
         
         auto* pied = n2->addBrancher();
         auto* wizard  = pied->addStep();
@@ -228,11 +251,12 @@ namespace rat
         wizard->addNode(exitt);
 
         knight->setTitle("Pokonaj rycerza");
-        knight->_onActivate = [w, &gui, knight](){
+        knight->_onActivate = [=, &gui](){
             w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/Knight.png"));
-            w[1]->setCallback(CALL, [knight, w, &gui](auto*){
+            w[1]->setCallback(CALL, [=, &gui](auto*){
                 w[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Quest/DeadKnight.png"));
-                w[1]->setCallback(CALL, [knight](auto*){
+                w[1]->setCallback(CALL, [=](auto*){
+                    quest->advanceCounter("TestCounter", 13);
                     knight->nextStep();
                 });
             });
@@ -262,6 +286,91 @@ namespace rat
     QuestGUI* QuestLog::getGUI()
     {
         return _title.get();
+    }
+
+    void QuestLog::addQuest(std::string name, Quest_t quest)
+    {
+        bool needDefaultName = false;
+        if(name == "") needDefaultName = true;
+        if(getQuest(name) != nullptr)
+        {
+            needDefaultName = true;
+            LOG_INFO("Quest with name \"", name, "\" already exist, default name is set.");
+        }
+
+        if(needDefaultName)
+        {
+            name = "Q" + std::to_string(_quests.size());
+        }
+        quest->setName(name);
+        _quests.emplace(name, std::move(quest));
+    }
+
+    Quest* QuestLog::getQuest(const std::string name)
+    {
+        auto found = _quests.find(name);
+        if(found == _quests.end())
+        {
+            //LOG_ERROR("Cannot get quest \"", name, "\", nullptr returned.");
+            return nullptr;
+        }
+
+        return found->second.get();
+    }
+
+    void QuestLog::load(const std::string& path)
+    {
+        std::ifstream in(path.c_str());
+
+        if(!in)
+        {
+            LOG_ERROR("Cannot open file \"", path, "\"...");
+            return;
+        }
+
+        json j;
+        in >> j;
+        loadFromJson(j);
+    }
+    void QuestLog::save(const std::string& path) const
+    {
+        std::ofstream out(path.c_str(), std::ios::trunc);
+
+        if(!out)
+        {
+            LOG_ERROR("Cannot open file \"", path, "\"...");
+            return;
+        }
+
+        out << std::setw(4) << getJson();
+    }
+
+    json QuestLog::getJson() const
+    {
+        json j;
+
+        for(auto& [name, quest] : _quests)
+        {
+            j[name] = quest->getJson();
+        }
+
+        return j;
+    }
+    void QuestLog::loadFromJson(nlohmann::json& j)
+    {
+        LOG_INFO("Loading QuestLog...");
+        for(auto i = j.begin(); i != j.end(); i++)
+        {
+            const std::string name = i.key();
+            auto quest = getQuest(name);
+            if(!quest)
+            {
+                LOG_ERROR("Quest \"", name, "\" hasn't been created. Maybe it has been removed...?");
+                continue;
+            }
+            quest->loadFromJson(i.value());
+        }
+        LOG_INFO("Loaded QuestLog.");
     }
     
 }

@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <fstream>
+
+#include <Json/json.hpp>
 
 #include "QuestNode.hpp"
 #include "Requirements.hpp"
@@ -16,7 +19,7 @@ namespace rat
     {
         using Node_t = std::unique_ptr<QuestNode>;
     public:
-        Quest(QuestLog& owner);
+        Quest(QuestLog& owner, const std::string& name = "");
 
         QuestNode* getNode(const std::string& nodeName);
         QuestNode* getRoot();
@@ -25,17 +28,38 @@ namespace rat
         void start();
         void finish();
 
-        void setTitle(const std::string& name);
+        void setTitle(const TitleInfo& info);
+
+        QuestTitle* addSubtitle(const TitleInfo& info);
+
+        void setName(const std::string& name);
+        const std::string& getName() const;
         
-        QuestTitle* addSubtitle(const std::string& name);
-        QuestTitle* addSubtitle(const std::string& name, int current, int maximum);
-        QuestTitle* addSubtitle(const std::string& name, bool isSuited);
+
+        //void setSubtitle
 
         void setCurrentNode(QuestNode* current);
+
+        void testLoad(std::ifstream& in);
+        void testSave(std::ofstream& out);
+
+        nlohmann::json getJson() const;
+        void loadFromJson(nlohmann::json& j);
+
     private:
         std::unordered_map<std::string, Node_t> _nodes;
         QuestNode* _rootNode;
+
+        enum class State { NotStarted, Active, Inactive, Finished};
+        State _state{State::NotStarted};
+        std::string _name{""};
         
         QuestLog& _owner;
+
+        void _loadRootFromJson(nlohmann::json& j);
+        void _loadReqsFromJson(nlohmann::json& j);
+        void _resetNodesReqs();
+
+        void _activateRootsGUI();
     };
 }

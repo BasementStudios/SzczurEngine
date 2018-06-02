@@ -5,7 +5,9 @@ namespace rat
     QuestGUI::QuestGUI()
     {
         _title.setSize({200u, 25u});
-        _title.setReq("None");
+        TitleInfo info;
+        info.makeTitle("None");
+        _title.setTitle(info);
         _addBar(_title);
     }
     //void QuestGUI::setQuestName(const std::string& name);
@@ -17,30 +19,16 @@ namespace rat
         }
         _activeAmount = 0;
     }
-    void QuestGUI::setTitle(const std::string& name)
+    void QuestGUI::setTitle(const TitleInfo& info)
     {
-        _title.setReq(name);
+        _title.setTitle(info);
     }
     
-    QuestTitle* QuestGUI::addSubtitle(const std::string& name)
+    QuestTitle* QuestGUI::addSubtitle(const TitleInfo& info)
     {
         auto* sub = _getSubTitle(_activeAmount++);
 
-        sub->setReq(name);
-        return sub;
-    }
-    QuestTitle* QuestGUI::addSubtitle(const std::string& name, int current, int maximum)
-    {
-        auto* sub = _getSubTitle(_activeAmount++);
-
-        sub->setReq(name, current, maximum);
-        return sub;
-    }
-    QuestTitle* QuestGUI::addSubtitle(const std::string& name, bool isSuited)
-    {
-        auto* sub = _getSubTitle(_activeAmount++);
-
-        sub->setReq(name, isSuited);
+        sub->setTitle(info);
         return sub;
     }
     //void QuestGUI::popSubtitle();
