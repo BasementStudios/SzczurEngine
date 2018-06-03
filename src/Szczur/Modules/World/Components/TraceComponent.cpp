@@ -231,8 +231,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar);
 			{
-				for (auto& action : actions)
+				for (int aId = 0; aId < actions.size(); ++aId)
 				{
+					auto& action = actions[aId];
+
 					std::string buttonName;
 
 					switch (action->getType())
@@ -275,6 +277,22 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 							_currentAction->Color = glm::vec3(0.f, 1.f, 0.f);
 						}
 					}
+
+
+					// draging objects
+					static int draggedObject = -1;
+					if (ImGui::IsMouseReleased(0)) 
+						draggedObject = -1;
+
+					if (ImGui::IsItemClicked()) 
+						draggedObject = aId;
+
+					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) && draggedObject != -1 && draggedObject != aId)
+					{
+						std::swap(actions[aId], actions[draggedObject]);
+						draggedObject = aId;
+					}
+
 
 					if (active)
 					{
