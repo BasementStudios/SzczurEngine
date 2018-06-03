@@ -12,8 +12,12 @@ namespace rat
 {
     GUITest::GUITest()
     {
-        auto& window = getModule<Window>().getWindow();
+        auto& mainWindow = getModule<Window>();
+        auto& window = mainWindow.getWindow();
+
+        mainWindow.pushGLStates();
         _canvas.create(window.getSize().x, window.getSize().y);
+        mainWindow.popGLStates();
 
         init();
     }
@@ -50,6 +54,7 @@ namespace rat
     
     void GUITest::update(float deltaTime)
     {
+
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);
@@ -111,11 +116,15 @@ namespace rat
     }
     void GUITest::render()
     {
+        auto& mainWindow = getModule<Window>();
+
+        mainWindow.pushGLStates();
+
        _canvas.clear(sf::Color::Transparent);
-
-
-
         _canvas.display();
-        getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
+
+        mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
+
+        mainWindow.popGLStates();
     }
 }

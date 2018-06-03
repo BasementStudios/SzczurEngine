@@ -14,31 +14,48 @@ class Application
 {
 public:
 
+	///
 	Application() = default;
 
+	///
 	Application(const Application&) = delete;
 
+	///
 	Application& operator = (const Application&) = delete;
 
+	///
 	Application(Application&&) = delete;
 
+	///
 	Application& operator = (Application&&) = delete;
 
-	int run();
+	///
+	~Application() = default;
 
+	///
 	void init();
 
-	void input();
+	///
+	bool input();
 
+	///
 	void update();
 
+	///
 	void render();
 
+	///
+	int run();
+
+	///
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
 
+	///
 	template <typename U>
 	U& getModule();
+
+	///
 	template <typename U>
 	const U& getModule() const;
 
@@ -46,6 +63,10 @@ private:
 
 	ModulesHolder<Window, Input, Script, GUI, GUITest> _modules;
 	Clock _mainClock;
+	#ifdef EDITOR
+	bool _isImGuiInitialized = false;
+	#endif
+
 };
 
 }

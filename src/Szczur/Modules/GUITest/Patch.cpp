@@ -120,7 +120,7 @@ namespace rat
             float totalWidth = float(_size.x);
             float realWidth = elementSize.x;
             
-            float widthTimes = std::max(round(totalWidth/realWidth), 1.f);
+            float widthTimes = std::max(float(round(totalWidth/realWidth)), 1.f);
             _elementAmount.x = int(widthTimes);
             _elementDim.x = totalWidth/widthTimes;
 
@@ -132,7 +132,7 @@ namespace rat
             float totalHeigt = float(_size.y);
             float realHeight = elementSize.y;
             
-            float heightTimes = std::max(round(totalHeigt/realHeight), 1.f);
+            float heightTimes = std::max(float(round(totalHeigt/realHeight)), 1.f);
             _elementAmount.y = int(heightTimes);
             _elementDim.y = totalHeigt/heightTimes;
 

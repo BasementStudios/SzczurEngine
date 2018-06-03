@@ -15,8 +15,11 @@ namespace rat {
     {
         LOG_INFO(this, "Module GUI constructed")
         initScript();
-        auto& window = getModule<Window>().getWindow();
-        _canvas.create(window.getSize().x, window.getSize().y);
+        auto& mainWindow = getModule<Window>();
+        auto& window = mainWindow.getWindow();
+        mainWindow.pushGLStates(); 
+        _canvas.create(window.getSize().x, window.getSize().y); 
+        mainWindow.popGLStates();
     }
 
     void GUI::initScript() {
@@ -59,18 +62,21 @@ namespace rat {
 
     void GUI::update(float deltaTime) 
     {
-        //time_t start = clock();
         _root.invokeToCalculate();
-        //std::cout << "Time elapsed: " << (clock() - start) << " clocks.\n";
         _root.update(deltaTime);
     }
 
     void GUI::render() {
-        _canvas.clear(sf::Color::Transparent);
-        
-        _canvas.draw(_root);
+        auto& mainWindow = getModule<Window>();
 
+        mainWindow.pushGLStates();
+ 
+        _canvas.clear(sf::Color::Transparent);
+        _canvas.draw(_root);
         _canvas.display();
-        getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
+
+        mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
+ 
+        mainWindow.popGLStates();
     }
 }
