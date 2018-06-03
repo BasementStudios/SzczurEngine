@@ -17,6 +17,11 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<GUI>();
+	#ifdef GUI_TEST
+	{
+		initModule<GUITest>();
+	}
+	#endif
 	initModule<QuestLog>();
 
 	// For testing `Script`
@@ -130,6 +135,11 @@ void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<GUI>().update(deltaTime);
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().update(deltaTime);
+	}
+	#endif
 	getModule<QuestLog>().update(deltaTime);
 	/*
 		Put other updates here
@@ -153,6 +163,11 @@ void Application::render()
 {
 	getModule<Window>().clear();
 	getModule<GUI>().render();
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().render();
+	}
+	#endif
 	getModule<QuestLog>().render();
 	#ifdef EDITOR
 	{
