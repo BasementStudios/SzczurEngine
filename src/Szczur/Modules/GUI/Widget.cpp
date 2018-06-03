@@ -70,7 +70,7 @@ namespace rat {
         if(object) {
             _children.push_back(object);
             object->setParent(this);
-            //_aboutToRecalculate = true;
+            _addWidget(object);
             _aboutToRecalculate = true;
         }
         else {
@@ -150,6 +150,11 @@ namespace rat {
             }
         }
 
+        _onMovedChildren(event);
+    }
+
+    void Widget::_onMovedChildren(sf::Event event)
+    {
         for(auto* child : _children)
         {
             auto childPos = child->getPosition();
@@ -165,6 +170,11 @@ namespace rat {
         if(isActivated()) 
         {
             _input(event);
+            if(event.type == sf::Event::MouseMoved)
+            {
+                event.mouseMove.x -= int(_padding.x * _winProp.x);
+                event.mouseMove.y -= int(_padding.y * _winProp.y);
+            }
             _inputChildren(event);
         }
     }
@@ -210,14 +220,13 @@ namespace rat {
             _drawDebug(target, states);
 	        #endif
             _draw(target, states);
+            states.transform.translate(_padding);
             _drawChildren(target, states);
         }
     }
 
     void Widget::_drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform.translate(_padding);
-
         for(auto it : _children) target.draw(*it, states);
     }
 
@@ -244,7 +253,7 @@ namespace rat {
             shape.setSize({float(_size.x), _padding.y});
             shape.setPosition(0.f, 0.f);            
             target.draw(shape, states);            
-            shape.setPosition(0.f, float(_size.y) - _padding.x);
+            shape.setPosition(0.f, float(_size.y) - _padding.y);
             target.draw(shape, states);
 
             shape.setSize({_padding.x, float(_size.y) - 2.f *_padding.y});
@@ -265,7 +274,6 @@ namespace rat {
 
     void Widget::calculateSize() 
     {
-        _aboutToRecalculate = false;
         auto oldSize = _size;
         _size = {};
 
@@ -287,6 +295,8 @@ namespace rat {
         
         _recalcOrigin();
         if(_parent && _size != oldSize) _parent->_aboutToRecalculate = true;
+
+        _aboutToRecalculate = false;
     }
 
 	sf::Vector2u Widget::_getChildrenSize()

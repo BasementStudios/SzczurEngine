@@ -63,11 +63,11 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI, 
+	ModulesHolder<Window, Input, Script, GUI
 	#ifdef GUI_TEST
-	GUITest, 
+	,GUITest 
 	#endif
-	QuestLog> _modules;
+	> _modules;
 	Clock _mainClock;
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;

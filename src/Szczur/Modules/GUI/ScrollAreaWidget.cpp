@@ -80,7 +80,6 @@ namespace rat {
         for(auto child : _children) _renderTexture.draw(*child, childrenStates);
 
         _renderTexture.display();
-        states.transform.translate(getPadding());
         target.draw(sf::Sprite(_renderTexture.getTexture()), states);
     }
 

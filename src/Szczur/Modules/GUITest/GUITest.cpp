@@ -6,6 +6,7 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 
 namespace rat
@@ -36,28 +37,50 @@ namespace rat
         _widget = gui.addInterface();
         _widget->setSize(100, 100);
 
-        _imageWidget = new ImageWidget;
-        _widget->add(_imageWidget);
 
-        //_imageWidget->setSize(20, 20);
-        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        _imageWidget->setPosition(100.f, 100.f);
+        
+        auto* list = new ListWidget;
+        list->setPosition(700.f, 300.f);
+        list->setPadding(20.f, 10.f);
+        list->setBetweenPadding(30.f);
+        _widget->add(list);
 
-        auto* _patch = new WindowWidget;
-        _patch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
-        _widget->add(_patch);
-        _patch->setSize(600, 200);
-        _patch->setScale(0.2f, 0.2f);
+        std::vector<Widget*> _ws(4, new Widget);
+        size_t i = 0;
+        for(auto* w : _ws)
+        {
+            std::cout << "Kek\n";
+            list->add(w);
+            w->setSize(50, 50);
+            w->setCallback(Widget::CallbackType::onHover, [i](auto){
+                std::cout << "Kekunio" << i << '\n';
+            });
+            std::cout << "Kek2\n";
+            i++;
+        }
 
+        auto* scroller = new ScrollAreaWidget;
+        _widget->add(scroller);
+        scroller->setSize(200, 200);
+        scroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+
+        auto* widego = new Widget;
+        scroller->add(widego);
+        widego->setSize(20.f, 20.f);
+        widego->setPosition(20.f, 20.f);
+        widego->setCallback(Widget::CallbackType::onPress, [](auto){
+            std::cout << "Mekorororor\n";
+        });
     }
     
     
     void GUITest::update(float deltaTime)
     {
-
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);
+
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             _scale-= deltaTime * 0.4f;
@@ -110,9 +133,6 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
-
-        _imageWidget->setPosition(_size);
-
     }
     void GUITest::render()
     {

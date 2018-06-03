@@ -103,12 +103,17 @@ namespace rat
 		virtual sf::Vector2u _getSize() const;
 		virtual void _calculateSize() {}
 		virtual void _setColor(const sf::Color& color) {}
+		virtual void _addWidget(Widget* widget) {}
 
 		virtual void _inputChildren(sf::Event event);
+		virtual void _onMovedChildren(sf::Event event);
 
 		virtual sf::Vector2u _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		bool _onPressed();
+		void _onRealesed();
+		void _onMoved(sf::Event event);
 		bool _aboutToRecalculate;
 
 		bool _isHovered;
@@ -141,9 +146,6 @@ namespace rat
 		void _drawDebug(sf::RenderTarget& target, sf::RenderStates states) const;
 		#endif
 
-		bool _onPressed();
-		void _onRealesed();
-		void _onMoved(sf::Event event);
 
 		void _recalcOrigin();
 
