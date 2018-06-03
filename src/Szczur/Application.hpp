@@ -5,7 +5,9 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#ifdef GUI_TEST
 #include "Szczur/Modules/GUITest/GUITest.hpp"
+#endif
 #include "Szczur/Modules/Script/Script.hpp"
 namespace rat
 {
@@ -61,7 +63,11 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI, GUITest> _modules;
+	ModulesHolder<Window, Input, Script, GUI, 
+	#ifdef GUI_TEST
+	GUITest, 
+	#endif
+	QuestLog> _modules;
 	Clock _mainClock;
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
