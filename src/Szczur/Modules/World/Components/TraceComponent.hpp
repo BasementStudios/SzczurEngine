@@ -10,6 +10,7 @@ namespace rat
 {
 class Trace;
 class Timeline;
+class Action;
 class Script;
 
 class TraceComponent : public Component
@@ -70,6 +71,9 @@ public:
 private:
 
 	std::shared_ptr<Trace> _trace;
+
+	Timeline*	_currentTimeline = nullptr;
+	Action*		_currentAction = nullptr;
 
 };
 

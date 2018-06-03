@@ -50,6 +50,9 @@ void TraceComponent::loadFromConfig(Json& config)
 	Component::loadFromConfig(config);
 	
 	_trace->loadFromConfig(config, this->getEntity());
+
+	_currentTimeline = nullptr;
+	_currentAction = nullptr;
 }
 
 void TraceComponent::saveToConfig(Json& config) const
@@ -93,9 +96,6 @@ std::unique_ptr<Component> TraceComponent::copy(Entity* newParent) const
 
 void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object) 
 {
-	static Timeline* currentTimeline = nullptr;
-	static Action* currentAction = nullptr;
-
 	if (ImGui::CollapsingHeader("Trace##trance_component"))
 	{
 		ImGui::Text("Timeline: %d\n", _trace->getCurrentTimeline() ? _trace->getCurrentTimeline()->getId() : -1);
@@ -113,10 +113,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 		if (ImGui::Button(playStopButtonText))
 		{
-			if (currentTimeline)
+			if (_currentTimeline)
 			{
 				if (_trace->getCurrentTimeline() == nullptr)
-					_trace->setCurrentTimeline(currentTimeline);
+					_trace->setCurrentTimeline(_currentTimeline);
 				else
 					_trace->setCurrentTimeline(nullptr);
 			}
@@ -142,10 +142,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 		if (ImGui::Button("-"))
 		{
-			if (currentTimeline)
+			if (_currentTimeline)
 			{
-				_trace->removeTimeline(currentTimeline);
-				currentTimeline = nullptr;
+				_trace->removeTimeline(_currentTimeline);
+				_currentTimeline = nullptr;
 			}
 		}
 
@@ -158,20 +158,20 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			{
 				ImGui::PushID(timeline.get());
 
-				bool activeTimeline = timeline.get() == currentTimeline;
+				bool activeTimeline = timeline.get() == _currentTimeline;
 
 				if (activeTimeline)
 				{
-					ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
-					ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+					ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_HeaderHovered]);
+					ImGui::PushStyleColor(ImGuiCol_Border, style.Colors[ImGuiCol_SeparatorHovered]);
 				}
 
 				if (ImGui::Button(std::to_string(timeline->getId()).c_str(), { ImGui::GetFrameHeight(), 0.f }))
 				{
-					if (currentTimeline == timeline.get())
-						currentTimeline = nullptr;
+					if (_currentTimeline == timeline.get())
+						_currentTimeline = nullptr;
 					else
-						currentTimeline = timeline.get();
+						_currentTimeline = timeline.get();
 				}
 
 				if (activeTimeline)
@@ -187,21 +187,21 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		ImGui::EndChild();
 
 		// Show current timeline
-		if (currentTimeline)
+		if (_currentTimeline)
 		{
-			ImGui::Checkbox("Loop", &currentTimeline->Loop);
-			ImGui::Checkbox("Show lines in editor", &currentTimeline->ShowLines);
+			ImGui::Checkbox("Loop", &_currentTimeline->Loop);
+			ImGui::Checkbox("Show lines in editor", &_currentTimeline->ShowLines);
 
 			ImGui::PushItemWidth(100.f);
-			ImGui::DragFloat("Speed multiplier", &currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
+			ImGui::DragFloat("Speed multiplier", &_currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
 			ImGui::PopItemWidth();
 			ImGui::Spacing();
 
-			auto& actions = currentTimeline->getActions();
+			auto& actions = _currentTimeline->getActions();
 
 			if (ImGui::Button("+Move"))
 			{
-				currentTimeline->addAction(new MoveAction(object));
+				_currentTimeline->addAction(new MoveAction(object));
 			}
 
 			ImGui::SameLine();
@@ -209,14 +209,14 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			if (ImGui::Button("+Anim"))
 			{
 				if (object->hasComponent<ArmatureComponent>())
-					currentTimeline->addAction(new AnimAction(object));
+					_currentTimeline->addAction(new AnimAction(object));
 			}
 
 			ImGui::SameLine();
 
 			if (ImGui::Button("+Wait"))
 			{
-				currentTimeline->addAction(new WaitAction(object));
+				_currentTimeline->addAction(new WaitAction(object));
 			}
 
 			ImGui::SameLine();
@@ -224,9 +224,9 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			if (ImGui::Button("+Script"))
 			{
 				if (object->hasComponent<ScriptableComponent>())
-					currentTimeline->addAction(new ScriptAction(object));
+					_currentTimeline->addAction(new ScriptAction(object));
 			}
-
+			
 			ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 10.f);
 
 			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar);
@@ -253,26 +253,26 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 					ImGui::PushID(action.get());
 
-					bool active = action.get() == currentAction;
+					bool active = action.get() == _currentAction;
 
 					if (active)
 					{
-						ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
-						ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetStyle().Colors[ImGuiCol_SeparatorHovered]);
+						ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_HeaderHovered]);
+						ImGui::PushStyleColor(ImGuiCol_Border, style.Colors[ImGuiCol_SeparatorHovered]);
 					}
 
 					if (ImGui::Button((buttonName).c_str(), { ImGui::GetFrameHeight(), 0.f }))
 					{
 
-						if (currentAction)
-							currentAction->Color = glm::vec3(1.f, 1.f, 1.f);
+						if (_currentAction)
+							_currentAction->Color = glm::vec3(1.f, 1.f, 1.f);
 
-						if (currentAction == action.get())
-							currentAction = nullptr;
+						if (_currentAction == action.get())
+							_currentAction = nullptr;
 						else
 						{
-							currentAction = action.get();
-							currentAction->Color = glm::vec3(0.f, 1.f, 0.f);
+							_currentAction = action.get();
+							_currentAction->Color = glm::vec3(0.f, 1.f, 0.f);
 						}
 					}
 
@@ -285,7 +285,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					{
 						if (ImGui::Selectable("Remove"))
 						{
-							currentTimeline->removeAction(action.get());
+							_currentTimeline->removeAction(action.get());
 							ImGui::EndPopup();
 							ImGui::PopID();
 							break;
@@ -330,15 +330,15 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 			ImGui::PopStyleVar();
 
-			if (currentAction)
+			if (_currentAction)
 			{
 				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 
-				switch (currentAction->getType())
+				switch (_currentAction->getType())
 				{
 					case Action::Move:
 					{
-						auto moveAction = static_cast<MoveAction*>(currentAction);
+						auto moveAction = static_cast<MoveAction*>(_currentAction);
 
 						ImGui::PushItemWidth(-80);
 
@@ -399,7 +399,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					} break;
 					case Action::Anim:
 					{
-						auto animAction = static_cast<AnimAction*>(currentAction);
+						auto animAction = static_cast<AnimAction*>(_currentAction);
 
 						ImGui::Text("Action: Anim");
 						ImGui::Separator();
@@ -435,7 +435,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					} break;
 					case Action::Wait:
 					{
-						auto waitAction = static_cast<WaitAction*>(currentAction);
+						auto waitAction = static_cast<WaitAction*>(_currentAction);
 
 						ImGui::Text("Action: Wait");
 						ImGui::Separator();
@@ -444,7 +444,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					} break;
 					case Action::Script:
 					{
-						auto scriptAction = static_cast<ScriptAction*>(currentAction);
+						auto scriptAction = static_cast<ScriptAction*>(_currentAction);
 
 						ImGui::Text("Action: Script");
 						ImGui::Separator();
