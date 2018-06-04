@@ -2,15 +2,18 @@
 
 #include "../Component.hpp"
 
-#include <sol.hpp>
+#include <Sol/sol.hpp>
 
 #include <glm/glm.hpp>
 
 namespace rat {
-class Entity;
 class Script;
 class ScenesManger;
 class InputManager;
+
+class Script;
+class Entity;
+template<class T> class ScriptClass;
 
 class InteractableComponent : public Component {
 public:
@@ -46,7 +49,7 @@ public:
     virtual void saveToConfig(Json& config) const override;
 
     ///
-    static void initScript(Script& script);
+    static void initScript(ScriptClass<Entity>& entity, Script& script);
 
     ///
     virtual void renderHeader(ScenesManager& scenes, Entity* object) override;

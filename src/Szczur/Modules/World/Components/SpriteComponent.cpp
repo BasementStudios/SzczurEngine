@@ -2,10 +2,12 @@
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
+#include "../ScenesManager.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include <Szczur/Modules/World/World.hpp>
 
-#include "../ScenesManager.hpp"
 
 namespace rat {
 	SpriteComponent::SpriteComponent(Entity* parent)
@@ -27,6 +29,11 @@ namespace rat {
 	void SpriteComponent::setSpriteDisplayData(SpriteDisplayData* spriteDisplayData)
 	{
 		_spriteDisplayData = spriteDisplayData;
+	}
+
+	void SpriteComponent::setTexture(const std::string& texturePath) {
+		auto* data = detail::globalPtr<World>->getScenes().getTextureDataHolder().getData(texturePath);
+		setSpriteDisplayData(data);
 	}
 
 	///
@@ -134,5 +141,20 @@ namespace rat {
 			ImGui::SameLine();
 			ImGui::Text(getSpriteDisplayData() ? mapWindows1250ToUtf8(getSpriteDisplayData()->getName()).c_str() : "None");
 		}
+	}
+
+	void SpriteComponent::initScript(ScriptClass<Entity>& entity, Script& script)
+	{
+		auto object = script.newClass<SpriteComponent>("SpriteComponent", "World");
+
+		// Main
+		object.set("setTexture", &SpriteComponent::setTexture);
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
+		// Entity
+		entity.set("addSpriteComponent", [&](Entity& e){return (SpriteComponent*)e.addComponent<SpriteComponent>();});
+		entity.set("sprite", &Entity::getComponentAs<SpriteComponent>);
+
+		object.init();
 	}
 }

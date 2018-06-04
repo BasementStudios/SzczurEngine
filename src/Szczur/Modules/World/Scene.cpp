@@ -12,6 +12,8 @@
 #include "Components/ScriptableComponent.hpp"
 
 #include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/World/World.hpp"
 
 #include "UniqueID.hpp"
 
@@ -117,6 +119,13 @@ bool Scene::removeEntity(size_t id)
 {
 	if (auto it = _find("single", id); it != getEntities("single").end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if(it->get()->getID() == objects.getSelectedID()) {
+			objects.unselect();			
+		}
+		#endif //EDITOR
+
 		getEntities("single").erase(it);
 
 		return true;
@@ -124,6 +133,13 @@ bool Scene::removeEntity(size_t id)
 
 	if (auto it = _find("path", id); it != getEntities("path").end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if(it->get()->getID() == objects.getSelectedID()) {
+			objects.unselect();			
+		}
+		#endif //EDITOR
+
 		getEntities("path").erase(it);
 
 		return true;
@@ -131,6 +147,13 @@ bool Scene::removeEntity(size_t id)
 
 	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if(it->get()->getID() == objects.getSelectedID()) {
+			objects.unselect();			
+		}
+		#endif //EDITOR
+
 		getEntities("foreground").erase(it);
 
 		return true;
@@ -138,6 +161,13 @@ bool Scene::removeEntity(size_t id)
 
 	if (auto it = _find("background", id); it != getEntities("background").end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if(it->get()->getID() == objects.getSelectedID()) {
+			objects.unselect();			
+		}
+		#endif //EDITOR
+
 		getEntities("background").erase(it);
 
 		return true;
@@ -145,6 +175,13 @@ bool Scene::removeEntity(size_t id)
 
 	if (auto it = _find("entries", id); it != getEntities("entries").end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if(it->get()->getID() == objects.getSelectedID()) {
+			objects.unselect();			
+		}
+		#endif //EDITOR
+
 		getEntities("entries").erase(it);
 
 		return true;
@@ -152,6 +189,13 @@ bool Scene::removeEntity(size_t id)
 
 	if (auto it = _find("battles", id); it != getEntities("battles").end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if(it->get()->getID() == objects.getSelectedID()) {
+			objects.unselect();			
+		}
+		#endif //EDITOR
+
 		getEntities("battles").erase(it);
 
 		return true;
@@ -205,6 +249,17 @@ Entity* Scene::getEntity(size_t id)
 		return it->get();
 	}
 
+	return nullptr;
+}
+
+Entity* Scene::getEntity(const std::string& name) {
+	for(auto& group : _collectingHolder) {
+		for(auto& entity : group.second) {
+			if(entity->getName() == name) {
+				return entity.get();
+			}
+		}
+	}
 	return nullptr;
 }
 
@@ -431,6 +486,35 @@ typename Scene::EntitiesHolder_t::const_iterator Scene::_find(const std::string&
 	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
 		return arg->getID() == id;
 	});
+}
+
+void Scene::initScript(Script& script) {
+	auto object = script.newClass<Scene>("Scene", "World");
+
+	object.set("getEntity", sol::resolve<Entity*(const std::string&)>(&Scene::getEntity));
+	object.set("addEntity", [&](Scene* s, const std::string& group, const std::string& name){
+		auto* entity = s->addEntity(group);
+		entity->setName(name);
+		return entity;
+	});
+	object.setOverload("cloneEntity",
+		[&](Scene* s, const std::string& name) {
+			return s->duplicateEntity(s->getEntity(name)->getID());
+		},
+		[&](Scene* s, Entity* e){
+			return s->duplicateEntity(e->getID());
+		}
+	);
+	object.setOverload("removeEntity", 
+		[&](Scene* s, const std::string& name) {
+			return s->removeEntity(s->getEntity(name)->getID());
+		},
+		[&](Scene* s, Entity* e){
+			return s->removeEntity(e->getID());
+		}
+	);
+
+	object.init();
 }
 
 }

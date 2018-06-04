@@ -75,6 +75,9 @@ public:
 	///
 	glm::vec2 getClipboardVec2();
 
+	///
+	ObjectsList& getObjectsList();
+
 private:
 
 	///

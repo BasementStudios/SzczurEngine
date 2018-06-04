@@ -8,8 +8,9 @@ World::World()
 {
 	LOG_INFO("Initializing World module");
 
-	ComponentTraits::initScript(getModule<Script>());
-	Entity::initScript(getModule<Script>());
+	// ComponentTraits::initScript(getModule<Script>());
+
+	initScript();
 
 	_scenes.setCurrentScene(_scenes.addScene()->getID());
 
@@ -33,9 +34,9 @@ void World::update(float deltaTime)
 		else
 			_doEditor = true;
 	}
-	if (_getScenes().isCurrentSceneValid())
+	if (getScenes().isCurrentSceneValid())
 	{
-		_getScenes().getCurrentScene()->update(deltaTime);
+		getScenes().getCurrentScene()->update(deltaTime);
 	}
 
 	#ifdef EDITOR
@@ -48,10 +49,10 @@ void World::render()
 {
 	auto& window = getModule<Window>().getWindow();
 
-	if (_getScenes().isCurrentSceneValid())
+	if (getScenes().isCurrentSceneValid())
 	{
-		_getScenes().getCurrentScene()->render(window);
-		// _getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
+		getScenes().getCurrentScene()->render(window);
+		// getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
 		// 	if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
 		// 	{
 		// 		window.draw(*ptr);
@@ -65,14 +66,31 @@ void World::render()
 	#endif
 }
 
-ScenesManager& World::_getScenes()
+ScenesManager& World::getScenes()
 {
 	return _scenes;
 }
 
-const ScenesManager& World::_getScenes() const
+const ScenesManager& World::getScenes() const
 {
 	return _scenes;
+}
+
+void World::	initScript() {
+	auto& script = getModule<Script>();
+
+	auto module = script.newModule("World");
+
+	module.set_function("getScene", sol::overload(
+		[&](){return _scenes.getCurrentScene();},
+		[&](const std::string& name){return _scenes.getScene(name);}
+	));
+	module.set_function("setCurrentScene", sol::overload(
+		[&](Scene* scene){_scenes.setCurrentScene(scene->getID());},
+		[&](const std::string& name){_scenes.setCurrentScene(_scenes.getScene(name)->getID());}
+	));
+
+	script.initClasses<Entity, Scene>();
 }
 
 }

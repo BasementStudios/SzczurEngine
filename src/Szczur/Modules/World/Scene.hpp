@@ -15,6 +15,7 @@ namespace rat
 
 // FWD
 class ScenesManager;
+class Script;
 
 class Scene
 {
@@ -98,6 +99,9 @@ public:
 	Entity* getEntity(const std::string& group, size_t id);
 
 	///
+	Entity* getEntity(const std::string& name);
+
+	///
 	const Entity* getEntity(const std::string& group, size_t id) const;
 
 	///
@@ -154,6 +158,9 @@ public:
 
 	///
 	void updateIDs();
+
+	///
+	static void initScript(Script& script);
 
 private:
 

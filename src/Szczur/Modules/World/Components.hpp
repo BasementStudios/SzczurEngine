@@ -18,6 +18,7 @@ namespace rat
 
 // FWD
 class Entity;
+template<class T> class ScriptClass;
 
 struct ComponentTraits
 {
@@ -114,12 +115,15 @@ struct ComponentTraits
 		return static_cast<Component::Feature_e>(0);
 	}
 
-	static void initScript(Script& script) {
-		auto module = script.newModule("World");
-		script.initClasses<ScriptableComponent>();
-		script.initClasses<InteractableComponent>();
-		script.initClasses<ArmatureComponent>();
-		script.initClasses<TraceComponent>();
+	static void initScript(ScriptClass<Entity>& entity, Script& script) {
+		BaseComponent::initScript(entity, script);
+		SpriteComponent::initScript(entity, script);
+		ArmatureComponent::initScript(entity, script);
+		CameraComponent::initScript(entity, script);
+		ScriptableComponent::initScript(entity, script);
+		InteractableComponent::initScript(entity, script);
+		TriggerComponent::initScript(entity, script);
+		TraceComponent::initScript(entity, script);
 	}
 };
 

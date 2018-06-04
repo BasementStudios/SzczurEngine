@@ -41,8 +41,15 @@ namespace rat {
 					ImGui::OpenPopup("Change components...##modal");
 					ImGui::SetNextWindowSize(ImVec2(300,300));
 				}
-				_renderComponentsManager();
 			}
+			// if(_scenes.isGameRunning()) {
+			// 	ImGui::SameLine();
+			// 	if(ImGui::Button("Update status##properties")) {
+			// 		focusedObject->saveToConfig(_scenes.getRunConfig());
+			// 		printMenuBarInfo(std::string("Updated status for: ")+focusedObject->getName());
+			// 	}
+			// }
+			_renderComponentsManager();
 
 			// Render headers for components
 			if(focusedObject) {                
@@ -56,8 +63,8 @@ namespace rat {
 				if(auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
 			}
 
-			ImGui::End();
 		}
+		ImGui::End();
 
 		// Unselect object after close properties window
 		if(openWindow == false) {

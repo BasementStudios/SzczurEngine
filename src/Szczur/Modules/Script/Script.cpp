@@ -1,9 +1,11 @@
-#include <iostream>
 #include "Script.hpp"
-#include <sol.hpp>
+
+#include <iostream>
+#include <Sol/sol.hpp>
 #include <SFML/Graphics.hpp>
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Script/ScriptClass.hpp"
+#include <glm/glm.hpp>
 
 namespace rat {
 	
@@ -17,24 +19,29 @@ namespace rat {
 	}
 	void Script::initMainFunctions() {
 		auto script = _lua.create_table("Script");
-		script.set_function("scriptFile", &Script::scriptFile, this);
+		script.set_function("runScript", &Script::scriptFile, this);
 	}
 	void Script::initSFML() {
 		sol::table sfml = _lua.create_table("SFML");
 		sfml.new_simple_usertype<sf::Vector2f>("Vector2f",
 			"x", &sf::Vector2f::x,
 			"y", &sf::Vector2f::y
-			);
+		);
 		sfml.new_simple_usertype<sf::Vector2i>("Vector2i",
 			"x", &sf::Vector2i::x,
 			"y", &sf::Vector2i::y
-			);
+		);
 		sfml.new_simple_usertype<sf::Color>("Color",
 			"r", &sf::Color::r,
 			"g", &sf::Color::g,
 			"b", &sf::Color::b,
 			"a", &sf::Color::a
-			);
+		);
+		sfml.new_simple_usertype<glm::vec3>("Vec3",
+			"x", &glm::vec3::x,
+			"y", &glm::vec3::y,
+			"z", &glm::vec3::z
+		);
 	}
 	void Script::scriptFile(const std::string& filePath) {
 		_lua.script_file(filePath);

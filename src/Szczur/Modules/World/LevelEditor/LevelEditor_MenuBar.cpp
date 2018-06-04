@@ -43,46 +43,47 @@ namespace rat {
 		}
 
 		// Scenes manager popup
-		if(openScenesManager && ImGui::Begin("Scenes Manager##window", &openScenesManager)) {
-			
-			// Change scene name
-			static char name[255];
-			std::strcpy(&name[0], _scenes.getCurrentScene()->getName().c_str());
-			ImGui::PushItemWidth(-50);
-			ImGui::InputText("Name##scene_name", name, 255u);
-			ImGui::PopItemWidth();
-			_scenes.getCurrentScene()->setName(std::string{name});
+		if(openScenesManager) {
+			if(ImGui::Begin("Scenes Manager##window", &openScenesManager)) {
+				
+				// Change scene name
+				static char name[255];
+				std::strcpy(&name[0], _scenes.getCurrentScene()->getName().c_str());
+				ImGui::PushItemWidth(-50);
+				ImGui::InputText("Name##scene_name", name, 255u);
+				ImGui::PopItemWidth();
+				_scenes.getCurrentScene()->setName(std::string{name});
 
-			// Calculate width for 3 buttons
-			float availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
-			
-			// Add button
-			if(ImGui::Button("Add", ImVec2(availWidth, 0.f))) {
-				_scenes.addScene();
-			}
-			ImGui::SameLine();
+				// Calculate width for 3 buttons
+				float availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
+				
+				// Add button
+				if(ImGui::Button("Add", ImVec2(availWidth, 0.f))) {
+					_scenes.addScene();
+				}
+				ImGui::SameLine();
 
-			// Remove button
-			if(ImGui::Button("Remove", ImVec2(availWidth, 0.f))) {
-				_scenes.removeScene(_scenes.getCurrentSceneID());
-			}
-			ImGui::SameLine();
+				// Remove button
+				if(ImGui::Button("Remove", ImVec2(availWidth, 0.f))) {
+					_scenes.removeScene(_scenes.getCurrentSceneID());
+				}
+				ImGui::SameLine();
 
-			// Ok button
-			if(ImGui::Button("Ok", ImVec2(availWidth, 0.f))) {
-				ImGui::CloseCurrentPopup();
-			}
+				// Ok button
+				if(ImGui::Button("Ok", ImVec2(availWidth, 0.f))) {
+					ImGui::CloseCurrentPopup();
+				}
 
-			// List of scenes
-			if(ImGui::BeginChild("Scenes")) {
-				for(auto& it : _scenes.getScenes()) {
-					if(ImGui::Selectable(it->getName().c_str(), it->getID() == _scenes.getCurrentSceneID())) {
-						_scenes.setCurrentScene(it->getID());
+				// List of scenes
+				if(ImGui::BeginChild("Scenes")) {
+					for(auto& it : _scenes.getScenes()) {
+						if(ImGui::Selectable(it->getName().c_str(), it->getID() == _scenes.getCurrentSceneID())) {
+							_scenes.setCurrentScene(it->getID());
+						}
 					}
 				}
+				ImGui::EndChild();
 			}
-			ImGui::EndChild();
-
 			ImGui::End();	
 		}
 

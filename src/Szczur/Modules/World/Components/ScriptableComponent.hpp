@@ -4,10 +4,13 @@
 
 #include <Szczur/Modules/Script/Script.hpp>
 
-#include <sol.hpp>
+#include <Sol/sol.hpp>
 
 namespace rat {
+
 class Entity;
+class Script;
+template<class T> class ScriptClass;
 
 class ScriptableComponent : public Component {
 public:
@@ -66,7 +69,7 @@ public:
 	virtual void saveToConfig(Json& config) const override;
 
 	///
-	static void initScript(Script& script);
+	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;

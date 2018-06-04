@@ -8,10 +8,13 @@
 #include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
 
+#include <Szczur/Modules/Script/Script.hpp>
+
 namespace rat
 {
 
-class Script;
+class Entity;
+template<class T> class ScriptClass;
 
 class ArmatureComponent : public Component, public sf3d::Drawable
 {
@@ -73,7 +76,7 @@ public:
 // Scripts
 
 	///
-	static void initScript(Script& script);
+	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 // Main
 

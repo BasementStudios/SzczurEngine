@@ -4,6 +4,7 @@
 #include "../ScenesManager.hpp"
 
 #include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
 	TriggerComponent::TriggerComponent(Entity* parent) :
@@ -92,6 +93,12 @@ namespace rat {
                 }
             }
         }
+    }
+
+    void TriggerComponent::initScript(ScriptClass<Entity>& entity, Script& script)
+    {
+        auto object = script.newClass<TriggerComponent>("TriggerComponent", "World");
+        object.init();
     }
 
     void TriggerComponent::renderHeader(ScenesManager& scenes, Entity* object) {

@@ -10,6 +10,9 @@
 #include "Components/CameraComponent.hpp"
 #include "Components/BaseComponent.hpp"
 #include "Components/ScriptableComponent.hpp"
+
+#include <Szczur/Modules/World/World.hpp>
+
 namespace rat
 {
 
@@ -63,6 +66,10 @@ void ScenesManager::removeAllScenes()
 	_holder.clear();
 
 	_currentSceneID = 0u;
+
+	#ifdef EDITOR
+	detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
+	#endif //EDITOR
 }
 
 Scene* ScenesManager::getScene(size_t id) const
@@ -72,6 +79,16 @@ Scene* ScenesManager::getScene(size_t id) const
 		return it->get();
 	}
 
+	return nullptr;
+}
+
+Scene* ScenesManager::getScene(const std::string& name) {
+
+	for(auto& scene : _holder) {
+		if(scene->getName() == name) {
+			return scene.get();
+		}
+	}
 	return nullptr;
 }
 
@@ -94,11 +111,15 @@ bool ScenesManager::setCurrentScene(size_t id)
 {
 	if (hasScene(id))
 	{
+		#ifdef EDITOR
+		detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
+		#endif //EDITOR
+		
 		_currentSceneID = id;
 
 		if(isGameRunning()) {
-			auto* scene = getCurrentScene();
-			
+			auto* scene = getCurrentScene();		
+		
 			scene->forEach([](const std::string& group, Entity& entity) {
 					if(auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
 				}
@@ -152,6 +173,21 @@ void ScenesManager::saveToConfig(Json& config) {
 
 		scene->saveToConfig(current);
 	}
+}
+
+void ScenesManager::saveEntityToConfig(Entity& entity, Json& config) {
+	// config["currentSceneID"] = getCurrentSceneID();
+	// Json& scenes = config["scenes"];
+
+	
+
+	// for (auto& scene : _holder)
+	// {
+	// 	scenes.push_back(Json::object());
+	// 	Json& current = scenes.back();
+
+	// 	scene->saveToConfig(current);
+	// }
 }
 
 void ScenesManager::loadFromFile(const std::string& filepath)
@@ -229,9 +265,18 @@ void ScenesManager::runGame() {
 
 void ScenesManager::stopGame() {
 	if(_gameIsRunning) {
+
+		#ifdef EDITOR
+		detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
+		#endif //EDITOR
+
 		_gameIsRunning = false;
 		loadFromConfig(_configBeforeRun);
 	}
+}
+
+Json& ScenesManager::getRunConfig() {
+	return _configBeforeRun;
 }
 
 TextureDataHolder& ScenesManager::getTextureDataHolder() {

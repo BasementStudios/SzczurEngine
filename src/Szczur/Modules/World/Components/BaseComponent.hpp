@@ -8,7 +8,11 @@
 
 namespace rat
 {
+
 class Entity;
+class Script;
+template<class T> class ScriptClass;
+
 class BaseComponent : public Component
 {
 public:
@@ -45,6 +49,9 @@ public:
 
 	///
 	void positionOnly(bool flag);
+
+	///
+	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
 

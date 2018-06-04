@@ -87,13 +87,21 @@ void TraceComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states)
 	_trace->draw(target, states);
 }
 
-void TraceComponent::initScript(Script& script)
+void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 {
 	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
+
+	// Main
 	object.set("pause", &TraceComponent::pause);
 	object.set("resume", &TraceComponent::resume);
 	object.set("setTimeline", &TraceComponent::setTimeline);
 	object.set("stop", &TraceComponent::stop);
+	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
+	// Entity
+	entity.set("addTraceComponent", [&](Entity& e){return (TraceComponent*)e.addComponent<TraceComponent>();});
+	entity.set("trace", &Entity::getComponentAs<TraceComponent>);
+
 	object.init();
 }
 

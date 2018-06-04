@@ -57,6 +57,10 @@ namespace rat {
 		return _vec2Clipboard;
 	}
 
+	ObjectsList& LevelEditor::getObjectsList() {
+		return _objectsList;
+	}
+
 	void LevelEditor::render(sf3d::RenderTarget& target) {
 
 		// Show ImGui demo window
@@ -259,31 +263,41 @@ namespace rat {
 		
 		auto mouse = input.getMousePosition();
 
-		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
-		
-		// if(input.isReleased(Mouse::Left)) {
-		// 	_scenes.getCurrentScene()->forEach([&linear, scene](const std::string&, Entity& entity){
-		// 		if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-		// 			scene->focusedObject = entity.getID();
-		// 			scene->anySelected = true;
-		// 		}
-		// 	});
-		// }
-
-		sf3d::View view;
 		Entity* currentCamera{nullptr};
-		_scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
-			if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
-				if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
-					currentCamera = &entity;
+
+		for(auto& ent : _scenes.getCurrentScene()->getEntities("single")) {
+			if(auto* comp = ent->getComponentAs<CameraComponent>()) {
+				if(_objectsList.getSelectedID() == ent->getID() || comp->getLock()) {
+					currentCamera = ent.get();
+				}
 			}
-		});
-		if(ImGui::IsAnyItemActive() == false) {
-			if(currentCamera==nullptr)
-				_freeCamera.processEvents(input);
-			else
-				currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
 		}
+
+		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
+		if(input.isPressed(Mouse::Left)) {
+			_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
+				if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
+					if(currentCamera && entity.getID() == currentCamera->getID()) return;
+					_objectsList.select(entity.getID());
+				}
+			});
+		}
+
+		// _scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
+		// 	if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
+		// 		if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
+		// 			currentCamera = &entity;
+		// 	}
+		// });
+		
+		if(ImGui::IsAnyItemActive() == false) {
+			if(currentCamera)
+				currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
+			else
+				_freeCamera.processEvents(input);
+		}
+		
+		sf3d::View view;
 		if(currentCamera) {
 			view.setRotation(currentCamera->getRotation());
 			view.setCenter(currentCamera->getPosition());

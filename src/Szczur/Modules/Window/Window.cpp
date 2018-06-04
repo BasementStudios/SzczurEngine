@@ -86,6 +86,11 @@ Window::Window()
 {
 	LOG_INFO("Initializing Window module");
 	this->init();
+
+	glEnable(GL_CULL_FACE);  
+	glCullFace(GL_FRONT);  
+	glFrontFace(GL_CCW);  
+
 	LOG_INFO("Module Window initialized");
 }
 /// Destructor

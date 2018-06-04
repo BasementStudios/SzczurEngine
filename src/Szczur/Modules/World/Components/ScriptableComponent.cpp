@@ -6,6 +6,7 @@
 #include <Szczur/Modules/Script/Script.hpp>
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
 
@@ -22,17 +23,17 @@ namespace rat {
 		if(!_inited) {			
 			_inited = true;
 			if(_initCallback.valid()) {
-				_initCallback(this);
+				_initCallback(getEntity());
 			}
 		}
 		if(_updateCallback.valid()) {
-			_updateCallback(this, deltaTime);
+			_updateCallback(getEntity(), deltaTime);
 		}
 	}
 
 	void ScriptableComponent::sceneChanged() {		
 		if(_sceneChangeCallback.valid()) {
-			_sceneChangeCallback(this);
+			_sceneChangeCallback(getEntity());
 		}
 	}
 
@@ -66,12 +67,17 @@ namespace rat {
 
 	/// Run any script for object
 	void ScriptableComponent::runScript(const std::string& path) {
-		if(path != "") {
-			auto& script = *detail::globalPtr<Script>;
+		try {
+			if(path != "") {
+				auto& script = *detail::globalPtr<Script>;
 
-			script.get()["THIS"] = getEntity();
-			script.scriptFile(path);
-			script.get()["THIS"] = sol::nil;
+				script.get()["THIS"] = getEntity();
+				script.scriptFile(path);
+				script.get()["THIS"] = sol::nil;
+			}
+		}
+		catch(sol::error e) {
+			LOG_EXCEPTION(e);
 		}
 	}
 
@@ -89,13 +95,28 @@ namespace rat {
 		config["script"] = _scriptPath;
 	}
 
-	void ScriptableComponent::initScript(Script& script) {
+	void ScriptableComponent::initScript(ScriptClass<Entity>& entity, Script& script)
+	{
 		auto object = script.newClass<ScriptableComponent>("ScriptableComponent", "World");
-		// object.set("onUpdate", [](ScriptableComponent& obj){return "SCRIPT!";});
-		object.set("onUpdate", &ScriptableComponent::_updateCallback);
-		object.set("onInit", &ScriptableComponent::_initCallback);
-		object.set("onSceneChange", &ScriptableComponent::_sceneChangeCallback);
+
+		// Main
+		object.set("getFilePath", &ScriptableComponent::getFilePath);
+		object.set("runScript", sol::resolve<void(const std::string&)>(&ScriptableComponent::runScript));
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
+		// Entity
+		entity.set("addScriptableComponent", [&](Entity& e){return (ScriptableComponent*)e.addComponent<ScriptableComponent>();});
+		entity.setProperty("onUpdate", [](){}, [](Entity &obj, sol::function func) {
+			obj.getComponentAs<ScriptableComponent>()->_updateCallback = func;
+		});
+		entity.setProperty("onInit", [](){}, [](Entity &obj, sol::function func) {
+			obj.getComponentAs<ScriptableComponent>()->_initCallback = func;
+		});
+		entity.setProperty("onChangeScene", [](){}, [](Entity &obj, sol::function func) {
+			obj.getComponentAs<ScriptableComponent>()->_sceneChangeCallback = func;
+		});
+		entity.set("scriptable", &Entity::getComponentAs<ScriptableComponent>);
+
 		object.init();
 	}
 

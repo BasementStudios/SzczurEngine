@@ -8,7 +8,11 @@
 
 namespace rat
 {
+
 class Entity;
+class Script;
+template<class T> class ScriptClass;
+
 class SpriteComponent : public sf3d::Drawable, public Component
 {
 public:
@@ -38,6 +42,9 @@ public:
 	void setSpriteDisplayData(SpriteDisplayData* spriteDisplayData);
 
 	///
+	void setTexture(const std::string& texturePath);
+
+	///
 	SpriteDisplayData* getSpriteDisplayData() const;
 
 	///
@@ -57,6 +64,9 @@ public:
 
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
+	///
+	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
 

@@ -148,15 +148,22 @@ namespace rat
 		}
 	}
 
-	void ArmatureComponent::initScript(Script& script)
+	void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	{
 		auto object = script.newClass<ArmatureComponent>("ArmatureComponent", "World");
+
+		// Main
 		object.set("play", &ArmatureComponent::playAnim);
 		object.set("fadeIn", &ArmatureComponent::fadeIn);
 		object.set("setFlipX", &ArmatureComponent::setFlipX);
 		object.set("setSpeed", &ArmatureComponent::setSpeed);
-		object.init();
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
+		// Entity
+		entity.set("armature", &Entity::getComponentAs<ArmatureComponent>);
+		entity.set("addArmatureComponent", [&](Entity& e){return (ArmatureComponent*)e.addComponent<ArmatureComponent>();});
+
+		object.init();
 	}
 
 	void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object) {
