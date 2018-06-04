@@ -114,8 +114,8 @@ namespace rat {
 				++id;				
 			}
 			ImGui::EndChild();
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	bool ObjectsList::_renderObjectPopup(int id) {

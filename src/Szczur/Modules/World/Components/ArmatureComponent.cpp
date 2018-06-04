@@ -148,15 +148,101 @@ namespace rat
 		}
 	}
 
-	void ArmatureComponent::initScript(Script& script)
+	void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	{
 		auto object = script.newClass<ArmatureComponent>("ArmatureComponent", "World");
+
+		// Main
 		object.set("play", &ArmatureComponent::playAnim);
 		object.set("fadeIn", &ArmatureComponent::fadeIn);
 		object.set("setFlipX", &ArmatureComponent::setFlipX);
 		object.set("setSpeed", &ArmatureComponent::setSpeed);
-		object.init();
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
+		// Entity
+		entity.set("armature", &Entity::getComponentAs<ArmatureComponent>);
+		entity.set("addArmatureComponent", [&](Entity& e){return (ArmatureComponent*)e.addComponent<ArmatureComponent>();});
+
+		object.init();
+	}
+
+	void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object) {
+		if(ImGui::CollapsingHeader("Armature##armature_component")) {
+
+            // Armature data holder
+            auto& armatures = scenes.getArmatureDisplayDataHolder();
+
+            // Load armature button
+            if(ImGui::Button("Load armature...##armature_component")) {
+
+            	// Path to direcotry with armature files
+                std::string directory = scenes.getRelativePathFromExplorer("Select armature file", ".\\Assets");
+                directory = std::experimental::filesystem::path(directory).parent_path().string();
+
+                // Load armature form directory
+                if(directory != "") {
+                    try {
+
+                        auto armature = std::find_if(armatures.begin(), armatures.end(), [directory] (auto& armature) { return armature.getFolderPath() == directory; });
+
+                        ArmatureDisplayData* it = nullptr;
+                        if (armature == armatures.end())
+                        {
+                            // Create new
+                            it = &armatures.emplace_back(directory);
+                        }
+                        else
+                        {
+                            // Use exisiting
+                            it = &(*armature);
+                        }
+
+                        setArmatureDisplayData(it);
+                    }
+                    catch(const std::exception& exc) {
+                        setArmatureDisplayData(nullptr, false);
+
+                        LOG_EXCEPTION(exc);
+                    }
+                }
+            }
+
+            // Show path to armature directory
+            ImGui::Text("Path:");
+            ImGui::SameLine();
+            ImGui::Text(getArmatureDisplayData() ? mapWindows1250ToUtf8(getArmatureDisplayData()->getName()).c_str() : "None");
+
+			// Select animation button
+			if (auto* arm = getArmature(); arm && arm->getAnimation())
+			{
+				if (ImGui::BeginCombo("Animation", arm->getAnimation()->getLastAnimationName().c_str()))
+				{
+					for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames())
+					{
+						bool isSelected = (arm->getAnimation()->getLastAnimationName() == anim);
+
+						if (ImGui::Selectable(anim.c_str(), isSelected))
+							arm->getAnimation()->play(anim);
+						else
+							ImGui::SetItemDefaultFocus();
+					}
+
+					ImGui::EndCombo();
+				}
+
+				if (arm->getAnimation()->isPlaying())
+				{
+					ImGui::SameLine();
+					if (ImGui::Button("Stop##armature_component"))
+					{
+						arm->getAnimation()->stop(arm->getAnimation()->getLastAnimationName());
+						arm->getAnimation()->reset();
+					}
+				}
+
+				ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
+			}
+        }
 	}
 
 	void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object) {

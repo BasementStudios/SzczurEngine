@@ -13,7 +13,10 @@ class Timeline;
 class Action;
 class Script;
 
-class TraceComponent : public Component
+class Entity;
+template<class T> class ScriptClass;
+
+class TraceComponent : public Component, public sf3d::Drawable
 {
 public:
 
@@ -66,7 +69,7 @@ public:
 // Script
 
 	///
-	static void initScript(Script& script);
+    static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
 
@@ -75,6 +78,7 @@ private:
 	Timeline*	_currentTimeline = nullptr;
 	Action*		_currentAction = nullptr;
 
+	
 };
 
 }

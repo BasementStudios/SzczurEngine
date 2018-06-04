@@ -14,7 +14,7 @@ namespace rat {
 
 	void InteractableComponent::callback() {
 		if(_interactionCallback.valid())
-			_interactionCallback(this);
+			_interactionCallback(getEntity());
 	}
 
 	void InteractableComponent::setDistance(float distance) {
@@ -57,10 +57,25 @@ namespace rat {
 		config["distance"] = _distance;
 	}
 
-	void InteractableComponent::initScript(Script& script) {
+
+	void InteractableComponent::initScript(ScriptClass<Entity>& entity, Script& script)
+	{
 		auto object = script.newClass<InteractableComponent>("InteractableComponent", "World");
-		object.set("onInteraction", &InteractableComponent::_interactionCallback);
+
+		// Main
+		object.set("setDistance", &InteractableComponent::setDistance);
+		object.set("getDistance", &InteractableComponent::getDistance);
+		object.set("setHeight", &InteractableComponent::setHeight);
+		object.set("getHeight", &InteractableComponent::getHeight);
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
+		// Entity
+		entity.set("interactable", &Entity::getComponentAs<InteractableComponent>);
+		entity.set("addInteractableComponent", [&](Entity& e){return (InteractableComponent*)e.addComponent<InteractableComponent>();});
+		entity.setProperty("onInteraction", [](){}, [](Entity &obj, sol::function func) {
+			obj.getComponentAs<InteractableComponent>()->_interactionCallback = func;
+		});
+
 		object.init();
 	}
 

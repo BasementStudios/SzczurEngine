@@ -7,6 +7,7 @@
 #include "../ScenesManager.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 
 namespace rat {
@@ -148,4 +149,25 @@ namespace rat {
 			getEntity()->setPosition(curPos);
 		}
     }
+
+	void CameraComponent::initScript(ScriptClass<Entity>& entity, Script& script)
+	{
+		auto object = script.newClass<CameraComponent>("CameraComponent", "World");
+
+		// Main
+		object.set("setVelocity", &CameraComponent::setVelocity);
+		object.set("getVelocity", &CameraComponent::getVelocity);
+		object.set("setLock", &CameraComponent::setLock);
+		object.set("getLock", &CameraComponent::getLock);
+		object.set("setStickToPlayer", &CameraComponent::setStickToPlayer);
+		object.set("getStickToPlayer", &CameraComponent::getStickToPlayer);
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
+		// Entity
+		entity.set("addCameraComponent", [&](Entity& e){return (CameraComponent*)e.addComponent<CameraComponent>();});
+		entity.set("camera", &Entity::getComponentAs<CameraComponent>);
+
+		object.init();
+
+	}
 }

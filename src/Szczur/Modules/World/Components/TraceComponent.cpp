@@ -47,6 +47,21 @@ void TraceComponent::stop()
 
 void TraceComponent::loadFromConfig(Json& config)
 {
+	auto& timelines = _trace->getTimelines();
+
+	auto timeline = std::find_if(timelines.begin(), timelines.end(), [id] (auto& timeline) { return id == timeline->getId(); });
+
+	if (*timeline)
+		_trace->setCurrentTimeline((*timeline).get());
+}
+
+void TraceComponent::stop()
+{
+	_trace->setCurrentTimeline(nullptr);
+}
+
+void TraceComponent::loadFromConfig(Json& config)
+{
 	Component::loadFromConfig(config);
 	
 	_trace->loadFromConfig(config, this->getEntity());
@@ -75,13 +90,21 @@ void TraceComponent::render(sf3d::RenderTarget& target)
 	_trace->draw(target, sf3d::RenderStates());
 }
 
-void TraceComponent::initScript(Script& script)
+void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 {
 	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
+
+	// Main
 	object.set("pause", &TraceComponent::pause);
 	object.set("resume", &TraceComponent::resume);
 	object.set("setTimeline", &TraceComponent::setTimeline);
 	object.set("stop", &TraceComponent::stop);
+	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
+	// Entity
+	entity.set("addTraceComponent", [&](Entity& e){return (TraceComponent*)e.addComponent<TraceComponent>();});
+	entity.set("trace", &Entity::getComponentAs<TraceComponent>);
+
 	object.init();
 }
 

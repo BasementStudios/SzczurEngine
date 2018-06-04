@@ -38,8 +38,8 @@ namespace rat {
 	_armatureDisplayDataManager{scenes} {
 		_freeCamera.move({1000.f,500.f,2000.f});
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
-		_dialogEditor = detail::globalPtr<DialogEditor>;
-		_audioEditor = detail::globalPtr<AudioEditor>;
+		// _dialogEditor = detail::globalPtr<DialogEditor>;
+		// _audioEditor = detail::globalPtr<AudioEditor>;
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -56,6 +56,10 @@ namespace rat {
 
 	glm::vec2 LevelEditor::getClipboardVec2() {
 		return _vec2Clipboard;
+	}
+
+	ObjectsList& LevelEditor::getObjectsList() {
+		return _objectsList;
 	}
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -76,8 +80,8 @@ namespace rat {
 			if(_ifRenderObjectsList) _objectsList.render(_ifRenderObjectsList);
 			if(_ifRenderSpriteDisplayDataManager) _spriteDisplayDataManager.render(_ifRenderSpriteDisplayDataManager);
 			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
-			if (_ifRenderDialogEditor) _dialogEditor->update();
-			if (_ifRenderAudioEditor) _audioEditor->render();
+			// if (_ifRenderDialogEditor) _dialogEditor->update();
+			// if (_ifRenderAudioEditor) _audioEditor->render();
 
 			scene = _scenes.getCurrentScene();
 			
@@ -260,40 +264,41 @@ namespace rat {
 		
 		auto mouse = input.getMousePosition();
 
-		auto linear = window.getLinerByScreenPos({ (float)mouse.x, (float)mouse.y });
-		if (input.isPressed(Mouse::Left))
-		{
-			_scenes.getCurrentScene()->forEach([&] (const std::string&, Entity& entity) {
-				if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f }))
-				{
+		Entity* currentCamera{nullptr};
+
+		for(auto& ent : _scenes.getCurrentScene()->getEntities("single")) {
+			if(auto* comp = ent->getComponentAs<CameraComponent>()) {
+				if(_objectsList.getSelectedID() == ent->getID() || comp->getLock()) {
+					currentCamera = ent.get();
+				}
+			}
+		}
+
+		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
+		if(input.isPressed(Mouse::Left)) {
+			_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
+				if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
+					if(currentCamera && entity.getID() == currentCamera->getID()) return;
 					_objectsList.select(entity.getID());
 				}
 			});
 		}
 
-		// if(input.isReleased(Mouse::Left)) {
-		// 	_scenes.getCurrentScene()->forEach([&linear, scene](const std::string&, Entity& entity){
-		// 		if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-		// 			scene->focusedObject = entity.getID();
-		// 			scene->anySelected = true;
-		// 		}
-		// 	});
-		// }
-
-		sf3d::View view;
-		Entity* currentCamera{nullptr};
-		_scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
-			if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
-				if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
-					currentCamera = &entity;
-			}
-		});
+		// _scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
+		// 	if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
+		// 		if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
+		// 			currentCamera = &entity;
+		// 	}
+		// });
+		
 		if(ImGui::IsAnyItemActive() == false) {
-			if(currentCamera==nullptr)
-				_freeCamera.processEvents(input);
-			else
+			if(currentCamera)
 				currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
+			else
+				_freeCamera.processEvents(input);
 		}
+		
+		sf3d::View view;
 		if(currentCamera) {
 			view.setRotation(currentCamera->getRotation());
 			view.setCenter(currentCamera->getPosition());
@@ -363,17 +368,15 @@ namespace rat {
 
 		if(!ax::NodeEditor::IsActive())
 		{
-			if (input.isPressed(Mouse::Right))
-			{
-				rotating = true;
-				previousMouse = input.getMousePosition();
-			}
-			if (input.isReleased(Mouse::Right))
-			{
-				rotating = false;
-			}
+    		if (input.isPressed(Mouse::Right))
+    		{
+    			rotating = true;
+    			previousMouse = input.getMousePosition();
+    		}
+    		if (input.isReleased(Mouse::Right))
+    		{
+    			rotating = false;
+    		}
 		}
-
-		// }
 	}
 }

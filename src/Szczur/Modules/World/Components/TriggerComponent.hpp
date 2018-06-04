@@ -4,8 +4,10 @@
 
 namespace rat {
 
-class Entity;
 class InputManager;
+class Entity;
+class Script;
+template<class T> class ScriptClass;
 
 class TriggerComponent : public Component {
 public:
@@ -54,6 +56,9 @@ public:
 
     ///
     void update(ScenesManager& scenes, float deltaTime);
+
+	///
+	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
 

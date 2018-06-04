@@ -47,13 +47,14 @@ public:
 
 	// void initScript();
 
-private:
+	///
+	ScenesManager& getScenes();
 
 	///
-	ScenesManager& _getScenes();
+	const ScenesManager& getScenes() const;
 
 	///
-	const ScenesManager& _getScenes() const;
+	void initScript();
 
 private:
 

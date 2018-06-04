@@ -6,6 +6,7 @@
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
 #include <Szczur/Modules/World/World.hpp>
+#include "Szczur/Modules/Script/Script.hpp"
 
 #include <ImGui/imgui.h>
 
@@ -102,5 +103,21 @@ namespace rat {
 
 	void BaseComponent::positionOnly(bool flag) {
 		_positionOnly = flag;
+	}
+
+	void BaseComponent::initScript(ScriptClass<Entity>& entity, Script& script)
+	{
+		auto object = script.newClass<BaseComponent>("BaseComponent", "World");
+
+		// Entity
+		entity.set("move", [](Entity& entity, float x, float y, float z){entity.move({x,y,z});});
+		entity.set("setPosition", [](Entity& entity, float x, float y, float z){entity.setPosition({x,y,z});});
+		entity.set("rotate", [](Entity& entity, float x, float y, float z){entity.rotate({x,y,z});});
+		entity.set("setRotation", [](Entity& entity, float x, float y, float z){entity.setRotation({x,y,z});});
+		entity.set("scale", [](Entity& entity, float x, float y, float z){entity.scale({x,y,z});});
+		entity.set("setScale", [](Entity& entity, float x, float y, float z){entity.setScale({x,y,z});});
+
+		object.init();
+
 	}
 }

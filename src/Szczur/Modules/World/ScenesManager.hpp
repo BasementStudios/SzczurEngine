@@ -50,6 +50,9 @@ public:
 	Scene* getScene(size_t id) const;
 
 	///
+	Scene* getScene(const std::string& name);
+
+	///
 	ScenesHolder_t& getScenes();
 
 	///
@@ -83,6 +86,9 @@ public:
 	void saveToConfig(Json& config);
 
 	///
+	void saveEntityToConfig(Entity& entity, Json& config);
+
+	///
 	void loadFromFile(const std::string& filepath);
 
 	///
@@ -102,6 +108,9 @@ public:
 
 	///
 	bool isGameRunning();
+
+	///
+	Json& getRunConfig();
 
 	///
 	TextureDataHolder& getTextureDataHolder();
