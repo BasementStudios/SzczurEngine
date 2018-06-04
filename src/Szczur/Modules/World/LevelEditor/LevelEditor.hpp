@@ -24,17 +24,6 @@ class DialogEditor;
 class AudioEditor;
 class InputManager;
 
-	struct FreeCamera {
-		glm::vec3 position{0.f, 0.f, 0.f};
-		glm::vec3 rotation{0.f, 0.f, 0.f};
-		bool rotating{false};
-		float velocity{50.f};
-		sf::Vector2i previousMouse{0, 0};
-		void move(const glm::vec3& offset) {position += offset;}
-		void rotate(const glm::vec3& offset) {rotation += offset;}
-		void processEvents(InputManager& input);
-	};
-
 struct FreeCamera {
 public:
 	
@@ -59,11 +48,7 @@ public:
 class LevelEditor {
 public:
 
-		ObjectsList _objectsList;
-		Bar _bar;
-		ObjectParameters _objectParameters;
-		SpriteDisplayDataManager _spriteDisplayDataManager;
-		ArmatureDisplayDataManager _armatureDisplayDataManager;
+// Constructors
 
 	///
 	LevelEditor(ScenesManager& scenes);
@@ -157,7 +142,6 @@ private:
 
 	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
 	glm::vec2 _vec2Clipboard{0.f,0.f};
-
 };
 
 	

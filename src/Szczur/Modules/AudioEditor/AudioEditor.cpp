@@ -1,6 +1,6 @@
 #include "AudioEditor.hpp"
 
-#include <json.hpp>
+#include <Json/json.hpp>
 
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>

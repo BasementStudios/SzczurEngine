@@ -47,21 +47,6 @@ void TraceComponent::stop()
 
 void TraceComponent::loadFromConfig(Json& config)
 {
-	auto& timelines = _trace->getTimelines();
-
-	auto timeline = std::find_if(timelines.begin(), timelines.end(), [id] (auto& timeline) { return id == timeline->getId(); });
-
-	if (*timeline)
-		_trace->setCurrentTimeline((*timeline).get());
-}
-
-void TraceComponent::stop()
-{
-	_trace->setCurrentTimeline(nullptr);
-}
-
-void TraceComponent::loadFromConfig(Json& config)
-{
 	Component::loadFromConfig(config);
 	
 	_trace->loadFromConfig(config, this->getEntity());

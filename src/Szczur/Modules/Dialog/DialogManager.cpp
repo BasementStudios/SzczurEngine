@@ -1,7 +1,7 @@
 #include "DialogManager.hpp"
 #include "TextStruct.hpp"
 #include <iostream>
-#include <sol.hpp>
+#include <Sol/sol.hpp>
 
 namespace rat {
     DialogManager::DialogManager(const std::string& path, DialogGUI& dialogGUI) :

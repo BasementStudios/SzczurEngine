@@ -12,15 +12,15 @@ void Application::init()
 	initModule<Window>();
 	initModule<Script>();
 	initModule<Input>();
-	// initModule<AudioEditor>();
-	// initModule<Music>("Assets/Music/");
-	// initModule<AudioEffects>();
+	initModule<AudioEditor>();
+	initModule<Music>("Assets/Music/");
+	initModule<AudioEffects>();
 	initModule<DragonBones>();
 	initModule<Camera>();
 	initModule<World>();
-	// initModule<GUI>();
-	// initModule<Dialog>();
-	// initModule<DialogEditor>();
+	initModule<GUI>();
+	initModule<Dialog>();
+	initModule<DialogEditor>();
 
 	LOG_INFO("Modules initialized");
 
@@ -42,7 +42,7 @@ bool Application::input()
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
 		getModule<Input>().getManager().processEvent(event);
-		// getModule<GUI>().input(event);
+		getModule<GUI>().input(event);
 
 		#ifdef EDITOR
 		{
@@ -63,9 +63,9 @@ void Application::update()
 	_imGuiStyler.update();
 
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-	// getModule<Dialog>().update();
-	// getModule<GUI>().update(deltaTime);
-	// getModule<Music>().update(deltaTime);
+	getModule<Dialog>().update();
+	getModule<GUI>().update(deltaTime);
+	getModule<Music>().update(deltaTime);
 
 
 	/*
@@ -90,9 +90,9 @@ void Application::render()
 
 	getModule<World>().render();
 
-	// getModule<Window>().pushGLStates();
-	// getModule<GUI>().render();
-	// getModule<Window>().popGLStates();
+	getModule<Window>().pushGLStates();
+	getModule<GUI>().render();
+	getModule<Window>().popGLStates();
 
 	#ifdef EDITOR
 	{

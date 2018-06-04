@@ -1,6 +1,6 @@
 #include "Music.hpp"
 
-#include <json.hpp>
+#include <Json/json.hpp>
 
 namespace rat 
 {

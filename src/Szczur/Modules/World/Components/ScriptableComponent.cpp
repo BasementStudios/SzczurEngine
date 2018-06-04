@@ -127,7 +127,7 @@ namespace rat {
 			if(ImGui::Button("Load##scriptable_component")) {
 
 				// Path to script
-				std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets");
+				std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets", "Lua (*.lua)|*.lua");
 				setScriptPath(file);
 				if(scenes.isGameRunning()) runScript();
 			}
@@ -151,7 +151,7 @@ namespace rat {
 			if(scenes.isGameRunning()) {
 				ImGui::SameLine();
 				if(ImGui::Button("Load once##scriptable_component")) {
-					std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets");
+					std::string file = scenes.getRelativePathFromExplorer("Select script file", ".\\Assets", "Lua (*.lua)|*.lua");
 					runScript(file);
 				}
 			

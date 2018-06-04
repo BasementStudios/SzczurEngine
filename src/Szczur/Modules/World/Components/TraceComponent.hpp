@@ -16,7 +16,7 @@ class Script;
 class Entity;
 template<class T> class ScriptClass;
 
-class TraceComponent : public Component, public sf3d::Drawable
+class TraceComponent : public Component
 {
 public:
 
