@@ -160,7 +160,6 @@ void ScenesManager::loadFromConfig(Json& config) {
 		scene->loadFromConfig(current);
 	}
 }
-
 void ScenesManager::saveToConfig(Json& config) {
 
 	config["currentSceneID"] = getCurrentSceneID();
