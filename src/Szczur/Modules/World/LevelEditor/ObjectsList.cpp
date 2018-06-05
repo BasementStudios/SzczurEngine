@@ -149,10 +149,6 @@ namespace rat {
 	void ObjectsList::addObject(const std::string& groupName) {
 		Entity* entity = _scenes.getCurrentScene()->addEntity(groupName);
 		if(entity) {
-			auto* base = entity->addComponent<BaseComponent>();
-			if(groupName == "entries") {
-				dynamic_cast<BaseComponent*>(base)->positionOnly(true);
-			}
 			select(entity);
 		}
 	}

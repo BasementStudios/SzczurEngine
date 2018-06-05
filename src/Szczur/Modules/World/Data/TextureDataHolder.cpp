@@ -6,7 +6,7 @@
 
 #include <Szczur/Utility/Logger.hpp>
 
-#include <SFML/System/Thread.hpp>
+#include <Szczur/Modules/Script/Script.hpp>
 
 namespace rat {
 
@@ -114,6 +114,14 @@ TextureDataHolder::Data_t* TextureDataHolder::find(const std::string& filePath) 
 		}
 	}
 	return nullptr;
+}
+
+void TextureDataHolder::initScript(Script& script) {
+	auto object = script.newClass<TextureDataHolder>("TextureDataHolder", "World");
+
+	object.set("getData", &TextureDataHolder::getData);
+
+	object.init();
 }
 
 }

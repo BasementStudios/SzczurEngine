@@ -90,7 +90,16 @@ const ScenesManager* Scene::getScenes() const
 
 Entity* Scene::addEntity(const std::string& group)
 {
-	return getEntities(group).emplace_back(std::make_unique<Entity>(this, group)).get();
+	auto* entity = getEntities(group).emplace_back(std::make_unique<Entity>(this, group)).get();
+
+	#ifdef EDITOR
+	auto* base = entity->addComponent<BaseComponent>();
+	if(group == "entries") {
+		dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+	}
+	#endif //EDITOR
+
+	return entity;
 }
 
 Entity* Scene::duplicateEntity(size_t id)

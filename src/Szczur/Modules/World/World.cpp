@@ -1,5 +1,7 @@
 #include "World.hpp"
 
+#include <Szczur/Modules/World/Data/TextureDataHolder.hpp>
+
 namespace rat
 {
 
@@ -76,7 +78,7 @@ const ScenesManager& World::getScenes() const
 	return _scenes;
 }
 
-void World::	initScript() {
+void World::initScript() {
 	auto& script = getModule<Script>();
 
 	auto module = script.newModule("World");
@@ -90,7 +92,9 @@ void World::	initScript() {
 		[&](const std::string& name){_scenes.setCurrentScene(_scenes.getScene(name)->getID());}
 	));
 
-	script.initClasses<Entity, Scene>();
+	module.set_function("getTextureDataHolder", [&](){return std::ref(getScenes().getTextureDataHolder());});
+
+	script.initClasses<Entity, Scene, TextureDataHolder>();
 }
 
 }

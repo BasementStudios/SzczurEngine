@@ -8,6 +8,7 @@
 namespace rat {
 
 class SpriteDisplayData;
+class Script;
 
 class TextureDataHolder 
 {
@@ -29,6 +30,8 @@ public:
 	void loadAllInNewThread();
 
 	Data_t* find(const std::string& filePath);
+
+	static void initScript(Script& script);
 
 private:
 

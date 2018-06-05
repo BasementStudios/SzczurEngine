@@ -27,6 +27,7 @@ Entity::Entity(const Entity& rhs)
 	{
 		_holder.emplace_back(ptr->copy(this));
 	}
+	_scriptData = rhs._scriptData;
 }
 
 Entity& Entity::operator = (const Entity& rhs)
@@ -238,6 +239,7 @@ void Entity::initScript(Script& script)
 	auto object = script.newClass<Entity>("Entity", "World");
 	ComponentTraits::initScript(object, script);
 	object.set("getName", &Entity::getName);
+	object.set("setName", &Entity::setName);
 	object.set(sol::meta_function::index, &Entity::_getScriptDataObject);
 	object.set(sol::meta_function::new_index, &Entity::_setScriptDataObject);
 

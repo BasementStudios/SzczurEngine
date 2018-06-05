@@ -37,10 +37,15 @@ namespace rat {
 			"b", &sf::Color::b,
 			"a", &sf::Color::a
 		);
-		sfml.new_simple_usertype<glm::vec3>("Vec3",
+		sol::table glmTable = _lua.create_table("GLM");
+		glmTable.new_simple_usertype<glm::vec3>("Vec3",
 			"x", &glm::vec3::x,
 			"y", &glm::vec3::y,
 			"z", &glm::vec3::z
+		);
+		glmTable.new_simple_usertype<glm::vec2>("Vec2",
+			"x", &glm::vec2::x,
+			"y", &glm::vec2::y
 		);
 	}
 	void Script::scriptFile(const std::string& filePath) {

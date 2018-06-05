@@ -26,13 +26,11 @@ Scene* ScenesManager::addScene()
 
 	// Add default player
 	Entity* player = scene->addEntity("single");
-	player->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
 	
 	// Add default camera
 	Entity* camera = scene->addEntity("single");
-	camera->addComponent<BaseComponent>();
 	camera->addComponent<CameraComponent>();
 	camera->setName("Camera");
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
@@ -160,6 +158,7 @@ void ScenesManager::loadFromConfig(Json& config) {
 		scene->loadFromConfig(current);
 	}
 }
+
 void ScenesManager::saveToConfig(Json& config) {
 
 	config["currentSceneID"] = getCurrentSceneID();
@@ -240,7 +239,6 @@ void ScenesManager::addPlayer()
 	auto scene = getCurrentScene();
 
 	Entity* player = scene->addEntity("single");
-	player->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
 }
