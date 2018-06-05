@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Script.hpp"
-#include <sol.hpp>
+#include <Sol/sol.hpp>
 #include <SFML/Graphics.hpp>
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Script/ScriptClass.hpp"

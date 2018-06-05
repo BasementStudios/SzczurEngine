@@ -16,9 +16,9 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
+	initModule<AudioEffects>();
+	initModule<Music>("Assets/Music/");
 
-	// For testing `Script`
-	initModule<BattleField>();
 
 	LOG_INFO("Modules initialized");
 
@@ -99,9 +99,6 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
-	_modules.initModule<AudioEffects>();
-	_modules.initModule<Music>("res/Music/");
-	_modules.initModule<Script>();
 }
 
 bool Application::input()
@@ -128,12 +125,11 @@ bool Application::input()
 
 void Application::update()
 {
-	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+	[[maybe_unused]] auto deltaTime = _mainClock.restart().asSeconds();
 
 	/*
 		Put other updates here
 	*/
-	_modules.getModule<BattleField>().update();
 	
 	#ifdef EDITOR
 	{
