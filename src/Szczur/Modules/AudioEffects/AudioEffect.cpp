@@ -15,6 +15,16 @@ namespace rat
         cleanEffect<Echo>();
     }
 
+    int AudioEffect::lastFreeSlot() 
+    {
+        for (unsigned int i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {
+            if (!_freeSlots[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     unsigned int AudioEffect::getLastFreeSlot() 
     {
         for (unsigned int i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {

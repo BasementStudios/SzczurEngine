@@ -1,5 +1,7 @@
 #include "Music.hpp"
 
+#include <Json/json.hpp>
+
 namespace rat 
 {
 
@@ -20,8 +22,18 @@ namespace rat
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
-		SCRIPT_SET_MODULE(Music, play, pause, stop, includes, cleanEffects, setPlayingMode) 
-		SCRIPT_SET_MODULE(Music, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects);
+		module.set_function("play", &Music::play, this);
+		module.set_function("pause", &Music::pause, this);
+		module.set_function("stop", &Music::stop, this);
+		module.set_function("includes", &Music::includes, this);
+		module.set_function("cleanEffects", &Music::cleanEffects, this);
+		module.set_function("setPlayingMode", &Music::setPlayingMode, this);
+		module.set_function("setVolume", &Music::setVolume, this);
+		module.set_function("getVolume", &Music::getVolume, this);
+		module.set_function("get", &Music::get, this);
+		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
+		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
 
 		module.set_function("addPlaylist",
@@ -58,7 +70,22 @@ namespace rat
 		module.set_function("cleanEcho", &Music::cleanEffect<Echo>, this);
 	}
 
-	void Music::update(float deltaTime) 
+	void Music::loadPlaylistFromJson(const std::string& filePath)
+	{
+		nlohmann::json j;
+
+		std::ifstream file("Assets/Music/" + filePath + ".json");
+        if (file.is_open()) {
+            file >> j;
+        }
+        file.close();
+
+        for (auto it = j.begin(); it != j.end(); ++it) {
+                addPlaylist(it.key(), it.value());
+        }
+	}
+
+	void Music::update(float deltaTime)
 	{
 		if (_currentPlaylistKey != 0)
 			_playlists[_currentPlaylistKey]->update(deltaTime);
@@ -75,7 +102,7 @@ namespace rat
 	void Music::addToPlaylist(const std::string& key, const std::string& fileName)
 	{
 		_assets.load(fileName);
-		auto&& base = MusicBase(fileName, _assets.get(fileName));
+		auto&& base = MusicBase(_assets.get(fileName));
 		_playlists[fnv1a_32(key.begin())]->add(std::move(base));
 
 		LOG_INFO("Added ", fileName, " to playlist ", key);

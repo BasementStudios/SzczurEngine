@@ -13,10 +13,11 @@ namespace rat
 {
 	class Playlist
 	{ 
-		using BasePointer_t = std::shared_ptr<MusicBase>;
-		using Container_t = std::vector<BasePointer_t>;
 
 	public:
+
+		using BasePointer_t = std::shared_ptr<MusicBase>;
+		using Container_t = std::vector<BasePointer_t>;
 
 		enum class PlayingMode {
 			Random,
@@ -34,7 +35,7 @@ namespace rat
 
 		Container_t _playlist;
 
-		unsigned int _currentID;
+		unsigned int _currentID = 0;
 
 		BasePointer_t _endingFile = nullptr;
 		bool _isFileEnding = false;
@@ -97,22 +98,3 @@ namespace rat
 	};
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

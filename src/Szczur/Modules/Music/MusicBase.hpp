@@ -14,10 +14,7 @@ namespace rat
 
 		RatMusic& _base;
 		
-		std::string _name;
-		float _bpm;
 		float _timeLeft;
-		float _fadeTime;
 		float _baseVolume;
 
 		bool _isEnding = false;
@@ -28,7 +25,7 @@ namespace rat
 
 	public:
 
-		MusicBase(const std::string& fileName, RatMusic& source);
+		MusicBase(RatMusic& source);
 
 		void update(float deltaTime);
 

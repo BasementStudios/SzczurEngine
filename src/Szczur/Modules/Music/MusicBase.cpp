@@ -4,23 +4,20 @@
 
 #include <SFML/System.hpp>
 
-#include <Szczur/Json.hpp>
-
 namespace rat
 { 
 
-	MusicBase::MusicBase(const std::string& fileName, RatMusic& source)
-		: _base(source), _name(fileName)
+	MusicBase::MusicBase(RatMusic& source)
+		: _base(source)
 	{
 		_timeLeft = getDuration();
-		getJsonData();
 	}
 
 	void MusicBase::update(float deltaTime) 
 	{
 		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
 			_timeLeft -= deltaTime;
-			if (_timeLeft <= _fadeTime)
+			if (_timeLeft <= _base._fadeTime)
 				_isEnding = true;
 		}
 	}
@@ -35,7 +32,7 @@ namespace rat
 
 		if (_finishInit) { 	
 			_finishInit = false;
-			_timeLeft = _fadeTime;
+			_timeLeft = _base._fadeTime;
 			_finishing = true;
 			_isEnding = false;
 		}
@@ -43,7 +40,7 @@ namespace rat
 		_timeLeft -= deltaTime;
 
 		if (_timeLeft >= 0) {
-			_base.setVolume((_timeLeft / _fadeTime) * _baseVolume);
+			_base.setVolume((_timeLeft / _base._fadeTime) * _baseVolume);
 			return false;
 		}
 		
@@ -60,26 +57,9 @@ namespace rat
 			_startInit = false;
 		}
 		update(deltaTime);
-		_base.setVolume((_baseVolume * (getDuration() - _timeLeft)) / introTime);
-	}
-
-	void MusicBase::getJsonData() 
-	{
-		Json json;
-		std::ifstream file("res/Music/Music.json");
-		
-		if(file.is_open()){
-			file >> json;
-			file.close();
-		}
-
-		_bpm = json[_name]["BPM"];
-		float numberOfBars = json[_name]["FadeTime"];
-
-		if(numberOfBars > 0) {
-			float barTime = 240 / _bpm;
-			_fadeTime = barTime * numberOfBars;
-		}
+		auto vol = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
+		if (vol > 100) vol = 100;
+		_base.setVolume(vol);
 	}
 
 	void MusicBase::play() 
@@ -114,7 +94,7 @@ namespace rat
 
 	float MusicBase::getFadeTime() const 
 	{
-		return _fadeTime;
+		return _base._fadeTime;
 	}
 
 	float MusicBase::getDuration() const 
@@ -156,7 +136,7 @@ namespace rat
 
 	const std::string& MusicBase::getName() const
 	{
-		return _name;
+		return _base._name;
 	}
 
 	RatMusic& MusicBase::getSource() const

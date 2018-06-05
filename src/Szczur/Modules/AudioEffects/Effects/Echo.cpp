@@ -12,7 +12,11 @@ namespace rat
 	void Echo::initScript(Script& script)
 	{
 		auto object = script.newClass<Echo>("Echo", "AudioEffects");
-		SCRIPT_SET_CLASS(Echo, delay, lrDelay, damping, feedback, spread);
+		object.set("delay", &Echo::delay);
+		object.set("lrDelay", &Echo::lrDelay);
+		object.set("damping", &Echo::damping);
+		object.set("feedback", &Echo::feedback);
+		object.set("spread", &Echo::spread);
 		object.init();
 	} 
 
@@ -40,6 +44,5 @@ namespace rat
 	{
 		setEffect(AL_ECHO_SPREAD, spread);
 	}
-
 
 }
