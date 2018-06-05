@@ -88,6 +88,7 @@ const void* ArmatureComponent::getFeature(Component::Feature_e feature) const
 
 	return nullptr;
 }
+
 void ArmatureComponent::loadFromConfig(Json& config)
 {
 	Component::loadFromConfig(config);
@@ -124,6 +125,18 @@ void ArmatureComponent::saveToConfig(Json& config) const
 	config["armatureDisplayData"] = _armatureDisplayData ? mapWindows1250ToUtf8(_armatureDisplayData->getName()) : "";
 }
 
+void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
+{
+	if (_isPlayingOnceAnimation)
+	{
+		if (_armature && _armature->getAnimation()->isCompleted())
+		{
+			_isPlayingOnceAnimation = false;
+			fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
+		}
+	}
+}
+
 void ArmatureComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
 	if (_armature)
@@ -145,7 +158,24 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 {
 	if (_armature)
 	{
+		_isPlayingOnceAnimation = false;
 		_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
+	}
+}
+
+void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime)
+{
+	if (_armature)
+	{
+		if (auto anim = _armature->getAnimation(); anim && anim->isPlaying())
+		{
+			auto lastAnimation = anim->getLastAnimationState();
+			_lastAnimationFadeInTime = lastAnimation->fadeTotalTime;
+			_lastAnimationName = lastAnimation->name;
+			_isPlayingOnceAnimation = true;
+		}
+
+		_armature->getAnimation()->fadeIn(animationName, fadeInTime, 1);
 	}
 }
 
@@ -159,10 +189,7 @@ void ArmatureComponent::setFlipX(bool flipX)
 
 void ArmatureComponent::setSpeed(float speed)
 {
-	if (_armature)
-	{
-		_armature->getAnimation()->timeScale = speed;
-	}
+	_armature->getAnimation()->timeScale = speed;
 }
 
 void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
@@ -172,6 +199,7 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	// Main
 	object.set("play", &ArmatureComponent::playAnim);
 	object.set("fadeIn", &ArmatureComponent::fadeIn);
+	object.set("playOnce", &ArmatureComponent::playOnce);
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
@@ -204,7 +232,6 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			{
 				try
 				{
-
 					auto armature = std::find_if(armatures.begin(), armatures.end(), [directory] (auto& armature) { return armature.getFolderPath() == directory; });
 
 					ArmatureDisplayData* it = nullptr;

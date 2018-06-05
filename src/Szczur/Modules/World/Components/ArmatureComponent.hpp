@@ -10,6 +10,11 @@
 
 #include <Szczur/Modules/Script/Script.hpp>
 
+namespace dragonBones
+{
+	class AnimationState;
+}
+
 namespace rat
 {
 
@@ -68,6 +73,9 @@ public:
 	void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
 
 	///
+	void playOnce(const std::string& animationName, float fadeInTime = -1.f);
+
+	///
 	void setFlipX(bool flipX);
 
 	///
@@ -81,15 +89,21 @@ public:
 // Main
 
 	///
+	void update(ScenesManager& scenes, float deltaTime);
+
+	///
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
 
 private:
-
 	dragonBones::SF3DArmatureDisplay* _armature = nullptr;
 	ArmatureDisplayData* _armatureDisplayData = nullptr;
+
+	std::string _lastAnimationName;
+	float _lastAnimationFadeInTime = 0.f;
+	bool _isPlayingOnceAnimation = false;
 };
 
 }
