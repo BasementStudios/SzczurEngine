@@ -46,11 +46,7 @@
 // Editor specification
 #if defined(DEBUG) && defined(OS_WINDOWS)
 #	define EDITOR
-#	include <boost/lexical_cast.hpp>
-#	include <ImGui/imgui.h>
-#	include <ImGui/imgui-SFML.h>
-#	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
 #endif
 
-// Global helper for modules system
+// Global helper ptr
 namespace rat::detail { template <typename T> inline T* globalPtr = nullptr; }

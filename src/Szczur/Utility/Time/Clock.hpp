@@ -33,6 +33,9 @@ public:
 	Clock& operator = (Clock&&) = default;
 
 	///
+	~Clock() = default;
+
+	///
 	Time getElapsedTime() const;
 
 	///

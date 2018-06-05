@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstring>
-
 #include <SFML/System/String.hpp>
 
 namespace rat

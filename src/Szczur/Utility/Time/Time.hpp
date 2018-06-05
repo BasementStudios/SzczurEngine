@@ -36,6 +36,9 @@ public:
 	Time& operator = (Time&&) = default;
 
 	///
+	~Time() = default;
+
+	///
 	Duration_t getDuration() const;
 
 	///

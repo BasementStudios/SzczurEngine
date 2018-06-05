@@ -1,5 +1,9 @@
 #include "Szczur/Application.hpp"
 
+#ifdef DEBUG
+#	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
+#endif
+
 int main()
 {
 	// Logger instance on the bottom of the stack to ensure that it will be destructed after all other objects

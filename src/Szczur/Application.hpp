@@ -65,6 +65,10 @@ private:
 	ModulesHolder<Window, Input, Script, Music, AudioEffects> _modules;
 	sf::Clock _mainClock;
 
+	#ifdef EDITOR
+	bool _isImGuiInitialized = false;
+	#endif
+
 };
 
 }
