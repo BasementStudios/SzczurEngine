@@ -27,6 +27,7 @@ Entity::Entity(const Entity& rhs)
 	{
 		_holder.emplace_back(ptr->copy(this));
 	}
+	_scriptData = rhs._scriptData;
 }
 
 Entity& Entity::operator = (const Entity& rhs)
@@ -240,6 +241,10 @@ void Entity::initScript(Script& script)
 	auto object = script.newClass<Entity>("Entity", "World");
 	ComponentTraits::initScript(object, script);
 	object.set("getName", &Entity::getName);
+	object.set("setName", &Entity::setName);
+	object.set(sol::meta_function::index, &Entity::_getScriptDataObject);
+	object.set(sol::meta_function::new_index, &Entity::_setScriptDataObject);
+
 	object.init();
 
 	// object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
@@ -284,6 +289,22 @@ typename Entity::ComponentsHolder_t::const_iterator Entity::_findByFeature(Compo
 	return std::find_if(_holder.begin(), _holder.end(), [=](const auto& arg) {
 		return arg->getFeatures() & feature;
 	});
+}
+
+void Entity::_setScriptDataObject(std::string key, sol::stack_object value) {
+	auto obj = _scriptData.find(key);
+
+	if (obj == _scriptData.cend()) {
+		_scriptData.insert(obj, { std::move(key), std::move(value) });
+	}
+	else {
+		obj->second = sol::object(std::move(value));
+	}
+}
+
+sol::object Entity::_getScriptDataObject(const std::string& key) {
+	auto obj = _scriptData.find(key);
+	return (obj == _scriptData.cend() ? sol::lua_nil : obj->second);
 }
 
 }

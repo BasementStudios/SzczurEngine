@@ -1,5 +1,5 @@
 function THIS:onUpdate(dt)
-	local velocity = 30
+	local velocity = 9*dt*60
 	if(Input.isKept(Input.Key_Up)) then
 		self:move(0, 0, -velocity / 1.2)
 	end
@@ -16,7 +16,7 @@ function THIS:onUpdate(dt)
 	local armature = self:armature()
 
 	if (Input.isPressed(Input.Key_Left)) then
-		armature:fadeIn("Dab_On_Them", 0.25)
+		armature:fadeIn("Run_051", 0.25)
 		armature:setFlipX(true)
 	elseif (Input.isPressed(Input.Key_Right)) then
 		armature:fadeIn("Run_051", 0.25)

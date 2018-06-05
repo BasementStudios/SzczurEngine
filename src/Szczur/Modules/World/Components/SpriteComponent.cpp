@@ -119,7 +119,7 @@ namespace rat {
 				
 				// Path to .png file
 			    std::string file = scenes.getRelativePathFromExplorer("Select texture", ".\\Assets", "Images (*.png, *.jpg, *.psd|*.png;*.jpg;*.psd");
-				
+			    
 				// Load file to sprite data holder
 				if(file != "") {
 					auto* data = scenes.getTextureDataHolder().getData(file);
@@ -149,6 +149,9 @@ namespace rat {
 
 		// Main
 		object.set("setTexture", &SpriteComponent::setTexture);
+		object.set("setTextureData", &SpriteComponent::setSpriteDisplayData);
+		object.set("getTextureData", &SpriteComponent::getSpriteDisplayData);
+		object.set("getTextureSize", [](SpriteComponent& comp){return glm::vec2(comp._spriteDisplayData->getTexture().getSize());});
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 		// Entity

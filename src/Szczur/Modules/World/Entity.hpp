@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "Szczur/Utility/SFML3D/Transformable.hpp"
 
 #include "Components.hpp"
@@ -178,6 +180,18 @@ private:
 
 	///
 	typename ComponentsHolder_t::const_iterator _findByFeature(Component::Feature_e feature) const;
+
+	///
+	void _setScriptDataObject(std::string key, sol::stack_object value);
+
+	///
+	sol::object _getScriptDataObject(const std::string& key);
+
+// Script
+
+	std::unordered_map<std::string, sol::object> _scriptData;
+
+// Main
 
 	size_t _id;
 	std::string _group;
