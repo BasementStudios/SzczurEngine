@@ -51,7 +51,7 @@ public:
 		}
 		else
 		{
-			_progress += _progressSpeed * timeline->SpeedMultiplier * deltaTime * 100.f;
+			_progress += _progressSpeed * timeline->SpeedMultiplier * deltaTime * 60.f;
 
 			if (_progress >= 1.f)
 			{
