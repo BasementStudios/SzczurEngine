@@ -166,6 +166,11 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 {
 	if (_armature)
 	{
+		if (animationName == _armature->getAnimation()->getLastAnimationName())
+		{
+			return;
+		}
+
 		_isPlayingOnceAnimation = false;
 		_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
 	}
