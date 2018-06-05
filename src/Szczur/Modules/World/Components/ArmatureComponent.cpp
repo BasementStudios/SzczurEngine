@@ -113,8 +113,14 @@ void ArmatureComponent::loadFromConfig(Json& config)
 			}
 			catch (const std::exception& exc)
 			{
-
+				LOG_EXCEPTION(exc);
 			}
+		}
+
+		if (_armature && _armature->getAnimation())
+		{
+			_armature->getAnimation()->play(config["animationMame"]);
+			_armature->getAnimation()->timeScale = config["speed"];
 		}
 	}
 }
@@ -123,6 +129,8 @@ void ArmatureComponent::saveToConfig(Json& config) const
 {
 	Component::saveToConfig(config);
 	config["armatureDisplayData"] = _armatureDisplayData ? mapWindows1250ToUtf8(_armatureDisplayData->getName()) : "";
+	config["animationMame"] = _armature ? _armature->getAnimation()->getLastAnimationName() : "";
+	config["speed"] = _armature ? _armature->getAnimation()->timeScale : 1.f;
 }
 
 void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
