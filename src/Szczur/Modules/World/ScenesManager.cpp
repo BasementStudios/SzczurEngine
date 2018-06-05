@@ -239,7 +239,6 @@ void ScenesManager::addPlayer()
 	auto scene = getCurrentScene();
 
 	Entity* player = scene->addEntity("single");
-	player->addComponent<BaseComponent>();
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
 }
