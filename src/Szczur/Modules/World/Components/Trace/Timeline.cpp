@@ -3,6 +3,8 @@
 #include "Actions/AnimAction.hpp"
 #include "Actions/MoveAction.hpp"
 
+#include "Szczur/Utility/Random.hpp"
+
 namespace rat
 {
 
@@ -22,6 +24,12 @@ void Timeline::addAction(Action* action)
 	{
 		_vertexArray.resize(_vertexArray.getSize() + 2);
 	}
+
+	Random random;
+
+	float min = 10.f, max = 150.f;
+
+	action->ButtonColor = ImVec4(random.get(min, max) / 255.f, random.get(min, max) / 255.f, random.get(min, max) / 255.f, 1.f);
 
 	_actions.push_back(std::unique_ptr<Action>(action));
 }

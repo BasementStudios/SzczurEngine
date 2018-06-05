@@ -22,6 +22,8 @@ public:
 public:
 	glm::vec3 Color = { 1.f, 1.f, 1.f };
 
+	ImVec4 ButtonColor = { 1.f, 1.f, 1.f, 1.f };
+
 protected:
 	Type _type;
 	Entity* _entity = nullptr;
@@ -32,8 +34,8 @@ public:
 	Action(Entity* entity, Type type)
 		: _entity(entity), _type(type)
 	{
-
 	}
+
 	virtual ~Action() = default;
 
 	virtual void update(float deltaTime, Timeline* timeline) = 0;

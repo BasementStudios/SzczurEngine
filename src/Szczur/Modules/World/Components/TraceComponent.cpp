@@ -270,6 +270,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_HeaderHovered]);
 						ImGui::PushStyleColor(ImGuiCol_Border, style.Colors[ImGuiCol_SeparatorHovered]);
 					}
+					else
+					{
+						ImGui::PushStyleColor(ImGuiCol_Button, action->ButtonColor);
+					}
 
 					if (ImGui::Button((buttonName).c_str(), { ImGui::GetFrameHeight(), 0.f }))
 					{
@@ -305,6 +309,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 					if (active)
 					{
 						ImGui::PopStyleColor(2);
+					}
+					else
+					{
+						ImGui::PopStyleColor();
 					}
 
 					if (ImGui::BeginPopupContextItem("item context menu"))
