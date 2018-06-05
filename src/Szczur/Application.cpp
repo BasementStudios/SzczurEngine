@@ -77,7 +77,6 @@ void Application::update()
 	}
 	#endif
 
-	getModule<DragonBones>().update(deltaTime);
 	getModule<World>().update(deltaTime);
 	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();

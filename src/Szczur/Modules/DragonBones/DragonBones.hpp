@@ -37,11 +37,6 @@ public:
 	// Disable moving
 	DragonBones(DragonBones&&) = delete;
 	DragonBones& operator = (DragonBones&&) = delete;
-
-	/* Methods */
-public:
-	// Module system
-	void update(float deltaTime);
 };
 
 }

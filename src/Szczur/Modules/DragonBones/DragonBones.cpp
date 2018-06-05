@@ -23,10 +23,4 @@ DragonBones::~DragonBones()
 	LOG_INFO("Module DragonBones destructed");
 }
 
-// update
-void DragonBones::update(float deltaTime)
-{
-	this->factory.update(deltaTime);
-}
-
 }

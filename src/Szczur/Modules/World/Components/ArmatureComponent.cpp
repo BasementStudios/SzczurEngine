@@ -135,6 +135,11 @@ void ArmatureComponent::saveToConfig(Json& config) const
 
 void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
 {
+	if (_armature)
+	{
+		_armature->getArmature()->advanceTime(deltaTime);
+	}
+
 	if (_isPlayingOnceAnimation)
 	{
 		if (_armature && _armature->getAnimation()->isCompleted())
