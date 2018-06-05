@@ -11,6 +11,7 @@ namespace rat {
     public:
         Camera();
         void setView(const sf3d::View& view);
+        const sf3d::View& getView() const;
         void update();
     private:
         sf3d::View _view;

@@ -297,10 +297,15 @@ namespace rat {
 				_freeCamera.processEvents(input);
 		}
 		
-		sf3d::View view;
+		sf3d::View view{camera.getView()};
 		if(currentCamera) {
-			view.setRotation(currentCamera->getRotation());
-			view.setCenter(currentCamera->getPosition());
+			auto delta = currentCamera->getPosition() - view.getCenter();
+			auto deltaRotation = currentCamera->getRotation() - view.getRotation();
+			float smoothness{currentCamera->getComponentAs<CameraComponent>()->getSmoothness()};
+			if(smoothness != 0.f) {
+				view.move(delta/smoothness);
+				view.rotate(deltaRotation/smoothness);
+			}
 		}
 		else {
 			//std::cout << _freeCamera.position.x << ' ' << _freeCamera.position.y << '\n';

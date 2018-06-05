@@ -10,6 +10,10 @@ namespace rat {
         _view.setCenter(view.getCenter());
         _view.setRotation(view.getRotation());
     }
+    
+    const sf3d::View& Camera::getView() const {
+        return _view;
+    }
 
     void Camera::update() {
 

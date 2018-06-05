@@ -36,6 +36,10 @@ public:
     ///
     float getVelocity() const;
 
+    void setSmoothness(float smoothness);
+
+    float getSmoothness() const;
+
     ///
     void setLock(bool lock);
 
@@ -62,6 +66,7 @@ private:
     bool _locked{false};
     bool _stickToPlayer{false};
     float _velocity{50.f};
+    float _smoothness{1.f};
     sf::Vector2i _previousMouse;
 };
 

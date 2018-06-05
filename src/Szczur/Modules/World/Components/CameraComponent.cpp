@@ -127,6 +127,8 @@ namespace rat {
 			ImGui::DragFloat("Velocity##camera_component", &velocity);
 			setVelocity(velocity);
 
+			ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 1.f, 1.f, 5000.f);
+
 			// Set lock
 			bool locked = getLock();
 			ImGui::Checkbox("Locked##camera_component", &locked);
@@ -148,7 +150,17 @@ namespace rat {
 			curPos.x = player->getPosition().x;
 			getEntity()->setPosition(curPos);
 		}
+
+		
     }
+
+	void CameraComponent::setSmoothness(float smoothness) {
+		_smoothness = smoothness;
+	}
+
+    float CameraComponent::getSmoothness() const {
+		return _smoothness;
+	}
 
 	void CameraComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	{
