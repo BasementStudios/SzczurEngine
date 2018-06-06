@@ -220,11 +220,13 @@ void Cinematics::update()
 
     for(int i=0;i<7;i++)
     {
+        m_IstartTime = m_VClock->getElapsedTime().asMilliseconds();
+
         if((m_ISmax>m_sound->timeElapsed()*1000 && !m_syncAV&& m_ISmax>m_duration-4000000)||(m_sound->g_audioPkts.empty()&&m_ISmax>m_duration-4000000))
         {
             if(!m_sound->g_videoPkts.empty())
             {
-                m_IstartTime = m_VClock->getElapsedTime().asMilliseconds();
+                
                 AVPacket *packet_ptr = m_sound->g_videoPkts.front();
  
                 auto decodedLength = avcodec_decode_video2(m_pCodecCtx, m_pFrame, &m_frameFinished, packet_ptr);
@@ -246,7 +248,7 @@ void Cinematics::update()
                 m_im_video.update(m_data);
                 
                 m_IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - m_IstartTime;
-                //sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime));
+                if(!m_isMusic) sf::sleep((sf::milliseconds(((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime))));
                 m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
                 return;
             }
@@ -386,6 +388,8 @@ void Cinematics::update()
                     m_syncAV = false;
                 }
               
+                m_IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - m_IstartTime;
+                if(!m_isMusic) sf::sleep((sf::milliseconds(((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime))));
                 
             }
            
@@ -415,7 +419,7 @@ void Cinematics::update()
             }
         }
     }
-
+    
 }
 
 void Cinematics::render()
