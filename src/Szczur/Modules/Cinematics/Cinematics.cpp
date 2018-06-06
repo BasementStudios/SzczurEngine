@@ -353,6 +353,7 @@ void Cinematics::update()
    
         }
         const auto pStream = m_pFormatCtx->streams[m_videoStream];
+        if(m_sound->g_videoPkts.empty()) m_play =false;
         if(!isDraw &&((m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady())||!m_isMusic) && !m_sound->g_videoPkts.empty())
         {
             packet_ptr = m_sound->g_videoPkts.front();
