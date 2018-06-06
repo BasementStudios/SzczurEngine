@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <tuple>
 
 #include "Szczur/Utility/Logger.hpp"
@@ -32,27 +31,13 @@ struct NthElement<0u, T, Ts...> { using type = T; };
 template <size_t N, typename... Ts>
 using NthElement_t = typename NthElement<N, Ts...>::type;
 
+///
 template <typename... Ts>
-constexpr size_t StorageSizeFor()
-{
-	size_t size = 0u;
+constexpr size_t StorageSizeFor();
 
-	using Swallow_t = int[];
-	Swallow_t{ ((size += sizeof(Ts)), 0)... };
-
-	return size;
-}
-
+///
 template <typename... Ts>
-constexpr size_t StorageAlignFor()
-{
-	size_t align = 0u;
-
-	using Swallow_t = int[];
-	Swallow_t{ ((align = alignof(Ts) > align ? alignof(Ts) : align), 0)... };
-
-	return align;
-}
+constexpr size_t StorageAlignFor();
 
 }
 

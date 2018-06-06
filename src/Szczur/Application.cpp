@@ -6,10 +6,12 @@ namespace rat
 {
 
 #ifdef EDITOR
+#	include <ImGui/imgui.h>
+#	include <ImGui/imgui-SFML.h>
 #   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 #endif
 
-void Application::init()
+namespace rat
 {
 	LOG_INFO("Initializing modules");
 
@@ -19,6 +21,7 @@ void Application::init()
 	initModule<Script>();
 	initModule<Music>("music/");
 	initModule<AudioEffects>();
+
 
 	LOG_INFO("Modules initialized");
 
@@ -95,6 +98,8 @@ int Application::run()
 
 		LOG_INFO("Starting main loop of application");
 
+		getModule<Script>().scriptFile("Assets/Scripts/test.lua");
+
 		while (getModule<Window>().getWindow().isOpen()) {
 			if(input()) {
 				update();
@@ -108,7 +113,10 @@ int Application::run()
 
 	#ifdef EDITOR
 	{
-		ImGui::SFML::Shutdown();
+		if (_isImGuiInitialized)
+		{
+			ImGui::SFML::Shutdown();
+		}
 	}
 	#endif
 

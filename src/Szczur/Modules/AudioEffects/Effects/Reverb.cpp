@@ -12,8 +12,20 @@ namespace rat
     void Reverb::initScript(Script& script)
 	{
 		auto object = script.newClass<Reverb>("Reverb", "AudioEffects");
-		SCRIPT_SET_CLASS(Reverb, density, diffusion, gain, gainHf, decayTime, decayHfRatio, reflectionsGain, reflectionsDelay,
-                        lateReverbGain, lateReverbDelay, airAbsorptionGainHf, roomRolloffFactor, decayHfLimit);
+
+		object.set("density", &Reverb::density);
+		object.set("diffusion", &Reverb::diffusion);
+		object.set("gain", &Reverb::gain);
+		object.set("gainHf", &Reverb::gainHf);
+		object.set("decayTime", &Reverb::decayTime);
+		object.set("decayHfRatio", &Reverb::decayHfRatio);
+		object.set("reflectionsGain", &Reverb::reflectionsGain);
+		object.set("reflectionsDelay", &Reverb::reflectionsDelay);
+		object.set("lateReverbDelay", &Reverb::lateReverbDelay);
+		object.set("airAbsorptionGainHf", &Reverb::airAbsorptionGainHf);
+		object.set("roomRolloffFactor", &Reverb::roomRolloffFactor);
+		object.set("decayHfLimit", &Reverb::decayHfLimit);
+
 		object.init();
 	} 
 

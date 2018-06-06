@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <sol.hpp>
+#include <Sol/sol.hpp>
 
 #include "Szczur/Utility/Modules/Module.hpp"
 
@@ -11,119 +11,72 @@
 namespace rat
 {
 
-class Script : public Module<>
+	class Script : public Module<>
 
-{
-private:	
-	
-	sol::state _lua;	
-
-public:
-
-	inline static Script* _this;
-
-	template <typename Tuple>
-	Script(Tuple&& tuple);
-
-	Script(const Script&) = delete;
-	Script& operator = (const Script&) = delete;
-	Script(Script&&) = delete;
-	Script& operator = (Script&&) = delete;
-
-	void init() {
-		_lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::table);
-		initSFML();
-		initMainFunctions();
-	}
-	
-	void initMainFunctions() {
-		auto script = _lua.create_table("Script");
-		script.set_function("scriptFile", &Script::scriptFile);
-	}
-	
-	void initSFML() {
-		sol::table sfml = _lua.create_table("SFML");
-		sfml.new_simple_usertype<sf::Vector2f>("Vector2f",
-			"x", &sf::Vector2f::x,
-			"y", &sf::Vector2f::y
-		);
-		sfml.new_simple_usertype<sf::Vector2i>("Vector2i",
-			"x", &sf::Vector2i::x,
-			"y", &sf::Vector2i::y
-		);
-		sfml.new_simple_usertype<sf::Color>("Color",
-			"r", &sf::Color::r,
-			"g", &sf::Color::g,
-			"b", &sf::Color::b,
-			"a", &sf::Color::a
-		);
-	}
-	
-	void scriptFile(const std::string& filePath) {
-		_lua.script_file(filePath);
-	}
-	
-	void script(const std::string& code) {
-		_lua.script(code);
-	}
-	
-	sol::state& get() {
-		return _lua;
-	}
-	
-	// void runFunction(const std::string& moduleName, const std::string& className, const std::string& functionName) {
-		// sol::function 
-	// }
-	
-	template <typename T, typename U, typename ...Ts>
-	void initClasses() {
-		T::initScript(*this);
-		initClasses<U, Ts...>();
-	}
-	
-	template <typename T>
-	void initClasses() {
-		T::initScript(*this);
-	}
-	
-	sol::table newModule(const std::string& moduleName, const std::string &scriptPath = "") {
-		_lua.create_table(moduleName);
-		if(scriptPath != "") _lua.script_file(scriptPath);
-		return _lua[moduleName];
-	}
-	
-	template <typename T>
-	auto newClass(const std::string& className, const std::string& moduleName, const std::string& scriptPath = "") {
-		// sol::table module = _lua[moduleName];
-		// auto object = module.create_simple_usertype<T>();
-		auto ret = ScriptClass<T>(_lua, className, moduleName, scriptPath);
-		ret.set("is", [](sol::object obj) {return obj.is<T*>() || obj.is<std::unique_ptr<T>>();});
-		return ret;
-	}
-	
-	template <typename T>
-	void initClass(ScriptClass<T>& scriptClass, const std::string& scriptPath = "") {
-		sol::table module = _lua[scriptClass.moduleName];
-		module.set_usertype(scriptClass.className, scriptClass.object);
-		if(scriptPath != "") _lua.script_file(scriptPath);
-	}	
-		
-	static Script& ref() {
-		return *_this;
-	}
-	
-	Script()
 	{
-		LOG_INFO(this, " : Module Script constructed");
-		init();
-		if(!_this) _this = this;
-	}
-	
-	~Script()
-	{
-		LOG_INFO(this, " : Module Script destructed");
-	}
-};
+	private:
+
+		sol::state _lua;
+
+	public:
+
+		inline static Script* _this;
+
+		template <typename Tuple>
+		Script(Tuple&& tuple);
+
+		Script(const Script&) = delete;
+		Script& operator = (const Script&) = delete;
+		Script(Script&&) = delete;
+		Script& operator = (Script&&) = delete;
+
+		void init();
+
+		void initMainFunctions();
+
+		void initSFML();
+
+		void scriptFile(const std::string& filePath);
+
+		void script(const std::string& code);
+
+		sol::state& get();
+
+		template <typename T, typename U, typename ...Ts>
+		void initClasses() {
+			T::initScript(*this);
+			initClasses<U, Ts...>();
+		}
+
+		template <typename T>
+		void initClasses() {
+			T::initScript(*this);
+		}
+
+		sol::table newModule(const std::string& moduleName, const std::string &scriptPath = "");
+
+		template <typename T>
+		auto newClass(const std::string& className, const std::string& moduleName, const std::string& scriptPath = "") {
+			// sol::table module = _lua[moduleName];
+			// auto object = module.create_simple_usertype<T>();
+			auto ret = ScriptClass<T>(_lua, className, moduleName, scriptPath);
+			ret.set("is", [](sol::object obj) {return obj.is<T*>() || obj.is<std::unique_ptr<T>>(); });
+			return ret;
+		}
+
+		template <typename T>
+		void initClass(ScriptClass<T>& scriptClass, const std::string& scriptPath = "") {
+			sol::table module = _lua[scriptClass.moduleName];
+			module.set_usertype(scriptClass.className, scriptClass.object);
+			if (scriptPath != "") _lua.script_file(scriptPath);
+		}
+
+		static Script& ref();
+
+		Script();
+
+		~Script();
+	};
 
 }
 
@@ -138,9 +91,9 @@ public:
 
 #define _COUNT_ARGS(...)  _ARG_PATTERN_MATCH(__VA_ARGS__, 17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
 #define _ARG_PATTERN_MATCH(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,_17, N, ...)   N
-	
+
 // MODULE : SCRIPT_SET_MODULE_BODY
-	
+
 #define SCRIPT_SET_MODULE_BODY(c, f) module.set_function( #f , & c :: f , this);
 
 // MODULE : SCRIPT_SET_MODULE (functions only)

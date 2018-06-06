@@ -8,6 +8,7 @@
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Sound/SoundManager.hpp"
 
 namespace rat
 {
@@ -52,6 +53,10 @@ private:
 	
 	Clock _mainClock;
 	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script> _modules;
+
+	#ifdef EDITOR
+	bool _isImGuiInitialized = false;
+	#endif
 
 };
 

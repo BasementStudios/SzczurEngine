@@ -60,7 +60,7 @@ unsigned int Window::getFramerateLimit() const
 void Window::setFramerateLimit(const unsigned int limit)
 {
 	this->framerateLimit = limit;
-	LOG_INFO("framerateLimit: " + this->framerateLimit);
+	LOG_INFO("framerateLimit: ", this->framerateLimit);
 
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
@@ -73,7 +73,7 @@ const std::string& Window::getTitle() const
 void Window::setTitle(const std::string& title)
 {
 	this->title = title;
-	LOG_INFO("Window title: " + this->title);
+	LOG_INFO("Window title: ", this->title);
 
 	this->getWindow().setTitle(this->title);
 }

@@ -3,6 +3,9 @@
 #include "Effects/Equalizer.hpp"
 #include "Effects/Echo.hpp"
 #include "Effects/Reverb.hpp"
+
+#include "EffectsData.hpp"
+
 #include <tuple>
 
 #define MAX_AUX_FOR_SOURCE 2
@@ -48,6 +51,16 @@ namespace rat
         float RRF = 0.0;
         int DHL = 1;
         /**********************/ 
+
+        enum class EffectType {
+            None, Reverb, Echo, Equalizer
+        };
+
+        std::array<EffectType, MAX_AUX_FOR_SOURCE> effectsTypes {EffectType::None};
+
+        EqualizerData eqData;
+        ReverbData    reverbData;
+        EchoData      echoData;
 
         enum class EffectType {
             None, Reverb, Echo, Equalizer

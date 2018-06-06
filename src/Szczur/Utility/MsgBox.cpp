@@ -1,5 +1,7 @@
 #include "MsgBox.hpp"
 
+#ifdef EDITOR
+#	include <windows.h>
 #if defined(EDITOR) && defined(OS_WINDOWS)
 #include <Windows.h>
 #endif
@@ -9,6 +11,7 @@ namespace rat::MsgBox
 
 int getIconId(Icon icon)
 {
+#ifdef EDITOR
 #if defined(EDITOR) && defined(OS_WINDOWS)
 	switch (icon)
 	{
@@ -29,6 +32,7 @@ int getIconId(Icon icon)
 
 int getButtonId(Button button)
 {
+#ifdef EDITOR
 #if defined(EDITOR) && defined(OS_WINDOWS)
 	switch (button)
 	{
@@ -53,6 +57,8 @@ int getButtonId(Button button)
 
 Result show(const std::string& text, const std::string& title, Icon icon, Button button)
 {
+#ifdef EDITOR
+	int result = MessageBoxA(nullptr, text.c_str(), title.c_str(), getIconId(icon) | getButtonId(button));
 	return show(nullptr, text, title, icon, button);
 }
 

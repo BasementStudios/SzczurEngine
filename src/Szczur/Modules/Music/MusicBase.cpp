@@ -57,7 +57,9 @@ namespace rat
 			_startInit = false;
 		}
 		update(deltaTime);
-		_base.setVolume((_baseVolume * (getDuration() - _timeLeft)) / introTime);
+		auto vol = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
+		if (vol > 100) vol = 100;
+		_base.setVolume(vol);
 	}
 
 	void MusicBase::play() 

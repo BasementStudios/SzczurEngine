@@ -1,14 +1,11 @@
 #include "Music.hpp"
 
-#include <json.hpp>
-
-using Json = nlohmann::json;
+#include <Json/json.hpp>
 
 namespace rat 
 {
 
-	Music::Music(const std::string& assetsPath)
-		: _assets(assetsPath)
+	Music::Music()
 	{
 		initScript();
 		LOG_INFO(this, " : Module Music constructed");
@@ -24,8 +21,18 @@ namespace rat
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
-		SCRIPT_SET_MODULE(Music, play, pause, stop, includes, cleanEffects, setPlayingMode) 
-		SCRIPT_SET_MODULE(Music, setVolume, getVolume, get, getCurrentPlaying, setGlobalEffects, loadPlaylistFromJson);
+		module.set_function("play", &Music::play, this);
+		module.set_function("pause", &Music::pause, this);
+		module.set_function("stop", &Music::stop, this);
+		module.set_function("includes", &Music::includes, this);
+		module.set_function("cleanEffects", &Music::cleanEffects, this);
+		module.set_function("setPlayingMode", &Music::setPlayingMode, this);
+		module.set_function("setVolume", &Music::setVolume, this);
+		module.set_function("getVolume", &Music::getVolume, this);
+		module.set_function("get", &Music::get, this);
+		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
+		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
 
 		module.set_function("addPlaylist",
@@ -64,17 +71,17 @@ namespace rat
 
 	void Music::loadPlaylistFromJson(const std::string& filePath)
 	{
-		Json j;
+		nlohmann::json j;
 
-		std::ifstream file("music/" + filePath + ".json");
+		std::string path = MUSIC_DEFAULT_PATH;
+		std::ifstream file(path + "Playlists/" + filePath + ".json");
         if (file.is_open()) {
             file >> j;
         }
         file.close();
 
-        for (auto it = j.begin(); it != j.end(); ++it) {
-                addPlaylist(it.key(), it.value());
-        }
+        for (auto it = j.begin(); it != j.end(); ++it)
+            addPlaylist(it.key(), it.value());
 	}
 
 	void Music::update(float deltaTime)
