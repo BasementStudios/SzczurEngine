@@ -17,7 +17,7 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<AudioEffects>();
-	initModule<Music>("Assets/Music/");
+	initModule<Music>();
 
 
 	LOG_INFO("Modules initialized");
@@ -164,6 +164,8 @@ int Application::run()
 		init();
 
 		LOG_INFO("Starting main loop of application");
+
+		getModule<Script>().scriptFile("Assets/Scripts/test.lua");
 
 		while (getModule<Window>().getWindow().isOpen()) {
 			if (input()) {

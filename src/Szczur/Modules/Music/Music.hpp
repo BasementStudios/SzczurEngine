@@ -31,7 +31,7 @@ namespace rat
 
 	public:
 
-		Music(const std::string& assetsPath);
+		Music();
 		~Music();
 
 		void initScript();

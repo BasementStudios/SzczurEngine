@@ -34,6 +34,7 @@ namespace rat
 		return _counter;
 	}
 
+	//Only for editor
 	void RatMusic::saveToJson()
 	{
 		std::array<std::vector<float>, 3> effects;
@@ -42,17 +43,23 @@ namespace rat
 				switch(effectsTypes[i]) {
 					case AudioEffect::EffectType::Reverb:
 						effects[0] = {
-							DEN, DIFF, G, RGH, DT, DHF, RG, RD, LRG, LRG, AAGH, RRF, (float)DHL
+							reverbData.density, reverbData.diffusion, reverbData.gain, reverbData.gainHf, 
+							reverbData.decayTime, reverbData.decayHfRatio, reverbData.reflectionsGain, 
+							reverbData.reflectionsDelay, reverbData.lateReverbGain, reverbData.lateReverbDelay, 
+							reverbData.airAbsorptionGainHf, reverbData.roomRolloffFactor, (float)reverbData.decayHfLimit
 						};
 						break;
 					case AudioEffect::EffectType::Echo:
 						effects[1] = {
-							DL, LDL, DG, FB, SP
+							echoData.delay, echoData.lrDelay, echoData.damping,
+							echoData.feedback, echoData.spread
 						}; 
 						break;
 					case AudioEffect::EffectType::Equalizer: 
 						effects[2] = {
-							LC, LG, HC, HG, M1C, M1W, M1G, M2C, M2W, M2G
+							eqData.lowCutoff, eqData.lowGain, eqData.highCutoff, eqData.highGain, 
+							eqData.lowMidCenter, eqData.lowMidWidth, eqData.lowMidGain, eqData.highMidCenter,
+							eqData.highMidWidth, eqData.highMidGain
 						};
 						break;
 					default: 
@@ -68,7 +75,8 @@ namespace rat
 		j[_name]["Volume"] = getVolume();
 		j[_name]["Effects"] = effects;
 
-		std::ofstream file("Assets/Music/" + _name + ".json", std::ios::trunc);
+		std::string path = MUSIC_DEFAULT_PATH;
+		std::ofstream file(path + "Data/" + _name + ".json", std::ios::trunc);
         if (file.is_open()) {
             file << j;
         }
@@ -78,8 +86,8 @@ namespace rat
 	void RatMusic::getJsonData()
 	{
 		nlohmann::json j;
-		auto path = "Assets/Music/" + _name + ".json";
-		std::ifstream file(path);
+		std::string path = MUSIC_DEFAULT_PATH;
+		std::ifstream file(path + "Data/" + _name + ".json");
 
 		float numberOfBars;
 		
@@ -91,72 +99,72 @@ namespace rat
 			setVolume(j[_name]["Volume"]);
 			LOG_INFO("1");
 			if(j[_name]["Effects"][0].size() > 0) {
-				DEN = j[_name]["Effects"][0][0];
-				DIFF = j[_name]["Effects"][0][1];
-				G = j[_name]["Effects"][0][2];
-				RGH = j[_name]["Effects"][0][3];
-				DT = j[_name]["Effects"][0][4];
-				DHF = j[_name]["Effects"][0][5];
-				RG = j[_name]["Effects"][0][6];
-				RD = j[_name]["Effects"][0][7];
-				LRG = j[_name]["Effects"][0][8];
-				LRG = j[_name]["Effects"][0][9];
-				AAGH = j[_name]["Effects"][0][10];
-				RRF = j[_name]["Effects"][0][11];
-				DHL = j[_name]["Effects"][0][12];
+				reverbData.density = j[_name]["Effects"][0][0];
+				reverbData.diffusion = j[_name]["Effects"][0][1];
+				reverbData.gain = j[_name]["Effects"][0][2];
+				reverbData.gainHf = j[_name]["Effects"][0][3];
+				reverbData.decayTime = j[_name]["Effects"][0][4];
+				reverbData.decayHfRatio = j[_name]["Effects"][0][5];
+				reverbData.reflectionsGain = j[_name]["Effects"][0][6];
+				reverbData.reflectionsDelay = j[_name]["Effects"][0][7];
+				reverbData.lateReverbGain = j[_name]["Effects"][0][8];
+				reverbData.lateReverbDelay = j[_name]["Effects"][0][9];
+				reverbData.airAbsorptionGainHf = j[_name]["Effects"][0][10];
+				reverbData.roomRolloffFactor = j[_name]["Effects"][0][11];
+				reverbData.decayHfLimit = (bool)j[_name]["Effects"][0][12];
 
 				effectsTypes[lastFreeSlot()] = AudioEffect::EffectType::Reverb;
-                getEffect<Reverb>().density(DEN);
-				getEffect<Reverb>().diffusion(DIFF);
-				getEffect<Reverb>().gain(G);
-				getEffect<Reverb>().gainHf(RGH);
-				getEffect<Reverb>().decayTime(DT);
-				getEffect<Reverb>().decayHfRatio(DHF);
-				getEffect<Reverb>().reflectionsGain(RG);
-				getEffect<Reverb>().reflectionsDelay(RD);
-				getEffect<Reverb>().lateReverbGain(LRG);
-				getEffect<Reverb>().lateReverbDelay(LRD);
-				getEffect<Reverb>().airAbsorptionGainHf(AAGH);
-				getEffect<Reverb>().roomRolloffFactor(RRF);
-				getEffect<Reverb>().decayHfLimit(DHL);
+                getEffect<Reverb>().density(reverbData.density);
+				getEffect<Reverb>().diffusion(reverbData.diffusion);
+				getEffect<Reverb>().gain(reverbData.gain);
+				getEffect<Reverb>().gainHf(reverbData.gainHf);
+				getEffect<Reverb>().decayTime(reverbData.decayTime);
+				getEffect<Reverb>().decayHfRatio(reverbData.decayHfRatio);
+				getEffect<Reverb>().reflectionsGain(reverbData.lateReverbGain);
+				getEffect<Reverb>().reflectionsDelay(reverbData.reflectionsDelay);
+				getEffect<Reverb>().lateReverbGain(reverbData.lateReverbGain);
+				getEffect<Reverb>().lateReverbDelay(reverbData.lateReverbDelay);
+				getEffect<Reverb>().airAbsorptionGainHf(reverbData.airAbsorptionGainHf);
+				getEffect<Reverb>().roomRolloffFactor(reverbData.roomRolloffFactor);
+				getEffect<Reverb>().decayHfLimit(reverbData.decayHfLimit);
 			}
 			if(j[_name]["Effects"][1].size() > 0) {
-				DL = j[_name]["Effects"][1][0];
-				LDL = j[_name]["Effects"][1][1]; 
-				DG = j[_name]["Effects"][1][2];
-				FB = j[_name]["Effects"][1][3]; 
-				SP = j[_name]["Effects"][1][4];
+				echoData.delay = j[_name]["Effects"][1][0];
+				echoData.lrDelay = j[_name]["Effects"][1][1]; 
+				echoData.damping = j[_name]["Effects"][1][2];
+				echoData.feedback = j[_name]["Effects"][1][3]; 
+				echoData.spread = j[_name]["Effects"][1][4];
 
 				effectsTypes[lastFreeSlot()] = AudioEffect::EffectType::Echo;
-                getEffect<Echo>().delay(DL);
-				getEffect<Echo>().lrDelay(LDL);
-			    getEffect<Echo>().damping(DG);
-				getEffect<Echo>().feedback(FB);
-				getEffect<Echo>().spread(SP);
+                getEffect<Echo>().delay(echoData.delay);
+				getEffect<Echo>().lrDelay(echoData.lrDelay);
+			    getEffect<Echo>().damping(echoData.damping);
+				getEffect<Echo>().feedback(echoData.feedback);
+				getEffect<Echo>().spread(echoData.spread);
 			}
 			if(j[_name]["Effects"][2].size() > 0) {
-				LC = j[_name]["Effects"][2][0];
-				LG = j[_name]["Effects"][2][1];
-				HC = j[_name]["Effects"][2][2]; 
-				HG = j[_name]["Effects"][2][3]; 
-				M1C = j[_name]["Effects"][2][4]; 
-				M1W = j[_name]["Effects"][2][5]; 
-				M1G = j[_name]["Effects"][2][6]; 
-				M2C = j[_name]["Effects"][2][7]; 
-				M2W = j[_name]["Effects"][2][8]; 
-				M2G = j[_name]["Effects"][2][9];
+				eqData.lowCutoff = j[_name]["Effects"][2][0];
+				eqData.lowGain = j[_name]["Effects"][2][1];
+				eqData.highCutoff = j[_name]["Effects"][2][2]; 
+				eqData.highGain = j[_name]["Effects"][2][3]; 
+				eqData.lowMidCenter = j[_name]["Effects"][2][4]; 
+				eqData.lowMidWidth = j[_name]["Effects"][2][5]; 
+				eqData.lowMidGain = j[_name]["Effects"][2][6]; 
+				eqData.highMidCenter = j[_name]["Effects"][2][7]; 
+				eqData.highMidWidth = j[_name]["Effects"][2][8]; 
+				eqData.highMidGain = j[_name]["Effects"][2][9];
 
 				effectsTypes[lastFreeSlot()] = AudioEffect::EffectType::Equalizer;
-                getEffect<Equalizer>().lowGain(LG);
-				getEffect<Equalizer>().lowCutoff(LC);
-				getEffect<Equalizer>().lowMidGain(M1G);
-				getEffect<Equalizer>().lowMidCenter(M1C);
-				getEffect<Equalizer>().lowMidWidth(M1W);
-				getEffect<Equalizer>().highMidGain(M2G);
-				getEffect<Equalizer>().highMidCenter(M2C);
-				getEffect<Equalizer>().highMidWidth(M2W);
-				getEffect<Equalizer>().highGain(HG);
-				getEffect<Equalizer>().highCutoff(HC);
+                getEffect<Equalizer>().lowGain(eqData.lowGain);
+				getEffect<Equalizer>().lowCutoff(eqData.lowCutoff);
+				getEffect<Equalizer>().lowMidGain(eqData.lowMidGain);
+				getEffect<Equalizer>().lowMidCenter(eqData.lowMidCenter);
+				getEffect<Equalizer>().lowMidWidth(eqData.lowMidWidth);
+				getEffect<Equalizer>().highMidGain(eqData.highMidGain);
+				getEffect<Equalizer>().highMidCenter(eqData.highMidCenter);
+				getEffect<Equalizer>().highMidWidth(eqData.highMidWidth);
+				getEffect<Equalizer>().highGain(eqData.highGain);
+				getEffect<Equalizer>().highCutoff(eqData.highCutoff);
 			}
 		}
 		else {
