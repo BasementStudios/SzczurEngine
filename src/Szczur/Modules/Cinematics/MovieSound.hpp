@@ -35,6 +35,7 @@ public:
 	std::deque<AVPacket*> g_videoPkts;
 
     MovieSound(AVFormatContext* ctx, int index);
+    MovieSound() = default;
     virtual ~MovieSound();
     
     bool isAudioReady() const

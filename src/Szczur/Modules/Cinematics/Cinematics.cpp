@@ -138,13 +138,17 @@ void Cinematics::play()
     float x = window.getSize().x;
     float y = window.getSize().y;
     m_sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
-  
-    m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
-    if(m_isMusic) m_sound->play();
+   
+    if(m_isMusic) 
+    {
+        m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
+        m_sound->play();
+    }
+    else m_sound = new MovieSound();
     m_VClock = new sf::Clock;
- 
-    m_count =  m_loops.size();
 
+    m_count =  m_loops.size();
+    
 }
 
 void Cinematics::setFont(sf::Font &font)
