@@ -20,9 +20,9 @@ Cinematics::~Cinematics()
 bool Cinematics::loadFromFile(const char * filename)
 {
     av_register_all();
-
-    if(avformat_open_input(&m_pFormatCtx, filename, NULL, NULL)!=0)
-        return false; 
+  
+    if(avformat_open_input(&m_pFormatCtx, filename, NULL, NULL)!=0)   
+           return false;     
 
     if(avformat_find_stream_info(m_pFormatCtx, NULL)<0)
         return false; 
@@ -56,6 +56,7 @@ bool Cinematics::loadFromFile(const char * filename)
     }
     if(m_audioStream >= 0)
     {
+        m_isMusic = true;
         m_paCodecCtx = m_pFormatCtx->streams[m_audioStream]->codec;
         m_paCodec = avcodec_find_decoder(m_paCodecCtx->codec_id);
         
@@ -74,7 +75,7 @@ bool Cinematics::loadFromFile(const char * filename)
     m_buffer = (uint8_t*)av_malloc(m_numBytes * sizeof(uint8_t));
     
     m_sws_ctx = sws_getContext(m_pCodecCtx->width, m_pCodecCtx->height, m_pCodecCtx->pix_fmt, m_pCodecCtx->width, m_pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
-    
+
     avpicture_fill((AVPicture*)m_pFrameRGB, m_buffer, AV_PIX_FMT_RGB24, m_pCodecCtx->width, m_pCodecCtx->height);
     return true;
 }
@@ -139,7 +140,7 @@ void Cinematics::play()
     m_sprite.setScale(x/m_im_video.getSize().x,y/m_im_video.getSize().y);
   
     m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
-    m_sound->play();
+    if(m_isMusic) m_sound->play();
     m_VClock = new sf::Clock;
  
     m_count =  m_loops.size();
@@ -221,13 +222,14 @@ void Cinematics::update()
             {
                 m_IstartTime = m_VClock->getElapsedTime().asMilliseconds();
                 AVPacket *packet_ptr = m_sound->g_videoPkts.front();
-
+ 
                 auto decodedLength = avcodec_decode_video2(m_pCodecCtx, m_pFrame, &m_frameFinished, packet_ptr);
     
                 if(!sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize))
                 {
-                    stop();
-                }
+                    m_sound->g_videoPkts.clear();
+                    return;
+                }  
                             
                 for (int i = 0, j = 0; i < m_FrameSize; i += 3, j += 4)
                 {
@@ -240,12 +242,14 @@ void Cinematics::update()
                 m_im_video.update(m_data);
                 
                 m_IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - m_IstartTime;
-                sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime));
+                //sf::sleep(sf::milliseconds((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime));
+                m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
                 return;
             }
             else
             {
-                stop();
+                //stop(); music ended, we don't have to clear anything
+                m_play = false;
                 return;
             }
         }
@@ -286,7 +290,7 @@ void Cinematics::update()
         
         AVPacket* packet_ptr = nullptr;
         
-        if(m_sound->g_videoPkts.size() < 150)
+        if(m_sound->g_videoPkts.size() < 500)
         {
             packet_ptr = (AVPacket*)av_malloc(sizeof(AVPacket));
             av_init_packet(packet_ptr);
@@ -343,7 +347,7 @@ void Cinematics::update()
    
         }
         const auto pStream = m_pFormatCtx->streams[m_videoStream];
-        if(!isDraw && m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady() && !m_sound->g_videoPkts.empty())
+        if(!isDraw &&((m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady())||!m_isMusic) && !m_sound->g_videoPkts.empty())
         {
             packet_ptr = m_sound->g_videoPkts.front();
             m_sound->g_videoPkts.pop_front();
