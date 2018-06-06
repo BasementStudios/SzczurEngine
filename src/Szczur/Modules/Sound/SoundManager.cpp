@@ -27,10 +27,10 @@ namespace rat
         module.set_function("play", &SoundManager::play, this);
         module.set_function("pause", &SoundManager::pause, this);
         module.set_function("stop", &SoundManager::stop, this);
-        module.set_function("setVolume", &SoundManager::newSound, this);
-        module.set_function("setPitch", &SoundManager::newSound, this);
-        module.set_function("setLoop", &SoundManager::newSound, this);
-        module.set_function("changeLoop", &SoundManager::newSound, this);
+        module.set_function("setVolume", &SoundManager::setVolume, this);
+        module.set_function("setPitch", &SoundManager::setPitch, this);
+        module.set_function("setLoop", &SoundManager::setLoop, this);
+        module.set_function("changeLoop", &SoundManager::changeLoop, this);
         module.set_function("getLoop", &SoundManager::getLoop, this);
         module.set_function("getSize", &SoundManager::getSize, this);
         module.set_function("setOffset", &SoundManager::setOffset, this);
