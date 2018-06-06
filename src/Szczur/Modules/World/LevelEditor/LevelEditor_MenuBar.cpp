@@ -65,13 +65,14 @@ namespace rat {
 
 				// Remove button
 				if(ImGui::Button("Remove", ImVec2(availWidth, 0.f))) {
+					_objectsList.unselect();
 					_scenes.removeScene(_scenes.getCurrentSceneID());
 				}
 				ImGui::SameLine();
 
 				// Ok button
 				if(ImGui::Button("Ok", ImVec2(availWidth, 0.f))) {
-					ImGui::CloseCurrentPopup();
+					openScenesManager = false;
 				}
 
 				// List of scenes
