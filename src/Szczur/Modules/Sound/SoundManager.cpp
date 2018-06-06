@@ -1,5 +1,7 @@
 #include "SoundManager.hpp"
 
+#include <Json/json.hpp>
+
 namespace rat
 {
     SoundManager::SoundManager()
@@ -41,7 +43,7 @@ namespace rat
     {
         auto sound = std::make_unique<SoundBase>();
          
-        if(sound->init(name,fileName)){
+        if(sound->init(name, fileName)){
             _sounds.push_back(std::move(sound));
             return true;
         }
@@ -62,13 +64,13 @@ namespace rat
     void SoundManager::eraseSingleSound(const std::string &fileName)
     {
         int i = getSound(fileName);
-        _sounds.erase (_sounds.begin()+i);
+        _sounds.erase(_sounds.begin() + i);
     }
 
     int SoundManager::getSound(const std::string &fileName) const
     {
-        for(unsigned int i=0; i<_sounds.size(); ++i){
-            if(fileName==_sounds[i]->getName())
+        for(unsigned int i = 0; i < _sounds.size(); ++i){
+            if(fileName == _sounds[i]->getName())
                 return i;
         }
 
@@ -169,7 +171,7 @@ namespace rat
         _sounds[i]->stop();
     }
 
-    void SoundManager::setOffset(const std::string &fileName,Second_t beginT,Second_t endT)
+    void SoundManager::setOffset(const std::string &fileName, Second_t beginT, Second_t endT)
     {
         int i = getSound(fileName);
         _sounds[i]->setOffset(beginT,endT);
@@ -188,26 +190,20 @@ namespace rat
 
     void SoundManager::load(const std::string& fileName)
     {
-        std::fstream file;        
-        std::string mainName = fileName + ".dat";
-        file.open(mainName, std::ios::in);
-        std::string name;
-        std::string soundFileName;
-        Second_t beginT;
-        Second_t endT;
-        float volume;
-        float pitch;
+        nlohmann::json j;
+        std::ifstream file("Assets/Sounds/Data/" + fileName + ".json");    
 
-        while(file >> name){ 
-            file >> soundFileName;
-            newSound(name,soundFileName);
-            file >> beginT;
-            file >> endT;
-            file >> volume;
-            file >> pitch;
-            setVolume(volume,name);
-            setPitch(pitch,name);
-            setOffset(name,beginT,endT);
+        if (file.is_open()) {
+            file >> j;
+            file.close();
+
+            auto name = j["Name"];
+
+            newSound(name, j["File"]);
+            setVolume(j["Volume"], name);
+            setPitch(j["Pitch"], name);
+            setOffset(name, j["BeginTime"], j["EndTime"]);
+
         }
     }
 

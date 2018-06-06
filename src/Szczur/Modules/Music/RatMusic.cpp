@@ -91,7 +91,7 @@ namespace rat
 
 		float numberOfBars;
 		
-		if(file.is_open()){
+		if (file.is_open()) {
 			file >> j;
 			file.close();
 			_bpm = j[_name]["BPM"];

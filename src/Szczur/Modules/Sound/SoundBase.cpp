@@ -9,7 +9,7 @@ namespace rat
         if (!loadBuffer())
             return false;
 
-        _length=buffer.getDuration().asSeconds();
+        _length = buffer.getDuration().asSeconds();
         offset.beginTime=0;
         offset.endTime=_length;
         return true;
@@ -17,7 +17,6 @@ namespace rat
 
     void SoundBase::setVolume(float volume)
     {
-        //_volume = volume;
         sound.setVolume(volume);
     }
 
@@ -50,14 +49,14 @@ namespace rat
 
     bool SoundBase::getLoop() const
     {
-         return sound.getLoop();
+        return sound.getLoop();
     }
 
     void SoundBase::play()
     {
         sound.setBuffer(buffer);
         sound.play();
-        if(playingTime>offset.beginTime && playingTime < offset.endTime)
+        if(playingTime > offset.beginTime && playingTime < offset.endTime)
             sound.setPlayingOffset(sf::seconds(playingTime));
         else
             sound.setPlayingOffset(sf::seconds(offset.beginTime)); 
@@ -71,7 +70,7 @@ namespace rat
 
     void SoundBase::stop()
     {
-        playingTime=0;
+        playingTime = 0;
         sound.stop();
     }
 
@@ -87,23 +86,23 @@ namespace rat
 
     void SoundBase::setOffset(Second_t beginT,Second_t endT)
     {
-        if(beginT>=_length || beginT<0 && endT>_length || endT<0){
-            offset.beginTime=0;
-            offset.endTime=_length;
+        if (beginT >= _length || beginT < 0 && endT > _length || endT < 0) {
+            offset.beginTime = 0;
+            offset.endTime = _length;
         }
-        else if(beginT>=_length || beginT<0){
+        else if (beginT>=_length || beginT<0) {
             offset.beginTime=0;
             offset.endTime=endT;
         }
-        else if(endT>_length || endT<0 || endT<beginT){
+        else if (endT>_length || endT<0 || endT<beginT) {
             offset.beginTime=beginT;
             offset.endTime=_length;
         }
-        else{
+        else {
             offset.beginTime=beginT;
             offset.endTime=endT;
         }
-        if(offset.endTime < offset.beginTime)
+        if (offset.endTime < offset.beginTime)
             offset.endTime=_length;    
     }
 
