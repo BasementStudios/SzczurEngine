@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Szczur/Utility/SFML3D/View.hpp"
+
 #include "../Component.hpp"
 
 
@@ -58,6 +60,8 @@ public:
     ///
     void update(ScenesManager& scenes, float deltaTime);
 
+    sf3d::View getRecalculatedView(sf3d::View baseView);;
+
     ///
     static void initScript(ScriptClass<Entity>& entity, Script& script);
 
@@ -65,6 +69,13 @@ private:
     bool _rotating{false};
     bool _locked{false};
     bool _stickToPlayer{false};
+
+    bool _limitedRange{false};
+    struct {
+        float left{0.f};
+        float right{0.f};
+    } _limit;
+
     float _velocity{50.f};
     float _smoothness{1.f};
     sf::Vector2i _previousMouse;

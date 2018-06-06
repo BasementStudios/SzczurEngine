@@ -51,7 +51,7 @@ void Scene::update(float deltaTime)
 		}
 	}
 
-	for(auto& ent : getEntities("single")) {
+	/*for(auto& ent : getEntities("single")) {
 		if(auto* comp = ent->getComponentAs<CameraComponent>()) {
 			auto* camera = detail::globalPtr<Camera>;
 			sf3d::View view{camera->getView()};
@@ -63,7 +63,7 @@ void Scene::update(float deltaTime)
 				view.rotate(deltaRotation/smoothness);
 			}
 		}
-	}
+	}*/
 }
 
 void Scene::render(sf3d::RenderTarget& canvas)

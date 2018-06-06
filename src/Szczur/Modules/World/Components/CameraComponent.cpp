@@ -110,6 +110,7 @@ namespace rat {
 		if(auto& var = config["velocity"]; !var.is_null()) _velocity = var;
 		if(auto& var = config["locked"]; !var.is_null()) _locked = var;
 		if(auto& var = config["stick_to_player"]; !var.is_null()) _stickToPlayer = var;
+		if(auto& var = config["smoothness"]; !var.is_null()) _smoothness = var;
 	}
 
 	void CameraComponent::saveToConfig(Json& config) const {
@@ -117,6 +118,7 @@ namespace rat {
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
 		config["stick_to_player"] = _stickToPlayer;
+		config["smoothness"] = _smoothness;
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
@@ -127,7 +129,7 @@ namespace rat {
 			ImGui::DragFloat("Velocity##camera_component", &velocity);
 			setVelocity(velocity);
 
-			ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 1.f, 1.f, 5000.f);
+			ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 0.05f, 1.f, 50.f);
 
 			// Set lock
 			bool locked = getLock();
@@ -138,6 +140,13 @@ namespace rat {
 			bool stickToPlayer = getStickToPlayer();
 			ImGui::Checkbox("Stick To Player##camera_component", &stickToPlayer);
 			setStickToPlayer(stickToPlayer);
+
+			ImGui::Checkbox("Limited Range##camera_component", &_limitedRange);
+			if(_limitedRange) {
+				ImGui::DragFloat2("Limit", (float*)&_limit);
+				if(_limit.right < _limit.left)
+					_limit.left = _limit.right;
+			}
 		}
 	}
 
@@ -160,6 +169,32 @@ namespace rat {
 
     float CameraComponent::getSmoothness() const {
 		return _smoothness;
+	}
+
+	sf3d::View CameraComponent::getRecalculatedView(sf3d::View baseView) {
+		if(_smoothness >= 1.f) {
+			auto* entity = getEntity();
+
+			if(_limitedRange) {
+				float newX = entity->getPosition().x;
+				if(newX > _limit.right)
+					newX = _limit.right;
+				else if(newX < _limit.left)
+					newX = _limit.left;
+				entity->setPosition({
+					newX,
+					entity->getPosition().y,
+					entity->getPosition().z
+				});
+			}
+
+			auto delta = entity->getPosition() - baseView.getCenter();
+			auto deltaRotation = entity->getRotation() - baseView.getRotation();
+			baseView.move(delta/_smoothness);
+			baseView.rotate(deltaRotation/_smoothness);
+
+		}
+		return baseView;
 	}
 
 	void CameraComponent::initScript(ScriptClass<Entity>& entity, Script& script)

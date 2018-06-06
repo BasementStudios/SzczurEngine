@@ -298,21 +298,13 @@ namespace rat {
 		}
 		
 		sf3d::View view{camera.getView()};
-		if(currentCamera) {
-			auto delta = currentCamera->getPosition() - view.getCenter();
-			auto deltaRotation = currentCamera->getRotation() - view.getRotation();
-			float smoothness{currentCamera->getComponentAs<CameraComponent>()->getSmoothness()};
-			if(smoothness != 0.f) {
-				view.move(delta/smoothness);
-				view.rotate(deltaRotation/smoothness);
-			}
-		}
+		if(currentCamera)
+			camera.setView(currentCamera->getComponentAs<CameraComponent>()->getRecalculatedView(view));
 		else {
-			//std::cout << _freeCamera.position.x << ' ' << _freeCamera.position.y << '\n';
 			view.setRotation(_freeCamera.rotation);
 			view.setCenter(_freeCamera.position);
+			camera.setView(view);
 		}
-		camera.setView(view);
 
 		if(input.isReleased(Keyboard::F1)) {
 			_scenes.menuSave();
