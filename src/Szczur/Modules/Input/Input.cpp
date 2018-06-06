@@ -16,6 +16,8 @@ Input::Input()
 	SET_KEY(W);	SET_KEY(S);	SET_KEY(A); SET_KEY(D);
 	SET_KEY(Up); SET_KEY(Left); SET_KEY(Down); SET_KEY(Right);
 	SET_KEY(Space);
+	
+	SET_KEY(Return);
 
 	// module.set("Key_W", Keyboard::Up);
 	// module.set("Key_A", Keyboard::Left);
