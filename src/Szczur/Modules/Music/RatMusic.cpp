@@ -97,7 +97,6 @@ namespace rat
 			_bpm = j[_name]["BPM"];
 			numberOfBars = j[_name]["FadeTime"];
 			setVolume(j[_name]["Volume"]);
-			LOG_INFO("1");
 			if(j[_name]["Effects"][0].size() > 0) {
 				reverbData.density = j[_name]["Effects"][0][0];
 				reverbData.diffusion = j[_name]["Effects"][0][1];
