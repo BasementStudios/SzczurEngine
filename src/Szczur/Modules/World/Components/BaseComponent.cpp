@@ -112,18 +112,18 @@ namespace rat {
 		// Entity
 		entity.set("move", [](Entity& entity, float x, float y, float z){entity.move({x,y,z});});
 		entity.set("setPosition", [](Entity& entity, float x, float y, float z){entity.setPosition({x,y,z});});
-		entity.set("getPosition", [](Entity& entity){entity.getPosition();});
+		entity.set("getPosition", [](Entity& entity){return entity.getPosition();});
 
 		entity.set("rotate", [](Entity& entity, float x, float y, float z){entity.rotate({x,y,z});});
 		entity.set("setRotation", [](Entity& entity, float x, float y, float z){entity.setRotation({x,y,z});});
-		entity.set("getRotation", [](Entity& entity){entity.getRotation();});
+		entity.set("getRotation", [](Entity& entity){return entity.getRotation();});
 
 		entity.set("scale", [](Entity& entity, float x, float y, float z){entity.scale({x,y,z});});
 		entity.set("setScale", [](Entity& entity, float x, float y, float z){entity.setScale({x,y,z});});
-		entity.set("getScale", [](Entity& entity){entity.getScale();});
+		entity.set("getScale", [](Entity& entity){return entity.getScale();});
 
 		entity.set("setOrigin", [](Entity& entity, float x, float y, float z){entity.setOrigin({x,y,z});});
-		entity.set("getOrigin", [](Entity& entity){entity.getOrigin();});
+		entity.set("getOrigin", [](Entity& entity){return entity.getOrigin();});
 
 		object.init();
 
