@@ -21,6 +21,7 @@ void Application::init()
 	initModule<GUI>();
 	initModule<Dialog>();
 	initModule<DialogEditor>();
+	initModule<Cinematics>();
 
 	LOG_INFO("Modules initialized");
 
@@ -71,6 +72,8 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
+	getModule<Cinematics>().update();
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -92,6 +95,7 @@ void Application::render()
 	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
 	getModule<Window>().popGLStates();
+	getModule<Cinematics>().render();
 
 	#ifdef EDITOR
 	{
