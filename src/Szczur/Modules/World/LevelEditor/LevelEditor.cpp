@@ -60,6 +60,35 @@ namespace rat {
 		return _objectsList;
 	}
 
+	void LevelEditor::updateCurrentCamera()
+	{
+		_currentCamera = nullptr;
+
+		for (auto& ent : _scenes.getCurrentScene()->getEntities("single"))
+		{
+			if (auto* comp = ent->getComponentAs<CameraComponent>())
+			{
+				if (_objectsList.getSelectedID() == ent->getID() || comp->getLock())
+				{
+					_currentCamera = ent.get();
+				}
+			}
+		}
+	}
+
+	void LevelEditor::updateCamera(Camera& camera)
+	{
+		sf3d::View view{ camera.getView() };
+		if (_currentCamera)
+			camera.setView(_currentCamera->getComponentAs<CameraComponent>()->getRecalculatedView(view));
+		else
+		{
+			view.setRotation(_freeCamera.rotation);
+			view.setCenter(_freeCamera.position);
+			camera.setView(view);
+		}
+	}
+
 	void LevelEditor::render(sf3d::RenderTarget& target) {
 
 		// Show ImGui demo window
@@ -263,47 +292,30 @@ namespace rat {
 		
 		auto mouse = input.getMousePosition();
 
-		Entity* currentCamera{nullptr};
-
-		for(auto& ent : _scenes.getCurrentScene()->getEntities("single")) {
-			if(auto* comp = ent->getComponentAs<CameraComponent>()) {
-				if(_objectsList.getSelectedID() == ent->getID() || comp->getLock()) {
-					currentCamera = ent.get();
-				}
-			}
-		}
+		updateCurrentCamera();
 
 		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
 		if(input.isPressed(Mouse::Left)) {
 			_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
 				if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-					if(currentCamera && entity.getID() == currentCamera->getID()) return;
+					if(_currentCamera && entity.getID() == _currentCamera->getID()) return;
 					_objectsList.select(entity.getID());
 				}
 			});
 		}
 
-		// _scenes.getCurrentScene()->forEach([this, scene, &currentCamera](const std::string&, Entity& entity){
+		// _scenes.getCurrentScene()->forEach([this, scene, &_currentCamera](const std::string&, Entity& entity){
 		// 	if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
 		// 		if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
-		// 			currentCamera = &entity;
+		// 			_currentCamera = &entity;
 		// 	}
 		// });
 		
 		if(ImGui::IsAnyItemActive() == false) {
-			if(currentCamera)
-				currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
+			if(_currentCamera)
+				_currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
 			else
 				_freeCamera.processEvents(input);
-		}
-		
-		sf3d::View view{camera.getView()};
-		if(currentCamera)
-			camera.setView(currentCamera->getComponentAs<CameraComponent>()->getRecalculatedView(view));
-		else {
-			view.setRotation(_freeCamera.rotation);
-			view.setCenter(_freeCamera.position);
-			camera.setView(view);
 		}
 
 		if(input.isReleased(Keyboard::F1)) {

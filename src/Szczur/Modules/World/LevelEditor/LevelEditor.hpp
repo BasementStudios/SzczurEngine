@@ -79,6 +79,10 @@ public:
 	///
 	ObjectsList& getObjectsList();
 
+	void updateCurrentCamera();
+
+	void updateCamera(Camera& camera);
+
 private:
 
 	///
@@ -113,6 +117,7 @@ private:
 // World
 
 	ScenesManager& _scenes;
+	Entity* _currentCamera{ nullptr };
 
 // Parts of editor
 

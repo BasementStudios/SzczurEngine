@@ -123,6 +123,9 @@ bool ScenesManager::setCurrentScene(size_t id)
 				}
 			);
 		}
+
+		detail::globalPtr<World>->getLevelEditor().updateCurrentCamera();
+
 		return true;
 	}
 	return false;

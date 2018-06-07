@@ -31,10 +31,7 @@ World::~World()
 void World::update(float deltaTime)
 {
 	if(getModule<Input>().getManager().isReleased(Keyboard::F10)) {
-		if(_doEditor)
-			_doEditor = false;
-		else
-			_doEditor = true;
+		_doEditor = !_doEditor;
 	}
 	if (getScenes().isCurrentSceneValid())
 	{
@@ -45,6 +42,7 @@ void World::update(float deltaTime)
 			_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
 	#endif
 
+	_levelEditor.updateCamera(getModule<Camera>());
 }
 
 void World::render()
