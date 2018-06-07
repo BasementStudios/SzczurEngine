@@ -121,7 +121,7 @@ private:
 
     bool                m_syncAV = false;
     bool                m_isInit = false;
-    bool                m_play = true;
+    bool                m_play = false;
     bool                m_isMusic = false;
     int                 m_ICurrentFrame = 0;
     int                 m_ICurrentLoop = 0;
