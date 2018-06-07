@@ -1,10 +1,12 @@
-Cinematics.loadFromFile("Assets/Movies/movie.mp4")
-Cinematics.setFontPath("Assets/Movies/font.otf")
-Cinematics.addLoop(10000000,15000000,
-    function() print("text1") end,
-    "text1", 25000000,
-    function() Cinematics.stop() end,
-    "text2", 0
-)
+Cinematics.loadFromFile("Assets/Movies/movie3.mp4")
+
+
+Cinematics.setCallbackFinish(function()
+
+  Cinematics.loadFromFile("Assets/Movies/movie3.mp4")
+  Cinematics.play();
+
+end)
 Cinematics.play()
-Cinematics.setVolume(10);
+
+
