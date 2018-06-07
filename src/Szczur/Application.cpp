@@ -72,7 +72,6 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-	getModule<Cinematics>().update();
 
 	#ifdef EDITOR
 	{
@@ -83,6 +82,7 @@ void Application::update()
 	getModule<World>().update(deltaTime);
 	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();
+	getModule<Cinematics>().update();
 }
 
 void Application::render()
