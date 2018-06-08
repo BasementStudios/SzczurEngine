@@ -98,6 +98,9 @@ public:
     void setVolume(float vol);
 
     bool isPlaying();
+
+    void setCallbackFinish(callme t);
+
 private:
 
     void initScript();
@@ -135,7 +138,8 @@ private:
     int                 m_IdeltaTime;
     int                 m_IstartTime;
     int                 m_FrameSize;
-  
+    
+    callme              m_callbackFinish;
     sf::Uint8*          m_data;
     sf::Sprite          m_sprite;
     sf::Font            m_font;

@@ -19,6 +19,11 @@ Cinematics::~Cinematics()
 }
 bool Cinematics::loadFromFile(const char * filename)
 {
+
+    stop();
+
+    m_callbackFinish = nullptr;
+
     av_register_all();
   
     if(avformat_open_input(&m_pFormatCtx, filename, NULL, NULL)!=0)   
@@ -206,6 +211,8 @@ void Cinematics::initScript()
     module.set_function("stop", &Cinematics::stop, this);
     module.set_function("setVolume",&Cinematics::setVolume,this);
     module.set_function("isPlaying",&Cinematics::isPlaying,this);
+    module.set_function("setCallbackFinish",&Cinematics::setCallbackFinish,this);
+    module.set("onFinish",&Cinematics::m_callbackFinish);
 
 }
 
@@ -233,7 +240,8 @@ void Cinematics::update()
     
                 if(!sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize))
                 {
-                    m_sound->g_videoPkts.clear();
+                    //m_sound->g_videoPkts.clear();
+                    stop();
                     return;
                 }  
                             
@@ -254,8 +262,7 @@ void Cinematics::update()
             }
             else
             {
-                //stop(); music ended, we don't have to clear anything
-                m_play = false;
+                stop();
                 return;
             }
         }
@@ -353,7 +360,12 @@ void Cinematics::update()
    
         }
         const auto pStream = m_pFormatCtx->streams[m_videoStream];
-        if(m_sound->g_videoPkts.empty()) m_play =false;
+        if(m_sound->g_videoPkts.empty()) 
+        {
+            stop();
+            return;
+        }
+     
         if(!isDraw &&((m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady())||!m_isMusic) && !m_sound->g_videoPkts.empty())
         {
             packet_ptr = m_sound->g_videoPkts.front();
@@ -444,7 +456,7 @@ void Cinematics::stop()
 {
     if(m_play)
     {
-        m_sound->stop();
+       
         for(auto p : m_sound->g_videoPkts)
         {
             av_free_packet(p);
@@ -454,6 +466,7 @@ void Cinematics::stop()
             av_free_packet(p);
             av_free(p);
         }
+        //m_sound->stop();
         sws_freeContext(m_sws_ctx);
         av_free(m_buffer);
         av_free(m_pFrameRGB);
@@ -465,6 +478,8 @@ void Cinematics::stop()
         delete [] m_data;
         m_play = false;
 
+        if(m_callbackFinish != nullptr) 
+            m_callbackFinish();
     }
 }
 
@@ -476,6 +491,11 @@ void Cinematics::setVolume(float vol)
 bool Cinematics::isPlaying()
 {
     return m_play;
+}
+
+void Cinematics::setCallbackFinish(callme t)
+{
+    m_callbackFinish = t;
 }
 
 }
