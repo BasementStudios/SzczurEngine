@@ -1,41 +1,15 @@
 namespace rat
 {
 
-namespace detail
-{
-
-template <typename... Ts>
-constexpr size_t StorageSizeFor()
-{
-	size_t size = 0u;
-
-	using Swallow_t = int[];
-
-	(void)Swallow_t{ ((size += sizeof(Ts)), 0)... };
-
-	return size;
-}
-
-template <typename... Ts>
-constexpr size_t StorageAlignFor()
-{
-	size_t align = 0u;
-
-	using Swallow_t = int[];
-
-	(void)Swallow_t{ ((align = alignof(Ts) > align ? alignof(Ts) : align), 0)... };
-
-	return align;
-}
-
-}
-
 template <typename... Ts>
 ModulesHolder<Ts...>::ModulesHolder()
 {
+#if defined(COMPILER_MSVC)
 	using Swallow_t = int[];
-
-	(void)Swallow_t{ ((detail::globalPtr<Ts> = std::addressof(getModule<Ts>())), 0)... };
+	Swallow_t{ ((detail::globalPtr<Ts> = std::addressof(getModule<Ts>())), 0)... };
+#else
+	((detail::globalPtr<Ts> = std::addressof(getModule<Ts>())), ...);
+#endif
 }
 
 template <typename... Ts>
@@ -101,9 +75,12 @@ template <typename... Ts>
 template <size_t... Ns>
 void ModulesHolder<Ts...>::_destroyAll(std::index_sequence<Ns...>)
 {
+#if defined(COMPILER_MSVC)
 	using Swallow_t = int[];
-
-	(void)Swallow_t{ ((_destroy<detail::NthElement_t<sizeof...(Ts) - 1u - Ns, Ts...>>()), 0)... };
+	Swallow_t{ ((_destroy<detail::NthElement_t<sizeof...(Ts) - 1u - Ns, Ts...>>()), 0)... };
+#else
+	((_destroy<detail::NthElement_t<sizeof...(Ts) - 1u - Ns, Ts...>>()), ...);
+#endif
 }
 
 template <typename... Ts>

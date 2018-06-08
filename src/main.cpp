@@ -1,8 +1,5 @@
 #include "Szczur/Application.hpp"
 
-#ifdef DEBUG
-#	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
-#endif
 
 int main()
 {

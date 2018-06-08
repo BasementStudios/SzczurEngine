@@ -11,16 +11,17 @@ namespace rat
 #   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 #endif
 
-namespace rat
+void Application::init()
 {
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
 	initModule<Input>();
-	initModule<AudioEditor>();
 	initModule<Script>();
-	initModule<Music>("music/");
+	initModule<Music>();
 	initModule<AudioEffects>();
+	initModule<SoundManager>();
+	initModule<AudioEditor>();
 
 
 	LOG_INFO("Modules initialized");
@@ -97,8 +98,6 @@ int Application::run()
 		init();
 
 		LOG_INFO("Starting main loop of application");
-
-		getModule<Script>().scriptFile("Assets/Scripts/test.lua");
 
 		while (getModule<Window>().getWindow().isOpen()) {
 			if(input()) {

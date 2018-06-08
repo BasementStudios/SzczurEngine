@@ -48,7 +48,7 @@ namespace rat
         MusicAssets* musicAssets;
 
         std::string currentEditingMusicFile = "";
-
+        std::string currentPlaylist = "";
 
     public:
         AudioEditor();

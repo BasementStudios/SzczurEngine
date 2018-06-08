@@ -4,7 +4,7 @@
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
-#include "Szczur/Modules/Editor/AudioEditor.hpp"
+#include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -52,7 +52,7 @@ private:
 
 	
 	Clock _mainClock;
-	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script> _modules;
+	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script, SoundManager> _modules;
 
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
