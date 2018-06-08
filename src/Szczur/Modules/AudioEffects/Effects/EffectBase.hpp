@@ -20,7 +20,7 @@ namespace rat
         bool _created = false;
         bool _supported = false;
 
-        unsigned int _sourceSlot;
+        unsigned int _sourceSlot = 0;
 
     public:
 
