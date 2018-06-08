@@ -109,7 +109,7 @@ void ArmatureComponent::loadFromConfig(Json& config)
 		{
 			try
 			{
-				setArmatureDisplayData(&(armatureDisplayDataHolder.emplace_back("Assets/Armatures/" + name)));
+				setArmatureDisplayData(&(armatureDisplayDataHolder.emplace_back("Assets\\Armatures\\" + name)));
 			}
 			catch (const std::exception& exc)
 			{
@@ -233,14 +233,12 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 {
 	if (ImGui::CollapsingHeader("Armature##armature_component"))
 	{
-
 		// Armature data holder
 		auto& armatures = scenes.getArmatureDisplayDataHolder();
 
 		// Load armature button
 		if (ImGui::Button("Load armature...##armature_component"))
 		{
-
 			// Path to direcotry with armature files
 			std::string directory = scenes.getRelativePathFromExplorer("Select armature file", ".\\Assets");
 			directory = std::experimental::filesystem::path(directory).parent_path().string();
