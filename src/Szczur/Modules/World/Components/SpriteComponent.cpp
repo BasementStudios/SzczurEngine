@@ -89,6 +89,9 @@ namespace rat {
 			// 	}
 			// }
 		}
+
+		if (auto& val = config["parallax"]; !val.is_null()) _parallax = val;
+		if (auto& val = config["parallaxValue"]; !val.is_null()) _parallaxValue = val;
 	}
 
 	///
@@ -96,6 +99,9 @@ namespace rat {
 	{
 		Component::saveToConfig(config);
 		config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
+
+		config["parallax"] = _parallax;
+		config["parallaxValue"] = _parallaxValue;
 	}
 
 	///
@@ -104,6 +110,14 @@ namespace rat {
 		// return;
 		if(_spriteDisplayData) {
 			states.transform *= getEntity()->getTransform();
+
+			if (_parallax)
+			{
+				auto camera = detail::globalPtr<Camera>->getView();
+
+				states.transform.translate(_parallaxValue * camera.getCenter().x, 0.f, 0.f);
+			}
+
 			target.draw(*_spriteDisplayData, states);
 		}
 	}
@@ -140,6 +154,12 @@ namespace rat {
 			ImGui::Text("Path:");
 			ImGui::SameLine();
 			ImGui::Text(getSpriteDisplayData() ? mapWindows1250ToUtf8(getSpriteDisplayData()->getName()).c_str() : "None");
+
+			ImGui::Checkbox("Parallax", &_parallax);
+			if (_parallax)
+			{
+				ImGui::DragFloat("Value##parallax", &_parallaxValue);
+			}
 		}
 	}
 

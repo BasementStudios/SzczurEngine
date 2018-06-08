@@ -72,6 +72,9 @@ private:
 
 	SpriteDisplayData* _spriteDisplayData = nullptr;
 
+	bool _parallax = false;
+	float _parallaxValue = 0.f;
+
 };
 
 }
