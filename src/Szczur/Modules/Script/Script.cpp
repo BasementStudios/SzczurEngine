@@ -1,5 +1,6 @@
 #include "Script.hpp"
 
+#include <cmath>
 #include <iostream>
 #include <Sol/sol.hpp>
 #include <SFML/Graphics.hpp>
@@ -47,6 +48,9 @@ namespace rat {
 			"x", &glm::vec2::x,
 			"y", &glm::vec2::y
 		);
+
+		auto mathTab = _lua.get<sol::table>("Math");
+		mathTab.set_function("atan2", sol::resolve<float(float, float)>(std::atan2));
 	}
 	void Script::scriptFile(const std::string& filePath) {
 		_lua.script_file(filePath);
