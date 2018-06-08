@@ -111,6 +111,10 @@ namespace rat {
 		if(auto& var = config["locked"]; !var.is_null()) _locked = var;
 		if(auto& var = config["stick_to_player"]; !var.is_null()) _stickToPlayer = var;
 		if(auto& var = config["smoothness"]; !var.is_null()) _smoothness = var;
+
+		if(auto& var = config["limit"]["left"]; !var.is_null()) _limit.left = var;
+		if(auto& var = config["limit"]["right"]; !var.is_null()) _limit.right = var;
+		if(auto& var = config["limitedRange"]; !var.is_null()) _limitedRange = var;
 	}
 
 	void CameraComponent::saveToConfig(Json& config) const {
@@ -119,6 +123,9 @@ namespace rat {
 		config["locked"] = _locked;
 		config["stick_to_player"] = _stickToPlayer;
 		config["smoothness"] = _smoothness;
+		config["limit"]["left"] = _limit.left;
+		config["limit"]["right"] = _limit.right;
+		config["limitedRange"] = _limitedRange;
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
@@ -204,6 +211,8 @@ namespace rat {
 		// Main
 		object.set("setVelocity", &CameraComponent::setVelocity);
 		object.set("getVelocity", &CameraComponent::getVelocity);
+		object.set("setSmoothness", &CameraComponent::setSmoothness);
+		object.set("getSmoothness", &CameraComponent::getSmoothness);
 		object.set("setLock", &CameraComponent::setLock);
 		object.set("getLock", &CameraComponent::getLock);
 		object.set("setStickToPlayer", &CameraComponent::setStickToPlayer);
