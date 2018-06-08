@@ -42,6 +42,8 @@ public:
 
     float getSmoothness() const;
 
+    void stickTo(Entity* entity);
+
     ///
     void setLock(bool lock);
 
@@ -49,14 +51,10 @@ public:
     bool getLock() const;
 
     ///
-    void setStickToPlayer(bool value);
-
-    ///
-    bool getStickToPlayer() const;
-
-    ///
     virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
     
+    void stickToPlayer();
+
     ///
     void update(ScenesManager& scenes, float deltaTime);
 
@@ -68,7 +66,6 @@ public:
 private:
     bool _rotating{false};
     bool _locked{false};
-    bool _stickToPlayer{false};
 
     bool _limitedRange{false};
     struct {
@@ -79,6 +76,9 @@ private:
     float _velocity{50.f};
     float _smoothness{1.f};
     sf::Vector2i _previousMouse;
+
+    Entity* _stickTo{nullptr};
+
 };
 
 }

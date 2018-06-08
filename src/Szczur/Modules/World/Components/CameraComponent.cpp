@@ -37,7 +37,7 @@ namespace rat {
 				0.f,
 				velocity * glm::cos(glm::radians(rotation.y))
 			});
-		if(!_stickToPlayer) {
+		if(!_stickTo) {
 			if(input.isKept(Keyboard::D)) {
 				object->move(glm::vec3{
 					velocity * glm::cos(glm::radians(rotation.y)),
@@ -97,19 +97,19 @@ namespace rat {
 		return _locked;
 	}
 
-	
-	void CameraComponent::setStickToPlayer(bool value) {
-		_stickToPlayer = value;
+	void CameraComponent::stickTo(Entity* entity) {
+		_stickTo = entity;
 	}
-	bool CameraComponent::getStickToPlayer() const {
-		return _stickToPlayer;
+
+	
+	void CameraComponent::stickToPlayer() {
+		_stickTo = getEntity()->getScene()->getPlayer();
 	}
 
 	void CameraComponent::loadFromConfig(Json& config) {
 		Component::loadFromConfig(config);
 		if(auto& var = config["velocity"]; !var.is_null()) _velocity = var;
 		if(auto& var = config["locked"]; !var.is_null()) _locked = var;
-		if(auto& var = config["stick_to_player"]; !var.is_null()) _stickToPlayer = var;
 		if(auto& var = config["smoothness"]; !var.is_null()) _smoothness = var;
 
 		if(auto& var = config["limit"]["left"]; !var.is_null()) _limit.left = var;
@@ -121,7 +121,6 @@ namespace rat {
 		Component::saveToConfig(config);
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
-		config["stick_to_player"] = _stickToPlayer;
 		config["smoothness"] = _smoothness;
 		config["limit"]["left"] = _limit.left;
 		config["limit"]["right"] = _limit.right;
@@ -144,9 +143,16 @@ namespace rat {
 			setLock(locked);
 			
 			// Set lock on player
-			bool stickToPlayer = getStickToPlayer();
-			ImGui::Checkbox("Stick To Player##camera_component", &stickToPlayer);
-			setStickToPlayer(stickToPlayer);
+			ImGui::Text(
+				(
+					std::string{"Stick To: "} + 
+					((_stickTo)?_stickTo->getName():std::string{"None"})
+				).c_str()
+			);
+
+			if(ImGui::Button("Stick To Player##camera_component")) {
+				stickToPlayer();
+			}
 
 			ImGui::Checkbox("Limited Range##camera_component", &_limitedRange);
 			if(_limitedRange) {
@@ -161,9 +167,9 @@ namespace rat {
 		auto* player = getEntity()->getScene()->getPlayer();
 		if(player == nullptr) return;
 
-		if(getStickToPlayer()) {
+		if(_stickTo) {
 			auto curPos = getEntity()->getPosition();
-			curPos.x = player->getPosition().x;
+			curPos.x = _stickTo->getPosition().x;
 			getEntity()->setPosition(curPos);
 		}
 
@@ -213,11 +219,13 @@ namespace rat {
 		object.set("getVelocity", &CameraComponent::getVelocity);
 		object.set("setSmoothness", &CameraComponent::setSmoothness);
 		object.set("getSmoothness", &CameraComponent::getSmoothness);
+		object.set("stickTo", &CameraComponent::stickTo);
+
 		object.set("setLock", &CameraComponent::setLock);
 		object.set("getLock", &CameraComponent::getLock);
-		object.set("setStickToPlayer", &CameraComponent::setStickToPlayer);
-		object.set("getStickToPlayer", &CameraComponent::getStickToPlayer);
+		object.set("strickToPlayer", &CameraComponent::stickToPlayer);
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+		
 
 		// Entity
 		entity.set("addCameraComponent", [&](Entity& e){return (CameraComponent*)e.addComponent<CameraComponent>();});
