@@ -41,6 +41,7 @@ bool Cinematics::loadFromFile(const char * filename)
     m_ISmax = 0;
 
 
+    m_alfa = 255;
 
     m_callbackFinish = nullptr;
 
@@ -168,6 +169,7 @@ void Cinematics::play()
     m_im_video.setSmooth(false);
 
     m_sprite.setTexture(m_im_video,true);
+    m_sprite.setColor(sf::Color(255,255,255,m_alfa));
     float x = window.getSize().x;
     float y = window.getSize().y;
 
@@ -254,6 +256,14 @@ void Cinematics::update()
     auto& w = getModule<Window>();
 
     bool isDraw = false;
+
+    if(m_VClock->getElapsedTime().asMicroseconds()>m_duration-500000 && m_alfa>0)
+    {
+        m_alfa-=5;
+
+        m_sprite.setColor(sf::Color(255,255,255,m_alfa));
+
+    }
 
     for(int i=0;i<7;i++)
     {

@@ -146,6 +146,7 @@ private:
     int                 m_IdeltaTime;
     int                 m_IstartTime;
     int                 m_FrameSize;
+    unsigned int        m_alfa;
     
     callme              m_callbackFinish;
     
