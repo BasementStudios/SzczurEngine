@@ -159,6 +159,31 @@ void ScenesManager::loadFromConfig(Json& config) {
 		auto* scene = addScene();
 		scene->removeAllEntities();
 		scene->loadFromConfig(current);
+
+		bool foundPlayer = false;
+		bool foundCamera = false;
+		for(auto& ent : scene->getEntities("single")) {
+			if(ent->getName() == "Player") {
+				foundPlayer = true;
+				scene->setPlayerID(ent->getID());
+			}
+			else if(ent->getName() == "Camera") {
+				foundCamera = true;
+			}
+		}
+		if(!foundPlayer) {
+			Entity* player = scene->addEntity("single");
+			player->setName("Player");
+			scene->setPlayerID(player->getID());
+		}
+		if(!foundCamera) {			
+			Entity* camera = scene->addEntity("single");
+			camera->addComponent<CameraComponent>();
+			camera->setName("Camera");
+			camera->setPosition({ 0.f, 1160.f, 3085.f });
+			camera->setRotation({ 15.f, 0.f, 0.f });
+		}
+
 	}
 }
 
@@ -244,6 +269,15 @@ void ScenesManager::addPlayer()
 	Entity* player = scene->addEntity("single");
 	player->setName("Player");
 	scene->setPlayerID(player->getID());
+}
+
+void ScenesManager::addCamera()
+{
+	auto scene = getCurrentScene();
+
+	Entity* camera = scene->addEntity("single");
+	camera->addComponent<CameraComponent>();
+	camera->setName("Camera");
 }
 
 bool ScenesManager::isGameRunning() {

@@ -100,6 +100,9 @@ public:
 	///
 	void addPlayer();
 
+	///
+	void addCamera();
+
 	/// Run game and save current config
 	void runGame();
 
