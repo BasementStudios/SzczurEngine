@@ -25,12 +25,12 @@ Scene::Scene(ScenesManager* parent)
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
 {
-	_collectingHolder.emplace("background", EntitiesHolder_t{});
-	_collectingHolder.emplace("path", EntitiesHolder_t{});
-	_collectingHolder.emplace("single", EntitiesHolder_t{});
 	_collectingHolder.emplace("foreground", EntitiesHolder_t{});
-	_collectingHolder.emplace("entries", EntitiesHolder_t{});
 	_collectingHolder.emplace("battles", EntitiesHolder_t{});
+	_collectingHolder.emplace("entries", EntitiesHolder_t{});
+	_collectingHolder.emplace("single", EntitiesHolder_t{});
+	_collectingHolder.emplace("path", EntitiesHolder_t{});
+	_collectingHolder.emplace("background", EntitiesHolder_t{});
 
 	for (auto& holder : getAllEntities())
 	{
