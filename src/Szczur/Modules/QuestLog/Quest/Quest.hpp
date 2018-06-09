@@ -12,7 +12,7 @@
 
 #include "QuestNode.hpp"
 #include "Requirements.hpp"
-#include "Szczur/Modules/QuestLog/GUI/QuestInfoBar/QuestTitle.hpp"
+//#include "Szczur/Modules/QuestLog/GUI/QuestInfoBar/QuestTitle.hpp"
 
 namespace rat
 {
@@ -30,9 +30,9 @@ namespace rat
         void start();
         void finish();
 
-        void setTitle(const TitleInfo& info);
+        //void setTitle(const TitleInfo& info);
 
-        QuestTitle* addSubtitle(const TitleInfo& info);
+        //QuestTitle* addSubtitle(const TitleInfo& info);
 
         void setName(const std::string& name);
         const std::string& getName() const;
@@ -66,7 +66,7 @@ namespace rat
         void _loadReqsFromJson(nlohmann::json& j);
         void _resetNodesReqs();
 
-        void _activateRootsGUI();
+        //void _activateRootsGUI();
 
         Requirements _reqs;
     };

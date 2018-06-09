@@ -4,7 +4,6 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/GUI/GUI.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -12,14 +11,13 @@
 #include <Json/json.hpp>
 
 #include "Quest/Quest.hpp"
-#include "GUI/QuestGUI.hpp"
+//#include "GUI/QuestGUI.hpp"
 
 #include "Quest/Requirements.hpp"
 
 namespace rat 
 {
-    class Widget;
-    class QuestLog : public Module<Input, Window, Script, GUI>
+    class QuestLog : public Module<Input, Window, Script>
     {
         using Quest_t = std::unique_ptr<Quest>;
     public:
@@ -31,14 +29,10 @@ namespace rat
 
         void setTitle(const std::string& name);
 
-        void _resetWidget(Widget*);
-
-        void addQuest(std::string name);
+        Quest* addQuest(std::string name);
         Quest* getQuest(const std::string name);
 
-        void addQuestFrom(std::string name, Quest_t quest);
-
-        QuestGUI* getGUI();
+        //QuestGUI* getGUI();
 
         void load(const std::string& path);
         void save(const std::string& path) const;
@@ -53,8 +47,8 @@ namespace rat
     private:
 
         std::unique_ptr<Quest> _quest;
-        Widget* _widget{nullptr};
-        std::unique_ptr<QuestGUI> _title;
+        //Widget* _widget{nullptr};
+        //std::unique_ptr<QuestGUI> _title;
 
         std::unordered_map<std::string, Quest_t> _quests;
 

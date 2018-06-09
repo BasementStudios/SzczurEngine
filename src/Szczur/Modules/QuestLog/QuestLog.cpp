@@ -5,10 +5,7 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
-#include "Szczur/Modules/GUI/ImageWidget.hpp"
-#include "GUI/QuestInfoBar/QuestTitle.hpp"
-
-#define CALL Widget::CallbackType::onRelease
+//#define CALL Widget::CallbackType::onRelease
 
 using namespace nlohmann;
 
@@ -16,15 +13,18 @@ namespace rat
 {
     QuestLog::QuestLog()
     {
-        LOG_INFO(this, "QuestLog initing...");
+        LOG_INFO(this, " : QuestLog initing...");
         init();
-        LOG_INFO(this, "QuestLog inited.");
+        LOG_INFO(this, " : QuestLog inited.");
     }
     void QuestLog::init()
     {
         //_debugCounterTest();
 
         initScript();
+
+
+        /*
 
         _quest = std::make_unique<Quest>(*this, "Q0");
         auto* quest = _quest.get();
@@ -266,10 +266,6 @@ namespace rat
 
     }
 
-    void QuestLog::addQuest(std::string name)
-    {
-        new Quest(*this, name);
-    }
 
     void QuestLog::update(float dt)
     {
@@ -279,17 +275,14 @@ namespace rat
         
     }
     
-    void _resetWidget(Widget* w)
-    {
-        w->setCallback(CALL, [](Widget*){});
-    }
 
+/*
     QuestGUI* QuestLog::getGUI()
     {
         return _title.get();
     }
-
-    void QuestLog::addQuestFrom(std::string name, Quest_t quest)
+*/
+    Quest* QuestLog::addQuest(std::string name)
     {
         bool needDefaultName = false;
         if(name == "") needDefaultName = true;
@@ -303,8 +296,14 @@ namespace rat
         {
             name = "Q" + std::to_string(_quests.size());
         }
-        quest->setName(name);
+
+        auto quest = std::make_unique<Quest>(*this, name);
+
+        auto* questPtr = quest.get();
+        
         _quests.emplace(name, std::move(quest));
+
+        return questPtr;
     }
 
     Quest* QuestLog::getQuest(const std::string name)
@@ -396,6 +395,9 @@ namespace rat
         module.set_function("getReqs", &QuestLog::getReqs, this);
 
         script.initClasses<Requirements, Quest, QuestNode>();
+
+
+        script.scriptFile("quests/testowyQuest.lua");
         
     }
     

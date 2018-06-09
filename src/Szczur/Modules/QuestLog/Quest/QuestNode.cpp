@@ -78,11 +78,6 @@ namespace rat
         if(_isFinished() || _state == State::Blocked) return;
         if(!_canBeFinished()) return;
 
-        if(_startingNode)
-        {
-            std::cout << "Debug name: " << getName() << "\n";
-        }
-
         if(_type == Type::Step)
         {
             _state = State::Finished;
@@ -90,14 +85,12 @@ namespace rat
             {
                 _onFinished();
             }
-            _onFinishedGUISet();
+            //_onFinishedGUISet();
         }
-        std::cout << "After normal\n";
         if(_nextNodes.size() == 0)
         {
             if(_type == Type::Step)
             {
-                if(_startingNode == nullptr) std::cout << "KEKUNIO\n";
                 _startingNode->finish();
             }
             else
@@ -122,7 +115,7 @@ namespace rat
             {
                 _onFinished();
             }
-            _onFinishedGUISet();
+           // _onFinishedGUISet();
 
             if(_parentNode)
             {
@@ -130,9 +123,7 @@ namespace rat
             }
             else
             {
-                std::cout << "Before\n";
                 _parentQuest->finish();
-                std::cout << "After\n";
             }
         }
         else
@@ -167,7 +158,6 @@ namespace rat
 
         _fillChildWithLove(nextNode);
         nextNode->_activate();
-        std::cout << nextNode->_title << "\n";
     }
     void QuestNode::_fillChildWithLove(QuestNode* child)
     {
@@ -196,7 +186,7 @@ namespace rat
             _startingNode->_currentChildNode = this;
         }
 
-        _onActivateGUISet();
+        //_onActivateGUISet();
         if(_state == State::Finished)
         {
             if(_onFinished.valid())
@@ -218,7 +208,7 @@ namespace rat
             req->_activate(this);
         }
     }
-
+/*
     void QuestNode::_onActivateGUISet()
     {   
         TitleInfo info;
@@ -251,6 +241,7 @@ namespace rat
         }
         LOG_INFO("_onActivateGUISet ", _name, " has beed activated", _title);
     }
+    /*
     void QuestNode::_onFinishedGUISet()
     {
         if(_type == Type::Starting)
@@ -261,7 +252,7 @@ namespace rat
                 _titleGUI->setTitle(info);
         }
     }
-
+*/
     void QuestNode::setActivateCallback(Function_t onActivate)
     {
         _onActivate = onActivate;
@@ -295,13 +286,10 @@ namespace rat
     {
         if(_currentChildNode)
         {
-            std::cout << "Heheszki111\n";
             _currentChildNode->resume();
-            std::cout << "Heheszki222\n";
         }
         else
         {
-            std::cout << "Name of current: " << _name << "\n";
             if(_state == State::Finished)
             {
                 if(_onFinished.valid())
@@ -362,11 +350,8 @@ namespace rat
 
     void QuestNode::loadFromJson(nlohmann::json& j)
     {
-        std::cout << "Node \"" << _name << "\" loading...\n";
         _state = static_cast<State>(j["state"]);
 
-        
-        std::cout << "MECH\n";
         if(j["hasCurrent"])
         {
             auto& jCur = j["current"];
@@ -381,13 +366,11 @@ namespace rat
         _loadRequirmentNodesFromJson(j["requeirmentNodes"]);
 
         _reqs.loadFromJson(j["reqs"]);
-
-        std::cout << "Node \"" << _name << "\" loaded.\n";
     }
 
     void QuestNode::_loadRequirmentNodesFromJson(nlohmann::json& j)
     {
-        LOG_ERROR_IF(j.size() != _requirmentNodes.size(), "Node \"", _name, "\" cannot load requirment nodes...");
+        LOG_ERROR_IF(j.size() != _requirmentNodes.size(), "Node \"", _name, "\" cannot load requirment nodes properly...");
         for(int i = 0; i < j.size(); i++)
         {
             auto req = _requirmentNodes[i];
@@ -425,7 +408,7 @@ void QuestNode::initScript(Script& script)
         object.set("getReqs", &QuestNode::getReqs);
 
         // Callbacks
-        object.set("onActivate", &QuestNode::_onActivate);
+        //object.set("onActivate", &QuestNode::_onActivate);
         object.set("onBlock", &QuestNode::_onBlocked);
         object.set("onFinish", &QuestNode::_onFinished);
 

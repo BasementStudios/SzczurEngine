@@ -9,8 +9,6 @@
 #include <sol.hpp>
 #include <Json/json.hpp>
 
-#include "Szczur/Modules/QuestLog/GUI/QuestInfoBar/QuestTitle.hpp"
-
 #include "Requirements.hpp"
 
 namespace rat
@@ -88,9 +86,9 @@ namespace rat
 
         std::set<QuestNode*> _getStartingNodes();
 
-        void _onActivateGUISet();
-        void _onFinishedGUISet();
-        QuestTitle* _titleGUI{nullptr};
+        //void _onActivateGUISet();
+        //void _onFinishedGUISet();
+        //QuestTitle* _titleGUI{nullptr};
 
 
         std::string _title{"None"};

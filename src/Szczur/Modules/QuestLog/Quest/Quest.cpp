@@ -14,9 +14,9 @@ namespace rat
 {
     Quest::Quest(QuestLog& owner, const std::string& name)
     :
-    _owner(owner)
+    _owner(owner),
+    _name(name)
     {
-        _owner.addQuestFrom(name, std::move(std::unique_ptr<Quest>(this)));
         _rootNode = new QuestNode(this, "Root");
     }
     QuestNode* Quest::getNode(const std::string& nodeName)
@@ -60,7 +60,7 @@ namespace rat
         _state = State::Finished;
         std::cout << "Jo Jo, you finished Quest\n";
     }
-
+/*
     void Quest::setTitle(const TitleInfo& info)
     {      
         auto* gui = _owner.getGUI();
@@ -75,20 +75,7 @@ namespace rat
         auto* gui = _owner.getGUI();
         return gui->addSubtitle(info);
     }
-
-    void Quest::testLoad(std::ifstream& in)
-    {
-        json j;
-        in >> j;
-        for(auto& node : _nodes)
-        {
-            node.second->reset();
-        }
-    }
-    void Quest::testSave(std::ofstream& out)
-    {
-        out << std::setw(4) << _rootNode->getJson();
-    }
+*/
 
     json Quest::getJson() const
     {
@@ -118,11 +105,13 @@ namespace rat
     void Quest::_loadRootFromJson(nlohmann::json& j)
     {
         _resetNodesReqs();
-        _rootNode->loadFromJson(j); 
+        _rootNode->loadFromJson(j);
+        /* 
         if(_state == State::Active)
         {
             _activateRootsGUI();
         }
+        */
     }
 
     void Quest::_resetNodesReqs()
@@ -132,14 +121,14 @@ namespace rat
             node->reset();
         }
     }
-
+/*
     void Quest::_activateRootsGUI()
     {
         auto gui = _owner.getGUI();
         gui->resetSubtitles();
         _rootNode->resume();
     }
-
+*/
     void Quest::setName(const std::string& name)
     {
         _name = name;
@@ -159,7 +148,7 @@ namespace rat
 
     // Main
     object.set("getNode", &Quest::getNode);
-    object.set("setTitle", &Quest::setTitle);
+    //object.set("setTitle", &Quest::setTitle);
     object.set("getRoot", &Quest::getRoot);
     object.set("getReqs", &Quest::getReqs);
 
