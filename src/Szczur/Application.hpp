@@ -59,7 +59,7 @@ private:
 
 	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor, Music, AudioEditor, AudioEffects, Cinematics> _modules;
+	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor, Music, AudioEditor, AudioEffects, Cinematics, SoundManager> _modules;
 
 };
 
