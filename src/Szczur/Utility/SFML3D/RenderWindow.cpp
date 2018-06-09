@@ -1,5 +1,8 @@
 #include "RenderWindow.hpp"
 #include <iostream>
+
+#include <SFML/Graphics.hpp>
+
 namespace sf3d {
 	RenderWindow::RenderWindow() {
 	}
