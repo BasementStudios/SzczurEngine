@@ -51,6 +51,13 @@ namespace rat {
 
 		auto mathTab = _lua.get<sol::table>("Math");
 		mathTab.set_function("atan2", sol::resolve<float(float, float)>(std::atan2));
+
+		auto moduleUtility = newModule("Utility");
+		auto classClock = newClass<sf::Clock>("Clock", "Utility");
+		classClock.set("new", sol::constructors<sf::Clock()>());
+		classClock.set("restart", &sf::Clock::restart);
+		classClock.set("elapsed", [](sf::Clock& clock){return clock.getElapsedTime().asSeconds();});
+		classClock.init();
 	}
 	void Script::scriptFile(const std::string& filePath) {
 		_lua.script_file(filePath);
