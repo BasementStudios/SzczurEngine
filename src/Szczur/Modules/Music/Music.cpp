@@ -37,7 +37,7 @@ namespace rat
 
 		module.set_function("addPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args newPlaylist){
-				owner->_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
+				owner->_playlists[fnv1a_32(key.c_str())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
 				for (auto it : newPlaylist){
 					owner->addToPlaylist(key, it);
 				}
@@ -92,7 +92,7 @@ namespace rat
 
 	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist) 
 	{
-		_playlists[fnv1a_32(key.begin())] = std::make_unique<Playlist>(getModule<AudioEffects>());
+		_playlists[fnv1a_32(key.c_str())] = std::make_unique<Playlist>(getModule<AudioEffects>());
 
 		for (auto it : newPlaylist)
 			addToPlaylist(key, it);
@@ -102,14 +102,14 @@ namespace rat
 	{
 		_assets.load(fileName);
 		auto&& base = MusicBase(_assets.get(fileName));
-		_playlists[fnv1a_32(key.begin())]->add(std::move(base));
+		_playlists[fnv1a_32(key.c_str())]->add(std::move(base));
 
 		LOG_INFO("Added ", fileName, " to playlist ", key);
 	}
 
 	void Music::removeFromPlaylist(const std::string& key, const std::string& fileName) 
 	{
-		auto hashKey = fnv1a_32(key.begin()); 
+		auto hashKey = fnv1a_32(key.c_str()); 
 
 		if (_currentPlaylistKey == hashKey) 
 			_currentPlaylistKey = 0;
@@ -129,7 +129,7 @@ namespace rat
 
 	void Music::play(const std::string& key, const std::string& fileName)
 	{
-		auto hashKey = fnv1a_32(key.begin());
+		auto hashKey = fnv1a_32(key.c_str());
 
 		if (_currentPlaylistKey == 0)
 			_playlists[hashKey]->play(fileName);
@@ -170,7 +170,7 @@ namespace rat
 
 	bool Music::includes(const std::string& key, const std::string& fileName)
 	{
-		return _playlists[fnv1a_32(key.begin())]->includes(fileName);
+		return _playlists[fnv1a_32(key.c_str())]->includes(fileName);
 	}
 
 	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
@@ -181,12 +181,12 @@ namespace rat
 			case PlayingMode::Single: LOG_INFO("Playing Mode in playlist ", key, " changed to Single"); break;
 		}
 
-		_playlists[fnv1a_32(key.begin())]->setPlayingMode(mode);
+		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);
 	}
 
 	void Music::setVolume(const std::string& key, float volume, const std::string& fileName)
 	{
-		_playlists[fnv1a_32(key.begin())]->setVolume(volume, fileName);
+		_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);
 	}
 
 	float Music::getVolume(const std::string& fileName)
