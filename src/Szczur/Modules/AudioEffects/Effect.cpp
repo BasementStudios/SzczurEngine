@@ -1,6 +1,6 @@
 #include "Effect.hpp"
 
-#include "RatSound.hpp"
+#include "Szczur/Modules/Sound/RatSound.hpp"
 #include "Szczur/Modules/Music/RatMusic.hpp"
 
 namespace rat

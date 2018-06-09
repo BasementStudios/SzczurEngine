@@ -2,10 +2,9 @@
 
 namespace rat
 {
-    MusicAssets::MusicAssets(const std::string& path)
-        : DEFAULT_PATH(path)
+    MusicAssets::MusicAssets()
     {
-        LOG_INFO("Default musics assets path: ", DEFAULT_PATH);
+        LOG_INFO("Default musics assets path: ", MUSIC_DEFAULT_PATH);
     }
 
     void MusicAssets::load(const std::string& fileName) 
@@ -36,7 +35,7 @@ namespace rat
 
     std::string MusicAssets::getPath(const std::string& fileName) const 
 	{
-		auto path = DEFAULT_PATH + fileName;
+		auto path = MUSIC_DEFAULT_PATH + fileName;
         path += ".flac";
 
         return path;

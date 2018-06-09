@@ -45,5 +45,4 @@ namespace rat
 		setEffect(AL_ECHO_SPREAD, spread);
 	}
 
-
 }

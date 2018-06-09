@@ -4,6 +4,8 @@
 
 #include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
 
+#define MUSIC_DEFAULT_PATH "Assets/Music/"
+
 namespace rat
 {
 	class RatMusic : public sf::Music, public AudioEffect
@@ -28,7 +30,7 @@ namespace rat
 
 		unsigned int getCounterValue() const;
 
-		void saveToJson();
+		void saveToJson(); //Only for editor
 
 	private:
 

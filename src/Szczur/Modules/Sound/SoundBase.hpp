@@ -2,57 +2,60 @@
 
 #include <string>
 
-#include <SFML/Audio.hpp>
+#include "SFML/Audio/SoundBuffer.hpp"
+
+#include "RatSound.hpp"
 
 namespace rat
 {
-        class SoundBase
-        {
-             using Second_t = float;
-        private:
+    class SoundBase
+    {
+        using Second_t = float;
+    private:
             
-            struct
-            {
-                Second_t beginTime;
-                Second_t endTime;
-            }offset;
+        struct
+        {
+            Second_t beginTime;
+            Second_t endTime;
+        } offset;
 
-            Second_t _length;
-            float _volume{100};
-            float _pitch;
-            std::string _name;
-            std::string _fileName;
-            sf::SoundBuffer buffer;
-            sf::Sound sound;
-            Second_t playingTime{0};
+        Second_t _length;
+        float _volume {100};
+        float _pitch;
+        std::string _name;
+        std::string _fileName;
+        Second_t playingTime {0};
+            
+        sf::SoundBuffer buffer;
+        RatSound sound;
 
-        public:
+    public:
 
-            bool init(const std::string &name,const std::string &filename);
+        bool init(const std::string &name,const std::string &filename);
 
-            void play();
-            void stop();
-            void pause();
+        void play();
+        void stop();
+        void pause();
 
-            float getVolume() const;
-            void setVolume(float volume);
-            void setBaseVolume(float volume);
+        float getVolume() const;
+        void setVolume(float volume);
+        void setBaseVolume(float volume);
 
-            float getPitch() const;
-            void setPitch(float pitch);
+        float getPitch() const;
+        void setPitch(float pitch);
 
-            bool getLoop() const;
-            void setLoop(bool loop);
+        bool getLoop() const;
+        void setLoop(bool loop);
 
-            void setOffset(Second_t beginT,Second_t endT);
-            Second_t getLength() const;
+        void setOffset(Second_t beginT, Second_t endT);
+        Second_t getLength() const;
 
-            const std::string getName() const;
+        const std::string getName() const;
 
-        private:
+    private:
 
-            bool loadBuffer();
-            std::string getPath() const;
+        bool loadBuffer();
+        std::string getPath() const;
 
-        };
+    };
 }

@@ -16,11 +16,9 @@ namespace rat
 
         Container_t _musicHolder;
 
-        const std::string DEFAULT_PATH;
-
     public:
 
-        MusicAssets(const std::string& path);
+        MusicAssets();
 
         void load(const std::string& name);
         void unload(const std::string& name);

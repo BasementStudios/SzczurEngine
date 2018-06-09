@@ -13,7 +13,7 @@ void Application::init()
 	initModule<Script>();
 	initModule<Input>();
 	initModule<AudioEditor>();
-	initModule<Music>("Assets/Music/");
+	initModule<Music>();
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
 	initModule<Camera>();
@@ -22,6 +22,8 @@ void Application::init()
 	initModule<Dialog>();
 	initModule<DialogEditor>();
 	initModule<Cinematics>();
+	initModule<SoundManager>();
+
 
 	LOG_INFO("Modules initialized");
 

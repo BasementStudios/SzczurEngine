@@ -5,8 +5,7 @@
 namespace rat 
 {
 
-	Music::Music(const std::string& assetsPath)
-		: _assets(assetsPath)
+	Music::Music()
 	{
 		initScript();
 		LOG_INFO(this, " : Module Music constructed");
@@ -74,15 +73,15 @@ namespace rat
 	{
 		nlohmann::json j;
 
-		std::ifstream file("Assets/Music/" + filePath + ".json");
+		std::string path = MUSIC_DEFAULT_PATH;
+		std::ifstream file(path + "Playlists/" + filePath + ".json");
         if (file.is_open()) {
             file >> j;
         }
         file.close();
 
-        for (auto it = j.begin(); it != j.end(); ++it) {
-                addPlaylist(it.key(), it.value());
-        }
+        for (auto it = j.begin(); it != j.end(); ++it)
+            addPlaylist(it.key(), it.value());
 	}
 
 	void Music::update(float deltaTime)

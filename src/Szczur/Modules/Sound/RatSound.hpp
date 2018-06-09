@@ -2,7 +2,7 @@
 
 #include "SFML/Audio/Sound.hpp"
 
-#include "AudioEffect.hpp"
+#include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
 
 namespace rat
 {

@@ -1,6 +1,12 @@
 #include "SoundEditor.hpp"
 namespace rat
 {
+  SoundEditor::SoundEditor()
+    : _soundManager(getModule<SoundManager>())
+  {
+
+  }
+
   void SoundEditor::init()
   {
     _soundManager.setVolume(100);
@@ -41,7 +47,7 @@ namespace rat
         }
 
         if(_soundsInfo[i]->toDelete && ImGui::Button((_soundManager.getName(i)+" Delete").c_str())){
-          _soundManager.eraseSingleSound(i);
+          _soundManager.eraseSingleSoundByID(i);
           _soundsInfo.erase(_soundsInfo.begin()+i);
           break;
         }

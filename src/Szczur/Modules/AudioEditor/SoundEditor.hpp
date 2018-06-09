@@ -4,15 +4,14 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Sound/SoundManager.hpp"
 
-
 #include <ImGui/imgui.h>
 #include <ImGui/imgui-SFML.h>
 #include <fstream>
 namespace rat
 {
-    class SoundEditor : public Module <Window, Input>
+    class SoundEditor : public Module <Window, Input, SoundManager>
     {
-        SoundManager _soundManager;
+        SoundManager& _soundManager;
         struct SoundInfo{
             int id;
             float volume;
@@ -30,6 +29,8 @@ namespace rat
         float max=100;
         char file[256]={};
     public:
+
+        SoundEditor();
 
         void init();
         void render();

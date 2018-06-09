@@ -1,183 +1,210 @@
 #include "SoundManager.hpp"
 
+#include <Json/json.hpp>
+
 namespace rat
 {
-        bool SoundManager::newSound(const std::string &name,const std::string &fileName)
-        {
-            auto sound = std::make_unique<SoundBase>();
-            
-            if(sound->init(name,fileName)){
-                _sounds.push_back(std::move(sound));
-                return true;
-            }
-            return false;
+    SoundManager::SoundManager()
+    {
+        initScript();
+        LOG_INFO(this, " : Module SoundManager constructed");
+    }
+
+    SoundManager::~SoundManager()
+    {
+        LOG_INFO(this, " : Module SoundManager destructed");
+    }
+
+    void SoundManager::initScript()
+    {
+        Script& script = getModule<Script>();
+		auto module = script.newModule("SoundManager");
+
+        module.set_function("newSound", &SoundManager::newSound, this);
+        module.set_function("eraseSounds", &SoundManager::eraseSounds, this);
+        module.set_function("eraseSingleSound", &SoundManager::eraseSingleSound, this);
+        module.set_function("getSound", &SoundManager::getSound, this);
+        module.set_function("play", &SoundManager::play, this);
+        module.set_function("pause", &SoundManager::pause, this);
+        module.set_function("stop", &SoundManager::stop, this);
+        module.set_function("setVolume", &SoundManager::setVolume, this);
+        module.set_function("setPitch", &SoundManager::setPitch, this);
+        module.set_function("setLoop", &SoundManager::setLoop, this);
+        module.set_function("changeLoop", &SoundManager::changeLoop, this);
+        module.set_function("getLoop", &SoundManager::getLoop, this);
+        module.set_function("getSize", &SoundManager::getSize, this);
+        module.set_function("setOffset", &SoundManager::setOffset, this);
+        module.set_function("getLength", &SoundManager::getLength, this);
+        module.set_function("getName", &SoundManager::getName, this);
+        module.set_function("load", &SoundManager::load, this);
+    }
+
+    bool SoundManager::newSound(const std::string &name,const std::string &fileName)
+    {
+        auto sound = std::make_unique<SoundBase>();
+         
+        if(sound->init(name, fileName)){
+            _sounds.push_back(std::move(sound));
+            return true;
+        }
+        return false;
+    }
+
+    void SoundManager::eraseSounds()
+    {
+        _sounds.clear();
+    }
+
+    void SoundManager::eraseSingleSoundByID(int id)
+    {
+        if (id >= 0 && id < _sounds.size())
+            _sounds.erase(_sounds.begin() + id);
+    }
+
+    void SoundManager::eraseSingleSound(const std::string &fileName)
+    {
+        int i = getSound(fileName);
+        _sounds.erase(_sounds.begin() + i);
+    }
+
+    int SoundManager::getSound(const std::string &fileName) const
+    {
+        for(unsigned int i = 0; i < _sounds.size(); ++i){
+            if(fileName == _sounds[i]->getName())
+                return i;
         }
 
-        void SoundManager::eraseSounds()
-        {
-            _sounds.clear();
-        }
+        return _sounds.size();
+    }
 
-        void SoundManager::eraseSingleSound(int i)
-        {
-            if(i>=0 && i< _sounds.size())
-            _sounds.erase(_sounds.begin()+i);
+    void SoundManager::setVolume(float volume, const std::string &fileName)
+    {
+        if(fileName==""){
+            _volumeGame=volume;
+            for(unsigned int i=0; i<_sounds.size(); ++i)
+               _sounds[i]->setVolume(_sounds[i]->getVolume()*(volume/100));
         }
-
-        void SoundManager::eraseSingleSound(const std::string &fileName)
-        {
+        else{
             int i = getSound(fileName);
-            _sounds.erase (_sounds.begin()+i);
+            _sounds[i]->setBaseVolume(volume*(_volumeGame/100));
         }
+    }
 
-        int SoundManager::getSound(const std::string &fileName) const
-        {
-            for(unsigned int i=0; i<_sounds.size(); ++i){
-                    if(fileName==_sounds[i]->getName())
-                       return i;
-            }
-
-            return _sounds.size();
-        }
-
-        void SoundManager::setVolume(float volume, const std::string &fileName)
-        {
-            if(fileName==""){
-                _volumeGame=volume;
-                for(unsigned int i=0; i<_sounds.size(); ++i)
-                    _sounds[i]->setVolume(_sounds[i]->getVolume()*(volume/100));
-            }
-            else{
-                int i = getSound(fileName);
-                _sounds[i]->setBaseVolume(volume*(_volumeGame/100));
-            }
-        }
-
-        void SoundManager::setPitch(float pitch, const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->setPitch(pitch);
-           // for(unsigned int i=0; i<_sounds.size(); ++i)
-             //       _sounds[i]->setPitch(pitch);
-
-        }
+    void SoundManager::setPitch(float pitch, const std::string &fileName)
+    {
+        int i = getSound(fileName);
+        _sounds[i]->setPitch(pitch);
+    }
  
-        void SoundManager::setLoop(bool loop,const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->setLoop(loop);
-        }
+    void SoundManager::setLoop(bool loop,const std::string &fileName)
+    {
+        int i = getSound(fileName);
+        _sounds[i]->setLoop(loop);
+    }
 
-        void SoundManager::changeLoop(const std::string &fileName)
-        {
-            int i = getSound(fileName);
-                if(_sounds[i]->getLoop())
-                    _sounds[i]->setLoop(false);
-                else
-                    _sounds[i]->setLoop(true);
-        }
-
-       void SoundManager::changeLoop()
-        {
+    void SoundManager::changeLoop(const std::string &fileName)
+    {
+        if(fileName.empty()) {
             for(unsigned int i=0; i<_sounds.size(); ++i){
                 if(_sounds[i]->getLoop())
                     _sounds[i]->setLoop(false);
                 else
                     _sounds[i]->setLoop(true);
             }
+            return;
         }
 
-        bool SoundManager::getLoop(const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            return _sounds[i]->getLoop();
-        }
+        int i = getSound(fileName);
+        if(_sounds[i]->getLoop())
+            _sounds[i]->setLoop(false);
+        else
+            _sounds[i]->setLoop(true);
+    }
 
-        int SoundManager::getSize() const
-        {
-            return _sounds.size();
-        }
+    bool SoundManager::getLoop(const std::string &fileName)
+    {
+        int i = getSound(fileName);
+        return _sounds[i]->getLoop();
+    }
 
-        void SoundManager::play()
-        {
-            for(unsigned int i=0; i<_sounds.size(); ++i)
+    int SoundManager::getSize() const
+    {
+        return _sounds.size();
+    }
+
+    void SoundManager::play(const std::string &fileName)
+    {
+        if (fileName.empty()) {
+            for (unsigned int i=0; i<_sounds.size(); ++i)
                 _sounds[i]->play();
+            return;
         }
 
-        void SoundManager::pause()
-        {
-            for(unsigned int i=0; i<_sounds.size(); ++i)
+        int i = getSound(fileName);
+        _sounds[i]->play();
+    }
+
+    void SoundManager::pause(const std::string &fileName)
+    {
+        if (fileName.empty()) {
+            for (unsigned int i=0; i<_sounds.size(); ++i)
                 _sounds[i]->pause();
+            return;
         }
 
-        void SoundManager::stop()
-        {
-            for(unsigned int i=0; i<_sounds.size(); ++i){
+        int i = getSound(fileName);
+        _sounds[i]->pause();
+    }
+
+    void SoundManager::stop(const std::string &fileName)
+    {
+        if (fileName.empty()) {
+            for (unsigned int i = 0; i < _sounds.size(); ++i) {
                 _sounds[i]->setLoop(false);
                 _sounds[i]->stop();
             }
+            return;
         }
 
-        void SoundManager::play(const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->play();
-        }
+        int i = getSound(fileName);
+        _sounds[i]->setLoop(false);
+        _sounds[i]->stop();
+    }
 
-        void SoundManager::pause(const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->pause();
-        }
+    void SoundManager::setOffset(const std::string &fileName, Second_t beginT, Second_t endT)
+    {
+        int i = getSound(fileName);
+        _sounds[i]->setOffset(beginT,endT);
+    }
 
-        void SoundManager::stop(const std::string &fileName)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->setLoop(false);
-            _sounds[i]->stop();
-        }
+    SoundManager::Second_t SoundManager::getLength(const std::string &fileName) const
+    {
+        int i = getSound(fileName);
+        return _sounds[i]->getLength();
+    }
 
-        void SoundManager::setOffset(const std::string &fileName,Second_t beginT,Second_t endT)
-        {
-            int i = getSound(fileName);
-            _sounds[i]->setOffset(beginT,endT);
-        }
+    std::string SoundManager::getName(int i) const
+    {
+        return _sounds[i]->getName();
+    }
 
-        SoundManager::Second_t SoundManager::getLength(const std::string &fileName) const
-        {
-            int i = getSound(fileName);
-            return _sounds[i]->getLength();
-        }
+    void SoundManager::load(const std::string& fileName)
+    {
+        nlohmann::json j;
+        std::ifstream file("Assets/Sounds/Data/" + fileName + ".json");    
 
-        std::string SoundManager::getName(int i) const
-        {
-            return _sounds[i]->getName();
-        }
+        if (file.is_open()) {
+            file >> j;
+            file.close();
 
-         void SoundManager::load(const std::string& fileName)
-        {
-            std::fstream file;        
-            std::string mainName = fileName + ".dat";
-            file.open(mainName, std::ios::in);
-            std::string name;
-            std::string soundFileName;
-            Second_t beginT;
-            Second_t endT;
-            float volume;
-            float pitch;
+            auto name = j["Name"];
 
-            while(file >> name){ 
-                file >> soundFileName;
-                newSound(name,soundFileName);
-                //file >> _soundsInfo[_soundsInfo.size()-1]->name;
-                file >> beginT;
-                file >> endT;
-                file >> volume;
-                file >> pitch;
-                setVolume(volume,name);
-                setPitch(pitch,name);
-                setOffset(name,beginT,endT);
-            }
+            newSound(name, j["File"]);
+            setVolume(j["Volume"], name);
+            setPitch(j["Pitch"], name);
+            setOffset(name, j["BeginTime"], j["EndTime"]);
+
         }
+    }
 
 }
