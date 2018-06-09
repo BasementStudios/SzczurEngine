@@ -61,10 +61,10 @@ namespace rat
 		void highMidGain(float gain);
 
 
-		//delay: [Range: 0.0 - 0.207] [Default: 0.1]
+		//cutoff: [Range: 4000.0 - 16000.0] [Default: 6000.0]
 		void highCutoff(float cutoff);
 
-		//cutoff: [Range: 4000.0 - 16000.0] [Default: 6000.0]
+		//gain: [Range: 0.126 - 7.943] [Default: 1.0]
 		void highGain(float gain);
 
 	};

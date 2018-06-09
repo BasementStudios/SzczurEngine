@@ -22,6 +22,7 @@ namespace rat
 		object.set("reflectionsGain", &Reverb::reflectionsGain);
 		object.set("reflectionsDelay", &Reverb::reflectionsDelay);
 		object.set("lateReverbDelay", &Reverb::lateReverbDelay);
+        object.set("lateReverbGain", &Reverb::lateReverbDelay);
 		object.set("airAbsorptionGainHf", &Reverb::airAbsorptionGainHf);
 		object.set("roomRolloffFactor", &Reverb::roomRolloffFactor);
 		object.set("decayHfLimit", &Reverb::decayHfLimit);
