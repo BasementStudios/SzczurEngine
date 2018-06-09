@@ -19,6 +19,9 @@
 #include "SpriteDisplayDataManager.hpp"
 #include "ArmatureDisplayDataManager.hpp"
 
+#include <Szczur/Utility/SFML3D/RectangleShape.hpp>
+#include <Szczur/Utility/SFML3D/CircleShape.hpp>
+
 namespace rat {
 class DialogEditor;
 class AudioEditor;
@@ -113,6 +116,11 @@ private:
 	void _render();
 
 private:
+
+// World
+
+	sf3d::CircleShape originCircle;
+	sf3d::RectangleShape originRect;
 
 // World
 

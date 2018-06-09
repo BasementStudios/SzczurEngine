@@ -76,6 +76,14 @@ const ScenesManager& World::getScenes() const
 	return _scenes;
 }
 
+bool World::isEditor() {
+	return _doEditor;
+}
+
+void World::setEditor(bool flag) {
+	_doEditor = flag;
+}
+
 void World::initScript() {
 	auto& script = getModule<Script>();
 

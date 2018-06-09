@@ -56,6 +56,12 @@ public:
 	///
 	void initScript();
 
+	///	
+	bool isEditor();
+
+	///
+	void setEditor(bool flag);
+
 private:
 
 	bool _doEditor{true};

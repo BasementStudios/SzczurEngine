@@ -118,55 +118,55 @@ namespace rat {
 	}
 
 	void LevelEditor::_renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target) {
-		sf3d::RectangleShape rect({100.f, 100.f});
-		rect.setPosition(position);
-		rect.setOrigin({50.f, 50.f, -10.f});
+		originRect.setSize({100.f, 100.f});
+		originRect.setPosition(position);
+		originRect.setOrigin({50.f, 50.f, -10.f});
 
 		if(selected) {
-			rect.setColor({1.f, 0.3f, 1.f, 0.4f});
-			target.draw(rect);
+			originRect.setColor({1.f, 0.3f, 1.f, 0.4f});
+			target.draw(originRect);
 
-			rect.move({0.f, 0.f, 0.1f});
-			rect.setSize({80.f, 80.f});
-			rect.setOrigin({40.f, 40.f, -10.f});
+			originRect.move({0.f, 0.f, 0.1f});
+			originRect.setSize({80.f, 80.f});
+			originRect.setOrigin({40.f, 40.f, -10.f});
 		}
 		else {
-			rect.setColor({0.6f, 0.f, 0.7f, 0.4f});
-			target.draw(rect);
+			originRect.setColor({0.6f, 0.f, 0.7f, 0.4f});
+			target.draw(originRect);
 
-			rect.move({0.f, 0.f, 0.1f});
-			rect.setSize({70.f, 70.f});
-			rect.setOrigin({35.f, 35.f, -10.f});
+			originRect.move({0.f, 0.f, 0.1f});
+			originRect.setSize({70.f, 70.f});
+			originRect.setOrigin({35.f, 35.f, -10.f});
 		}
 
-		rect.setColor(color);
-		target.draw(rect);
+		originRect.setColor(color);
+		target.draw(originRect);
 	}
 
 	void LevelEditor::_renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target) {
-		sf3d::CircleShape cir(50.f);
-		cir.setPosition(position);
-		cir.setOrigin({50.f, 50.f, -10.f});
+		originCircle.setRadius(50.f);
+		originCircle.setPosition(position);
+		originCircle.setOrigin({50.f, 50.f, -10.f});
 
 		if(selected) {
-			cir.setColor({1.f, 0.3f, 1.f, 0.4f});
-			target.draw(cir);
+			originCircle.setColor({1.f, 0.3f, 1.f, 0.4f});
+			target.draw(originCircle);
 
-			cir.move({0.f, 0.f, 0.1f});
-			cir.setRadius(40.f);
-			cir.setOrigin({40.f, 40.f, -10.f});
+			originCircle.move({0.f, 0.f, 0.1f});
+			originCircle.setRadius(40.f);
+			originCircle.setOrigin({40.f, 40.f, -10.f});
 		}
 		else {
-			cir.setColor({0.6f, 0.f, 0.7f, 0.4f});
-			target.draw(cir);
+			originCircle.setColor({0.6f, 0.f, 0.7f, 0.4f});
+			target.draw(originCircle);
 
-			cir.move({0.f, 0.f, 0.1f});
-			cir.setRadius(35.f);
-			cir.setOrigin({35.f, 35.f, -10.f});
+			originCircle.move({0.f, 0.f, 0.1f});
+			originCircle.setRadius(35.f);
+			originCircle.setOrigin({35.f, 35.f, -10.f});
 		}
 
-		cir.setColor(color);
-		target.draw(cir);
+		originCircle.setColor(color);
+		target.draw(originCircle);
 	}
 
 
@@ -223,41 +223,6 @@ namespace rat {
 			}
 		}
 
-		// sf3d::RectangleShape rect({100.f, 100.f});
-		// rect.setColor({1.f, 1.f, 0.f, 0.2f});
-		// rect.setOrigin({50.f, 50.f, -10.f});
-
-		// scene->forEach([&](const std::string& group, Entity& entity){
-		// 	rect.setPosition(entity.getPosition());
-		// 	if(_objectsList.getSelectedID() == entity.getID()) {
-		// 		rect.setSize({100.f, 100.f});
-		// 		rect.setOrigin({50.f, 50.f, -10.f});
-		// 		rect.setColor({1.f, 0.3f, 1.f, 0.4f});
-		// 		target.draw(rect);
-		// 		rect.move({0.f, 0.f, 0.1f});
-		// 		rect.setSize({80.f, 80.f});
-		// 		rect.setOrigin({40.f, 40.f, -10.f});
-		// 		rect.setColor({0.f, 1.f, 1.f, 0.4f});
-		// 		target.draw(rect);
-		// 		rect.move({0.f, 0.f, -0.1f});
-		// 		// rect.setOutlineColor({1.f, 1.f, 0.f, 0.8f})
-		// 		// rect.setOutlineThickness(2.f);
-		// 	}
-		// 	else {
-		// 		rect.setSize({100.f, 100.f});
-		// 		rect.setOrigin({50.f, 50.f, -10.f});
-		// 		rect.setColor({0.7f, 0.f, 0.8f, 0.4f});
-		// 		target.draw(rect);
-		// 		rect.move({0.f, 0.f, 0.1f});
-		// 		rect.setSize({80.f, 80.f});
-		// 		rect.setOrigin({40.f, 40.f, -10.f});
-		// 		rect.setColor({1.f, 1.f, 0.f, 0.4f});
-		// 		target.draw(rect);
-		// 		rect.move({0.f, 0.f, -0.1f});
-		// 		// rect.setOutlineThickness(0.f);
-		// 	}
-		// });		
-
 		sf3d::CircleShape circ;
 		sf3d::CircleShape circ2;
 		circ.rotate({-90.f, 0.f, 0.f});
@@ -294,14 +259,16 @@ namespace rat {
 
 		updateCurrentCamera();
 
-		auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
-		if(input.isPressed(Mouse::Left)) {
-			_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
-				if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-					if(_currentCamera && entity.getID() == _currentCamera->getID()) return;
-					_objectsList.select(entity.getID());
-				}
-			});
+		if(!ImGui::IsAnyWindowHovered()) {
+			auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
+			if(input.isPressed(Mouse::Left)) {
+				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
+					if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
+						if(_currentCamera && entity.getID() == _currentCamera->getID()) return;
+						_objectsList.select(entity.getID());
+					}
+				});
+			}
 		}
 
 		// _scenes.getCurrentScene()->forEach([this, scene, &_currentCamera](const std::string&, Entity& entity){
@@ -320,6 +287,7 @@ namespace rat {
 
 		if(input.isReleased(Keyboard::F1)) {
 			_scenes.menuSave();
+			printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
 		}
 	}
 

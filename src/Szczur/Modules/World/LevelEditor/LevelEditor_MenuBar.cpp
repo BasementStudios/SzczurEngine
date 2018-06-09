@@ -5,6 +5,8 @@
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
+#include <Szczur/Modules/World/World.hpp>
+
 #include <Szczur/ImGuiStyler.hpp>
 
 #include <ImGui/imgui.h>
@@ -161,20 +163,29 @@ namespace rat {
 			}
 
 			// Debug
+			auto* world = detail::globalPtr<World>;
 			if (ImGui::BeginMenu("Debug"))
 			{
 				if (ImGui::MenuItem("Reload style", nullptr))
 				{
 					ImGuiStyler::get().reload();
 				}
-				if (ImGui::MenuItem("Add player", nullptr))
+				if (ImGui::MenuItem("Add Player", nullptr))
 				{
 					_scenes.addPlayer();
 				}
-				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) {
-					_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
-					LOG_INFO(_ifShowImGuiDemoWindow)
+				if (ImGui::MenuItem("Add Camera", nullptr))
+				{
+					_scenes.addCamera();
 				}
+				if (ImGui::MenuItem("Enable editor", "F10", world->isEditor()))
+				{
+					world->setEditor(!world->isEditor());
+				}
+				// if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) {
+				// 	_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
+				// 	LOG_INFO(_ifShowImGuiDemoWindow)
+				// }
 
 				ImGui::EndMenu();
 			}
