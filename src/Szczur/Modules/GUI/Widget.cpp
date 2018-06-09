@@ -172,10 +172,10 @@ namespace rat {
             tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
 
             child->_onMoved(tempEvent);
-
+ 
             auto childShift = _getChildShiftByIndex(i);
-            event.mouseMove.x -= childShift.x;
-            event.mouseMove.y -= childShift.y;
+            event.mouseMove.x -= int(childShift.x * _winProp.x);
+            event.mouseMove.y -= int(childShift.y * _winProp.y);
         }
         /*
         for(auto* child : _children)
@@ -204,6 +204,11 @@ namespace rat {
 
 	void Widget::_inputChildren(sf::Event event)
     {
+        {
+            auto childrenShift = _getChildrenShift();
+            event.mouseMove.x -= childrenShift.x;
+            event.mouseMove.y -= childrenShift.y;
+        }
         for(auto child : _children) 
         {
             if(event.type == sf::Event::MouseMoved)
@@ -213,6 +218,10 @@ namespace rat {
                 tempEvent.mouseMove.x -= int(childPosition.x * _winProp.x);
                 tempEvent.mouseMove.y -= int(childPosition.y * _winProp.y);
                 child->input(tempEvent);
+
+                auto childShift = _getChildShiftByIndex(i);
+                event.mouseMove.x -= int(childShift.x * _winProp.x);
+                event.mouseMove.y -= int(childShift.y * _winProp.y);
             }
             else child->input(event);
         }

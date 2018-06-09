@@ -14,8 +14,7 @@ namespace rat
         virtual void _addWidget(Widget* widget) override;
         virtual void _calculateSize() override;
         virtual sf::Vector2u _getChildrenSize() override;
-        virtual void _inputChildren(sf::Event event) override;
-		//virtual void _onMovedChildren(sf::Event event) override;        
+        virtual sf::Vector2f _getChildShiftByIndex(size_t index) const override;
 
         virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;
     private:

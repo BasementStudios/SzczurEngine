@@ -33,6 +33,8 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
 
+        gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
+        gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
 
         _widget = gui.addInterface();
         _widget->setSize(100, 100);
@@ -40,38 +42,38 @@ namespace rat
 
         
         auto* list = new ListWidget;
-        list->setPosition(700.f, 300.f);
+        list->setPosition(0.f, 0.f);
         list->setPadding(20.f, 10.f);
         list->setBetweenPadding(30.f);
         _widget->add(list);
-
-        std::vector<Widget*> _ws(4, new Widget);
+        
+        
+        std::vector<ImageWidget*> _ws(4, nullptr);
         size_t i = 0;
         for(auto* w : _ws)
         {
-            std::cout << "Kek\n";
+            w = new ImageWidget;
+            int addon = i * 50;
+            std::cout << addon << '\t';
             list->add(w);
-            w->setSize(50, 50);
-            w->setCallback(Widget::CallbackType::onHover, [i](auto){
-                std::cout << "Kekunio" << i << '\n';
+            if(i == 1)
+            {
+            w->setSize(50, 50 + addon);
+            w->setPosition(addon, 0);
+
+            }
+
+            w->setCallback(Widget::CallbackType::onHoverOut, [](auto* w){
+                w->setColor({255, 255, 255}, 1.f);
             });
-            std::cout << "Kek2\n";
+            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* w){
+                w->setColor({0, 0, 0}, 1.f);
+            });
+            w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+
             i++;
         }
-
-        auto* scroller = new ScrollAreaWidget;
-        _widget->add(scroller);
-        scroller->setSize(200, 200);
-        scroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-
-        auto* widego = new Widget;
-        scroller->add(widego);
-        widego->setSize(20.f, 20.f);
-        widego->setPosition(20.f, 20.f);
-        widego->setCallback(Widget::CallbackType::onPress, [](auto){
-            std::cout << "Mekorororor\n";
-        });
+        std::cout << '\n';
     }
     
     
