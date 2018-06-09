@@ -11,7 +11,7 @@
 
 /*
  Main class of playing movies.  
- Just call loadFromFile(<filepath>),setPathFont(<fontpaht>) and play()
+ Just call loadFromFile(<filepath>) and play()
 */
 namespace rat
 {
@@ -20,7 +20,6 @@ class Cinematics :public Module<Input,Window,Script>
 {
 public:
     /* callback */
-    //typedef void(*callme)();
     typedef std::function<void()> callme;
 
     Cinematics();
@@ -80,44 +79,53 @@ public:
     void setTextScale(float x,float y);
 
 /*
-    drawing current frame
+    Drawing current frame
 */
     void render();
 /*
-    we should not try drawing frame without decode next packets,
+    We should not try drawing frame without decode next packets,
     that's what "update" is doing - dirty job ^^
 */
     void update();
 
 
 /*
-    wrong! wrong! wrong! Absolutely stop everything!
+    Wrong! wrong! wrong! Absolutely stop everything!
 */
     void stop();
 
+/*
+    If you want to reduce the volume call this function
+*/
     void setVolume(float vol);
 
+/*
+    Ask me if this movie still playing
+*/
     bool isPlaying();
 
+/*  
+    Tell me what I should do at the end of the movie
+*/
     void setCallbackFinish(callme t);
 
 private:
 
     void initScript();
-    MovieSound          *m_sound = nullptr;
+    MovieSound          *m_sound;
 
-    AVFormatContext     *m_pFormatCtx = nullptr;
-    AVCodecContext      *m_pCodecCtx = nullptr;
-    AVCodecContext      *m_paCodecCtx = nullptr;
-    AVCodec             *m_pCodec = nullptr;
-    AVCodec             *m_paCodec = nullptr;
-    AVFrame             *m_pFrame = nullptr;
-    AVFrame             *m_pFrameRGB = nullptr;
-    AVDictionary        *m_optionsDict = nullptr;
-    AVDictionary        *m_optionsDictA = nullptr;
-    SwsContext          *m_sws_ctx = nullptr;
+    AVFormatContext     *m_pFormatCtx;
+    AVCodecContext      *m_pCodecCtx;
+    AVCodecContext      *m_paCodecCtx;
+    AVCodec             *m_pCodec;
+    AVCodec             *m_paCodec;
+    AVFrame             *m_pFrame;
+    AVFrame             *m_pFrameRGB;
+    AVDictionary        *m_optionsDict;
+    AVDictionary        *m_optionsDictA;
+    SwsContext          *m_sws_ctx;
 
-    uint8_t             *m_buffer = nullptr;
+    uint8_t             *m_buffer;
     size_t              m_count;
     int64_t             m_duration;
     int64_t             m_blockPts = 0;
@@ -126,13 +134,13 @@ private:
     bool                m_isInit = false;
     bool                m_play = false;
     bool                m_isMusic = false;
-    int                 m_ICurrentFrame = 0;
-    int                 m_ICurrentLoop = 0;
+ 
+    int                 m_ICurrentLoop;
     int                 m_frameFinished;
     int                 m_numBytes;
     int                 m_videoStream;
     int                 m_audioStream;
-    int                 m_ISmax = 0;
+    int                 m_ISmax;
     int                 m_jump =0;
     int                 m_lastDecodedTimeStamp=0;
     int                 m_IdeltaTime;
@@ -140,6 +148,7 @@ private:
     int                 m_FrameSize;
     
     callme              m_callbackFinish;
+    
     sf::Uint8*          m_data;
     sf::Sprite          m_sprite;
     sf::Font            m_font;
