@@ -108,6 +108,9 @@ namespace rat
 		virtual void _inputChildren(sf::Event event);
 		virtual void _onMovedChildren(sf::Event event);
 
+		virtual sf::Vector2f _getChildrenShift() const { return {}; }
+		virtual sf::Vector2f _getChildShiftByIndex(size_t index) const { return {}; }
+
 		virtual sf::Vector2u _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 

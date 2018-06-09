@@ -155,6 +155,29 @@ namespace rat {
 
     void Widget::_onMovedChildren(sf::Event event)
     {
+        {
+            auto childrenShift = _getChildrenShift();
+            event.mouseMove.x -= childrenShift.x;
+            event.mouseMove.y -= childrenShift.y;
+        }
+
+        size_t i = 0;
+        for(auto childIt = _children.begin(), childEnd = _children.end(); childIt < childEnd; ++childIt, ++i)
+        {
+            auto* child = *childIt;
+
+            auto childPos = child->getPosition();
+            sf::Event tempEvent(event);
+            tempEvent.mouseMove.x -= int(childPos.x * _winProp.x);
+            tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
+
+            child->_onMoved(tempEvent);
+
+            auto childShift = _getChildShiftByIndex(i);
+            event.mouseMove.x -= childShift.x;
+            event.mouseMove.y -= childShift.y;
+        }
+        /*
         for(auto* child : _children)
         {
             auto childPos = child->getPosition();
@@ -163,7 +186,7 @@ namespace rat {
             tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
 
             child->_onMoved(tempEvent);
-        }
+        }*/
     }
 
     void Widget::input(sf::Event event) {
