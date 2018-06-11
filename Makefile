@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.4.0 ])
+$(info [ PsychoX' Makefile - version 2.5.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -108,6 +108,9 @@ LDFLAGS  :=
 MXE := no
 MXE_DIR := /usr/lib/mxe
 
+# Packages
+PKG_CONFIG := pkg-config
+
 # Arch tags
 ARCH_32 := i686
 ARCH_64 := x86_64
@@ -140,39 +143,45 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := IMGUI SFML BOOST LUA
-#   SFML
- CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
-  LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
-CXXFLAGS_DYNAMIC_SFML   :=
- LDFLAGS_DYNAMIC_SFML   := -lsfml-audio   -lsfml-graphics   -lsfml-window   -lsfml-system   -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm
- MXE_PACKAGENAME_SFML   := sfml
+LIB_LIST := BOOST IMGUI GLAD SFML LUA SOL2 JSON GLM OPENAL
 #   Boost
+ PKG_CONFIG_NAME_BOOST  := boost
  CXXFLAGS_STATIC_BOOST  :=
   LDFLAGS_STATIC_BOOST  :=
 CXXFLAGS_DYNAMIC_BOOST  :=
  LDFLAGS_DYNAMIC_BOOST  :=
- MXE_PACKAGENAME_BOOST  := boost
-#  Lua
- CXXFLAGS_STATIC_LUA    :=
-  LDFLAGS_STATIC_LUA    := -llua
-CXXFLAGS_DYNAMIC_LUA    :=
- LDFLAGS_DYNAMIC_LUA    := -llua
- MXE_PACKAGENAME_LUA    := lua
 #   ImGUI 
+ PKG_CONFIG_NAME_IMGUI  := imgui
  CXXFLAGS_STATIC_IMGUI  := 
   LDFLAGS_STATIC_IMGUI  := -limgui 
 CXXFLAGS_DYNAMIC_IMGUI  := 
  LDFLAGS_DYNAMIC_IMGUI  := -limgui
-
-# Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
-FILES_DYNAMIC_SFML := openal32.dll sfml*
-
-# Header-only libs
-HEADER_LIB_LIST := SOL2 JSON GLM
-HEADER_INC_SOL2 := 3rd-party/sol2
-HEADER_INC_JSON := 3rd-party/json
-HEADER_INC_SOL2 := 3rd-party/glm
+#   GLAD
+ PKG_CONFIG_NAME_GLAD   := glad
+ CXXFLAGS_STATIC_GLAD   := 
+  LDFLAGS_STATIC_GLAD   := -lglad 
+CXXFLAGS_DYNAMIC_GLAD   := 
+ LDFLAGS_DYNAMIC_GLAD   := -lglad
+#   SFML
+ PKG_CONFIG_NAME_SFML   := sfml
+ CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
+  LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
+CXXFLAGS_DYNAMIC_SFML   :=
+ LDFLAGS_DYNAMIC_SFML   := -lsfml-audio   -lsfml-graphics   -lsfml-window   -lsfml-system   -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm
+#   Lua
+ PKG_CONFIG_NAME_LUA    := lua
+ CXXFLAGS_STATIC_LUA    :=
+  LDFLAGS_STATIC_LUA    := -llua
+CXXFLAGS_DYNAMIC_LUA    :=
+ LDFLAGS_DYNAMIC_LUA    := -llua
+#   Sol2
+ PKG_CONFIG_NAME_SOL2   := sol2
+#   JSON
+ PKG_CONFIG_NAME_JSON   := json
+#   GLM
+ PKG_CONFIG_NAME_JSON   := glm
+#   OpenAL
+ PKG_CONFIG_NAME_JSON   := openal
 
 # Print definitions
 COLORS := no
@@ -299,9 +308,18 @@ ifeq ($(CROSS),none)
     CROSS :=
 endif
 
-# Finally select compiler and linker
+# Disabling pkg-config to force use stupid basic system
+ifeq ($(PKG_CONFIG),no)
+    PKG_CONFIG :=
+endif
+ifeq ($(shell bash -c "command -v $(PKG_CONFIG)"),)
+    PKG_CONFIG :=
+endif
+
+# Select compiler, linker and other tools
 CXX := $(CROSS)$(CXX)
 LD  := $(CROSS)$(LD)
+PKG_CONFIG := $(CROSS)$(PKG_CONFIG)
 
 
 
@@ -309,34 +327,33 @@ LD  := $(CROSS)$(LD)
 # Library flags selection
 #
 
-# Compiled libs
 define add_lib
-    ifeq ($(and $(findstring $(TARGET_PLATFORM),win),$(findstring $(MXE),yes),$(MXE_PACKAGENAME_$(1)),1),1)
-        # Use MXE packages
-        MXE_PKGS += $(MXE_PACKAGENAME_$(1))
-    else
-        # Add linking dependent flags
-        CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1))
-        LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1))
-        # Add includes/libraries object directories
-        ifneq ($(INC_DIR_$(1)_$(TARGET_ARCH)),)
-            CXXFLAGS += -I$(INC_DIR_$(1)_$(TARGET_ARCH))
-        endif
-        ifneq ($(LIB_DIR_$(1)_$(TARGET_ARCH)),)
-            LDFLAGS  += -L$(LIB_DIR_$(1)_$(TARGET_ARCH))
-        endif
-    endif
+    $(eval TMP_CXXFLAGS :=)
+    $(eval TMP_LDFLAGS  :=)
+    
+    # Detect pkg-config package
+    $(if $(PKG_CONFIG),
+        $(eval TMP_CXXFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_CONFIG_NAME_$(1)) 2>/dev/null))
+        $(eval TMP_LDFLAGS  := $(shell $(PKG_CONFIG) --libs   $(PKG_CONFIG_NAME_$(1)) 2>/dev/null))
+    )
+    
+    $(if $(TMP_CXXFLAGS)$(TMP_LDFLAGS),
+        # Use package flags
+        $(eval CXXFLAGS += $(TMP_CXXFLAGS))
+        $(eval LDFLAGS  += $(TMP_LDFLAGS))
+    ,
+        # Use primitive method...
+        $(eval CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1)))
+        $(eval LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1)))
+        $(if $(INC_DIR_$(1)_$(TARGET_ARCH)),
+            $(eval CXXFLAGS += -I$(INC_DIR_$(1)_$(TARGET_ARCH)))
+        )
+        $(if $(LIB_DIR_$(1)_$(TARGET_ARCH)),
+            $(eval LDFLAGS  += -L$(LIB_DIR_$(1)_$(TARGET_ARCH)))
+        )
+    )
 endef
-$(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
-
-# MXE uses pkg-config
-ifeq ($(and $(findstring $(TARGET_PLATFORM),win),$(findstring $(MXE),yes),$(LIB_LIST),1),1)
-    CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
-    LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
-endif
-
-# Header-only libs
-$(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_NAME))))
+Q := $(foreach LIB_NAME, $(LIB_LIST), $(call add_lib,$(LIB_NAME)))
 
 
 
