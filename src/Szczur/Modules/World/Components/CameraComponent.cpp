@@ -220,10 +220,10 @@ namespace rat {
 		object.set("setSmoothness", &CameraComponent::setSmoothness);
 		object.set("getSmoothness", &CameraComponent::getSmoothness);
 		object.set("stickTo", &CameraComponent::stickTo);
+		object.set("stickToPlayer", &CameraComponent::stickToPlayer);
 
 		object.set("setLock", &CameraComponent::setLock);
 		object.set("getLock", &CameraComponent::getLock);
-		object.set("strickToPlayer", &CameraComponent::stickToPlayer);
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 		
 
