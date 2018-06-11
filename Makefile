@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.5.0 ])
+$(info [ PsychoX' Makefile - version 2.5.1 ])
 
 # Special variables
 .SUFFIXES:
@@ -121,6 +121,9 @@ CXXFLAGS_STATIC  := -static
 CXXFLAGS_DYNAMIC :=
  LDFLAGS_STATIC  := -static
  LDFLAGS_DYNAMIC :=
+
+# Threads model
+THREADS := posix
 
 # Optimalization
 OPTIMALIZE := no
@@ -247,6 +250,9 @@ override LINKING := $(shell echo $(LINKING) | tr a-z A-Z)
 CXXFLAGS += $(CXXFLAGS_$(LINKING))
 LDFLAGS  += $( LDFLAGS_$(LINKING))
 
+# Threads mode
+override THREADS := $(shell echo $(THREADS) | tr a-z A-Z)
+
 # Default cross compiler
 ifeq ($(CROSS),)
     CROSS := yes
@@ -270,11 +276,15 @@ ifeq ($(CROSS),yes)
             PATH := $(PATH):$(MXE_BIN_DIR)
             # Make shell use the specified in the makefile path
             SHELL = env PATH='$(PATH)' /bin/bash
-            # Select static/shared compilator.
+            # Select static/shared compilator
             ifeq ($(LINKING),STATIC)
                 CROSS := $(CROSS).static
             else
                 CROSS := $(CROSS).shared
+            endif
+            # Select threads mode
+            ifeq ($(THREADS),POSIX)
+                CROSS := $(CROSS).posix
             endif
         endif
     # -> Linux...
