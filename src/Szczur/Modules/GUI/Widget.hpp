@@ -69,6 +69,8 @@ namespace rat
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
 
+		sf::Vector2i getInnerSize() const;
+
 		void setColor(const sf::Color& color);
 		void setColor(const sf::Color& color, float inTime);
 		void resetColor();
@@ -93,6 +95,9 @@ namespace rat
 		bool isVisible() const;
 
 		void makeChildrenPenetrable();
+
+		void invokeToUpdatePropSize();
+        void invokeToUpdatePropPosition();
 
 		static void setWinProp(sf::Vector2f prop);
 
@@ -160,6 +165,9 @@ namespace rat
 		sf::Color _color;
 
 		bool _areChildrenPenetrable{false}; //lenny
+
+		void _updatePropSize();
+		void _updatePropPosition();
 
 	protected:
 		static sf::Vector2f _winProp;

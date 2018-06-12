@@ -7,6 +7,7 @@
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "Widget.hpp"
+#include "InterfaceWidget.hpp"
 
 #include "GuiAssetsManager.hpp"
 
@@ -35,6 +36,7 @@ namespace rat {
     private:
         //std::vector<Interface*> _interfaces;
         Widget _root;
+        std::vector<InterfaceWidget*> _interfaces;
         //Widget _root;
         //GuiJson _guiJson;
         BasicGuiAssetsManager _assets;

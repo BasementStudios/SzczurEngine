@@ -44,17 +44,26 @@ namespace rat {
     }
 
     Widget* GUI::addInterface() {
-        Widget* widget = new Widget;
-        _root.add(widget);
-        return widget;
+        auto* interface = new InterfaceWidget;
+        
+        _root.add(interface);
+        _interfaces.emplace_back(interface);
+        return interface;
     }
     
     void GUI::input(const sf::Event& event) {
         if(event.type == sf::Event::Resized)
         {
+            sf::Vector2u winSize = { event.size.width, event.size.height };
+
             sf::Vector2f winProp = { float(event.size.width) / float(_standartWindowSize.x),
             float(event.size.height) / float(_standartWindowSize.y) };
             Widget::setWinProp(winProp);
+
+            for(auto* interface : _interfaces)
+            {
+                interface->updateSizeByWindowSize(winSize);
+            }
         }
         _root.invokeInput(event);
         _root.input(event);

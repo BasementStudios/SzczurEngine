@@ -209,6 +209,7 @@ namespace rat {
             event.mouseMove.x -= childrenShift.x;
             event.mouseMove.y -= childrenShift.y;
         }
+        size_t i = 0;
         for(auto child : _children) 
         {
             if(event.type == sf::Event::MouseMoved)
@@ -219,7 +220,7 @@ namespace rat {
                 tempEvent.mouseMove.y -= int(childPosition.y * _winProp.y);
                 child->input(tempEvent);
 
-                auto childShift = _getChildShiftByIndex(i);
+                auto childShift = _getChildShiftByIndex(i++);
                 event.mouseMove.x -= int(childShift.x * _winProp.x);
                 event.mouseMove.y -= int(childShift.y * _winProp.y);
             }
@@ -367,6 +368,15 @@ namespace rat {
     sf::Vector2f Widget::getPadding() const
     {
         return _padding;
+    }
+
+    sf::Vector2i Widget::getInnerSize() const
+    {
+        auto size = getSize();
+        auto minSize = getMinimalSize();
+        size.x = std::max(size.x, minSize.x);
+        size.y = std::max(size.y, minSize.y);
+        return static_cast<sf::Vector2i>(size) - (static_cast<sf::Vector2i>(getPadding()) * 2);
     }
 
 	sf::Vector2u Widget::getMinimalSize() const
@@ -555,6 +565,32 @@ namespace rat {
 	void Widget::setWinProp(sf::Vector2f prop)
     {
         _winProp = prop;
+    }
+
+    void Widget::invokeToUpdatePropSize()
+    {
+        _updatePropSize();
+        for(auto* child : _children)
+        {
+            child->invokeToUpdatePropSize();
+        }
+    }
+    void Widget::invokeToUpdatePropPosition()
+    {
+        _updatePropPosition();
+        for(auto* child : _children)
+        {
+            child->_updatePropPosition();
+        }
+    }
+
+    void Widget::_updatePropSize()
+    {
+
+    }
+	void Widget::_updatePropPosition()
+    {
+
     }
     
     
