@@ -5,6 +5,7 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Equipment/Equipment.hpp"
 #ifdef GUI_TEST
 #include "Szczur/Modules/GUITest/GUITest.hpp"
 #endif
@@ -63,7 +64,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI
+	ModulesHolder<Window, Input, Script, GUI, Equipment
 	#ifdef GUI_TEST
 	,GUITest 
 	#endif

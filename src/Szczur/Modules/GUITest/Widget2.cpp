@@ -34,6 +34,7 @@ namespace rat
         _children.emplace_back(child);
         child->setParent(this);
         _recalcSize();
+		return nullptr;
     }
     void Widget2::setParent(Widget2* parent)
     {

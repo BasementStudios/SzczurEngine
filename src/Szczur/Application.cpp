@@ -17,6 +17,7 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<GUI>();
+	initModule<Equipment>();
 	#ifdef GUI_TEST
 	{
 		initModule<GUITest>();
@@ -132,6 +133,7 @@ void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<GUI>().update(deltaTime);
+	getModule<Equipment>().update(deltaTime);
 	#ifdef GUI_TEST
 	{
 		getModule<GUITest>().update(deltaTime);
@@ -159,6 +161,7 @@ void Application::render()
 {
 	getModule<Window>().clear();
 	getModule<GUI>().render();
+	getModule<Equipment>().render();
 	#ifdef GUI_TEST
 	{
 		getModule<GUITest>().render();
