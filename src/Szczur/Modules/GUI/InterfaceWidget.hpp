@@ -13,6 +13,7 @@ namespace rat
         void setWidthToHeightProp(float prop);
     protected:
         virtual void _update(float deltaTime) override;
+        virtual void _addWidget(Widget* widget) override;
     private:
         bool _childrenSizesMustBeenRecalculated{false};
         bool _hasProportion{false};

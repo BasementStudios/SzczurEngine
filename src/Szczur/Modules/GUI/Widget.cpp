@@ -8,12 +8,14 @@
 #include <algorithm>
 
 #include "TransformAnimBasics/ColorAnim.hpp"
+#include "InterfaceWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
 //#undef GUI_DEBUG
 
-namespace rat {
+namespace rat 
+{
     Widget::Widget() :
     _parent(nullptr),
     _isHovered(false),
@@ -22,9 +24,8 @@ namespace rat {
     _isVisible(true),
     _aboutToRecalculate(false),
     _color(255, 255, 255),
-    _size(0u,0u) {
-
-    }
+    _size(0u,0u) 
+    {}
 
     Widget::~Widget() {
         for(auto it : _children)
@@ -37,8 +38,6 @@ namespace rat {
         object.init();
     }
 
-    
-
     void Widget::clear() {
         for(auto it : _children)
             delete it;
@@ -47,6 +46,16 @@ namespace rat {
 
     void Widget::setParent(Widget* parent) {
         _parent = parent;
+        if(parent->_interface) setInterface(parent->_interface);
+        else setInterface(nullptr);
+    }
+    void Widget::setInterface(const InterfaceWidget* interface)
+    {
+        _interface = interface;
+        for(auto* child : _children)
+        {
+            child->setInterface(interface);
+        }
     }
 
     Widget* Widget::setCallback(CallbackType key, Function_t value) {
@@ -453,7 +462,7 @@ namespace rat {
 
     void Widget::setOrigin(const sf::Vector2f& origin)
     {
-        _isPropOriginSet = false;
+        _props.hasOrigin = false;
         _origin = origin;
         _recalcOrigin();
     }
@@ -464,8 +473,8 @@ namespace rat {
 
 	void Widget::setPropOrigin(const sf::Vector2f& prop)
     {
-        _isPropOriginSet = true;
-        _propOrigin = prop;
+        _props.hasOrigin = true;
+        _props.origin = prop;
         _recalcOrigin();
     }
 	void Widget::setPropOrigin(float x, float y)
@@ -475,10 +484,10 @@ namespace rat {
 
     void Widget::_recalcOrigin()
     {
-        if(_isPropOriginSet)
+        if(_props.hasOrigin)
         {
             auto size = static_cast<sf::Vector2f>(getSize());
-            _origin = {size.x * _propOrigin.x, size.y * _propOrigin.y};
+            _origin = {size.x * _props.origin.x, size.y * _props.origin.y};
         }
         sf::Transformable::setOrigin(_origin);
         if(_parent) _parent->_aboutToRecalculate = true;

@@ -9,14 +9,17 @@
 
 #include <SFML/Graphics.hpp>
 
-
 #include "Szczur/Modules/Script/Script.hpp"
+
+#include "ProportionalDimes.hpp"
 
 #define GUI_DEBUG 1
 
 namespace rat 
 {
+	class InterfaceWidget;
 	class TransformAnimationBase;
+
 	class Widget : public sf::Drawable, public sf::Transformable {
 	public:
 		Widget();
@@ -41,6 +44,7 @@ namespace rat
 		using AnimationsContainer_t = std::vector<Animation_t>;
 
 		void setParent(Widget* parent);
+		void setInterface(const InterfaceWidget* interface);
 
 		Widget* add(Widget* object);
 
@@ -137,8 +141,7 @@ namespace rat
 		bool _isMinSizeSet{false};
 
 		sf::Vector2f _origin{0.f, 0.f};
-		sf::Vector2f _propOrigin;
-		bool _isPropOriginSet{false};
+		ProportionalDimes _props;
 
 		sf::Vector2f _padding;
 
@@ -146,6 +149,7 @@ namespace rat
 		CallbacksLuaContainer_t _luaCallbacks;
 		
 		Children_t _children;
+		const bool _isInterface{false};
 	private:
 		virtual void _callback(CallbackType type);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -168,6 +172,8 @@ namespace rat
 
 		void _updatePropSize();
 		void _updatePropPosition();
+
+		const InterfaceWidget* _interface{nullptr};
 
 	protected:
 		static sf::Vector2f _winProp;

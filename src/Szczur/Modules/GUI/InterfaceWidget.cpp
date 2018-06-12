@@ -12,12 +12,18 @@ namespace rat
         _updateSizingSize();
     }
 
+    void InterfaceWidget::_addWidget(Widget* widget)
+    {
+        widget->setInterface(this);
+    }
+
     void InterfaceWidget::_update(float deltaTime)
     {
         if(_childrenSizesMustBeenRecalculated)
         {
             invokeToUpdatePropSize();
             invokeToUpdatePropPosition();
+            _childrenSizesMustBeenRecalculated = false;
         }
     }
 
