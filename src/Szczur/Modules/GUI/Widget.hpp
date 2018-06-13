@@ -39,7 +39,6 @@ namespace rat
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 		using CallbacksLuaContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 		using Children_t = std::vector<Widget*>;
-
 		using Animation_t = std::unique_ptr<TransformAnimationBase>;
 		using AnimationsContainer_t = std::vector<Animation_t>;
 
@@ -88,6 +87,9 @@ namespace rat
 
 		void setSize(sf::Vector2u size);
 		void setSize(size_t width, size_t height);
+
+		void setPropSize(const sf::Vector2f& propSize);
+		void setPropSize(float widthProp, float widthHeight);
 		void lockSize();
 
 		void activate();
