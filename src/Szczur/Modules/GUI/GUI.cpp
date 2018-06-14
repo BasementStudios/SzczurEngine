@@ -17,9 +17,13 @@ namespace rat {
         initScript();
         auto& mainWindow = getModule<Window>();
         auto& window = mainWindow.getWindow();
-        mainWindow.pushGLStates(); 
-        _canvas.create(window.getSize().x, window.getSize().y); 
-        mainWindow.popGLStates();
+        auto winSize = window.getSize();
+        //mainWindow.pushGLStates(); 
+        _canvas.create(winSize.x, winSize.y); 
+        //mainWindow.popGLStates();
+
+        _root.setSize(winSize);
+        _root.makeChildrenUnresizable();
     }
 
     void GUI::initScript() {
@@ -47,6 +51,7 @@ namespace rat {
         auto* interface = new InterfaceWidget;
         
         _root.add(interface);
+        interface->updateSizeByWindowSize(_root.getMinimalSize());
         _interfaces.emplace_back(interface);
         return interface;
     }
@@ -56,10 +61,17 @@ namespace rat {
         {
             sf::Vector2u winSize = { event.size.width, event.size.height };
 
+            auto& mainWindow = getModule<Window>();
+            mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
+
+            /*
             sf::Vector2f winProp = { float(event.size.width) / float(_standartWindowSize.x),
             float(event.size.height) / float(_standartWindowSize.y) };
-            Widget::setWinProp(winProp);
+            Widget::setWinProp(winProp);*/
 
+
+
+            _root.setSize(winSize);
             for(auto* interface : _interfaces)
             {
                 interface->updateSizeByWindowSize(winSize);
@@ -72,6 +84,7 @@ namespace rat {
     void GUI::update(float deltaTime) 
     {
         _root.invokeToCalculate();
+        _root.invokeToUpdatePropPosition();
         _root.update(deltaTime);
     }
 

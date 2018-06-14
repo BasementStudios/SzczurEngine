@@ -42,7 +42,7 @@ namespace rat
 
         
         auto* list = new ListWidget;
-        list->setPosition(0.f, 0.f);
+        list->setPosition(400.f, 400.f);
         list->setPadding(20.f, 10.f);
         list->setBetweenPadding(30.f);
         _widget->add(list);
@@ -74,11 +74,28 @@ namespace rat
             i++;
         }
         std::cout << '\n';
+
+        auto* testRes = new ImageWidget;
+
+        _widget->add(testRes);
+
+        testRes->setPropSize(0.5f, 0.5f);
+        testRes->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+
+        _imageWidget = new ImageWidget;
+
+        _widget->add(_imageWidget);
+        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        _imageWidget->setPropSize(0.5f, 0.5f);
+        _imageWidget->setPropPosition(0.5f, 0.f);
+
     }
     
     
     void GUITest::update(float deltaTime)
     {
+        //std::cout << "XXXXXXX Image: x: " << _imageWidget->getSize().x << " y: " << _imageWidget->getSize().y << '\n';        
+
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);

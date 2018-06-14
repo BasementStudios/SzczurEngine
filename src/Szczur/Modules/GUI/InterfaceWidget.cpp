@@ -2,14 +2,19 @@
 
 namespace rat
 {
+    InterfaceWidget::InterfaceWidget()
+    {
+        makeChildrenUnresizable();
+    }
     void InterfaceWidget::setWidthToHeightProp(float prop)
     {
         _widthToHeightProp = prop;
         _hasProportion = true;
-        _childrenSizesMustBeenRecalculated = true;
 
         _updateSizeProportion();
         _updateSizingSize();
+
+        forceToUpdatePropSize();
     }
 
     void InterfaceWidget::_addWidget(Widget* widget)
@@ -17,25 +22,19 @@ namespace rat
         widget->setInterface(this);
     }
 
-    void InterfaceWidget::_update(float deltaTime)
-    {
-        if(_childrenSizesMustBeenRecalculated)
-        {
-            invokeToUpdatePropSize();
-            invokeToUpdatePropPosition();
-            _childrenSizesMustBeenRecalculated = false;
-        }
-    }
-
     void InterfaceWidget::updateSizeByWindowSize(const sf::Vector2u& winSize)
     {
         setSize(winSize);
         _updateSizeProportion();
         _updateSizingSize();
+
+        std::cout << "Sizing: X:" << _sizingSize.x << " Y: " << _sizingSize.y << '\n';
+        forceToUpdatePropSize();
     }
 
-    sf::Vector2i InterfaceWidget::getSizeByPropSize(const sf::Vector2f& propSize)
+    sf::Vector2i InterfaceWidget::getSizeByPropSize(const sf::Vector2f& propSize) const
     {
+        std::cout << "Sizing: X:" << _sizingSize.x << " Y: " << _sizingSize.y << '\n';
         return { int(_sizingSize.x * propSize.x), int(_sizingSize.y * propSize.y) };
     }
 
@@ -60,11 +59,12 @@ namespace rat
 
     void InterfaceWidget::_updateSizingSize()
     {
-        if(!_hasSizing) return;
-
-        auto innerSize = static_cast<sf::Vector2f>(getInnerSize());
+        auto innerSize = static_cast<sf::Vector2f>(getMinimalSize()) - (getPadding() * 2.f);
 
         _sizingSize = innerSize;
+
+        if(!_hasSizing) return;
+
 
         if(_widthToHeightProp > _sizingWidthToHeightProp)
         {

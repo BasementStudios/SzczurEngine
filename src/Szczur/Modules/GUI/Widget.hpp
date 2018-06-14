@@ -68,6 +68,9 @@ namespace rat
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
 
+		void setPropPosition(const sf::Vector2f& propPos);
+		void setPropPosition(float propX, float propY);
+
 		virtual void setPadding(const sf::Vector2f& padding);
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
@@ -101,9 +104,10 @@ namespace rat
 		bool isVisible() const;
 
 		void makeChildrenPenetrable();
+		void makeChildrenUnresizable();
 
-		void invokeToUpdatePropSize();
         void invokeToUpdatePropPosition();
+		void forceToUpdatePropSize();
 
 		static void setWinProp(sf::Vector2f prop);
 
@@ -151,7 +155,6 @@ namespace rat
 		CallbacksLuaContainer_t _luaCallbacks;
 		
 		Children_t _children;
-		const bool _isInterface{false};
 	private:
 		virtual void _callback(CallbackType type);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -171,11 +174,18 @@ namespace rat
 		sf::Color _color;
 
 		bool _areChildrenPenetrable{false}; //lenny
+		bool _areChildrenResizing{true};
+
+		sf::Vector2u _getBound() const;
 
 		void _updatePropSize();
 		void _updatePropPosition();
 
 		const InterfaceWidget* _interface{nullptr};
+
+		bool _childrenPropSizesMustBeenRecalculated{false};
+		bool _propSizeMustBeenRecalculated{false};
+		bool _propPosMustBeenRecalculated{false};
 
 	protected:
 		static sf::Vector2f _winProp;

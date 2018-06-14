@@ -306,6 +306,12 @@ namespace rat
         }
 	#endif
 
+    void Widget::makeChildrenUnresizable()
+    {
+        _areChildrenResizing = false;
+        _aboutToRecalculate = true;
+    }
+
 	void Widget::invokeToCalculate()
     {
         for(auto* child : _children) child->invokeToCalculate();
@@ -325,9 +331,12 @@ namespace rat
             _size.y = std::max(_size.y, _minSize.y);
         }
 
-        auto chSize = _getChildrenSize();
-        _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
-        _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
+        if(_areChildrenResizing)
+        {
+            auto chSize = _getChildrenSize();
+            _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
+            _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
+        }
 
         _calculateSize();
         auto ownSize = _getSize();
@@ -336,7 +345,12 @@ namespace rat
         if(ownSize.y > _size.y) _size.y = ownSize.y;
         
         _recalcOrigin();
-        if(_parent && _size != oldSize) _parent->_aboutToRecalculate = true;
+
+        if(_size != oldSize)
+        {
+            if(_parent) _parent->_aboutToRecalculate = true;
+            _childrenPropSizesMustBeenRecalculated = true;
+        }
 
         _aboutToRecalculate = false;
     }
@@ -344,16 +358,33 @@ namespace rat
 	sf::Vector2u Widget::_getChildrenSize()
     {
         sf::Vector2u size;
-        for(auto child : _children) {
-            auto childSize = child->getSize();
-            auto childPosition = static_cast<sf::Vector2i>(child->getPosition());
-            auto childOrigin = child->getOrigin();
-            if(childPosition.x + childSize.x - childOrigin.x > size.x)
-                size.x = childPosition.x + childSize.x - childOrigin.x;
-            if(childPosition.y + childSize.y - childOrigin.y > size.y)
-                size.y = childPosition.y + childSize.y - childOrigin.y;
+        for(auto child : _children) 
+        {
+            auto childBound = child->_getBound();
+
+            size.x = std::max(size.x, childBound.x);
+            size.y = std::max(size.y, childBound.y);
         }
         return size;
+    }
+
+    sf::Vector2u Widget::_getBound() const
+    {
+        auto size = static_cast<sf::Vector2f>(getSize());
+        auto position = static_cast<sf::Vector2f>(getPosition());
+        auto origin = getOrigin();
+
+        if(_props.hasPosition)
+        {
+            position = {0.f, 0.f};
+            origin = {0.f, 0.f};
+        } 
+        if(_props.hasSize) size = {0.f, 0.f};
+
+        auto width = (unsigned int)(position.x + size.x - origin.x);
+        auto height = (unsigned int)(position.y + size.y - origin.y);
+
+        return {width, height};
     }
     
 
@@ -458,6 +489,40 @@ namespace rat
     }
     void Widget::setPosition(float x, float y) {
         setPosition({x, y});
+    }
+
+    void Widget::setPropPosition(const sf::Vector2f& propPos)
+    {
+        if(!_parent) return;
+
+        _props.hasPosition = true;
+        _props.position = propPos;
+        _props.position.x = std::max(0.f, std::min(1.f, _props.position.x));
+        _props.position.y = std::max(0.f, std::min(1.f, _props.position.y));
+
+        _propPosMustBeenRecalculated = true;
+    }
+	void Widget::setPropPosition(float propX, float propY)
+    {
+        setPropPosition({propX, propY});
+    }
+
+    void  Widget::setPropSize(const sf::Vector2f& propSize)
+    {
+        if(!_interface) return;
+
+        _props.hasSize = true;
+        _props.size = propSize;
+        _props.size.x = std::max(0.f, std::min(1.f, _props.size.x));
+        _props.size.y = std::max(0.f, std::min(1.f, _props.size.y));
+
+        auto newSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
+        std::cout << "X: " << newSize.x << " Y: " << newSize.y << '\n';
+        setSize(newSize);
+    }
+    void Widget::setPropSize(float widthProp, float heightProp)
+    {
+        setPropSize({widthProp, heightProp});
     }
 
     void Widget::setOrigin(const sf::Vector2f& origin)
@@ -576,30 +641,56 @@ namespace rat
         _winProp = prop;
     }
 
-    void Widget::invokeToUpdatePropSize()
-    {
-        _updatePropSize();
-        for(auto* child : _children)
-        {
-            child->invokeToUpdatePropSize();
-        }
-    }
     void Widget::invokeToUpdatePropPosition()
     {
-        _updatePropPosition();
-        for(auto* child : _children)
+        if(_childrenPropSizesMustBeenRecalculated)
         {
-            child->_updatePropPosition();
+            for(auto* child : _children) child->_updatePropPosition();
+            _childrenPropSizesMustBeenRecalculated = false;
         }
+        
+        for(auto* child : _children) child->invokeToUpdatePropPosition();
+
+        if(_propPosMustBeenRecalculated) _updatePropPosition();
+    }
+
+    void Widget::forceToUpdatePropSize()
+    {
+        _updatePropSize();
+
+        for(auto* child : _children) child->_updatePropSize();
     }
 
     void Widget::_updatePropSize()
     {
+        if(!_props.hasSize) return;
+        if(!_interface) return;
 
+        std::cout << "keke\n";
+
+        auto updatedSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
+        LOG_INFO("UpdatedSize: X: ", updatedSize.x, " Y: ", updatedSize.y);
+        
+
+        setSize(updatedSize);
     }
 	void Widget::_updatePropPosition()
     {
+        if(!_props.hasPosition) return;
+        if(!_parent) return;
 
+        auto size = getSize();
+        auto origin = getOrigin();
+        auto parentSize = _parent->getSize();
+
+        auto posRange = parentSize - size;
+
+        const float x = float(posRange.x) * _props.position.x + origin.x;
+        const float y = float(posRange.y) * _props.position.y + origin.y;
+
+        sf::Transformable::setPosition(x, y);
+
+        _propPosMustBeenRecalculated = false;
     }
     
     
