@@ -7,6 +7,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 namespace rat
 {
+	class WindowWidget; class EquipmentSlot;
 	class Equipment : public Module<Window, Input, GUI> {
 	public:
 
@@ -15,11 +16,16 @@ namespace rat
 		void render();
 
 		Equipment();
-		~Equipment() {}
 
 	private:
 
+		Window& mainWindow;
+		sf3d::RenderWindow& window;
+
 		Widget* _base{ nullptr };
+		WindowWidget* _equipmentFrame{ nullptr };
+		EquipmentSlot* _equipmentSlot{ nullptr };
+
 		sf::RenderTexture _canvas;
 	};
 }
