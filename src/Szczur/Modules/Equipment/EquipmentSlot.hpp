@@ -15,7 +15,10 @@ namespace rat {
 		void setTexture(sf::Texture*);
 
 		void setItem(EquipmentObject*);
+		EquipmentObject* getItem();
 		void removeItem();
+
+		size_t index;
 
 	private:
 		ImageWidget* _slotImage;

@@ -5,9 +5,11 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
+
+#include <vector>
 namespace rat
 {
-	class WindowWidget; class EquipmentSlot;
+	class WindowWidget; class NormalSlots;
 	class Equipment : public Module<Window, Input, GUI> {
 	public:
 
@@ -18,13 +20,16 @@ namespace rat
 		Equipment();
 
 	private:
+		NormalSlots* _normalSlots;
 
 		Window& mainWindow;
 		sf3d::RenderWindow& window;
 
 		Widget* _base{ nullptr };
 		WindowWidget* _equipmentFrame{ nullptr };
-		EquipmentSlot* _equipmentSlot{ nullptr };
+		//EquipmentSlot* _equipmentSlot{ nullptr };
+
+		//std::vector<EquipmentSlot*> _slots;
 
 		sf::RenderTexture _canvas;
 	};

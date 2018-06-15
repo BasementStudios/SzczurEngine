@@ -24,10 +24,15 @@ namespace rat {
 	void EquipmentSlot::setItem(EquipmentObject* item) {
 		_itemPlaced = item;
 		_itemImage->setTexture(item->getIcon());
+		_itemImage->resetColor();
 	}
 
 	void EquipmentSlot::removeItem() {
 		_itemPlaced = nullptr;
-		_itemImage->setTexture(NULL);
+		_itemImage->setColor(sf::Color::Color(0, 0, 0, 0));
+	}
+
+	EquipmentObject* EquipmentSlot::getItem() {
+		return _itemPlaced;
 	}
 }
