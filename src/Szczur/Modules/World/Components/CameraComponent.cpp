@@ -115,13 +115,22 @@ namespace rat {
 		if(auto& var = config["limit"]["left"]; !var.is_null()) _limit.left = var;
 		if(auto& var = config["limit"]["right"]; !var.is_null()) _limit.right = var;
 		if(auto& var = config["limitedRange"]; !var.is_null()) _limitedRange = var;
+		if(auto& var = config["type"]; !var.is_null()) _type = size_tToEnumType(var);
+		if(auto& var = config["smoothness"]; !var.is_null() && _type == Smooth) _smoothness = var;
+		if(auto& var = config["linear"]; !var.is_null() && _type == Linear) _linear = var;
+
+
 	}
 
 	void CameraComponent::saveToConfig(Json& config) const {
 		Component::saveToConfig(config);
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
-		config["smoothness"] = _smoothness;
+		if(_type == Smooth)
+			config["smoothness"] = _smoothness;
+		else if(_type == Linear)
+			config["linear"] = _linear;
+		config["type"] = enumTypeToSize_t();
 		config["limit"]["left"] = _limit.left;
 		config["limit"]["right"] = _limit.right;
 		config["limitedRange"] = _limitedRange;
@@ -269,5 +278,8 @@ namespace rat {
 			case Smooth: return "Smooth";
 			case Linear: return "Linear";
 		}
+	}
+	size_t CameraComponent::enumTypeToSize_t() const {
+		return static_cast<size_t>(_type);
 	}
 }
