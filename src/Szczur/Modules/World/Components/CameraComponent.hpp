@@ -66,6 +66,7 @@ public:
 private:
     bool _rotating{false};
     bool _locked{false};
+	float _velocity{50.f};
 
     bool _limitedRange{false};
     struct {
@@ -73,8 +74,19 @@ private:
         float right{0.f};
     } _limit;
 
-    float _velocity{50.f};
-    float _smoothness{1.f};
+	union {
+		float _smoothness{1.f};
+		float _linear;
+	};
+
+	enum {
+		None,
+		Smooth,
+		Linear
+	} _type{None};
+
+	std::string enumTypeToString() const;
+
     sf::Vector2i _previousMouse;
 
     Entity* _stickTo{nullptr};

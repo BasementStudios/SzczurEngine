@@ -135,7 +135,21 @@ namespace rat {
 			ImGui::DragFloat("Velocity##camera_component", &velocity);
 			setVelocity(velocity);
 
-			ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 0.05f, 1.f, 50.f);
+			if(ImGui::BeginCombo("Type", enumTypeToString().c_str())) {
+				if(ImGui::Selectable("None", _type == None))
+					_type = None;
+				if(ImGui::Selectable("Smooth", _type == Smooth))
+					_type = Smooth;
+				if(ImGui::Selectable("Linear", _type == Linear))
+					_type = Linear;
+				ImGui::EndCombo();
+			}
+
+			if(_type == Smooth)
+				ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 0.05f, 1.f, 50.f);
+			else if(_type == Linear)
+				ImGui::DragFloat("Linear##camera_component", &_linear, 0.05f, 1.f, 50.f);
+
 
 			// Set lock
 			bool locked = getLock();
@@ -153,6 +167,10 @@ namespace rat {
 			if(ImGui::Button("Stick To Player##camera_component")) {
 				stickToPlayer();
 			}
+			ImGui::SameLine();
+			if(ImGui::Button("Stick to None##camera_component")) {
+				stickTo(nullptr);
+			}
 
 			ImGui::Checkbox("Limited Range##camera_component", &_limitedRange);
 			if(_limitedRange) {
@@ -164,7 +182,8 @@ namespace rat {
 	}
 
     void CameraComponent::update(ScenesManager& scenes, float deltaTime) {
-		auto* player = getEntity()->getScene()->getPlayer();
+		auto* entity = getEntity();
+		auto* player = entity->getScene()->getPlayer();
 		if(player == nullptr) return;
 
 		if(_stickTo) {
@@ -172,7 +191,14 @@ namespace rat {
 			curPos.x = _stickTo->getPosition().x;
 			getEntity()->setPosition(curPos);
 		}
-
+		if(_limitedRange) {
+			auto position = entity->getPosition();
+			if(position.x > _limit.right)
+				position.x = _limit.right;
+			else if(position.x < _limit.left)
+				position.x = _limit.left;
+			entity->setPosition(position);
+		}
 		
     }
 
@@ -185,27 +211,30 @@ namespace rat {
 	}
 
 	sf3d::View CameraComponent::getRecalculatedView(sf3d::View baseView) {
-		if(_smoothness >= 1.f) {
-			auto* entity = getEntity();
+		auto* entity = getEntity();
+		if(_type == None) {
+			baseView.setCenter(entity->getPosition());
+			baseView.setRotation(entity->getRotation());
+		}
+		else if(_type == Smooth) {
+			if(_smoothness >= 1.f) {
+				auto delta = entity->getPosition() - baseView.getCenter();
+				auto deltaRotation = entity->getRotation() - baseView.getRotation();
+				baseView.move(delta / _smoothness);
+				baseView.rotate(deltaRotation / _smoothness);
 
-			if(_limitedRange) {
-				float newX = entity->getPosition().x;
-				if(newX > _limit.right)
-					newX = _limit.right;
-				else if(newX < _limit.left)
-					newX = _limit.left;
-				entity->setPosition({
-					newX,
-					entity->getPosition().y,
-					entity->getPosition().z
-				});
 			}
-
-			auto delta = entity->getPosition() - baseView.getCenter();
-			auto deltaRotation = entity->getRotation() - baseView.getRotation();
-			baseView.move(delta/_smoothness);
-			baseView.rotate(deltaRotation/_smoothness);
-
+		}
+		else if(_type == Linear) {
+			auto position = entity->getPosition();
+			auto direction = position - baseView.getCenter();
+			float length = glm::sqrt(direction.x*direction.x + direction.y*direction.y);
+			direction /= length;
+			if(length <= _linear)
+				baseView.setCenter(position);
+			else
+				baseView.move(direction*_linear);
+			baseView.setRotation(entity->getRotation());
 		}
 		return baseView;
 	}
@@ -233,5 +262,12 @@ namespace rat {
 
 		object.init();
 
+	}
+	std::string CameraComponent::enumTypeToString() const {
+		switch(_type) {
+			case None: return "None";
+			case Smooth: return "Smooth";
+			case Linear: return "Linear";
+		}
 	}
 }
