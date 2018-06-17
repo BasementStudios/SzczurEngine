@@ -92,6 +92,8 @@ namespace rat
         _imageWidget->setPropSize(0.2f, 0.2f);
         _imageWidget->setPropPosition(1.f, 1.f);
 
+        _imageWidget->setTexture(nullptr);
+
     }
     
     
