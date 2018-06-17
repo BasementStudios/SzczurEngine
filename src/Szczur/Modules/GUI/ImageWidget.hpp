@@ -6,7 +6,8 @@
 
 namespace rat {
     class Script;
-    class ImageWidget : public Widget {
+    class ImageWidget : public Widget
+    {
     public:
         ImageWidget();
         ImageWidget(sf::Texture* texture);
@@ -25,7 +26,6 @@ namespace rat {
         virtual void _calculateSize() override;
         virtual void _setColor(const sf::Color& color) override;
     private:
-        virtual void _callback(CallbackType type) override;
         sf::Sprite _sprite; 
 
         bool _hasTexture{false};

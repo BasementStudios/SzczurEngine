@@ -10,6 +10,9 @@ namespace rat
     {
     public:
         void setBetweenPadding(float padding);
+
+        void makeVertical();
+        void makeHorizontal();
     protected:
         virtual void _addWidget(Widget* widget) override;
         virtual void _calculateSize() override;
@@ -18,9 +21,11 @@ namespace rat
 
         virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;
     private:
-        std::vector<float> _shifts;
+        std::vector<sf::Vector2f> _shifts;
         bool _areShiftsCurrent{false};
         float _betweenWidgetsPadding{0.f};
+
+        enum class Positioning { Horizontal, Vertical } _positioning{Positioning::Vertical};
 
         void _updateShifts();
     };

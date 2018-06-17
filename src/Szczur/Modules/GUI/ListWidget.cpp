@@ -1,12 +1,14 @@
 #include "ListWidget.hpp"
 
+#include <algorithm>
+
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
     void ListWidget::_addWidget(Widget* widget)
     {
-        _shifts.push_back(0.f);
+        _shifts.emplace_back(sf::Vector2f{});
         _areShiftsCurrent = false;
     }
     void ListWidget::setBetweenPadding(float padding)
@@ -15,14 +17,35 @@ namespace rat
         _areShiftsCurrent = false;
         _aboutToRecalculate = true;
     }
+    void ListWidget::makeVertical()
+    {
+        _positioning = Positioning::Vertical;
+        _aboutToRecalculate = true;
+    }
+    void ListWidget::makeHorizontal()
+    {
+        _positioning = Positioning::Horizontal;
+        _aboutToRecalculate = true;
+    }
     void ListWidget::_updateShifts()
     {
         LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");
-        for(size_t i = 0; i < _shifts.size(); ++i)
+
+        if(_positioning == Positioning::Vertical)
         {
-            auto* child = _children[i];
-            
-            _shifts[i] = float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding;
+            auto func = [this](const Widget* child, auto&){
+                return sf::Vector2f{0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding};
+            };
+
+            std::transform(_children.begin(), _children.end(), _shifts.begin(), _shifts.begin(), func);
+        }
+        else
+        {
+            auto func = [this](const Widget* child, auto&){
+                return sf::Vector2f{float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f};
+            };
+
+            std::transform(_children.begin(), _children.end(), _shifts.begin(), _shifts.begin(), func);
         }
 
         _areShiftsCurrent = true;
@@ -34,7 +57,7 @@ namespace rat
         for(size_t i = 0; i < _shifts.size(); ++i)
         {
             target.draw(*_children[i], states);
-            states.transform.translate(0.f, _shifts[i]);
+            states.transform.translate(_shifts[i]);
         }
     }
 
@@ -43,16 +66,31 @@ namespace rat
         LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");        
         if(!_areShiftsCurrent || _aboutToRecalculate) _updateShifts();
 
-        auto otherDim = float(Widget::_getChildrenSize().x);
-        float childrenShiftedDim = 0.f;
+        sf::Vector2f childrenShiftedSize;
+
+        bool isVertical = _positioning == Positioning::Vertical;
+
+        if(isVertical)
+        {
+
+        }
 
         for(auto& shift : _shifts)
         {
-            childrenShiftedDim += shift;
+            childrenShiftedSize += shift;
         }
-        if(_shifts.size() > 0) childrenShiftedDim -= _betweenWidgetsPadding;
-
-        return {(unsigned int)otherDim, (unsigned int)childrenShiftedDim};
+        
+        if(isVertical)
+        {
+            childrenShiftedSize.y -= _betweenWidgetsPadding;
+            childrenShiftedSize.x = Widget::_getChildrenSize().x;
+        }
+        else
+        {
+            childrenShiftedSize.x -= _betweenWidgetsPadding;
+            childrenShiftedSize.y = Widget::_getChildrenSize().y;
+        }
+        return static_cast<sf::Vector2u>(childrenShiftedSize);
     }
 
     void ListWidget::_calculateSize()
@@ -62,7 +100,7 @@ namespace rat
 
     sf::Vector2f ListWidget::_getChildShiftByIndex(size_t index) const
     {
-        return {0.f, _shifts[index]};
+        return _shifts[index];
     }
 
 /*

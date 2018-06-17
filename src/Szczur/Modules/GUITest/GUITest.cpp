@@ -45,6 +45,7 @@ namespace rat
 
         
         auto* list = new ListWidget;
+        list->makeHorizontal();
         list->setPosition(400.f, 400.f);
         list->setPadding(20.f, 10.f);
         list->setBetweenPadding(30.f);
@@ -90,6 +91,8 @@ namespace rat
         _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
         _imageWidget->setPropSize(0.2f, 0.2f);
         _imageWidget->setPropPosition(1.f, 1.f);
+
+        _imageWidget->setTexture(nullptr);
 
     }
     
