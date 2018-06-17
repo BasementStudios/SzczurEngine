@@ -9,7 +9,11 @@ namespace rat
 
 Logger::Logger()
 {
+	logger = this;
+
 	std::snprintf(_logPath, sizeof(_logPath), "Logs/%lld.log", static_cast<long long>(std::time(nullptr)));
+
+	LOG_INFO("Start of the application");
 }
 
 Logger::~Logger()

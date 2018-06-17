@@ -3,6 +3,7 @@
 
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat {
@@ -79,7 +80,6 @@ namespace rat {
         for(auto child : _children) _renderTexture.draw(*child, childrenStates);
 
         _renderTexture.display();
-        states.transform.translate(getPadding());
         target.draw(sf::Sprite(_renderTexture.getTexture()), states);
     }
 
@@ -149,16 +149,24 @@ namespace rat {
 
         float barWidth = float(_minScrollSize.x);
         float barX = float(size.x - _minScrollSize.x);
+
         _scroller.setPosition(barX, 0.f);
         _scroller.setSize(_minScrollSize.x, size.y);
-        _renderTexture.create(size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f));
+
+        sf::Vector2u rTexSize = { size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f) };
+
+        auto* window = detail::globalPtr<Window>; 
+        window->pushGLStates(); 
+        _renderTexture.create(rTexSize.x, rTexSize.y); 
+        window->popGLStates();
 
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
         _childrenHeightProp = _childrenHeight/float(size.y);
         _scroller.setScrollerHeightProp(_childrenHeightProp);
     }
 
-    void ScrollAreaWidget::_callback(CallbackType type) {
+    void ScrollAreaWidget::_callback(CallbackType type) 
+    {
         if(auto it = _luaCallbacks.find(type); it != _luaCallbacks.end())
             std::invoke(it->second, this);
         if(auto it = _callbacks.find(type); it != _callbacks.end())

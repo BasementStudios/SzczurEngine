@@ -29,7 +29,7 @@ namespace rat
         float _shift{0.7f};
         sf::Vector2f _size{30, 30.f};
 
-        Widget* _widget{nullptr};
+        InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
     };
 

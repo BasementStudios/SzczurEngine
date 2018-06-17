@@ -6,14 +6,19 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 
 namespace rat
 {
     GUITest::GUITest()
     {
-        auto& window = getModule<Window>().getWindow();
+        auto& mainWindow = getModule<Window>();
+        auto& window = mainWindow.getWindow();
+
+        mainWindow.pushGLStates();
         _canvas.create(window.getSize().x, window.getSize().y);
+        mainWindow.popGLStates();
 
         init();
     }
@@ -28,22 +33,63 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
 
+        gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
+        gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
 
         _widget = gui.addInterface();
-        _widget->setSize(100, 100);
+        //_widget->setSize(100, 100);
+        _widget->setSizingWidthToHeightProportion(1.f);
+        _widget->setWidthToHeightProp(16.f/9.f);
 
+
+
+        
+        auto* list = new ListWidget;
+        list->setPosition(400.f, 400.f);
+        list->setPadding(20.f, 10.f);
+        list->setBetweenPadding(30.f);
+        _widget->add(list);
+        
+        
+        std::vector<ImageWidget*> _ws(4, nullptr);
+        size_t i = 0;
+        for(auto* w : _ws)
+        {
+            w = new ImageWidget;
+            int addon = i * 50;
+            list->add(w);
+            if(i == 1)
+            {
+            w->setSize(50, 50 + addon);
+            w->setPosition(addon, 0);
+
+            }
+
+            w->setCallback(Widget::CallbackType::onHoverOut, [](auto* w){
+                w->setColor({255, 255, 255}, 1.f);
+            });
+            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* w){
+                w->setColor({0, 0, 0}, 1.f);
+            });
+            w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+
+            i++;
+        }
+        auto* testRes = new ImageWidget;
+
+        _widget->add(testRes);
+
+        testRes->setPropSize(0.2f, 0.2f);
+        testRes->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        testRes->setPropPosition(0.f, 0.f);
+
+        
         _imageWidget = new ImageWidget;
+
         _widget->add(_imageWidget);
-
-        //_imageWidget->setSize(20, 20);
-        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        _imageWidget->setPosition(100.f, 100.f);
-
-        auto* _patch = new WindowWidget;
-        _patch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
-        _widget->add(_patch);
-        _patch->setSize(600, 200);
-        _patch->setScale(0.2f, 0.2f);
+        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        _imageWidget->setPropSize(0.2f, 0.2f);
+        _imageWidget->setPropPosition(1.f, 1.f);
 
     }
     
@@ -53,6 +99,7 @@ namespace rat
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);
+
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             _scale-= deltaTime * 0.4f;
@@ -105,17 +152,18 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
-
-        _imageWidget->setPosition(_size);
-
     }
     void GUITest::render()
     {
+        auto& mainWindow = getModule<Window>();
+
+        mainWindow.pushGLStates();
+
        _canvas.clear(sf::Color::Transparent);
-
-
-
         _canvas.display();
-        getModule<Window>().getWindow().draw(sf::Sprite(_canvas.getTexture()));
+
+        mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
+
+        mainWindow.popGLStates();
     }
 }
