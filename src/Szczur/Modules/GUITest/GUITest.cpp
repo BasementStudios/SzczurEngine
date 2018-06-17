@@ -45,6 +45,7 @@ namespace rat
 
         
         auto* list = new ListWidget;
+        list->makeHorizontal();
         list->setPosition(400.f, 400.f);
         list->setPadding(20.f, 10.f);
         list->setBetweenPadding(30.f);
