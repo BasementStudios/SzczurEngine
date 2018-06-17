@@ -36,21 +36,22 @@ namespace rat
 	void NormalSlots::addItem(EquipmentObject* item) {
 		if (_freeSlots.size() > 0) {
 			_freeSlots[0]->setItem(item);
-			_occupiedSlots.push_back(_freeSlots[0]);
+			_itemSlots.insert(itemMap::value_type(item->getName() ,_freeSlots[0]));
 			_freeSlots.erase(_freeSlots.begin());
 			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 		}
 	}
-	void NormalSlots::removeItem(EquipmentObject* item) {	//bug if item removed frame dissapears
-		for (size_t i = 0; i < _occupiedSlots.size(); i++)
+	void NormalSlots::removeItem(sf::String itemName) {
+		auto it = _itemSlots.find(itemName);
+		if (it != _itemSlots.end())
 		{
-			if (_occupiedSlots[i]->getItem() == item) {
-				_occupiedSlots[i]->removeItem();
-				_freeSlots.push_back(_occupiedSlots[i]);
-				_occupiedSlots.erase(_occupiedSlots.begin() + i);
-				std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
-			}
+			it->second->removeItem();
+			_freeSlots.push_back(it->second);
+			_itemSlots.erase(it->first);
+			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 		}
+		else
+			LOG_INFO("item with given name doesn't exist in equipment");
 	}
 
 	void NormalSlots::setPosition(sf::Vector2f pos) {

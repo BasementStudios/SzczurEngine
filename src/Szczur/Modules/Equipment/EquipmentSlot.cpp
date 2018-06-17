@@ -5,9 +5,8 @@ namespace rat {
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
 		_addWidget(_itemImage);
-		_itemImage->add(_slotImage);
+		_addWidget(_slotImage);		
 	}
-
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);
 	}

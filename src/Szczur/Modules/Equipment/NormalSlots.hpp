@@ -2,18 +2,20 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
+//#include <multimap>
 
-//possible bug/ to do removing items based on their names not pointers
 
-namespace rat {
+namespace rat {	
 	class EquipmentSlot; class EquipmentObject; class Widget;
-	class NormalSlots //part of equipment for normal items looking like a grid
+	typedef std::multimap<sf::String, EquipmentSlot*> itemMap;
+
+	class NormalSlots			//part of equipment for normal items looking like a grid
 	{
 	public:
 		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2u frameSize);
 
 		void addItem(EquipmentObject* item);
-		void removeItem(EquipmentObject* item);
+		void removeItem(sf::String itemName);
 		void resizeSlots(unsigned int newSize);
 		void setParent(Widget* newBase);
 
@@ -28,8 +30,8 @@ namespace rat {
 
 		sf::Texture* _frameText;
 
+		itemMap _itemSlots;		//slots with items
 		std::vector<EquipmentSlot*> _freeSlots;
-		std::vector<EquipmentSlot*> _occupiedSlots;
 
 	};
 }

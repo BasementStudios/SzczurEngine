@@ -9,7 +9,7 @@
 #include <vector>
 namespace rat
 {
-	class WindowWidget; class NormalSlots;
+	class WindowWidget; class NormalSlots; class ArmorSlots;
 	class Equipment : public Module<Window, Input, GUI> {
 	public:
 
@@ -21,15 +21,13 @@ namespace rat
 
 	private:
 		NormalSlots* _normalSlots;
+		ArmorSlots* _armorSlots;
 
 		Window& mainWindow;
 		sf3d::RenderWindow& window;
 
 		Widget* _base{ nullptr };
 		WindowWidget* _equipmentFrame{ nullptr };
-		//EquipmentSlot* _equipmentSlot{ nullptr };
-
-		//std::vector<EquipmentSlot*> _slots;
 
 		sf::RenderTexture _canvas;
 	};
