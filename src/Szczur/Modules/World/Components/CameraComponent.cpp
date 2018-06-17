@@ -37,7 +37,7 @@ namespace rat {
 				0.f,
 				velocity * glm::cos(glm::radians(rotation.y))
 			});
-		if(!_stickTo) {
+		if(!_stickTo || _stickToX) {
 			if(input.isKept(Keyboard::D)) {
 				object->move(glm::vec3{
 					velocity * glm::cos(glm::radians(rotation.y)),
