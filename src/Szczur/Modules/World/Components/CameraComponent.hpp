@@ -44,6 +44,8 @@ public:
 
     void stickTo(Entity* entity);
 
+	void stickTo(float x);
+
     ///
     void setLock(bool lock);
 
@@ -94,6 +96,9 @@ private:
     sf::Vector2i _previousMouse;
 
     Entity* _stickTo{nullptr};
+
+	float _stickToX{0.f};
+	bool _stickedToX{false};
 
 };
 

@@ -99,6 +99,13 @@ namespace rat {
 
 	void CameraComponent::stickTo(Entity* entity) {
 		_stickTo = entity;
+		_stickedToX = false;
+	}
+
+	void CameraComponent::stickTo(float x) {
+		_stickTo = nullptr;
+		_stickToX = x;
+		_stickedToX = true;
 	}
 
 	
@@ -200,6 +207,11 @@ namespace rat {
 			curPos.x = _stickTo->getPosition().x;
 			getEntity()->setPosition(curPos);
 		}
+		else if(_stickedToX) {
+			auto curPos = getEntity()->getPosition();
+			curPos.x = _stickToX;
+			getEntity()->setPosition(curPos);
+		}
 		if(_limitedRange) {
 			auto position = entity->getPosition();
 			if(position.x > _limit.right)
@@ -257,7 +269,10 @@ namespace rat {
 		object.set("getVelocity", &CameraComponent::getVelocity);
 		object.set("setSmoothness", &CameraComponent::setSmoothness);
 		object.set("getSmoothness", &CameraComponent::getSmoothness);
-		object.set("stickTo", &CameraComponent::stickTo);
+		object.set("stickTo", sol::overload(
+			sol::resolve<void(Entity*)>(&CameraComponent::stickTo),
+			sol::resolve<void(float)>(&CameraComponent::stickTo)
+		));
 		object.set("stickToPlayer", &CameraComponent::stickToPlayer);
 
 		object.set("setLock", &CameraComponent::setLock);
