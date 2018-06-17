@@ -476,18 +476,22 @@ namespace rat
         return _isVisible;
     }
 
-    void Widget::move(const sf::Vector2f& offset) {
+    void Widget::move(const sf::Vector2f& offset) 
+    {
         sf::Transformable::move(offset);
         if(_parent) _parent->_aboutToRecalculate = true;   
     }
-    void Widget::move(float offsetX, float offsetY) {
+    void Widget::move(float offsetX, float offsetY) 
+    {
         move({offsetX, offsetY});
     }
-    void Widget::setPosition(const sf::Vector2f& offset) {
+    void Widget::setPosition(const sf::Vector2f& offset) 
+    {
         sf::Transformable::setPosition(offset);
         if(_parent) _parent->_aboutToRecalculate = true;   
     }
-    void Widget::setPosition(float x, float y) {
+    void Widget::setPosition(float x, float y) 
+    {
         setPosition({x, y});
     }
 
@@ -517,7 +521,6 @@ namespace rat
         _props.size.y = std::max(0.f, std::min(1.f, _props.size.y));
 
         auto newSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
-        std::cout << "X: " << newSize.x << " Y: " << newSize.y << '\n';
         setSize(newSize);
     }
     void Widget::setPropSize(float widthProp, float heightProp)
@@ -666,11 +669,7 @@ namespace rat
         if(!_props.hasSize) return;
         if(!_interface) return;
 
-        std::cout << "keke\n";
-
         auto updatedSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
-        LOG_INFO("UpdatedSize: X: ", updatedSize.x, " Y: ", updatedSize.y);
-        
 
         setSize(updatedSize);
     }
@@ -681,7 +680,7 @@ namespace rat
 
         auto size = getSize();
         auto origin = getOrigin();
-        auto parentSize = _parent->getSize();
+        auto parentSize = _parent->getSize() - static_cast<sf::Vector2u>(_parent->getPadding() * 2.f);
 
         auto posRange = parentSize - size;
 

@@ -18,9 +18,7 @@ namespace rat {
         auto& mainWindow = getModule<Window>();
         auto& window = mainWindow.getWindow();
         auto winSize = window.getSize();
-        //mainWindow.pushGLStates(); 
         _canvas.create(winSize.x, winSize.y); 
-        //mainWindow.popGLStates();
 
         _root.setSize(winSize);
         _root.makeChildrenUnresizable();
@@ -47,11 +45,13 @@ namespace rat {
         LOG_INFO(this, "Module GUI destructed")
     }
 
-    Widget* GUI::addInterface() {
+    InterfaceWidget* GUI::addInterface() 
+    {
         auto* interface = new InterfaceWidget;
         
         _root.add(interface);
         interface->updateSizeByWindowSize(_root.getMinimalSize());
+        interface->setPropPosition(0.5f, 0.5f);
         _interfaces.emplace_back(interface);
         return interface;
     }

@@ -12,6 +12,7 @@ namespace rat
         sf::Vector2i getSizeByPropSize(const sf::Vector2f& propSize) const;
 
         void setWidthToHeightProp(float prop);
+        void setSizingWidthToHeightProportion(float prop);
     protected:
         virtual void _addWidget(Widget* widget) override;
     private:
@@ -21,7 +22,6 @@ namespace rat
         bool _hasSizing{false};
         float _sizingWidthToHeightProp{16.f/9.f};
         sf::Vector2f _sizingSize;
-        enum class SizeState : char {TooWidth, TooHeigh, Ok} _sizeState{SizeState::Ok};
 
         void _updateSizeProportion();
         void _updateSizingSize();

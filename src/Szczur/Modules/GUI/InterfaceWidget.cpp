@@ -17,6 +17,17 @@ namespace rat
         forceToUpdatePropSize();
     }
 
+    void InterfaceWidget::setSizingWidthToHeightProportion(float prop)
+    {
+        if(prop < 0.f) prop = 0.f;
+
+        _hasSizing = true;
+        _sizingWidthToHeightProp = prop;
+
+        _updateSizingSize();
+        forceToUpdatePropSize();
+    }
+
     void InterfaceWidget::_addWidget(Widget* widget)
     {
         widget->setInterface(this);
@@ -28,13 +39,11 @@ namespace rat
         _updateSizeProportion();
         _updateSizingSize();
 
-        std::cout << "Sizing: X:" << _sizingSize.x << " Y: " << _sizingSize.y << '\n';
         forceToUpdatePropSize();
     }
 
     sf::Vector2i InterfaceWidget::getSizeByPropSize(const sf::Vector2f& propSize) const
     {
-        std::cout << "Sizing: X:" << _sizingSize.x << " Y: " << _sizingSize.y << '\n';
         return { int(_sizingSize.x * propSize.x), int(_sizingSize.y * propSize.y) };
     }
 
@@ -55,6 +64,10 @@ namespace rat
             }
             setSize(size);
         }
+        else
+        {
+            _widthToHeightProp = float(size.x)/float(size.y);
+        }
     }
 
     void InterfaceWidget::_updateSizingSize()
@@ -64,15 +77,14 @@ namespace rat
         _sizingSize = innerSize;
 
         if(!_hasSizing) return;
-
-
+        
         if(_widthToHeightProp > _sizingWidthToHeightProp)
         {
-            _sizingSize.x = innerSize.y * _widthToHeightProp;
+            _sizingSize.x = innerSize.y * _sizingWidthToHeightProp;
         }
         else
         {
-            _sizingSize.y = innerSize.x / _widthToHeightProp;
+            _sizingSize.y = innerSize.x / _sizingWidthToHeightProp;
         }
     }
 }

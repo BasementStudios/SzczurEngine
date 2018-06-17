@@ -37,7 +37,10 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
 
         _widget = gui.addInterface();
-        _widget->setSize(100, 100);
+        //_widget->setSize(100, 100);
+        _widget->setSizingWidthToHeightProportion(1.f);
+        _widget->setWidthToHeightProp(16.f/9.f);
+
 
 
         
@@ -54,7 +57,6 @@ namespace rat
         {
             w = new ImageWidget;
             int addon = i * 50;
-            std::cout << addon << '\t';
             list->add(w);
             if(i == 1)
             {
@@ -73,29 +75,27 @@ namespace rat
 
             i++;
         }
-        std::cout << '\n';
-
         auto* testRes = new ImageWidget;
 
         _widget->add(testRes);
 
-        testRes->setPropSize(0.5f, 0.5f);
+        testRes->setPropSize(0.2f, 0.2f);
         testRes->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        testRes->setPropPosition(0.f, 0.f);
 
+        
         _imageWidget = new ImageWidget;
 
         _widget->add(_imageWidget);
         _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        _imageWidget->setPropSize(0.5f, 0.5f);
-        _imageWidget->setPropPosition(0.5f, 0.f);
+        _imageWidget->setPropSize(0.2f, 0.2f);
+        _imageWidget->setPropPosition(1.f, 1.f);
 
     }
     
     
     void GUITest::update(float deltaTime)
     {
-        //std::cout << "XXXXXXX Image: x: " << _imageWidget->getSize().x << " y: " << _imageWidget->getSize().y << '\n';        
-
         const auto& window = getModule<Window>().getWindow();
 
         auto mousePos = sf::Mouse::getPosition(window);
