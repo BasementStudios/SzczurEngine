@@ -282,4 +282,12 @@ namespace rat {
 	size_t CameraComponent::enumTypeToSize_t() const {
 		return static_cast<size_t>(_type);
 	}
+
+	CameraComponent::Type CameraComponent::size_tToEnumType(size_t type) const {
+		switch(type) {
+			case static_cast<size_t>(Smooth) : return Smooth;
+				case static_cast<size_t>(Linear) : return Linear;
+		}
+		return None;
+	}
 }

@@ -79,7 +79,7 @@ private:
 		float _linear;
 	};
 
-	enum : size_t {
+	enum Type : size_t {
 		None,
 		Smooth,
 		Linear
@@ -89,13 +89,7 @@ private:
 
 	size_t enumTypeToSize_t() const;
 
-	auto size_tToEnumType(size_t type) const {
-		switch(type) {
-			case static_cast<size_t>(Smooth) : return Smooth;
-				case static_cast<size_t>(Linear) : return Linear;
-		}
-		return None;
-	}
+	Type size_tToEnumType(size_t type) const;
 
     sf::Vector2i _previousMouse;
 
