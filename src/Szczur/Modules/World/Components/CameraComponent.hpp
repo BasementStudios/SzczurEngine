@@ -44,6 +44,8 @@ public:
 
     void stickTo(Entity* entity);
 
+	void stickTo(float x);
+
     ///
     void setLock(bool lock);
 
@@ -66,6 +68,7 @@ public:
 private:
     bool _rotating{false};
     bool _locked{false};
+	float _velocity{50.f};
 
     bool _limitedRange{false};
     struct {
@@ -73,11 +76,29 @@ private:
         float right{0.f};
     } _limit;
 
-    float _velocity{50.f};
-    float _smoothness{1.f};
+	union {
+		float _smoothness{1.f};
+		float _linear;
+	};
+
+	enum Type : size_t {
+		None,
+		Smooth,
+		Linear
+	} _type{None};
+
+	std::string enumTypeToString() const;
+
+	size_t enumTypeToSize_t() const;
+
+	Type size_tToEnumType(size_t type) const;
+
     sf::Vector2i _previousMouse;
 
     Entity* _stickTo{nullptr};
+
+	float _stickToX{0.f};
+	bool _stickedToX{false};
 
 };
 
