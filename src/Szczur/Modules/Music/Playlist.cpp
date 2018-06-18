@@ -99,7 +99,7 @@ namespace rat
 
 	void Playlist::play(Playlist::BasePointer_t prevMusicFile, const std::string& fileName)
 	{
-		if (_status == Status::Playing || _playlist[_currentID]->getName() == fileName) {
+		if (_status != Status::Playing || _playlist[_currentID]->getName() == fileName) {
 			_isFileEnding = true;
 			_endingFile = prevMusicFile;
 		}
@@ -147,8 +147,9 @@ namespace rat
 
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
-		if (!fileName.empty())
+		if (!fileName.empty()) {
 			_playlist[getID(fileName)]->setVolume(volume * (_globalVolume / 100));
+		}
 		else {
 			for (auto it : _playlist)
 				it->setVolume(it->getVolume() * (volume / 100));
