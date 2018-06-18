@@ -25,13 +25,13 @@ namespace rat
 			Single
 		};
 
-	private:
-
 		enum class Status {
 			Playing, 
 			Paused,
 			Stopped
 		};
+
+	private:
 
 		Container_t _playlist;
 
@@ -73,6 +73,8 @@ namespace rat
 		void stop();
 
 		void setPlayingMode(PlayingMode mode);
+
+		Status getStatus() const;
 
 		void setVolume(float volume, const std::string& fileName = "");
 		float getVolume(const std::string& fileName) const;

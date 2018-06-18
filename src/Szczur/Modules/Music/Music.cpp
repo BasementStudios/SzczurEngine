@@ -130,14 +130,14 @@ namespace rat
 	void Music::play(const std::string& key, const std::string& fileName)
 	{
 		auto hashKey = fnv1a_32(key.c_str());
+		auto samePlaylist   = (_currentPlaylistKey == hashKey);
 
-		if (_currentPlaylistKey == 0)
+		if (_currentPlaylistKey == 0 || (fileName == "" && samePlaylist))
 			_playlists[hashKey]->play(fileName);
 		else {
 			auto currentPlaying = _playlists[_currentPlaylistKey]->getCurrentPlaying();
-			auto samePlaylist   = (_currentPlaylistKey == hashKey);
 
-			if (currentPlaying->getName() != fileName)
+			if (currentPlaying->getName() != fileName || (_playlists[_currentPlaylistKey]->getStatus() == Playlist::Status::Stopped && samePlaylist))
 				_playlists[hashKey]->play(currentPlaying, fileName);
 			else if (!samePlaylist)
 				_playlists[hashKey]->play(_playlists[hashKey]->getID(fileName), currentPlaying->getTimeLeft());
@@ -150,17 +150,20 @@ namespace rat
 
 	void Music::pause()
 	{
-		_playlists[_currentPlaylistKey]->pause();
+		if (_currentPlaylistKey != 0)
+			_playlists[_currentPlaylistKey]->pause();
 	}
 
 	void Music::stop()
 	{
-		_playlists[_currentPlaylistKey]->stop();
+		if (_currentPlaylistKey != 0)
+			_playlists[_currentPlaylistKey]->stop();
 	}
 
 	RatMusic& Music::getCurrentPlaying()
 	{
-		return _playlists[_currentPlaylistKey]->getCurrentPlaying()->getSource();
+		if (_currentPlaylistKey != 0)
+			return _playlists[_currentPlaylistKey]->getCurrentPlaying()->getSource();
 	}
 
 	RatMusic& Music::get(const std::string& fileName) 

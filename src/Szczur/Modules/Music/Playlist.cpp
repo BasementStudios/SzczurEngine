@@ -99,7 +99,7 @@ namespace rat
 
 	void Playlist::play(Playlist::BasePointer_t prevMusicFile, const std::string& fileName)
 	{
-		if (_status != Status::Playing || _playlist[_currentID]->getName() != fileName) {
+		if (_status == Status::Playing || _playlist[_currentID]->getName() != fileName) {
 			_isFileEnding = true;
 			_endingFile = prevMusicFile;
 		}
@@ -118,6 +118,11 @@ namespace rat
 	void Playlist::setPlayingMode(PlayingMode mode) 
 	{
 		_playingMode = mode;
+	}
+
+	Playlist::Status Playlist::getStatus() const 
+	{
+		return _status;
 	}
 
 	void Playlist::pause() 
