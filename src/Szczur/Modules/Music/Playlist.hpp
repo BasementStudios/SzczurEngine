@@ -76,6 +76,8 @@ namespace rat
 
 		Status getStatus() const;
 
+		static void setGlobalVolume(float volume);
+		
 		void setVolume(float volume, const std::string& fileName = "");
 		float getVolume(const std::string& fileName) const;
 

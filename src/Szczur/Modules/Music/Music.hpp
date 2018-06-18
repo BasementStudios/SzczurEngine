@@ -59,7 +59,7 @@ namespace rat
 
 		void setPlayingMode(const std::string& key, PlayingMode mode);
 
-		void setVolume(const std::string& key, float volume, const std::string& fileName = "");
+		void setVolume(float volume, const std::string& key = "", const std::string& fileName = "");
 		float getVolume(const std::string& fileName);
 
 		template <typename T>

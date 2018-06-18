@@ -187,9 +187,17 @@ namespace rat
 		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);
 	}
 
-	void Music::setVolume(const std::string& key, float volume, const std::string& fileName)
+	void Music::setVolume(float volume, const std::string& key, const std::string& fileName)
 	{
-		_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);
+		if (key.empty()) {
+			for (auto& it : _playlists) {
+				it.second->setVolume(volume);
+			}
+			Playlist::setGlobalVolume(volume);
+			LOG_INFO("Global music volume set to ", volume);
+		}
+		else
+			_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);
 	}
 
 	float Music::getVolume(const std::string& fileName)
