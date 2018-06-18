@@ -129,8 +129,8 @@ namespace rat
 
 	void Music::play(const std::string& key, const std::string& fileName)
 	{
-		auto hashKey = fnv1a_32(key.c_str());
-		auto samePlaylist   = (_currentPlaylistKey == hashKey);
+		auto hashKey      = fnv1a_32(key.c_str());
+		auto samePlaylist = (_currentPlaylistKey == hashKey);
 
 		if (_currentPlaylistKey == 0 || (fileName == "" && samePlaylist))
 			_playlists[hashKey]->play(fileName);
