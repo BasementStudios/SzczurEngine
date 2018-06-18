@@ -29,6 +29,23 @@ namespace rat
     {
         return _base->getPosition();
     }
+
+    void BaseBar::setPropSize(const sf::Vector2f& propSize)
+    {
+        _base->setPropSize(propSize);
+    }
+    void BaseBar::setPropSize(float propWidth, float propHeight)
+    {
+        _base->setPropSize(propWidth, propHeight);
+    }
+    void BaseBar::setPropPosition(const sf::Vector2f& propPos)
+    {
+        _base->setPropPosition(propPos);
+    }
+    void BaseBar::setPropPosition(float propX, float propY)
+    {
+        _base->setPropPosition(propX, propY);
+    }
     
     void BaseBar::setParent(Widget* parent)
     {

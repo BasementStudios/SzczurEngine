@@ -30,6 +30,11 @@ namespace rat
         bool isActivate() const;
         void setPropOrigin(const sf::Vector2f& propOrigin);
         void setPropOrigin(float x, float y);
+        void setPropSize(const sf::Vector2f& propSize);
+        void setPropSize(float propWidth, float propHeight);
+        void setPropPosition(const sf::Vector2f& propPos);
+        void setPropPosition(float propX, float propY);
+
 
     protected:
         void _addWidget(Widget* addon);
