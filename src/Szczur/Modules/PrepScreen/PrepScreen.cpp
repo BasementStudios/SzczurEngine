@@ -54,6 +54,8 @@ namespace rat
         _codex.initAssetsViaGUI(gui);
 
         _base = gui.addInterface();
+        _base->setPadding(20.f, 20.f);
+        _base->setSizingWidthToHeightProportion(1.f);
 
         _source.ppContainer.add(3);
 

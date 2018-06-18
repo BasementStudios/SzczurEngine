@@ -25,7 +25,7 @@
 
 namespace rat
 {
-    class Widget; class ScrollAreaWidget; class ImageWidget;
+    class InterfaceWidget; class ScrollAreaWidget; class ImageWidget;
 
     class PrepScreen : public Module <Window, Input, Script, GUI>
     {
@@ -49,7 +49,7 @@ namespace rat
 
         void test();
 
-        Widget* _base{nullptr};
+        InterfaceWidget* _base{nullptr};
 
         GrayPPArea _grayPPArea;
         SkillArea _skillArea;
