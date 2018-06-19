@@ -16,6 +16,7 @@ namespace rat
     {
     public:
         BaseBar();
+        BaseBar(Widget* base);
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& position);
         sf::Vector2f getPosition() const;
