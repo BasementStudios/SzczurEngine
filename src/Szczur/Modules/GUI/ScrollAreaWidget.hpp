@@ -12,9 +12,7 @@ namespace rat {
         ScrollAreaWidget();
 
         static void initScript(Script& script);
-/*
-        void setSize(size_t x, size_t y);
-        void setSize(sf::Vector2u size);*/
+
         void setScrollerTexture(sf::Texture* texture, int boundsHeight = 140);
         void setPathTexture(sf::Texture* texture);
         void setBoundsTexture(sf::Texture* texture);        
@@ -28,7 +26,8 @@ namespace rat {
         virtual sf::Vector2u _getSize() const override;
 		virtual void _calculateSize() override;
 
-        virtual void _inputChildren(sf::Event event) override;
+        //virtual void _inputChildren(sf::Event event) override;
+        virtual sf::Vector2f _getChildrenShift() const override;
         virtual sf::Vector2u _getChildrenSize() override;
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;        
     private:

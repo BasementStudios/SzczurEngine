@@ -56,7 +56,8 @@ namespace rat {
         return interface;
     }
     
-    void GUI::input(const sf::Event& event) {
+    void GUI::input(const sf::Event& event) 
+    {
         if(event.type == sf::Event::Resized)
         {
             sf::Vector2u winSize = { event.size.width, event.size.height };
@@ -64,19 +65,16 @@ namespace rat {
             auto& mainWindow = getModule<Window>();
             mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
 
-            /*
-            sf::Vector2f winProp = { float(event.size.width) / float(_standartWindowSize.x),
-            float(event.size.height) / float(_standartWindowSize.y) };
-            Widget::setWinProp(winProp);*/
-
-
+            _canvas.create(winSize.x, winSize.y);
 
             _root.setSize(winSize);
+
             for(auto* interface : _interfaces)
             {
                 interface->updateSizeByWindowSize(winSize);
             }
         }
+        
         _root.invokeInput(event);
         _root.input(event);
     }

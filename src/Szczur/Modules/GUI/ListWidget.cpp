@@ -33,19 +33,19 @@ namespace rat
 
         if(_positioning == Positioning::Vertical)
         {
-            auto func = [this](const Widget* child, auto&){
+            auto func = [this](const Widget* child){
                 return sf::Vector2f{0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding};
             };
 
-            std::transform(_children.begin(), _children.end(), _shifts.begin(), _shifts.begin(), func);
+            std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
         }
         else
         {
-            auto func = [this](const Widget* child, auto&){
+            auto func = [this](const Widget* child){
                 return sf::Vector2f{float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f};
             };
 
-            std::transform(_children.begin(), _children.end(), _shifts.begin(), _shifts.begin(), func);
+            std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
         }
 
         _areShiftsCurrent = true;

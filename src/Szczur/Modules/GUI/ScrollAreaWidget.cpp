@@ -114,7 +114,7 @@ namespace rat {
         }
         
     }
-
+    /*
     void ScrollAreaWidget::_inputChildren(sf::Event event)
     {
         if(_isHovered)
@@ -132,6 +132,10 @@ namespace rat {
                 else it->input(event);
             }
         }
+    }*/
+    sf::Vector2f ScrollAreaWidget::_getChildrenShift() const
+    {
+        return { 0.f, _offset};
     }
 
     sf::Vector2u ScrollAreaWidget::_getChildrenSize()

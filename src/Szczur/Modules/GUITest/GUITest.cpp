@@ -37,62 +37,45 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
 
         _widget = gui.addInterface();
-        //_widget->setSize(100, 100);
+
         _widget->setSizingWidthToHeightProportion(1.f);
-        _widget->setWidthToHeightProp(16.f/9.f);
+        //_widget->setWidthToHeightProp(16.f/9.f);
+
+        auto* scroll = new ScrollAreaWidget;
+        _widget->add(scroll);
+
+        scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+
+        scroll->setPropSize(0.5f, 0.5f);
+        scroll->setPropPosition(1.f, 0.f);
 
 
+        auto* image = new ImageWidget;
+        image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        image->setPropSize(0.15f, 0.15f);
+        //image->setPropPosition(0.5f, 1.f);
+        _widget->add(image);
 
-        
         auto* list = new ListWidget;
-        list->makeHorizontal();
-        list->setPosition(400.f, 400.f);
-        list->setPadding(20.f, 10.f);
-        list->setBetweenPadding(30.f);
-        _widget->add(list);
-        
-        
-        std::vector<ImageWidget*> _ws(4, nullptr);
-        size_t i = 0;
-        for(auto* w : _ws)
+        scroll->add(list);
+
+        for(int i = 0; i < 4; i++)
         {
-            w = new ImageWidget;
-            int addon = i * 50;
+            auto* w = new Widget;
             list->add(w);
-            if(i == 1)
-            {
-            w->setSize(50, 50 + addon);
-            w->setPosition(addon, 0);
-
-            }
-
-            w->setCallback(Widget::CallbackType::onHoverOut, [](auto* w){
-                w->setColor({255, 255, 255}, 1.f);
+            w->setPropSize(0.05f, 0.05f);
+            //w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+            /*
+            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* owner){
+                owner->setColor({0, 0, 0}, 1.f);
             });
-            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* w){
-                w->setColor({0, 0, 0}, 1.f);
+            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* owner){
+                owner->setColor({255, 255, 255}, 1.f);
             });
-            w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-
-            i++;
+            */
         }
-        auto* testRes = new ImageWidget;
-
-        _widget->add(testRes);
-
-        testRes->setPropSize(0.2f, 0.2f);
-        testRes->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        testRes->setPropPosition(0.f, 0.f);
-
-        
-        _imageWidget = new ImageWidget;
-
-        _widget->add(_imageWidget);
-        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        _imageWidget->setPropSize(0.2f, 0.2f);
-        _imageWidget->setPropPosition(1.f, 1.f);
-
-        _imageWidget->setTexture(nullptr);
 
     }
     

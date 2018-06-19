@@ -179,6 +179,9 @@ namespace rat
 		sf::Vector2u _getBound() const;
 
 		void _updatePropSize();
+
+		bool _propSizeMustBeenCalculatedViaInterface{false};
+
 		void _updatePropPosition();
 
 		const InterfaceWidget* _interface{nullptr};
