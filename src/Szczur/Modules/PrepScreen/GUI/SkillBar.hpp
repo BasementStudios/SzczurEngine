@@ -9,6 +9,7 @@
 namespace rat
 {
     class SkillArea; class ChosenSkillArea; class GrayPPArea;
+    class ListWidget;
 
     class SkillBar : public BaseBar
     {

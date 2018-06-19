@@ -26,12 +26,13 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-
+        /*
         gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
         gui.addAsset<sf::Texture>("Assets/Test/Scroller.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
+        */
 
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");

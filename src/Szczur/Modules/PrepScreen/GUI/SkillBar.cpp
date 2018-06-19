@@ -5,6 +5,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 #include "GrayPPArea.hpp"
 #include "SkillArea.hpp"
@@ -22,7 +23,8 @@ namespace rat
     :
     _parentArea(parentArea),
     _chosenArea(_parentArea.getChosenSkillArea()),
-    _sourceArea(_parentArea.getSourceArea())
+    _sourceArea(_parentArea.getSourceArea()),
+    BaseBar([]{auto* base = new ListWidget; base->makeHorizontal(); return base;}())
     {
         setSize(_size);
 
@@ -31,16 +33,16 @@ namespace rat
         _infoBar = new WindowWidget;
         _name = new TextWidget;
 
-        _iconWindow->setSize(_size.y, _size.y);
+        _iconWindow->setPropSize(0.09f, 0.09f);
         _iconWindow->setScale(0.3f, 0.3f);
         _addWidget(_iconWindow);        
         
         
-        _icon->setSize(_size.y - 2 * round(_iconWindow->getPadding().x), _size.y - 2 * round(_iconWindow->getPadding().x));
+        _icon->setPropSize(0.08f, 0.08f);
+        _icon->setPropPosition(0.5f, 0.5f);
         _iconWindow->add(_icon);
 
-        _infoBar->setSize(_size.x - _size.y, _size.y);
-        _infoBar->setPosition(_size.y, 0);
+        _infoBar->setPropSize(0.21f, 0.09f);
         _infoBar->setScale(0.3f, 0.3f);
         _infoBar->setPadding(10, 10);
         _infoBar->makeChildrenPenetrable();
@@ -58,10 +60,11 @@ namespace rat
         _addWidget(_infoBar);
 
         _name->setCharacterSize(20);
+        _name->setPropPosition(0.f, 0.f);
         _infoBar->add(_name);
 
         _costBar.setParent(_infoBar);
-        _costBar.setPosition(0.f, 30.f);
+        _costBar.setPropPosition(0.f, 1.f);
         _costBar.setWidth(_infoBar->getMinimalSize().x);
     }
 

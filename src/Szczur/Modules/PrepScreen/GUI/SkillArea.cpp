@@ -45,6 +45,7 @@ namespace rat
         _infoBar.initAssetsViaGUI(gui);
 
         _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
+        
 
         for(auto& skillBar : _skillBars)
         {
