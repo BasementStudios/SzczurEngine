@@ -48,11 +48,11 @@ namespace rat
 		void addToPlaylist(const std::string& key, const std::string& fileName);
 		void removeFromPlaylist(const std::string& key, const std::string& fileName = "");
 
-		void play(unsigned int musicPath, const std::string& key, const std::string& fileName = "");
-		void pause(int musicPath = -1);
-		void stop(int musicPath = -1);
+		void play(unsigned int musicTrack, const std::string& key, const std::string& fileName = "");
+		void pause(int musicTrack = -1);
+		void stop(int musicTrack = -1);
 
-		RatMusic& getCurrentPlaying(unsigned int musicPath);
+		RatMusic& getCurrentPlaying(unsigned int musicTrack);
 		RatMusic& get(const std::string& fileName);
 
 		bool includes(const std::string& key, const std::string& fileName);

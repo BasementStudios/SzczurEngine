@@ -134,57 +134,64 @@ namespace rat
 		}
 	}
 
-	void Music::play(unsigned int musicPath, const std::string& key, const std::string& fileName)
+	void Music::play(unsigned int musicTrack, const std::string& key, const std::string& fileName)
 	{
 		auto hashKey      = fnv1a_32(key.c_str());
-		auto samePlaylist = (_currentPlaylistKeys[musicPath] == hashKey);
+		auto samePlaylist = (_currentPlaylistKeys[musicTrack] == hashKey);
 
-		if (_currentPlaylistKeys[musicPath] == 0 || (fileName == "" && samePlaylist))
+		for (unsigned int i = 0; i <= 3; ++i) {
+			if (_currentPlaylistKeys[i] == hashKey && musicTrack != i) {
+				LOG_INFO("Can't play the same playlist on several tracks at the same time!");
+				return; 
+			}
+		}
+
+		if (_currentPlaylistKeys[musicTrack] == 0 || (fileName == "" && samePlaylist))
 			_playlists[hashKey]->play(fileName);
 		else {
-			auto currentPlaying = _playlists[_currentPlaylistKeys[musicPath]]->getCurrentPlaying();
+			auto currentPlaying = _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying();
 
-			if (currentPlaying->getName() != fileName || (_playlists[_currentPlaylistKeys[musicPath]]->getStatus() == Playlist::Status::Stopped && samePlaylist))
+			if (currentPlaying->getName() != fileName || (_playlists[_currentPlaylistKeys[musicTrack]]->getStatus() == Playlist::Status::Stopped && samePlaylist))
 				_playlists[hashKey]->play(currentPlaying, fileName);
 			else if (!samePlaylist)
 				_playlists[hashKey]->play(_playlists[hashKey]->getID(fileName), currentPlaying->getTimeLeft());
 			
 			if (!samePlaylist)
-				_playlists[_currentPlaylistKeys[musicPath]]->stopUpdates();
+				_playlists[_currentPlaylistKeys[musicTrack]]->stopUpdates();
 		}
-		_currentPlaylistKeys[musicPath] = hashKey;
+		_currentPlaylistKeys[musicTrack] = hashKey;
 	}
 
-	void Music::pause(int musicPath)
+	void Music::pause(int musicTrack)
 	{
-		if (musicPath == -1) {
+		if (musicTrack == -1) {
 			for(auto& it : _currentPlaylistKeys) {
 				if (it != 0)
 					_playlists[it]->pause();
 			}
 		}
-		else if (musicPath <= 3 && musicPath >= 0) {
-			_playlists[_currentPlaylistKeys[musicPath]]->pause();
+		else if (musicTrack <= 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
+			_playlists[_currentPlaylistKeys[musicTrack]]->pause();
 		}
 	}
 
-	void Music::stop(int musicPath)
+	void Music::stop(int musicTrack)
 	{
-		if (musicPath == -1) {
+		if (musicTrack == -1) {
 			for(auto& it : _currentPlaylistKeys) {
 				if (it != 0)
 					_playlists[it]->stop();
 			}
 		}
-		else if (musicPath <= 3 && musicPath >= 0) {
-			_playlists[_currentPlaylistKeys[musicPath]]->stop();
+		else if (musicTrack <= 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
+			_playlists[_currentPlaylistKeys[musicTrack]]->stop();
 		}
 	}
 
-	RatMusic& Music::getCurrentPlaying(unsigned int musicPath)
+	RatMusic& Music::getCurrentPlaying(unsigned int musicTrack)
 	{
-		if (musicPath <= 3) {
-			return _playlists[_currentPlaylistKeys[musicPath]]->getCurrentPlaying()->getSource();
+		if (musicTrack <= 3 && _currentPlaylistKeys[musicTrack] != 0) {
+			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource();
 		}
 	}
 
