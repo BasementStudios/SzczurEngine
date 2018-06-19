@@ -24,6 +24,7 @@ namespace rat
 		object.set("lowMidGain", &Equalizer::lowMidGain);
 		object.set("highMidCenter", &Equalizer::highMidCenter);
 		object.set("highMidWidth", &Equalizer::highMidWidth);
+        object.set("highMidGain", &Equalizer::highMidGain);
 		object.set("highCutoff", &Equalizer::highCutoff);
 		object.set("highGain", &Equalizer::highGain);
 

@@ -99,11 +99,20 @@ namespace rat
 
 	void Playlist::play(Playlist::BasePointer_t prevMusicFile, const std::string& fileName)
 	{
-		if (_status != Status::Playing || _playlist[_currentID]->getName() != fileName) {
-			_isFileEnding = true;
-			_endingFile = prevMusicFile;
+		std::string name;
+
+		if(includes(prevMusicFile->getName()) && (fileName.empty() || prevMusicFile->getName() == fileName)) {
+			name = prevMusicFile->getName();
+		} 
+		else {
+			name = fileName;
+			if ((fileName != "" && _status == Status::Playing) || (_status != Status::Playing || _playlist[_currentID]->getName() != fileName)) {
+				_isFileEnding = true;
+				_endingFile = prevMusicFile;
+			}
 		}
-		play(fileName);
+
+		play(name);
 	}
 
 	void Playlist::clear() 
@@ -118,6 +127,11 @@ namespace rat
 	void Playlist::setPlayingMode(PlayingMode mode) 
 	{
 		_playingMode = mode;
+	}
+
+	Playlist::Status Playlist::getStatus() const 
+	{
+		return _status;
 	}
 
 	void Playlist::pause() 
@@ -135,12 +149,17 @@ namespace rat
 		_status = Status::Stopped;
 	}
 
+	void Playlist::setGlobalVolume(float volume)
+	{
+		_globalVolume = volume;
+	}
+
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
-		if (!fileName.empty())
+		if (!fileName.empty()) {
 			_playlist[getID(fileName)]->setVolume(volume * (_globalVolume / 100));
+		}
 		else {
-			_globalVolume = volume;
 			for (auto it : _playlist)
 				it->setVolume(it->getVolume() * (volume / 100));
 		}

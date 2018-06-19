@@ -34,7 +34,6 @@ namespace rat
 		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
 		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
-
 		module.set_function("addPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args newPlaylist){
 				owner->_playlists[fnv1a_32(key.c_str())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
@@ -67,6 +66,10 @@ namespace rat
 		module.set_function("cleanEqualizer", &Music::cleanEffect<Equalizer>, this);
 		module.set_function("cleanReverb", &Music::cleanEffect<Reverb>, this);
 		module.set_function("cleanEcho", &Music::cleanEffect<Echo>, this);
+
+		module.set("Random", PlayingMode::Random);
+		module.set("Orderly", PlayingMode::Orderly);
+		module.set("Single", PlayingMode::Single);
 	}
 
 	void Music::loadPlaylistFromJson(const std::string& filePath)
@@ -86,8 +89,10 @@ namespace rat
 
 	void Music::update(float deltaTime)
 	{
-		if (_currentPlaylistKey != 0)
-			_playlists[_currentPlaylistKey]->update(deltaTime);
+		for(auto& it : _currentPlaylistKeys) {
+			if (it != 0)
+				_playlists[it]->update(deltaTime);
+		}
 	}
 
 	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist) 
@@ -111,8 +116,10 @@ namespace rat
 	{
 		auto hashKey = fnv1a_32(key.c_str()); 
 
-		if (_currentPlaylistKey == hashKey) 
-			_currentPlaylistKey = 0;
+		for(auto& it : _currentPlaylistKeys) {
+			if (it == hashKey) 
+				it = 0;
+		}
 
 		if (fileName.empty()) {
 
@@ -127,40 +134,65 @@ namespace rat
 		}
 	}
 
-	void Music::play(const std::string& key, const std::string& fileName)
+	void Music::play(unsigned int musicTrack, const std::string& key, const std::string& fileName)
 	{
-		auto hashKey = fnv1a_32(key.c_str());
+		auto hashKey      = fnv1a_32(key.c_str());
+		auto samePlaylist = (_currentPlaylistKeys[musicTrack] == hashKey);
 
-		if (_currentPlaylistKey == 0)
+		for (unsigned int i = 0; i <= 3; ++i) {
+			if (_currentPlaylistKeys[i] == hashKey && musicTrack != i) {
+				LOG_INFO("Can't play the same playlist on several tracks at the same time!");
+				return; 
+			}
+		}
+
+		if (_currentPlaylistKeys[musicTrack] == 0 || (fileName == "" && samePlaylist))
 			_playlists[hashKey]->play(fileName);
 		else {
-			auto currentPlaying = _playlists[_currentPlaylistKey]->getCurrentPlaying();
-			auto samePlaylist   = (_currentPlaylistKey == hashKey);
+			auto currentPlaying = _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying();
 
-			if (currentPlaying->getName() != fileName)
+			if (currentPlaying->getName() != fileName || (_playlists[_currentPlaylistKeys[musicTrack]]->getStatus() == Playlist::Status::Stopped && samePlaylist))
 				_playlists[hashKey]->play(currentPlaying, fileName);
 			else if (!samePlaylist)
 				_playlists[hashKey]->play(_playlists[hashKey]->getID(fileName), currentPlaying->getTimeLeft());
-
+			
 			if (!samePlaylist)
-				_playlists[_currentPlaylistKey]->stopUpdates();
+				_playlists[_currentPlaylistKeys[musicTrack]]->stopUpdates();
 		}
-		_currentPlaylistKey = hashKey;
+		_currentPlaylistKeys[musicTrack] = hashKey;
 	}
 
-	void Music::pause()
+	void Music::pause(int musicTrack)
 	{
-		_playlists[_currentPlaylistKey]->pause();
+		if (musicTrack == -1) {
+			for(auto& it : _currentPlaylistKeys) {
+				if (it != 0)
+					_playlists[it]->pause();
+			}
+		}
+		else if (musicTrack <= 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
+			_playlists[_currentPlaylistKeys[musicTrack]]->pause();
+		}
 	}
 
-	void Music::stop()
+	void Music::stop(int musicTrack)
 	{
-		_playlists[_currentPlaylistKey]->stop();
+		if (musicTrack == -1) {
+			for(auto& it : _currentPlaylistKeys) {
+				if (it != 0)
+					_playlists[it]->stop();
+			}
+		}
+		else if (musicTrack <= 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
+			_playlists[_currentPlaylistKeys[musicTrack]]->stop();
+		}
 	}
 
-	RatMusic& Music::getCurrentPlaying()
+	RatMusic& Music::getCurrentPlaying(unsigned int musicTrack)
 	{
-		return _playlists[_currentPlaylistKey]->getCurrentPlaying()->getSource();
+		if (musicTrack <= 3 && _currentPlaylistKeys[musicTrack] != 0) {
+			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource();
+		}
 	}
 
 	RatMusic& Music::get(const std::string& fileName) 
@@ -184,9 +216,17 @@ namespace rat
 		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);
 	}
 
-	void Music::setVolume(const std::string& key, float volume, const std::string& fileName)
+	void Music::setVolume(float volume, const std::string& key, const std::string& fileName)
 	{
-		_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);
+		if (key.empty()) {
+			for (auto& it : _playlists) {
+				it.second->setVolume(volume);
+			}
+			Playlist::setGlobalVolume(volume);
+			LOG_INFO("Global music volume set to ", volume);
+		}
+		else
+			_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);
 	}
 
 	float Music::getVolume(const std::string& fileName)
@@ -205,14 +245,18 @@ namespace rat
 
 	void Music::setGlobalEffects()
 	{
-		if (_currentPlaylistKey != 0)
-			_playlists[_currentPlaylistKey]->setGlobalEffects();
+		for(auto& it : _currentPlaylistKeys) {
+			if (it != 0)
+				_playlists[it]->setGlobalEffects();
+		}
 	}
 
 	void Music::cleanEffects()
 	{
-		if (_currentPlaylistKey != 0)
-			getCurrentPlaying().cleanAllEffects();
+		for(auto i = 0; i <= 3; ++i) {
+			if (_currentPlaylistKeys[i] != 0)
+				getCurrentPlaying(i).cleanAllEffects();
+		}
 	}
 
 }
