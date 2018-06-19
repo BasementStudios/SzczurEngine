@@ -31,7 +31,7 @@ namespace rat
 
     public:
 
-        bool init(const std::string &name,const std::string &filename);
+        bool init(const std::string& name, const std::string& filename);
 
         void play();
         void stop();
@@ -51,6 +51,16 @@ namespace rat
         Second_t getLength() const;
 
         const std::string getName() const;
+
+        template <typename T>
+		T& getEffect() {
+            return sound.getEffect<T>();
+        }
+
+        template <typename T>
+    	void cleanEffect() {
+            sound.cleanEffect<T>();
+        }
 
     private:
 

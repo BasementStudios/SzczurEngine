@@ -2,7 +2,7 @@
 
 namespace rat
 {
-    bool SoundBase::init(const std::string &name,const std::string& fileName)
+    bool SoundBase::init(const std::string& name,const std::string& fileName)
     {
         _fileName = fileName;
         _name = name;
@@ -10,8 +10,8 @@ namespace rat
             return false;
 
         _length = buffer.getDuration().asSeconds();
-        offset.beginTime=0;
-        offset.endTime=_length;
+        offset.beginTime = 0;
+        offset.endTime = _length;
         return true;
     };
 
@@ -33,7 +33,7 @@ namespace rat
 
     void SoundBase::setPitch(float pitch)
     {
-        _pitch=pitch;
+        _pitch = pitch;
         sound.setPitch(pitch);
     }
 
@@ -56,7 +56,7 @@ namespace rat
     {
         sound.setBuffer(buffer);
         sound.play();
-        if(playingTime > offset.beginTime && playingTime < offset.endTime)
+        if (playingTime > offset.beginTime && playingTime < offset.endTime)
             sound.setPlayingOffset(sf::seconds(playingTime));
         else
             sound.setPlayingOffset(sf::seconds(offset.beginTime)); 
@@ -90,20 +90,20 @@ namespace rat
             offset.beginTime = 0;
             offset.endTime = _length;
         }
-        else if (beginT>=_length || beginT<0) {
+        else if (beginT >= _length || beginT < 0) {
             offset.beginTime=0;
             offset.endTime=endT;
         }
-        else if (endT>_length || endT<0 || endT<beginT) {
+        else if (endT > _length || endT<0 || endT < beginT) {
             offset.beginTime=beginT;
             offset.endTime=_length;
         }
         else {
-            offset.beginTime=beginT;
-            offset.endTime=endT;
+            offset.beginTime = beginT;
+            offset.endTime = endT;
         }
         if (offset.endTime < offset.beginTime)
-            offset.endTime=_length;    
+            offset.endTime = _length;    
     }
 
     SoundBase::Second_t SoundBase::getLength() const
