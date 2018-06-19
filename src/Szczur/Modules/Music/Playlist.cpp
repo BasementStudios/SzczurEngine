@@ -102,7 +102,7 @@ namespace rat
 		std::string name;
 
 		if(includes(prevMusicFile->getName()) && (fileName.empty() || prevMusicFile->getName() == fileName)) {
-				name = prevMusicFile->getName();
+			name = prevMusicFile->getName();
 		} 
 		else {
 			name = fileName;
