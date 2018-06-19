@@ -65,7 +65,7 @@ namespace rat
         {
             auto* w = new Widget;
             list->add(w);
-            w->setPropSize(0.05f, 0.05f);
+            w->setPropSize(0.19f, 0.19f);
             //w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             /*
             w->setCallback(Widget::CallbackType::onHoverIn, [](auto* owner){

@@ -33,15 +33,6 @@ namespace rat {
         );
         object.init();
     }
-/*
-    void ScrollAreaWidget::setSize(size_t x, size_t y) {
-        setSize({unsigned int(x), unsigned int(y)});
-    }
-
-    void ScrollAreaWidget::setSize(sf::Vector2u size) {
-        _renderTexture.create(size.x, size.y);
-        _aboutToRecalculate = true;
-    }*/
     void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture, int boundsHeight)
     {
         _scroller.setScrollerTexture(texture, boundsHeight);
@@ -92,7 +83,7 @@ namespace rat {
         float oldProp = _scroller.getProportion();
         if(_isHovered && event.type == sf::Event::MouseWheelScrolled) 
         {
-           float propOffset = static_cast<float>(event.mouseWheelScroll.delta) * 0.07f;
+           float propOffset = -static_cast<float>(event.mouseWheelScroll.delta) * 0.07f;
            _scroller.moveProportion(propOffset);
         }
         
