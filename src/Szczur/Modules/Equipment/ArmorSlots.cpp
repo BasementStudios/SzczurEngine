@@ -42,4 +42,20 @@ namespace rat {
 	void ArmorSlots::setPosition(sf::Vector2f position) {
 		_base->setPosition(position);
 	}
+
+	void ArmorSlots::addAmulet(EquipmentObject* amulet) {
+		_amuletSlot->addAmulet(amulet);
+	}
+
+	void ArmorSlots::removeAmulet(sf::String name) {
+		_amuletSlot->removeAmulet(name);
+	}
+
+	EquipmentObject* ArmorSlots::getChosenAmulet() {
+		return _amuletSlot->getChosenAmulet();
+	}
+
+	std::vector<EquipmentObject*> ArmorSlots::getAmuletList() {
+		return _amuletSlot->getAmuletList();
+	}
 }

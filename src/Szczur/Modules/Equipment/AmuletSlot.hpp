@@ -16,6 +16,9 @@ namespace rat {
 		std::vector<EquipmentObject*> getAmuletList();
 
 		float yOffset;
+
+		void upArrowClicked();
+		void downArrowClicked();
 	private:
 		std::vector<EquipmentObject*> _amulets;
 
@@ -24,5 +27,7 @@ namespace rat {
 		ImageWidget* _amuletImage;
 		ImageWidget* _upArrow;
 		ImageWidget* _downArrow;
+
+		sf::Vector2u _slotSize;
 	};
 }

@@ -24,6 +24,7 @@ namespace rat {
 		gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
 		gui.addAsset<sf::Texture>("Assets/Equipment/item1.png");
 		gui.addAsset<sf::Texture>("Assets/Equipment/item2.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/item3.png");
 		gui.addAsset<sf::Texture>("Assets/Equipment/downArrow.png");
 		gui.addAsset<sf::Texture>("Assets/Equipment/upArrow.png");
 
@@ -36,12 +37,13 @@ namespace rat {
 		_equipmentFrame->setSize(sf::Vector2u(window.getSize().x / 10 * 5, window.getSize().y / 10 * 6));
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 70);
 
-		EquipmentObject* item = new EquipmentObject("item", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item1.png"), equipmentObjectType::amulet);
-		EquipmentObject* item2 = new EquipmentObject("item2", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item2.png"), equipmentObjectType::amulet);
+		EquipmentObject* item = new EquipmentObject("item", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item1.png"), equipmentObjectType::potion);
+		EquipmentObject* item2 = new EquipmentObject("item2", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item2.png"), equipmentObjectType::potion);
+		EquipmentObject* item3 = new EquipmentObject("item3", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item3.png"), equipmentObjectType::amulet);
 
 		_normalSlots = new NormalSlots(15, gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {70u, 70u});
 		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->addItem(item);
+		_normalSlots->addItem(item3);
 		_normalSlots->addItem(item2);
 		_normalSlots->removeItem(item2->getName());
 		_normalSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 4));
@@ -49,8 +51,10 @@ namespace rat {
 		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {80u, 80u}, gui.getAsset<sf::Texture>("Assets/Equipment/upArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/downArrow.png"));
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 50));
-		_armorSlots->setArmor(item2);
-
+		_armorSlots->setArmor(item3);
+		_armorSlots->addAmulet(item);
+		_armorSlots->addAmulet(item3);
+		_armorSlots->addAmulet(item2);		
 	}
 
 	void Equipment::update(float deltaTime) {

@@ -6,7 +6,7 @@
 */
 
 namespace rat {
-	enum equipmentObjectType {	//type of 
+	enum equipmentObjectType {	//not used yet
 		potion, amulet
 	};
 
