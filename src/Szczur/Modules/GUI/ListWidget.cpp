@@ -1,6 +1,7 @@
 #include "ListWidget.hpp"
 
 #include <algorithm>
+#include <functional>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -22,6 +23,7 @@ namespace rat
             LOG_ERROR("ListWidget::popBack can't pop ", amount, " children");
             return;
         }
+        
         _children.erase(_children.end() - amount, _children.end());
         _shifts.erase(_shifts.end() - amount, _shifts.end());
 
@@ -55,22 +57,20 @@ namespace rat
     {
         LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");
 
+        std::function<sf::Vector2f(const Widget* child)> func;
+        
+        func = [this](const Widget* child){
+            return sf::Vector2f{ float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f };
+        };
+
         if(_positioning == Positioning::Vertical)
         {
-            auto func = [this](const Widget* child){
-                return sf::Vector2f{0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding};
+            func = [this](const Widget* child){
+                return sf::Vector2f{ 0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding };
             };
-
-            std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
         }
-        else
-        {
-            auto func = [this](const Widget* child){
-                return sf::Vector2f{float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f};
-            };
 
-            std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
-        }
+        std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
 
         _areShiftsCurrent = true;
     }
