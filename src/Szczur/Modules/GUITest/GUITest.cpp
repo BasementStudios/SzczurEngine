@@ -64,10 +64,11 @@ namespace rat
         scroll->add(list);
 
         image->setCallback(Widget::CallbackType::onRelease, [list](auto){
-            auto* addon = new Widget;
+            //auto* addon = new Widget;
             //addon->setPosition(0.f, 20.f);
-            addon->setPropSize(0.1f, 0.1f);
-            list->add(addon);
+            //addon->setPropSize(0.1f, 0.1f);
+            //list->add(addon);
+            list->popBack();
         });
 
         float size = 0.1f;

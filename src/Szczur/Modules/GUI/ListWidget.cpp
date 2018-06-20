@@ -24,6 +24,8 @@ namespace rat
         }
         _children.erase(_children.end() - amount, _children.end());
         _shifts.erase(_shifts.end() - amount, _shifts.end());
+
+        _aboutToRecalculate = true;
     }
     void ListWidget::setBetweenPadding(float padding)
     {
