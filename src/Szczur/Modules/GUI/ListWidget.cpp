@@ -11,6 +11,20 @@ namespace rat
         _shifts.emplace_back(sf::Vector2f{});
         _areShiftsCurrent = false;
     }
+    void ListWidget::_clear()
+    {
+        _shifts.clear();
+    }
+    void ListWidget::popBack(size_t amount)
+    {
+        if(_children.size() < amount)
+        {
+            LOG_ERROR("ListWidget::popBack can't pop ", amount, " children");
+            return;
+        }
+        _children.erase(_children.end() - amount, _children.end());
+        _shifts.erase(_shifts.end() - amount, _shifts.end());
+    }
     void ListWidget::setBetweenPadding(float padding)
     {
         _betweenWidgetsPadding = padding;
