@@ -4,59 +4,16 @@
 #include "Vertex.hpp"
 
 namespace sf3d {
-
-	VertexInterface::VertexInterface(GLuint VBO, size_t index) :
-	_VBO(VBO), _index(index) {
-
-	}
-
-	void VertexInterface::setPosition(const glm::vec3& position) {
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index;
-		vertex->position = position;
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	void VertexInterface::move(const glm::vec3& offset) { 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
-		vertex->position += offset; 
-		glUnmapBuffer(GL_ARRAY_BUFFER); 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	} 
-	
-	void VertexInterface::setColor(const glm::vec4& color) { 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
-		vertex->color = color; 
-		glUnmapBuffer(GL_ARRAY_BUFFER); 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	} 
-	
-	void VertexInterface::setTexCoord(const glm::vec2& pos) { 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
-		vertex->texCoord = pos; 
-		glUnmapBuffer(GL_ARRAY_BUFFER); 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	} 
-
 	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
-		_storageUsage(storageUsage),
-		_size(size) {
+	_storageUsage(storageUsage),
+	_vertices(size) {
 		glGenBuffers(1, &_VBO);
 		glGenVertexArrays(1, &_VAO);
 
-		Vertex defaultVert;
 
 		glBindVertexArray(_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*size, nullptr, storageUsage);
-
-		for (size_t i = 0; i < size; ++i)
-			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
-
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &(_vertices[0]), _storageUsage);
 
 		// position
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
@@ -81,73 +38,33 @@ namespace sf3d {
 		glEnableVertexAttribArray(2);
 
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+	}
+
+	VertexArray::VertexArray(VertexArray && other) :
+	_VAO{std::move(other._VAO)},
+	_VBO{std::move(other._VBO)},
+	_toUpdate{std::move(other._toUpdate)},
+	_toResize{std::move(other._toResize)},
+	_min{std::move(other._min)},
+	_max{std::move(other._max)},
+	_primitveType{std::move(other._primitveType)},
+	_storageUsage{std::move(other._storageUsage)},
+	_vertices{std::move(other._vertices)}{
+		other._VAO = 0u;
+		other._VBO = 0u;
 	}
 
 	VertexArray::~VertexArray() {
-		glDeleteBuffers(1, &_VBO);
-		glDeleteVertexArrays(1, &_VAO);
+		if(_VBO)
+			glDeleteBuffers(1, &_VBO);
+		if(_VAO)
+			glDeleteVertexArrays(1, &_VAO);
 	}
 
-	void VertexArray::resize(size_t size) {
-		glBindVertexArray(_VAO);
-		GLuint temp;
-		glGenBuffers(1, &temp);
-		glBindBuffer(GL_ARRAY_BUFFER, temp);
-		glBufferData(GL_ARRAY_BUFFER, _size * sizeof(Vertex), nullptr, _storageUsage);
-
-		glBindBuffer(GL_COPY_READ_BUFFER, _VBO);
-		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, _size * sizeof(Vertex));
-
-
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBindBuffer(GL_COPY_READ_BUFFER, temp);
-		glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vertex), nullptr, _storageUsage);
-
-		Vertex defaultVert;
-
-		for (size_t i = 0; i < size; ++i)
-			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
-
-		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, ((_size>size) ? size : _size) * sizeof(Vertex));
-
-		_size = size;
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_COPY_READ_BUFFER, 0);
-
-		glBindVertexArray(0);
-		glDeleteBuffers(1, &temp);
-	}
-
-	void VertexArray::setPosition(size_t index, const glm::vec3 & position) {
-		if(index < _size) {
-			_startEdit(index)->position = position;
-			_endEdit();
-		}
-	}
-
-	void VertexArray::setColor(size_t index, const glm::vec4 & color) {
-		if(index < _size) {
-			_startEdit(index)->color = color;
-			_endEdit();
-		}
-	}
-
-	void VertexArray::setTexCoord(size_t index, const glm::vec2 & texCoord) {
-		if(index < _size) {
-			_startEdit(index)->texCoord = texCoord;
-			_endEdit();
-		}
-	}
-
-	void VertexArray::set(size_t index, const Vertex & vertex) {
-		if(index < _size) {
-			*_startEdit(index) = vertex;
-			_endEdit();
-		}
-	}
 
 	unsigned int VertexArray::getPrimitiveType() const {
 		return _primitveType;
@@ -162,39 +79,53 @@ namespace sf3d {
 	}
 
 	size_t VertexArray::getSize() const {
-		return _size;
+		return _vertices.size();
+	}
+
+	Vertex & VertexArray::add() {
+		_toResize = true;
+		_toUpdate = true;
+		return _vertices.emplace_back();
 	}
 
 	void VertexArray::draw(RenderTarget& /*target*/, RenderStates /*states*/) const {
 		//target.draw(this, states);
 	}
 
-	void VertexArray::draw() {
-		glBindVertexArray(_VAO);
-
-		glDrawArrays(GL_TRIANGLES, 0, _size);
-
-		glBindVertexArray(0);
-	}
-
 	void VertexArray::bind() const {
 		glBindVertexArray(_VAO);
 	}
 
-	Vertex * VertexArray::_startEdit(size_t index) {
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		return ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + index;
+	void VertexArray::update() const {
+		if(_toUpdate && _VBO && _VAO) {
+			_update();
+			_toResize = false;
+			_toUpdate = false;
+			_min = static_cast<size_t>(-1);
+			_max = 0u;
+		}
 	}
 
-	void VertexArray::_endEdit() {
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+	void VertexArray::_update() const {
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+		if(_toResize)
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*_vertices.size(), &(_vertices[0]), _storageUsage);
+		else
+			glBufferSubData(GL_ARRAY_BUFFER, _min*sizeof(Vertex), (_max - _min + 1)*sizeof(Vertex), &(_vertices[_min]));
+		//
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	VertexInterface VertexArray::operator[](size_t index) const {
-		if(index >= _size)
-			throw std::out_of_range("Vertex array out of range");
-		return VertexInterface(_VBO, index);
+	Vertex& VertexArray::operator[](size_t index) {
+		if(index < _vertices.size()) {
+			if(index < _min)
+				_min = index;
+			if(index > _max)
+				_max = index;
+			_toUpdate = true;
+			return _vertices[index];
+		}
+		throw std::out_of_range{"Vertex array out of bound"};
 	}
 
 }
