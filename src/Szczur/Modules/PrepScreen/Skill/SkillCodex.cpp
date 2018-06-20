@@ -62,7 +62,8 @@ namespace rat
         skill->setTexturePath("assets/PrepScreen/test5.png");
         skill->setPPCost(2);
         skill->setRequirements({
-            {GlyphID::Wrath, 1}
+            {GlyphID::Wrath, 1},
+            {GlyphID::Fear, 1}
         });
         _skills.emplace(skill->getName(), std::move(skill));
 
