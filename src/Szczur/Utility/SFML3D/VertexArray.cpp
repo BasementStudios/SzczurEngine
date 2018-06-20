@@ -94,6 +94,12 @@ namespace sf3d {
 		return _vertices.emplace_back(vertex);
 	}
 
+	void VertexArray::resize(size_t newSize) {
+		_toResize = true;
+		_toUpdate = true;
+		_vertices.resize(newSize);
+	}
+
 	void VertexArray::draw(RenderTarget& /*target*/, RenderStates /*states*/) const {
 		//target.draw(this, states);
 	}
