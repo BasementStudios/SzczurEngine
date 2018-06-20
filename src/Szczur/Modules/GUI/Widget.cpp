@@ -39,9 +39,28 @@ namespace rat
     }
 
     void Widget::clear() {
-        for(auto it : _children)
-            delete it;
+        for(auto it : _children) delete it;
         _children.clear();
+        _clear();
+    }
+
+    Widget* Widget::operator[](size_t index)
+    {
+        if(_children.size() <= index)
+        {
+            LOG_ERROR("Widget::[] can't return child at index ", index);
+            return nullptr;
+        }
+        return _children[index];
+    }
+	const Widget* Widget::operator[](size_t index) const
+    {
+        if(_children.size() <= index)
+        {
+            LOG_ERROR("Widget::[] can't return child at index ", index);
+            return nullptr;
+        }
+        return _children[index];
     }
 
     void Widget::setParent(Widget* parent) 

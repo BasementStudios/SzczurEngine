@@ -109,6 +109,9 @@ namespace rat
         void invokeToUpdatePropPosition();
 		void forceToUpdatePropSize();
 
+		Widget* operator[](size_t index);
+		const Widget* operator[](size_t index) const;
+
 		static void setWinProp(sf::Vector2f prop);
 
 	protected:
@@ -119,6 +122,7 @@ namespace rat
 		virtual void _calculateSize() {}
 		virtual void _setColor(const sf::Color& color) {}
 		virtual void _addWidget(Widget* widget) {}
+		virtual void _clear() {}
 
 		virtual void _inputChildren(sf::Event event);
 		virtual void _onMovedChildren(sf::Event event);
