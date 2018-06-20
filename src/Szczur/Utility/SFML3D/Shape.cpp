@@ -8,9 +8,9 @@ namespace sf3d {
 
 	void Shape::_update() {
 		for(size_t i = 0; i < _vertices.getSize(); ++i) {
-			_vertices[i].setPosition(getPointPosition(i));
-			_vertices[i].setColor(getPointColor(i));
-			_vertices[i].setTexCoord(getPointCoord(i));
+			_vertices[i].position = getPointPosition(i);
+			_vertices[i].color = getPointColor(i);
+			_vertices[i].texCoord = getPointCoord(i);
 		}
 		_vertices.setPrimitveType(GL_TRIANGLE_FAN);
 	}
