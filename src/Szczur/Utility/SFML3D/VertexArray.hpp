@@ -23,6 +23,8 @@ namespace sf3d {
 		Vertex& add();
 		Vertex& add(const Vertex& vertex);
 
+		void resize(size_t newSize);
+
 		void bind() const;
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
