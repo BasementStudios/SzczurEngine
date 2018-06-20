@@ -59,22 +59,30 @@ namespace rat
         _widget->add(image);
 
         auto* list = new ListWidget;
+        list->makeReversed();
         scroll->add(list);
 
+        image->setCallback(Widget::CallbackType::onRelease, [list](auto){
+            auto* addon = new Widget;
+            addon->setPropSize(0.1f, 0.1f);
+            list->add(addon);
+        });
+
+        float size = 0.1f;
         for(int i = 0; i < 4; i++)
         {
-            auto* w = new Widget;
+            auto* w = new ImageWidget;
             list->add(w);
-            w->setPropSize(0.19f, 0.19f);
-            //w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-            /*
-            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* owner){
-                owner->setColor({0, 0, 0}, 1.f);
+            w->setPropSize(size, size);
+            size += 0.05f;
+            w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+            
+            w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
+                w->setColor({0, 0, 0}, 1.f);
             });
-            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* owner){
-                owner->setColor({255, 255, 255}, 1.f);
+            w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
+                w->setColor({255, 255, 255}, 1.f);
             });
-            */
         }
 
     }
