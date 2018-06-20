@@ -5,6 +5,7 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 #include "ChosenSkillArea.hpp"
 #include "GrayPPArea.hpp"
@@ -27,8 +28,12 @@ namespace rat
         _border->setPadding(11.f, 11.f);
 
         _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setSize(300.f, 400.f);
+        _skillsScroller->setPropSize(0.375f, 0.5f);
         _border->add(_skillsScroller);
+
+        _skillsList = new ListWidget;
+        _skillsList->setBetweenPadding(10.f);
+        _skillsScroller->add(_skillsList);
 
         _addBar(_infoBar);
         _infoBar.deactivate();

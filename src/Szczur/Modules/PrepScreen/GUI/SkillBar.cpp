@@ -24,7 +24,24 @@ namespace rat
     _parentArea(parentArea),
     _chosenArea(_parentArea.getChosenSkillArea()),
     _sourceArea(_parentArea.getSourceArea()),
-    BaseBar([]{auto* base = new ListWidget; base->makeHorizontal(); return base;}())
+    BaseBar( [this]
+        {
+            auto* base = new ListWidget; 
+            base->makeHorizontal();
+            base->makeChildrenPenetrable();
+            base->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
+                _onClick();
+            });
+            base->setCallback(Widget::CallbackType::onHoverIn, [&](Widget* owner){
+                _onHoverIn();
+                owner->setColor({180, 180, 180}, 0.3f);
+            });
+            base->setCallback(Widget::CallbackType::onHoverOut, [&](Widget* owner){
+                _onHoverOut();
+                owner->setColor({255, 255, 255}, 0.3f);
+            });
+            return base;
+        } () )
     {
         setSize(_size);
 
@@ -37,26 +54,14 @@ namespace rat
         _iconWindow->setScale(0.3f, 0.3f);
         _addWidget(_iconWindow);        
         
-        
         _icon->setPropSize(0.08f, 0.08f);
         _icon->setPropPosition(0.5f, 0.5f);
         _iconWindow->add(_icon);
 
         _infoBar->setPropSize(0.21f, 0.09f);
         _infoBar->setScale(0.3f, 0.3f);
-        _infoBar->setPadding(10, 10);
+        _infoBar->setPadding(5, 5);
         _infoBar->makeChildrenPenetrable();
-        _infoBar->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
-            _onClick();
-        });
-        _infoBar->setCallback(Widget::CallbackType::onHoverIn, [&](Widget* owner){
-            _onHoverIn();
-            owner->setColor({180, 180, 180}, 0.3f);
-        });
-        _infoBar->setCallback(Widget::CallbackType::onHoverOut, [&](Widget* owner){
-            _onHoverOut();
-            owner->setColor({255, 255, 255}, 0.3f);
-        });
         _addWidget(_infoBar);
 
         _name->setCharacterSize(20);
@@ -65,7 +70,6 @@ namespace rat
 
         _costBar.setParent(_infoBar);
         _costBar.setPropPosition(0.f, 1.f);
-        _costBar.setWidth(_infoBar->getMinimalSize().x);
     }
 
     void SkillBar::setSkill(Skill* skill)

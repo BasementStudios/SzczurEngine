@@ -58,6 +58,7 @@ namespace rat
 
         WindowWidget* _border{nullptr};
         ScrollAreaWidget* _skillsScroller{nullptr};
+        ListWidget* _skillsList{nullptr};
 
         InfoBar _infoBar;
         Skill* _chosenSkill{nullptr};
