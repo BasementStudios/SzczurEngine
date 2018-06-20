@@ -21,6 +21,7 @@ namespace sf3d {
 		size_t getSize() const;
 
 		Vertex& add();
+		Vertex& add(const Vertex& vertex);
 
 		void bind() const;
 

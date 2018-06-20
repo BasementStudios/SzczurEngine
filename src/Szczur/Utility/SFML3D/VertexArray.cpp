@@ -88,6 +88,12 @@ namespace sf3d {
 		return _vertices.emplace_back();
 	}
 
+	Vertex & VertexArray::add(const Vertex & vertex) {
+		_toResize = true;
+		_toUpdate = true;
+		return _vertices.emplace_back(vertex);
+	}
+
 	void VertexArray::draw(RenderTarget& /*target*/, RenderStates /*states*/) const {
 		//target.draw(this, states);
 	}
