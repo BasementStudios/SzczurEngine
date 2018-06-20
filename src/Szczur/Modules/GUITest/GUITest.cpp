@@ -60,10 +60,12 @@ namespace rat
 
         auto* list = new ListWidget;
         list->makeReversed();
+        list->setBetweenPadding(20.f);
         scroll->add(list);
 
         image->setCallback(Widget::CallbackType::onRelease, [list](auto){
             auto* addon = new Widget;
+            //addon->setPosition(0.f, 20.f);
             addon->setPropSize(0.1f, 0.1f);
             list->add(addon);
         });

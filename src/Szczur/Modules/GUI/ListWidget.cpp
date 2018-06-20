@@ -81,12 +81,12 @@ namespace rat
             auto shift = _childrenSize;
             if(_positioning == Positioning::Horizontal)
             {
-                shift.x -= _shifts.front().x;
+                shift.x -= (_shifts.front().x - _betweenWidgetsPadding);
                 shift.y = 0;
             }
             else
             {
-                shift.y -= _shifts.front().y;
+                shift.y -= (_shifts.front().y - _betweenWidgetsPadding);
                 shift.x = 0;
             }
             return static_cast<sf::Vector2f>(shift);
