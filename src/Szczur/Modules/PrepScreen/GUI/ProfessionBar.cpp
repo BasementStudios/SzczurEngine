@@ -4,6 +4,8 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 
+#include "Szczur/Utility/Logger.hpp"
+
 #include <ctime>
 
 namespace rat
@@ -11,8 +13,10 @@ namespace rat
     ProfessionBar::ProfessionBar(SkillArea& skillArea)
     :
     _skillArea(skillArea),
-    BaseBar([this]{ _window = new WindowWidget; return _window; }() )
+    BaseBar()
     {
+        _window = new WindowWidget;
+        _addWidget(_window);
         _window->makeChildrenPenetrable();
         _window->setCallback(Widget::CallbackType::onHoverIn, [](Widget* owner){
             owner->setColor({180, 180, 180}, 0.3f);
@@ -26,7 +30,6 @@ namespace rat
         auto click = [&](Widget* owner){
             _onClick();
         };
-
         _icon->setPropSize(0.17f, 0.17f);
         _icon->setPropPosition(0.5f, 0.5f);
         _window->add(_icon);
