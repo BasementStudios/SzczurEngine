@@ -8,7 +8,6 @@ namespace sf3d {
 	public:
 		VertexArray() = delete;
 		VertexArray(size_t size, unsigned int storageUsage = GL_STREAM_DRAW);
-		VertexArray(VertexArray&& other);
 		~VertexArray();
 
 

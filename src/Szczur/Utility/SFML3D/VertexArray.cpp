@@ -44,19 +44,6 @@ namespace sf3d {
 		
 	}
 
-	VertexArray::VertexArray(VertexArray && other) :
-	_VAO{std::move(other._VAO)},
-	_VBO{std::move(other._VBO)},
-	_toUpdate{std::move(other._toUpdate)},
-	_toResize{std::move(other._toResize)},
-	_min{std::move(other._min)},
-	_max{std::move(other._max)},
-	_primitveType{std::move(other._primitveType)},
-	_storageUsage{std::move(other._storageUsage)},
-	_vertices{std::move(other._vertices)}{
-		other._VAO = 0u;
-		other._VBO = 0u;
-	}
 
 	VertexArray::~VertexArray() {
 		if(_VBO)
