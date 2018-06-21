@@ -18,7 +18,7 @@ namespace rat
     int AudioEffect::lastFreeSlot() 
     {
         for (unsigned int i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {
-            if (!_freeSlots[i]) {
+            if (effectsTypes[i] == EffectType::None) {
                 return i;
             }
         }
