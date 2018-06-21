@@ -101,7 +101,7 @@ void Timeline::updateVertexArray()
 			sf3d::Vertex vertex;
 			vertex.position = start;
 			vertex.color = glm::vec4(action->Color, 1.f);
-			_vertexArray.set(i, vertex);
+			_vertexArray[i] = vertex;
 
 			i++;
 
@@ -113,7 +113,7 @@ void Timeline::updateVertexArray()
 
 			vertex.position = end;
 			vertex.color = glm::vec4(action->Color, 1.f);
-			_vertexArray.set(i, vertex);
+			_vertexArray[i] = vertex;
 
 			lastPosition = end;
 
