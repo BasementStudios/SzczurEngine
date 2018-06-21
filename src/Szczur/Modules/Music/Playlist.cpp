@@ -45,7 +45,7 @@ namespace rat
 	{	
 		if (!includes(base.getName())) {
 			_playlist.push_back(std::make_shared<MusicBase>(std::move(base)));
-			_playlist.back()->setVolume(_globalVolume);
+			_playlist.back()->setVolume(_playlist.back()->getVolume() * (_globalVolume / 100));
 		}	
 
 		if (_playlist.size() == 1) _playlist[0]->setLoop(true);
