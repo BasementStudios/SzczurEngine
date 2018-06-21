@@ -16,6 +16,7 @@ namespace rat
     class SoundManager : public Module<Script, AudioEffects>
     {
         using Second_t = float;
+        
     private:
 
         std::vector<std::unique_ptr<SoundBase>> _sounds;
@@ -28,12 +29,13 @@ namespace rat
 
         void initScript();
 
-        bool newSound(const std::string& name,const std::string& fileName);
+        bool newSound(const std::string& fileName);
+
         void eraseSounds();
         void eraseSingleSoundByID(int i);
         void eraseSingleSound(const std::string& fileName);
 
-        int getSound(const std::string& fileName) const;
+        int getSoundID(const std::string& fileName) const;
 
         void play(const std::string& fileName = "");
         void pause(const std::string& fileName = "");
@@ -41,9 +43,11 @@ namespace rat
 
         void setVolume(float volume, const std::string& fileName = "");
         void setPitch(float pitch, const std::string& fileName = "");
+
         void setLoop(bool loop, const std::string& fileName);
         void changeLoop(const std::string& fileName = "");
         bool getLoop(const std::string& fileName);
+
         int getSize() const;
                 
         void setOffset(const std::string& fileName, Second_t beginT, Second_t endT);
@@ -55,12 +59,12 @@ namespace rat
 
         template <typename T>
 		T& getEffect(const std::string& fileName) {
-            return _sounds[getSound(fileName)]->getEffect<T>();
+            return _sounds[getSoundID(fileName)]->getEffect<T>();
         }
 
         template <typename T>
     	void cleanEffect(const std::string& fileName) {
-            _sounds[getSound(fileName)]->cleanEffect<T>();
+            _sounds[getSoundID(fileName)]->cleanEffect<T>();
         }
 
     };
