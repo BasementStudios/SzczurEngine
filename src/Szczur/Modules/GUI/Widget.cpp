@@ -514,7 +514,8 @@ namespace rat
     }
     void Widget::setPosition(const sf::Vector2f& offset) 
     {
-        sf::Transformable::setPosition(offset);
+        sf::Transformable::setPosition(int(offset.x), int(offset.y));
+        //sf::Transformable::setPosition(round(offset.x), round(offset.y));
         if(_parent) _parent->_aboutToRecalculate = true;   
     }
     void Widget::setPosition(float x, float y) 

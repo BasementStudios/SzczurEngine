@@ -57,13 +57,17 @@ namespace rat
         image->setPropSize(0.15f, 0.15f);
         //image->setPropPosition(0.5f, 1.f);
         _widget->add(image);
-
-        auto* list = new ListWidget;
+        /*
+        list = new ListWidget;
         list->makeReversed();
-        list->setBetweenPadding(20.f);
+        //list->setBetweenPadding(20.f);
         scroll->add(list);
+        //list->setPropPosition(0.f, 1.f);
+        list->setPropSize(0.3f, 1.f);
+        list->setAutoBetweenPadding();
 
-        image->setCallback(Widget::CallbackType::onRelease, [list](auto){
+
+        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             //auto* addon = new Widget;
             //addon->setPosition(0.f, 20.f);
             //addon->setPropSize(0.1f, 0.1f);
@@ -86,7 +90,7 @@ namespace rat
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
                 w->setColor({255, 255, 255}, 1.f);
             });
-        }
+        }*/
 
     }
     
@@ -107,12 +111,12 @@ namespace rat
             _scale+= deltaTime * 0.4f;
             //if(_scale > 1.f) _scale = 1.f;
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
             _prop+= deltaTime * 0.4f;
             if(_prop > 1.f) _prop = 1.f;            
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
             _prop-= deltaTime * 0.4f;
             if(_prop < 0.f) _prop = 0.f;
@@ -149,6 +153,9 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
+        //list->setPropSize(0.3f, _prop);
+
+        std::cout << 1.f/deltaTime << '\n';
     }
     void GUITest::render()
     {

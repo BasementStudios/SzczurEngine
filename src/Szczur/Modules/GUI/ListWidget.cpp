@@ -103,6 +103,7 @@ namespace rat
         int i = _isReversed ? _shifts.size() - 1 : 0;
         int iEnd = _isReversed ? -1 : _shifts.size();
         int addon = _isReversed ? -1 : 1;
+
         for(; i != iEnd; i+=addon)
         {
             target.draw(*_children[i], states);
@@ -112,14 +113,16 @@ namespace rat
 
     sf::Vector2u ListWidget::_getChildrenSize()
     {
+        if(_hasAutoBetweenPad) _betweenWidgetsPadding = 0.f;
         _updateChildrenSize();
         return _childrenSize;
     }
 
     void ListWidget::_updateChildrenSize()
     {
-        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");        
-        if(!_areShiftsCurrent || _aboutToRecalculate) _updateShifts();
+        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");
+
+        _updateShifts();
 
         sf::Vector2f childrenShiftedSize;
 
@@ -143,11 +146,41 @@ namespace rat
 
         _childrenSize = static_cast<sf::Vector2u>(childrenShiftedSize);
     }
+    void ListWidget::setAutoBetweenPadding()
+    {
+        _hasAutoBetweenPad = true;
+        _aboutToRecalculate = true;
+    }
+    
 
     void ListWidget::_calculateSize()
-    {
-        if(!_areShiftsCurrent) _updateShifts();
+    {    
+        if(_hasAutoBetweenPad)
+        {
+            if(_children.size() < 2) return;            
+            _calculateAutoBetweenPad();
+            _updateShifts();
+            _updateChildrenSize();
+        }
     }
+
+    void ListWidget::_calculateAutoBetweenPad()
+    {
+        float freeSpace;
+        if(_positioning == Positioning::Horizontal)
+        {
+            freeSpace = getSize().x - _childrenSize.x;
+        }
+        else
+        {
+            freeSpace = getSize().y - _childrenSize.y;
+        }
+        if(freeSpace <= 0.f) return;
+
+        auto numOfPaddings = float(_children.size() - 1);
+        _betweenWidgetsPadding = freeSpace / numOfPaddings;
+    }
+    
 
     sf::Vector2f ListWidget::_getChildShiftByIndex(size_t index) const
     {
