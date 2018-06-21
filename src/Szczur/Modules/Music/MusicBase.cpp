@@ -11,6 +11,7 @@ namespace rat
 		: _base(source)
 	{
 		_timeLeft = getDuration();
+		setVolume(source.getVolume());
 	}
 
 	void MusicBase::update(float deltaTime) 
