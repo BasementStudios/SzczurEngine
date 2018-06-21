@@ -2,16 +2,18 @@
 
 namespace rat
 {
-    bool SoundBase::init(const std::string& name,const std::string& fileName)
+    bool SoundBase::init(const std::string& fileName)
     {
         _fileName = fileName;
-        _name = name;
+
         if (!loadBuffer())
             return false;
 
         _length = buffer.getDuration().asSeconds();
+
         offset.beginTime = 0;
-        offset.endTime = _length;
+        offset.endTime   = _length;
+
         return true;
     };
 
@@ -56,6 +58,7 @@ namespace rat
     {
         sound.setBuffer(buffer);
         sound.play();
+
         if (playingTime > offset.beginTime && playingTime < offset.endTime)
             sound.setPlayingOffset(sf::seconds(playingTime));
         else
@@ -65,7 +68,7 @@ namespace rat
     void SoundBase::pause()
     {
         sound.pause();
-        playingTime=sound.getPlayingOffset().asSeconds();
+        playingTime = sound.getPlayingOffset().asSeconds();
     }
 
     void SoundBase::stop()
@@ -76,7 +79,7 @@ namespace rat
 
     const std::string SoundBase::getName() const
     {
-        return _name;
+        return _fileName;
     }
 
     bool SoundBase::loadBuffer()
@@ -88,20 +91,21 @@ namespace rat
     {
         if (beginT >= _length || beginT < 0 && endT > _length || endT < 0) {
             offset.beginTime = 0;
-            offset.endTime = _length;
+            offset.endTime   = _length;
         }
         else if (beginT >= _length || beginT < 0) {
-            offset.beginTime=0;
-            offset.endTime=endT;
+            offset.beginTime = 0;
+            offset.endTime   = endT;
         }
         else if (endT > _length || endT<0 || endT < beginT) {
-            offset.beginTime=beginT;
-            offset.endTime=_length;
+            offset.beginTime = beginT;
+            offset.endTime   = _length;
         }
         else {
             offset.beginTime = beginT;
-            offset.endTime = endT;
+            offset.endTime   = endT;
         }
+
         if (offset.endTime < offset.beginTime)
             offset.endTime = _length;    
     }

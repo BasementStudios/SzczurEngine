@@ -11,6 +11,7 @@ namespace rat
     class SoundBase
     {
         using Second_t = float;
+    
     private:
             
         struct
@@ -20,10 +21,12 @@ namespace rat
         } offset;
 
         Second_t _length;
+
         float _volume {100};
         float _pitch;
-        std::string _name;
+
         std::string _fileName;
+
         Second_t playingTime {0};
             
         sf::SoundBuffer buffer;
@@ -31,7 +34,7 @@ namespace rat
 
     public:
 
-        bool init(const std::string& name, const std::string& filename);
+        bool init(const std::string& fileName);
 
         void play();
         void stop();
