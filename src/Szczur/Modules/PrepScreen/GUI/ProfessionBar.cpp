@@ -24,13 +24,14 @@ namespace rat
         _window->setCallback(Widget::CallbackType::onHoverOut, [](Widget* owner){
             owner->setColor({255, 255, 255}, 0.3f);
         });
+        _window->setPadding(10.f, 10.f);
 
         _icon = new ImageWidget;
 
         auto click = [&](Widget* owner){
             _onClick();
         };
-        _icon->setPropSize(0.17f, 0.17f);
+        _icon->setPropSize(0.15f, 0.15f);
         _icon->setPropPosition(0.5f, 0.5f);
         _window->add(_icon);
         _window->setCallback(Widget::CallbackType::onPress, click);
@@ -43,7 +44,7 @@ namespace rat
         _icon->setTexture(gui.getAsset<sf::Texture>(path));
         _window->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
         _window->setScale(0.2f, 0.2f);
-        _window->setPadding(15.f, 15.f);
+        _window->setPadding(5.f, 5.f);
     }
 
     void ProfessionBar::setProfession(const std::string& profession)

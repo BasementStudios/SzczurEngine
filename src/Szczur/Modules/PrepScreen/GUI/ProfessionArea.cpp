@@ -8,7 +8,7 @@ namespace rat
 {
     ProfessionArea::ProfessionArea(SkillArea& skillArea)
     :
-    BaseBar([]{ auto* base = new ListWidget; base->setBetweenPadding(5.f); return base;}())
+    BaseBar([]{ auto* base = new ListWidget; base->setAutoBetweenPadding(); base->setPropSize(0.f, 0.7f); return base;}())
     {
         _initProfBars(skillArea);
     }

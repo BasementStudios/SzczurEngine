@@ -20,7 +20,7 @@ namespace rat
         void setInfo(const std::string& info);
         void initAssetsViaGUI(GUI& gui);
 
-        const std::string getName() const;
+        const std::string& getName() const;
     private:
         WindowWidget* _window{nullptr};
         TextWidget* _name{nullptr};

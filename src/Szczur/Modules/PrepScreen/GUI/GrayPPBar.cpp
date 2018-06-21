@@ -10,14 +10,12 @@ namespace rat
         _container = new ImageWidget;
         _addWidget(_container);
         auto dim = (unsigned int)(120 * 0.2f); 
-        _container->setSize(dim, dim);
-        float padding = _border * float(dim) / 1150.f;
-        _container->setPadding(padding, padding);
+        _container->setPropSize(0.0325f, 0.0325f);
 
         _pp = new ImageWidget;
         _container->add(_pp);
-        unsigned int ppDim = dim - (unsigned int)(2.f * padding);
-        _pp->setSize(ppDim, ppDim);
+        _pp->setPropSize(0.03f, 0.03);
+        _pp->setPropPosition(0.5f, 0.5f);
     }
 
     bool GrayPPBar::isTaken() const

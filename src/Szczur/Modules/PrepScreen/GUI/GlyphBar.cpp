@@ -20,19 +20,18 @@ namespace rat
         _amountState = new TextWidget;
 
         _addWidget(_container);
-        _container->setSize(100, 100);
-        float padding = float(100 - 14) * _circleShiftProp;
-        _container->setPadding(padding, padding);
-        _glyph->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
+        _container->setPropSize(0.125f, 0.125f);
+        _container->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
         });
+        _container->makeChildrenPenetrable();
         _container->add(_glyph);
-        _glyph->setSize(sf::Vector2u{100 - 14, 100 - 14} - static_cast<sf::Vector2u>(_container->getPadding() * 2.f));
+        _glyph->setPropSize(0.08f, 0.08f);
+        _glyph->setPropPosition(0.5f, 0.5f);
 
 
         _container->add(_amountState);
-        _amountState->setPropOrigin(1.f, 1.f);
-        _amountState->setPosition(sf::Vector2f{90, 90});
+        _amountState->setPropPosition(1.f, 1.f);
         _amountState->setCharacterSize(17);
         _amountState->setColor(sf::Color::White);
     }

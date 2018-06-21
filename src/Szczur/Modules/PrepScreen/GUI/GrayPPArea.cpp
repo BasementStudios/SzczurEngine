@@ -5,6 +5,7 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 #include "../ResourcesContainer.hpp"
 
@@ -15,14 +16,21 @@ namespace rat
     GrayPPArea::GrayPPArea(ResourcesContainer& source)
     :
     _source(source),
-    _activePPsAmount{0}
+    _activePPsAmount{0},
+    BaseBar()
     {
         setPropOrigin(0.5f, 0.f);
         _border = new WindowWidget;
         _addWidget(_border);
         _border->setScale(0.2f, 0.2f);
-        _border->setPadding(150.f * 0.2f, 16.f * 0.2f);
         _border->setPatchAmount(1, 1);
+
+        _ppsList = new ListWidget;
+        _ppsList->makeHorizontal();
+        _ppsList->setBetweenPadding(7.f);
+        _ppsList->setPropPosition(0.5f, 0.5f);
+
+        _border->add(_ppsList);
     }
 
 
@@ -67,12 +75,11 @@ namespace rat
             auto ppBar = std::make_unique<GrayPPBar>();
             ppBar->setContainerTexture(_containerTex);
             ppBar->setPPTexture(_ppTex);
-            ppBar->setParent(_border);
+            ppBar->setParent(_ppsList);
             _pps.emplace_back(std::move(ppBar));
         }
 
         auto& ppBar = _pps[index];
-        ppBar->setPosition({float(40 * index), 0.f});
         ppBar->activate();
         
     }
@@ -115,5 +122,6 @@ namespace rat
         _containerTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
         auto* borderTex = gui.getAsset<sf::Texture>("Assets/Test/GrayPPWindow.png");
         _border->setTexture(borderTex, 144, 76);
+        _border->setPadding(0.f, 0.f);
     }
 }

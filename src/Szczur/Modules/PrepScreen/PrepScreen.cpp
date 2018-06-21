@@ -82,21 +82,6 @@ namespace rat
         _initColorFilterArea();
         _initEnemyArea();
 
-        /*
-        _infoBar.setParent(_base);
-        _infoBar.setPosition(600.f, 400.f);
-        _infoBar.setName("Test");
-        _infoBar.initAssetsViaGUI(gui);
-        _infoBar.setInfo("Testowe info\nHalo halo dzieciaki efwefe wfsdvds grefdbkrfikbnj hrebf wkjbjerfkefb reji nnbi nui uyth ctr v yt  vhyt  h crcg ctr gc yctych  tyc ytc trc h t yh vg c\nAmadeusz");
-        */
-        /*
-        _testBar = new WindowWidget;
-        _testBar->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png"), 200);
-        _base->add(_testBar);
-        _testBar->setScale(0.2f, 0.2f);
-        _testBar->setPosition(1111.f, 350.f);
-        _testBar->setPatchAmount(4, 0);*/
-
         _testGlyphBar.setPosition(1280.f/2.f, 10.f);
         _testGlyphBar.setParent(_base);
         _testGlyphBar.initAssetsViaGUI(gui);

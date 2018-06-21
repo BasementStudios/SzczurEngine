@@ -33,9 +33,9 @@ namespace rat
     {
         _name->setString(name);
     }
-    const std::string InfoBar::getName() const
+    const std::string& InfoBar::getName() const
     {
-        _name->getString();
+        return _name->getString();
     }
     void InfoBar::setInfo(const std::string& info)
     {

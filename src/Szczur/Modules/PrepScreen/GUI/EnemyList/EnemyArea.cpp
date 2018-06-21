@@ -62,7 +62,7 @@ namespace rat
     }
     bool EnemyArea::isEnemyInInfo(Enemy* enemy)
     {
-        _chosenEnemy = enemy;
+        return _chosenEnemy == enemy;
     }
     void EnemyArea::deactivateInfo()
     {

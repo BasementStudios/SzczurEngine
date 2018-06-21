@@ -9,6 +9,7 @@
 namespace rat
 {
     struct ResourcesContainer;
+    class ListWidget;
 
     class GrayPPArea : public BaseBar
     {
@@ -24,6 +25,7 @@ namespace rat
         ResourcesContainer& _source;
 
         WindowWidget* _border{nullptr};
+        ListWidget* _ppsList{nullptr};
         std::vector<std::unique_ptr<GrayPPBar>> _pps;
 
         amount_t _activePPsAmount{0};
