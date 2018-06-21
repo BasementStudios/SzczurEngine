@@ -104,7 +104,7 @@ namespace rat
         _chosenArea.addSkill(_skill);
 
         _parentArea.recalculate();
-        _sourceArea.recalculate();
+        //_sourceArea.recalculate();
             
     }
 

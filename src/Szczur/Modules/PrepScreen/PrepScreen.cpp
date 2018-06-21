@@ -41,9 +41,88 @@ namespace rat
     {
     }
 
+    void PrepScreen::addPP(int amount)
+    {
+        if(amount < 0)
+        {
+            _source.ppContainer.remove(size_t(-amount));
+        }
+        else
+        {
+            _source.ppContainer.add(size_t(amount));
+        }
+
+        _calcPPsGUI();
+        _calcSkillsGUI();
+    }
+    void PrepScreen::takePP(int amount)
+    {
+        if(amount < 0)
+        {
+            _source.ppContainer.returnTo(size_t(-amount));
+        }
+        else _source.ppContainer.takeFrom(size_t(amount));
+
+        _calcPPsGUI();
+        _calcSkillsGUI();
+    }
+    bool PrepScreen::hasPPAmount(int amount) const
+    {
+        return _source.ppContainer.getAmount() >= size_t(amount);
+    }
+
+    void PrepScreen::addGlyph(GlyphID glyphID)
+    {
+        _source.glyphContainer.addGlyph(glyphID);
+        _calcGlyphGUI(glyphID);
+        _calcSkillsGUI();
+    }
+    void PrepScreen::removeGlyph(GlyphID glyphID)
+    {
+        _source.glyphContainer.removeGlyph(glyphID);
+        _calcGlyphGUI(glyphID);
+    }
+    void PrepScreen::activateGlyph(GlyphID glyphID)
+    {
+        _source.glyphContainer.activateGlyph(glyphID);
+        _calcGlyphGUI(glyphID);
+    }
+    void PrepScreen::deactivateGlyph(GlyphID glyphID)
+    {
+        _source.glyphContainer.deactivateGlyph(glyphID);
+        _calcGlyphGUI(glyphID);
+        _calcSkillsGUI();
+    }
+    bool PrepScreen::hasEnoughPowerfulGlyph(GlyphID glyphID, size_t powerLevel) const
+    {
+        return _source.glyphContainer.hasRequirements({{glyphID, powerLevel}});
+    }
+
     SkillCodex& PrepScreen::getSkillCodex()
     {
         return _codex;
+    }
+
+    void PrepScreen::_calcGlyphGUI(GlyphID id)
+    {
+        size_t activated = _source.glyphContainer.getGlyphAmount(id);
+        size_t total = _source.glyphContainer.getGlyphTotalAmount(id);
+        _testGlyphBar.setGlyph(id, activated, total);
+    }
+    
+    void PrepScreen::_calcPPsGUI()
+    {
+        size_t active = _source.ppContainer.getAmount();
+        size_t total = _source.ppContainer.getTotalAmount();
+
+        std::cout << active << ' ' << total << '\n';
+
+        _grayPPArea.setPPs(active, total);
+    }
+    
+    void PrepScreen::_calcSkillsGUI()
+    {
+        
     }
 
     void PrepScreen::initGUI()
@@ -56,8 +135,6 @@ namespace rat
         _base = gui.addInterface();
         _base->setPadding(20.f, 20.f);
         _base->setSizingWidthToHeightProportion(1.f);
-
-        _source.ppContainer.add(3);
 
         test();
     }
@@ -72,7 +149,7 @@ namespace rat
         _grayPPArea.initAssetsViaGUI(gui);
         _grayPPArea.setPosition(1280.f/2.f, 120);
 
-        _grayPPArea.recalculate();
+        //_grayPPArea.recalculate();
 
         
 
@@ -85,6 +162,10 @@ namespace rat
         _testGlyphBar.setPosition(1280.f/2.f, 10.f);
         _testGlyphBar.setParent(_base);
         _testGlyphBar.initAssetsViaGUI(gui);
+
+        addPP(4);
+        takePP(3);
+        
     }
 
     void PrepScreen::_initSkillArea()

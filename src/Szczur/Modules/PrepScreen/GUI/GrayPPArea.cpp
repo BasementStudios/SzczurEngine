@@ -16,14 +16,14 @@ namespace rat
     GrayPPArea::GrayPPArea(ResourcesContainer& source)
     :
     _source(source),
-    _activePPsAmount{0},
     BaseBar()
     {
         setPropOrigin(0.5f, 0.f);
         _border = new WindowWidget;
         _addWidget(_border);
-        _border->setScale(0.2f, 0.2f);
-        _border->setPatchAmount(1, 1);
+        _border->setScale(0.35f, 0.35f);
+        _border->setPadding(10.f, 3.f);
+        //_border->setPatchAmount(1, 1);
 
         _ppsList = new ListWidget;
         _ppsList->makeHorizontal();
@@ -39,87 +39,69 @@ namespace rat
         return _source;
     }
 
-    void GrayPPArea::recalculate()
+    void GrayPPArea::setPPs(size_t activated, size_t total)
     {
-        const auto& source = _source.ppContainer;
-        size_t sourceTotalAmount = source.getTotalAmount();
-
-        auto diff = (size_t)(abs(int(_activePPsAmount) - int(sourceTotalAmount)));
-
-        if(_activePPsAmount < sourceTotalAmount)
+        size_t totalsDiff = size_t(abs(int(total) - int(_totalAmount)));
+        if(totalsDiff > 0)
         {
-            for(size_t i = 0; i < diff; i++)
+            if(_totalAmount < total)
             {
-                _addPPBar(); 
+                for(size_t i = 0; i < totalsDiff; i++)
+                {
+                    _addPPBar();
+                }
+            }
+            else
+            {
+                for(size_t i = 0; i < totalsDiff; i++)
+                {
+                    _removePPBar();
+                }
             }
         }
-        else if(_activePPsAmount > sourceTotalAmount)
-        {
-            for(size_t i = 0; i < diff; i++)
-            { 
-                _removePPBar();
-            }
-        }
-        
+
+        _totalAmount = total;
+
         _resetTakenPPBars();
-        _takeNecessaryPPBars();
-    }   
+        if(activated > total)
+        {
+            LOG_ERROR("");
+            return;
+        }
+        for(size_t i = 0; i < activated; i++)
+        {
+            _pps[i]->returnTo();
+        }
+    }
 
     void GrayPPArea::_addPPBar()
     {
-        
-        auto index = _activePPsAmount++;
-
-        if(_pps.size() <= index)
-        {
-            auto ppBar = std::make_unique<GrayPPBar>();
-            ppBar->setContainerTexture(_containerTex);
-            ppBar->setPPTexture(_ppTex);
-            ppBar->setParent(_ppsList);
-            _pps.emplace_back(std::move(ppBar));
-        }
-
-        auto& ppBar = _pps[index];
-        ppBar->activate();
-        
+        auto ppBar = std::make_unique<GrayPPBar>();
+        ppBar->setContainerTexture(_containerTex);
+        ppBar->setPPTexture(_ppTex);
+        ppBar->setParent(_ppsList);
+        _pps.emplace_back(std::move(ppBar));
     }
     void GrayPPArea::_removePPBar()
-    {
+    { 
+        if(_totalAmount == 0) return;
         
-        if(_activePPsAmount == 0) return;
-        auto index = --_activePPsAmount;
-
-        auto& ppBar = _pps[index];
-        ppBar->setPosition(0, 0);
-        ppBar->deactivate();
-        
+        _pps.pop_back();
+        _ppsList->popBack();
     }   
 
     void GrayPPArea::_resetTakenPPBars()
     {   
         for(auto& ppBar : _pps)
         {
-            ppBar->returnTo();
-        }
-    }
-    void GrayPPArea::_takeNecessaryPPBars()
-    {
-        
-        auto& source = _source.ppContainer;
-        auto takenAmount = source.getTotalAmount() - source.getAmount();
-        for(size_t i = 0; i < takenAmount; i++)
-        {
-            auto& ppBar = _pps[i];
             ppBar->take();
         }
-        
     }
-    
 
     void GrayPPArea::initAssetsViaGUI(GUI& gui)
     {
         _ppTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
-        _containerTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
+        _containerTex = gui.getAsset<sf::Texture>("Assets/Test/GlyphCircle.png");
         auto* borderTex = gui.getAsset<sf::Texture>("Assets/Test/GrayPPWindow.png");
         _border->setTexture(borderTex, 144, 76);
         _border->setPadding(0.f, 0.f);

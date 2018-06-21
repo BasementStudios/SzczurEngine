@@ -16,8 +16,8 @@ namespace rat
         void addGlyph(GlyphID type, size_t addon = 1);
         void removeGlyph(GlyphID type, size_t sub = 1);
 
-        void activeGlyph(GlyphID type, size_t addon = 1);
-        void deactiveGlyph(GlyphID type, size_t sub = 1);
+        void activateGlyph(GlyphID type, size_t addon = 1);
+        void deactivateGlyph(GlyphID type, size_t sub = 1);
 
         size_t getGlyphTotalAmount(GlyphID type);
         size_t getGlyphAmount(GlyphID type);

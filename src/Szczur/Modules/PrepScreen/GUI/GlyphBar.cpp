@@ -39,7 +39,7 @@ namespace rat
     void GlyphBar::setType(GlyphID glyph)
     {
         _type = glyph;
-        _updateText();
+        setAmount(0, 0);
     }
     void GlyphBar::initAssetsViaGUI(GUI& gui)
     {
@@ -65,7 +65,7 @@ namespace rat
 
         auto& ppContainer = _source.getSource().ppContainer;
                 ppContainer.add();
-                _source.recalculate();
+                //_source.recalculate();
 
         if(glyphAmount < glyphTotal)
         {
@@ -73,11 +73,13 @@ namespace rat
             {
                 auto& ppContainer = _source.getSource().ppContainer;
                 ppContainer.add();
-                _source.recalculate();
+                //_source.recalculate();
             }
-            glyphContainer.activeGlyph(_type);
+            glyphContainer.activateGlyph(_type);
             _updateText();
             _glyph->setTexture(_glyphTextures[glyphAmount + 1]);
+
+            //prepScreen.activateGlyph(_type);
         }
     }
     void GlyphBar::_updateText()
@@ -86,6 +88,11 @@ namespace rat
         auto glyphAmount = glyphContainer.getGlyphAmount(_type);
         auto glyphTotal = glyphContainer.getGlyphTotalAmount(_type);
         _amountState->setString(std::to_string(glyphAmount) + "/" + std::to_string(glyphTotal));
+    }
+
+    void GlyphBar::setAmount(size_t activated, size_t total)
+    {
+        _amountState->setString(std::to_string(activated) + "/" + std::to_string(total));
     }
 
 }

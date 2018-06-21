@@ -73,7 +73,7 @@ namespace rat
             _skill = nullptr;
             _hasSkill = false;
             _icon->invisible();
-            _sourceBar.recalculate();
+            //_sourceBar.recalculate();
             _skillArea.recalculate();
             //_parentArea.recalculate();
         }

@@ -43,6 +43,16 @@ namespace rat
 
         SkillCodex& getSkillCodex();
 
+        void addPP(int amount = 1);
+        void takePP(int amount = 1);
+        bool hasPPAmount(int amount) const;
+
+        void addGlyph(GlyphID glyphID);
+        void removeGlyph(GlyphID glyphID);
+        void activateGlyph(GlyphID glyphID);
+        void deactivateGlyph(GlyphID glyphID);
+        bool hasEnoughPowerfulGlyph(GlyphID glyphID, size_t powerLevel) const;
+
     private:
         SkillCodex _codex;
         ResourcesContainer _source;
@@ -74,5 +84,9 @@ namespace rat
         void _initEnemyArea();
 
         void _loadAssetsFromGUI();
+
+        void _calcGlyphGUI(GlyphID id);
+        void _calcPPsGUI();
+        void _calcSkillsGUI();
     };
 }

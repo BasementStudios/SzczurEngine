@@ -42,7 +42,7 @@ namespace rat
         }
         amount -= sub;
     }
-    void GlyphContainer::activeGlyph(GlyphID type, size_t addon)
+    void GlyphContainer::activateGlyph(GlyphID type, size_t addon)
     {
         auto found = _glyphs.find(type);
         if(found == _glyphs.end())
@@ -57,7 +57,7 @@ namespace rat
         }
         found->second.amount += addon;
     }
-    void GlyphContainer::deactiveGlyph(GlyphID type, size_t sub)
+    void GlyphContainer::deactivateGlyph(GlyphID type, size_t sub)
     {
         auto found = _glyphs.find(type);
         if(found == _glyphs.end())

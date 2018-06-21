@@ -19,16 +19,16 @@ namespace rat
         void initAssetsViaGUI(GUI& gui);
         ResourcesContainer& getSource();
 
-        void recalculate();
+        void setPPs(size_t activated, size_t total);
     private:
-        amount_t _avaiblePPsAmount;
+        amount_t _totalAmount{0};
+
         ResourcesContainer& _source;
 
         WindowWidget* _border{nullptr};
         ListWidget* _ppsList{nullptr};
         std::vector<std::unique_ptr<GrayPPBar>> _pps;
 
-        amount_t _activePPsAmount{0};
 
         sf::Texture* _ppTex{nullptr};
         sf::Texture* _containerTex{nullptr};
@@ -36,6 +36,5 @@ namespace rat
         void _addPPBar();
         void _removePPBar();
         void _resetTakenPPBars();
-        void _takeNecessaryPPBars();
     };
 }

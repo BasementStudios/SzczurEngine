@@ -22,6 +22,8 @@ namespace rat
         void setStartAmount(int amount);
         int getUsedAmount() const;
         void initAssetsViaGUI(GUI& gui);
+
+        void setAmount(size_t activated, size_t total);
         
     private:    
         GrayPPArea& _source;
