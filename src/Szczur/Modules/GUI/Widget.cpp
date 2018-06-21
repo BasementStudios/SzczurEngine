@@ -39,12 +39,32 @@ namespace rat
     }
 
     void Widget::clear() {
-        for(auto it : _children)
-            delete it;
+        for(auto it : _children) delete it;
         _children.clear();
+        _clear();
     }
 
-    void Widget::setParent(Widget* parent) {
+    Widget* Widget::operator[](size_t index)
+    {
+        if(_children.size() <= index)
+        {
+            LOG_ERROR("Widget::[] can't return child at index ", index);
+            return nullptr;
+        }
+        return _children[index];
+    }
+	const Widget* Widget::operator[](size_t index) const
+    {
+        if(_children.size() <= index)
+        {
+            LOG_ERROR("Widget::[] can't return child at index ", index);
+            return nullptr;
+        }
+        return _children[index];
+    }
+
+    void Widget::setParent(Widget* parent) 
+    {
         _parent = parent;
         if(parent->_interface) setInterface(parent->_interface);
         else setInterface(nullptr);
@@ -52,6 +72,12 @@ namespace rat
     void Widget::setInterface(const InterfaceWidget* interface)
     {
         _interface = interface;
+        if(_propSizeMustBeenCalculatedViaInterface && _interface)
+        {
+            _updatePropSize();
+            _propSizeMustBeenCalculatedViaInterface = false;
+        }
+
         for(auto* child : _children)
         {
             child->setInterface(interface);
@@ -75,16 +101,17 @@ namespace rat
             std::invoke(it->second, this);
     }
 
-    Widget* Widget::add(Widget* object) {
-        if(object) {
+    Widget* Widget::add(Widget* object) 
+    {
+        if(object) 
+        {
             _children.push_back(object);
             object->setParent(this);
             _addWidget(object);
             _aboutToRecalculate = true;
         }
-        else {
-            LOG_ERROR("Widget given to Widget::add is nullptr")
-        }
+        else LOG_ERROR("Widget given to Widget::add is nullptr");
+
         return object;
     }
 
@@ -134,8 +161,8 @@ namespace rat
 
         auto thisSize = getSize();
         
-        event.mouseMove.x += int((_origin.x - _padding.x) * _winProp.x);
-        event.mouseMove.y += int((_origin.y - _padding.y) * _winProp.y);
+        event.mouseMove.x += int(_origin.x - _padding.x);
+        event.mouseMove.y += int(_origin.y - _padding.y);
 
         bool isMouseOverlap = event.mouseMove.x >= 0 &&
             event.mouseMove.x <= thisSize.x * _winProp.x &&
@@ -331,12 +358,13 @@ namespace rat
             _size.y = std::max(_size.y, _minSize.y);
         }
 
+        auto chSize = static_cast<sf::Vector2u>(_padding * 2.f);
         if(_areChildrenResizing)
         {
-            auto chSize = _getChildrenSize();
-            _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
-            _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
+            chSize += _getChildrenSize();
         }
+        _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
+        _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
 
         _calculateSize();
         auto ownSize = _getSize();
@@ -378,8 +406,7 @@ namespace rat
         {
             position = {0.f, 0.f};
             origin = {0.f, 0.f};
-        } 
-        if(_props.hasSize) size = {0.f, 0.f};
+        }
 
         auto width = (unsigned int)(position.x + size.x - origin.x);
         auto height = (unsigned int)(position.y + size.y - origin.y);
@@ -487,7 +514,8 @@ namespace rat
     }
     void Widget::setPosition(const sf::Vector2f& offset) 
     {
-        sf::Transformable::setPosition(offset);
+        sf::Transformable::setPosition(int(offset.x), int(offset.y));
+        //sf::Transformable::setPosition(round(offset.x), round(offset.y));
         if(_parent) _parent->_aboutToRecalculate = true;   
     }
     void Widget::setPosition(float x, float y) 
@@ -497,8 +525,6 @@ namespace rat
 
     void Widget::setPropPosition(const sf::Vector2f& propPos)
     {
-        if(!_parent) return;
-
         _props.hasPosition = true;
         _props.position = propPos;
         _props.position.x = std::max(0.f, std::min(1.f, _props.position.x));
@@ -513,15 +539,19 @@ namespace rat
 
     void  Widget::setPropSize(const sf::Vector2f& propSize)
     {
-        if(!_interface) return;
-
         _props.hasSize = true;
         _props.size = propSize;
         _props.size.x = std::max(0.f, std::min(1.f, _props.size.x));
         _props.size.y = std::max(0.f, std::min(1.f, _props.size.y));
 
-        auto newSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
-        setSize(newSize);
+        if(_interface)
+        {
+            _updatePropSize();
+        }
+        else
+        {
+            _propSizeMustBeenCalculatedViaInterface = true;
+        }
     }
     void Widget::setPropSize(float widthProp, float heightProp)
     {
@@ -661,13 +691,12 @@ namespace rat
     {
         _updatePropSize();
 
-        for(auto* child : _children) child->_updatePropSize();
+        for(auto* child : _children) child->forceToUpdatePropSize();
     }
 
     void Widget::_updatePropSize()
     {
-        if(!_props.hasSize) return;
-        if(!_interface) return;
+        if(!(_props.hasSize && _interface)) return;
 
         auto updatedSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
 

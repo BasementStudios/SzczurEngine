@@ -16,6 +16,7 @@ namespace rat
     {
     public:
         BaseBar();
+        BaseBar(Widget* base);
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& position);
         sf::Vector2f getPosition() const;
@@ -40,6 +41,9 @@ namespace rat
         void _addWidget(Widget* addon);
         void _setWidgetSize(ImageWidget* widget, float x, float y);
         void _addBar(BaseBar& addon);
+
+        Widget* _getBase() { return _base; }
+
         template<typename B>
         void _addBar(std::unique_ptr<B>& bar);
     private:

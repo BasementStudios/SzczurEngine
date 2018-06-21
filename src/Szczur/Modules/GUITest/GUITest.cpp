@@ -37,62 +37,60 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
 
         _widget = gui.addInterface();
-        //_widget->setSize(100, 100);
+
         _widget->setSizingWidthToHeightProportion(1.f);
-        _widget->setWidthToHeightProp(16.f/9.f);
+        //_widget->setWidthToHeightProp(16.f/9.f);
+
+        auto* scroll = new ScrollAreaWidget;
+        _widget->add(scroll);
+
+        scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+
+        scroll->setPropSize(0.5f, 0.5f);
+        scroll->setPropPosition(1.f, 0.f);
 
 
+        auto* image = new ImageWidget;
+        image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        image->setPropSize(0.15f, 0.15f);
+        //image->setPropPosition(0.5f, 1.f);
+        _widget->add(image);
+        /*
+        list = new ListWidget;
+        list->makeReversed();
+        //list->setBetweenPadding(20.f);
+        scroll->add(list);
+        //list->setPropPosition(0.f, 1.f);
+        list->setPropSize(0.3f, 1.f);
+        list->setAutoBetweenPadding();
 
-        
-        auto* list = new ListWidget;
-        list->makeHorizontal();
-        list->setPosition(400.f, 400.f);
-        list->setPadding(20.f, 10.f);
-        list->setBetweenPadding(30.f);
-        _widget->add(list);
-        
-        
-        std::vector<ImageWidget*> _ws(4, nullptr);
-        size_t i = 0;
-        for(auto* w : _ws)
+
+        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
+            //auto* addon = new Widget;
+            //addon->setPosition(0.f, 20.f);
+            //addon->setPropSize(0.1f, 0.1f);
+            //list->add(addon);
+            list->popBack();
+        });
+
+        float size = 0.1f;
+        for(int i = 0; i < 4; i++)
         {
-            w = new ImageWidget;
-            int addon = i * 50;
+            auto* w = new ImageWidget;
             list->add(w);
-            if(i == 1)
-            {
-            w->setSize(50, 50 + addon);
-            w->setPosition(addon, 0);
-
-            }
-
-            w->setCallback(Widget::CallbackType::onHoverOut, [](auto* w){
-                w->setColor({255, 255, 255}, 1.f);
-            });
-            w->setCallback(Widget::CallbackType::onHoverIn, [](auto* w){
+            w->setPropSize(size, size);
+            size += 0.05f;
+            w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+            
+            w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
                 w->setColor({0, 0, 0}, 1.f);
             });
-            w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-
-            i++;
-        }
-        auto* testRes = new ImageWidget;
-
-        _widget->add(testRes);
-
-        testRes->setPropSize(0.2f, 0.2f);
-        testRes->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        testRes->setPropPosition(0.f, 0.f);
-
-        
-        _imageWidget = new ImageWidget;
-
-        _widget->add(_imageWidget);
-        _imageWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        _imageWidget->setPropSize(0.2f, 0.2f);
-        _imageWidget->setPropPosition(1.f, 1.f);
-
-        _imageWidget->setTexture(nullptr);
+            w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
+                w->setColor({255, 255, 255}, 1.f);
+            });
+        }*/
 
     }
     
@@ -113,12 +111,12 @@ namespace rat
             _scale+= deltaTime * 0.4f;
             //if(_scale > 1.f) _scale = 1.f;
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
             _prop+= deltaTime * 0.4f;
             if(_prop > 1.f) _prop = 1.f;            
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         {
             _prop-= deltaTime * 0.4f;
             if(_prop < 0.f) _prop = 0.f;
@@ -155,6 +153,9 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
+        //list->setPropSize(0.3f, _prop);
+
+        std::cout << 1.f/deltaTime << '\n';
     }
     void GUITest::render()
     {

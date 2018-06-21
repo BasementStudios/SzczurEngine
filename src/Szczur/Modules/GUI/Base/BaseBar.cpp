@@ -9,6 +9,10 @@ namespace rat
     {
         _base = new Widget;
     }
+    BaseBar::BaseBar(Widget* base)
+    {
+        _base = base;
+    }
     void BaseBar::setPosition(const sf::Vector2f& position)
     {
         setPosition(position.x, position.y);
