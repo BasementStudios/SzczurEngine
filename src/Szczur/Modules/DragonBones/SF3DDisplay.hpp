@@ -67,7 +67,7 @@ public:
 	{
 		for (std::size_t i = 0; i < this->verticesDisplay.getSize(); ++i)
 		{
-			this->verticesDisplay.setColor(i, { color.redMultiplier, color.greenMultiplier, color.blueMultiplier, color.alphaMultiplier });
+			this->verticesDisplay[i].color = { color.redMultiplier, color.greenMultiplier, color.blueMultiplier, color.alphaMultiplier };
 		}
 	}
 
