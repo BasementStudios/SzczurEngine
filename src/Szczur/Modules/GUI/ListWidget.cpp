@@ -1,6 +1,7 @@
 #include "ListWidget.hpp"
 
 #include <algorithm>
+#include <functional>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -22,6 +23,7 @@ namespace rat
             LOG_ERROR("ListWidget::popBack can't pop ", amount, " children");
             return;
         }
+        
         _children.erase(_children.end() - amount, _children.end());
         _shifts.erase(_shifts.end() - amount, _shifts.end());
 
@@ -55,22 +57,20 @@ namespace rat
     {
         LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");
 
+        std::function<sf::Vector2f(const Widget* child)> func;
+        
+        func = [this](const Widget* child){
+            return sf::Vector2f{ float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f };
+        };
+
         if(_positioning == Positioning::Vertical)
         {
-            auto func = [this](const Widget* child){
-                return sf::Vector2f{0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding};
+            func = [this](const Widget* child){
+                return sf::Vector2f{ 0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding };
             };
-
-            std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
         }
-        else
-        {
-            auto func = [this](const Widget* child){
-                return sf::Vector2f{float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f};
-            };
 
-            std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
-        }
+        std::transform(_children.begin(), _children.end(), _shifts.begin(), func);
 
         _areShiftsCurrent = true;
     }
@@ -103,6 +103,7 @@ namespace rat
         int i = _isReversed ? _shifts.size() - 1 : 0;
         int iEnd = _isReversed ? -1 : _shifts.size();
         int addon = _isReversed ? -1 : 1;
+
         for(; i != iEnd; i+=addon)
         {
             target.draw(*_children[i], states);
@@ -112,14 +113,16 @@ namespace rat
 
     sf::Vector2u ListWidget::_getChildrenSize()
     {
+        if(_hasAutoBetweenPad) _betweenWidgetsPadding = 0.f;
         _updateChildrenSize();
         return _childrenSize;
     }
 
     void ListWidget::_updateChildrenSize()
     {
-        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");        
-        if(!_areShiftsCurrent || _aboutToRecalculate) _updateShifts();
+        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");
+
+        _updateShifts();
 
         sf::Vector2f childrenShiftedSize;
 
@@ -143,11 +146,41 @@ namespace rat
 
         _childrenSize = static_cast<sf::Vector2u>(childrenShiftedSize);
     }
+    void ListWidget::setAutoBetweenPadding()
+    {
+        _hasAutoBetweenPad = true;
+        _aboutToRecalculate = true;
+    }
+    
 
     void ListWidget::_calculateSize()
-    {
-        if(!_areShiftsCurrent) _updateShifts();
+    {    
+        if(_hasAutoBetweenPad)
+        {
+            if(_children.size() < 2) return;            
+            _calculateAutoBetweenPad();
+            _updateShifts();
+            _updateChildrenSize();
+        }
     }
+
+    void ListWidget::_calculateAutoBetweenPad()
+    {
+        float freeSpace;
+        if(_positioning == Positioning::Horizontal)
+        {
+            freeSpace = getSize().x - _childrenSize.x;
+        }
+        else
+        {
+            freeSpace = getSize().y - _childrenSize.y;
+        }
+        if(freeSpace <= 0.f) return;
+
+        auto numOfPaddings = float(_children.size() - 1);
+        _betweenWidgetsPadding = freeSpace / numOfPaddings;
+    }
+    
 
     sf::Vector2f ListWidget::_getChildShiftByIndex(size_t index) const
     {
