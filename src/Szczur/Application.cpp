@@ -17,6 +17,7 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<GUI>();
+	initModule<QuestJournal>();
 	#ifdef GUI_TEST
 	{
 		initModule<GUITest>();
