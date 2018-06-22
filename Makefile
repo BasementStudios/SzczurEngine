@@ -146,7 +146,10 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := BOOST IMGUI GLAD SFML LUA SOL2 JSON GLM OPENAL
+LIB_LIST := BOOST IMGUI GLAD SFML LUA SOL2 JSON GLM OPENAL FFMPEG_AV
+ifeq ($(TARGET_PLATFORM),win)
+    LIB_LIST += WINDOWS
+endif
 #   Boost
  PKG_CONFIG_NAME_BOOST  := boost
  CXXFLAGS_STATIC_BOOST  :=
@@ -161,10 +164,10 @@ CXXFLAGS_DYNAMIC_IMGUI  :=
  LDFLAGS_DYNAMIC_IMGUI  := -limgui
 #   GLAD
  PKG_CONFIG_NAME_GLAD   := glad
- CXXFLAGS_STATIC_GLAD   := 
-  LDFLAGS_STATIC_GLAD   := -lglad 
-CXXFLAGS_DYNAMIC_GLAD   := 
- LDFLAGS_DYNAMIC_GLAD   := -lglad
+ CXXFLAGS_STATIC_GLAD   :=
+  LDFLAGS_STATIC_GLAD   :=
+CXXFLAGS_DYNAMIC_GLAD   :=
+ LDFLAGS_DYNAMIC_GLAD   :=
 #   SFML
  PKG_CONFIG_NAME_SFML   := sfml
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
@@ -185,6 +188,14 @@ CXXFLAGS_DYNAMIC_LUA    :=
  PKG_CONFIG_NAME_JSON   := glm
 #   OpenAL
  PKG_CONFIG_NAME_JSON   := openal
+#   FFMPEG/libavformat
+ PKG_CONFIG_NAME_FFMPEG_AV := libavformat
+  LDFLAGS_STATIC_FFMPEG_AV := -lavformat -lavcodec -lavutil -lswresample
+  LDFLAGS_SHARED_FFMPEG_AV := -lavformat -lavcodec -lavutil -lswresample
+  LDFLAGS += -lswscale
+#   Windows
+ LDFLAGS_STATIC_WINDOWS := -lcomdlg32
+ LDFLAGS_SHARED_WINDOWS := -lcomdlg32
 
 # Print definitions
 COLORS := no
