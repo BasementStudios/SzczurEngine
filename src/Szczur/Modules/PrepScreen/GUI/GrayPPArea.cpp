@@ -13,9 +13,8 @@
 
 namespace rat
 {
-    GrayPPArea::GrayPPArea(ResourcesContainer& source)
+    GrayPPArea::GrayPPArea()
     :
-    _source(source),
     BaseBar()
     {
         setPropOrigin(0.5f, 0.f);
@@ -32,13 +31,7 @@ namespace rat
 
         _border->add(_ppsList);
     }
-
-
-    ResourcesContainer& GrayPPArea::getSource()
-    {
-        return _source;
-    }
-
+    
     void GrayPPArea::setPPs(size_t activated, size_t total)
     {
         size_t totalsDiff = size_t(abs(int(total) - int(_totalAmount)));

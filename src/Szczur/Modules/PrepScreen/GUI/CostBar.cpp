@@ -46,7 +46,7 @@ namespace rat
         }
     }  
 
-    void CostBar::setSkill(Skill* skill)
+    void CostBar::setSkill(const Skill* skill)
     {
         _skill = skill;
         auto& ppCost = _skill->getCostInfo();
@@ -63,6 +63,11 @@ namespace rat
         }
 
         _recalculateGlyphs();
+    }
+
+    void CostBar::removeSkill()
+    {
+        for(auto& [glyph, widget] : _glyphs) widget->invisible();
     }
     
     void CostBar::loadAssetsFromGUI(GUI& gui)

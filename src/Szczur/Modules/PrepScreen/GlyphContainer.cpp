@@ -74,7 +74,7 @@ namespace rat
         }
         amount -= sub;
     }
-    size_t GlyphContainer::getGlyphTotalAmount(GlyphID type)
+    size_t GlyphContainer::getGlyphTotalAmount(GlyphID type) const
     {
         auto found = _glyphs.find(type);
         if(found == _glyphs.end())
@@ -84,7 +84,7 @@ namespace rat
         }
         return found->second.total;
     }
-    size_t GlyphContainer::getGlyphAmount(GlyphID type)
+    size_t GlyphContainer::getGlyphAmount(GlyphID type) const
     {
         auto found = _glyphs.find(type);
         if(found == _glyphs.end())

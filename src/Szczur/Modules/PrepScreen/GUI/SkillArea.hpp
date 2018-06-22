@@ -3,7 +3,7 @@
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
 #include "SkillBar.hpp"
-#include "../Skill/SortedSkillsContainer.hpp"
+#include "../Skill/Skill.hpp"
 #include "../GlyphTypes.hpp"
 
 #include <unordered_map>
@@ -23,34 +23,15 @@ namespace rat
     {
         using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
     public:
-        SkillArea(GrayPPArea& sourceBar);
+        SkillArea();
 
         void initAssetsViaGUI(GUI& gui);
-        void initViaSkillCodex(SkillCodex& skillCodex);
 
-        void activate();
-        void activate(const std::string& profession, const std::set<GlyphID>& colors);
-        void deactivate();
-        void setGlyphs(const std::set<GlyphID>& colors);
-        void addColor(GlyphID color);
-        void removeColor(GlyphID color);
-        void setProfession(const std::string& profession);
-        void initChosenSkillArea(ChosenSkillArea& chosenSkillArea);
-        ChosenSkillArea& getChosenSkillArea() const;
-        void recalculate();
-
-        GrayPPArea& getSourceArea();
-
-        void setSkillInfo(Skill* skill, const sf::Vector2f& pos = {});
-        bool isSkillInInfo(Skill* enemy);
-        void deactivateInfo();
+        void setSkills(const std::vector<const Skill*>& skills);
+        void recalculateSkillsAvailability();
 
     private:
-        GrayPPArea& _sourceBar;
-        ChosenSkillArea* _chosenSkillArea{nullptr};
-        SortedSkillsContainer _skills;
         SkillBars_t _skillBars;
-        size_t _activeBarsAmount{0};
 
         sf::Texture* _textureBar{nullptr};
         sf::Texture* _textureLocked{nullptr};
@@ -61,14 +42,7 @@ namespace rat
         ListWidget* _skillsList{nullptr};
 
         InfoBar _infoBar;
-        Skill* _chosenSkill{nullptr};
-
 
         void _initNewSkillBarsAmount(size_t newAmount);
-
-        float _barHeight{80.f};
-
-        std::set<GlyphID> _chosenColors;
-        std::string _curentProfession;
     };
 }

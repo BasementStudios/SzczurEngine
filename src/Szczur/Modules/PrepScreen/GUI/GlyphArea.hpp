@@ -16,14 +16,12 @@ namespace rat
     class GlyphArea : public BaseBar
     {
     public:
-        GlyphArea(GrayPPArea& source);
+        GlyphArea();
 
         void initAssetsViaGUI(GUI& gui);
 
         void setGlyph(GlyphID id, size_t activated, size_t total);
     private:
-        GrayPPArea& _sourceArea;
-
         std::unordered_map<GlyphID, std::unique_ptr<GlyphBar>> _glyphBars;
     };
 }

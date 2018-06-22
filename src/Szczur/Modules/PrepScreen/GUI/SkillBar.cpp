@@ -19,11 +19,8 @@ namespace rat
     
      sf::Vector2u SkillBar::_size = {240, 72};
 
-    SkillBar::SkillBar(SkillArea& parentArea)
+    SkillBar::SkillBar()
     :
-    _parentArea(parentArea),
-    _chosenArea(_parentArea.getChosenSkillArea()),
-    _sourceArea(_parentArea.getSourceArea()),
     BaseBar( [this]
         {
             auto* base = new ListWidget; 
@@ -72,13 +69,51 @@ namespace rat
         _costBar.setPropPosition(0.f, 1.f);
     }
 
-    void SkillBar::setSkill(Skill* skill)
+    void SkillBar::setSkill(const Skill* skill)
     {
         _skill = skill;
         _name->setString(skill->getName());
         _costBar.setSkill(skill);
         _icon->setTexture(skill->getTexture());
+
+        if(skill->isBought())
+        {
+            _getBase()->invisible();
+            _getBase()->deactivate();
+        }
+        else
+        {
+            _getBase()->visible();
+            _getBase()->activate();
+        }  
     }
+    void SkillBar::removeSkill()
+    {
+        _skill = nullptr;
+        _getBase()->invisible();
+        _getBase()->deactivate();
+        _costBar.removeSkill();
+    }
+
+    void SkillBar::recalculateAvailability()
+    {
+        bool isBought = _skill->isBought();
+        if(_isKnownAsBought != isBought)
+        {
+            if(isBought)
+            {
+                _getBase()->invisible();
+                _getBase()->deactivate();
+            }
+            else
+            {
+                _getBase()->invisible();
+                _getBase()->deactivate();
+            }
+            _isKnownAsBought = isBought;
+        }
+    }
+    
 
     const std::string& SkillBar::getIconPath() const
     {
@@ -88,36 +123,43 @@ namespace rat
 
     void SkillBar::_onClick()
     {      
-        auto& source = _sourceArea.getSource();
-        std::cout << "Clicked\n";
-
-        if(isBought()) return;
-        
-        std::cout << "Not bought\n";
-        //if(!_skill->canBeBoughtFrom(source)) return;
-        std::cout << "Enough\n";
-        if(!_chosenArea.hasFreeSpace()) return;
-
-        std::cout << "Cyk Kupione\n";
-        _skill->buyFrom(source);
-
-        _chosenArea.addSkill(_skill);
-
-        _parentArea.recalculate();
         //_sourceArea.recalculate();
-            
+
+        /*
+        if(isBought()) return;
+        if(!canBeBought()) return;
+
+        buy();;
+        */  
+    }
+
+    void SkillBar::_buy()
+    {
+        //auto ppCost = _skill->getCostInfo().getCost();
+        //_prepScreen.takePP(ppCost);
+        //_prepScreen.buySkill(_skill);
+    }
+    bool SkillBar::_canBeBought() const
+    {
+        const auto& cost = _skill->getCostInfo();
+
+        /*if(!_prepScreen.hasPPAmount(cost.getCost())) return false;
+        for(auto& [id, power] : cost)
+        {
+            if(!_prepScreen.hasEnoughPowerfulGlyph(id, power)) return false;
+        }*/
+        return false;
+        return true;
+        
     }
 
     void SkillBar::_onHoverIn()
     {
-        if(!_skill) return;    
-        _parentArea.setSkillInfo(_skill, {float(getSize().x) + 40.f, getPosition().y});
     }
     void SkillBar::_onHoverOut()
     {
-        if(!_skill) return;
-        if(_parentArea.isSkillInInfo(_skill) || true) _parentArea.deactivateInfo();
     }
+
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {

@@ -23,28 +23,28 @@ namespace rat
         void unlock();
         bool isUnlocked() const;
         void lock();
+
+        void buy() const { _isBought = true; }
+        void unBuy() const { _isBought = false; }
         bool isBought() const;
-        void buyFrom(ResourcesContainer& source);
 
-        void returnCostsTo(ResourcesContainer& source);
 
-        bool canBeBoughtFrom(ResourcesContainer& source);
         void setPPCost(amount_t cost);
         void addRequirement(GlyphID glyph, power_t power = 1);
-
         void setRequirements(std::initializer_list<std::pair<GlyphID, power_t>> requirements);
-
         void setProfession(const std::string& profession);
+
         const std::string getProfession() const;
 
         const std::set<GlyphID> getGlyphs() const;
+        bool hasGlyphs(const std::set<GlyphID>& colors) const;
+
 
         void setTexturePath(const std::string& texturePath);
         const std::string& getTexturePath() const;
         void setTexture(sf::Texture* texture);
         sf::Texture* getTexture() const;
 
-        bool hasGlyphs(const std::set<GlyphID>& colors);
 
     private:
         std::string _name;
@@ -52,7 +52,7 @@ namespace rat
         SkillCost _cost;
         
         bool _unlocked{true};
-        bool _isBought{false};
+        mutable bool _isBought{false};
 
         std::string _texturePath{""};
         sf::Texture* _iconTexture{nullptr};

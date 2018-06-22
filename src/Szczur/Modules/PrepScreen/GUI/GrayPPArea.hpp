@@ -15,20 +15,16 @@ namespace rat
     {
         using amount_t = size_t;
     public:
-        GrayPPArea(ResourcesContainer& source);
+        GrayPPArea();
         void initAssetsViaGUI(GUI& gui);
-        ResourcesContainer& getSource();
 
         void setPPs(size_t activated, size_t total);
     private:
         amount_t _totalAmount{0};
 
-        ResourcesContainer& _source;
-
         WindowWidget* _border{nullptr};
         ListWidget* _ppsList{nullptr};
         std::vector<std::unique_ptr<GrayPPBar>> _pps;
-
 
         sf::Texture* _ppTex{nullptr};
         sf::Texture* _containerTex{nullptr};

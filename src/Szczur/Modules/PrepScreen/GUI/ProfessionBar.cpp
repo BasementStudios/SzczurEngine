@@ -10,9 +10,8 @@
 
 namespace rat
 {
-    ProfessionBar::ProfessionBar(SkillArea& skillArea)
+    ProfessionBar::ProfessionBar()
     :
-    _skillArea(skillArea),
     BaseBar()
     {
         _window = new WindowWidget;
@@ -59,7 +58,7 @@ namespace rat
     void ProfessionBar::_onClick()
     {
         //clock_t t = clock();        
-        _skillArea.setProfession(_profession);
+        //_skillArea.setProfession(_profession);
         //float time = float(clock() - t);
         //std::cout << "Time elapsed: " << time/CLOCKS_PER_SEC << "s\n";
     }

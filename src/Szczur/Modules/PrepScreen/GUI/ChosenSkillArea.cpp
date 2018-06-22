@@ -5,30 +5,30 @@
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "SkillArea.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
-    ChosenSkillArea::ChosenSkillArea(SkillArea& parentArea, size_t size)
+    ChosenSkillArea:: ChosenSkillArea(size_t size)
     :
-    _parentArea(parentArea),
     _size(size),
     _widthPadding(70.f),
     _iconSize{246.f, 400.f}
     {
-        _skills = new Widget;
-        _addWidget(_skills);
-        _skills->setPadding(_widthPadding * _scale, 0.f);
+        _skillsList = new ListWidget;
+        _addWidget(_skillsList);
+        //_skills->setPadding(_widthPadding * _scale, 0.f);
+        _skillsList->makeHorizontal();
 
         _border = new WindowWidget;
         _addWidget(_border);
         for(size_t i = 0; i < size; i++)
         {
-            auto chSkillBar = std::make_unique<ChosenSkillBar>(*this);
-            chSkillBar->setParent(_skills);
-            chSkillBar->setPosition(_iconSize.x * _scale * float(i), 0.f);
+            auto chSkillBar = std::make_unique<ChosenSkillBar>();
+            chSkillBar->setParent(_skillsList);
             chSkillBar->setSize(_iconSize * _scale);
             _skillBars.emplace_back(std::move(chSkillBar));
         }
@@ -86,10 +86,5 @@ namespace rat
             }
             if(itsTimeToStop) break;
         }
-    }
-    SkillArea& ChosenSkillArea::getSkillArea() const
-    {
-        return _parentArea;
-    }
-    
+    }   
 }

@@ -5,9 +5,8 @@
 
 namespace rat
 {
-    GlyphArea::GlyphArea(GrayPPArea& source)
+    GlyphArea::GlyphArea()
     :
-    _sourceArea(source),
     BaseBar([]{ auto* base = new ListWidget; base->makeHorizontal(); base->setAutoBetweenPadding(); return base;}())
     {
         setPropOrigin(0.5f, 0.f);
@@ -24,7 +23,7 @@ namespace rat
         _glyphBars.reserve(4);
         for(auto& type : types)
         {
-            auto glyphBar = std::make_unique<GlyphBar>(source);
+            auto glyphBar = std::make_unique<GlyphBar>();
             glyphBar->setType(converter.toEnum(type));
             _addBar(glyphBar);
             _glyphBars.emplace(converter.toEnum(type), std::move(glyphBar));

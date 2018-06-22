@@ -10,16 +10,16 @@
 #include "Szczur/Modules/PrepScreen/ResourcesContainer.hpp"
 #include "Szczur/Modules/PrepScreen/Skill/SkillCodex.hpp"
 #include "GUI/SkillArea.hpp"
-//#include "GUI/ColoredPPBar.hpp"
 #include "GUI/GrayPPArea.hpp"
 #include "GUI/ProfessionArea.hpp"
 #include "GUI/ChosenSkillArea.hpp"
-#include "GUI/ColorFilterArea.hpp"
 
 #include "GUI/EnemyList/EnemyArea.hpp"
 
 #include "GUI/InfoBar.hpp"
 #include "GUI/GlyphArea.hpp"
+
+#include "Szczur/Modules/PrepScreen/Skill/SortedSkillsContainer.hpp"
 
 #include "Enemy/EnemyCodex.hpp"
 
@@ -32,6 +32,7 @@ namespace rat
     public:
         void init()
         {
+            _sortedSkills.initViaSkillCodex(_codex);
             initGUI();
         }
 
@@ -49,13 +50,23 @@ namespace rat
 
         void addGlyph(GlyphID glyphID);
         void removeGlyph(GlyphID glyphID);
+        bool canBeGlyphActivated(GlyphID glyphID) const;
         void activateGlyph(GlyphID glyphID);
+        bool canBeGlyphDeactivated(GlyphID glyphID) const;
         void deactivateGlyph(GlyphID glyphID);
         bool hasEnoughPowerfulGlyph(GlyphID glyphID, size_t powerLevel) const;
+
+        void buySkill(const Skill* skill);
+        bool canSkillBeBought(const Skill* skill) const;
+        void returnSkill(const Skill* skill);
+        bool isSkillBought(const Skill* skill) const;
+
+        void setProfession(const std::string& profession);
 
     private:
         SkillCodex _codex;
         ResourcesContainer _source;
+        SortedSkillsContainer _sortedSkills;
 
         void test();
 

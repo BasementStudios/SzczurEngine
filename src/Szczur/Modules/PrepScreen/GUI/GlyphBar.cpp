@@ -11,9 +11,7 @@
 
 namespace rat
 {
-    GlyphBar::GlyphBar(GrayPPArea& source)
-    :
-    _source(source)
+    GlyphBar::GlyphBar()
     {
         _container = new ImageWidget;
         _glyph = new ImageWidget;
@@ -57,37 +55,11 @@ namespace rat
 
     void GlyphBar::_onClick()
     {
-        auto& glyphContainer = _source.getSource().glyphContainer;
-        auto glyphAmount = glyphContainer.getGlyphAmount(_type);
-        auto glyphTotal = glyphContainer.getGlyphTotalAmount(_type);
 
-        std::cout << "Type: " << GlyphesConverter().toString(_type) << " amount: " << glyphAmount << " total: " << glyphTotal << "\n";
-
-        auto& ppContainer = _source.getSource().ppContainer;
-                ppContainer.add();
-                //_source.recalculate();
-
-        if(glyphAmount < glyphTotal)
-        {
-            if(glyphAmount == 0)
-            {
-                auto& ppContainer = _source.getSource().ppContainer;
-                ppContainer.add();
-                //_source.recalculate();
-            }
-            glyphContainer.activateGlyph(_type);
-            _updateText();
-            _glyph->setTexture(_glyphTextures[glyphAmount + 1]);
-
-            //prepScreen.activateGlyph(_type);
-        }
     }
     void GlyphBar::_updateText()
     {
-        auto& glyphContainer = _source.getSource().glyphContainer;
-        auto glyphAmount = glyphContainer.getGlyphAmount(_type);
-        auto glyphTotal = glyphContainer.getGlyphTotalAmount(_type);
-        _amountState->setString(std::to_string(glyphAmount) + "/" + std::to_string(glyphTotal));
+        
     }
 
     void GlyphBar::setAmount(size_t activated, size_t total)

@@ -37,26 +37,6 @@ namespace rat
         {
             return _isBought;
         }
-        void Skill::buyFrom(ResourcesContainer& source)
-        {
-            auto& ppContainer = source.ppContainer;
-            auto cost = _cost.getCost();
-            ppContainer.takeFrom(cost);
-            _isBought = true;
-        }
-
-        void Skill::returnCostsTo(ResourcesContainer& source)
-        {
-            assert(_isBought);
-            auto cost = _cost.getCost();
-            source.ppContainer.returnTo(cost);
-            _isBought = false;
-        }
-
-        bool Skill::canBeBoughtFrom(ResourcesContainer& source)
-        {
-            return _cost.canBeBoughtFrom(source);
-        }
 
         void Skill::setPPCost(amount_t cost)
         {
@@ -108,7 +88,7 @@ namespace rat
             return _iconTexture;
         }
 
-        bool Skill::hasGlyphs(const std::set<GlyphID>& colors)
+        bool Skill::hasGlyphs(const std::set<GlyphID>& colors) const
         {
             return _cost.getGlyphs() == colors;
         }

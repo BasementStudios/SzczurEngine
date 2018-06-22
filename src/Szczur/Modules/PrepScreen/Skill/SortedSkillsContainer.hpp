@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../GlyphTypes.hpp"
+#include "Skill.hpp"
 
 namespace rat
 {
@@ -13,7 +14,7 @@ namespace rat
     class SortedSkillsContainer
     {
         using Glyphs_t = std::set<GlyphID>;
-        using Skills_t = std::vector<Skill*>;
+        using Skills_t = std::vector<const Skill*>;
         using SkillGlyphs_t = std::unordered_map<size_t, Skills_t>;
         using SkillProfs_t = std::unordered_map<std::string, SkillGlyphs_t>;
     public:

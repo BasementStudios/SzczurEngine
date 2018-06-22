@@ -19,8 +19,8 @@ namespace rat
         void activateGlyph(GlyphID type, size_t addon = 1);
         void deactivateGlyph(GlyphID type, size_t sub = 1);
 
-        size_t getGlyphTotalAmount(GlyphID type);
-        size_t getGlyphAmount(GlyphID type);
+        size_t getGlyphTotalAmount(GlyphID type) const;
+        size_t getGlyphAmount(GlyphID type) const;
 
         bool hasRequirements(const std::map<GlyphID, size_t>& requirements) const;
     private:

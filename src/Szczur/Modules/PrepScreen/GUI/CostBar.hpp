@@ -17,12 +17,13 @@ namespace rat
     public:
         CostBar();
         void loadAssetsFromGUI(GUI& gui);
-        void setSkill(Skill* skill);
+        void setSkill(const Skill* skill);
+        void removeSkill();
         void setWidth(float width);
 
         sf::Vector2f getPPSize() const;
     private:
-        Skill* _skill{nullptr};
+        const Skill* _skill{nullptr};
 
         std::map<GlyphID, ImageWidget*> _glyphs;
         ImageWidget* _costPP{nullptr};

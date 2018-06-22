@@ -1,4 +1,7 @@
 #include "PrepScreen.hpp"
+
+#include <cassert>
+
 #include "Skill/Skill.hpp"
 
 #include "GUI/SkillBar.hpp"
@@ -20,12 +23,11 @@ namespace rat
 
     PrepScreen::PrepScreen()
     :
-    _grayPPArea(_source),
-    _testGlyphBar(_grayPPArea),
-    _skillArea(_grayPPArea),
-    _profArea(_skillArea),
-    _chosenSkillArea(_skillArea)//,
-    //_colorFilterArea(_skillArea)
+    _grayPPArea(),
+    _testGlyphBar(),
+    _skillArea(),
+    _profArea(),
+    _chosenSkillArea(6)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();
@@ -82,10 +84,20 @@ namespace rat
         _source.glyphContainer.removeGlyph(glyphID);
         _calcGlyphGUI(glyphID);
     }
+    bool PrepScreen::canBeGlyphActivated(GlyphID glyphID) const
+    {
+        return _source.glyphContainer.getGlyphAmount(glyphID) < _source.glyphContainer.getGlyphTotalAmount(glyphID);
+    }
     void PrepScreen::activateGlyph(GlyphID glyphID)
     {
         _source.glyphContainer.activateGlyph(glyphID);
         _calcGlyphGUI(glyphID);
+    }
+    bool PrepScreen::canBeGlyphDeactivated(GlyphID glyphID) const
+    {
+        if(_source.glyphContainer.getGlyphAmount(glyphID) == 0) return false;
+        if(_source.ppContainer.getAmount() == 0) return false;
+        return true;
     }
     void PrepScreen::deactivateGlyph(GlyphID glyphID)
     {
@@ -96,6 +108,55 @@ namespace rat
     bool PrepScreen::hasEnoughPowerfulGlyph(GlyphID glyphID, size_t powerLevel) const
     {
         return _source.glyphContainer.hasRequirements({{glyphID, powerLevel}});
+    }
+
+    void PrepScreen::buySkill(const Skill* skill)
+    {
+        assert(canSkillBeBought(skill));
+        const auto& cost = skill->getCostInfo();
+        takePP(cost.getCost());
+
+        //_skillArea.removeSkill(skill);
+        //_chosenSkillArea.addSkill(skill);
+
+        _calcPPsGUI();
+        _calcSkillsGUI();
+    }
+    bool PrepScreen::canSkillBeBought(const Skill* skill) const
+    {
+        const auto& cost = skill->getCostInfo();
+        if(cost.getCost() > _source.ppContainer.getAmount()) return false;
+
+        for(auto& [id, power] : cost)
+        {
+            if(!hasEnoughPowerfulGlyph(id, power)) return false;
+        }
+
+        return true;
+    }
+    void PrepScreen::returnSkill(const Skill* skill)
+    {
+        assert(isSkillBought(skill));
+
+        const auto& cost = skill->getCostInfo();
+        takePP(-int(cost.getCost()));
+
+        //_chosenSkillArea.removeSkill(skill);
+        //_skillArea.addSkill(skill);
+
+        _calcPPsGUI();
+        _calcSkillsGUI();
+    }
+    bool PrepScreen::isSkillBought(const Skill* skill) const
+    {
+        //return _chosenSkillArea.hasSkill(skill);
+        return true; 
+    }
+
+    void PrepScreen::setProfession(const std::string& profession)
+    {
+        auto skills = _sortedSkills.getWholeProfession(profession);
+        _skillArea.setSkills(skills);
     }
 
     SkillCodex& PrepScreen::getSkillCodex()
@@ -122,7 +183,7 @@ namespace rat
     
     void PrepScreen::_calcSkillsGUI()
     {
-        
+        _skillArea.recalculateSkillsAvailability();
     }
 
     void PrepScreen::initGUI()
@@ -166,16 +227,14 @@ namespace rat
         addPP(4);
         takePP(3);
         
+        setProfession("Range");
     }
 
     void PrepScreen::_initSkillArea()
     {
-        _skillArea.initChosenSkillArea(_chosenSkillArea);
         _skillArea.setParent(_base);
         _skillArea.setPosition(200.f, 150.f);
-        _skillArea.initViaSkillCodex(_codex); //traitor
         _skillArea.initAssetsViaGUI(getModule<GUI>());
-        _skillArea.activate("Mele", {});
     }
 
     void PrepScreen::_initProfArea()

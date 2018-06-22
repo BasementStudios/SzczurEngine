@@ -14,7 +14,7 @@ namespace rat
     class ProfessionBar : public BaseBar
     {
     public:
-        ProfessionBar(SkillArea& skillArea);
+        ProfessionBar();
 
         void setTexture(sf::Texture* texture);
         void setProfession(const std::string& profession);
@@ -23,8 +23,6 @@ namespace rat
 
         const std::string& getProfession() const;
     private:
-        SkillArea& _skillArea;
-
         ImageWidget* _icon{nullptr};
         WindowWidget* _window{nullptr};
         std::string _profession;

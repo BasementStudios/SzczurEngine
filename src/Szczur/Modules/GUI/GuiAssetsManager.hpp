@@ -34,19 +34,19 @@ namespace rat {
         }
         
         template<typename T>
-        T* loadFromFile(const std::string& path)
+        void loadFromFile(const std::string& path)
         {
+            auto* duplicate = _get<T>(fnv1a_32(path.begin(), path.end()));
+            if(duplicate) return;
             T* obj = new T;
             if(obj->loadFromFile(path))
             {
                 _add( fnv1a_32(path.begin(), path.end()), obj);
-                return obj;
             }
             else 
             {
                 LOG_ERROR("Cannot load file: \"", path, "\"");
                 delete obj;
-                return nullptr;
             }
         }
 

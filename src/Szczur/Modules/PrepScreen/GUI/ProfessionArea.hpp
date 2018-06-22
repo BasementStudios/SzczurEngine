@@ -14,11 +14,11 @@ namespace rat
     class ProfessionArea : public BaseBar
     {
     public:
-        ProfessionArea(SkillArea& skillArea);
+        ProfessionArea();
         void initAssetsViaGUI(GUI& gui);
     private:
         std::vector<std::unique_ptr<ProfessionBar>> _profBars;
 
-        void _initProfBars(SkillArea& skillArea);
+        void _initProfBars();
     };
 }

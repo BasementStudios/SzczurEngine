@@ -11,11 +11,7 @@
 
 namespace rat
 {
-    ChosenSkillBar::ChosenSkillBar(ChosenSkillArea& parentArea)
-    :
-    _parentArea(parentArea),
-    _skillArea(parentArea.getSkillArea()),
-    _sourceBar(_skillArea.getSourceArea())
+    ChosenSkillBar::ChosenSkillBar()
     {
         _icon = new ImageWidget;
         _addWidget(_icon);
@@ -32,7 +28,7 @@ namespace rat
     {
     }
 
-    void ChosenSkillBar::setSkill(Skill* skill)
+    void ChosenSkillBar::setSkill(const Skill* skill)
     {
         if(skill == nullptr)
         {
@@ -67,16 +63,6 @@ namespace rat
     
     void ChosenSkillBar::_onClick()
     {
-        if(_hasSkill)
-        {
-            _skill->returnCostsTo(_sourceBar.getSource());
-            _skill = nullptr;
-            _hasSkill = false;
-            _icon->invisible();
-            //_sourceBar.recalculate();
-            _skillArea.recalculate();
-            //_parentArea.recalculate();
-        }
     }
     void ChosenSkillBar::setSize(const sf::Vector2f& size)
     {
@@ -89,7 +75,7 @@ namespace rat
     }
     void ChosenSkillBar::swapSkillsWith(ChosenSkillBar& other)
     {
-        Skill* othersSkill = other._skill;
+        const Skill* othersSkill = other._skill;
 
         std::cout << "Skill: " << (_skill ? _skill->getName() : "nullptr")
         << " swaped into Skill: " << (othersSkill ? othersSkill->getName() : "nullptr") << "\n";

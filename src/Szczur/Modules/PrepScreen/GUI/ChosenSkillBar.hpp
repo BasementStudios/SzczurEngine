@@ -15,9 +15,9 @@ namespace rat
     class ChosenSkillBar : public BaseBar
     {
     public:
-        ChosenSkillBar(ChosenSkillArea& parentArea);
+        ChosenSkillBar();
 
-        void setSkill(Skill* skill);
+        void setSkill(const Skill* skill);
         void initAssetsViaGUI(GUI& gui);
         bool hasSkill() const;
         bool isFree() const;
@@ -26,11 +26,7 @@ namespace rat
         void swapSkillsWith(ChosenSkillBar& other);
 
     private:
-        ChosenSkillArea& _parentArea;
-        SkillArea& _skillArea;
-        GrayPPArea& _sourceBar;
-
-        Skill* _skill{nullptr};
+        const Skill* _skill{nullptr};
         ImageWidget* _icon{nullptr};       
 
         bool _hasSkill{false};
