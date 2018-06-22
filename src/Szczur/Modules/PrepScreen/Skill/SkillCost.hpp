@@ -31,6 +31,8 @@ namespace rat
             return _glyphsRequired.end();
         }
 
+        bool needGlyphThatPower(GlyphID glyphID, size_t power) const;
+
     private:
         amount_t _cost;
         std::map<GlyphID, amount_t> _glyphsRequired;

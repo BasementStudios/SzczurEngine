@@ -24,7 +24,7 @@ namespace rat
     PrepScreen::PrepScreen()
     :
     _grayPPArea(),
-    _testGlyphBar(),
+    _testGlyphBar(*this),
     _skillArea(*this),
     _profArea(*this),
     _chosenSkillArea(*this, 6)
@@ -96,9 +96,20 @@ namespace rat
     }
     bool PrepScreen::canBeGlyphDeactivated(GlyphID glyphID) const
     {
-        if(_source.glyphContainer.getGlyphAmount(glyphID) == 0) return false;
+        size_t glyphsPower = _source.glyphContainer.getGlyphAmount(glyphID);
+        if(glyphsPower == 0) return false;
         if(_source.ppContainer.getAmount() == 0) return false;
+        if(_isAnyBoughtSkillNeedGlyph(glyphID, glyphsPower)) return false;
         return true;
+    }
+    bool PrepScreen::_isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const
+    {
+        auto oneThatNeed = std::find_if(_boughtSkills.begin(), _boughtSkills.end(), [&glyphID, &power](const Skill* skill){
+            const auto& cost = skill->getCostInfo();
+            return cost.needGlyphThatPower(glyphID, power);
+        });
+
+        return oneThatNeed != _boughtSkills.end();
     }
     void PrepScreen::deactivateGlyph(GlyphID glyphID)
     {
@@ -118,6 +129,7 @@ namespace rat
         takePP(cost.getCost());
 
         skill->buy();
+        _boughtSkills.emplace(skill);
         _chosenSkillArea.addSkill(skill);
 
         _calcPPsGUI();
@@ -142,6 +154,7 @@ namespace rat
         takePP(-int(cost.getCost()));
 
         skill->unBuy();
+        _boughtSkills.erase(skill);
 
         _chosenSkillArea.recalculate();
 

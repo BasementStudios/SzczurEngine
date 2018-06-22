@@ -76,12 +76,14 @@ namespace rat
         SkillArea _skillArea;
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;
-        //ColorFilterArea _colorFilterArea;
+        GlyphArea _testGlyphBar;
 
         InfoBar _infoBar;
 
-        WindowWidget* _testBar{nullptr};
-        GlyphArea _testGlyphBar;
+        bool _isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const;
+
+        std::set<const Skill*> _boughtSkills;
+
 
         EnemyArea _enemyArea;
         EnemyCodex _enemyCodex;

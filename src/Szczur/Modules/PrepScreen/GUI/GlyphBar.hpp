@@ -11,12 +11,11 @@
 
 namespace rat
 {
-    class GlyphContainer;
-    class GrayPPArea;
+    class PrepScreen;
     class GlyphBar : public BaseBar
     {
     public:
-        GlyphBar();
+        GlyphBar(PrepScreen& prepScreen);
 
         void setType(GlyphID glyph);
         void setStartAmount(int amount);
@@ -25,7 +24,8 @@ namespace rat
 
         void setAmount(size_t activated, size_t total);
         
-    private:    
+    private:
+        PrepScreen& _prepScreen;
         GlyphID _type;
         int _amount{0};
         int _takenAmount{0};

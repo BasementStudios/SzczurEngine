@@ -11,12 +11,12 @@
 
 namespace rat 
 {
-    class GrayPPArea;
+    class PrepScreen;
 
     class GlyphArea : public BaseBar
     {
     public:
-        GlyphArea();
+        GlyphArea(PrepScreen& prepScreen);
 
         void initAssetsViaGUI(GUI& gui);
 

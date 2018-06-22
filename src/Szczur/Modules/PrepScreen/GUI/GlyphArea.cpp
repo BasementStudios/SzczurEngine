@@ -5,25 +5,19 @@
 
 namespace rat
 {
-    GlyphArea::GlyphArea()
+    GlyphArea::GlyphArea(PrepScreen& prepScreen)
     :
     BaseBar([]{ auto* base = new ListWidget; base->makeHorizontal(); base->setAutoBetweenPadding(); return base;}())
     {
         setPropOrigin(0.5f, 0.f);
         setPropSize(0.6f, 0.f);
 
-        /*
-        _container.addGlyph(GlyphID::Wrath, 2);
-        _container.addGlyph(GlyphID::Wearines, 1);
-        _container.addGlyph(GlyphID::Fear, 3);
-        _container.addGlyph(GlyphID::Desperation, 0);*/
-
         GlyphTypes types;
         GlyphesConverter converter;
         _glyphBars.reserve(4);
         for(auto& type : types)
         {
-            auto glyphBar = std::make_unique<GlyphBar>();
+            auto glyphBar = std::make_unique<GlyphBar>(prepScreen);
             glyphBar->setType(converter.toEnum(type));
             _addBar(glyphBar);
             _glyphBars.emplace(converter.toEnum(type), std::move(glyphBar));

@@ -1,17 +1,21 @@
 #include "GlyphBar.hpp"
 
+#include <SFML/Graphics.hpp>
+
+#include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
+
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 
-#include "GrayPPArea.hpp"
-#include "../ResourcesContainer.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
-    GlyphBar::GlyphBar()
+    GlyphBar::GlyphBar(PrepScreen& prepScreen)
+    :
+    _prepScreen(prepScreen)
     {
         _container = new ImageWidget;
         _glyph = new ImageWidget;
@@ -55,7 +59,20 @@ namespace rat
 
     void GlyphBar::_onClick()
     {
-
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+        {
+            if(_prepScreen.canBeGlyphDeactivated(_type))
+            {
+                _prepScreen.deactivateGlyph(_type);
+            }
+        }
+        else
+        {
+            if(_prepScreen.canBeGlyphActivated(_type))
+            {
+                _prepScreen.activateGlyph(_type);
+            }
+        }
     }
     void GlyphBar::_updateText()
     {

@@ -28,6 +28,13 @@ namespace rat
         }
         return glyphs;
     }
+
+    bool SkillCost::needGlyphThatPower(GlyphID glyphID, size_t power) const
+    {
+        auto found = _glyphsRequired.find(glyphID);
+        if(found == _glyphsRequired.end()) return false;
+        return found->second >= power;
+    }
     void SkillCost::resetRequirements()
     {
         _glyphsRequired.clear();
