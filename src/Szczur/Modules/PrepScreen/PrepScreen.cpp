@@ -27,7 +27,7 @@ namespace rat
     _testGlyphBar(),
     _skillArea(*this),
     _profArea(*this),
-    _chosenSkillArea(6)
+    _chosenSkillArea(*this, 6)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
         init();
@@ -118,6 +118,7 @@ namespace rat
         takePP(cost.getCost());
 
         skill->buy();
+        _chosenSkillArea.addSkill(skill);
 
         _calcPPsGUI();
         _calcSkillsGUI();
@@ -130,6 +131,7 @@ namespace rat
         {
             if(!hasEnoughPowerfulGlyph(id, power)) return false;
         }
+        if(!_chosenSkillArea.hasFreeSpace()) return false;
         return true;
     }
     void PrepScreen::returnSkill(const Skill* skill)
@@ -141,22 +143,21 @@ namespace rat
 
         skill->unBuy();
 
+        _chosenSkillArea.recalculate();
+
         //_chosenSkillArea.removeSkill(skill);
         //_skillArea.addSkill(skill);
 
         _calcPPsGUI();
         _calcSkillsGUI();
     }
-    bool PrepScreen::isSkillBought(const Skill* skill) const
-    {
-        //return _chosenSkillArea.hasSkill(skill);
-        return true; 
-    }
 
     void PrepScreen::setProfession(const std::string& profession)
     {
         auto skills = _sortedSkills.getWholeProfession(profession);
         _skillArea.setSkills(skills);
+
+        _calcSkillsGUI();
     }
 
     SkillCodex& PrepScreen::getSkillCodex()
@@ -222,7 +223,7 @@ namespace rat
         _testGlyphBar.setParent(_base);
         _testGlyphBar.initAssetsViaGUI(gui);
 
-        addPP(4);
+        addPP(12);
         //takePP(3);
 
         addGlyph(GlyphID::Wrath);
@@ -284,8 +285,8 @@ namespace rat
         gui.addAsset<sf::Texture>(path + "Window2.png");
         gui.addAsset<sf::Texture>(path + "GlyphCircle.png");
         gui.addAsset<sf::Texture>(path + "GrayPPWindow.png");
-        gui.addAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
-        
+        gui.addAsset<sf::Texture>("Assets/Test/ChosenSkill.png");
+                
 
         GlyphTypes glyphTypes;
         for(auto& type : glyphTypes)

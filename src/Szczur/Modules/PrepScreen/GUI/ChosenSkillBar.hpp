@@ -8,31 +8,31 @@
 
 namespace rat
 {
-    class ImageWidget; class TextWidget;
-    class GUI;
-    class ChosenSkillArea; class SkillArea; class GrayPPArea;
+    class PrepScreen;
 
     class ChosenSkillBar : public BaseBar
     {
     public:
-        ChosenSkillBar();
+        ChosenSkillBar(PrepScreen& prepScreen);
 
         void setSkill(const Skill* skill);
-        void initAssetsViaGUI(GUI& gui);
+        void removeSkill();
         bool hasSkill() const;
         bool isFree() const;
-        void setSize(float x, float y);
-        void setSize(const sf::Vector2f& size);
+        bool isSkillUnbought() const { return !_skill->isBought(); }
+
+        void initAssetsViaGUI(GUI& gui);
+
         void swapSkillsWith(ChosenSkillBar& other);
 
     private:
+        PrepScreen& _prepScreen;
         const Skill* _skill{nullptr};
-        ImageWidget* _icon{nullptr};       
+        ImageWidget* _icon{nullptr};
+        ImageWidget* _border{nullptr};      
 
         bool _hasSkill{false};
-        sf::Vector2f _size{120.f, 120.f};
 
-        void _setIconTexture(sf::Texture* texture);
         void _onClick();
 
     };

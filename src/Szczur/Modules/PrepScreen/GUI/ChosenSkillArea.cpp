@@ -6,85 +6,84 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
-#include "SkillArea.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
-    ChosenSkillArea:: ChosenSkillArea(size_t size)
+    ChosenSkillArea:: ChosenSkillArea(PrepScreen& prepScreen, size_t size)
     :
-    _size(size),
-    _widthPadding(70.f),
-    _iconSize{246.f, 400.f}
+    _size(size)
     {
         _skillsList = new ListWidget;
         _addWidget(_skillsList);
-        //_skills->setPadding(_widthPadding * _scale, 0.f);
         _skillsList->makeHorizontal();
 
-        _border = new WindowWidget;
-        _addWidget(_border);
         for(size_t i = 0; i < size; i++)
         {
-            auto chSkillBar = std::make_unique<ChosenSkillBar>();
+            auto chSkillBar = std::make_unique<ChosenSkillBar>(prepScreen);
             chSkillBar->setParent(_skillsList);
-            chSkillBar->setSize(_iconSize * _scale);
             _skillBars.emplace_back(std::move(chSkillBar));
         }
     }
 
     void ChosenSkillArea::initAssetsViaGUI(GUI& gui)
     {
-        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkillWindow.png"), 200);
-        _border->setScale(_scale, _scale);
-        _border->setPatchAmount((unsigned int)_size, 0);
         for(auto& chSkillBar : _skillBars)
         {
             chSkillBar->initAssetsViaGUI(gui);
         }
     }
-    void ChosenSkillArea::addSkill(Skill* skill)
+    void ChosenSkillArea::addSkill(const Skill* skill)
     {
         assert(hasFreeSpace());
         auto freeSlot = std::find_if(_skillBars.begin(), _skillBars.end(), [](const std::unique_ptr<ChosenSkillBar>& skillBar){
             return skillBar->isFree();
         });
         (*freeSlot)->setSkill(skill);
+        _ocuppied++;
         recalculate();
     }
     bool ChosenSkillArea::hasFreeSpace() const
     {
-        return std::any_of(_skillBars.begin(), _skillBars.end(), [](const auto& csb){
-            return !csb->hasSkill();
-        });
+        return _ocuppied < _size;
     }
+
     void ChosenSkillArea::recalculate()
     {
-        int move = 1;
-        for(auto i = _skillBars.begin(); i < _skillBars.end(); ++i)
+        for(size_t i = 0, j = 0; j < _skillBars.size(); ++i, ++j)
         {
-            auto& skillBar = (*i);
-            if(skillBar->hasSkill()) continue;
-            bool itsTimeToStop = false;
-            while(true)
+            auto& skillBar = _skillBars[i];
+
+            if(skillBar->isFree()) break;
+            if(skillBar->isSkillUnbought())
             {
-                auto j = i + move;
-                if(j == _skillBars.end())
+                skillBar->removeSkill();
+                --_ocuppied;
+                ++j;
+                bool foundNext{false};
+                for(; j < _skillBars.size(); ++j)
                 {
-                    itsTimeToStop = true;
+                    auto& nextBar = _skillBars[j];
+                    if(nextBar->isFree())
+                    {
+                        foundNext = false;
+                        break;
+                    }
+
+                    if(nextBar->isSkillUnbought())
+                    {
+                        nextBar->removeSkill();
+                        --_ocuppied;
+                        continue;
+                    }
+
+                    foundNext = true;
                     break;
                 }
-                auto& nextBar = *j;
-                if(!nextBar->hasSkill())
-                {
-                    move++;
-                    continue;
-                } 
-                skillBar->swapSkillsWith(*nextBar);
-                break;
+                if(!foundNext) break;
+                skillBar->swapSkillsWith(*_skillBars[j]);
             }
-            if(itsTimeToStop) break;
         }
-    }   
+    }
 }

@@ -110,8 +110,8 @@ namespace rat
             }
             else
             {
-                _getBase()->invisible();
-                _getBase()->deactivate();
+                _getBase()->visible();
+                _getBase()->activate();
             }
             _isKnownAsBought = isBought;
         }

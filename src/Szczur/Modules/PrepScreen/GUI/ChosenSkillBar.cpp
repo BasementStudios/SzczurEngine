@@ -1,8 +1,6 @@
 #include "ChosenSkillBar.hpp"
 
-#include "ChosenSkillArea.hpp"
-#include "SkillArea.hpp"
-#include "GrayPPArea.hpp"
+#include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
@@ -11,21 +9,41 @@
 
 namespace rat
 {
-    ChosenSkillBar::ChosenSkillBar()
+    ChosenSkillBar::ChosenSkillBar(PrepScreen& prepScreen)
+    :
+    _prepScreen(prepScreen)
     {
         _icon = new ImageWidget;
         _addWidget(_icon);
-        _icon->setPosition(0.f, 0.f);
+        _icon->setPropSize(0.07f, 0.07f);
 
-        auto onClick = [&](Widget* owner){
+        _border = new ImageWidget;
+        _addWidget(_border);
+        _border->setPropSize(0.07f, 0.07f);
+
+        _border->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
+            if(hasSkill())
+            {
+                _icon->setColor({125, 125, 125}, 0.5f);
+            }
+
+        });
+
+        _border->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
+            if(hasSkill())
+            {
+                _icon->setColor({255, 255, 255}, 0.5f);
+            }
+        });
+
+        _border->setCallback(Widget::CallbackType::onRelease, [this](auto){
             _onClick();
-        };
-
-        _icon->setCallback(Widget::CallbackType::onPress, onClick);
+        });
     }
 
     void ChosenSkillBar::initAssetsViaGUI(GUI& gui)
     {
+        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkill.png"));
     }
 
     void ChosenSkillBar::setSkill(const Skill* skill)
@@ -33,16 +51,19 @@ namespace rat
         if(skill == nullptr)
         {
             _hasSkill = false;
-            _icon->invisible();
+            _icon->setTexture(nullptr);
         }
         else
         {
             _hasSkill = true;
-            _icon->visible();
             auto* texture = skill->getTexture();
-            _setIconTexture(texture);
+            _icon->setTexture(texture);
         }
         _skill = skill;
+    }
+    void ChosenSkillBar::removeSkill()
+    {
+        setSkill(nullptr);
     }
     bool ChosenSkillBar::hasSkill() const
     {
@@ -53,26 +74,11 @@ namespace rat
         return !_hasSkill;
     }
     
-
-    void ChosenSkillBar::_setIconTexture(sf::Texture* texture)
-    {
-        _icon->setTexture(texture);
-        auto size = static_cast<sf::Vector2f>(texture->getSize());
-        _icon->setScale({_size.x/size.x, _size.y/size.y});  
-    }
-    
     void ChosenSkillBar::_onClick()
     {
+        if(hasSkill()) _prepScreen.returnSkill(_skill);
     }
-    void ChosenSkillBar::setSize(const sf::Vector2f& size)
-    {
-        setSize(size.x, size.y);
-    }
-    
-    void ChosenSkillBar::setSize(float x, float y)
-    {
-        _icon->setSize((unsigned int)x, (unsigned int)y);
-    }
+
     void ChosenSkillBar::swapSkillsWith(ChosenSkillBar& other)
     {
         const Skill* othersSkill = other._skill;

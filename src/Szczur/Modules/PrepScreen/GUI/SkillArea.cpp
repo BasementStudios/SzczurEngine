@@ -79,7 +79,6 @@ namespace rat
     {
         for(auto& bar : _skillBars)
         {
-            std::cout << "emcho\n";
             if(!bar->hasSkill()) break;
             bar->recalculateAvailability();
         }
