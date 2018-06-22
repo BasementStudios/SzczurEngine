@@ -60,12 +60,14 @@ namespace rat
         std::function<sf::Vector2f(const Widget* child)> func;
         
         func = [this](const Widget* child){
+            if(child->isFullyDeactivated()) return sf::Vector2f{};
             return sf::Vector2f{ float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f };
         };
 
         if(_positioning == Positioning::Vertical)
         {
             func = [this](const Widget* child){
+                if(child->isFullyDeactivated()) return sf::Vector2f{};
                 return sf::Vector2f{ 0.f, float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding };
             };
         }

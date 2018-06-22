@@ -29,6 +29,8 @@ namespace rat
         float _shift{0.7f};
         sf::Vector2f _size{30, 30.f};
 
+        bool randomBool{false};
+
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};

@@ -103,6 +103,10 @@ namespace rat
 		void invisible();
 		bool isVisible() const;
 
+		void fullyDeactivate();
+		void fullyActivate();
+		bool isFullyDeactivated() const;
+
 		void makeChildrenPenetrable();
 		void makeChildrenUnresizable();
 
@@ -142,6 +146,8 @@ namespace rat
 		bool _isPressed;
 		bool _isActivated;
 		bool _isVisible;
+
+		bool _isFullyDeactivated{false};
 
 		sf::Vector2u _size;
 
