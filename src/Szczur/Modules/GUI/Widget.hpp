@@ -116,6 +116,8 @@ namespace rat
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
 
+		size_t getChildrenAmount() const;
+
 		static void setWinProp(sf::Vector2f prop);
 
 	protected:

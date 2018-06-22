@@ -63,6 +63,12 @@ namespace rat
         return _children[index];
     }
 
+	size_t Widget::getChildrenAmount() const
+    {
+        return _children.size();
+    }
+    
+
     void Widget::setParent(Widget* parent) 
     {
         _parent = parent;
