@@ -1,5 +1,8 @@
 #pragma once
+#include <Sol/sol.hpp>
+
 #include <glm/glm.hpp>
+
 #include "../Component.hpp"
 
 namespace rat {
@@ -16,6 +19,7 @@ public:
 	enum Type : size_t { 
 		None = 0u, 
 		ChangeScene = 1u, 
+		Overlaping = 2u,
 		TypesCount 
 	} type{None};
 
@@ -61,9 +65,13 @@ public:
 	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
-
 	InputManager& _input;
 	float _radius{10.f};
+
+	bool _isPlayerInside = false;
+	sol::function _enterCallback;
+	sol::function _insideCallback;
+	sol::function _leaveCallback;
 
 };
 
