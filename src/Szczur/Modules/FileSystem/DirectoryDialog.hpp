@@ -3,7 +3,7 @@
 #include "Szczur/Config.hpp"
 
 #ifdef OS_WINDOWS
-#include <Shlobj.h>
+#include <shlobj.h>
 #endif
 
 namespace rat

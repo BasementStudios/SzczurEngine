@@ -4,7 +4,7 @@
 #include <experimental/filesystem>
 
 #ifdef OS_WINDOWS
-#include <Shellapi.h>
+#include <shellapi.h>
 #endif
 
 #include <ImGui/imgui.h>

@@ -6,7 +6,7 @@
 #include "Szczur/Config.hpp"
 
 #ifdef EDITOR
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 namespace rat
