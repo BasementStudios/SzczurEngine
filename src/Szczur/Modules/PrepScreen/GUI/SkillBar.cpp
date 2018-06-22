@@ -1,5 +1,7 @@
 #include "SkillBar.hpp"
 
+#include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
+
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
@@ -19,8 +21,9 @@ namespace rat
     
      sf::Vector2u SkillBar::_size = {240, 72};
 
-    SkillBar::SkillBar()
+    SkillBar::SkillBar(PrepScreen& prepScreen)
     :
+    _prepScreen(prepScreen),
     BaseBar( [this]
         {
             auto* base = new ListWidget; 
@@ -31,11 +34,9 @@ namespace rat
             });
             base->setCallback(Widget::CallbackType::onHoverIn, [&](Widget* owner){
                 _onHoverIn();
-                owner->setColor({180, 180, 180}, 0.3f);
             });
             base->setCallback(Widget::CallbackType::onHoverOut, [&](Widget* owner){
                 _onHoverOut();
-                owner->setColor({255, 255, 255}, 0.3f);
             });
             return base;
         } () )
@@ -76,6 +77,8 @@ namespace rat
         _costBar.setSkill(skill);
         _icon->setTexture(skill->getTexture());
 
+        _canBeBought = _prepScreen.canSkillBeBought(skill);
+
         if(skill->isBought())
         {
             _getBase()->invisible();
@@ -112,6 +115,16 @@ namespace rat
             }
             _isKnownAsBought = isBought;
         }
+
+        _canBeBought = _prepScreen.canSkillBeBought(_skill);
+        if(_canBeBought)
+        {
+            _getBase()->setColor({255, 255, 255}, 0.3f);
+        }
+        else
+        {
+            _getBase()->setColor({125, 125, 125}, 0.3f);
+        }
     }
     
 
@@ -123,14 +136,13 @@ namespace rat
 
     void SkillBar::_onClick()
     {      
-        //_sourceArea.recalculate();
+        if(!_skill) return;
+        if(_isKnownAsBought) return;
 
-        /*
-        if(isBought()) return;
-        if(!canBeBought()) return;
-
-        buy();;
-        */  
+        if(_prepScreen.canSkillBeBought(_skill))
+        {
+            _prepScreen.buySkill(_skill);
+        }
     }
 
     void SkillBar::_buy()
@@ -139,25 +151,20 @@ namespace rat
         //_prepScreen.takePP(ppCost);
         //_prepScreen.buySkill(_skill);
     }
-    bool SkillBar::_canBeBought() const
-    {
-        const auto& cost = _skill->getCostInfo();
-
-        /*if(!_prepScreen.hasPPAmount(cost.getCost())) return false;
-        for(auto& [id, power] : cost)
-        {
-            if(!_prepScreen.hasEnoughPowerfulGlyph(id, power)) return false;
-        }*/
-        return false;
-        return true;
-        
-    }
 
     void SkillBar::_onHoverIn()
     {
+        if(_canBeBought)
+        {
+            _getBase()->setColor({180, 180, 180}, 0.3f);
+        }
     }
     void SkillBar::_onHoverOut()
     {
+        if(_canBeBought)
+        {
+            _getBase()->setColor({255, 255, 255}, 0.3f);
+        }
     }
 
 

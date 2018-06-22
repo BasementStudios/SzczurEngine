@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <ctime>
 
+#include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
+
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
@@ -13,11 +15,13 @@
 
 #include "../Skill/SkillCodex.hpp"
 
-#include "Szczur/Utility/Logger.hpp" 
+#include "Szczur/Utility/Logger.hpp"
+
+
 
 namespace rat
 {
-    SkillArea::SkillArea()
+    SkillArea::SkillArea(PrepScreen& prep)
     {
         _border = new WindowWidget;
         _addWidget(_border);
@@ -36,7 +40,7 @@ namespace rat
 
         for(size_t i = 0; i < 20; i++)
         {
-            auto skillBar = std::make_unique<SkillBar>();
+            auto skillBar = std::make_unique<SkillBar>(prep);
             skillBar->setParent(_skillsList);
             _skillBars.emplace_back(std::move(skillBar));
         }
@@ -75,8 +79,8 @@ namespace rat
     {
         for(auto& bar : _skillBars)
         {
+            std::cout << "emcho\n";
             if(!bar->hasSkill()) break;
-
             bar->recalculateAvailability();
         }
     }

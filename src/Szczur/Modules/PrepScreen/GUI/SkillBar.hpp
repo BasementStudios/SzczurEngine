@@ -8,13 +8,12 @@
 
 namespace rat
 {
-    class SkillArea; class ChosenSkillArea; class GrayPPArea;
-    class ListWidget;
+    class PrepScreen;
 
     class SkillBar : public BaseBar
     {
     public:
-        SkillBar();
+        SkillBar(PrepScreen& prepScreen);
         void setSkill(const Skill* skill);
         const std::string& getIconPath() const;
         void setIconTexture(sf::Texture* icon); 
@@ -22,7 +21,7 @@ namespace rat
 
         void buySkill();
         void removeSkill();
-        bool hasSkill() const { return bool(_skill); }
+        bool hasSkill() const { return _skill != nullptr; }
 
         bool isBought() const{
             return _skill->isBought();
@@ -31,6 +30,8 @@ namespace rat
         void recalculateAvailability();
 
     private:
+        PrepScreen& _prepScreen;
+
         const Skill* _skill{nullptr};
 
         bool _isActivate{true};
@@ -40,7 +41,7 @@ namespace rat
         void _onHoverOut();
 
         void _buy();
-        bool _canBeBought() const;
+        bool _canBeBought{false};
         bool _isKnownAsBought{false};
 
         CostBar _costBar;

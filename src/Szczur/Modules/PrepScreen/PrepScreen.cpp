@@ -25,7 +25,7 @@ namespace rat
     :
     _grayPPArea(),
     _testGlyphBar(),
-    _skillArea(),
+    _skillArea(*this),
     _profArea(),
     _chosenSkillArea(6)
     {
@@ -92,6 +92,7 @@ namespace rat
     {
         _source.glyphContainer.activateGlyph(glyphID);
         _calcGlyphGUI(glyphID);
+        _calcSkillsGUI();
     }
     bool PrepScreen::canBeGlyphDeactivated(GlyphID glyphID) const
     {
@@ -116,8 +117,7 @@ namespace rat
         const auto& cost = skill->getCostInfo();
         takePP(cost.getCost());
 
-        //_skillArea.removeSkill(skill);
-        //_chosenSkillArea.addSkill(skill);
+        skill->buy();
 
         _calcPPsGUI();
         _calcSkillsGUI();
@@ -126,20 +126,20 @@ namespace rat
     {
         const auto& cost = skill->getCostInfo();
         if(cost.getCost() > _source.ppContainer.getAmount()) return false;
-
         for(auto& [id, power] : cost)
         {
             if(!hasEnoughPowerfulGlyph(id, power)) return false;
         }
-
         return true;
     }
     void PrepScreen::returnSkill(const Skill* skill)
     {
-        assert(isSkillBought(skill));
+        assert(skill->isBought());
 
         const auto& cost = skill->getCostInfo();
         takePP(-int(cost.getCost()));
+
+        skill->unBuy();
 
         //_chosenSkillArea.removeSkill(skill);
         //_skillArea.addSkill(skill);
@@ -175,8 +175,6 @@ namespace rat
     {
         size_t active = _source.ppContainer.getAmount();
         size_t total = _source.ppContainer.getTotalAmount();
-
-        std::cout << active << ' ' << total << '\n';
 
         _grayPPArea.setPPs(active, total);
     }
@@ -225,7 +223,10 @@ namespace rat
         _testGlyphBar.initAssetsViaGUI(gui);
 
         addPP(4);
-        takePP(3);
+        //takePP(3);
+
+        addGlyph(GlyphID::Wrath);
+        activateGlyph(GlyphID::Wrath);
         
         setProfession("Range");
     }

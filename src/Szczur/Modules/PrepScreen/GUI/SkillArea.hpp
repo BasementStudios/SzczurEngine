@@ -15,15 +15,13 @@
 
 namespace rat
 {
-    class GUI; class ScrollAreaWidget;
-    class SkillCodex; class GrayPPArea;
-    class ChosenSkillArea;
+    class PrepScreen;
 
     class SkillArea : public BaseBar
     {
         using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
     public:
-        SkillArea();
+        SkillArea(PrepScreen& prepScreen);
 
         void initAssetsViaGUI(GUI& gui);
 
