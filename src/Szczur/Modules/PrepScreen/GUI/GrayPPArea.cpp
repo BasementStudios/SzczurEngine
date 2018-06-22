@@ -91,6 +91,15 @@ namespace rat
         }
     }
 
+    void GrayPPArea::dimPPs(size_t amount)
+    {
+        
+    }
+    void GrayPPArea::undimPPs()
+    {
+        
+    }
+
     void GrayPPArea::initAssetsViaGUI(GUI& gui)
     {
         _ppTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");

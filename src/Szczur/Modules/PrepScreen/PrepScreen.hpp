@@ -63,6 +63,9 @@ namespace rat
 
         void setProfession(const std::string& profession);
 
+        void dimPPsNeededToBuySkill(const Skill* skill);
+        void normPPsNeededToBuySkill(const Skill* skill);
+
     private:
         SkillCodex _codex;
         ResourcesContainer _source;
@@ -83,6 +86,7 @@ namespace rat
         bool _isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const;
 
         std::set<const Skill*> _boughtSkills;
+        const Skill* _dimedPPsSkill{nullptr};
 
 
         EnemyArea _enemyArea;

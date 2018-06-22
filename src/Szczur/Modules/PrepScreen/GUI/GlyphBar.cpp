@@ -74,10 +74,6 @@ namespace rat
             }
         }
     }
-    void GlyphBar::_updateText()
-    {
-        
-    }
 
     void GlyphBar::setAmount(size_t activated, size_t total)
     {

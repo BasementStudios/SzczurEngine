@@ -19,6 +19,9 @@ namespace rat
         void initAssetsViaGUI(GUI& gui);
 
         void setPPs(size_t activated, size_t total);
+
+        void dimPPs(size_t amount);
+        void undimPPs();
     private:
         amount_t _totalAmount{0};
 

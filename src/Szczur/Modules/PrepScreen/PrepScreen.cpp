@@ -173,6 +173,18 @@ namespace rat
         _calcSkillsGUI();
     }
 
+    void PrepScreen::dimPPsNeededToBuySkill(const Skill* skill)
+    {
+        
+        _dimedPPsSkill = skill;
+    }
+    void PrepScreen::normPPsNeededToBuySkill(const Skill* skill)
+    {
+        if(skill != _dimedPPsSkill) return;
+
+        _dimedPPsSkill = nullptr;
+    }
+
     SkillCodex& PrepScreen::getSkillCodex()
     {
         return _codex;
