@@ -58,7 +58,7 @@ namespace rat
         image->setPropSize(0.15f, 0.15f);
         //image->setPropPosition(0.5f, 1.f);
         _widget->add(image);
-        /*
+        
         list = new ListWidget;
         list->makeReversed();
         //list->setBetweenPadding(20.f);
@@ -69,11 +69,10 @@ namespace rat
 
 
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            //auto* addon = new Widget;
-            //addon->setPosition(0.f, 20.f);
-            //addon->setPropSize(0.1f, 0.1f);
-            //list->add(addon);
-            list->popBack();
+            auto* widgeto = (*list)[1];
+            if(randomBool) widgeto->fullyDeactivate();
+            else widgeto->fullyActivate();
+            randomBool = !randomBool;
         });
 
         float size = 0.1f;
@@ -91,7 +90,7 @@ namespace rat
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
                 w->setColor({255, 255, 255}, 1.f);
             });
-        }*/
+        }
 
     }
     

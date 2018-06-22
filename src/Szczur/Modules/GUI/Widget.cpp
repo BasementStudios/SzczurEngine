@@ -63,6 +63,12 @@ namespace rat
         return _children[index];
     }
 
+	size_t Widget::getChildrenAmount() const
+    {
+        return _children.size();
+    }
+    
+
     void Widget::setParent(Widget* parent) 
     {
         _parent = parent;
@@ -127,7 +133,7 @@ namespace rat
 
     bool Widget::_onPressed()
     {
-        if(!_isActivated) return false;
+        if(!_isActivated || _isFullyDeactivated) return false;
         if(!_isHovered) return false;
         
         bool isAnyPressed = false;
@@ -144,7 +150,7 @@ namespace rat
     }
     void Widget::_onRealesed()
     {
-        if(!_isActivated) return;        
+        if(!_isActivated || _isFullyDeactivated) return;        
 
         for(auto* child : _children)
         {
@@ -157,7 +163,7 @@ namespace rat
     }
 	void Widget::_onMoved(sf::Event event)
     {
-        if(!_isActivated) return;
+        if(!_isActivated || _isFullyDeactivated) return;
 
         auto thisSize = getSize();
         
@@ -226,7 +232,7 @@ namespace rat
     }
 
     void Widget::input(sf::Event event) {
-        if(isActivated()) 
+        if(isActivated()  && !_isFullyDeactivated) 
         {
             _input(event);
             if(event.type == sf::Event::MouseMoved)
@@ -282,7 +288,7 @@ namespace rat
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        if(isVisible()) {
+        if(isVisible() && !isFullyDeactivated()) {
             states.transform *= getTransform();
             
             #ifdef GUI_DEBUG
@@ -398,6 +404,8 @@ namespace rat
 
     sf::Vector2u Widget::_getBound() const
     {
+        if(_isFullyDeactivated) return {};
+
         auto size = static_cast<sf::Vector2f>(getSize());
         auto position = static_cast<sf::Vector2f>(getPosition());
         auto origin = getOrigin();
@@ -501,6 +509,23 @@ namespace rat
 
     bool Widget::isVisible() const {
         return _isVisible;
+    }
+
+    void Widget::fullyDeactivate()
+    {
+        if(_isFullyDeactivated) return;
+        _isFullyDeactivated = true;
+        if(_parent) _parent->_aboutToRecalculate = true;
+    }
+    void Widget::fullyActivate()
+    {
+        if(!_isFullyDeactivated) return;
+        _isFullyDeactivated = false;
+        if(_parent) _parent->_aboutToRecalculate = true;
+    }
+    bool Widget::isFullyDeactivated() const
+    {
+        return _isFullyDeactivated;
     }
 
     void Widget::move(const sf::Vector2f& offset) 

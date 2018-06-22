@@ -103,6 +103,10 @@ namespace rat
 		void invisible();
 		bool isVisible() const;
 
+		void fullyDeactivate();
+		void fullyActivate();
+		bool isFullyDeactivated() const;
+
 		void makeChildrenPenetrable();
 		void makeChildrenUnresizable();
 
@@ -111,6 +115,8 @@ namespace rat
 
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
+
+		size_t getChildrenAmount() const;
 
 		static void setWinProp(sf::Vector2f prop);
 
@@ -142,6 +148,8 @@ namespace rat
 		bool _isPressed;
 		bool _isActivated;
 		bool _isVisible;
+
+		bool _isFullyDeactivated{false};
 
 		sf::Vector2u _size;
 
