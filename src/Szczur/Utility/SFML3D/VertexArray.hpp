@@ -3,20 +3,6 @@
 #include "Vertex.hpp"
 #include "Drawable.hpp"
 namespace sf3d {
-	class VertexInterface {
-	public:
-		VertexInterface(GLuint VBO, size_t index);
-
-		void setPosition(const glm::vec3& position);
-		void move(const glm::vec3& offset); 
- 
-		void setColor(const glm::vec4& color); 
-
-		void setTexCoord(const glm::vec2& pos); 
-	private:
-		GLuint _VBO;
-		size_t _index;
-	};
 
 	class VertexArray : public Drawable {
 	public:
@@ -24,10 +10,7 @@ namespace sf3d {
 		VertexArray(size_t size, unsigned int storageUsage = GL_STREAM_DRAW);
 		~VertexArray();
 
-		void setPosition(size_t index, const glm::vec3& position);
-		void setColor(size_t index, const glm::vec4& color);
-		void setTexCoord(size_t index, const glm::vec2& texCoord);
-		void set(size_t index, const Vertex& vertex);
+
 
 		unsigned int getPrimitiveType() const;
 		unsigned int getStorageUsage() const;
@@ -36,25 +19,33 @@ namespace sf3d {
 
 		size_t getSize() const;
 
-		void resize(size_t size);
+		Vertex& add();
+		Vertex& add(const Vertex& vertex);
+
+		void resize(size_t newSize);
 
 		void bind() const;
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
-		void draw();
 
-		VertexInterface operator[](size_t index) const;
+		void update() const;
+
+		Vertex& operator[](size_t index);
 	private:
 		unsigned int _VAO;
 		unsigned int _VBO;
 
+		std::vector<Vertex> _vertices;
+
 		unsigned int _primitveType{GL_TRIANGLE_FAN};
 		unsigned int _storageUsage;
 
-		size_t _size;
+		void _update() const;
+		mutable bool _toUpdate{false};
+		mutable bool _toResize{false};
 
-		Vertex* _startEdit(size_t index);
+		mutable size_t _min{static_cast<size_t>(-1)};
+		mutable size_t _max{0u};
 
-		void _endEdit();
 	};
 }
