@@ -81,20 +81,17 @@ namespace rat
 
         if(skill->isBought())
         {
-            _getBase()->invisible();
-            _getBase()->deactivate();
+            _getBase()->fullyDeactivate();
         }
         else
         {
-            _getBase()->visible();
-            _getBase()->activate();
+            _getBase()->fullyActivate();
         }  
     }
     void SkillBar::removeSkill()
     {
         _skill = nullptr;
-        _getBase()->invisible();
-        _getBase()->deactivate();
+        _getBase()->fullyDeactivate();
         _costBar.removeSkill();
     }
 
@@ -105,13 +102,11 @@ namespace rat
         {
             if(isBought)
             {
-                _getBase()->invisible();
-                _getBase()->deactivate();
+                _getBase()->fullyDeactivate();
             }
             else
             {
-                _getBase()->visible();
-                _getBase()->activate();
+                _getBase()->fullyActivate();
             }
             _isKnownAsBought = isBought;
         }
@@ -157,6 +152,7 @@ namespace rat
         if(_canBeBought)
         {
             _getBase()->setColor({180, 180, 180}, 0.3f);
+            _prepScreen.dimPPsNeededToBuySkill(_skill);
         }
     }
     void SkillBar::_onHoverOut()
@@ -164,6 +160,7 @@ namespace rat
         if(_canBeBought)
         {
             _getBase()->setColor({255, 255, 255}, 0.3f);
+            _prepScreen.normPPsNeededToBuySkill(_skill);
         }
     }
 

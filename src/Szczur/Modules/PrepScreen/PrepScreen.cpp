@@ -175,12 +175,19 @@ namespace rat
 
     void PrepScreen::dimPPsNeededToBuySkill(const Skill* skill)
     {
-        
+        assert(canSkillBeBought(skill));
+        auto& cost = skill->getCostInfo();
+
+        size_t ppCost = cost.getCost();
+        _grayPPArea.dimPPs(ppCost);
+
         _dimedPPsSkill = skill;
     }
     void PrepScreen::normPPsNeededToBuySkill(const Skill* skill)
     {
         if(skill != _dimedPPsSkill) return;
+
+        _grayPPArea.undimPPs();
 
         _dimedPPsSkill = nullptr;
     }
@@ -311,6 +318,7 @@ namespace rat
         gui.addAsset<sf::Texture>(path + "GlyphCircle.png");
         gui.addAsset<sf::Texture>(path + "GrayPPWindow.png");
         gui.addAsset<sf::Texture>("Assets/Test/ChosenSkill.png");
+        gui.addAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
                 
 
         GlyphTypes glyphTypes;

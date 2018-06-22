@@ -41,7 +41,7 @@ namespace rat
            ImageWidget* reqWidget = new ImageWidget;
            reqWidget->setPropSize(0.04f, 0.04f);
            glyphList->add(reqWidget);
-           reqWidget->invisible();
+           reqWidget->fullyDeactivate();
            _glyphs.emplace(converter.toEnum(glyph), reqWidget);
         }
     }  
@@ -67,7 +67,7 @@ namespace rat
 
     void CostBar::removeSkill()
     {
-        for(auto& [glyph, widget] : _glyphs) widget->invisible();
+        for(auto& [glyph, widget] : _glyphs) widget->fullyDeactivate();
     }
     
     void CostBar::loadAssetsFromGUI(GUI& gui)
@@ -88,13 +88,13 @@ namespace rat
     {
         auto& cost = _skill->getCostInfo();
 
-        for(auto& [glyph, widget] : _glyphs) widget->invisible();
+        for(auto& [glyph, widget] : _glyphs) widget->fullyDeactivate();
         
         for(auto& [glyph, power] : cost)
         {
             auto found = _glyphs.find(glyph);
             auto* widget = found->second;
-            widget->visible();
+            widget->fullyActivate();
         }
     }  
 }

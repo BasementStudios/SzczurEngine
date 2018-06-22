@@ -38,4 +38,13 @@ namespace rat
     {
         _pp->setTexture(tex);
     }
+
+    void GrayPPBar::dim()
+    {
+        _getBase()->setColor({150, 150, 150}, 0.3f);
+    }
+    void GrayPPBar::undim()
+    {
+        _getBase()->setColor({255, 255, 255}, 0.3f);
+    }
 }

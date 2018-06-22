@@ -93,11 +93,25 @@ namespace rat
 
     void GrayPPArea::dimPPs(size_t amount)
     {
-        
+        size_t ppsAmount = _pps.size();
+        if(amount > ppsAmount)
+        {
+            LOG_ERROR("GrayPPArea::dimPPs tried to dim ", amount, " not existing pps");
+            return;
+        }
+        for(size_t i = ppsAmount - amount; i < ppsAmount; ++i)
+        {
+            auto& pp = _pps[i];
+            pp->dim();
+        }
+
     }
     void GrayPPArea::undimPPs()
     {
-        
+        for(auto& pp : _pps)
+        {
+            pp->undim();
+        }
     }
 
     void GrayPPArea::initAssetsViaGUI(GUI& gui)

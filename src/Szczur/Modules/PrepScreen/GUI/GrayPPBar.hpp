@@ -13,6 +13,9 @@ namespace rat
         void setContainerTexture(sf::Texture* tex);
         void setPPTexture(sf::Texture* tex);
 
+        void dim();
+        void undim();
+
     private:
         ImageWidget* _container{nullptr};
         ImageWidget* _pp{nullptr};
