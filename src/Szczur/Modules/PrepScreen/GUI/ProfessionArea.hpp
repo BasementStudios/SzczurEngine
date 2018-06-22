@@ -9,16 +9,16 @@
 
 namespace rat
 {
-    class GUI; class Widget;
+    class PrepScreen;
 
     class ProfessionArea : public BaseBar
     {
     public:
-        ProfessionArea();
+        ProfessionArea(PrepScreen& prepScreen);
         void initAssetsViaGUI(GUI& gui);
     private:
         std::vector<std::unique_ptr<ProfessionBar>> _profBars;
 
-        void _initProfBars();
+        void _initProfBars(PrepScreen& prepScreen);
     };
 }

@@ -8,13 +8,12 @@
 
 namespace rat
 {
-    class Widget; class ImageWidget; class WindowWidget;
-    class GUI;
+    class PrepScreen;
 
     class ProfessionBar : public BaseBar
     {
     public:
-        ProfessionBar();
+        ProfessionBar(PrepScreen& prepScreen);
 
         void setTexture(sf::Texture* texture);
         void setProfession(const std::string& profession);
@@ -23,6 +22,7 @@ namespace rat
 
         const std::string& getProfession() const;
     private:
+        PrepScreen& _prepScreen;
         ImageWidget* _icon{nullptr};
         WindowWidget* _window{nullptr};
         std::string _profession;

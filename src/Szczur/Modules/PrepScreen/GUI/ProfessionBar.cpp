@@ -1,5 +1,7 @@
 #include "ProfessionBar.hpp"
 
+#include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
+
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
@@ -10,8 +12,9 @@
 
 namespace rat
 {
-    ProfessionBar::ProfessionBar()
+    ProfessionBar::ProfessionBar(PrepScreen& prepScreen)
     :
+    _prepScreen(prepScreen),
     BaseBar()
     {
         _window = new WindowWidget;
@@ -27,7 +30,7 @@ namespace rat
 
         _icon = new ImageWidget;
 
-        auto click = [&](Widget* owner){
+        auto click = [this](Widget* owner){
             _onClick();
         };
         _icon->setPropSize(0.15f, 0.15f);
@@ -57,10 +60,7 @@ namespace rat
 
     void ProfessionBar::_onClick()
     {
-        //clock_t t = clock();        
-        //_skillArea.setProfession(_profession);
-        //float time = float(clock() - t);
-        //std::cout << "Time elapsed: " << time/CLOCKS_PER_SEC << "s\n";
+        _prepScreen.setProfession(_profession);
     }
     
 }

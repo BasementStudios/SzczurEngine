@@ -6,11 +6,11 @@
 
 namespace rat
 {
-    ProfessionArea::ProfessionArea()
+    ProfessionArea::ProfessionArea(PrepScreen& prepScreen)
     :
     BaseBar([]{ auto* base = new ListWidget; base->setAutoBetweenPadding(); base->setPropSize(0.f, 0.7f); return base;}())
     {
-        _initProfBars();
+        _initProfBars(prepScreen);
     }
     void ProfessionArea::initAssetsViaGUI(GUI& gui)
     {
@@ -20,12 +20,12 @@ namespace rat
         }
     }
 
-    void ProfessionArea::_initProfBars()
+    void ProfessionArea::_initProfBars(PrepScreen& prepScreen)
     {
         ProfessionTypes profTypes;
         for(auto& prof : profTypes)
         {
-            auto profBar = std::make_unique<ProfessionBar>();
+            auto profBar = std::make_unique<ProfessionBar>(prepScreen);
             _addBar(profBar);
             profBar->setProfession(prof);
 

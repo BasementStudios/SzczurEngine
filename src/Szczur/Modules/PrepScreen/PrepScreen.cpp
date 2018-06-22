@@ -26,7 +26,7 @@ namespace rat
     _grayPPArea(),
     _testGlyphBar(),
     _skillArea(*this),
-    _profArea(),
+    _profArea(*this),
     _chosenSkillArea(6)
     {
         LOG_INFO(this, " : Module PrepScreen initing...");
