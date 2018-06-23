@@ -1,122 +1,207 @@
 #include "SoundEditor.hpp"
+
+#include <Json/json.hpp>
+
+#include <cmath>
+
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include <experimental/filesystem>
+
+#include <ImGui/imgui.h>
+#include <ImGui/imgui-SFML.h>
+#include <fstream>
+
 namespace rat
 {
-    SoundEditor::SoundEditor()
-        : _soundManager(getModule<SoundManager>())
+    SoundEditor::SoundEditor(SoundManager& soundManager)
+        : _soundManager(soundManager)
     {
-        _soundManager.setVolume(100);
-    }
-
-    void SoundEditor::init()
-    {
-        _soundManager.setVolume(100);
+        
     }
 
     void SoundEditor::render()
     { 
-        ImGui::Begin("Sound Editor");
-        for (int i=0; i<_soundManager.getSize(); ++i) {
-            
-            ImGui::Separator();
-            
-            if(ImGui::Button(_soundManager.getName(i).c_str())){
-                _soundManager.play( _soundManager.getName(i));
+        ImGui::Begin("Sounds List", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+            if (ImGui::Button("Save##SoundLists")) {
+                for(auto& it : _soundNames) {
+                    save(it);
+                }
             }
-            ImGui::SameLine(); 
-            if(ImGui::Button((_soundManager.getName(i)+" Pause").c_str())){
-                _soundManager.pause( _soundManager.getName(i));
-            }
+
             ImGui::SameLine();
-            if(ImGui::Button((_soundManager.getName(i)+" Stop").c_str())){
-                _soundManager.stop( _soundManager.getName(i));
-            }
-            
-            ImGui::Checkbox(("Edit "+_soundManager.getName(i)).c_str(),&_soundsInfo[i]->enable);
-            ImGui::SameLine(); 
-            ImGui::Checkbox(("Delete "+_soundManager.getName(i)).c_str(),&_soundsInfo[i]->toDelete);
 
-            if(_soundsInfo[i]->enable){
-                ImGui::SliderFloat((_soundManager.getName(i)+" Volume").c_str(),&_soundsInfo[i]->volume,mini,max);  
-                _soundManager.setVolume(_soundsInfo[i]->volume,_soundManager.getName(i));
-
-                ImGui::SliderFloat((_soundManager.getName(i)+" Pitch").c_str(),&_soundsInfo[i]->pitch,0,2);  
-                _soundManager.setPitch(_soundsInfo[i]->pitch,_soundManager.getName(i));
-
-                ImGui::SliderFloat2((_soundManager.getName(i)+" Time").c_str(),_soundsInfo[i]->offsetTime,0,_soundManager.getLength(_soundManager.getName(i))); 
-                _soundManager.setOffset(_soundManager.getName(i),_soundsInfo[i]->offsetTime[0],_soundsInfo[i]->offsetTime[1]);
+            if (ImGui::Button("Load##SoundLists")) {
+                load();
             }
 
-            if(_soundsInfo[i]->toDelete && ImGui::Button((_soundManager.getName(i)+" Delete").c_str())){
-                _soundManager.eraseSingleSoundByID(i);
-                _soundsInfo.erase(_soundsInfo.begin()+i);
-                break;
+            ImGui::Separator();
+
+            if (ImGui::TreeNode("Sounds List")) { 
+                for(auto it = _soundNames.begin(); it != _soundNames.end(); ++it) {
+                    if (ImGui::Button((*it).c_str())) {
+                        if (_currentEditing != *it)
+                            _soundManager.stop();
+                        _currentEditing = *it;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Save")) {
+                        save(*it);
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("-")) {
+                        _soundManager.eraseSingleSound(*it);
+                        _soundNames.erase(it);
+                        if (_currentEditing == *it)
+                            _currentEditing = "";
+                        break;
+                    }
+                }
+                ImGui::TreePop();   
             }
 
-        }
+
         ImGui::End();
-    }
 
-    bool SoundEditor::addSound(const std::string& soundName,const std::string& soundFileName)
-    {
-        for (int i = 0; i < _soundsInfo.size(); ++i) {
-        if (_soundsInfo[i]->name == soundName)
-            return false;
-        }  
+        if (!_currentEditing.empty()) {
+            ImGui::Begin("Sound Editor");
 
-        if(!_soundManager.newSound(soundName,soundFileName))
-        return false;
-    
-        std::unique_ptr<SoundInfo> soundInfo(new SoundInfo);
-        soundInfo->enable=false;
-        soundInfo->toDelete=false;
-        soundInfo->offsetTime[0]=0;
-        soundInfo->offsetTime[1]=_soundManager.getLength(soundName);
-        soundInfo->name=soundName;         
-        soundInfo->fileName=soundFileName;         
-        soundInfo->volume=100;         
-        soundInfo->pitch=1;         
-        _soundsInfo.push_back(std::move(soundInfo));
-        return true;
+                ImGui::Text(("Name: " + _currentEditing).c_str());
+
+                ImGui::Separator();
+
+                if (ImGui::Button("PLAY##SoundEditor")) {
+                    _soundManager.play(_currentEditing);
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("PAUSE##SoundEditor")) {
+                    _soundManager.pause();
+                }
+                
+                ImGui::SameLine();
+                if (ImGui::Button("STOP##SoundEditor")) {
+                    _soundManager.stop();
+                }   
+
+                ImGui::Separator();
+
+                char beginTime[6] = "00:00"; 
+                char endTime[6] = "00:00";
+
+                strncpy(beginTime, toTime(_soundManager.getBeginTime(_currentEditing)).c_str(), 6);
+                strncpy(endTime, toTime(_soundManager.getEndTime(_currentEditing)).c_str(), 6);
+
+                ImGui::PushItemWidth(50); 
+                if (ImGui::InputText("##SongBegineTimeSelector", beginTime, 6, 1)) {
+                    std::string timeString = beginTime;
+                    checkTimeString(timeString);
+                    _soundManager.setOffset(_currentEditing, toFloatSeconds(timeString), _soundManager.getEndTime(_currentEditing));
+                }
+                ImGui::PopItemWidth();
+                ImGui::SameLine();
+                ImGui::Text("-");
+                ImGui::SameLine();
+                ImGui::PushItemWidth(50);
+                if (ImGui::InputText("##SongEndTimeSelector", endTime, 6, 1)) {
+                    std::string timeString = endTime;
+                    checkTimeString(timeString);
+                    _soundManager.setOffset(_currentEditing, _soundManager.getBeginTime(_currentEditing), toFloatSeconds(timeString));
+                }
+                ImGui::PopItemWidth();
+                
+                ImGui::SameLine();
+                ImGui::Text("Offset");
+
+                ImGui::Separator();
+
+                float volume = _soundManager.getVolume(_currentEditing);
+                if (ImGui::SliderFloat("Volume##SoundEditor", &volume, 0, 100)) {
+                    _soundManager.setVolume(volume, _currentEditing);
+                }
+
+                ImGui::Separator();
+
+                float pitch = _soundManager.getPitch(_currentEditing);
+                if (ImGui::InputFloat("Pitch##SoundEditor", &pitch, 0.0f, 0.0f, 2)) {
+                    _soundManager.setPitch(pitch, _currentEditing);
+                }
+
+                ImGui::Separator();
+
+
+
+            ImGui::End();
+        }
     }
 
     void SoundEditor::save(const std::string& fileName)
     {
-        std::fstream file;    
-        std::string mainName = fileName + ".dat";
-        file.open(mainName, std::ios::out | std::ios::trunc);
-        for (int i=0; i<_soundManager.getSize(); ++i){
-        file<<_soundsInfo[i]->name<<" ";
-        file<<_soundsInfo[i]->fileName<<" ";
-        file<<_soundsInfo[i]->offsetTime[0]<<" ";
-        file<<_soundsInfo[i]->offsetTime[1]<<" ";
-        file<<_soundsInfo[i]->volume<<" ";
-        file<<_soundsInfo[i]->pitch<<"\n";
-        }
+        nlohmann::json j;
+        std::ofstream file("Assets/Sounds/Data/" + fileName + ".json", std::ios::trunc);
 
-    }
+        j["BeginTime"] = _soundManager.getBeginTime(fileName);
+        j["EndTime"] = _soundManager.getEndTime(fileName);
+        j["Volume"] = _soundManager.getVolume(fileName);
+        j["Pitch"] = _soundManager.getPitch(fileName);
 
-    void SoundEditor::load(const std::string& fileName)
-    {
-        std::fstream file;        
-        std::string mainName = fileName + ".dat";
-        file.open(mainName, std::ios::in);
-        std::string name;
-        std::string soundFileName;
-
-        while(file >> name){ 
-        file >> soundFileName;
-        if(!addSound(name,soundFileName))
-            continue;
-        file >> _soundsInfo[_soundsInfo.size()-1]->offsetTime[0];
-        file >> _soundsInfo[_soundsInfo.size()-1]->offsetTime[1];
-        file >> _soundsInfo[_soundsInfo.size()-1]->volume;
-        file >> _soundsInfo[_soundsInfo.size()-1]->pitch;
+        if (file.is_open()) {
+            file << j;
+            file.close();
         }
     }
 
-    void SoundEditor::clear()
+    void SoundEditor::load()
     {
-        _soundManager.eraseSounds();
-        _soundsInfo.clear();
+        auto currentPath = std::experimental::filesystem::current_path().string();
+        auto path = FileDialog::getOpenFileName("", currentPath, "Sound (*.flac)|*.flac");
+        std::string filePath;
+        size_t start = path.find(currentPath);
+
+        if (start != -1) {
+            filePath = path.substr(currentPath.length() + 15, path.length() - 5 - currentPath.length() - 15);
+        } 
+        else {
+            filePath = path;
+        }
+
+        std::replace(filePath.begin(), filePath.end(), '\\', '/');
+       
+        for (auto& it : _soundNames) {
+            if (it == filePath)
+                return;
+        }
+
+        _soundManager.load(filePath);
+        _soundNames.push_back(filePath);
+    
     }
+
+    std::string SoundEditor::toTime(float secF)
+    {
+        int minI = std::floor(secF);
+        int secI = (secF - minI) * 100;
+
+        auto minS = std::to_string(minI);
+        auto secS = std::to_string(secI);
+
+        return (minI >= 10 ? minS : "0" + minS) + ":" + (secI >= 10 ? secS : "0" + secS);
+    }
+
+    float SoundEditor::toFloatSeconds(const std::string& timeString) const
+    {
+        return atoi(&timeString.at(0)) + (float(atoi(&timeString.at(3))) / 100);
+    }
+
+    void SoundEditor::checkTimeString(std::string& timeString)
+    {
+        auto semicolonPos = timeString.find(':');
+        if (semicolonPos == std::string::npos || semicolonPos != 2 || timeString.length() != 5) {
+            timeString = "00:00";
+        } 
+        else if (timeString[3] >= 54) {
+            timeString[3] -= 6;
+            timeString[1] += 1;
+        }
+    }
+
 }

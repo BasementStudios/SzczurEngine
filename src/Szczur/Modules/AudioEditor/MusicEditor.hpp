@@ -30,8 +30,8 @@ namespace rat
         PlaylistHolder _playlistHolder;
         MusicAssets*   _musicAssets;
 
-        std::string currentEditingMusicFile = "";
-        std::string currentPlaylist         = "";
+        std::string currentEditingMusicFile {""};
+        std::string currentPlaylist         {""};
 
     public:
 

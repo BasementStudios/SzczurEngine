@@ -95,7 +95,7 @@ namespace rat
 	{ 
 		static std::string newPlaylistName;
 		
-        ImGui::Begin("Music Editor");
+        ImGui::Begin("Music Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
             if (ImGui::Button("Save")){
                 _playlistHolder.savePlaylists();
@@ -103,11 +103,13 @@ namespace rat
 
             ImGui::Separator();
                     
-            if (ImGui::Button("Load Playlist")){
+            if (ImGui::Button("Load Playlist")) {
                 _playlistHolder.loadPlaylist();
             }
+            
+            ImGui::SameLine();
 
-            if (ImGui::Button("Add Playlist")){
+            if (ImGui::Button("Add Playlist")) {
                 _addingPlaylist = true;
             }
 
@@ -202,19 +204,15 @@ namespace rat
         if (!currentEditingMusicFile.empty()) {
             ImGui::Begin("Music Editor ##Song", NULL);
 
-                static int bpm;
-                static int fadeTime;
-                static float volume = 100;
-
                 EqualizerData eqData;
                 ReverbData    reverbData;
                 EchoData      echoData;
 
                 auto& song = _musicAssets->get(currentEditingMusicFile);
 
-                bpm = static_cast<int>(song._bpm);
-                fadeTime = static_cast<int>(song._fadeTime);
-                volume = song.getVolume();
+                int bpm = static_cast<int>(song._bpm);
+                int fadeTime = static_cast<int>(song._fadeTime);
+                float volume = song._volume;
 
                 auto nameText = "Name: " + currentEditingMusicFile;
                 ImGui::Text(nameText.c_str());
