@@ -58,6 +58,7 @@ namespace rat
         Second_t getEndTime() const;  
 
         const std::string getName() const;
+        std::string getFileName() const;
 
         template <typename T>
 		T& getEffect() {
