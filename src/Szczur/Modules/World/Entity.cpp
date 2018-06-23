@@ -61,13 +61,15 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
 }
 
-void Entity::render(sf3d::RenderTarget& canvas)
+void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	if(auto* ptr = getFeature<sf3d::Drawable>()) {
-		canvas.draw(*ptr);
+	if (auto* ptr = getFeature<sf3d::Drawable>()) {
+		target.draw(*ptr, states);
 	}
-
-	if (auto* comp = getComponentAs<TraceComponent>()) comp->render(canvas);
+	
+	if (auto* comp = getComponentAs<TraceComponent>()) {
+		comp->render(target);
+	}
 }
 
 size_t Entity::getID() const

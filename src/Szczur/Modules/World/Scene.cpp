@@ -66,13 +66,13 @@ void Scene::update(float deltaTime)
 	}*/
 }
 
-void Scene::render(sf3d::RenderTarget& canvas)
+void Scene::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
 	for (auto& holder : getAllEntities())
 	{
 		for (auto& entity : holder.second)
 		{
-			entity->render(canvas);
+			entity->draw(target, states);
 		}
 	}
 }

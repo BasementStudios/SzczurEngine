@@ -2,13 +2,13 @@
 
 #include <unordered_map>
 
+#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/SFML3D/Transformable.hpp"
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
 #include "Components.hpp"
-
-#include <Szczur/Modules/Script/Script.hpp>
-
-#include <Szczur/Utility/SFML3D/RenderTarget.hpp>
 
 namespace rat
 {
@@ -17,7 +17,7 @@ namespace rat
 class Scene;
 class ScenesManager;
 
-class Entity : public sf3d::Transformable
+class Entity : public sf3d::Transformable, public sf3d::Drawable
 {
 public:
 
@@ -45,7 +45,7 @@ public:
 	void update(ScenesManager& scenes, float deltaTime);
 
 	///
-	void render(sf3d::RenderTarget& canvas);
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
 	///
 	size_t getID() const;

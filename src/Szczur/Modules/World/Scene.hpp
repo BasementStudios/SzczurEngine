@@ -7,7 +7,9 @@
 
 #include <boost/container/flat_map.hpp>
 
+#include <Szczur/Utility/SFML3D/Drawable.hpp>
 #include <Szczur/Utility/SFML3D/RenderTarget.hpp>
+#include <Szczur/Utility/SFML3D/RenderStates.hpp>
 
 #include "Entity.hpp"
 
@@ -18,7 +20,7 @@ namespace rat
 class ScenesManager;
 class Script;
 
-class Scene
+class Scene : public sf3d::Drawable
 {
 public:
 
@@ -56,7 +58,7 @@ public:
 	void update(float deltaTime);
 
 	///
-	void render(sf3d::RenderTarget& canvas);
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
 	///
 	size_t getID() const;

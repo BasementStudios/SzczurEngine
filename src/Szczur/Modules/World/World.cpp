@@ -10,6 +10,18 @@ World::World()
 {
 	LOG_INFO("Initializing World module");
 
+	// Load and initialize shader program for world objects
+	{
+		sf3d::FShader frag;
+		frag.loadFromFile("Assets/Shaders/world.frag");
+		
+		sf3d::VShader vert;
+		vert.loadFromFile("Assets/Shaders/world.vert");
+		
+		this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
+		this->shaderProgram->linkShaders(frag, vert);
+	}
+
 	// ComponentTraits::initScript(getModule<Script>());
 
 	initScript();
@@ -47,11 +59,12 @@ void World::update(float deltaTime)
 
 void World::render()
 {
-	auto& window = getModule<Window>().getWindow();
+	auto& target = getModule<Window>().getWindow();
+	sf3d::RenderStates states {this->shaderProgram.get()};
 
 	if (getScenes().isCurrentSceneValid())
 	{
-		getScenes().getCurrentScene()->render(window);
+		getScenes().getCurrentScene()->draw(target, states);
 		// getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
 		// 	if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
 		// 	{
@@ -62,7 +75,7 @@ void World::render()
 
 	#ifdef EDITOR
 		if(_doEditor)
-			_levelEditor.render(window);
+			_levelEditor.render(target);
 	#endif
 }
 

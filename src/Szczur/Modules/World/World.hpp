@@ -66,6 +66,8 @@ private:
 
 	bool _doEditor{true};
 
+	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
+
 	ScenesManager _scenes;
 
 	#ifdef EDITOR
