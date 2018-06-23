@@ -8,6 +8,7 @@
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Sound/SoundManager.hpp"
+#include "Szczur/Modules/Listener/Listener.hpp"
 
 namespace rat
 {
@@ -63,7 +64,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, Music, AudioEffects, SoundManager> _modules;
+	ModulesHolder<Window, Input, Script, Music, AudioEffects, SoundManager, Listener> _modules;
 	sf::Clock _mainClock;
 
 	#ifdef EDITOR

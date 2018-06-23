@@ -19,6 +19,7 @@ void Application::init()
 	initModule<AudioEffects>();
 	initModule<Music>();
 	initModule<SoundManager>();
+	initModule<Listener>();
 
 
 	LOG_INFO("Modules initialized");

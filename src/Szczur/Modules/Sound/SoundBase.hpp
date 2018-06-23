@@ -22,10 +22,12 @@ namespace rat
 
         Second_t _length;
 
-        float _volume {100};
-        float _pitch;
+        std::string _name {""};
 
-        std::string _fileName;
+        float _volume {100};
+        float _pitch {1};
+
+        std::string _fileName {""};
 
         Second_t playingTime {0};
             
@@ -34,9 +36,7 @@ namespace rat
 
     public:
 
-        inline static float globalVolume {100};
-
-        bool init(const std::string& fileName);
+        bool init(const std::string& fileName, const std::string& name);
 
         void play();
         void stop();

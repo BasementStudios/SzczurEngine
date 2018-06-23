@@ -2,9 +2,10 @@
 
 namespace rat
 {
-    bool SoundBase::init(const std::string& fileName)
+    bool SoundBase::init(const std::string& fileName, const std::string& name)
     {
         _fileName = fileName;
+        _name = name;
 
         if (!loadBuffer())
             return false;
@@ -20,7 +21,7 @@ namespace rat
     void SoundBase::setVolume(float volume)
     {
         _volume = volume;
-        sound.setVolume(volume * (globalVolume / 100));
+        sound.setVolume(volume);
     }
 
     float SoundBase::getVolume() const
@@ -74,7 +75,7 @@ namespace rat
 
     const std::string SoundBase::getName() const
     {
-        return _fileName;
+        return _name;
     }
 
     bool SoundBase::loadBuffer()
