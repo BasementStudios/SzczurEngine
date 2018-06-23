@@ -95,6 +95,7 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
+		initModule<QuestEditor>();
 }
 
 bool Application::input()
@@ -130,6 +131,8 @@ void Application::update()
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
+
+		getModule<QuestEditor>().update(deltaTime);
 
 		/*
 			Put main editor window here

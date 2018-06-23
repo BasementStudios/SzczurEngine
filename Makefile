@@ -140,7 +140,7 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := IMGUI SFML BOOST LUA
+LIB_LIST := IMGUI SFML BOOST LUA NODEEDITOR
 #   SFML
  CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
   LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
