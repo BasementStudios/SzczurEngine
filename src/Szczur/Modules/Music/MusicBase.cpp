@@ -124,7 +124,7 @@ namespace rat
 		else if (volume < 0) volume = 0;
 
 		_baseVolume = volume;
-		_base.setVolume(volume);
+		_base.setVolume(_baseVolume);
 	}
 	
 	void MusicBase::reset() 

@@ -47,8 +47,6 @@ namespace rat
 
 		AudioEffects& _effects;
 
-		inline static float _globalVolume = 100;
-
 	public:
 
 		Playlist(AudioEffects& effects);
@@ -76,7 +74,7 @@ namespace rat
 
 		Status getStatus() const;
 
-		static void setGlobalVolume(float volume);
+		void setGlobalVolume(float volume);
 		
 		void setVolume(float volume, const std::string& fileName = "");
 		float getVolume(const std::string& fileName) const;

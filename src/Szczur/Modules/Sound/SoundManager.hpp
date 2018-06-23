@@ -42,7 +42,11 @@ namespace rat
         void stop(const std::string& fileName = "");
 
         void setVolume(float volume, const std::string& fileName = "");
+        float getVolume(const std::string& fileName) const;
+        float getGlobalVolume() const;
+        
         void setPitch(float pitch, const std::string& fileName = "");
+        float getPitch(const std::string& fileName) const;
 
         void setLoop(bool loop, const std::string& fileName);
         void changeLoop(const std::string& fileName = "");
@@ -52,7 +56,10 @@ namespace rat
                 
         void setOffset(const std::string& fileName, Second_t beginT, Second_t endT);
         Second_t getLength(const std::string& fileName) const;
-                
+
+        Second_t getBeginTime(const std::string& fileName) const;
+        Second_t getEndTime(const std::string& fileName) const;            
+
         std::string getName(int i) const;
 
         void load(const std::string& fileName);
