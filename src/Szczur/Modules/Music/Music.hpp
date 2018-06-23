@@ -27,7 +27,7 @@ namespace rat
 		PlaylistContainer_t _playlists;
 		MusicAssets _assets;
 		
-		Hash32_t _currentPlaylistKey = 0;
+		std::array<Hash32_t, 3> _currentPlaylistKeys {0, 0, 0};
 
 	public:
 
@@ -48,18 +48,18 @@ namespace rat
 		void addToPlaylist(const std::string& key, const std::string& fileName);
 		void removeFromPlaylist(const std::string& key, const std::string& fileName = "");
 
-		void play(const std::string& key, const std::string& fileName = "");
-		void pause();
-		void stop();
+		void play(unsigned int musicTrack, const std::string& key, const std::string& fileName = "");
+		void pause(int musicTrack = -1);
+		void stop(int musicTrack = -1);
 
-		RatMusic& getCurrentPlaying();
+		RatMusic& getCurrentPlaying(unsigned int musicTrack);
 		RatMusic& get(const std::string& fileName);
 
 		bool includes(const std::string& key, const std::string& fileName);
 
 		void setPlayingMode(const std::string& key, PlayingMode mode);
 
-		void setVolume(const std::string& key, float volume, const std::string& fileName = "");
+		void setVolume(float volume, const std::string& key = "", const std::string& fileName = "");
 		float getVolume(const std::string& fileName);
 
 		template <typename T>
