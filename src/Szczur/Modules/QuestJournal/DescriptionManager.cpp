@@ -8,10 +8,9 @@ namespace rat
         _scroller.setPropSize(0.7f, 0.83f);
         _scroller.setPropPosition(0.94f, 0.85f);
         _list.setBetweenPadding(20.f);
-        _list.setPropSize(0.3f, 1.f);
+        _list.setPropSize(0.6f, 1.f);
 
         _scroller.add(&_list);
-        _scroller.setPosition(20,20);
     }
 
     DescriptionManager::~DescriptionManager()

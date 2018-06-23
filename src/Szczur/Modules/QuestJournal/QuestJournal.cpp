@@ -20,7 +20,15 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
        
         _interface = gui.addInterface();
+
+
+        _scroller.add(&_list);
+        _list.setBetweenPadding(20.f);
+        _list.setPropSize(0.6f, 1.f);
+        _interface->add(&_scroller);
+
         _interface->setSizingWidthToHeightProportion(1.f);
+
         _fileLoader = std::make_shared<FileLoader>();
         _stepManager = std::make_shared<StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
         _descriptionManager = std::make_shared<DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
@@ -33,7 +41,15 @@ namespace rat
         _descriptionManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-      
+
+        _scroller.setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        _scroller.setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        _scroller.setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+
+        _scroller.setPropSize(0.7f, 0.5f);
+        _scroller.setPropPosition(0.1f, 0.85f);
+        addQuest(0);
+
     }
 
     QuestJournal::~QuestJournal()
@@ -44,11 +60,29 @@ namespace rat
     void QuestJournal::addQuest(const unsigned int &i)
     {
         std::shared_ptr<Quest> quest= std::make_shared<Quest>(_fileLoader);
-
         quest->setQuestName(i);
+        quest->nextStep(2);
+        quest->nextStep(3);
+        quest->addQuestDescription(0,4);
+        
 
         _quests.push_back(quest);
         it = _quests.end()-1;
+        
+        TextWidget* widget;
+        widget = new TextWidget;
+        widget->setString(quest->getQuestName());
+        widget->setCharacterSize(30);
+        widget->setColor(sf::Color::White);
+        widget->setFont(getModule<GUI>().getAsset<sf::Font>("Assets/GUITest/testfont.otf"));
+        _list.add(widget);
+
+        _stepManager->setQuest(quest);
+        _descriptionManager->setQuest(quest);
+        _questName->setQuest(quest);
+
+
+
     }
 
     void QuestJournal::addStep(const unsigned int &i)

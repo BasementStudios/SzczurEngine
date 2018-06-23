@@ -25,6 +25,11 @@ namespace rat
 
             void moveIterator(std::string questName);
         private:
+
+            std::vector<std::shared_ptr<TextWidget> > _widgets;
+            ListWidget _list;
+            ScrollAreaWidget _scroller;
+
             InterfaceWidget* _interface{nullptr};
             std::shared_ptr<FileLoader> _fileLoader;
 
