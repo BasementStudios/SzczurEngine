@@ -101,8 +101,8 @@ void ColliderComponent::move(float x, float y, float z)
 {
 	bool canMove = true;
 
-	auto& thisPos = getEntity()->getPosition() + glm::vec3(x, 0, z);
-	auto& thisRect = getRect(thisPos, _boxSize);
+	auto thisPos = getEntity()->getPosition() + glm::vec3(x, 0, z);
+	auto thisRect = getRect(thisPos, _boxSize);
 
 	// scan every entity on path
 	auto& entities = this->getEntity()->getScene()->getEntities("path");
@@ -115,7 +115,7 @@ void ColliderComponent::move(float x, float y, float z)
 			
 			if (this->_boxCollider && comp->isBoxCollider())// if both have box collider
 			{
-				auto& entityRect = getRect(entity->getPosition(), comp->getBoxSize());
+				auto entityRect = getRect(entity->getPosition(), comp->getBoxSize());
 
 				// collision check
 				if (thisRect.intersects(entityRect))
