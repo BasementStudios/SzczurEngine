@@ -11,6 +11,7 @@ namespace rat
     class SoundBase
     {
         using Second_t = float;
+    
     private:
             
         struct
@@ -20,10 +21,12 @@ namespace rat
         } offset;
 
         Second_t _length;
+
         float _volume {100};
         float _pitch;
-        std::string _name;
+
         std::string _fileName;
+
         Second_t playingTime {0};
             
         sf::SoundBuffer buffer;
@@ -31,7 +34,9 @@ namespace rat
 
     public:
 
-        bool init(const std::string &name,const std::string &filename);
+        inline static float globalVolume {100};
+
+        bool init(const std::string& fileName);
 
         void play();
         void stop();
@@ -39,7 +44,6 @@ namespace rat
 
         float getVolume() const;
         void setVolume(float volume);
-        void setBaseVolume(float volume);
 
         float getPitch() const;
         void setPitch(float pitch);
@@ -50,7 +54,20 @@ namespace rat
         void setOffset(Second_t beginT, Second_t endT);
         Second_t getLength() const;
 
+        Second_t getBeginTime() const;
+        Second_t getEndTime() const;  
+
         const std::string getName() const;
+
+        template <typename T>
+		T& getEffect() {
+            return sound.getEffect<T>();
+        }
+
+        template <typename T>
+    	void cleanEffect() {
+            sound.cleanEffect<T>();
+        }
 
     private:
 

@@ -66,7 +66,7 @@ namespace rat
             lateReverbDelay       = 0.011f;
             airAbsorptionGainHf   = 0.994f;
             roomRolloffFactor     = 0.f;
-            decayHfLimit           = true;
+            decayHfLimit          = true;
         }
     };
 
@@ -83,11 +83,11 @@ namespace rat
         }
 
         void reset() {
-            delay                 = 0.1;
-            lrDelay               = 0.1;
-            damping               = 0.5;
-            feedback              = 0.5;
-            spread                = -1;
+            delay                 = 0.1f;
+            lrDelay               = 0.1f;
+            damping               = 0.5f;
+            feedback              = 0.5f;
+            spread                = -1.f;
         }
     };
 }

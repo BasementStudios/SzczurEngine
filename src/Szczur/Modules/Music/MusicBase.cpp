@@ -11,6 +11,7 @@ namespace rat
 		: _base(source)
 	{
 		_timeLeft = getDuration();
+		setVolume(source.getVolume());
 	}
 
 	void MusicBase::update(float deltaTime) 
@@ -123,7 +124,7 @@ namespace rat
 		else if (volume < 0) volume = 0;
 
 		_baseVolume = volume;
-		_base.setVolume(volume);
+		_base.setVolume(_baseVolume);
 	}
 	
 	void MusicBase::reset() 

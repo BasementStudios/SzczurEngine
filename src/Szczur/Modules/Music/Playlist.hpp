@@ -25,13 +25,13 @@ namespace rat
 			Single
 		};
 
-	private:
-
 		enum class Status {
 			Playing, 
 			Paused,
 			Stopped
 		};
+
+	private:
 
 		Container_t _playlist;
 
@@ -46,8 +46,6 @@ namespace rat
 		Status _status = Status::Stopped;
 
 		AudioEffects& _effects;
-
-		inline static float _globalVolume = 100;
 
 	public:
 
@@ -74,6 +72,10 @@ namespace rat
 
 		void setPlayingMode(PlayingMode mode);
 
+		Status getStatus() const;
+
+		void setGlobalVolume(float volume);
+		
 		void setVolume(float volume, const std::string& fileName = "");
 		float getVolume(const std::string& fileName) const;
 

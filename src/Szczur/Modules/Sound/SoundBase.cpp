@@ -2,28 +2,25 @@
 
 namespace rat
 {
-    bool SoundBase::init(const std::string &name,const std::string& fileName)
+    bool SoundBase::init(const std::string& fileName)
     {
         _fileName = fileName;
-        _name = name;
+
         if (!loadBuffer())
             return false;
 
         _length = buffer.getDuration().asSeconds();
-        offset.beginTime=0;
-        offset.endTime=_length;
+
+        offset.beginTime = 0;
+        offset.endTime   = _length;
+
         return true;
     };
 
     void SoundBase::setVolume(float volume)
     {
-        sound.setVolume(volume);
-    }
-
-    void SoundBase::setBaseVolume(float volume)
-    {
         _volume = volume;
-        sound.setVolume(volume);
+        sound.setVolume(volume * (globalVolume / 100));
     }
 
     float SoundBase::getVolume() const
@@ -33,7 +30,7 @@ namespace rat
 
     void SoundBase::setPitch(float pitch)
     {
-        _pitch=pitch;
+        _pitch = pitch;
         sound.setPitch(pitch);
     }
 
@@ -56,7 +53,8 @@ namespace rat
     {
         sound.setBuffer(buffer);
         sound.play();
-        if(playingTime > offset.beginTime && playingTime < offset.endTime)
+
+        if (playingTime > offset.beginTime && playingTime < offset.endTime)
             sound.setPlayingOffset(sf::seconds(playingTime));
         else
             sound.setPlayingOffset(sf::seconds(offset.beginTime)); 
@@ -65,7 +63,7 @@ namespace rat
     void SoundBase::pause()
     {
         sound.pause();
-        playingTime=sound.getPlayingOffset().asSeconds();
+        playingTime = sound.getPlayingOffset().asSeconds();
     }
 
     void SoundBase::stop()
@@ -76,7 +74,7 @@ namespace rat
 
     const std::string SoundBase::getName() const
     {
-        return _name;
+        return _fileName;
     }
 
     bool SoundBase::loadBuffer()
@@ -84,31 +82,42 @@ namespace rat
         return buffer.loadFromFile(getPath());
     }
 
-    void SoundBase::setOffset(Second_t beginT,Second_t endT)
+    void SoundBase::setOffset(Second_t beginT, Second_t endT)
     {
         if (beginT >= _length || beginT < 0 && endT > _length || endT < 0) {
             offset.beginTime = 0;
-            offset.endTime = _length;
+            offset.endTime   = _length;
         }
-        else if (beginT>=_length || beginT<0) {
-            offset.beginTime=0;
-            offset.endTime=endT;
+        else if (beginT >= _length || beginT < 0) {
+            offset.beginTime = 0;
+            offset.endTime   = endT;
         }
-        else if (endT>_length || endT<0 || endT<beginT) {
-            offset.beginTime=beginT;
-            offset.endTime=_length;
+        else if (endT > _length || endT < 0 || endT < beginT) {
+            offset.beginTime = beginT;
+            offset.endTime   = _length;
         }
         else {
-            offset.beginTime=beginT;
-            offset.endTime=endT;
+            offset.beginTime = beginT;
+            offset.endTime   = endT;
         }
+
         if (offset.endTime < offset.beginTime)
-            offset.endTime=_length;    
+            offset.endTime = _length;    
     }
 
     SoundBase::Second_t SoundBase::getLength() const
     {
         return _length;
+    }
+
+    SoundBase::Second_t SoundBase::getBeginTime() const
+    {
+        return offset.beginTime;
+    }
+
+    SoundBase::Second_t SoundBase::getEndTime() const
+    {
+        return offset.endTime;
     }
 
     std::string SoundBase::getPath() const
