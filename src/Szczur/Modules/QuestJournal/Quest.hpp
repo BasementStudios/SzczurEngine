@@ -17,6 +17,12 @@ namespace rat
 
             void nextStep(const unsigned int &i);
 
+            std::string getQuestName();
+
+            std::vector<std::string> & getDescription();
+
+            std::vector<std::string> & getSteps();
+
         private:
             std::string _questName;
             std::vector<std::string> _steps;

@@ -27,4 +27,19 @@ namespace rat
     {
         _steps.push_back(_fileLoader->getStep(i));
     }
+
+    std::string Quest::getQuestName()
+    {
+        return _questName;
+    }
+
+    std::vector<std::string>& Quest::getDescription()
+    {
+        return _descriptions;
+    }
+
+    std::vector<std::string> & Quest::getSteps()
+    {
+        return _steps;
+    }
 }
