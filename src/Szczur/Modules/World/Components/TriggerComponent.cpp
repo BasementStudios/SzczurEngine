@@ -5,12 +5,12 @@
 
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 
 namespace rat {
 	TriggerComponent::TriggerComponent(Entity* parent) :
     	Component{parent, fnv1a_64("TriggerComponent"), "TriggerComponent"},
         _input(detail::globalPtr<Input>->getManager()) {
-
 	}
 
 	std::unique_ptr<Component> TriggerComponent::copy(Entity* newParent) const
@@ -39,7 +39,7 @@ namespace rat {
 	}
 
 	std::string TriggerComponent::enumToString(size_t en) {
-		static std::string names[] {"None", "Change scene"};
+		static std::string names[] {"None", "Change scene", "Overlaping"};
 		return names[en];
 	}
 
@@ -47,6 +47,7 @@ namespace rat {
 		switch(s) {
 			case 0: return None;
 			case 1: return ChangeScene;
+			case 2: return Overlaping;
 		}
 	}
 
@@ -75,10 +76,32 @@ namespace rat {
 
     void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
         auto* player = getEntity()->getScene()->getPlayer();
-        if(player == nullptr) return;
+        if(player == nullptr) 
+			return;
 
+		if (type == TriggerComponent::Overlaping) {
+			if (checkForTrigger(player->getPosition())) {
+				if (_insideCallback.valid())
+					_insideCallback(getEntity());
+
+				if (!_isPlayerInside) {
+					if (_enterCallback.valid())
+						_enterCallback(getEntity());
+
+					_isPlayerInside = true;
+				}
+			}
+			else {
+				if (_isPlayerInside) {
+					if (_leaveCallback.valid())
+						_leaveCallback(getEntity());
+
+					_isPlayerInside = false;
+				}
+			}
+		}
         // Active trigger after [LShift]
-        if(_input.isPressed(Keyboard::LShift)) {
+        else if(_input.isPressed(Keyboard::LShift)) {
             // Is player inside trigger
             if(checkForTrigger(player->getPosition())) {
                 // Action for ChangeScene trigger
@@ -98,6 +121,26 @@ namespace rat {
     void TriggerComponent::initScript(ScriptClass<Entity>& entity, Script& script)
     {
         auto object = script.newClass<TriggerComponent>("TriggerComponent", "World");
+
+		// Entity
+		entity.set("trigger", &Entity::getComponentAs<TriggerComponent>);
+		entity.set("addTriggerComponent", [&] (Entity& e) {return (TriggerComponent*)e.addComponent<TriggerComponent>(); });
+
+		// enter callback
+		entity.setProperty("onEnter", [](){}, [] (Entity &obj, sol::function func) {
+			obj.getComponentAs<TriggerComponent>()->_enterCallback = func;
+		});
+
+		// inside callback
+		entity.setProperty("onInside", [](){}, [] (Entity &obj, sol::function func) {
+			obj.getComponentAs<TriggerComponent>()->_insideCallback = func;
+		});
+
+		// leave callback
+		entity.setProperty("onLeave", [](){}, [] (Entity &obj, sol::function func) {
+			obj.getComponentAs<TriggerComponent>()->_leaveCallback = func;
+		});
+
         object.init();
     }
 
@@ -117,7 +160,12 @@ namespace rat {
                     sceneId = 0u;
                     entranceId = 0u;
                 }
-                ImGui::EndCombo();
+				if (ImGui::Selectable(enumToString(Type::Overlaping).c_str(), type == Type::Overlaping))
+				{
+					type = Type::Overlaping;
+					_isPlayerInside = false;
+				}
+				ImGui::EndCombo();
             }
 
             // Set radius
