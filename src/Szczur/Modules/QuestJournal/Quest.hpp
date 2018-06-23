@@ -30,8 +30,5 @@ namespace rat
             std::vector<std::string> _descriptions;
 
             std::shared_ptr<FileLoader> _fileLoader;
-
-            std::vector<std::shared_ptr<Quest> > _quests;
-        
     };
 }

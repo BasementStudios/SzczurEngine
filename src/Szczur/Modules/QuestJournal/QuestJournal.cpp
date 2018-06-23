@@ -5,6 +5,8 @@ namespace rat
     {
         LOG_INFO("QuestJournal module initialized");
 
+        it = _quests.begin();
+
         auto& mainWindow = getModule<Window>();
         auto& window = mainWindow.getWindow();
         mainWindow.pushGLStates();
@@ -22,33 +24,50 @@ namespace rat
         _fileLoader = std::make_shared<FileLoader>();
         _stepManager = std::make_shared<StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
         _descriptionManager = std::make_shared<DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
-        _quest = std::make_shared<Quest>(_fileLoader);
+        
         _questName = std::make_shared<QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
 
-        _quest->nextStep(1);
-        _quest->nextStep(2);
-
-        _quest->setQuestName(0);
-
-        _stepManager->setQuest(_quest);
-        _questName->setQuest(_quest);
-        _descriptionManager->setQuest(_quest);
         _stepManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
         _descriptionManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-        _quest->nextStep(2);
-        _quest->nextStep(3);
-        _stepManager->refresh();
-        _quest->addQuestDescription(1,5);
-        _descriptionManager->refresh();
+      
     }
 
     QuestJournal::~QuestJournal()
     {
         LOG_INFO("QuestJournal module destructed");
+    }
+
+    void QuestJournal::addQuest(const unsigned int &i)
+    {
+        std::shared_ptr<Quest> quest= std::make_shared<Quest>(_fileLoader);
+
+        quest->setQuestName(i);
+
+        _quests.push_back(quest);
+        it = _quests.end()-1;
+    }
+
+    void QuestJournal::addStep(const unsigned int &i)
+    {
+        (*it)->nextStep(i);
+    }
+
+    void QuestJournal::addDescription(const unsigned int &a,const unsigned int &b)
+    {
+        (*it)->addQuestDescription(a,b);
+    }
+
+    void QuestJournal::moveIterator(std::string questName)
+    {
+        for(it = _quests.begin();it!=_quests.end();it++)
+        {
+            if((*it)->getQuestName() == questName)    
+                return;
+        }
     }
 
 }
