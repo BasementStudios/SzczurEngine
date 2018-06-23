@@ -19,6 +19,12 @@ namespace rat
 		getJsonData();
 	}
 
+	void RatMusic::setVolume(float volume)
+	{
+		_volume = volume;
+		sf::Music::setVolume(volume * (globalVolume / 100));
+	}
+
 	void RatMusic::incrementCounter()
 	{
 		++_counter;
@@ -72,7 +78,7 @@ namespace rat
 
 		j[_name]["BPM"] = _bpm;
 		j[_name]["FadeTime"] = _fadeTime;
-		j[_name]["Volume"] = getVolume();
+		j[_name]["Volume"] = _volume;
 		j[_name]["Effects"] = effects;
 
 		std::string path = MUSIC_DEFAULT_PATH;

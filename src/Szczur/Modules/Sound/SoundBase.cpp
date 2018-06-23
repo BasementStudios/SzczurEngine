@@ -19,13 +19,8 @@ namespace rat
 
     void SoundBase::setVolume(float volume)
     {
-        sound.setVolume(volume);
-    }
-
-    void SoundBase::setBaseVolume(float volume)
-    {
         _volume = volume;
-        sound.setVolume(volume);
+        sound.setVolume(volume * (globalVolume / 100));
     }
 
     float SoundBase::getVolume() const
@@ -87,7 +82,7 @@ namespace rat
         return buffer.loadFromFile(getPath());
     }
 
-    void SoundBase::setOffset(Second_t beginT,Second_t endT)
+    void SoundBase::setOffset(Second_t beginT, Second_t endT)
     {
         if (beginT >= _length || beginT < 0 && endT > _length || endT < 0) {
             offset.beginTime = 0;
@@ -97,7 +92,7 @@ namespace rat
             offset.beginTime = 0;
             offset.endTime   = endT;
         }
-        else if (endT > _length || endT<0 || endT < beginT) {
+        else if (endT > _length || endT < 0 || endT < beginT) {
             offset.beginTime = beginT;
             offset.endTime   = _length;
         }
@@ -113,6 +108,16 @@ namespace rat
     SoundBase::Second_t SoundBase::getLength() const
     {
         return _length;
+    }
+
+    SoundBase::Second_t SoundBase::getBeginTime() const
+    {
+        return offset.beginTime;
+    }
+
+    SoundBase::Second_t SoundBase::getEndTime() const
+    {
+        return offset.endTime;
     }
 
     std::string SoundBase::getPath() const

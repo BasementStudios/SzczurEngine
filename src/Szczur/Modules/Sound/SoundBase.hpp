@@ -34,6 +34,8 @@ namespace rat
 
     public:
 
+        inline static float globalVolume {100};
+
         bool init(const std::string& fileName);
 
         void play();
@@ -42,7 +44,6 @@ namespace rat
 
         float getVolume() const;
         void setVolume(float volume);
-        void setBaseVolume(float volume);
 
         float getPitch() const;
         void setPitch(float pitch);
@@ -52,6 +53,9 @@ namespace rat
 
         void setOffset(Second_t beginT, Second_t endT);
         Second_t getLength() const;
+
+        Second_t getBeginTime() const;
+        Second_t getEndTime() const;  
 
         const std::string getName() const;
 

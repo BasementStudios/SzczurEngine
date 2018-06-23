@@ -45,7 +45,6 @@ namespace rat
 	{	
 		if (!includes(base.getName())) {
 			_playlist.push_back(std::make_shared<MusicBase>(std::move(base)));
-			_playlist.back()->setVolume(_playlist.back()->getVolume() * (_globalVolume / 100));
 		}	
 
 		if (_playlist.size() == 1) _playlist[0]->setLoop(true);
@@ -151,13 +150,16 @@ namespace rat
 
 	void Playlist::setGlobalVolume(float volume)
 	{
-		_globalVolume = volume;
+		RatMusic::globalVolume = volume;
+
+		for (auto it : _playlist)
+			it->setVolume(it->getVolume());
 	}
 
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
 		if (!fileName.empty()) {
-			_playlist[getID(fileName)]->setVolume(volume * (_globalVolume / 100));
+			_playlist[getID(fileName)]->setVolume(volume);
 		}
 		else {
 			for (auto it : _playlist)
