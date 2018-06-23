@@ -248,6 +248,26 @@ namespace rat {
 				circ.setOrigin({r, r, 0.f});
 				target.draw(circ);
 			}
+			if(auto* comp = entity.getComponentAs<ColliderComponent>(); comp != nullptr) {
+				if (comp->isCircleCollider()) {
+					circ.setColor({ 0.13f, 0.59f, 0.95f, 0.2f });
+					circ.setPosition(entity.getPosition());
+					float r = comp->getCircleRadius();
+					circ.setRadius(r);
+					circ.setOrigin({ r, r, 0.f });
+					target.draw(circ);
+				}
+				if (comp->isBoxCollider()) {
+					sf3d::RectangleShape rect;
+					rect.rotate({ -90.f, 0.f, 0.f });
+					rect.setColor({ 0.3f, 0.69f, 0.31f, 0.2f });
+					rect.setPosition(entity.getPosition() + glm::vec3(0.f, 10.f, 0.f));
+					auto& size = comp->getBoxSize();
+					rect.setSize(size);
+					rect.setOrigin({ size.x / 2.f, size.y / 2.f, 0.f });
+					target.draw(rect);
+				}
+			}
 		});
 	}
 

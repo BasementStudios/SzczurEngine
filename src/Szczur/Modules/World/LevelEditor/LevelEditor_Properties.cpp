@@ -57,6 +57,7 @@ namespace rat {
 				if(auto* object = focusedObject->getComponentAs<SpriteComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<CameraComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>()) object->renderHeader(_scenes, focusedObject);
+				if(auto* object = focusedObject->getComponentAs<ColliderComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<ScriptableComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<InteractableComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
@@ -82,10 +83,11 @@ namespace rat {
 			if(ImGui::IsWindowAppearing()) {
 				choosed[0] = entity->hasComponent<SpriteComponent>();
 				choosed[1] = entity->hasComponent<ArmatureComponent>();
-				choosed[2] = entity->hasComponent<ScriptableComponent>();                
-				choosed[3] = entity->hasComponent<InteractableComponent>();
-				choosed[4] = entity->hasComponent<TriggerComponent>();
-				choosed[5] = entity->hasComponent<TraceComponent>();
+				choosed[2] = entity->hasComponent<ColliderComponent>();
+				choosed[3] = entity->hasComponent<ScriptableComponent>();
+				choosed[4] = entity->hasComponent<InteractableComponent>();
+				choosed[5] = entity->hasComponent<TriggerComponent>();
+				choosed[6] = entity->hasComponent<TraceComponent>();
 			}
 
 
@@ -98,10 +100,11 @@ namespace rat {
 				// Update components in object
 				UPDATE_COMPONENT(SpriteComponent, 0);
 				UPDATE_COMPONENT(ArmatureComponent, 1);
-				UPDATE_COMPONENT(ScriptableComponent, 2);
-				UPDATE_COMPONENT(InteractableComponent, 3);
-				UPDATE_COMPONENT(TriggerComponent, 4);
-				UPDATE_COMPONENT(TraceComponent, 5);
+				UPDATE_COMPONENT(ColliderComponent, 2);
+				UPDATE_COMPONENT(ScriptableComponent, 3);
+				UPDATE_COMPONENT(InteractableComponent, 4);
+				UPDATE_COMPONENT(TriggerComponent, 5);
+				UPDATE_COMPONENT(TraceComponent, 6);
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -115,10 +118,11 @@ namespace rat {
 
 			ImGui::Checkbox("Sprite", &choosed[0]);
 			ImGui::Checkbox("Armature", &choosed[1]);
-			ImGui::Checkbox("Scriptable", &choosed[2]);
-			ImGui::Checkbox("Interactable", &choosed[3]);
-			ImGui::Checkbox("Trigger", &choosed[4]);
-			ImGui::Checkbox("Trace", &choosed[5]);
+			ImGui::Checkbox("Collider", &choosed[2]);
+			ImGui::Checkbox("Scriptable", &choosed[3]);
+			ImGui::Checkbox("Interactable", &choosed[4]);
+			ImGui::Checkbox("Trigger", &choosed[5]);
+			ImGui::Checkbox("Trace", &choosed[6]);
 
 			ImGui::EndPopup();
 		}
