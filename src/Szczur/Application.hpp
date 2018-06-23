@@ -16,6 +16,7 @@
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
 #include "Szczur/Modules/Sound/SoundManager.hpp"
+#include "Szczur/Modules/Listener/Listener.hpp"
 
 #include "ImGuiStyler.hpp"
 

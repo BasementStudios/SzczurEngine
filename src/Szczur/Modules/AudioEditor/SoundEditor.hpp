@@ -6,9 +6,13 @@ namespace rat
 {
     class SoundEditor
     {
+    
+    private:
+
         SoundManager& _soundManager;
         
-        bool _editor {false};
+        bool _editor      {false};
+        bool _addingSound {false};
 
         std::string _currentEditing {""};
 
@@ -21,7 +25,9 @@ namespace rat
         void render();
 
         void save(const std::string& fileName);
+
         void load();
+        void add();
 
     private:
 

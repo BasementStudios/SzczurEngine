@@ -23,6 +23,7 @@ void Application::init()
 	initModule<Cinematics>();
 	initModule<SoundManager>();
 	initModule<AudioEditor>();
+	initModule<Listener>();
 
 
 	LOG_INFO("Modules initialized");
