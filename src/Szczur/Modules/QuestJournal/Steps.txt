@@ -1,0 +1,12 @@
+MISJA 1 
+---
+1   KROK 1
+2   KROK 2
+3   KROK 3
+4   KROK 4
+---
+MISJA 2
+---
+1   KROK 1
+2   KROK 2
+3   KROK 3

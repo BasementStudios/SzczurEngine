@@ -1,0 +1,30 @@
+#include <string>
+#include <vector>
+#include <memory>
+
+#include "FileLoader.hpp"
+
+namespace rat
+{
+    class Quest
+    {
+        public:
+            Quest(std::shared_ptr<FileLoader> loader);
+            ~Quest();
+            void setQuestName(const unsigned int &i);
+
+            void setQuestDescription(const unsigned int &a,const unsigned int &b);
+
+            void nextStep(const unsigned int &i);
+
+        private:
+            std::string _questName;
+            std::vector<std::string> _steps;
+            std::vector<std::string> _descriptions;
+
+            std::shared_ptr<FileLoader> _fileLoader;
+
+            std::vector<std::shared_ptr<Quest> > _quests;
+        
+    };
+}
