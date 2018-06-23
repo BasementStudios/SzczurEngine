@@ -16,11 +16,11 @@ namespace rat
             
         struct
         {
-            Second_t beginTime;
-            Second_t endTime;
+            Second_t beginTime {0};
+            Second_t endTime {0};
         } offset;
 
-        Second_t _length;
+        Second_t _length {0};
 
         std::string _name {""};
 
@@ -47,6 +47,15 @@ namespace rat
 
         float getPitch() const;
         void setPitch(float pitch);
+
+        bool isRelativeToListener() const;
+        void setRelativeToListener(bool relative);
+
+        float getAttenuation() const; 
+        void setAttenuation(float attenuation);
+
+        float getMinDistance() const; 
+        void setMinDistance(float minDistance);
 
         bool getLoop() const;
         void setLoop(bool loop);

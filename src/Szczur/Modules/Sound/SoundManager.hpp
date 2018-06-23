@@ -47,6 +47,15 @@ namespace rat
         void setPitch(float pitch, const std::string& name = "");
         float getPitch(const std::string& name) const;
 
+        bool isRelativeToListener(const std::string& name) const;
+        void setRelativeToListener(bool relative, const std::string& name = "");
+
+        float getAttenuation(const std::string& name) const; 
+        void setAttenuation(float attenuation, const std::string& name = "");
+
+        float getMinDistance(const std::string& name) const; 
+        void setMinDistance(float minDistance, const std::string& name = "");
+
         void setLoop(bool loop, const std::string& name);
         void changeLoop(const std::string& name = "");
         bool getLoop(const std::string& name);

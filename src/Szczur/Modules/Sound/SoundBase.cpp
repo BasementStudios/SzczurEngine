@@ -40,6 +40,36 @@ namespace rat
         return sound.getPitch();
     }
 
+    bool SoundBase::isRelativeToListener() const
+    {
+        return sound.isRelativeToListener();
+    } 
+
+    void SoundBase::setRelativeToListener(bool relative)
+    {
+        sound.setRelativeToListener(relative);
+    }
+
+    float SoundBase::getAttenuation() const
+    {
+        return sound.getAttenuation();
+    }
+
+    void SoundBase::setAttenuation(float attenuation) 
+    {
+        sound.setAttenuation(attenuation);
+    }
+
+    float SoundBase::getMinDistance() const
+    {
+        return sound.getMinDistance();
+    }
+
+    void SoundBase::setMinDistance(float minDistance) 
+    {
+        sound.setMinDistance(minDistance);
+    }
+
     void SoundBase::setLoop(bool loop)
     {
         sound.setLoop(loop);

@@ -10,11 +10,7 @@ namespace rat
 	RatMusic::RatMusic()
 		: AudioEffect(m_source)
 	{
-		LOG_INFO("RatMusic created");
-
-		setRelativeToListener(true);
-		setAttenuation(0);
-		
+		LOG_INFO("RatMusic created");	
 	}
 
 	void RatMusic::init(const std::string& name)
