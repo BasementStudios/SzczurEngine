@@ -28,7 +28,15 @@ namespace rat
         module.set_function("pause", &SoundManager::pause, this);
         module.set_function("stop", &SoundManager::stop, this);
         module.set_function("setVolume", &SoundManager::setVolume, this);
+        module.set_function("getVolume", &SoundManager::getVolume, this);
+        module.set_function("isRelativeToListener", &SoundManager::isRelativeToListener, this);
+        module.set_function("setRelativeToListener", &SoundManager::setRelativeToListener, this);
+        module.set_function("getAttenuation", &SoundManager::getAttenuation, this);
+        module.set_function("setAttenuation", &SoundManager::setAttenuation, this);
+        module.set_function("getMinDistance", &SoundManager::getMinDistance, this);
+        module.set_function("setMinDistance", &SoundManager::setMinDistance, this);
         module.set_function("setPitch", &SoundManager::setPitch, this);
+        module.set_function("getPitch", &SoundManager::getPitch, this);
         module.set_function("setLoop", &SoundManager::setLoop, this);
         module.set_function("changeLoop", &SoundManager::changeLoop, this);
         module.set_function("getLoop", &SoundManager::getLoop, this);
@@ -105,14 +113,69 @@ namespace rat
 
     void SoundManager::setPitch(float pitch, const std::string& name)
     {
-        int id = getSoundID(name);
-        _sounds[id]->setPitch(pitch);
+        if (name == "") {
+            for (unsigned int i = 0; i < _sounds.size(); ++i)
+               _sounds[i]->setPitch(pitch);
+        }
+        else {
+            int id = getSoundID(name);
+            _sounds[id]->setPitch(pitch);
+        }
     }
 
     float SoundManager::getPitch(const std::string& name) const 
     {
         return _sounds[getSoundID(name)]->getPitch();
     }
+
+    bool SoundManager::isRelativeToListener(const std::string& name) const 
+    {
+        return _sounds[getSoundID(name)]->isRelativeToListener();
+    }
+
+    void SoundManager::setRelativeToListener(bool relative, const std::string& name)
+    {
+        if (name == "") {
+            for (unsigned int i = 0; i < _sounds.size(); ++i)
+               _sounds[i]->setRelativeToListener(relative);
+        }
+        else {
+            _sounds[getSoundID(name)]->setRelativeToListener(relative);
+        }
+    }
+
+    float SoundManager::getAttenuation(const std::string& name) const 
+    {
+        return _sounds[getSoundID(name)]->getAttenuation();
+    }
+
+    void SoundManager::setAttenuation(float attenuation, const std::string& name)
+    {
+        if (name == "") {
+            for (unsigned int i = 0; i < _sounds.size(); ++i)
+               _sounds[i]->setAttenuation(attenuation);
+        }
+        else {
+            _sounds[getSoundID(name)]->setAttenuation(attenuation);
+        }
+    }
+
+    float SoundManager::getMinDistance(const std::string& name) const 
+    {
+        return _sounds[getSoundID(name)]->getMinDistance();
+    }
+
+    void SoundManager::setMinDistance(float minDistance, const std::string& name)
+    {
+        if (name == "") {
+            for (unsigned int i = 0; i < _sounds.size(); ++i)
+               _sounds[i]->setMinDistance(minDistance);
+        }
+        else {
+            _sounds[getSoundID(name)]->setMinDistance(minDistance);
+        }
+    }
+
  
     void SoundManager::setLoop(bool loop, const std::string& name)
     {
