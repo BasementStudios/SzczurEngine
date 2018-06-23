@@ -47,16 +47,14 @@ namespace rat
 		module.set_function("cleanEcho", &SoundManager::cleanEffect<Echo>, this);
     }
 
-    bool SoundManager::newSound(const std::string& fileName)
+    bool SoundManager::newSound(const std::string& fileName, const std::string& name)
     {
         auto sound = std::make_unique<SoundBase>();
          
-        if (sound->init(fileName)) {
+        if (sound->init(fileName, name)) {
             _sounds.push_back(std::move(sound));
             return true;
         }
-
-        _sounds.back()->setVolume(_sounds.back()->getVolume() * (_volumeGame / 100));
 
         return false;
     }
@@ -72,65 +70,59 @@ namespace rat
             _sounds.erase(_sounds.begin() + id);
     }
 
-    void SoundManager::eraseSingleSound(const std::string& fileName)
+    void SoundManager::eraseSingleSound(const std::string& name)
     {
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         _sounds.erase(_sounds.begin() + id);
     }
 
-    int SoundManager::getSoundID(const std::string& fileName) const
+    int SoundManager::getSoundID(const std::string& name) const
     {
         for(unsigned int i = 0; i < _sounds.size(); ++i){
-            if(fileName == _sounds[i]->getName())
+            if(name == _sounds[i]->getName())
                 return i;
         }
 
         return _sounds.size();
     }
 
-    void SoundManager::setVolume(float volume, const std::string& fileName)
+    void SoundManager::setVolume(float volume, const std::string& name)
     {
-        if (fileName == "") {
-            SoundBase::globalVolume = volume;
+        if (name == "") {
             for (unsigned int i = 0; i < _sounds.size(); ++i)
-               _sounds[i]->setVolume(_sounds[i]->getVolume());
+               _sounds[i]->setVolume(_sounds[i]->getVolume() * (volume / 100));
         }
         else {
-            int id = getSoundID(fileName);
+            int id = getSoundID(name);
             _sounds[id]->setVolume(volume);
         }
     }
 
-    float SoundManager::getVolume(const std::string& fileName) const 
+    float SoundManager::getVolume(const std::string& name) const 
     {
-        return _sounds[getSoundID(fileName)]->getVolume();
+        return _sounds[getSoundID(name)]->getVolume();
     }
 
-    float SoundManager::getGlobalVolume() const 
+    void SoundManager::setPitch(float pitch, const std::string& name)
     {
-        return _volumeGame;
-    }
-
-    void SoundManager::setPitch(float pitch, const std::string& fileName)
-    {
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         _sounds[id]->setPitch(pitch);
     }
 
-    float SoundManager::getPitch(const std::string& fileName) const 
+    float SoundManager::getPitch(const std::string& name) const 
     {
-        return _sounds[getSoundID(fileName)]->getPitch();
+        return _sounds[getSoundID(name)]->getPitch();
     }
  
-    void SoundManager::setLoop(bool loop, const std::string& fileName)
+    void SoundManager::setLoop(bool loop, const std::string& name)
     {
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         _sounds[id]->setLoop(loop);
     }
 
-    void SoundManager::changeLoop(const std::string& fileName)
+    void SoundManager::changeLoop(const std::string& name)
     {
-        if (fileName.empty()) {
+        if (name.empty()) {
             for (unsigned int i = 0; i < _sounds.size(); ++i) {
                 if (_sounds[i]->getLoop())
                     _sounds[i]->setLoop(false);
@@ -140,7 +132,7 @@ namespace rat
             return;
         }
 
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         
         if(_sounds[id]->getLoop())
             _sounds[id]->setLoop(false);
@@ -148,9 +140,9 @@ namespace rat
             _sounds[id]->setLoop(true);
     }
 
-    bool SoundManager::getLoop(const std::string& fileName)
+    bool SoundManager::getLoop(const std::string& name)
     {
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         return _sounds[id]->getLoop();
     }
 
@@ -159,33 +151,33 @@ namespace rat
         return _sounds.size();
     }
 
-    void SoundManager::play(const std::string& fileName)
+    void SoundManager::play(const std::string& name)
     {
-        if (fileName.empty()) {
+        if (name.empty()) {
             for (unsigned int i = 0; i < _sounds.size(); ++i)
                 _sounds[i]->play();
             return;
         }
 
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         _sounds[id]->play();
     }
 
-    void SoundManager::pause(const std::string& fileName)
+    void SoundManager::pause(const std::string& name)
     {
-        if (fileName.empty()) {
+        if (name.empty()) {
             for (unsigned int i = 0; i < _sounds.size(); ++i)
                 _sounds[i]->pause();
             return;
         }
 
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         _sounds[id]->pause();
     }
 
-    void SoundManager::stop(const std::string& fileName)
+    void SoundManager::stop(const std::string& name)
     {
-        if (fileName.empty()) {
+        if (name.empty()) {
             for (unsigned int i = 0; i < _sounds.size(); ++i) {
                 _sounds[i]->setLoop(false);
                 _sounds[i]->stop();
@@ -193,32 +185,32 @@ namespace rat
             return;
         }
 
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
 
         _sounds[id]->setLoop(false);
         _sounds[id]->stop();
     }
 
-    void SoundManager::setOffset(const std::string& fileName, Second_t beginT, Second_t endT)
+    void SoundManager::setOffset(const std::string& name, Second_t beginT, Second_t endT)
     {
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         _sounds[id]->setOffset(beginT, endT);
     }
 
-    SoundManager::Second_t SoundManager::getLength(const std::string& fileName) const
+    SoundManager::Second_t SoundManager::getLength(const std::string& name) const
     {
-        int id = getSoundID(fileName);
+        int id = getSoundID(name);
         return _sounds[id]->getLength();
     }
 
-    SoundManager::Second_t SoundManager::getBeginTime(const std::string& fileName) const
+    SoundManager::Second_t SoundManager::getBeginTime(const std::string& name) const
     {
-        return _sounds[getSoundID(fileName)]->getBeginTime();
+        return _sounds[getSoundID(name)]->getBeginTime();
     }
 
-    SoundManager::Second_t SoundManager::getEndTime(const std::string& fileName) const
+    SoundManager::Second_t SoundManager::getEndTime(const std::string& name) const
     {
-        return _sounds[getSoundID(fileName)]->getEndTime();
+        return _sounds[getSoundID(name)]->getEndTime();
     }
 
     std::string SoundManager::getName(int id) const
@@ -235,11 +227,14 @@ namespace rat
             file >> j;
             file.close();
 
-            newSound(fileName);
+            std::string name = j["Name"];
+            std::string path = j["Path"];
 
-            setVolume(j["Volume"], fileName);
-            setPitch(j["Pitch"], fileName);
-            setOffset(fileName, j["BeginTime"], j["EndTime"]);
+            newSound(path, name);
+            
+            setVolume(j["Volume"], name);
+            setPitch(j["Pitch"], name);
+            setOffset(name, j["BeginTime"], j["EndTime"]);
         }
     }
 
