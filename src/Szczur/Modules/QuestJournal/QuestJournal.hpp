@@ -1,15 +1,13 @@
 #pragma once
-#include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
-#include "Szczur/Modules/GUI/ImageWidget.hpp"
 
 
 #include "StepsManager.hpp"
 #include "DescriptionManager.hpp"
+#include "QuestName.hpp"
 
 namespace rat
 {
-    class ImageWidget;
     class QuestJournal : public Module<Window,GUI>
     {
         public:
@@ -23,6 +21,7 @@ namespace rat
 
             std::shared_ptr<StepsManager> _stepManager;
             std::shared_ptr<DescriptionManager> _descriptionManager;
+            std::shared_ptr<QuestName> _questName;
           
     };
 }

@@ -1,18 +1,16 @@
 #include <Szczur/Modules/GUI/GUI.hpp>
 #include <Szczur/Modules/GUI/TextWidget.hpp>
-#include <Szczur/Modules/GUI/ImageWidget.hpp>
-#include <Szczur/Utility/Modules/Module.hpp>
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
-#include <Szczur/Modules/QuestJournal/Quest.hpp>
+#include "Quest.hpp"
 
 #include <SFML/graphics.hpp>
 
 namespace rat
 {
     class Quest;
-    class TextWidget; class ImageWidget; class ScrollAreaWidget;class ListWidget;
+    class TextWidget; class ScrollAreaWidget;class ListWidget;
     class DescriptionManager
     {
         public:
