@@ -5,6 +5,7 @@
 
 
 #include "StepsManager.hpp"
+#include "DescriptionManager.hpp"
 
 namespace rat
 {
@@ -18,8 +19,11 @@ namespace rat
         private:
             InterfaceWidget* _interface{nullptr};
             std::shared_ptr<FileLoader> _fileLoader;
-            std::shared_ptr<StepsManager> _stepManager;
             std::shared_ptr<Quest> _quest;
+
+            std::shared_ptr<StepsManager> _stepManager;
+            std::shared_ptr<DescriptionManager> _descriptionManager;
+          
     };
 }
 

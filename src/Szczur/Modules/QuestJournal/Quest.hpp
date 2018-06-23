@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 #include <memory>
@@ -13,7 +14,7 @@ namespace rat
             ~Quest();
             void setQuestName(const unsigned int &i);
 
-            void setQuestDescription(const unsigned int &a,const unsigned int &b);
+            void addQuestDescription(const unsigned int &a,const unsigned int &b);
 
             void nextStep(const unsigned int &i);
 

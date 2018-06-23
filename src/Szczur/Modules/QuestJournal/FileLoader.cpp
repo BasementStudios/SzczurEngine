@@ -33,7 +33,7 @@ namespace rat
     std::string FileLoader::getDescription(const unsigned int &a,const unsigned int &b)
     {
         std::string text="";
-        for(int i=a;a<=b;i++)
+        for(int i=a;i<=b;i++)
         {
             text+=descriptions[i] + "\n";
         }

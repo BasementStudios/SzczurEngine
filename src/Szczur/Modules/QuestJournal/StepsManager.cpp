@@ -7,7 +7,7 @@ namespace rat
     {
         interface->add(&_scroller);
         _scroller.setPropSize(0.4f, 0.3f);
-        _scroller.setPropPosition(1.f, 0.f);
+        _scroller.setPropPosition(0.1f, 0.1f);
         _list.setBetweenPadding(20.f);
         _list.setPropSize(0.3f, 1.f);
 
@@ -31,7 +31,6 @@ namespace rat
             widget->setCharacterSize(20);
             widget->setColor(sf::Color::White);
             _list.add(widget);
-            LOG_INFO(widget->getLength());
         }
    
     }
