@@ -218,6 +218,11 @@ namespace rat
         return _sounds[id]->getName();
     }
 
+    std::string SoundManager::getFileName(const std::string& name) const
+    {
+        return _sounds[getSoundID(name)]->getFileName();
+    }
+
     void SoundManager::load(const std::string& fileName)
     {
         nlohmann::json j;

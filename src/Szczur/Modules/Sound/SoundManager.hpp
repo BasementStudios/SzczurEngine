@@ -60,6 +60,7 @@ namespace rat
         Second_t getEndTime(const std::string& name) const;            
 
         std::string getName(int i) const;
+        std::string getFileName(const std::string& name) const;
 
         void load(const std::string& fileName);
 

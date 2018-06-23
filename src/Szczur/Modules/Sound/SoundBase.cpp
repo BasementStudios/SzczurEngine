@@ -78,6 +78,11 @@ namespace rat
         return _name;
     }
 
+    std::string SoundBase::getFileName() const
+    {
+        return _fileName;
+    }
+
     bool SoundBase::loadBuffer()
     {
         return buffer.loadFromFile(getPath());
