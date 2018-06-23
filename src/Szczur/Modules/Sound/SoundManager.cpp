@@ -83,7 +83,7 @@ namespace rat
                 return i;
         }
 
-        return _sounds.size();
+        return -1;
     }
 
     void SoundManager::setVolume(float volume, const std::string& name)
