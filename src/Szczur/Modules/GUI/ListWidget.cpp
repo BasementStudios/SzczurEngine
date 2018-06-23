@@ -61,7 +61,7 @@ namespace rat
         
         func = [this](const Widget* child){
             if(child->isFullyDeactivated()) return sf::Vector2f{};
-            return sf::Vector2f{ float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding, 0.f };
+            return sf::Vector2f{ float(child->getSize().x) + child->getPosition().x - child->getPadding().x + _betweenWidgetsPadding, 0.f };
         };
 
         if(_positioning == Positioning::Vertical)
@@ -90,8 +90,8 @@ namespace rat
             }
             else
             {
-                shift.y -= (_shifts.front().y - _betweenWidgetsPadding);
                 shift.x = 0;
+                shift.y -= (_shifts.front().y - _betweenWidgetsPadding);
             }
             return static_cast<sf::Vector2f>(shift);
         }

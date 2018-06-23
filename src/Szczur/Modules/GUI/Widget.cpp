@@ -566,8 +566,8 @@ namespace rat
     {
         _props.hasSize = true;
         _props.size = propSize;
-        _props.size.x = std::max(0.f, std::min(1.f, _props.size.x));
-        _props.size.y = std::max(0.f, std::min(1.f, _props.size.y));
+        _props.size.x = std::max(0.f, _props.size.x);
+        _props.size.y = std::max(0.f, _props.size.y);
 
         if(_interface)
         {

@@ -79,7 +79,7 @@ namespace rat
         SkillArea _skillArea;
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;
-        GlyphArea _testGlyphBar;
+        GlyphArea _glyphArea;
 
         InfoBar _infoBar;
 
@@ -101,6 +101,7 @@ namespace rat
         void _initEnemyArea();
 
         void _loadAssetsFromGUI();
+        void _initAssetsViaGUI();
 
         void _calcGlyphGUI(GlyphID id);
         void _calcPPsGUI();

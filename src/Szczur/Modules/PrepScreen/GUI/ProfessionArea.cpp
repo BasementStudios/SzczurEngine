@@ -8,7 +8,7 @@ namespace rat
 {
     ProfessionArea::ProfessionArea(PrepScreen& prepScreen)
     :
-    BaseBar([]{ auto* base = new ListWidget; base->setAutoBetweenPadding(); base->setPropSize(0.f, 0.7f); return base;}())
+    BaseBar([]{ auto* base = new ListWidget; base->setAutoBetweenPadding(); /*base->setPropSize(0.f, 0.7f);*/ return base;}())
     {
         _initProfBars(prepScreen);
     }

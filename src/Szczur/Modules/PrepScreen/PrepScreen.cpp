@@ -13,6 +13,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 #include "GlyphTypes.hpp"
 
@@ -24,7 +25,7 @@ namespace rat
     PrepScreen::PrepScreen()
     :
     _grayPPArea(),
-    _testGlyphBar(*this),
+    _glyphArea(*this),
     _skillArea(*this),
     _profArea(*this),
     _chosenSkillArea(*this, 6)
@@ -201,7 +202,7 @@ namespace rat
     {
         size_t activated = _source.glyphContainer.getGlyphAmount(id);
         size_t total = _source.glyphContainer.getGlyphTotalAmount(id);
-        _testGlyphBar.setGlyph(id, activated, total);
+        _glyphArea.setGlyph(id, activated, total);
     }
     
     void PrepScreen::_calcPPsGUI()
@@ -222,11 +223,45 @@ namespace rat
         auto& gui = getModule<GUI>();
 
         _loadAssetsFromGUI();
-        _codex.initAssetsViaGUI(gui);
+        _initAssetsViaGUI();
+        
 
         _base = gui.addInterface();
         _base->setPadding(20.f, 20.f);
         _base->setSizingWidthToHeightProportion(1.f);
+
+        auto* list = new ListWidget;
+        list->setPropPosition(0.5f, 0.f);
+        list->setPropSize(0.f, 1.f);
+        list->setAutoBetweenPadding();
+        _base->add(list);
+
+        _glyphArea.setParent(list);
+        _glyphArea.setPropPosition(0.5f, 0.f);
+
+        _grayPPArea.setParent(list);
+        _grayPPArea.setPropPosition(0.5f, 0.f);
+
+        auto* mainList = new ListWidget;
+        list->add(mainList);
+        mainList->setPropPosition(0.5f, 0.f);
+        mainList->makeHorizontal();
+        mainList->setPropSize(1.6f, 0.f);
+        mainList->setAutoBetweenPadding();
+        //mainList->setPropPosition(0.5f, 0.f);
+
+        _profArea.setParent(mainList);
+        //_profArea.setPropPosition(0.f, 0.5f);
+
+        _skillArea.setParent(mainList);
+       // _skillArea.setPropPosition(0.f, 0.5f);
+
+        _chosenSkillArea.setParent(mainList);
+        
+        _enemyArea.setParent(mainList);
+        //_enemyArea.setPropPosition(0.f, 0.5f);
+
+
 
         test();
     }
@@ -237,23 +272,23 @@ namespace rat
         auto& gui = getModule<GUI>();
 
 
-        _grayPPArea.setParent(_base);
-        _grayPPArea.initAssetsViaGUI(gui);
-        _grayPPArea.setPosition(1280.f/2.f, 120);
+        //_grayPPArea.setParent(_base);
+        
+        //_grayPPArea.setPosition(1280.f/2.f, 120);
 
         //_grayPPArea.recalculate();
 
         
 
-        _initSkillArea(); // Traitor
+        _initSkillArea();
         _initChosenSkillArea();
         _initProfArea();
         _initColorFilterArea();
         _initEnemyArea();
 
-        _testGlyphBar.setPosition(1280.f/2.f, 10.f);
-        _testGlyphBar.setParent(_base);
-        _testGlyphBar.initAssetsViaGUI(gui);
+        //_glyphArea.setPosition(1280.f/2.f, 10.f);
+        //_glyphArea.setParent(_base);
+        
 
         addPP(12);
         //takePP(3);
@@ -266,23 +301,24 @@ namespace rat
 
     void PrepScreen::_initSkillArea()
     {
-        _skillArea.setParent(_base);
-        _skillArea.setPosition(200.f, 150.f);
-        _skillArea.initAssetsViaGUI(getModule<GUI>());
+        //_skillArea.setParent(_base);
+        //_skillArea.setPosition(200.f, 150.f);
+        
     }
 
     void PrepScreen::_initProfArea()
     {
-        _profArea.setParent(_base);
-        _profArea.setPosition(40.f, 150.f);
-        _profArea.initAssetsViaGUI(getModule<GUI>());
+        //_profArea.setParent(_base);
+        //_profArea.setPosition(40.f, 150.f);
+        
+        
     }
     
     void PrepScreen::_initChosenSkillArea()
     {
-        _chosenSkillArea.setParent(_base);
-        _chosenSkillArea.setPosition(200.f, 600.f);
-        _chosenSkillArea.initAssetsViaGUI(getModule<GUI>());
+        //_chosenSkillArea.setParent(_base);
+        //_chosenSkillArea.setPosition(200.f, 600.f);
+        
     }
     void PrepScreen::_initColorFilterArea()
     {
@@ -296,10 +332,9 @@ namespace rat
 
     void PrepScreen::_initEnemyArea()
     {
-        _enemyArea.setParent(_base);
-        _enemyArea.setPosition(900.f, 150.f);
-        _enemyArea.initEnemiesViaCodex(_enemyCodex);
-        _enemyArea.initAssetsViaGUI(getModule<GUI>());
+        //_enemyArea.setParent(_base);
+        //_enemyArea.setPosition(900.f, 150.f);
+        
     }
 
     void PrepScreen::_loadAssetsFromGUI()
@@ -329,8 +364,21 @@ namespace rat
         }
 
         gui.addAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
+        _codex.initAssetsViaGUI(gui);
         _enemyCodex.initAssetsViaGUI(gui);
     }
     
+    void PrepScreen::_initAssetsViaGUI()
+    {
+        auto& gui = getModule<GUI>();
+        
+        _grayPPArea.initAssetsViaGUI(gui);
+        _glyphArea.initAssetsViaGUI(gui);
+        _profArea.initAssetsViaGUI(gui);
+        _skillArea.initAssetsViaGUI(gui);
+        _chosenSkillArea.initAssetsViaGUI(gui);
+        _enemyArea.initEnemiesViaCodex(_enemyCodex);
+        _enemyArea.initAssetsViaGUI(gui);
+    }
     
 }
