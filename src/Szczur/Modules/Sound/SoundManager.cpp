@@ -35,6 +35,8 @@ namespace rat
         module.set_function("setAttenuation", &SoundManager::setAttenuation, this);
         module.set_function("getMinDistance", &SoundManager::getMinDistance, this);
         module.set_function("setMinDistance", &SoundManager::setMinDistance, this);
+        module.set_function("getPosition", &SoundManager::getPosition, this);
+        module.set_function("setPosition", &SoundManager::setPosition, this);
         module.set_function("setPitch", &SoundManager::setPitch, this);
         module.set_function("getPitch", &SoundManager::getPitch, this);
         module.set_function("setLoop", &SoundManager::setLoop, this);
@@ -176,6 +178,21 @@ namespace rat
         }
     }
 
+    sf::Vector3f SoundManager::getPosition(const std::string& name) const 
+    {
+        return _sounds[getSoundID(name)]->getPosition();
+    }
+
+    void SoundManager::setPosition(float x, float y, float z, const std::string& name)
+    {
+        if (name == "") {
+            for (unsigned int i = 0; i < _sounds.size(); ++i)
+               _sounds[i]->setPosition(x, y, z);
+        }
+        else {
+            _sounds[getSoundID(name)]->setPosition(x, y, z);
+        }
+    }
  
     void SoundManager::setLoop(bool loop, const std::string& name)
     {
@@ -303,6 +320,9 @@ namespace rat
             setVolume(j["Volume"], name);
             setPitch(j["Pitch"], name);
             setOffset(name, j["BeginTime"], j["EndTime"]);
+            setAttenuation(j["Attenuation"], name);
+            setMinDistance(j["MinDistance"], name);
+            setRelativeToListener(j["Relative"], name);
         }
     }
 

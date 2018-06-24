@@ -65,6 +65,16 @@ namespace rat
         return sound.getMinDistance();
     }
 
+    void SoundBase::setPosition(float x, float y, float z) 
+    {
+        sound.setPosition(x, y, z);
+    }
+
+    sf::Vector3f SoundBase::getPosition() const
+    {
+        return sound.getPosition();
+    }
+
     void SoundBase::setMinDistance(float minDistance) 
     {
         sound.setMinDistance(minDistance);
