@@ -99,10 +99,11 @@ void ColliderComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 
 void ColliderComponent::move(float x, float y, float z)
 {
-	bool canMove = true;
+	glm::vec3 velocity = { x, y, z };
 
 	auto thisPos = getEntity()->getPosition() + glm::vec3(x, 0, z);
-	auto thisRect = getRect(thisPos, _boxSize);
+	auto thisRectX = getRect(getEntity()->getPosition() + glm::vec3(x, 0, 0), _boxSize);
+	auto thisRectZ = getRect(getEntity()->getPosition() + glm::vec3(0, 0, z), _boxSize);
 
 	// scan every entity on path
 	auto& entities = this->getEntity()->getScene()->getEntities("path");
@@ -117,48 +118,58 @@ void ColliderComponent::move(float x, float y, float z)
 			{
 				auto entityRect = getRect(entity->getPosition(), comp->getBoxSize());
 
-				// collision check
-				if (thisRect.intersects(entityRect))
+				// if move to left/right will be collsion
+				if (thisRectX.intersects(entityRect))
 				{
 					if (comp->isDynamic())
-					{
-						// if entity is dynamic then move it
-						entity->move({ x, 0.f , z });
-					}
+						entity->move({ velocity.x, 0, 0 }); // move the other
 					else
-					{
-						// if entity isn't dynamic stop
-						canMove = false;
-					}
+						velocity.x = 0.f; // stop
+				}
+
+				// if move to up/down will be collsion
+				if (thisRectZ.intersects(entityRect))
+				{
+					if (comp->isDynamic())
+						entity->move({ 0, 0, velocity.z }); // move the other
+					else
+						velocity.z = 0.f; // stop
 				}
 			}
 			else if (this->_cicleCollider && comp->isCircleCollider()) // if both have circle collider
 			{
+				// calc delta between objects
 				auto delta = thisPos - entity->getPosition();
 
+				// calc distance
+				auto distance = sqrt(pow(delta.x, 2) + pow(delta.z, 2));
+
+				// add radius both circles
+				auto radius = _circleRadius + comp->getCircleRadius();
+
 				// collision check
-				if (sqrt(pow(delta.x, 2) + pow(delta.z, 2)) < _circleRadius + comp->getCircleRadius())
+				if (distance < radius)
 				{
+					// calc angle
+					auto angle = atan2(delta.z, delta.x);
+
 					if (comp->isDynamic())
 					{
-						// if entity is dynamic then move it
-						entity->move({ x, 0.f, z });
+						// move the other
+						entity->move({ -cos(angle) * (radius - distance), 0.f, -sin(angle) * (radius - distance) });
 					}
 					else
 					{
-						// if entity isn't dynamic stop
-						canMove = false;
+						// stop itself
+						velocity.x += cos(angle) * (radius - distance);
+						velocity.z += sin(angle) * (radius - distance);
 					}
 				}
 			}
 		}
 	}
 
-	// if can move then move xd
-	if (canMove)
-	{
-		getEntity()->move({ x, y, z });
-	}
+	getEntity()->move(velocity);
 }
 
 sf::FloatRect ColliderComponent::getRect(const glm::vec3& pos, const glm::vec2& size)
