@@ -12,8 +12,9 @@
 
 namespace rat {
 	CameraComponent::CameraComponent(Entity* parent) :
-	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"} {
-
+	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"}, 
+	_listener(detail::globalPtr<Listener>) {
+		
 	}
 
 	void CameraComponent::processEvents(InputManager& input) {
@@ -222,7 +223,7 @@ namespace rat {
 		}
 
 		auto curPos = entity->getPosition();
-		detail::globalPtr<Listener>->setPosition(curPos.x, curPos.y, curPos.z);
+		_listener->setPosition(curPos.x, curPos.y, curPos.z);
     }
 
 	void CameraComponent::setSmoothness(float smoothness) {

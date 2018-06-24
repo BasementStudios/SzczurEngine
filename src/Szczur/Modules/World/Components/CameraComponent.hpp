@@ -12,6 +12,7 @@ namespace rat {
 class InputManager;
 class Entity;
 class Script;
+class Listener;
 template<class T> class ScriptClass;
 
 class CameraComponent : public Component {
@@ -99,6 +100,8 @@ private:
 
 	float _stickToX{0.f};
 	bool _stickedToX{false};
+
+    Listener* _listener;
 
 };
 
