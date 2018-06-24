@@ -15,16 +15,30 @@ namespace rat
     {
         if(_texture)
         {        
-            states.transform *= getTransform();
-
             for(int y = 0; y < _elementAmount.y; y++)
                 for(int x = 0; x < _elementAmount.x; x++)
                 {
-                    _sprite.setPosition(float(x) * _elementDim.x, float(y) * _elementDim.y);
+                    _sprite.setPosition(_basePos + sf::Vector2f{float(x) * _elementDim.x, float(y) * _elementDim.y});
                     target.draw(_sprite, states);
                 }
+            _sprite.setPosition(_basePos);
         }
+    }
 
+    void Patch::setBasePosition(const sf::Vector2f& basePosition)
+    {
+        _sprite.move(-_basePos);
+        _basePos = basePosition;
+        sprite.move(_basePos);
+
+    }
+    void Patch::setPosition(const sf::Vector2f& position)
+    {
+        _sprite.setPosition(_basePos + position);
+    }
+    void Patch::setPosition(float x, float y)
+    {
+        setPosition({x, y});
     }
     
     void Patch::setScale(float x, float y)

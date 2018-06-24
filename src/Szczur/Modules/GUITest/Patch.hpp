@@ -4,7 +4,7 @@
 
 namespace rat
 {
-    class Patch : public sf::Drawable, public sf::Transformable
+    class Patch : public sf::Drawable
     {
     public:
         enum class Direction{ None, Vertical, Horizontal, All };
@@ -12,7 +12,11 @@ namespace rat
         Patch() = default;
         Patch(Direction direction);
 
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;       
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const override;      
+
+        void setBasePosition(const sf::Vector2f& basePosition);
+        void setPosition(const sf::Vector2f& position);
+        void setPosition(float x, float y);
 
         void setSize(int x, int y);
         void setSize(sf::Vector2i size);
@@ -31,6 +35,9 @@ namespace rat
 
     private:
         Direction _direction{Direction::Horizontal};
+
+        sf::Vector2f _basePos;
+        sf::Vector2f _pos;
 
         mutable sf::Sprite _sprite;
         const sf::Texture* _texture{nullptr}; 

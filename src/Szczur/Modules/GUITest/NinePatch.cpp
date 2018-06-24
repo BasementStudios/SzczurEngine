@@ -242,6 +242,23 @@ namespace rat
 
 
     }
+
+    void NinePatch::setPosition(sf::Vector2f& position)
+    {
+        _topBar.setBasePosition(position);
+        _bottomBar.setBasePosition(position);
+        _leftBar.setBasePosition(position);
+        _rightBar.setBasePosition(position);
+        _topLeftCorner.setBasePosition(position);
+        _topRightCorner.setBasePosition(position);
+        _bottomLeftCorner.setBasePosition(position);
+        _bottomRightCorner.setBasePosition(position);
+        _inner.setBasePosition(position);
+    }
+    void NinePatch::setPosition(float x, float y)
+    {
+        setPosition({x, y});
+    }
     
 
     void NinePatch::setSize(const sf::Vector2i& size)
