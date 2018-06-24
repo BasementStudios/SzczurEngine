@@ -105,15 +105,18 @@ void ColliderComponent::move(float x, float y, float z)
 	auto thisRectX = getRect(getEntity()->getPosition() + glm::vec3(x, 0, 0), _boxSize);
 	auto thisRectZ = getRect(getEntity()->getPosition() + glm::vec3(0, 0, z), _boxSize);
 
-	// scan every entity on path
-	auto& entities = this->getEntity()->getScene()->getEntities("path");
-	for (auto& entity : entities)
-	{
+	auto collisionCheck = [&] (Entity* entity) {
+
+		if (entity == getEntity())
+		{
+			return;
+		}
+
 		// if entity has collider
 		if (entity->hasComponent<ColliderComponent>())
 		{
 			auto comp = entity->getComponentAs<ColliderComponent>();
-			
+
 			if (this->_boxCollider && comp->isBoxCollider())// if both have box collider
 			{
 				auto entityRect = getRect(entity->getPosition(), comp->getBoxSize());
@@ -167,7 +170,16 @@ void ColliderComponent::move(float x, float y, float z)
 				}
 			}
 		}
+	};
+
+	// scan every entity on path
+	auto& entities = this->getEntity()->getScene()->getEntities("path");
+	for (auto& entity : entities)
+	{
+		collisionCheck(entity.get());
 	}
+
+	collisionCheck(getEntity()->getScene()->getPlayer());
 
 	getEntity()->move(velocity);
 }
