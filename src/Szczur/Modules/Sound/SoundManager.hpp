@@ -56,6 +56,9 @@ namespace rat
         float getMinDistance(const std::string& name) const; 
         void setMinDistance(float minDistance, const std::string& name = "");
 
+        sf::Vector3f getPosition(const std::string& name) const;
+        void setPosition(float x, float y, float z, const std::string& name = "");
+
         void setLoop(bool loop, const std::string& name);
         void changeLoop(const std::string& name = "");
         bool getLoop(const std::string& name);
