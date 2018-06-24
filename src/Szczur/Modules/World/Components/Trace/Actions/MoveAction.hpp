@@ -59,7 +59,13 @@ public:
 				_progress = 1.f;
 			}
 
-			_entity->setPosition(Start + _delta * _progress);
+			auto velocity = (Start + _delta * _progress) - _entity->getPosition();
+
+			// if entity has collider then move with it
+			if (_entity->hasComponent<ColliderComponent>())
+				_entity->getComponentAs<ColliderComponent>()->move(velocity.x, velocity.y, velocity.z);
+			else
+				_entity->move(velocity);
 		}
 	}
 
