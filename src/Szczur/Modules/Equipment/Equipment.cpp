@@ -41,11 +41,10 @@ namespace rat {
 		EquipmentObject* item2 = new EquipmentObject("item2", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item2.png"), equipmentObjectType::potion);
 		EquipmentObject* item3 = new EquipmentObject("item3", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item3.png"), equipmentObjectType::amulet);
 
-		_normalSlots = new NormalSlots(15, gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {70u, 70u});
+		_normalSlots = new NormalSlots(15, gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {70, 70});
 		_normalSlots->setParent(_equipmentFrame);
 		_normalSlots->addItem(item3);
 		_normalSlots->addItem(item2);
-		_normalSlots->removeItem(item2->getName());
 		_normalSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 4));
 
 		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {80u, 80u}, gui.getAsset<sf::Texture>("Assets/Equipment/upArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/downArrow.png"));
@@ -58,12 +57,10 @@ namespace rat {
 	}
 
 	void Equipment::update(float deltaTime) {
-
+		_normalSlots->update();
 	}
 
 	void Equipment::render() {
-		auto& mainWindow = getModule<Window>();
-
 		mainWindow.pushGLStates();
 
 		_canvas.clear(sf::Color::Transparent);

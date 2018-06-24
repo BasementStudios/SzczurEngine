@@ -1,11 +1,12 @@
 #include "EquipmentSlot.hpp"
-#include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/Widget.hpp"
 namespace rat {
 	EquipmentSlot::EquipmentSlot() {
+		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
-		_addWidget(_itemImage);
-		_addWidget(_slotImage);		
+		_base->add(_itemImage);
+		_base->add(_slotImage);
 	}
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);
@@ -22,7 +23,7 @@ namespace rat {
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {
 		_itemPlaced = item;
-		_itemImage->setTexture(item->getIcon());
+		_itemImage->setTexture(item->getTexture());
 		_itemImage->resetColor();
 	}
 
@@ -33,5 +34,27 @@ namespace rat {
 
 	EquipmentObject* EquipmentSlot::getItem() {
 		return _itemPlaced;
+	}
+
+	void EquipmentSlot::setItemPosition(sf::Vector2f pos) {
+		_itemImage->setPosition(pos + static_cast<sf::Vector2f>(_itemImage->getSize() / 2u));
+	}
+	void EquipmentSlot::resetItemPosition() {
+		_itemImage->setPosition(sf::Vector2f(0.f, 0.f));
+	}
+
+	Widget* EquipmentSlot::getSlotWidget() {
+		return _slotImage;
+	}
+
+	void EquipmentSlot::setParent(Widget* parent) {
+		parent->add(_base);
+	}
+
+	void EquipmentSlot::setPosition(sf::Vector2f pos) {
+		_base->setPosition(pos);
+	}
+	sf::Vector2f EquipmentSlot::getPosition() {
+		return _base->getPosition();
 	}
 }

@@ -43,7 +43,7 @@ namespace rat {
 		if (_chosenAmulet == nullptr) {
 			_amuletImage->resetColor();
 			_chosenAmulet = amulet;
-			_amuletImage->setTexture(amulet->getIcon());
+			_amuletImage->setTexture(amulet->getTexture());
 		}
 	}
 	void AmuletSlot::removeAmulet(sf::String name) {
@@ -53,7 +53,7 @@ namespace rat {
 				if (_chosenAmulet->getName() == name) {
 					if (i != 0)		//there is some other amulet to display
 					{
-						_amuletImage->setTexture(_amulets[i - 1]->getIcon());
+						_amuletImage->setTexture(_amulets[i - 1]->getTexture());
 						_chosenAmulet = _amulets[i - 1];
 						_amulets.erase(_amulets.begin() + i);
 					}
@@ -82,7 +82,7 @@ namespace rat {
 			{
 				if (_amulets[i] == _chosenAmulet && i + 1 < _amulets.size()) {
 					_chosenAmulet = _amulets[i + 1];
-					_amuletImage->setTexture(_chosenAmulet->getIcon());
+					_amuletImage->setTexture(_chosenAmulet->getTexture());
 					break;
 				}
 			}
@@ -94,7 +94,7 @@ namespace rat {
 			{
 				if (_amulets[i] == _chosenAmulet && i != 0) {
 					_chosenAmulet = _amulets[i - 1];
-					_amuletImage->setTexture(_chosenAmulet->getIcon());
+					_amuletImage->setTexture(_chosenAmulet->getTexture());
 				}
 			}
 		}

@@ -24,7 +24,7 @@ namespace rat {
 		_objectType = type;
 	}*/
 
-	sf::Texture* EquipmentObject::getIcon() {
+	sf::Texture* EquipmentObject::getTexture() {
 		return _objectIcon;
 	}
 

@@ -21,11 +21,12 @@ namespace rat {
 		void setDescription(sf::String);
 		void setType(equipmentObjectType);*/
 
-		sf::Texture* getIcon();
+		sf::Texture* getTexture();
 		sf::String getName();
 		sf::String getDescription();
 		equipmentObjectType getType();
 
+		bool usable = true;
 	private:
 		sf::Texture* _objectIcon;
 		sf::String _objectDescription, _objectName;
