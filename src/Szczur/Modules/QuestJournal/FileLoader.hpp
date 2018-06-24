@@ -11,7 +11,7 @@ namespace rat
             ~FileLoader();
 
             std::string getStep(const unsigned int &i);
-            std::string getDescription(const unsigned int &a,const unsigned int &b);
+            std::string getDescription(const unsigned int &a);
 
         private:
             std::vector<std::string> steps;

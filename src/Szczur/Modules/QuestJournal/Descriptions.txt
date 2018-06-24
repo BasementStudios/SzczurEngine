@@ -1,15 +1,31 @@
-o
-p
-i
-s
 ---
-o
-p
-i
-s
+_1
+uwaga teraz podaje pierwszy opis dla misji 1
+bla bla bla bla bla bla bla bla bla bla
+alb alb alb alb alb alb alb alb alb alb
+<<<koniec opisu dla misji 1!!!>>>
 ---
-o
-p
-i
-s
+_2
+uwaga teraz podaje drugi opis dla misji 1
+bla bla bla bla bla bla bla bla bla bla
+alb alb alb alb alb alb alb alb alb alb
+<<<koniec opisu dla misji 1!!!>>>
+---
+_3
+uwaga teraz podaje pierwszy opis dla misji 2
+bla bla bla bla bla bla bla bla bla bla
+alb alb alb alb alb alb alb alb alb alb
+<<<koniec opisu dla misji 2!!!>>>
+---
+_4
+uwaga teraz podaje drugi opis dla misji 2
+bla bla bla bla bla bla bla bla bla bla
+alb alb alb alb alb alb alb alb alb alb
+<<<koniec opisu dla misji 2!!!>>>
+---
+_5
+uwaga teraz podaje trzeci opis dla misji 2
+bla bla bla bla bla bla bla bla bla bla
+alb alb alb alb alb alb alb alb alb alb
+<<<koniec opisu dla misji 2!!!>>>
 ---

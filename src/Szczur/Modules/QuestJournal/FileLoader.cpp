@@ -30,12 +30,21 @@ namespace rat
         return steps[i];
     }
 
-    std::string FileLoader::getDescription(const unsigned int &a,const unsigned int &b)
+    std::string FileLoader::getDescription(const unsigned int &a)
     {
+        unsigned int i=0;
         std::string text="";
-        for(int i=a;i<=b;i++)
+
+        while(descriptions[i] != "_"+std::to_string(a))
+        {
+            i++;
+        }
+        i++;
+
+        while(descriptions[i] != "---")
         {
             text+=descriptions[i] + "\n";
+            i++;
         }
         return text;
     }

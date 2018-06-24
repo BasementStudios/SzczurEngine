@@ -18,9 +18,9 @@ namespace rat
         _questName = _fileLoader->getStep(i);
     }
     
-    void Quest::addQuestDescription(const unsigned int &a,const unsigned int &b)
+    void Quest::addQuestDescription(const unsigned int &descriptionNumber)
     {
-        _descriptions.push_back(_fileLoader->getDescription(a,b));
+        _descriptions.push_back(_fileLoader->getDescription(descriptionNumber));
     }
 
     void Quest::nextStep(const unsigned int &i)

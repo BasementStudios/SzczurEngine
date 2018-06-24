@@ -9,7 +9,7 @@ namespace rat
         _scroller.setPropPosition(0.94f, 0.85f);
         _list.setBetweenPadding(20.f);
         _list.setPropSize(0.6f, 1.f);
-
+        _list.makeReversed();
         _scroller.add(&_list);
     }
 
@@ -20,6 +20,7 @@ namespace rat
 
     void DescriptionManager::refresh()
     {
+        _list.clear();
         _descriptions = std::make_shared<std::vector<std::string> >(_quest->getDescription());
         TextWidget* widget;
         for(auto i = _descriptions->begin();i!=_descriptions->end();i++)
@@ -27,7 +28,7 @@ namespace rat
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(20);
+            widget->setCharacterSize(25);
             widget->setColor(sf::Color::White);
             _list.add(widget);
             LOG_INFO(widget->getLength());
@@ -36,6 +37,7 @@ namespace rat
 
     void DescriptionManager::setQuest(std::shared_ptr<Quest> quest)
     {
+        _list.clear();
         _quest = quest;
         _descriptions = std::make_shared<std::vector<std::string> >(quest->getDescription());
         TextWidget* widget;
@@ -44,7 +46,7 @@ namespace rat
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(20);
+            widget->setCharacterSize(25);
             widget->setColor(sf::Color::White);
             _list.add(widget);
         }

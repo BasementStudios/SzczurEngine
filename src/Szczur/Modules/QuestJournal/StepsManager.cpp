@@ -21,6 +21,7 @@ namespace rat
 
     void StepsManager::refresh()
     {
+        _list.clear();
         _steps = std::make_shared<std::vector<std::string> >(_quest->getSteps());
         TextWidget* widget;
         for(auto i = _steps->begin();i!=_steps->end();i++)
@@ -28,7 +29,7 @@ namespace rat
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(20);
+            widget->setCharacterSize(25);
             widget->setColor(sf::Color::White);
             _list.add(widget);
         }
@@ -43,6 +44,7 @@ namespace rat
 
     void StepsManager::setQuest(std::shared_ptr<Quest> quest)
     {
+        _list.clear();
         _quest = quest;
         _steps = std::make_shared<std::vector<std::string> >(quest->getSteps());
         TextWidget* widget;
@@ -51,9 +53,10 @@ namespace rat
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(20);
+            widget->setCharacterSize(25);
             widget->setColor(sf::Color::White);
             _list.add(widget);
         }
     }
+
 }

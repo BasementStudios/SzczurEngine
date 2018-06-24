@@ -14,7 +14,7 @@ namespace rat
             ~Quest();
             void setQuestName(const unsigned int &i);
 
-            void addQuestDescription(const unsigned int &a,const unsigned int &b);
+            void addQuestDescription(const unsigned int &descriptionNumber);
 
             void nextStep(const unsigned int &i);
 

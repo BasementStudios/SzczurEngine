@@ -3,7 +3,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
-
+#include "Szczur/Modules/GUI/Widget.hpp"
 #include "StepsManager.hpp"
 #include "DescriptionManager.hpp"
 #include "QuestName.hpp"
@@ -21,10 +21,14 @@ namespace rat
             void addQuest(const unsigned int &i);
             void addStep(const unsigned int &i);
 
-            void addDescription(const unsigned int &a,const unsigned int &b);
+            void addDescription(const unsigned int &descriptionNumber);
 
             void moveIterator(std::string questName);
+
+            void refresh(std::string questName);
         private:
+
+            
 
             std::vector<std::shared_ptr<TextWidget> > _widgets;
             ListWidget _list;
