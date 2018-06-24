@@ -8,7 +8,7 @@
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-
+#include "Szczur/Modules/Listener/Listener.hpp"
 
 namespace rat {
 	CameraComponent::CameraComponent(Entity* parent) :
@@ -220,7 +220,9 @@ namespace rat {
 				position.x = _limit.left;
 			entity->setPosition(position);
 		}
-		
+
+		auto curPos = entity->getPosition();
+		detail::globalPtr<Listener>->setPosition(curPos.x, curPos.y, curPos.z);
     }
 
 	void CameraComponent::setSmoothness(float smoothness) {
