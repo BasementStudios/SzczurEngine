@@ -11,6 +11,7 @@
 #include "Components/TraceComponent.hpp"
 #include "Components/BaseComponent.hpp"
 #include "Components/ColliderComponent.hpp"
+#include "Components/AudioComponent.hpp"
 
 #include <memory>
 
@@ -35,6 +36,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("InteractableComponent")) return std::make_unique<InteractableComponent>(parent);
 		if (id == fnv1a_64("TriggerComponent")) return std::make_unique<TriggerComponent>(parent);
 		if (id == fnv1a_64("TraceComponent")) return std::make_unique<TraceComponent>(parent);
+		if (id == fnv1a_64("AudioComponent")) return std::make_unique<AudioComponent>(parent);
 
 		return nullptr;
 	}
@@ -51,6 +53,7 @@ struct ComponentTraits
 		if (name == "InteractableComponent") return std::make_unique<InteractableComponent>(parent);
 		if (name == "TriggerComponent") return std::make_unique<TriggerComponent>(parent);
 		if (name == "TraceComponent") return std::make_unique<TraceComponent>(parent);
+		if (name == "AudioComponent") return std::make_unique<AudioComponent>(parent);
 
 		return nullptr;
 	}
@@ -74,6 +77,7 @@ struct ComponentTraits
 		if (name == "InteractableComponent") return fnv1a_64("InteractableComponent");
 		if (name == "TriggerComponent") return fnv1a_64("TriggerComponent");
 		if (name == "TraceComponent") return fnv1a_64("TraceComponent");
+		if (name == "AudioComponent") return fnv1a_64("AudioComponent");
 
 		return 0;
 	}
@@ -90,6 +94,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("InteractableComponent")) return "InteractableComponent";
 		if (id == fnv1a_64("TriggerComponent")) return "TriggerComponent";
 		if (id == fnv1a_64("TraceComponent")) return "TraceComponent";
+		if (id == fnv1a_64("AudioComponent")) return "AudioComponent";
 
 		return "";
 	}
@@ -107,6 +112,7 @@ struct ComponentTraits
 		if (std::is_same_v<T, InteractableComponent>) return fnv1a_64("InteractableComponent");
 		if (std::is_same_v<T, TriggerComponent>) return fnv1a_64("TriggerComponent");
 		if (std::is_same_v<T, TraceComponent>) return fnv1a_64("TraceComponent");
+		if (std::is_same_v<T, AudioComponent>) return fnv1a_64("AudioComponent");
 
 		return 0;
 	}
@@ -130,6 +136,7 @@ struct ComponentTraits
 		InteractableComponent::initScript(entity, script);
 		TriggerComponent::initScript(entity, script);
 		TraceComponent::initScript(entity, script);
+		AudioComponent::initScript(entity, script);
 	}
 };
 
