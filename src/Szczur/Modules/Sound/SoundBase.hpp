@@ -57,6 +57,9 @@ namespace rat
         float getMinDistance() const; 
         void setMinDistance(float minDistance);
 
+        void setPosition(float x, float y, float z);
+        sf::Vector3f getPosition() const;
+
         bool getLoop() const;
         void setLoop(bool loop);
 
