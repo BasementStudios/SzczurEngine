@@ -27,6 +27,8 @@ namespace rat
 		module.set_function("getDirection", &Listener::getDirection, this);
         module.set_function("setUpVector", &Listener::setUpVector, this);
 		module.set_function("getUpVector", &Listener::getUpVector, this);
+        module.set_function("getOffsetZ", &Listener::getOffsetZ, this);
+        module.set_function("setOffsetZ", &Listener::setOffsetZ, this);
 
     }
 
@@ -42,7 +44,7 @@ namespace rat
 
     void Listener::setPosition(float x, float y, float z)
     {
-        sf::Listener::setPosition(x, y, z);
+        sf::Listener::setPosition(x, y, z + _offsetZ);
     }
 
     sf::Vector3f Listener::getPosition()
@@ -68,6 +70,16 @@ namespace rat
     sf::Vector3f Listener::getUpVector()
     {
         return sf::Listener::getUpVector();
+    }
+
+    void Listener::setOffsetZ(float offsetZ)
+    {
+        _offsetZ = offsetZ;
+    }
+
+    float Listener::getOffsetZ() const
+    {
+        return _offsetZ;
     }
 
 }
