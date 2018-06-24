@@ -195,6 +195,9 @@ namespace rat
         j["EndTime"] = _soundManager.getEndTime(name);
         j["Volume"] = _soundManager.getVolume(name);
         j["Pitch"] = _soundManager.getPitch(name);
+        j["Attenuation"] = _soundManager.getAttenuation(name);
+        j["MinDistance"] = _soundManager.getMinDistance(name);
+        j["Relative"] = _soundManager.isRelativeToListener(name);
 
         if (file.is_open()) {
             file << j;
