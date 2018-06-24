@@ -32,7 +32,7 @@ private:
 
 	bool _finished = false;
 
-	sf3d::VertexArray _vertexArray{ 0 };
+	sf3d::VertexArray _vertexArray{ 1 };
 
 public:
 	Timeline(int id);
