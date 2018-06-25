@@ -7,6 +7,7 @@
 **/
 
 #include <string>
+#include <memory> // unique_ptr
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
@@ -41,7 +42,7 @@ private:
 	sf::VideoMode   videoMode		{1280, 720};
 	std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
-	sf3d::ShaderProgram* program;
+	std::unique_ptr<sf3d::ShaderProgram> program;
 
 
 
