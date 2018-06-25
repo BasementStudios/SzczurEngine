@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.5.1 ])
+$(info [ PsychoX' Makefile - version 2.5.2 ])
 
 # Special variables
 .SUFFIXES:
@@ -197,6 +197,8 @@ CXXFLAGS_DYNAMIC_LUA    :=
  LDFLAGS_STATIC_WINDOWS := -lcomdlg32
  LDFLAGS_SHARED_WINDOWS := -lcomdlg32
 
+LIB_SUPPRESS_WARNING := yes
+
 # Print definitions
 COLORS := no
 
@@ -348,6 +350,11 @@ PKG_CONFIG := $(CROSS)$(PKG_CONFIG)
 # Library flags selection
 #
 
+ifeq ($(LIB_SUPPRESS_WARNING),yes)
+    LIB_INCLUDE_PREFIX := -isystem${ }
+else
+    LIB_INCLUDE_PREFIX := -I
+endif
 define add_lib
     $(eval TMP_CXXFLAGS :=)
     $(eval TMP_LDFLAGS  :=)
@@ -367,7 +374,7 @@ define add_lib
         $(eval CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1)))
         $(eval LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1)))
         $(if $(INC_DIR_$(1)_$(TARGET_ARCH)),
-            $(eval CXXFLAGS += -I$(INC_DIR_$(1)_$(TARGET_ARCH)))
+            $(eval CXXFLAGS += $(LIB_INCLUDE_PREFIX)$(INC_DIR_$(1)_$(TARGET_ARCH)))
         )
         $(if $(LIB_DIR_$(1)_$(TARGET_ARCH)),
             $(eval LDFLAGS  += -L$(LIB_DIR_$(1)_$(TARGET_ARCH)))
