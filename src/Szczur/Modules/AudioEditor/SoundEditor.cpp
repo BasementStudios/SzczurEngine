@@ -210,9 +210,8 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "JSON files (*.json)|*.json");
         std::string filePath;
-        size_t start = path.find(currentPath);
-
-        if (start != -1 && !path.empty()) {
+        
+        if (path.find(currentPath) != std::string::npos && !path.empty()) {
             filePath = path.substr(currentPath.length() + 20, path.length() - 5 - currentPath.length() - 20);
 
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
