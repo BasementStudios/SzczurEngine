@@ -103,13 +103,15 @@ namespace rat
 			_itemSlots.insert(std::make_pair(_slotDropped->getItem()->getName(), _slotDropped.get()));
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
-			_itemHeldWidget->setSize({0,0});
+			_itemHeldWidget->setSize(sf::Vector2u(0u, 0u));
+			_itemHeldWidget->setPosition(sf::Vector2f(0.f, 0.f));
 		}
 		else if(_isMouseButtonHeld) {
 			_slotHeld->setItem(_itemHeld);
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
-			_itemHeldWidget->setSize({ 0,0 });
+			_itemHeldWidget->setSize(sf::Vector2u(0u,0u));
+			_itemHeldWidget->setPosition(sf::Vector2f(0.f, 0.f));
 		}		
 	}
 
