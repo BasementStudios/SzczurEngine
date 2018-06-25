@@ -1,15 +1,26 @@
 #include "VideoLoop.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
+
+#include "MovieText.hpp"
+
 namespace rat
 {
-VideoLoop::VideoLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2)
-:   m_timeEnd(endTime),
-    m_timeStart(startTime),
-    m_currentTime(0),
-    m_draw(false)
+VideoLoop::VideoLoop(
+    unsigned int startTime, unsigned int endTime, 
+    std::function<void()> fevent1, const char* text1, int jump1,
+    std::function<void()> fevent2, const char* text2, int jump2
+) :
+    m_draw(false), 
+    m_currentTime(0), 
+    m_timeStart(startTime), 
+    m_timeEnd(endTime)
 {
-    m_reply1 = new MovieText(fevent1,text1,jump1);
-    m_reply2 = new MovieText(fevent2,text2,jump2);
+    m_reply1 = new MovieText(fevent1, text1, jump1);
+    m_reply2 = new MovieText(fevent2, text2, jump2);
     m_reply1->set(true);
     startJump = jump1;
     m_reply2->setColor(sf::Color::Black);

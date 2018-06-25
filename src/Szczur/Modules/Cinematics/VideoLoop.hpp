@@ -1,10 +1,14 @@
 #pragma once
+
 #include <functional>
 
-#include <SFML/Graphics.hpp>
+namespace sf {
+    class RenderTarget;
+    class Font;
+}
+#include <SFML/System/Vector2.hpp>
 
 #include "MovieText.hpp"
-
 
 namespace rat
 {
@@ -12,12 +16,14 @@ namespace rat
 class VideoLoop
 {
 public:
-
-   // typedef void(* callme)();
-    typedef std::function<void()> callme;
-
-    VideoLoop(unsigned int startTime,unsigned int endTime,callme fevent1,const char *text1,int jump1,callme fevent2,const char *text2,int jump2);
+    
+    VideoLoop(
+        unsigned int startTime, unsigned int endTime, 
+        std::function<void()> fevent1, const char* text1, int jump1,
+        std::function<void()> fevent2, const char* text2, int jump2
+    );
     ~VideoLoop();
+    
     void draw(sf::RenderTarget& window);
     int update(const int &deltaTime);
     void setTime(const int time);
