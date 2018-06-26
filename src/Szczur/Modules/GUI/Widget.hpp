@@ -142,7 +142,8 @@ namespace rat
 		bool _onPressed();
 		void _onRealesed();
 		void _onMoved(sf::Event event);
-		bool _aboutToRecalculate;
+		
+		Widget* _parent; 
 
 		bool _isHovered;
 		bool _isPressed;
@@ -151,11 +152,12 @@ namespace rat
 
 		bool _isFullyDeactivated{false};
 
+		bool _aboutToRecalculate;
+
 		sf::Vector2u _size;
 
-		Widget* _parent;
-
 		sf::Vector2u _minSize;
+
 		bool _isMinSizeSet{false};
 
 		sf::Vector2f _origin{0.f, 0.f};

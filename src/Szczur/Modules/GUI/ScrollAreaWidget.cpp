@@ -142,7 +142,7 @@ namespace rat {
         size.x = std::max(size.x, _minScrollSize.x);
         size.y = std::max(size.y, _minScrollSize.y);
 
-        float barWidth = float(_minScrollSize.x);
+        [[maybe_unused]] float barWidth = float(_minScrollSize.x);
         float barX = float(size.x - _minScrollSize.x);
 
         _scroller.setPosition(barX, 0.f);

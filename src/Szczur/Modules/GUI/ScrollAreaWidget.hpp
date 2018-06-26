@@ -33,8 +33,8 @@ namespace rat {
     private:
         mutable sf::RenderTexture _renderTexture;
         sf::Transform _childrenTransform;
-        float _offset;
         float _scrollSpeed;
+        float _offset;
         Scroller _scroller;
         sf::Vector2u _minScrollSize{30, 50};
 

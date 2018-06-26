@@ -23,8 +23,8 @@ namespace rat
     _isActivated(true),
     _isVisible(true),
     _aboutToRecalculate(false),
-    _color(255, 255, 255),
-    _size(0u,0u) 
+    _size(0u,0u),
+    _color(255, 255, 255)
     {}
 
     Widget::~Widget() {
