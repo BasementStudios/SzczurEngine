@@ -182,10 +182,10 @@ namespace rat {
 				{
 					world->setEditor(!world->isEditor());
 				}
-				// if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) {
-				// 	_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
-				// 	LOG_INFO(_ifShowImGuiDemoWindow)
-				// }
+				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) 
+				{
+					_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
+				}
 
 				ImGui::EndMenu();
 			}
