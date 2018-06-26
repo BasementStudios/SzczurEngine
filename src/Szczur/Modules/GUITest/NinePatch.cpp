@@ -243,7 +243,7 @@ namespace rat
 
     }
 
-    void NinePatch::setPosition(sf::Vector2f& position)
+    void NinePatch::setPosition(const sf::Vector2f& position)
     {
         _topBar.setBasePosition(position);
         _bottomBar.setBasePosition(position);

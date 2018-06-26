@@ -15,7 +15,7 @@ namespace rat
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-        void setPosition(sf::Vector2f& position);
+        void setPosition(const sf::Vector2f& position);
         void setPosition(float x, float y);
 
         void setTexture(const sf::Texture* texture);

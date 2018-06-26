@@ -15,13 +15,14 @@ namespace rat
     {
         if(_texture)
         {        
+            const auto oldPos = _sprite.getPosition();
             for(int y = 0; y < _elementAmount.y; y++)
                 for(int x = 0; x < _elementAmount.x; x++)
                 {
-                    _sprite.setPosition(_basePos + sf::Vector2f{float(x) * _elementDim.x, float(y) * _elementDim.y});
+                    _sprite.setPosition(oldPos + sf::Vector2f{float(x) * _elementDim.x, float(y) * _elementDim.y});
                     target.draw(_sprite, states);
                 }
-            _sprite.setPosition(_basePos);
+            _sprite.setPosition(oldPos);
         }
     }
 
@@ -29,7 +30,7 @@ namespace rat
     {
         _sprite.move(-_basePos);
         _basePos = basePosition;
-        sprite.move(_basePos);
+        _sprite.move(_basePos);
 
     }
     void Patch::setPosition(const sf::Vector2f& position)
