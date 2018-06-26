@@ -1,8 +1,1 @@
-{
-    "Name": "button",
-    "File": "button",
-    "BeginTime": 0.073,
-    "EndTime": 0.345,
-    "Volume": 91.759,
-    "Pitch": 0.303
-}
+{"BeginTime":0.10,"EndTime":0.42,"Name":"button","Path":"button","Pitch":1.0,"Volume":42.00,"Attenuation":1.0,"MinDistance":1.0,"Relative": true}

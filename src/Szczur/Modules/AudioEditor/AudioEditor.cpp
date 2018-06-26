@@ -23,8 +23,7 @@ namespace rat
 			ImGui::Checkbox("Music Editor", &_showMusicEditor);
 			ImGui::Separator();
 			if (ImGui::SliderFloat("Global Volume", &_globalVolume, 0, 100)) {
-                getModule<Music>().setVolume(_globalVolume);
-				getModule<SoundManager>().setVolume(_globalVolume);
+                getModule<Listener>().setGlobalVolume(_globalVolume);
             }
 		ImGui::End();
 

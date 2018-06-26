@@ -16,6 +16,7 @@
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
 #include "Szczur/Modules/Sound/SoundManager.hpp"
+#include "Szczur/Modules/Listener/Listener.hpp"
 
 #include "ImGuiStyler.hpp"
 
@@ -59,7 +60,7 @@ private:
 
 	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor, Music, AudioEditor, AudioEffects, Cinematics, SoundManager> _modules;
+	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor, Music, AudioEditor, AudioEffects, Cinematics, SoundManager, Listener>_modules;
 
 };
 

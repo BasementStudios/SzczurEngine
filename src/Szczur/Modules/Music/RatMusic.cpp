@@ -10,19 +10,13 @@ namespace rat
 	RatMusic::RatMusic()
 		: AudioEffect(m_source)
 	{
-		LOG_INFO("RatMusic created");
+		LOG_INFO("RatMusic created");	
 	}
 
 	void RatMusic::init(const std::string& name)
 	{
 		_name = name;
 		getJsonData();
-	}
-
-	void RatMusic::setVolume(float volume)
-	{
-		_volume = volume;
-		sf::Music::setVolume(volume * (globalVolume / 100));
 	}
 
 	void RatMusic::incrementCounter()
@@ -78,7 +72,7 @@ namespace rat
 
 		j[_name]["BPM"] = _bpm;
 		j[_name]["FadeTime"] = _fadeTime;
-		j[_name]["Volume"] = _volume;
+		j[_name]["Volume"] = getVolume();
 		j[_name]["Effects"] = effects;
 
 		std::string path = MUSIC_DEFAULT_PATH;

@@ -220,9 +220,8 @@ namespace rat
 	{
 		if (key.empty()) {
 			for (auto& it : _playlists) {
-				it.second->setGlobalVolume(volume);
+				it.second->setVolume(volume);
 			}
-			LOG_INFO("Global music volume set to ", volume);
 		}
 		else
 			_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);

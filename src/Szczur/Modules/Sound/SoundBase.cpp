@@ -2,9 +2,10 @@
 
 namespace rat
 {
-    bool SoundBase::init(const std::string& fileName)
+    bool SoundBase::init(const std::string& fileName, const std::string& name)
     {
         _fileName = fileName;
+        _name = name;
 
         if (!loadBuffer())
             return false;
@@ -20,7 +21,7 @@ namespace rat
     void SoundBase::setVolume(float volume)
     {
         _volume = volume;
-        sound.setVolume(volume * (globalVolume / 100));
+        sound.setVolume(volume);
     }
 
     float SoundBase::getVolume() const
@@ -37,6 +38,46 @@ namespace rat
     float SoundBase::getPitch() const
     {
         return sound.getPitch();
+    }
+
+    bool SoundBase::isRelativeToListener() const
+    {
+        return sound.isRelativeToListener();
+    } 
+
+    void SoundBase::setRelativeToListener(bool relative)
+    {
+        sound.setRelativeToListener(relative);
+    }
+
+    float SoundBase::getAttenuation() const
+    {
+        return sound.getAttenuation();
+    }
+
+    void SoundBase::setAttenuation(float attenuation) 
+    {
+        sound.setAttenuation(attenuation);
+    }
+
+    float SoundBase::getMinDistance() const
+    {
+        return sound.getMinDistance();
+    }
+
+    void SoundBase::setPosition(float x, float y, float z) 
+    {
+        sound.setPosition(x, y, z);
+    }
+
+    sf::Vector3f SoundBase::getPosition() const
+    {
+        return sound.getPosition();
+    }
+
+    void SoundBase::setMinDistance(float minDistance) 
+    {
+        sound.setMinDistance(minDistance);
     }
 
     void SoundBase::setLoop(bool loop)
@@ -73,6 +114,11 @@ namespace rat
     }
 
     const std::string SoundBase::getName() const
+    {
+        return _name;
+    }
+
+    std::string SoundBase::getFileName() const
     {
         return _fileName;
     }

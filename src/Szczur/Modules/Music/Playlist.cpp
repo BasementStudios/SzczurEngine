@@ -148,14 +148,6 @@ namespace rat
 		_status = Status::Stopped;
 	}
 
-	void Playlist::setGlobalVolume(float volume)
-	{
-		RatMusic::globalVolume = volume;
-
-		for (auto it : _playlist)
-			it->setVolume(it->getVolume());
-	}
-
 	void Playlist::setVolume(float volume, const std::string& fileName) 
 	{
 		if (!fileName.empty()) {

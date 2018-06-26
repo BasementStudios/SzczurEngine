@@ -169,9 +169,7 @@ namespace rat {
             }
 
             // Set radius
-            float radius = getRadius();
-            ImGui::DragFloat("Radius", &radius);
-            setRadius(radius);
+            ImGui::DragFloat("Radius", &_radius);
 
             // Options for "Chagne scene" type
             if (type == Type::ChangeScene)

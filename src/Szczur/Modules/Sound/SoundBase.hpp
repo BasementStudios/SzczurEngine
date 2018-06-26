@@ -16,16 +16,18 @@ namespace rat
             
         struct
         {
-            Second_t beginTime;
-            Second_t endTime;
+            Second_t beginTime {0};
+            Second_t endTime {0};
         } offset;
 
-        Second_t _length;
+        Second_t _length {0};
+
+        std::string _name {""};
 
         float _volume {100};
-        float _pitch;
+        float _pitch {1};
 
-        std::string _fileName;
+        std::string _fileName {""};
 
         Second_t playingTime {0};
             
@@ -34,9 +36,7 @@ namespace rat
 
     public:
 
-        inline static float globalVolume {100};
-
-        bool init(const std::string& fileName);
+        bool init(const std::string& fileName, const std::string& name);
 
         void play();
         void stop();
@@ -48,6 +48,18 @@ namespace rat
         float getPitch() const;
         void setPitch(float pitch);
 
+        bool isRelativeToListener() const;
+        void setRelativeToListener(bool relative);
+
+        float getAttenuation() const; 
+        void setAttenuation(float attenuation);
+
+        float getMinDistance() const; 
+        void setMinDistance(float minDistance);
+
+        void setPosition(float x, float y, float z);
+        sf::Vector3f getPosition() const;
+
         bool getLoop() const;
         void setLoop(bool loop);
 
@@ -58,6 +70,7 @@ namespace rat
         Second_t getEndTime() const;  
 
         const std::string getName() const;
+        std::string getFileName() const;
 
         template <typename T>
 		T& getEffect() {

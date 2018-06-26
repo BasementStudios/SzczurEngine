@@ -16,29 +16,26 @@ namespace rat
         std::string filePath;
         size_t start = path.find(currentPath);
 
-        if (start != -1) {
+        if (start != -1 && !path.empty()) {
             filePath = path.substr(currentPath.length() + 24, path.length() - 5 - currentPath.length() - 24);
-        } 
-        else {
-            filePath = path;
-        }
 
-        std::replace(filePath.begin(), filePath.end(), '\\', '/');
+            std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
-        std::ifstream file("Assets/Music/Playlists/" + filePath + ".json");
-        if (file.is_open()) {
-            file >> j;
-        }
-        file.close();
-
-        for (auto it = j.begin(); it != j.end(); ++it) {
-            if (std::find(std::begin(playlistsNames), std::end(playlistsNames), it.key()) == std::end(playlistsNames)) {
-                music->addPlaylist(it.key(), it.value());
-                playlistsNames.push_back(it.key());
+            std::ifstream file("Assets/Music/Playlists/" + filePath + ".json");
+            if (file.is_open()) {
+                file >> j;
             }
-        }
+            file.close();
 
-        LOG_INFO("Playlist loaded from: ", filePath);
+            for (auto it = j.begin(); it != j.end(); ++it) {
+                if (std::find(std::begin(playlistsNames), std::end(playlistsNames), it.key()) == std::end(playlistsNames)) {
+                    music->addPlaylist(it.key(), it.value());
+                    playlistsNames.push_back(it.key());
+                }
+            }
+
+            LOG_INFO("Playlist loaded from: ", filePath);
+        } 
 	}
 
     void PlaylistHolder::savePlaylists()
@@ -67,15 +64,11 @@ namespace rat
         std::string filePath;
         size_t start = path.find(currentPath);
 
-        if (start != -1) {
+        if (start != -1 && !path.empty()) {
             filePath = path.substr(currentPath.length() + 14, path.length() - 5 - currentPath.length() - 14);
+            std::replace(filePath.begin(), filePath.end(), '\\', '/');
+            music->addToPlaylist(playlistName, filePath);
         } 
-        else {
-            filePath = path;
-        }
-
-        std::replace(filePath.begin(), filePath.end(), '\\', '/');
-        music->addToPlaylist(playlistName, filePath);
 	}
 
     void PlaylistHolder::addPlaylist(const std::string& name) 
@@ -212,7 +205,7 @@ namespace rat
 
                 int bpm = static_cast<int>(song._bpm);
                 int fadeTime = static_cast<int>(song._fadeTime);
-                float volume = song._volume;
+                float volume = song.getVolume();
 
                 auto nameText = "Name: " + currentEditingMusicFile;
                 ImGui::Text(nameText.c_str());

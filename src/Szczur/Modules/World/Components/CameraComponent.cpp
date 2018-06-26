@@ -8,12 +8,13 @@
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-
+#include "Szczur/Modules/Listener/Listener.hpp"
 
 namespace rat {
 	CameraComponent::CameraComponent(Entity* parent) :
-	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"} {
-
+	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"}, 
+	_listener(detail::globalPtr<Listener>) {
+		
 	}
 
 	void CameraComponent::processEvents(InputManager& input) {
@@ -220,7 +221,9 @@ namespace rat {
 				position.x = _limit.left;
 			entity->setPosition(position);
 		}
-		
+
+		auto curPos = entity->getPosition();
+		_listener->setPosition(curPos.x, curPos.y, curPos.z);
     }
 
 	void CameraComponent::setSmoothness(float smoothness) {
