@@ -7,6 +7,7 @@
  **/
 
 #include <string>
+#include <memory> // unique_ptr
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
@@ -104,16 +105,22 @@ void Window::init()
 	// @todo ? load videomode from settings
 	this->setVideoMode(this->videoMode);
 
-	// Shaders
+	// Default shaders
 	sf3d::FShader frag;
 	frag.loadFromFile("Assets/Shaders/default.frag");
 
 	sf3d::VShader vert;
 	vert.loadFromFile("Assets/Shaders/default.vert");
 
-	sf3d::ShaderProgram* program = new sf3d::ShaderProgram(); // @warn Leak - bo kiedys to i tak przez ShaderManager czy coś trzeba zrobić.
-	program->linkShaders(frag, vert);
-	this->getWindow().setProgram(program);
+	this->program = std::make_unique<sf3d::ShaderProgram>();
+	this->program->linkShaders(frag, vert);
+	this->getWindow().setProgram(program.get());
+	
+	// GL flags
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);  
+	glCullFace(GL_FRONT);  
+	glFrontFace(GL_CCW);  
 }
 
 /// render
