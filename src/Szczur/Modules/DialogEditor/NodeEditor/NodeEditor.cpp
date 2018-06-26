@@ -480,6 +480,8 @@ int NodeEditor::generateNodeNameId()
 	{
 		return ids.back() + 1;
 	}
+	
+	return -1;
 }
 
 void NodeEditor::update()
@@ -662,7 +664,7 @@ void NodeEditor::update()
 
 					if (ImGui::Button(label.c_str()))
 					{
-						auto pin = node->createPin(ed::PinKind::Output);
+						[[maybe_unused]] auto pin = node->createPin(ed::PinKind::Output);
 					}
 				}
 
@@ -967,7 +969,7 @@ void NodeEditor::showOptionConfig()
 
 				if (_currentOption->OptionTarget.Ptr != nullptr)
 				{
-					auto dialog = _currentOption->OptionTarget.Ptr;
+					[[maybe_unused]] auto dialog = _currentOption->OptionTarget.Ptr;
 
 					defaultLabelMajor = _currentOption->OptionTarget.Ptr->majorFullName;
 					defaultLabelMinor = _currentOption->OptionTarget.Ptr->minorFullName;
@@ -1116,7 +1118,7 @@ void NodeEditor::drawIcon(bool filled, ImColor&& color)
 
 	auto rect = ax::rect(to_point(a), to_point(b));
 	const auto outline_scale = rect.w / 24.0f;
-	const auto extra_segments = roundi(2 * outline_scale); // for full circle
+	[[maybe_unused]] const auto extra_segments = roundi(2 * outline_scale); // for full circle
 
 	auto innerColor = ImColor(32, 32, 32, 255);
 
