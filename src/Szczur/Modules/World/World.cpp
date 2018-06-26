@@ -6,7 +6,7 @@ namespace rat
 {
 
 World::World()
-	: _levelEditor { _scenes }
+	: _levelEditor { _scenes }, _blackScreen(sf::Vector2f(9999.f, 9999.f))
 {
 	LOG_INFO("Initializing World module");
 
@@ -43,6 +43,37 @@ void World::update(float deltaTime)
 	#endif
 
 	_levelEditor.updateCamera(getModule<Camera>());
+
+	if (_isChangingScene)
+	{
+		float progress = _fadeStart.getElapsedTime().asSeconds() / _fadeTime;
+
+		if (_fadeStage == 1)
+		{
+			if (progress >= 1.f)
+			{
+				progress = 1.f;
+				_scenes.setCurrentScene(_sceneToChange);
+				_fadeStage = 2;
+				_fadeStart.restart();
+			}
+		}
+		else if (_fadeStage == 2)
+		{
+			if (progress < 1.f)
+			{
+				progress = 1.f - progress;
+			}
+			else if (progress >= 1.f)
+			{
+				progress = 0.f;
+
+				_isChangingScene = false;
+			}
+		}
+
+		_blackScreen.setFillColor(sf::Color(0.f, 0.f, 0.f, progress * 255));
+	}
 }
 
 void World::render()
@@ -58,6 +89,13 @@ void World::render()
 		// 		window.draw(*ptr);
 		// 	}
 		// });
+	}
+
+	if (_isChangingScene)
+	{
+		window.pushGLStates();
+		window.draw(_blackScreen);
+		window.popGLStates();
 	}
 
 	#ifdef EDITOR
@@ -84,6 +122,15 @@ void World::setEditor(bool flag) {
 	_doEditor = flag;
 }
 
+void World::fadeIntoScene(size_t id, float fadeTime)
+{
+	_fadeStage = 1;
+	_isChangingScene = true;
+	_sceneToChange = id;
+	_fadeTime = fadeTime;
+	_fadeStart.restart();
+}
+
 void World::initScript() {
 	auto& script = getModule<Script>();
 
@@ -96,6 +143,10 @@ void World::initScript() {
 	module.set_function("setCurrentScene", sol::overload(
 		[&](Scene* scene){_scenes.setCurrentScene(scene->getID());},
 		[&](const std::string& name){_scenes.setCurrentScene(_scenes.getScene(name)->getID());}
+	));
+	module.set_function("fadeIntoScene", sol::overload(
+		[&] (Scene* scene, float fadeTime = 1.f) {fadeIntoScene(scene->getID(), fadeTime); },
+		[&] (const std::string& name, float fadeTime = 1.f) {fadeIntoScene(_scenes.getScene(name)->getID(), fadeTime); }
 	));
 
 	module.set_function("getTextureDataHolder", [&](){return std::ref(getScenes().getTextureDataHolder());});

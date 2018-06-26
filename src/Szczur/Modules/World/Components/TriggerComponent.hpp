@@ -68,6 +68,9 @@ private:
 	InputManager& _input;
 	float _radius{10.f};
 
+	bool _changingSceneWithFade = true;
+	float _fadeTime = 1.f;
+
 	bool _isPlayerInside = false;
 	sol::function _enterCallback;
 	sol::function _insideCallback;

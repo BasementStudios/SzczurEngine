@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics/RectangleShape.hpp>
+
 #include "ScenesManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
@@ -62,6 +64,9 @@ public:
 	///
 	void setEditor(bool flag);
 
+	///
+	void fadeIntoScene(size_t id, float fadeTime = 1.f);
+
 private:
 
 	bool _doEditor{true};
@@ -71,6 +76,14 @@ private:
 	#ifdef EDITOR
 	LevelEditor _levelEditor;
 	#endif
+
+// Fade into scene
+	sf::RectangleShape _blackScreen; // @todo: change to postprocess effect when will be avaliable
+	int _fadeStage = 0;
+	bool _isChangingScene = false;
+	size_t _sceneToChange = 0;
+	float _fadeTime = 1.f;
+	sf::Clock _fadeStart;
 };
 
 }

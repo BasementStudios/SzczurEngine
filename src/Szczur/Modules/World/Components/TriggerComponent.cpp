@@ -3,6 +3,7 @@
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
+#include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
@@ -57,10 +58,14 @@ namespace rat {
 		std::cout << "ID: " << config["type"].get<size_t>() << '\n';
 		std::cout << "asdasdasd\n";
 		type = uintToEnum(config["type"].get<size_t>());
-		if(type == ChangeScene) {
-			std::cout << "Passed\n";
+		if (type == ChangeScene) {
 			sceneId = config["sceneId"];
 			entranceId = config["enranceId"];
+
+			if (config.find("fadeTime") != config.end()) {
+				_fadeTime = config["fadeTime"];
+				_changingSceneWithFade = true;
+			}
 		}
 	}
 
@@ -71,6 +76,10 @@ namespace rat {
 		if(type == ChangeScene) {
 			config["sceneId"] = sceneId;
 			config["enranceId"] = entranceId;
+
+			if (_changingSceneWithFade) {
+				config["fadeTime"] = _fadeTime;
+			}
 		}
 	}
 
@@ -107,7 +116,12 @@ namespace rat {
                 // Action for ChangeScene trigger
                 if(type == TriggerComponent::ChangeScene) {
                     // Change scene after teleport
-                    scenes.setCurrentScene(sceneId);
+
+					if (_changingSceneWithFade)
+						detail::globalPtr<World>->fadeIntoScene(sceneId, _fadeTime);
+					else
+						scenes.setCurrentScene(sceneId);
+
                     // Set player position equal entry
                     auto* scene = scenes.getCurrentScene();
                     if(auto* entry = scene->getEntity("entries", entranceId)) {
@@ -174,6 +188,13 @@ namespace rat {
             // Options for "Chagne scene" type
             if (type == Type::ChangeScene)
             {
+				ImGui::Checkbox("Change scene with fade", &_changingSceneWithFade);
+				
+				if (_changingSceneWithFade)
+				{
+					ImGui::SliderFloat("Fade time", &_fadeTime, 0.1f, 2.f, "%.2f sec");
+				}
+
                 // Selected
                 auto* scene = scenes.getScene(sceneId);
 
