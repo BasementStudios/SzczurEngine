@@ -29,14 +29,14 @@ namespace rat
 			newSlot->setTexture(_frameText);
 			newSlot->setPosition(sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y));
 			newSlot->setSize(static_cast<sf::Vector2u>(_frameSize));
-			newSlot->getSlotWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
+			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				this->onMouseButtonPressed(newSlot); LOG_INFO("aaaaaaaaaa");
 			});
-			newSlot->getSlotWidget()->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
+			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
 				this->onMouseButtonReleased();
 			});
-			newSlot->getSlotWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, newSlot, i](Widget* owner) {_slotDropped = newSlot; /*LOG_INFO("in ", i);*/ });
-			newSlot->getSlotWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, i](Widget* owner) {_slotDropped = nullptr; /*LOG_INFO("out ", i);*/ });
+			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, newSlot, i](Widget* owner) {_slotDropped = newSlot; /*LOG_INFO("in ", i);*/ });
+			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, i](Widget* owner) {_slotDropped = nullptr; /*LOG_INFO("out ", i);*/ });
 			x++;
 		}
 		_itemHeldWidget = new ImageWidget;
@@ -89,7 +89,7 @@ namespace rat
 		}
 	}
 	void NormalSlots::onMouseButtonReleased() {
-		if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && !_slotDropped->getItem()) {
+		if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && !_slotDropped->getItem()) {	//placing item in free slot
 			_itemSlots.erase(_itemHeld->getName());
 			_freeSlots.push_back(_slotHeld.get());
 			_slotDropped->setItem(_itemHeld);
@@ -101,6 +101,14 @@ namespace rat
 				}
 			}
 			_itemSlots.insert(std::make_pair(_slotDropped->getItem()->getName(), _slotDropped.get()));
+			_isMouseButtonHeld = false;
+			_slotHeld = nullptr;
+			_itemHeldWidget->setSize(sf::Vector2u(0u, 0u));
+			_itemHeldWidget->setPosition(sf::Vector2f(0.f, 0.f));
+		}
+		else if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && _slotDropped->getItem()) {	//swaping items
+			_slotHeld->setItem(_slotDropped->getItem());
+			_slotDropped->setItem(_itemHeld);
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
 			_itemHeldWidget->setSize(sf::Vector2u(0u, 0u));
@@ -119,35 +127,5 @@ namespace rat
 		if (_isMouseButtonHeld) {
 			_itemHeldWidget->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition() - _originalMousePosition));
 		}
-		/*if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			LOG_INFO("left mouse button clicked");
-			auto pair = isMouseOverSlot(mousePosition, false);
-			if (!isMouseButtonHeld && pair.first) {
-				LOG_INFO("left mouse button clicked over slot");
-				isMouseButtonHeld = true;
-				itemHeld = pair.second;
-				itemHeld->setItemPosition(static_cast<sf::Vector2f>(mousePosition));
-			}
-			else if (isMouseButtonHeld) {
-				itemHeld->setItemPosition(static_cast<sf::Vector2f>(mousePosition));
-			}
-		}
-		else {
-			if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && isMouseButtonHeld) {
-				auto pair = isMouseOverSlot(mousePosition, true);
-				if (pair.first) {
-					itemHeld->resetItemPosition();
-					pair.second->setItem(itemHeld->getItem());
-					itemHeld->removeItem();
-					itemHeld = nullptr;
-					isMouseButtonHeld = false;
-				}
-				else {
-					itemHeld->resetItemPosition();
-					itemHeld = nullptr;
-					isMouseButtonHeld = false;
-				}
-			}
-		}*/
 	}
 }

@@ -7,7 +7,7 @@
 
 namespace rat {
 	enum equipmentObjectType {	//not used yet
-		potion, amulet
+		potion, amulet, armor, sword, ring, other
 	};
 
 	class ImageWidget;
@@ -15,11 +15,6 @@ namespace rat {
 	class EquipmentObject : public BaseBar {
 	public:
 		EquipmentObject(sf::String, sf::String, sf::Texture*, equipmentObjectType);
-
-		/*void setIcon(sf::Texture*);
-		void setName(sf::String);
-		void setDescription(sf::String);
-		void setType(equipmentObjectType);*/
 
 		sf::Texture* getTexture();
 		sf::String getName();
@@ -29,7 +24,7 @@ namespace rat {
 		bool usable = true;
 	private:
 		sf::Texture* _objectIcon;
-		sf::String _objectDescription, _objectName;
+		sf::String _objectDescription, _objectName, _objectId;
 
 		equipmentObjectType _objectType;
 	};

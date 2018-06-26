@@ -13,6 +13,7 @@ namespace rat {
 		void setPosition(sf::Vector2f position);
 
 		void setArmor(EquipmentObject* armor);
+		void setWeapon(EquipmentObject* weapon);
 
 		void addAmulet(EquipmentObject* amulet);
 		void removeAmulet(sf::String name);

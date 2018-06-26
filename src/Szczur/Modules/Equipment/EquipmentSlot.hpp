@@ -26,7 +26,7 @@ namespace rat {
 
 		size_t index;
 
-		Widget* getSlotWidget();
+		Widget* getItemWidget();
 		sf::Vector2f getPosition();
 
 	private:

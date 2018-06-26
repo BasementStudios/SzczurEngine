@@ -20,16 +20,16 @@ namespace rat {
 		_downArrow->setSize(slotSize / 2u);
 		_downArrow->setPosition(sf::Vector2f(slotSize.x / 4, slotSize.y + 5 + yOffset));
 
-		_amuletImage = new ImageWidget;
-		_addWidget(_amuletImage);
-		_amuletImage->setSize(slotSize);
-		_amuletImage->setPosition(0.f, yOffset);
-
 		_slot = new ImageWidget;
 		_slot->setTexture(slotText);
 		_addWidget(_slot);
 		_slot->setSize(slotSize);
 		_slot->setPosition(sf::Vector2f(0.f, yOffset));
+
+		_amuletImage = new ImageWidget;
+		_addWidget(_amuletImage);
+		_amuletImage->setSize(slotSize);
+		_amuletImage->setPosition(0.f, yOffset);
 
 		_upArrow->setCallback(Widget::CallbackType::onPress, [this](Widget* owner) {
 			upArrowClicked();

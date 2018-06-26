@@ -5,8 +5,8 @@ namespace rat {
 		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
-		_base->add(_itemImage);
 		_base->add(_slotImage);
+		_base->add(_itemImage);		
 	}
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);
@@ -43,8 +43,8 @@ namespace rat {
 		_itemImage->setPosition(sf::Vector2f(0.f, 0.f));
 	}
 
-	Widget* EquipmentSlot::getSlotWidget() {
-		return _slotImage;
+	Widget* EquipmentSlot::getItemWidget() {
+		return _itemImage;
 	}
 
 	void EquipmentSlot::setParent(Widget* parent) {

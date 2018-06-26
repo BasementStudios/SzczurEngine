@@ -23,12 +23,6 @@ namespace rat {
 		_armorSlot->setSize(frameSize);
 		_armorSlot->setTexture(frameText);
 		_armorSlot->setPosition(sf::Vector2f(frameSize.x + 10, 0.f + _amuletSlot->yOffset));
-
-		/*amuletSlot = new EquipmentSlot;
-		amuletSlot->setParent(_base);
-		amuletSlot->setSize(frameSize);
-		amuletSlot->setTexture(frameText);
-		amuletSlot->setPosition(sf::Vector2f(2 * (frameSize.x + 10), 0));*/
 	}
 
 	void ArmorSlots::setParent(Widget* newBase) {
@@ -57,5 +51,9 @@ namespace rat {
 
 	std::vector<EquipmentObject*> ArmorSlots::getAmuletList() {
 		return _amuletSlot->getAmuletList();
+	}
+
+	void ArmorSlots::setWeapon(EquipmentObject* weapon) {
+		_weaponSlot->setItem(weapon);
 	}
 }

@@ -21,10 +21,13 @@ namespace rat {
 		auto& gui = getModule<GUI>(); 
 
 		gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
-		gui.addAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/item1.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/item2.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/item3.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/slot.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/zbroja.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/miecz.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/amulet1.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/amulet2.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/zwoj.png");
+		gui.addAsset<sf::Texture>("Assets/Equipment/potion.png");
 		gui.addAsset<sf::Texture>("Assets/Equipment/downArrow.png");
 		gui.addAsset<sf::Texture>("Assets/Equipment/upArrow.png");
 
@@ -33,27 +36,31 @@ namespace rat {
 		_equipmentFrame = new WindowWidget();
 		_base->add(_equipmentFrame);
 
-		_equipmentFrame->setPosition(sf::Vector2f(window.getSize().x / 10 * 2.5f, window.getSize().y / 10 * 4)); //base equipment widget
-		_equipmentFrame->setSize(sf::Vector2u(window.getSize().x / 10 * 5, window.getSize().y / 10 * 6));
+		_equipmentFrame->setPosition(sf::Vector2f(window.getSize().x / 10 * 3, window.getSize().y / 10 * 3.5f)); //base equipment widget
+		_equipmentFrame->setSize(sf::Vector2u(window.getSize().x / 10 * 4, window.getSize().y / 10 * 6.5f));
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 70);
 
-		EquipmentObject* item = new EquipmentObject("item", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item1.png"), equipmentObjectType::potion);
-		EquipmentObject* item2 = new EquipmentObject("item2", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item2.png"), equipmentObjectType::potion);
-		EquipmentObject* item3 = new EquipmentObject("item3", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/item3.png"), equipmentObjectType::amulet);
+		EquipmentObject* _armor = new EquipmentObject("zbroja", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/zbroja.png"), equipmentObjectType::armor);
+		EquipmentObject* _sword = new EquipmentObject("miecz", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/miecz.png"), equipmentObjectType::sword);
+		EquipmentObject* _potion = new EquipmentObject("potion", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/potion.png"), equipmentObjectType::potion);
+		EquipmentObject* _amulet1 = new EquipmentObject("amulet1", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/amulet1.png"), equipmentObjectType::amulet);
+		EquipmentObject* _amulet2 = new EquipmentObject("amulet2", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/amulet2.png"), equipmentObjectType::amulet);
+		EquipmentObject* _scroll = new EquipmentObject("zwoj", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/zwoj.png"), equipmentObjectType::other);
+		
 
-		_normalSlots = new NormalSlots(15, gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {70, 70});
+		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {60, 60});
 		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->addItem(item3);
-		_normalSlots->addItem(item2);
+		_normalSlots->addItem(_scroll);
+		_normalSlots->addItem(_potion);
 		_normalSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 4));
 
-		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Test/NineMinusPatchTest.png"), {80u, 80u}, gui.getAsset<sf::Texture>("Assets/Equipment/upArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/downArrow.png"));
+		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {80u, 80u}, gui.getAsset<sf::Texture>("Assets/Equipment/upArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/downArrow.png"));
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 50));
-		_armorSlots->setArmor(item3);
-		_armorSlots->addAmulet(item);
-		_armorSlots->addAmulet(item3);
-		_armorSlots->addAmulet(item2);		
+		_armorSlots->setArmor(_armor);
+		_armorSlots->setWeapon(_sword);
+		_armorSlots->addAmulet(_amulet1);
+		_armorSlots->addAmulet(_amulet2);	
 	}
 
 	void Equipment::update(float deltaTime) {
