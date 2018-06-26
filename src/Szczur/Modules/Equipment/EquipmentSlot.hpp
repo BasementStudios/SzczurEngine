@@ -5,7 +5,7 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 
 namespace rat {
-	class Widget;
+	class Widget; class Equipment;
 	class EquipmentSlot //: public BaseBar
 	{
 	public:

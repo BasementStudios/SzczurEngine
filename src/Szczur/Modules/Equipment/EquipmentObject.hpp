@@ -14,17 +14,17 @@ namespace rat {
 
 	class EquipmentObject : public BaseBar {
 	public:
-		EquipmentObject(sf::String, sf::String, sf::Texture*, equipmentObjectType);
+		EquipmentObject(std::string, std::string, sf::Texture*, equipmentObjectType);
 
 		sf::Texture* getTexture();
-		sf::String getName();
-		sf::String getDescription();
+		std::string getName();
+		std::string getDescription();
 		equipmentObjectType getType();
 
 		bool usable = true;
 	private:
 		sf::Texture* _objectIcon;
-		sf::String _objectDescription, _objectName, _objectId;
+		std::string _objectDescription, _objectName, _objectId;
 
 		equipmentObjectType _objectType;
 	};

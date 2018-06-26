@@ -3,11 +3,11 @@
 #include <vector>
 
 namespace rat {
-	class EquipmentObject; class Widget; class EquipmentSlot; class AmuletSlot;
+	class EquipmentObject; class Widget; class EquipmentSlot; class AmuletSlot; class Equipment;
 	class ArmorSlots
 	{
 	public:
-		ArmorSlots(sf::Texture* frameText, sf::Vector2u frameSize, sf::Texture* upText, sf::Texture* downText);
+		ArmorSlots(sf::Texture* frameText, sf::Vector2u frameSize, sf::Texture* upText, sf::Texture* downText, Equipment* equipment);
 
 		void setParent(Widget* newBase);
 		void setPosition(sf::Vector2f position);
@@ -19,6 +19,10 @@ namespace rat {
 		void removeAmulet(sf::String name);
 
 		EquipmentObject* getChosenAmulet();
+
+		EquipmentSlot* getArmorSlot();
+		EquipmentSlot* getWeaponSlot();
+
 		std::vector<EquipmentObject*> getAmuletList();
 	private:
 		EquipmentSlot* _armorSlot;

@@ -5,13 +5,13 @@
 
 
 namespace rat {	
-	class EquipmentSlot; class EquipmentObject; class Widget; class ImageWidget;
+	class EquipmentSlot; class EquipmentObject; class Widget; class ImageWidget; class Equipment;
 	typedef std::multimap<sf::String, EquipmentSlot*> itemMap;
 
 	class NormalSlots			//part of equipment for normal items looking like a grid
 	{
 	public:
-		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize);
+		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize, Equipment* equipment);
 
 		void addItem(EquipmentObject* item);
 		void removeItem(sf::String itemName);

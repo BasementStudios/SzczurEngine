@@ -1,12 +1,14 @@
 #include "EquipmentSlot.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
+#include "Equipment.hpp"
+
 namespace rat {
 	EquipmentSlot::EquipmentSlot() {
 		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
 		_base->add(_slotImage);
-		_base->add(_itemImage);		
+		_base->add(_itemImage);
 	}
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);

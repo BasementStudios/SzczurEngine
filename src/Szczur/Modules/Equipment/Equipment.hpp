@@ -9,7 +9,7 @@
 #include <vector>
 namespace rat
 {
-	class WindowWidget; class NormalSlots; class ArmorSlots;
+	class WindowWidget; class NormalSlots; class ArmorSlots; class EquipmentObject; class ImageWidget; class ItemPreview;
 	class Equipment : public Module<Window, Input, GUI> {
 	public:
 
@@ -19,9 +19,12 @@ namespace rat
 
 		Equipment();
 
+		void enableItemPreview(EquipmentObject* item);
+		void disableItemPreview();
 	private:
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
+		ItemPreview* _itemPreview;
 
 		Window& mainWindow;
 		sf3d::RenderWindow& window;
@@ -30,5 +33,7 @@ namespace rat
 		WindowWidget* _equipmentFrame{ nullptr };
 
 		sf::RenderTexture _canvas;
+
+		bool isPreviewOn;
 	};
 }

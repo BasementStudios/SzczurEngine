@@ -2,6 +2,7 @@
 #include "EquipmentSlot.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Equipment.hpp"
 
 namespace rat 
 {
@@ -9,7 +10,7 @@ namespace rat
 		return lhs->index < rhs->index;
 	}
 
-	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize)
+	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize, Equipment* equipment)
 		: _slotNumber(slotNumber), _frameText(frameText), _frameSize(frameSize)
 	{
 		_base = new Widget;
@@ -22,7 +23,7 @@ namespace rat
 				y++;
 				x = 0;
 			}		
-			_freeSlots.push_back(new EquipmentSlot);
+			_freeSlots.push_back(new EquipmentSlot());
 			std::shared_ptr<EquipmentSlot> newSlot(_freeSlots[i]);
 			newSlot->index = i;
 			newSlot->setParent(_base);
@@ -30,13 +31,21 @@ namespace rat
 			newSlot->setPosition(sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y));
 			newSlot->setSize(static_cast<sf::Vector2u>(_frameSize));
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
-				this->onMouseButtonPressed(newSlot); LOG_INFO("aaaaaaaaaa");
+				this->onMouseButtonPressed(newSlot);
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
 				this->onMouseButtonReleased();
 			});
-			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, newSlot, i](Widget* owner) {_slotDropped = newSlot; /*LOG_INFO("in ", i);*/ });
-			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, i](Widget* owner) {_slotDropped = nullptr; /*LOG_INFO("out ", i);*/ });
+			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, newSlot, equipment](Widget* owner) {
+				_slotDropped = newSlot;
+			if (newSlot->getItem())
+				equipment->enableItemPreview(newSlot->getItem());
+			});
+			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
+				_slotDropped = nullptr;
+				if (newSlot->getItem())
+					equipment->disableItemPreview();
+			});
 			x++;
 		}
 		_itemHeldWidget = new ImageWidget;
