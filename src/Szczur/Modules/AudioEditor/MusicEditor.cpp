@@ -1,9 +1,13 @@
 #include "MusicEditor.hpp"
 
+#include <experimental/filesystem>
+#include <string>
+#include <fstream> // ifstream, ofstream
+#include <algorithm> // find, replace
+
 #include <Json/json.hpp>
 
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
-#include <experimental/filesystem>
 
 namespace rat
 {
@@ -14,9 +18,8 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "JSON files (*.json)|*.json");
         std::string filePath;
-        size_t start = path.find(currentPath);
-
-        if (start != -1 && !path.empty()) {
+        
+        if (path.find(currentPath) != std::string::npos) {
             filePath = path.substr(currentPath.length() + 24, path.length() - 5 - currentPath.length() - 24);
 
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
@@ -62,9 +65,8 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "Music (*.flac)|*.flac");
         std::string filePath;
-        size_t start = path.find(currentPath);
 
-        if (start != -1 && !path.empty()) {
+        if (path.find(currentPath) != std::string::npos) {
             filePath = path.substr(currentPath.length() + 14, path.length() - 5 - currentPath.length() - 14);
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
             music->addToPlaylist(playlistName, filePath);
