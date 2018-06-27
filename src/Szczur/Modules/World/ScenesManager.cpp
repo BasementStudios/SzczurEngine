@@ -12,6 +12,9 @@
 #include "Components/ScriptableComponent.hpp"
 
 #include <Szczur/Modules/World/World.hpp>
+#include <Szczur/Modules/Cinematics/Cinematics.hpp> 
+#include <Szczur/Modules/Music/Music.hpp> 
+#include <Szczur/Modules/Sound/SoundManager.hpp> 
 
 namespace rat
 {
@@ -201,19 +204,29 @@ void ScenesManager::saveToConfig(Json& config) {
 	}
 }
 
-void ScenesManager::saveEntityToConfig(Entity& entity, Json& config) {
-	// config["currentSceneID"] = getCurrentSceneID();
-	// Json& scenes = config["scenes"];
-
+void ScenesManager::saveEntityToConfig(Entity* entity, Json& config) { 
+	Json& scenes = config["scenes"]; 
+	int sceneID = entity->getScene()->getID(); 
 	
-
-	// for (auto& scene : _holder)
-	// {
-	// 	scenes.push_back(Json::object());
-	// 	Json& current = scenes.back();
-
-	// 	scene->saveToConfig(current);
-	// }
+	for(auto& scene : scenes) { 
+		if(scene["id"].get<int>() == sceneID) { 
+			auto& group = scene["groups"][entity->getGroup()]; 
+			if(!group.is_null()) { 
+				for(auto& ent : group) { 
+					if(ent["id"].get<int>() == entity->getID()) 
+					{ 
+						ent.clear(); 
+						entity->saveToConfig(ent); 
+						return; 
+					} 
+				} 
+			} 
+	  		// Add with normal way 
+			group.push_back(Json::object()); 
+			entity->saveToConfig(group.back()); 
+			return; 
+		} 
+	} 
 }
 
 void ScenesManager::loadFromFile(const std::string& filepath)
@@ -299,7 +312,11 @@ void ScenesManager::runGame() {
 
 void ScenesManager::stopGame() {
 	if(_gameIsRunning) {
-
+ 
+	    detail::globalPtr<Cinematics>->stop(); 
+	    detail::globalPtr<Music>->stop(); 
+	    detail::globalPtr<SoundManager>->stop(); 
+	
 		#ifdef EDITOR
 		detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
 		#endif //EDITOR

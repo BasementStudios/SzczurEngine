@@ -20,14 +20,16 @@ namespace rat {
 // ========== Main ==========
 
 	void ScriptableComponent::update(ScenesManager& scenes, float deltaTime) {
-		if(!_inited) {			
+		if(_inited) {
+			if(_updateCallback.valid()) {
+				_updateCallback(getEntity(), deltaTime);
+			}      
+		}
+		else {      
 			_inited = true;
 			if(_initCallback.valid()) {
 				_initCallback(getEntity());
 			}
-		}
-		if(_updateCallback.valid()) {
-			_updateCallback(getEntity(), deltaTime);
 		}
 	}
 

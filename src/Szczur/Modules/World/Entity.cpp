@@ -53,12 +53,17 @@ Entity& Entity::operator = (const Entity& rhs)
 
 void Entity::update(ScenesManager& scenes, float deltaTime)
 {
-	if(auto* comp = getComponentAs<ScriptableComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
+
+	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
+		if(getScene()->getScenes()->isGameRunning()) { 
+			comp->update(scenes, deltaTime); 
+		} 
+	} 
 }
 
 void Entity::render(sf3d::RenderTarget& canvas)
