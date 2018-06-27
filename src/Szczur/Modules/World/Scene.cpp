@@ -116,6 +116,14 @@ Entity* Scene::addEntity(const std::string& group)
 	return entity;
 }
 
+
+Entity* Scene::addRawEntity(const std::string& group)
+{
+	auto* entity = getEntities(group).emplace_back(std::make_unique<Entity>(this, group)).get();
+
+	return entity;
+}
+
 Entity* Scene::duplicateEntity(size_t id)
 {
 	if (auto ptr = getEntity(id); ptr != nullptr)
@@ -449,7 +457,7 @@ void Scene::loadFromConfig(Json& config)
 	{
 		for (Json& current : it.value())
 		{
-			addEntity(it.key())->loadFromConfig(current);
+			addRawEntity(it.key())->loadFromConfig(current);
 		}
 	}
 

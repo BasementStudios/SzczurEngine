@@ -77,6 +77,9 @@ public:
 	Entity* addEntity(const std::string& group);
 
 	///
+	Entity* addRawEntity(const std::string& group);
+
+	///
 	Entity* duplicateEntity(size_t id);
 
 	///
