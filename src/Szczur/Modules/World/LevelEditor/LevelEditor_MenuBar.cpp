@@ -113,26 +113,28 @@ namespace rat {
 						}
 					}
 				}
-				if(ImGui::MenuItem("Save", "F1")) {
-					_scenes.menuSave();
-                    printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
-				}
-				if(ImGui::MenuItem("Save As")) {
-					std::string relative = _scenes.getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
-					// std::cout<<"--s-"<<relative<<std::endl;
-					if(relative != "") {
-						try {
-							_scenes.saveToFile(relative);
-							_scenes.currentFilePath = relative;
-							printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
-						}
-						catch (const std::exception& exc)
-						{
-							LOG_EXCEPTION(exc);
+				if(!_scenes.isGameRunning()) {
+					if(ImGui::MenuItem("Save", "F1")) {
+						_scenes.menuSave();
+	                    printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+					}
+					if(ImGui::MenuItem("Save As")) {
+						std::string relative = _scenes.getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+						// std::cout<<"--s-"<<relative<<std::endl;
+						if(relative != "") {
+							try {
+								_scenes.saveToFile(relative);
+								_scenes.currentFilePath = relative;
+								printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+							}
+							catch (const std::exception& exc)
+							{
+								LOG_EXCEPTION(exc);
+							}
 						}
 					}
 				}
-
+				
 				if (ImGui::MenuItem("Show in explorer")) {
 					std::string current = std::experimental::filesystem::current_path().string();
 

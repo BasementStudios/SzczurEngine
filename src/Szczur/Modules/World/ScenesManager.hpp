@@ -86,7 +86,7 @@ public:
 	void saveToConfig(Json& config);
 
 	///
-	void saveEntityToConfig(Entity& entity, Json& config);
+  	void saveEntityToConfig(Entity* entity, Json& config);
 
 	///
 	void loadFromFile(const std::string& filepath);
