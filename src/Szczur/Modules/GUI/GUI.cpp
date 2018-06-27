@@ -82,7 +82,8 @@ namespace rat {
     void GUI::update(float deltaTime) 
     {
         _root.invokeToCalculate();
-        _root.invokeToUpdatePropPosition();
+        _root.invokeToCalcPropPosition();
+        _root.invokeToCalcPosition();
         _root.update(deltaTime);
     }
 

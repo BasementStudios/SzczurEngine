@@ -489,6 +489,7 @@ namespace rat
         _props.position.y = std::max(0.f, std::min(1.f, _props.position.y));
 
         _propPosMustBeenRecalculated = true;
+        _isPosChanged = true;
     }
 	void Widget::setPropPosition(float propX, float propY)
     {
@@ -630,7 +631,7 @@ namespace rat
         _areChildrenPenetrable = true;
     }
 
-    void Widget::invokeToUpdatePropPosition()
+    void Widget::invokeToCalcPropPosition()
     {
         if(_childrenPropSizesMustBeenRecalculated)
         {
@@ -638,7 +639,7 @@ namespace rat
             _childrenPropSizesMustBeenRecalculated = false;
         }
         
-        for(auto* child : _children) child->invokeToUpdatePropPosition();
+        for(auto* child : _children) child->invokeToCalcPropPosition();
 
         if(_propPosMustBeenRecalculated) _updatePropPosition();
     }
@@ -686,22 +687,24 @@ namespace rat
 
     void Widget::invokeToCalcPosition()
     {
+        std::cout << "Jolo\n";
         if(_isPosChanged)
         {
             _recalcPos();
+        std::cout << "Bolo\n";
             _recalcChildrenPos();
             for(auto* child : _children) child->_isPosChanged = true;
             _isPosChanged = false;
         }
-
         for(auto* child : _children) child->invokeToCalcPosition();
+        std::cout << "Kolo\n";
     }
 
     void Widget::_recalcChildrenPos()
     {
         for(auto* child : _children)
         {
-            child->applyParentPosition(getAbsolutePosition(), getDrawPosition());
+            child->gui::FamilyTransform::applyParentPosition(getAbsolutePosition(), getDrawPosition());
         }
     }
 

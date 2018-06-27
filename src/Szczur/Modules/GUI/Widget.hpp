@@ -115,7 +115,7 @@ namespace rat
 		void makeChildrenPenetrable();
 		void makeChildrenUnresizable();
 
-        void invokeToUpdatePropPosition();
+        void invokeToCalcPropPosition();
 		void forceToUpdatePropSize();
 		void invokeToCalcPosition();
 

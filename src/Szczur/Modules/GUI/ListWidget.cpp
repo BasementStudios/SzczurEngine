@@ -60,11 +60,12 @@ namespace rat
         bool isHorizontal = _positioning == Positioning::Horizontal;
 
         int i = _isReversed ? _children.size() - 1 : 0;
-        int iEnd = _isReversed ? _children.size() : -1;
+        int iEnd = _isReversed ? -1 : _children.size();
         int iAddon = _isReversed ? -1 : 1;
 
         for(; i != iEnd; i += iAddon)
         {
+            std::cout << i << '\n';
             auto* child = _children[i];
             child->applyFamilyTrans(basePos, drawPos);
 
