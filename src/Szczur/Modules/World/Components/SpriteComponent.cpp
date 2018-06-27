@@ -1,5 +1,7 @@
 #include "SpriteComponent.hpp"
 
+#include <experimental/filesystem>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
@@ -150,10 +152,19 @@ namespace rat {
 				}
 			}
 
+			// Change entity name
+			if(getSpriteDisplayData()) {
+				ImGui::SameLine();
+				if(ImGui::Button("Change entity name")) {
+					getEntity()->setName(std::experimental::filesystem::path(getSpriteDisplayData()->getName()).stem().string());
+				}
+			}
+
 			// Show path to .png file
 			ImGui::Text("Path:");
 			ImGui::SameLine();
 			ImGui::Text(getSpriteDisplayData() ? mapWindows1250ToUtf8(getSpriteDisplayData()->getName()).c_str() : "None");
+
 
 			ImGui::Checkbox("Parallax", &_parallax);
 			if (_parallax)
