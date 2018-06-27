@@ -1,6 +1,6 @@
 #include "ObjectsList.hpp"
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #include "../ScenesManager.hpp"
 #include "../Entity.hpp"

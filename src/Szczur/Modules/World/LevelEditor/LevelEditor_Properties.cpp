@@ -2,7 +2,7 @@
 
 #include <experimental/filesystem>
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 #include <glm/glm.hpp>
 
 #include "../ScenesManager.hpp"
@@ -43,13 +43,13 @@ namespace rat {
 					ImGui::SetNextWindowSize(ImVec2(300,300));
 				}
 			}
-			// if(_scenes.isGameRunning()) {
-			// 	ImGui::SameLine();
-			// 	if(ImGui::Button("Update status##properties")) {
-			// 		focusedObject->saveToConfig(_scenes.getRunConfig());
-			// 		printMenuBarInfo(std::string("Updated status for: ")+focusedObject->getName());
-			// 	}
-			// }
+			if(_scenes.isGameRunning()) { 
+				ImGui::SameLine(); 
+				if(ImGui::Button("Update status##properties")) { 
+					_scenes.saveEntityToConfig(focusedObject, _scenes.getRunConfig()); 
+					printMenuBarInfo(std::string("Updated status for: ")+focusedObject->getName()); 
+				}
+			}
 			_renderComponentsManager();
 
 			// Render headers for components

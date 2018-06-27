@@ -273,6 +273,14 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			}
 		}
 
+		// Change entity name
+		if(getArmatureDisplayData()) {
+				ImGui::SameLine();
+			if(ImGui::Button("Change entity name")) {
+				getEntity()->setName(std::experimental::filesystem::path(getArmatureDisplayData()->getName()).stem().string());
+			}
+		}
+
 		// Show path to armature directory
 		ImGui::Text("Path:");
 		ImGui::SameLine();

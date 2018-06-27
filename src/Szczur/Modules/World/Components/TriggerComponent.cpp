@@ -1,5 +1,7 @@
 #include "TriggerComponent.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
@@ -24,11 +26,23 @@ namespace rat {
 	}
 
 	bool TriggerComponent::checkForTrigger(const glm::vec3& position) const {
-		auto delta = position - getEntity()->getPosition();
-		if(delta.x*delta.x + delta.z*delta.z <= _radius*_radius) {
-			return true;
-        }
-		return false;
+		auto entityPos = getEntity()->getPosition();
+
+		if (_triggerShape == Shape::Circle) {
+			auto delta = position - entityPos;
+			if (delta.x*delta.x + delta.z*delta.z <= _radius * _radius) {
+				return true;
+			}
+			return false;
+		}
+		else if (_triggerShape == Shape::Rectangle) {
+			sf::FloatRect rect(entityPos.x - _rectSize.x / 2.f, entityPos.z - _rectSize.y / 2.f, _rectSize.x, _rectSize.y);
+
+			if (rect.contains({ position.x, position.z }))
+				return true;
+
+			return false;
+		}
 	}
 
 	void TriggerComponent::setRadius(float radius) {
@@ -37,6 +51,16 @@ namespace rat {
 
 	float TriggerComponent::getRadius() const {
 		return _radius;
+	}
+
+	void TriggerComponent::setRectSize(const glm::vec2& size)
+	{
+		_rectSize = size;
+	}
+
+	const glm::vec2& TriggerComponent::getRectSize() const
+	{
+		return _rectSize;
 	}
 
 	std::string TriggerComponent::enumToString(size_t en) {
@@ -54,10 +78,21 @@ namespace rat {
 
 	void TriggerComponent::loadFromConfig(Json& config) {
 		Component::loadFromConfig(config);
-		_radius = config["radius"];
-		std::cout << "ID: " << config["type"].get<size_t>() << '\n';
-		std::cout << "asdasdasd\n";
+		
+		if (config.find("shapeType") != config.end()) {
+			_triggerShape = static_cast<Shape>(config["shapeType"]);
+		}
+
+		if (_triggerShape == Shape::Circle) {
+			_radius = config["radius"];
+		}
+		else if (_triggerShape == Shape::Rectangle) {
+			_rectSize.x = config["rectSize"]["x"];
+			_rectSize.y = config["rectSize"]["y"];
+		}
+
 		type = uintToEnum(config["type"].get<size_t>());
+
 		if (type == ChangeScene) {
 			sceneId = config["sceneId"];
 			entranceId = config["enranceId"];
@@ -71,8 +106,19 @@ namespace rat {
 
 	void TriggerComponent::saveToConfig(Json& config) const {
 		Component::saveToConfig(config);
+
+		config["shapeType"] = static_cast<size_t>(_triggerShape);
+
+		if (_triggerShape == Shape::Circle) {
+			config["radius"] = _radius;
+		}
+		else if (_triggerShape == Shape::Rectangle){
+			config["rectSize"]["x"] = _rectSize.x;
+			config["rectSize"]["y"] = _rectSize.y;
+		}
+
 		config["type"] = static_cast<size_t>(type);
-		config["radius"] = _radius;
+
 		if(type == ChangeScene) {
 			config["sceneId"] = sceneId;
 			config["enranceId"] = entranceId;
@@ -83,6 +129,16 @@ namespace rat {
 		}
 	}
 
+	void TriggerComponent::setShapeType(Shape shape)
+	{
+		_triggerShape = shape;
+	}
+
+	const TriggerComponent::Shape& TriggerComponent::getShapeType()
+	{
+		return _triggerShape;
+	}
+
     void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
         auto* player = getEntity()->getScene()->getPlayer();
         if(player == nullptr) 
@@ -90,15 +146,15 @@ namespace rat {
 
 		if (type == TriggerComponent::Overlaping) {
 			if (checkForTrigger(player->getPosition())) {
-				if (_insideCallback.valid())
-					_insideCallback(getEntity());
-
 				if (!_isPlayerInside) {
 					if (_enterCallback.valid())
 						_enterCallback(getEntity());
 
 					_isPlayerInside = true;
 				}
+
+				if (_insideCallback.valid())
+					_insideCallback(getEntity());
 			}
 			else {
 				if (_isPlayerInside) {
@@ -109,8 +165,8 @@ namespace rat {
 				}
 			}
 		}
-        // Active trigger after [LShift]
-        else if(_input.isPressed(Keyboard::LShift)) {
+        // Active trigger after [Space]
+        else if(_input.isPressed(Keyboard::Space)) {
             // Is player inside trigger
             if(checkForTrigger(player->getPosition())) {
                 // Action for ChangeScene trigger
@@ -161,31 +217,56 @@ namespace rat {
     void TriggerComponent::renderHeader(ScenesManager& scenes, Entity* object) {
     	if (ImGui::CollapsingHeader("Trigger##trigger_component"))
         {
-        	// Combo box with available types
-            if (ImGui::BeginCombo("Types", enumToString(type).c_str()))
-            {
-                if (ImGui::Selectable(enumToString(Type::None).c_str(), type == Type::None))
-                {
-                    type = Type::None;
-                }
-                if (ImGui::Selectable(enumToString(Type::ChangeScene).c_str(), type == Type::ChangeScene))
-                {
-                    type = Type::ChangeScene;
-                    sceneId = 0u;
-                    entranceId = 0u;
-                }
+			if (ImGui::RadioButton("Circle", _triggerShape == Shape::Circle))
+			{
+				_triggerShape = Shape::Circle;
+			}
+			
+			ImGui::SameLine();
+
+			if (ImGui::RadioButton("Rectangle", _triggerShape == Shape::Rectangle))
+			{
+				_triggerShape = Shape::Rectangle;
+			}
+
+			if (_triggerShape == Shape::Circle)
+			{
+				// Set radius
+				ImGui::DragFloat("Radius", &_radius);
+			}
+			else
+			{
+				if (_triggerShape == Shape::Rectangle)
+				{
+					// set rect size
+					ImGui::DragFloat2("Size", &_rectSize[0]);
+				}
+			}
+
+			ImGui::Separator();
+
+			// Combo box with available types
+			if (ImGui::BeginCombo("Types", enumToString(type).c_str()))
+			{
+				if (ImGui::Selectable(enumToString(Type::None).c_str(), type == Type::None))
+				{
+					type = Type::None;
+				}
+				if (ImGui::Selectable(enumToString(Type::ChangeScene).c_str(), type == Type::ChangeScene))
+				{
+					type = Type::ChangeScene;
+					sceneId = 0u;
+					entranceId = 0u;
+				}
 				if (ImGui::Selectable(enumToString(Type::Overlaping).c_str(), type == Type::Overlaping))
 				{
 					type = Type::Overlaping;
 					_isPlayerInside = false;
 				}
 				ImGui::EndCombo();
-            }
+			}
 
-            // Set radius
-            ImGui::DragFloat("Radius", &_radius);
-
-            // Options for "Chagne scene" type
+            // Options for "Change scene" type
             if (type == Type::ChangeScene)
             {
 				ImGui::Checkbox("Change scene with fade", &_changingSceneWithFade);

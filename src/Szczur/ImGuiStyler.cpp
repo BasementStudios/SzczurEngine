@@ -4,10 +4,10 @@
 
 #include <Szczur/Utility/Logger.hpp>
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 

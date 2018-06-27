@@ -8,7 +8,7 @@
 #include <Szczur/Modules/World/World.hpp>
 #include "Szczur/Modules/Script/Script.hpp"
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 namespace rat {
 	

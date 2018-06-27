@@ -1,6 +1,8 @@
 #include "TextureDataHolder.hpp"
 
 #include <thread>
+#include <experimental/filesystem>
+
 
 #include "SpriteDisplayData.hpp"
 
@@ -10,38 +12,51 @@
 
 namespace rat {
 
+TextureDataHolder::TextureData::TextureData(SpriteDisplayData* data)
+	: data(data), reloaded(false) {
+	lastWriten = std::experimental::filesystem::last_write_time(data->getName());	
+}
+
+bool TextureDataHolder::TextureData::checkTime() {
+	return lastWriten == std::experimental::filesystem::last_write_time(data->getName());	
+}
+
+void TextureDataHolder::TextureData::updateTime() {
+	lastWriten = std::experimental::filesystem::last_write_time(data->getName());	
+}
+
 const sf3d::Texture& TextureDataHolder::getTexture(const std::string& filePath, bool reload) {
 
 	// If same texture is loaded
 	if(auto* data = find(filePath)) {
-		if(reload) {
-			data->second = false;
+		if(reload && !data->checkTime()) {
+			data->reloaded = false;
 			_allLoaded = false;			
 		}
-		return data->first->getTexture();
+		return data->data->getTexture();
 	}
 
-	auto& data = _data.emplace_back(new SpriteDisplayData(filePath), false);
+	auto& data = _data.emplace_back(new SpriteDisplayData(filePath));
 	_allLoaded = false;
 
-	return data.first->getTexture();
+	return data.data->getTexture();
 }
 	
 SpriteDisplayData* TextureDataHolder::getData(const std::string& filePath, bool reload) {
 	
 	// If same texture is loaded
 	if(auto* data = find(filePath)) {
-		if(reload) {
-			data->second = false;
-			_allLoaded = false;			
+		if(reload && !data->checkTime()) {
+			data->reloaded = false;
+			_allLoaded = false;
 		}
-		return data->first.get();
+		return data->data.get();
 	}
 
-	auto& data = _data.emplace_back(new SpriteDisplayData(filePath), false);
+	auto& data = _data.emplace_back(new SpriteDisplayData(filePath));
 	_allLoaded = false;
 
-	return data.first.get();
+	return data.data.get();
 }
 
 void TextureDataHolder::loadAll() {
@@ -50,11 +65,12 @@ void TextureDataHolder::loadAll() {
 	int size = _data.size();
 	int i = 1;
 	for(auto& obj : _data) {
-		if(!obj.second) {
-			obj.first->loadTexture();
-			obj.second = true;
-			std::cout<<"Loading textures: "<<i<<'/'<<size<<" | "<<obj.first->getName()<<std::endl;
-			// LOG_INFO("Loaded: ", obj.first->getName());
+		if(!obj.reloaded) {
+			obj.data->loadTexture();
+			obj.reloaded = true;
+			obj.updateTime();
+			std::cout<<"Loading textures: "<<i<<'/'<<size<<" | "<<obj.data->getName()<<std::endl;
+			// LOG_INFO("Loaded: ", obj.data->getName());
 		}
 		++i;
 	}
@@ -77,11 +93,11 @@ void TextureDataHolder::loadAllInNewThread() {
 			//LOG_INFO("F");
 			for(auto& obj : _data) {
 				//LOG_INFO("G");
-				if(!obj.second) {
+				if(!obj.reloaded) {
 					//LOG_INFO("H");
-					obj.first->loadTextureWithoutSet();
+					obj.data->loadTextureWithoutSet();
 					//LOG_INFO("I");
-					std::cout<<"Loading textures: "<<i<<'/'<<size<<" | "<<obj.first->getName()<<std::endl;
+					std::cout<<"Loading textures: "<<i<<'/'<<size<<" | "<<obj.data->getName()<<std::endl;
 					//LOG_INFO("J");
 				}
 				++i;
@@ -95,11 +111,11 @@ void TextureDataHolder::loadAllInNewThread() {
 		//LOG_INFO("X1");
 		for(auto& obj : _data) {
 			//LOG_INFO("X2");
-			if(!obj.second) {
+			if(!obj.reloaded) {
 				//LOG_INFO("X3");
-				obj.first->setupSprite();
+				obj.data->setupSprite();
 				//LOG_INFO("X4");
-				obj.second = true;
+				obj.reloaded = true;
 			}
 		}
 		_threadStatus = 0;
@@ -107,9 +123,9 @@ void TextureDataHolder::loadAllInNewThread() {
 	}
 }
 
-TextureDataHolder::Data_t* TextureDataHolder::find(const std::string& filePath) {
+TextureDataHolder::TextureData* TextureDataHolder::find(const std::string& filePath) {
 	for(auto& data : _data) {
-		if(data.first->getName() == filePath) {
+		if(data.data->getName() == filePath) {
 			return &data;
 		}
 	}
