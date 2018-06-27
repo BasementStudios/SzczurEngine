@@ -9,6 +9,7 @@ namespace sf3d {
 	public:
 		Shape(size_t vertexSize = 8u);
 
+		size_t getVerticesCount() const;
 
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
 	protected:

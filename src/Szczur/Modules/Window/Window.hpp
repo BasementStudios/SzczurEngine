@@ -1,10 +1,10 @@
 #pragma once
 
 /** @file Window.hpp
- ** @description Header file with main class of the Window module.
- ** @author Patryk (Stritch)
- ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
- **/
+** @description Header file with main class of the Window module.
+** @author Patryk (Stritch)
+** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+**/
 
 #include <string>
 
@@ -21,11 +21,12 @@
 #include "Szczur/Utility/SFML3D/Vertex.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
-namespace rat {
+namespace rat
+{
 
 /** @class Window
- ** @description Manages application window.
- **/
+** @description Manages application window.
+**/
 class Window : public Module<>
 {
 	/* Types */
@@ -37,9 +38,10 @@ public:
 	/* Variables */
 private:
 	Window_t        window;
-	sf::VideoMode   videoMode		{1280, 800};
+	sf::VideoMode   videoMode		{1280, 720};
 	std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
+	sf3d::ShaderProgram* program;
 
 
 
@@ -61,9 +63,9 @@ public:
 	void setVideoMode(const sf::VideoMode& mode);
 
 	/** @property FrameRate
-	 ** @description Limit of updated and rendered frames per second.
-	 ** @access get set
-	 **/
+	** @description Limit of updated and rendered frames per second.
+	** @access get set
+	**/
 	unsigned int getFramerateLimit() const;
 	void setFramerateLimit(const unsigned int limit);
 

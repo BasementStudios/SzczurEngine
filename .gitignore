@@ -1,13 +1,14 @@
 # Compiling results
 obj/
 out/*
-!out/Assets
 !out/Assets/*
-
+!out/Editor/*
+ 
 # Configurations
 settings.mk
-
-# Projects and sessions
+.gitignore
+ 
+# Projects and sessions 
 .clang_complete
 .vscode/
 *.npp

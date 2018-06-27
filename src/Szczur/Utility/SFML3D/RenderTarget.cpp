@@ -76,6 +76,10 @@ namespace sf3d {
 		}
 	}
 
+	RenderStates RenderTarget::getDefaultRenderStates() const {
+		return _states;
+	}
+
 	void RenderTarget::draw(const Drawable & drawable, RenderStates states) {
 		drawable.draw(*this, states);
 	}
@@ -88,6 +92,7 @@ namespace sf3d {
 
 	void RenderTarget::draw(const VertexArray& vertices, RenderStates states) {
 		if(vertices.getSize() > 0 && _setActive()) {
+			vertices.update();
 			ShaderProgram* shader;
 			if(states.shader)
 				shader = states.shader;

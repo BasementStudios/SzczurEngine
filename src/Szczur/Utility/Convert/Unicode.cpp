@@ -1,5 +1,7 @@
 #include "Unicode.hpp"
 
+#include <SFML/System/String.hpp>
+
 namespace rat
 {
 

@@ -1,5 +1,6 @@
 #include "InputManager.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
 namespace rat
 {
 

@@ -1,0 +1,113 @@
+{
+    "currentSceneID": 1,
+    "scenes": [
+        {
+            "groups": {
+                "background": [
+                    {
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 11724510038446719581,
+                                "name": "ScriptableComponent"
+                            },
+                            {
+                                "distance": 71.6510009765625,
+                                "features": 0,
+                                "id": 1438413831173615030,
+                                "name": "InteractableComponent"
+                            }
+                        ],
+                        "id": 3,
+                        "name": "unnamed_3",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ],
+                "foreground": [],
+                "path": [],
+                "single": [
+                    {
+                        "components": [],
+                        "id": 1,
+                        "name": "Player",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 13209209574413295037,
+                                "locked": false,
+                                "name": "CameraComponent",
+                                "velocity": 50.0
+                            }
+                        ],
+                        "id": 2,
+                        "name": "Camera",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 1160.0,
+                            "z": 3085.0
+                        },
+                        "rotation": {
+                            "x": 15.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ]
+            },
+            "id": 1,
+            "name": "unnamed_1",
+            "player": 1
+        }
+    ]
+}

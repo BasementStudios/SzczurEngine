@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <sol.hpp>
+#include <Sol/sol.hpp>
 
 #include "Szczur/Utility/Modules/Module.hpp"
 

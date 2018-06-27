@@ -56,6 +56,10 @@ HEADER_INC_JSON := e:/Libraries/JSON-2.1.1/include
 # GLM
 HEADER_INC_GLM := e:/Libraries/glm/include
 
+# GLAD
+SRC_DIRS += /mnt/e/Libraries/glad/src
+INC_DIRS += /mnt/e/Libraries/glad/include
+
 # DragonBones \w SFML wrapper
 SRC_DIRS += e:/Libraries/DragonBones/DragonBones/src e:/Libraries/DragonBones/SFML/src e:/Libraries/DragonBones/3rdParty
 INC_DIRS += e:/Libraries/DragonBones/DragonBones/src e:/Libraries/DragonBones/SFML/src e:/Libraries/DragonBones/3rdParty
