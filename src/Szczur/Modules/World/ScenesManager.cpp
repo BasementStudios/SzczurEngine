@@ -37,7 +37,7 @@ Scene* ScenesManager::addScene()
 	camera->addComponent<CameraComponent>();
 	camera->setName("Camera");
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
-	camera->setRotation({ 15.f, 0.f, 0.f });
+	camera->setRotation({ 0.f, 0.f, 0.f });
 
 	return scene;
 }

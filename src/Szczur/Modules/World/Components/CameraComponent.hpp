@@ -69,6 +69,7 @@ public:
 private:
     bool _rotating{false};
     bool _locked{false};
+    bool _noMove = false;
 	float _velocity{50.f};
 
     bool _limitedRange{false};
@@ -97,6 +98,7 @@ private:
     sf::Vector2i _previousMouse;
 
     Entity* _stickTo{nullptr};
+    int _stickedID = 0;
 
 	float _stickToX{0.f};
 	bool _stickedToX{false};
