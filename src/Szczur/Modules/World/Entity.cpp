@@ -250,8 +250,10 @@ void Entity::initScript(Script& script)
 	object.set("setName", &Entity::setName);
 	object.set(sol::meta_function::index, &Entity::_getScriptDataObject);
 	object.set(sol::meta_function::new_index, &Entity::_setScriptDataObject);
+	object.set("getScene", sol::resolve<Scene*()>(&Entity::getScene)); 
 
 	object.init();
+
 
 	// object.set("getScriptable", &Entity::getComponentAs<ScriptableComponent>);
 	// object.set("getInteractable", &Entity::getComponentAs<InteractableComponent>);

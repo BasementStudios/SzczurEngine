@@ -380,12 +380,12 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 
 		std::string file;
 		if(saveButton) 
-            file = FileDialog::getSaveFileName(title, directory, filter);
+			file = FileDialog::getSaveFileName(title, directory, filter);
 		else 
-            file = FileDialog::getOpenFileName(title, directory, filter);
+			file = FileDialog::getOpenFileName(title, directory, filter);
 
 		if(file == "") 
-            return "";
+			return "";
 
 		std::string current = filesystem::current_path().string();
 
