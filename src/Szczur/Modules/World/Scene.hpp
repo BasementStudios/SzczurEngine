@@ -30,7 +30,7 @@ public:
 	};
 
 	using EntitiesHolder_t            = std::vector<std::unique_ptr<Entity>>;
-	using CollectingHolder_t          = std::unordered_map<std::string, EntitiesHolder_t>;
+  	using CollectingHolder_t          = std::vector<std::pair<std::string, EntitiesHolder_t>>; 
 	//using CollectingHolder_t          = boost::container::flat_map<std::string, EntitiesHolder_t>; @todo
 	using SpriteDisplayDataHolder_t   = std::vector<SpriteDisplayData>;
 
