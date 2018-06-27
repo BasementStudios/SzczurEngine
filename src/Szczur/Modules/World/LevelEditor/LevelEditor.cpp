@@ -154,8 +154,13 @@ namespace rat {
 		}
 
 		if(input.isReleased(Keyboard::F1)) {
-			_scenes.menuSave();
-			printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+			if(_scenes.isGameRunning()) {
+				printMenuBarInfo("Cannot save while game is running");
+			}
+			else {
+				_scenes.menuSave();
+				printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+			}
 		}
 	}
 
