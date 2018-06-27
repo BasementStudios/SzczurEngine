@@ -100,15 +100,18 @@ private:
 	///
 	void _renderComponentsManager();
 
+    ///
+    void _prepareOrigins();
+
 	///
 	void _renderOrigins(sf3d::RenderTarget& target);
 
-	///
-	void _renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
-
-	///
-	void _renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
-
+    ///
+    void _renderOriginRectangle(const glm::vec3& position, bool selected, sf3d::RenderTarget& target);
+ 
+    ///
+    void _renderOriginCircle(const glm::vec3& position, bool selected, sf3d::RenderTarget& target);
+ 
 	///
 	void _renderPlayBar();
 
@@ -117,10 +120,11 @@ private:
 
 private:
 
-// World
+// Origins
 
-	sf3d::CircleShape originCircle;
-	sf3d::RectangleShape originRect;
+    sf3d::CircleShape _originCirIn, _originCirOut, _originCirInSel, _originCirOutSel;
+    sf3d::RectangleShape _originRectIn, _originRectOut, _originRectInSel, _originRectOutSel;
+ 
 
 // World
 
