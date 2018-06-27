@@ -59,4 +59,20 @@ namespace rat {
 	sf::Vector2f EquipmentSlot::getPosition() {
 		return _base->getPosition();
 	}
+
+	void EquipmentSlot::setStatus(bool newState) {
+		if (newState) {
+			_slotImage->resetColor();
+			isUseble = true;
+		}
+		else {
+			removeItem();
+			_slotImage->setColor(sf::Color::Color(170, 170, 170));
+			isUseble = false;
+		}
+	}
+
+	bool EquipmentSlot::getStatus(){
+		return isUseble;
+	}
 }

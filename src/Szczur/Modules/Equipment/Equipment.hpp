@@ -7,13 +7,16 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 
 #include <vector>
+
+#include "EquipmentObject.hpp"
 namespace rat
 {
-	class WindowWidget; class NormalSlots; class ArmorSlots; class EquipmentObject; class ImageWidget; class ItemPreview;
-	class Equipment : public Module<Window, Input, GUI> {
+	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview;
+	class Equipment : public Module<Window, Input, GUI, Script> {
 	public:
 
 		void init();
+		void initScript();
 		void update(float deltaTime = (1.f / 60.f));
 		void render();
 
@@ -21,6 +24,24 @@ namespace rat
 
 		void enableItemPreview(EquipmentObject* item);
 		void disableItemPreview();
+
+		bool canPreviewBeInstantiated;
+
+		void createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type);	//creating new item and adding it to list
+		bool addItem(std::string nameId);
+		bool removeItem(std::string nameId);
+		sol::table getItemsList();
+		int getFreeSlotsAmount();
+		void resizeSlots(int newCapacity);
+		int getSlotsAmount();
+		void setRingsLimit(int newCapacity);
+
+
+		void setCallback(std::string nameId, sol::function firstCallback);
+		void setCallback(std::string nameId, sol::function firstCallback, sol::function secondCallback);
+
+		//cos z tym jsonem
+
 	private:
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
@@ -34,6 +55,8 @@ namespace rat
 
 		sf::RenderTexture _canvas;
 
-		bool isPreviewOn;
+		bool isPreviewOn = false;
+
+		std::map<std::string, EquipmentObject*> _listOfObjects;
 	};
 }

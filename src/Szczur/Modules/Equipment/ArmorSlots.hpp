@@ -16,7 +16,7 @@ namespace rat {
 		void setWeapon(EquipmentObject* weapon);
 
 		void addAmulet(EquipmentObject* amulet);
-		void removeAmulet(sf::String name);
+		bool removeAmulet(sf::String name);
 
 		EquipmentObject* getChosenAmulet();
 

@@ -31,14 +31,16 @@ namespace rat {
 	}
 
 	void ItemPreview::minimalize() {
-		_background->setSize(sf::Vector2u(0u,0u));		//it's retarded i know
+		
 		_itemImage->setSize(sf::Vector2u(0u, 0u));		//need to rework this
 
 		_itemName->setString("");
-		_itemName->setSize(sf::Vector2u(0u, 0u));
+		_itemName->setSize(sf::Vector2u(0u, 0u));		//it's retarded i know
 
 		_itemDescription->setString("");
 		_itemDescription->setSize(sf::Vector2u(0u, 0u));
+
+		_background->setSize(sf::Vector2u(0u, 0u));
 	}
 
 	void ItemPreview::setPosition(sf::Vector2f pos) {

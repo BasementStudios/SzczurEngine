@@ -10,7 +10,7 @@ namespace rat {
 	public:
 		AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2u slotSize, Equipment* equipment);
 		void addAmulet(EquipmentObject* amulet);
-		void removeAmulet(std::string name);
+		bool removeAmulet(std::string name);
 
 		EquipmentObject* getChosenAmulet();
 		std::vector<EquipmentObject*> getAmuletList();

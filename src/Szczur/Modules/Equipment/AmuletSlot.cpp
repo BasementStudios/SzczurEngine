@@ -56,7 +56,7 @@ namespace rat {
 			_amuletImage->setTexture(amulet->getTexture());
 		}
 	}
-	void AmuletSlot::removeAmulet(std::string name) {
+	bool AmuletSlot::removeAmulet(std::string name) {
 		for (size_t i = 0; i < _amulets.size(); i++)
 		{
 			if (_amulets[i]->getName() == name) {
@@ -66,19 +66,23 @@ namespace rat {
 						_amuletImage->setTexture(_amulets[i - 1]->getTexture());
 						_chosenAmulet = _amulets[i - 1];
 						_amulets.erase(_amulets.begin() + i);
+						return true;
 					}
 					else {
 						_amuletImage->setColor(sf::Color::Color(0, 0, 0, 0));
 						_amulets.erase(_amulets.begin());
 						_chosenAmulet = nullptr;
+						return true;
 					}
 				}
 				else {
 					_amulets.erase(_amulets.begin() + i);
+					return true;
 				}
 
 			}
 		}
+		return false;
 	}
 	EquipmentObject* AmuletSlot::getChosenAmulet() {
 		return _chosenAmulet;

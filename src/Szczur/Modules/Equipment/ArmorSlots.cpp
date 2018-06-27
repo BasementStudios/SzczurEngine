@@ -57,8 +57,8 @@ namespace rat {
 		_amuletSlot->addAmulet(amulet);
 	}
 
-	void ArmorSlots::removeAmulet(sf::String name) {
-		_amuletSlot->removeAmulet(name);
+	bool ArmorSlots::removeAmulet(sf::String name) {
+		return _amuletSlot->removeAmulet(name);
 	}
 
 	EquipmentObject* ArmorSlots::getChosenAmulet() {

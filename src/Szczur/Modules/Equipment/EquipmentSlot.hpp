@@ -24,12 +24,17 @@ namespace rat {
 		EquipmentObject* getItem();
 		void removeItem();
 
+		bool getStatus();
+		void setStatus(bool newState);
+
 		size_t index;
 
 		Widget* getItemWidget();
 		sf::Vector2f getPosition();
 
 	private:
+		bool isUseble = true;
+
 		ImageWidget* _slotImage;
 		ImageWidget* _itemImage;
 
