@@ -35,7 +35,7 @@ namespace rat
 
     void InterfaceWidget::updateSizeByWindowSize(const sf::Vector2u& winSize)
     {
-        setSize(winSize);
+        setSize(static_cast<sf::Vector2i>(winSize));
         _updateSizeProportion();
         _updateSizingSize();
 
@@ -56,11 +56,11 @@ namespace rat
         {
             if(wth > _widthToHeightProp)
             {
-                size.x = (unsigned int)(float(size.y) * _widthToHeightProp);
+                size.x = (int)(float(size.y) * _widthToHeightProp);
             }
             else
             {
-                size.y = (unsigned int)(float(size.x) / _widthToHeightProp);
+                size.y = (int)(float(size.x) / _widthToHeightProp);
             }
             setSize(size);
         }
@@ -72,7 +72,7 @@ namespace rat
 
     void InterfaceWidget::_updateSizingSize()
     {
-        auto innerSize = static_cast<sf::Vector2f>(getMinimalSize()) - (getPadding() * 2.f);
+        auto innerSize = static_cast<sf::Vector2f>(getMinimalSize() - (getPadding() * 2));
 
         _sizingSize = innerSize;
 

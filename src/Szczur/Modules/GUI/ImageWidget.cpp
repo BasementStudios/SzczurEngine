@@ -56,9 +56,9 @@ namespace rat {
         return nullptr;
     }
 
-    sf::Vector2u ImageWidget::_getSize() const 
+    sf::Vector2i ImageWidget::_getSize() const 
     {
-        if(_hasTexture) return {(unsigned int)_sprite.getGlobalBounds().width, (unsigned int)_sprite.getGlobalBounds().height};
+        if(_hasTexture) return {(int)_sprite.getGlobalBounds().width, (int)_sprite.getGlobalBounds().height};
         return {};
     }
 
@@ -84,6 +84,11 @@ namespace rat {
     void ImageWidget::_setColor(const sf::Color& color)
     {
         _sprite.setColor(color);
+    }
+
+    void ImageWidget::_recalcChildrenPos()
+    {
+        _sprite.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }
     
     

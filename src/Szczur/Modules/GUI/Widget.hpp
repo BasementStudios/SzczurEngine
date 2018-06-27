@@ -12,6 +12,7 @@
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "ProportionalDimes.hpp"
+#include "Widget/FamilyTransform.hpp"
 
 #define GUI_DEBUG 1
 
@@ -20,7 +21,8 @@ namespace rat
 	class InterfaceWidget;
 	class TransformAnimationBase;
 
-	class Widget : public sf::Drawable, public sf::Transformable {
+	class Widget : public sf::Drawable, protected gui::FamilyTransform
+	{
 	public:
 		Widget();
 		Widget(const Widget&) = default;
@@ -57,23 +59,25 @@ namespace rat
 		virtual void calculateSize();
 		void invokeToCalculate();
 
-		void input(sf::Event event);
+		void input(const sf::Event& event);
 		void invokeInput(const sf::Event& event);
 
-		sf::Vector2u getSize() const;
-		sf::Vector2u getMinimalSize() const;
+		sf::Vector2i getSize() const;
+		sf::Vector2i getMinimalSize() const;
 
-		void move(const sf::Vector2f& offset);
-		void move(float offsetX, float offsetY);
-		void setPosition(const sf::Vector2f& offset);
-		void setPosition(float x, float y);
+		void move(const sf::Vector2i& offset);
+		void move(int offsetX, int offsetY);
+		void setPosition(const sf::Vector2i& offset);
+		void setPosition(int x, int y);
+		const sf::Vector2i& getPosition() const;
+		const sf::Vector2i& getGlobalPosition() const;
 
 		void setPropPosition(const sf::Vector2f& propPos);
 		void setPropPosition(float propX, float propY);
 
-		virtual void setPadding(const sf::Vector2f& padding);
-		virtual void setPadding(float width, float height);
-		sf::Vector2f getPadding() const;
+		virtual void setPadding(const sf::Vector2i& padding);
+		virtual void setPadding(int width, int height);
+		sf::Vector2i getPadding() const;
 
 		sf::Vector2i getInnerSize() const;
 
@@ -82,14 +86,15 @@ namespace rat
 		void resetColor();
 		sf::Color getColor() const; 
 		
-		void setOrigin(const sf::Vector2f& origin);
-		void setOrigin(float x, float y);
+		void setOrigin(const sf::Vector2i& origin);
+		void setOrigin(int x, int y);
+		sf::Vector2i getOrigin() const;
 
 		void setPropOrigin(const sf::Vector2f& prop);
 		void setPropOrigin(float x, float y);
 
-		void setSize(sf::Vector2u size);
-		void setSize(size_t width, size_t height);
+		void setSize(sf::Vector2i size);
+		void setSize(int width, int height);
 
 		void setPropSize(const sf::Vector2f& propSize);
 		void setPropSize(float widthProp, float widthHeight);
@@ -112,6 +117,9 @@ namespace rat
 
         void invokeToUpdatePropPosition();
 		void forceToUpdatePropSize();
+		void invokeToCalcPosition();
+
+		void applyFamilyTrans(const sf::Vector2i& globalPos, const sf::Vector2i& drawPos);
 
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
@@ -124,25 +132,25 @@ namespace rat
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
-		virtual sf::Vector2u _getSize() const;
+		virtual sf::Vector2i _getSize() const;
 		virtual void _calculateSize() {}
 		virtual void _setColor(const sf::Color& color) {}
 		virtual void _addWidget(Widget* widget) {}
 		virtual void _clear() {}
 
-		virtual void _inputChildren(sf::Event event);
-		virtual void _onMovedChildren(sf::Event event);
+		virtual void _recalcChildrenPos();
+		virtual void _recalcPos() {}
 
-		virtual sf::Vector2f _getChildrenShift() const { return {}; }
-		virtual sf::Vector2f _getChildShiftByIndex(size_t index) const { return {}; }
+		virtual sf::Vector2i _getInnerSize() const;
 
-		virtual sf::Vector2u _getChildrenSize();
+		virtual sf::Vector2i _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		bool _onPressed();
 		void _onRealesed();
-		void _onMoved(sf::Event event);
+		void _onMoved(const sf::Vector2i& mousePos);
 		bool _aboutToRecalculate;
+		bool _isPosChanged{false};
 
 		bool _isHovered;
 		bool _isPressed;
@@ -151,17 +159,16 @@ namespace rat
 
 		bool _isFullyDeactivated{false};
 
-		sf::Vector2u _size;
+		sf::Vector2i _size;
 
 		Widget* _parent;
 
-		sf::Vector2u _minSize;
+		sf::Vector2i _minSize;
 		bool _isMinSizeSet{false};
 
-		sf::Vector2f _origin{0.f, 0.f};
 		ProportionalDimes _props;
 
-		sf::Vector2f _padding;
+		sf::Vector2i _padding;
 
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
@@ -188,7 +195,7 @@ namespace rat
 		bool _areChildrenPenetrable{false}; //lenny
 		bool _areChildrenResizing{true};
 
-		sf::Vector2u _getBound() const;
+		sf::Vector2i _getBound() const;
 
 		void _updatePropSize();
 
@@ -196,11 +203,13 @@ namespace rat
 
 		void _updatePropPosition();
 
+
 		const InterfaceWidget* _interface{nullptr};
 
 		bool _childrenPropSizesMustBeenRecalculated{false};
 		bool _propSizeMustBeenRecalculated{false};
 		bool _propPosMustBeenRecalculated{false};
+
 
 	protected:
 		static sf::Vector2f _winProp;

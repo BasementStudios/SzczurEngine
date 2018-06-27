@@ -10,7 +10,7 @@ namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :
     Widget(),
     _scrollSpeed(10.f),
-    _offset(0.f) 
+    _offset(0) 
     {
         _scroller.setWidthProportion(2.1f);
         setSize(10 + _minScrollSize.x, _minScrollSize.y);
@@ -54,7 +54,7 @@ namespace rat {
         return _scrollSpeed;
     }
 
-    sf::Vector2u ScrollAreaWidget::_getSize() const {
+    sf::Vector2i ScrollAreaWidget::_getSize() const {
         return getMinimalSize();
     }
 
@@ -65,71 +65,63 @@ namespace rat {
     void ScrollAreaWidget::_drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
     {
         _renderTexture.clear(sf::Color::Transparent);
-        auto childrenStates = sf::RenderStates::Default;
-        childrenStates.transform *= _childrenTransform;
+        
 
-        for(auto child : _children) _renderTexture.draw(*child, childrenStates);
+        for(auto child : _children) _renderTexture.draw(*child);
 
         _renderTexture.display();
-        target.draw(sf::Sprite(_renderTexture.getTexture()), states);
+        _displaySprite.setTexture(_renderTexture.getTexture());
+        target.draw(_displaySprite, states);
     }
 
     void ScrollAreaWidget::_update(float deltaTime) {
     }
 
+    void ScrollAreaWidget::_recalcPos()
+    {
+        auto size = getSize();
+        size.x = std::max(size.x, _minScrollSize.x);
+
+        float barX = float(size.x - _minScrollSize.x);
+
+        auto basePos = static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition());
+
+        _scroller.setPosition(basePos + sf::Vector2f{float(barX), 0});
+        _displaySprite.setPosition(basePos + sf::Vector2f(getPadding()));
+    }
+
+    void ScrollAreaWidget::_recalcChildrenPos()
+    {
+        for(auto* child : _children)
+        {
+            child->gui::FamilyTransform::applyParentPosition(gui::FamilyTransform::getAbsolutePosition(), {0, -_offset});
+        }
+    }
+
     void ScrollAreaWidget::_input(const sf::Event& event) 
     {
-        float maxOffset = -(_childrenHeight - float(_getSize().y));
+        float maxOffset = -(_childrenHeight - _getSize().y);
+
         float oldProp = _scroller.getProportion();
+
         if(_isHovered && event.type == sf::Event::MouseWheelScrolled) 
         {
-           float propOffset = -static_cast<float>(event.mouseWheelScroll.delta) * 0.07f;
+           float propOffset = float(-event.mouseWheelScroll.delta) * 0.01f * _scrollSpeed;
            _scroller.moveProportion(propOffset);
         }
         
-        sf::Event tempEvent(event);
-        if(event.type == sf::Event::MouseMoved)
-        {
-            tempEvent.mouseMove.x -= (_scroller.getPosition().x) * _winProp.x;
-            tempEvent.mouseMove.y -= (_scroller.getPosition().y) * _winProp.y;
-        }
-        _scroller.input(tempEvent);
+        _scroller.input(event);
         
 
         if(oldProp != _scroller.getProportion())
         {
-            _childrenTransform.translate(0.f, -_offset);
-            _offset = maxOffset * _scroller.getProportion();
-            _childrenTransform.translate(0.f, _offset);
-
+            _offset = int(maxOffset * _scroller.getProportion());
+            _isPosChanged = true;
         }
-        
-    }
-    /*
-    void ScrollAreaWidget::_inputChildren(sf::Event event)
-    {
-        if(_isHovered)
-        {
-            for(auto it : _children) 
-            {
-                if(event.type == sf::Event::MouseMoved)
-                {
-                    auto itPosition = it->getPosition();
-                    sf::Event tempEvent(event);
-                    tempEvent.mouseMove.x += int((-itPosition.x) * _winProp.x);
-                    tempEvent.mouseMove.y += int((-itPosition.y - _offset) * _winProp.y);
-                    it->input(tempEvent);
-                }
-                else it->input(event);
-            }
-        }
-    }*/
-    sf::Vector2f ScrollAreaWidget::_getChildrenShift() const
-    {
-        return { 0.f, _offset};
     }
 
-    sf::Vector2u ScrollAreaWidget::_getChildrenSize()
+
+    sf::Vector2i ScrollAreaWidget::_getChildrenSize()
     {
         return {};
     }
@@ -143,9 +135,6 @@ namespace rat {
         size.y = std::max(size.y, _minScrollSize.y);
 
         float barWidth = float(_minScrollSize.x);
-        float barX = float(size.x - _minScrollSize.x);
-
-        _scroller.setPosition(barX, 0.f);
         _scroller.setSize(_minScrollSize.x, size.y);
 
         sf::Vector2u rTexSize = { size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f) };

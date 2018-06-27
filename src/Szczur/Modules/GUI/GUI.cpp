@@ -20,7 +20,7 @@ namespace rat {
         auto winSize = window.getSize();
         _canvas.create(winSize.x, winSize.y); 
 
-        _root.setSize(winSize);
+        _root.setSize(static_cast<sf::Vector2i>(winSize));
         _root.makeChildrenUnresizable();
     }
 
@@ -50,7 +50,7 @@ namespace rat {
         auto* interface = new InterfaceWidget;
         
         _root.add(interface);
-        interface->updateSizeByWindowSize(_root.getMinimalSize());
+        interface->updateSizeByWindowSize(static_cast<sf::Vector2u>(_root.getMinimalSize()));
         interface->setPropPosition(0.5f, 0.5f);
         _interfaces.emplace_back(interface);
         return interface;
@@ -60,14 +60,14 @@ namespace rat {
     {
         if(event.type == sf::Event::Resized)
         {
-            sf::Vector2u winSize = { event.size.width, event.size.height };
+            sf::Vector2u winSize = { (unsigned int)(event.size.width), (unsigned int)(event.size.height) };
 
             auto& mainWindow = getModule<Window>();
             mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
 
             _canvas.create(winSize.x, winSize.y);
 
-            _root.setSize(winSize);
+            _root.setSize(static_cast<sf::Vector2i>(winSize));
 
             for(auto* interface : _interfaces)
             {

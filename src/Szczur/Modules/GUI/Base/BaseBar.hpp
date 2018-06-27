@@ -17,18 +17,19 @@ namespace rat
     public:
         BaseBar();
         BaseBar(Widget* base);
-        void setPosition(float x, float y);
-        void setPosition(const sf::Vector2f& position);
-        sf::Vector2f getPosition() const;
-        void setSize(const sf::Vector2u& size);
-        void setSize(unsigned int width, unsigned int height);
-        sf::Vector2u getSize() const;
-        void move(float offsetX, float offsetY);
-        void move(const sf::Vector2f& offset);
+        void setPosition(int x, int y);
+        void setPosition(const sf::Vector2i& position);
+        sf::Vector2i getPosition() const;
+        void setSize(const sf::Vector2i& size);
+        void setSize(int width, int height);
+        sf::Vector2i getSize() const;
+        void move(int offsetX, int offsetY);
+        void move(const sf::Vector2i& offset);
         void setParent(Widget* parent);
         void deactivate();
         void activate();
         bool isActivate() const;
+
         void setPropOrigin(const sf::Vector2f& propOrigin);
         void setPropOrigin(float x, float y);
         void setPropSize(const sf::Vector2f& propSize);
@@ -39,7 +40,6 @@ namespace rat
 
     protected:
         void _addWidget(Widget* addon);
-        void _setWidgetSize(ImageWidget* widget, float x, float y);
         void _addBar(BaseBar& addon);
 
         Widget* _getBase() { return _base; }

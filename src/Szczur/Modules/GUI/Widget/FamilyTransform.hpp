@@ -5,14 +5,14 @@
 
 namespace rat
 {
-namespace GUI
+namespace gui
 {
     class FamilyTransform
     {
     public:
         void setPosition(const sf::Vector2i& position);
         void setPosition(int x, int y);
-        const sf::Vector2i getPosition() const;
+        const sf::Vector2i& getPosition() const;
 
         void setSize(const sf::Vector2i& size);
         void setSize(int width, int height);

@@ -27,12 +27,12 @@ namespace rat
         setScale({x, y});
     }
 
-    void WindowWidget::setPadding(const sf::Vector2f& padding)
+    void WindowWidget::setPadding(const sf::Vector2i& padding)
     {
         _isPaddingSet = true;
         Widget::setPadding(padding);
     }
-    void WindowWidget::setPadding(float x, float y)
+    void WindowWidget::setPadding(int x, int y)
     {
         setPadding({x, y});
     }
@@ -42,7 +42,7 @@ namespace rat
         {
             auto innerRect = _ninePatch.getInnerTextureRect();
             sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
-            sf::Vector2f padding = {rectPadding.x * _scale.x, rectPadding.y * _scale.y};
+            sf::Vector2i padding = {int(rectPadding.x * _scale.x), int(rectPadding.y * _scale.y)};
             Widget::setPadding(padding);
         }
     }
@@ -58,7 +58,7 @@ namespace rat
         _ninePatch.setColor(color);
     }
     
-	sf::Vector2u WindowWidget::_getSize() const
+	sf::Vector2i WindowWidget::_getSize() const
     {
         return _minWinSize;
     }
@@ -77,10 +77,10 @@ namespace rat
 	void WindowWidget::_calculateSize()
     {
         _calcPatchesAmount();
-        auto size = static_cast<sf::Vector2u>(getSize());
+        auto size = getSize();
         size.x = std::max(_minWinSize.x, size.x);
         size.y = std::max(_minWinSize.y, size.y);
-        _ninePatch.setSize(static_cast<sf::Vector2i>(size));
+        _ninePatch.setSize(size);
     }
     void WindowWidget::_calcPatchesAmount()
     {
@@ -89,8 +89,13 @@ namespace rat
             auto innerElSize = _ninePatch.getInnerPathSize();
             sf::Vector2i innerSize = {innerElSize.x * int(_patchesAmount.x), innerElSize.y * int(_patchesAmount.y)};
             auto newSize = innerSize + _ninePatch.getCornersCombinedSize();
-            _minWinSize = static_cast<sf::Vector2u>(newSize);
+            _minWinSize = newSize;
         }
+    }
+
+    void WindowWidget::_recalcPos()
+    {
+        _ninePatch.setPosition(sf::Vector2f(gui::FamilyTransform::getDrawPosition()));
     }
 
 

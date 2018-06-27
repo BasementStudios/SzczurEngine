@@ -2,7 +2,7 @@
 
 namespace rat
 {
-namespace GUI
+namespace gui
 {
     void FamilyTransform::setPosition(const sf::Vector2i& position)
     {
@@ -18,7 +18,7 @@ namespace GUI
     {
         setPosition({x, y});
     }
-    const sf::Vector2i FamilyTransform::getPosition() const
+    const sf::Vector2i& FamilyTransform::getPosition() const
     {
         return _absPos;
     }
