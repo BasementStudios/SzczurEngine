@@ -1,6 +1,6 @@
 #include "VertexArray.hpp"
 
-#include <glad/glad.h>
+#include <glad.h>
 #include "Vertex.hpp"
 
 namespace sf3d {

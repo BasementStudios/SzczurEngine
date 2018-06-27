@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <glad/glad.h>
+#include <glad.h>
 #include <glm/glm.hpp>
 
 namespace sf3d {
