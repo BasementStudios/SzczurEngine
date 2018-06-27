@@ -7,7 +7,7 @@
 #include <Shellapi.h>
 #endif
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 // #include <NodeEditor/NodeEditor.h>
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"

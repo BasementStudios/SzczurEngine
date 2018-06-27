@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"

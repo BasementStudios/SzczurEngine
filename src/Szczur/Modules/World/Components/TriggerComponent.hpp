@@ -1,5 +1,5 @@
 #pragma once
-#include <Sol/sol.hpp>
+#include <sol2/sol.hpp>
 
 #include <glm/glm.hpp>
 

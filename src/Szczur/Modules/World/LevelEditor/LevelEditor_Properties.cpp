@@ -2,7 +2,7 @@
 
 #include <experimental/filesystem>
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 #include <glm/glm.hpp>
 
 #include "../ScenesManager.hpp"

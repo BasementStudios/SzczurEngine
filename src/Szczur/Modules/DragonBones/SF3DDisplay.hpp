@@ -9,7 +9,7 @@
 #include <vector>
 
 #include <dragonBones/DragonBonesHeaders.h>
-#include <glad/glad.h> // vec3
+#include <glad.h> // vec3
 #include <SFML/Graphics/Color.hpp>
 
 #include "Szczur/Utility/SFML3D/Texture.hpp"

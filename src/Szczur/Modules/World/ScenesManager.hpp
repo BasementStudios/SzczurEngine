@@ -8,7 +8,7 @@
 #include "Scene.hpp"
 #include "Data/TextureDataHolder.hpp"
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 
 namespace rat

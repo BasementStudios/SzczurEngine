@@ -9,7 +9,7 @@
 
 #include <Szczur/ImGuiStyler.hpp>
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #include <shellapi.h>
 

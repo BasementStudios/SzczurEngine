@@ -1,6 +1,6 @@
 #include "ColliderComponent.hpp"
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #include "Szczur/Modules/World/Entity.hpp"
 #include "Szczur/Modules/World/Scene.hpp"
