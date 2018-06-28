@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include "TransformAnimBasics/ColorAnim.hpp"
+#include "TransformAnimBasics/PosAnim.hpp"
 #include "InterfaceWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
@@ -476,6 +477,16 @@ namespace rat
         setPosition({x, y});
     }
 
+	void Widget::setPositionInTime(const sf::Vector2f& offset, float inTime)
+    {
+        _props.hasPosition = false;
+
+        auto animPos = std::make_unique<PositionAnim>();
+        animPos->setAnim(getPosition(), offset, inTime);
+        _addAnimation(std::move(animPos));
+    }
+    
+
     const sf::Vector2f& Widget::getPosition() const
     {
         return gui::FamilyTransform::getPosition();
@@ -499,6 +510,16 @@ namespace rat
     {
         setPropPosition({propX, propY});
     }
+
+	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+    {
+        _props.hasPosition = true;
+
+        auto animPos = std::make_unique<PositionAnim>();
+        animPos->setAnim(_props.position, propPos, inTime);
+        _addAnimation(std::move(animPos));
+    }
+    
 
     void  Widget::setPropSize(const sf::Vector2f& propSize)
     {
@@ -609,6 +630,12 @@ namespace rat
                 {
                     auto* animCol = static_cast<ColorAnim*>(animPtr);
                     setColor(animCol->getActualColor());
+                } break;
+                case TransformAnimationBase::Types::Pos:
+                {
+                    auto* animPos = static_cast<PositionAnim*>(animPtr);
+                    if(_props.hasPosition) setPropPosition(animPos->getActualPos());
+                    else setPosition(animPos->getActualPos());
                 } break;
             
                 default:

@@ -167,10 +167,10 @@ namespace rat
                 {
                     const auto newGlobalPos = mousePos - _clickedShift;
                     const auto newPos = newGlobalPos - (getGlobalPosition() - getDrawPosition()); 
-                    std::cout << std::setw(8) << "GlobalPos" << "x:" << getGlobalPosition().x << '\t' << getGlobalPosition().y << '\n' <<
-                    "DrawPos x: " << getDrawPosition().x << '\t' << getDrawPosition().y << '\n' <<
-                    "GlobalMousePos x: " << newGlobalPos.x << '\t' << newGlobalPos.y << '\n' <<
-                    "NewPos x: " << newPos.x << '\t' << newPos.y << '\n';
+                    //std::cout << std::setw(8) << "GlobalPos" << "x:" << getGlobalPosition().x << '\t' << getGlobalPosition().y << '\n' <<
+                    //"DrawPos x: " << getDrawPosition().x << '\t' << getDrawPosition().y << '\n' <<
+                    //"GlobalMousePos x: " << newGlobalPos.x << '\t' << newGlobalPos.y << '\n' <<
+                    //"NewPos x: " << newPos.x << '\t' << newPos.y << '\n';
                     setScrollerPosition(newPos);
                 }
 
@@ -266,7 +266,7 @@ namespace rat
 
         const auto drawPos = gui::FamilyTransform::getDrawPosition();
 
-        std::cout << "MaxTop: " << maxTop << " maxBottom: " << maxBottom << '\n';
+        //std::cout << "MaxTop: " << maxTop << " maxBottom: " << maxBottom << '\n';
 
         if(newY < maxTop) newY = maxTop;
         if(newY > maxBottom) newY = maxBottom;

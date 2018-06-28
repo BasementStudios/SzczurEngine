@@ -52,6 +52,7 @@ namespace rat
 
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
+        scroll->setPropPosition({0.7f, 0.8f}, 3.f);
 
         /*
         auto* image = new ImageWidget;
@@ -161,12 +162,6 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
-        //list->setPropSize(0.3f, _prop);
-
-        //std::cout << 1.f/deltaTime << '\n';
-        fps->setString(std::to_string(1.f/deltaTime));
-        fps->setString("KEKEKEKEKEKEKEK");
-        std::cout << fps->getSize().x << '\n';
     }
     void GUITest::render()
     {

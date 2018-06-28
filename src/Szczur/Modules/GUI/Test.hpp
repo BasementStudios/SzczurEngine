@@ -11,8 +11,8 @@ namespace rat {
         auto basicValues = [](Widget* widget, sol::table tab){
             if(tab["position"].valid()) {
                 widget->setPosition(
-                    tab["position"][1],
-                    tab["position"][2]
+                    float(tab["position"][1]),
+                    float(tab["position"][2])
                 );
             }
             if(tab["visible"].valid()) {
