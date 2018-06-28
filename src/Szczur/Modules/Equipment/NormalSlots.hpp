@@ -5,7 +5,7 @@
 
 
 namespace rat {	
-	class EquipmentSlot; class EquipmentObject; class Widget; class ImageWidget; class Equipment;
+	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment;
 	typedef std::multimap<std::string, EquipmentSlot*> itemMap_t;
 
 	class NormalSlots			//part of equipment for normal items looking like a grid
@@ -13,7 +13,7 @@ namespace rat {
 	public:
 		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize, Equipment* equipment);
 
-		void addItem(EquipmentObject* item);
+		void addItem(UsebleItem* item);
 		bool removeItem(sf::String itemName);
 		void resizeSlots(size_t newSize);
 		void setParent(Widget* newBase);
@@ -24,7 +24,7 @@ namespace rat {
 		void setPosition(sf::Vector2f);
 		sf::Vector2f getPosition();
 
-		void update();		
+		void update(float deltaTime);
 	private:
 		unsigned int _slotAmount;
 		sf::Vector2i _frameSize;
@@ -40,7 +40,7 @@ namespace rat {
 		//std::pair<bool, EquipmentSlot*> isMouseOverSlot(sf::Vector2i position, bool freeSlot);
 		std::shared_ptr<EquipmentSlot> _slotHeld;
 		std::shared_ptr<EquipmentSlot> _slotDropped;
-		EquipmentObject* _itemHeld;
+		UsebleItem* _itemHeld;
 		ImageWidget* _itemHeldWidget;
 
 		bool _isMouseButtonHeld;
@@ -50,5 +50,10 @@ namespace rat {
 		void onMouseButtonReleased();
 
 		Equipment* _equipment;
+
+		void checkForDoubleClick(float deltaTime);
+		bool _isLeftMouseButtonPressed;
+		bool _isCountingToDoubleClickEnabled;	//used in detection of doubleclick
+		float _timeFromLastClick;
 	};
 }

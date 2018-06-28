@@ -45,8 +45,10 @@ namespace rat {
 		newBase->add(_base);
 	}
 
-	void ArmorSlots::setArmor(EquipmentObject* weapon) {
-		_armorSlot->setItem(weapon);
+	void ArmorSlots::setArmor(EquipmentObject* armor) {
+		if (_armorSlot->getItem()) _armorSlot->getItem()->deactivate();
+		_armorSlot->setItem(armor);
+		armor->activate();
 	}
 
 	void ArmorSlots::setPosition(sf::Vector2f position) {
@@ -70,7 +72,9 @@ namespace rat {
 	}
 
 	void ArmorSlots::setWeapon(EquipmentObject* weapon) {
+		if (_weaponSlot->getItem()) _weaponSlot->getItem()->deactivate();
 		_weaponSlot->setItem(weapon);
+		weapon->activate();
 	}
 
 	EquipmentSlot* ArmorSlots::getArmorSlot() {

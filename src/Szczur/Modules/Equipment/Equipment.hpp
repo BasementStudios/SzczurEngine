@@ -27,7 +27,7 @@ namespace rat
 
 		bool canPreviewBeInstantiated;
 
-		void createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type);	//creating new item and adding it to list
+		void createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble = true);	//creating new item and adding it to list
 		bool addItem(std::string nameId);
 		bool removeItem(std::string nameId);
 		sol::table getItemsList();

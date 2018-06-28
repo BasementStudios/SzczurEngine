@@ -3,6 +3,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Equipment.hpp"
+#include "UsableItem.hpp"
 
 namespace rat
 {
@@ -58,7 +59,7 @@ namespace rat
 	void NormalSlots::setParent(Widget* newBase) {
 		newBase->add(_base);
 	}
-	void NormalSlots::addItem(EquipmentObject* item) {
+	void NormalSlots::addItem(UsebleItem* item) {
 		if (_freeSlots.size() > 0) {
 			_freeSlots[0]->setItem(item);
 			_itemSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
@@ -139,9 +140,35 @@ namespace rat
 		_equipment->canPreviewBeInstantiated = true;
 	}
 
-	void NormalSlots::update() {
+	void NormalSlots::update(float deltaTime) {
 		if (_isMouseButtonHeld) {
 			_itemHeldWidget->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition() - _originalMousePosition));
+		}
+		checkForDoubleClick(deltaTime);
+	}
+
+	void NormalSlots::checkForDoubleClick(float deltaTime) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !_isCountingToDoubleClickEnabled)
+			_isLeftMouseButtonPressed = true;
+		if (_isLeftMouseButtonPressed && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			_isLeftMouseButtonPressed = false;
+			_isCountingToDoubleClickEnabled = true;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && _isCountingToDoubleClickEnabled && _timeFromLastClick <= 0.7f) {
+			_isCountingToDoubleClickEnabled = false;
+			_timeFromLastClick = 0.f;
+			if (_slotDropped) {
+				if (_slotDropped->getItem()) {
+					if (_slotDropped->getItem()->useItem()) {
+						removeItem(_slotDropped->getItem()->getNameId());
+					}
+				}
+			}
+		}
+		else if (_isCountingToDoubleClickEnabled && _timeFromLastClick <= 0.7f)
+			_timeFromLastClick += deltaTime;
+		else if (_isCountingToDoubleClickEnabled && _timeFromLastClick >= 0.7f) {
+			_isCountingToDoubleClickEnabled = false;
+			_timeFromLastClick = 0.f;
 		}
 	}
 

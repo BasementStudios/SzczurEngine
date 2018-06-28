@@ -29,6 +29,8 @@ namespace rat {
 		module.set("ITEM_TYPE_RING", equipmentObjectType::ring);
 		module.set("ITEM_TYPE_OTHER", equipmentObjectType::other);
 
+		auto object = script.newClass<EquipmentObject>("item", "Equipment");//, "../NewClass.lua");
+
 		module.set_function("createItem", &Equipment::createItem, this);
 
 		module.set_function("addItem", &Equipment::addItem, this);
@@ -37,11 +39,13 @@ namespace rat {
 		module.set_function("getFreeSlotsAmount", &Equipment::getFreeSlotsAmount, this);
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
+		//module.set_function("setCallback", sol::overload(sol::resolve<void(std::string, sol::function)>(&Equipment::setCallback), sol::resolve<void(std::string, sol::function, sol::function)>(&Equipment::setCallback)), this);
 
 		script.scriptFile("test.lua");
 
 		//module.set_function("a", &NewModule::a, this);
 		//module.set_function("functionName", [&](int a, int b){return a+b;});
+		//auto object = script.newClass<NewClass>("NewClass", "NewModule", "../NewClass.lua");
 	}
 
 	void Equipment::init() {
@@ -69,13 +73,6 @@ namespace rat {
 		_equipmentFrame->setSize(sf::Vector2u(window.getSize().x / 10 * 4, window.getSize().y / 10 * 6.5f));
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 70);
 
-		EquipmentObject* _armor = new EquipmentObject("zbroja", "zbroja", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/zbroja.png"), equipmentObjectType::armor);
-		EquipmentObject* _sword = new EquipmentObject("zbroja", "miecz", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/miecz.png"), equipmentObjectType::weapon);
-		EquipmentObject* _potion = new EquipmentObject("zbroja", "potion", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/potion.png"), equipmentObjectType::other);
-		EquipmentObject* _amulet1 = new EquipmentObject("zbroja", "amulet1", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/amulet1.png"), equipmentObjectType::amulet);
-		EquipmentObject* _amulet2 = new EquipmentObject("zbroja", "amulet2", "tez item", gui.getAsset<sf::Texture>("Assets/Equipment/amulet2.png"), equipmentObjectType::amulet);
-		EquipmentObject* _scroll = new EquipmentObject("zbroja", "zwoj", "tez item ale ten ma bardzo dlugi tekst", gui.getAsset<sf::Texture>("Assets/Equipment/zwoj.png"), equipmentObjectType::other);
-
 		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {100u, 100u}, gui.getAsset<sf::Texture>("Assets/Equipment/leftArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/rightArrow.png"), this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 20));
@@ -90,7 +87,7 @@ namespace rat {
 	}
 
 	void Equipment::update(float deltaTime) {
-		_normalSlots->update();
+		_normalSlots->update(deltaTime);
 		if (isPreviewOn)
 			_itemPreview->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 	}
@@ -118,19 +115,29 @@ namespace rat {
 		isPreviewOn = false;
 	}
 
-	void Equipment::createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type) {
+	void Equipment::createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble) {
 		auto& gui = getModule<GUI>();
 		gui.addAsset<sf::Texture>(iconPath);		
-		EquipmentObject* newObject = new EquipmentObject(nameId, name, description, gui.getAsset<sf::Texture>(iconPath), type);
+		EquipmentObject* newObject = new EquipmentObject(nameId, name, description, gui.getAsset<sf::Texture>(iconPath), type, isUseble);
 		_listOfObjects[nameId] = newObject;	//cos z tymi jsonami
 	}
 
 	void Equipment::setCallback(std::string nameId, sol::function firstCallback) {
-
+		auto item = _listOfObjects.find(nameId);
+		if (item != _listOfObjects.end()) {
+			if (item->second->getType() == equipmentObjectType::other) {
+				item->second->setCallback(firstCallback);
+			}
+		}
 	}
 
 	void Equipment::setCallback(std::string nameId, sol::function firstCallback, sol::function secondCallback) {
-
+		auto item = _listOfObjects.find(nameId);
+		if (item != _listOfObjects.end()) {
+			if (item->second->getType() != equipmentObjectType::other) {
+				item->second->setCallback(firstCallback, secondCallback);
+			}
+		}
 	}
 
 	bool Equipment::addItem(std::string nameId) {

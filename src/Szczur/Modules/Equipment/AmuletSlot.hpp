@@ -4,23 +4,23 @@
 #include "SFML/Graphics.hpp"
 
 namespace rat {
-	class EquipmentObject; class ImageWidget; class Equipment;
+	class WearableItem; class ImageWidget; class Equipment;
 	class AmuletSlot : public BaseBar
 	{
 	public:
 		AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2u slotSize, Equipment* equipment);
-		void addAmulet(EquipmentObject* amulet);
+		void addAmulet(WearableItem* amulet);
 		bool removeAmulet(std::string name);
 
-		EquipmentObject* getChosenAmulet();
-		std::vector<EquipmentObject*> getAmuletList();
+		WearableItem* getChosenAmulet();
+		std::vector<WearableItem*> getAmuletList();
 
 		void leftArrowClicked();
 		void rightArrowClicked();
 	private:
-		std::vector<EquipmentObject*> _amulets;
+		std::vector<WearableItem*> _amulets;
 
-		EquipmentObject* _chosenAmulet;
+		WearableItem* _chosenAmulet;
 		ImageWidget* _slot;
 		ImageWidget* _amuletImage;
 		ImageWidget* _leftArrow;

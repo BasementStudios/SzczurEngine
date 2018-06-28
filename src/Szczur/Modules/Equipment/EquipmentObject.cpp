@@ -1,12 +1,15 @@
 #include "EquipmentObject.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include <Sol/sol.hpp>
 
 namespace rat {
-	EquipmentObject::EquipmentObject(std::string nameId, std::string name, std::string description, sf::Texture* icon, equipmentObjectType type)
-		: _objectName(name), _objectDescription(description), _objectType(type), _objectIcon(icon), _objectId(nameId)
+	EquipmentObject::EquipmentObject(std::string nameId)
+		: _objectNameId(nameId)
 	{
-
 	}
+
+	void setName(std::string name);
+	void setDescription(std::string description);
 
 	sf::Texture* EquipmentObject::getTexture() {
 		return _objectIcon;
@@ -21,10 +24,50 @@ namespace rat {
 	}
 
 	std::string EquipmentObject::getNameId() {
-		return _objectId;
+		return _objectNameId;
 	}
 
-	equipmentObjectType EquipmentObject::getType() {
-		return _objectType;
+	/*void EquipmentObject::setCallback(sol::function firstCallback) {
+		callback1 = firstCallback;
+		has2Callbacks = false;
 	}
+
+	void EquipmentObject::setCallback(sol::function firstCallback, sol::function secondCallback) {
+		callback1 = firstCallback;
+		callback2 = secondCallback;
+		has2Callbacks = true;
+	}*/
+
+	/*bool EquipmentObject::useItem() {
+		if (_objectType == equipmentObjectType::other && callback1.valid()) {
+			if (usable) {
+				callback1();
+				return true;
+			}
+			else {
+				callback1();
+				return false;
+			}
+		}
+		else {
+			LOG_ERROR("trying to use non-item object or callback is invalid");
+			return false;
+		}
+	}
+	void EquipmentObject::activate() {
+		if (_objectType != equipmentObjectType::other && callback1.valid()) {
+			callback1();
+		}
+		else {
+			LOG_ERROR("trying to activate item object or callback is invalid");
+		}
+	}
+	void EquipmentObject::deactivate() {
+		if (_objectType != equipmentObjectType::other && callback2.valid()) {
+			callback2();
+		}
+		else {
+			LOG_ERROR("trying to disactivate item object or callback is invalid");
+		}
+	}*/
 }

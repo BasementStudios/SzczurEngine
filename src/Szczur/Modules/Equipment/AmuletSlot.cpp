@@ -1,5 +1,5 @@
 #include "AmuletSlot.hpp"
-#include "EquipmentObject.hpp"
+#include "WearableItem.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Equipment.hpp"
 
@@ -48,11 +48,12 @@ namespace rat {
 
 		_amulets.push_back(nullptr);
 	}
-	void AmuletSlot::addAmulet(EquipmentObject* amulet) {
+	void AmuletSlot::addAmulet(WearableItem* amulet) {
 		_amulets.push_back(amulet);
 		if (_chosenAmulet == nullptr) {
 			_amuletImage->resetColor();
 			_chosenAmulet = amulet;
+			_chosenAmulet->activate();
 			_amuletImage->setTexture(amulet->getTexture());
 		}
 	}
@@ -61,17 +62,20 @@ namespace rat {
 		{
 			if (_amulets[i]->getName() == name) {
 				if (_chosenAmulet->getName() == name) {
-					if (i != 0)		//there is some other amulet to display
+					if (_amulets[i - 1])		//there is some other amulet to display
 					{
+						_chosenAmulet->deactivate();
 						_amuletImage->setTexture(_amulets[i - 1]->getTexture());
 						_chosenAmulet = _amulets[i - 1];
+						_chosenAmulet->activate();
 						_amulets.erase(_amulets.begin() + i);
 						return true;
 					}
 					else {
+						_chosenAmulet->deactivate();
 						_amuletImage->setColor(sf::Color::Color(0, 0, 0, 0));
-						_amulets.erase(_amulets.begin());
-						_chosenAmulet = nullptr;
+						_amulets.erase(_amulets.begin() + 1);
+						_chosenAmulet = _amulets[0];
 						return true;
 					}
 				}
@@ -84,10 +88,10 @@ namespace rat {
 		}
 		return false;
 	}
-	EquipmentObject* AmuletSlot::getChosenAmulet() {
+	WearableItem* AmuletSlot::getChosenAmulet() {
 		return _chosenAmulet;
 	}
-	std::vector<EquipmentObject*> AmuletSlot::getAmuletList() {
+	std::vector<WearableItem*> AmuletSlot::getAmuletList() {
 		return _amulets;
 	}
 	void AmuletSlot::leftArrowClicked() {
@@ -96,11 +100,14 @@ namespace rat {
 			if (_amulets[i] == _chosenAmulet && i + 1 < _amulets.size()) {
 				if (_amulets[i + 1]) {
 					_amuletImage->resetColor();
+					_chosenAmulet->deactivate();
 					_chosenAmulet = _amulets[i + 1];
+					_chosenAmulet->activate();
 					_amuletImage->setTexture(_chosenAmulet->getTexture());
 					break;
 				}
-				else {
+				else {	//setting nullptr as chosen amulet
+					_chosenAmulet->deactivate();
 					_chosenAmulet = _amulets[i + 1];
 					_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
 					break;
@@ -114,10 +121,13 @@ namespace rat {
 			if (_amulets[i] == _chosenAmulet && i != 0) {
 				if (_amulets[i - 1]) {
 					_amuletImage->resetColor();
+					_chosenAmulet->deactivate();
 					_chosenAmulet = _amulets[i - 1];
+					_chosenAmulet->activate();
 					_amuletImage->setTexture(_chosenAmulet->getTexture());
 				}
 				else {
+					_chosenAmulet->deactivate();
 					_chosenAmulet = _amulets[i - 1];
 					_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
 					break;

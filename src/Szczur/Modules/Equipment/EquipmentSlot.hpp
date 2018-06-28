@@ -6,7 +6,7 @@
 
 namespace rat {
 	class Widget; class Equipment;
-	class EquipmentSlot //: public BaseBar
+	class EquipmentSlot
 	{
 	public:
 		EquipmentSlot();
