@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include "SFML/Audio/SoundBuffer.hpp"
 
 #include "RatSound.hpp"

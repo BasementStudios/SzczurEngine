@@ -1,6 +1,6 @@
 #include "Music.hpp"
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 
 namespace rat 
 {
@@ -188,11 +188,12 @@ namespace rat
 		}
 	}
 
-	RatMusic& Music::getCurrentPlaying(unsigned int musicTrack)
+	RatMusic* Music::getCurrentPlaying(unsigned int musicTrack)
 	{
 		if (musicTrack <= 3 && _currentPlaylistKeys[musicTrack] != 0) {
-			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource();
+			return &(_playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource());
 		}
+		return nullptr;
 	}
 
 	RatMusic& Music::get(const std::string& fileName) 
@@ -253,7 +254,7 @@ namespace rat
 	{
 		for(auto i = 0; i <= 3; ++i) {
 			if (_currentPlaylistKeys[i] != 0)
-				getCurrentPlaying(i).cleanAllEffects();
+				getCurrentPlaying(i)->cleanAllEffects();
 		}
 	}
 
