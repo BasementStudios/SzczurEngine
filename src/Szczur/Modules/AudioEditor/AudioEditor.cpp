@@ -1,11 +1,10 @@
 #include "AudioEditor.hpp"
 
-#include <Json/json.hpp>
-
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>
 
-#include <ImGui/imgui.h>
+#include <nlohmann/json.hpp>
+#include <imgui.h>
 
 namespace rat
 {

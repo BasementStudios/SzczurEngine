@@ -6,8 +6,8 @@ namespace rat
 {
 
 #ifdef EDITOR
-#	include <ImGui/imgui.h>
-#	include <ImGui/imgui-SFML.h>
+#	include <imgui.h>
+#	include <imgui-SFML.h>
 #   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 #endif
 

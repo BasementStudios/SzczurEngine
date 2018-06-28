@@ -1,15 +1,15 @@
 #include "SoundEditor.hpp"
 
-#include <Json/json.hpp>
-
 #include <cmath>
-
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
-#include <experimental/filesystem>
-
-#include <ImGui/imgui.h>
-#include <ImGui/imgui-SFML.h>
 #include <fstream>
+
+#include <experimental/filesystem>
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+
+#include <imgui.h>
+#include <imgui-SFML.h>
+
+#include <nlohmann/json.hpp>
 
 namespace rat
 {
@@ -83,8 +83,8 @@ namespace rat
                         auto currentPath = std::experimental::filesystem::current_path().string();
                         auto path = FileDialog::getOpenFileName("", currentPath, "Sound (*.flac)|*.flac");
                         std::string filePath;
-                        size_t start = path.find(currentPath);
-                        if (start != -1 && !path.empty()) {
+
+                        if (path.find(currentPath) != std::string::npos && !path.empty()) { 
                             filePath = path.substr(currentPath.length() + 15, path.length() - 5 - currentPath.length() - 15);
                             std::replace(filePath.begin(), filePath.end(), '\\', '/');
                             _soundManager.newSound(filePath, _currentEditing);
