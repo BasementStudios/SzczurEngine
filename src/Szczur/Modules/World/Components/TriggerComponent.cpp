@@ -234,13 +234,10 @@ namespace rat {
 				// Set radius
 				ImGui::DragFloat("Radius", &_radius);
 			}
-			else
+			else if (_triggerShape == Shape::Rectangle)
 			{
-				if (_triggerShape == Shape::Rectangle)
-				{
-					// set rect size
-					ImGui::DragFloat2("Size", &_rectSize[0]);
-				}
+				// set rect size
+				ImGui::DragFloat2("Size", &_rectSize[0]);
 			}
 
 			ImGui::Separator();
