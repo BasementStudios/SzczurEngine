@@ -15,7 +15,6 @@
 #include "../Components/InteractableComponent.hpp"
 #include "../Components/TriggerComponent.hpp"
 #include "../Components/BaseComponent.hpp"
-#include "../Components/AudioComponent.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
@@ -63,7 +62,6 @@ namespace rat {
 				if(auto* object = focusedObject->getComponentAs<InteractableComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<AudioComponent>()) object->renderHeader(_scenes, focusedObject);
 
 			}
 
@@ -91,7 +89,6 @@ namespace rat {
 				choosed[4] = entity->hasComponent<InteractableComponent>();
 				choosed[5] = entity->hasComponent<TriggerComponent>();
 				choosed[6] = entity->hasComponent<TraceComponent>();
-				choosed[6] = entity->hasComponent<AudioComponent>();
 			}
 
 
@@ -109,7 +106,6 @@ namespace rat {
 				UPDATE_COMPONENT(InteractableComponent, 4);
 				UPDATE_COMPONENT(TriggerComponent, 5);
 				UPDATE_COMPONENT(TraceComponent, 6);
-				UPDATE_COMPONENT(AudioComponent, 7);
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -128,7 +124,6 @@ namespace rat {
 			ImGui::Checkbox("Interactable", &choosed[4]);
 			ImGui::Checkbox("Trigger", &choosed[5]);
 			ImGui::Checkbox("Trace", &choosed[6]);
-			ImGui::Checkbox("Audio", &choosed[7]);
 
 			ImGui::EndPopup();
 		}
