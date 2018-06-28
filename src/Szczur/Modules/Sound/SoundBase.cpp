@@ -130,7 +130,7 @@ namespace rat
 
     void SoundBase::setOffset(Second_t beginT, Second_t endT)
     {
-        if (beginT >= _length || beginT < 0 && endT > _length || endT < 0) {
+        if ((beginT >= _length || beginT < 0) && (endT > _length || endT < 0)) {
             offset.beginTime = 0;
             offset.endTime   = _length;
         }

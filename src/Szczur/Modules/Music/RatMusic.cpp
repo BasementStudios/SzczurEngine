@@ -34,6 +34,31 @@ namespace rat
 		return _counter;
 	}
 
+	const std::string& RatMusic::getName() const
+	{
+		return _name;
+	}
+
+	float RatMusic::getBPM() const
+	{
+		return _bpm;
+	}	
+
+	void RatMusic::setBPM(float bpm)
+	{
+		_bpm = bpm;
+	}
+
+	float RatMusic::getFadeTime() const
+	{
+		return _fadeTime;
+	}
+
+	void RatMusic::setFadeTime(float fadeTime)
+	{
+		_fadeTime = fadeTime;
+	}
+
 	//Only for editor
 	void RatMusic::saveToJson()
 	{

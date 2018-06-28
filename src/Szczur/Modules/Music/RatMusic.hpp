@@ -15,11 +15,11 @@ namespace rat
 
 		unsigned int _counter = 0;
 
-	public:
-	
-		std::string _name;
+		std::string _name {""};
 		float _bpm = 60;
 		float _fadeTime = 0;
+
+	public:
 
 		RatMusic();
 
@@ -31,6 +31,14 @@ namespace rat
 		unsigned int getCounterValue() const;
 
 		void saveToJson(); //Only for editor
+
+		const std::string& getName() const;
+
+		float getBPM() const;
+		void setBPM(float bpm);
+
+		float getFadeTime() const;
+		void setFadeTime(float fadeTime);
 
 	private:
 

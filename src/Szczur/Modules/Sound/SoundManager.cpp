@@ -1,5 +1,8 @@
 #include "SoundManager.hpp"
 
+#include <fstream>
+#include <memory>
+
 #include <nlohmann/json.hpp>
 
 namespace rat
@@ -74,7 +77,7 @@ namespace rat
         _sounds.clear();
     }
 
-    void SoundManager::eraseSingleSoundByID(int id)
+    void SoundManager::eraseSingleSoundByID(unsigned int id)
     {
         if (id >= 0 && id < _sounds.size())
             _sounds.erase(_sounds.begin() + id);

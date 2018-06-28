@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "Szczur/Modules/Music/Music.hpp"
 
 namespace rat

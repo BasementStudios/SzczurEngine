@@ -1,9 +1,13 @@
 #include "MusicEditor.hpp"
 
-#include <nlohmann/json.hpp>
-
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>
+
+#include <string>
+#include <fstream> // ifstream, ofstream
+#include <algorithm> // find, replace
+
+#include <nlohmann/json.hpp>
 
 namespace rat
 {
@@ -14,9 +18,8 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "JSON files (*.json)|*.json");
         std::string filePath;
-        size_t start = path.find(currentPath);
-
-        if (start != -1 && !path.empty()) {
+        
+        if (path.find(currentPath) != std::string::npos) {
             filePath = path.substr(currentPath.length() + 24, path.length() - 5 - currentPath.length() - 24);
 
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
@@ -62,9 +65,8 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "Music (*.flac)|*.flac");
         std::string filePath;
-        size_t start = path.find(currentPath);
 
-        if (start != -1 && !path.empty()) {
+        if (path.find(currentPath) != std::string::npos) {
             filePath = path.substr(currentPath.length() + 14, path.length() - 5 - currentPath.length() - 14);
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
             music->addToPlaylist(playlistName, filePath);
@@ -203,8 +205,8 @@ namespace rat
 
                 auto& song = _musicAssets->get(currentEditingMusicFile);
 
-                int bpm = static_cast<int>(song._bpm);
-                int fadeTime = static_cast<int>(song._fadeTime);
+                int bpm = static_cast<int>(song.getBPM());
+                int fadeTime = static_cast<int>(song.getFadeTime());
                 float volume = song.getVolume();
 
                 auto nameText = "Name: " + currentEditingMusicFile;
@@ -235,10 +237,10 @@ namespace rat
                 ImGui::Separator();
 
                 if (ImGui::InputInt("BPM", &bpm)) {
-                    song._bpm = bpm;
+                    song.setBPM(bpm);
                 }
                 if (ImGui::InputInt("Fade Time", &fadeTime)) {
-                    song._fadeTime = fadeTime;
+                    song.setFadeTime(fadeTime);
                 }
                 if (ImGui::SliderFloat("Volume", &volume, 0, 100)) {
                     _music.setVolume(volume, currentPlaylist, currentEditingMusicFile);
