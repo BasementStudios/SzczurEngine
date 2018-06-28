@@ -9,7 +9,7 @@ namespace rat
     public:
         InterfaceWidget();
         void updateSizeByWindowSize(const sf::Vector2u& winSize);
-        sf::Vector2i getSizeByPropSize(const sf::Vector2f& propSize) const;
+        sf::Vector2f getSizeByPropSize(const sf::Vector2f& propSize) const;
 
         void setWidthToHeightProp(float prop);
         void setSizingWidthToHeightProportion(float prop);

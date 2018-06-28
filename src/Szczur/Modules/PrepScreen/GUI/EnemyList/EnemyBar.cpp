@@ -15,7 +15,7 @@ namespace rat
     :
     _parentArea(parentArea)
     {
-        sf::Vector2u size = {240, 72};
+        sf::Vector2f size = {240.f, 72.f};
         setSize(size);
 
         _border = new WindowWidget;

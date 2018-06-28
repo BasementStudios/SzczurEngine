@@ -35,8 +35,9 @@ namespace rat {
 
         void removeLast();
     protected:
-        virtual sf::Vector2u _getSize() const override;
+        virtual sf::Vector2f _getSize() const override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+        virtual void _recalcPos() override;
     private:
         virtual void _callback(CallbackType type) override;
 

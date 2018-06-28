@@ -11,7 +11,7 @@
 
 namespace rat
 {
-    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget;
+    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
         using Tab_t = TransformAnimationBase;
@@ -34,6 +34,7 @@ namespace rat
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};
+        TextWidget* fps{nullptr};
     };
 
 }

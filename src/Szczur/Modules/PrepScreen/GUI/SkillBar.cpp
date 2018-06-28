@@ -41,8 +41,6 @@ namespace rat
             return base;
         } () )
     {
-        setSize(_size);
-
         _iconWindow = new WindowWidget; 
         _icon = new ImageWidget;
         _infoBar = new WindowWidget;

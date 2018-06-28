@@ -30,6 +30,7 @@ namespace rat
         _container->add(_glyph);
         _glyph->setPropSize(0.08f, 0.08f);
         _glyph->setPropPosition(0.5f, 0.5f);
+        //_glyph->setPosition(10.f, 10.f);
 
 
         _container->add(_amountState);

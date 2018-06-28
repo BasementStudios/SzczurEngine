@@ -8,21 +8,25 @@
 
 namespace rat
 {
-    class NinePatch : public sf::Drawable, public sf::Transformable
+    class NinePatch : public sf::Drawable//, public sf::Transformable
     {
     public:
         NinePatch();
 
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+        void setPosition(const sf::Vector2f& position);
+        void setPosition(float x, float y);
+        const sf::Vector2f& getPosition() const;
+
         void setTexture(const sf::Texture* texture);
         void setTexture(const sf::Texture* texture, int padding);
         void setTexture(const sf::Texture* texture, int paddingWidth, int paddingHeight);
         void setTexture(const sf::Texture* texture, const sf::IntRect& rect);
 
-        void setSize(const sf::Vector2i& size);
-        void setSize(int x, int y);
-        sf::Vector2i getSize() const;
+        void setSize(const sf::Vector2f& size);
+        void setSize(float x, float y);
+        sf::Vector2f getSize() const;
 
         void setInnerSize(const sf::IntRect& rect);
         void setInnerSize(int x, int y, int width, int height);
@@ -32,15 +36,16 @@ namespace rat
         void setScale(float x, float y);
         //sf::Vector2f getScale() const;
 
-        sf::Vector2i getInnerPathSize() const;
-        sf::Vector2i getInnerSize() const;
+        sf::Vector2f getInnerPathSize() const;
+        sf::Vector2f getInnerSize() const;
 
         void setColor(const sf::Color& color);
 
-        sf::Vector2i getCornersCombinedSize() const;
+        sf::Vector2f getCornersCombinedSize() const;
 
     private:
-        sf::Vector2i _size{0, 0};
+        sf::Vector2f _pos;
+        sf::Vector2f _size{0, 0};
         bool _isSizeSet{false};
 
         const sf::Texture* _texture{nullptr};

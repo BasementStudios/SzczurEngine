@@ -23,8 +23,7 @@ namespace rat
     _isActivated(true),
     _isVisible(true),
     _aboutToRecalculate(false),
-    _color(255, 255, 255),
-    _size(0u,0u) 
+    _color(255, 255, 255)
     {}
 
     Widget::~Widget() {
@@ -125,7 +124,7 @@ namespace rat
     {
         switch(event.type)
         {
-            case sf::Event::MouseMoved: _onMoved(event); break;
+            case sf::Event::MouseMoved:_onMoved(sf::Vector2f{float(event.mouseMove.x), float(event.mouseMove.y)}); break;
             case sf::Event::MouseButtonPressed: _onPressed(); break;
             case sf::Event::MouseButtonReleased: _onRealesed(); break;
         }
@@ -161,21 +160,11 @@ namespace rat
         _isPressed = false;
         _callback(CallbackType::onRelease);    
     }
-	void Widget::_onMoved(sf::Event event)
+	void Widget::_onMoved(const sf::Vector2f& mousePos)
     {
         if(!_isActivated || _isFullyDeactivated) return;
 
-        auto thisSize = getSize();
-        
-        event.mouseMove.x += int(_origin.x - _padding.x);
-        event.mouseMove.y += int(_origin.y - _padding.y);
-
-        bool isMouseOverlap = event.mouseMove.x >= 0 &&
-            event.mouseMove.x <= thisSize.x * _winProp.x &&
-            event.mouseMove.y >= 0 &&
-            event.mouseMove.y <= thisSize.y * _winProp.y;
-
-        if(isMouseOverlap)
+        if(gui::FamilyTransform::isPointIn(mousePos))
         {
             if(!_isHovered) 
             {
@@ -192,81 +181,14 @@ namespace rat
             }
         }
 
-        _onMovedChildren(event);
+        for(auto* child : _children) child->_onMoved(mousePos);
     }
 
-    void Widget::_onMovedChildren(sf::Event event)
-    {
-        {
-            auto childrenShift = _getChildrenShift();
-            event.mouseMove.x -= childrenShift.x;
-            event.mouseMove.y -= childrenShift.y;
-        }
-
-        size_t i = 0;
-        for(auto childIt = _children.begin(), childEnd = _children.end(); childIt < childEnd; ++childIt, ++i)
-        {
-            auto* child = *childIt;
-
-            auto childPos = child->getPosition();
-            sf::Event tempEvent(event);
-            tempEvent.mouseMove.x -= int(childPos.x * _winProp.x);
-            tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
-
-            child->_onMoved(tempEvent);
- 
-            auto childShift = _getChildShiftByIndex(i);
-            event.mouseMove.x -= int(childShift.x * _winProp.x);
-            event.mouseMove.y -= int(childShift.y * _winProp.y);
-        }
-        /*
-        for(auto* child : _children)
-        {
-            auto childPos = child->getPosition();
-            sf::Event tempEvent(event);
-            tempEvent.mouseMove.x -= int(childPos.x * _winProp.x);
-            tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
-
-            child->_onMoved(tempEvent);
-        }*/
-    }
-
-    void Widget::input(sf::Event event) {
+    void Widget::input(const sf::Event& event) {
         if(isActivated()  && !_isFullyDeactivated) 
         {
             _input(event);
-            if(event.type == sf::Event::MouseMoved)
-            {
-                event.mouseMove.x -= int(_padding.x * _winProp.x);
-                event.mouseMove.y -= int(_padding.y * _winProp.y);
-            }
-            _inputChildren(event);
-        }
-    }
-
-	void Widget::_inputChildren(sf::Event event)
-    {
-        {
-            auto childrenShift = _getChildrenShift();
-            event.mouseMove.x -= childrenShift.x;
-            event.mouseMove.y -= childrenShift.y;
-        }
-        size_t i = 0;
-        for(auto child : _children) 
-        {
-            if(event.type == sf::Event::MouseMoved)
-            {
-                auto childPosition = child->getPosition();
-                sf::Event tempEvent(event);
-                tempEvent.mouseMove.x -= int(childPosition.x * _winProp.x);
-                tempEvent.mouseMove.y -= int(childPosition.y * _winProp.y);
-                child->input(tempEvent);
-
-                auto childShift = _getChildShiftByIndex(i++);
-                event.mouseMove.x -= int(childShift.x * _winProp.x);
-                event.mouseMove.y -= int(childShift.y * _winProp.y);
-            }
-            else child->input(event);
+            for(auto child : _children) child->input(event);
         }
     }
     
@@ -282,33 +204,33 @@ namespace rat
             if(_isPressed)
                 _callback(CallbackType::onHold);
 
-            for(auto& it : _children)
-                it->update(deltaTime);
+            for(auto& child : _children) child->update(deltaTime);
         }
     }
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         if(isVisible() && !isFullyDeactivated()) {
-            states.transform *= getTransform();
-            
+
             #ifdef GUI_DEBUG
             _drawDebug(target, states);
 	        #endif
             _draw(target, states);
-            states.transform.translate(_padding);
             _drawChildren(target, states);
         }
     }
 
     void Widget::_drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        for(auto it : _children) target.draw(*it, states);
+        for(auto child : _children) target.draw(*child, states);
     }
 
     #ifdef GUI_DEBUG
 		void Widget::_drawDebug(sf::RenderTarget& target, sf::RenderStates states) const
         {
+            auto pos = static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition());
+
             sf::RectangleShape shape;
+            shape.setPosition(pos);
             shape.setOutlineColor({255, 255, 255, 125});
             shape.setOutlineThickness(1.f);
             shape.setFillColor(sf::Color::Transparent);
@@ -325,14 +247,14 @@ namespace rat
             */
 
             shape.setFillColor({255, 0, 0, 100});
-            shape.setSize({float(_size.x), _padding.y});
-            shape.setPosition(0.f, 0.f);            
+            shape.setSize({float(_size.x), float(_padding.y)});
+            shape.setPosition(pos);            
             target.draw(shape, states);            
-            shape.setPosition(0.f, float(_size.y) - _padding.y);
+            shape.setPosition(pos.x, pos.y + float(_size.y) - _padding.y);
             target.draw(shape, states);
 
-            shape.setSize({_padding.x, float(_size.y) - 2.f *_padding.y});
-            shape.setPosition(0.f, _padding.y);
+            shape.setSize({float(_padding.x), float(_size.y) - 2.f *_padding.y});
+            shape.setPosition(pos.x, pos.y + _padding.y);
             target.draw(shape, states);
             shape.move(float(_size.x) - _padding.x, 0.f);
             target.draw(shape, states);
@@ -364,13 +286,13 @@ namespace rat
             _size.y = std::max(_size.y, _minSize.y);
         }
 
-        auto chSize = static_cast<sf::Vector2u>(_padding * 2.f);
+        auto chSize = static_cast<sf::Vector2f>(_padding * 2.f);
         if(_areChildrenResizing)
         {
             chSize += _getChildrenSize();
         }
-        _size.x = std::max(_size.x, chSize.x + (unsigned int)(2.f * _padding.x));
-        _size.y = std::max(_size.y, chSize.y + (unsigned int)(2.f * _padding.y));
+        _size.x = std::max(_size.x, chSize.x + 2 * _padding.x);
+        _size.y = std::max(_size.y, chSize.y + 2 * _padding.y);
 
         _calculateSize();
         auto ownSize = _getSize();
@@ -386,12 +308,14 @@ namespace rat
             _childrenPropSizesMustBeenRecalculated = true;
         }
 
+        gui::FamilyTransform::setSize(_size);
+
         _aboutToRecalculate = false;
     }
 
-	sf::Vector2u Widget::_getChildrenSize()
+	sf::Vector2f Widget::_getChildrenSize()
     {
-        sf::Vector2u size;
+        sf::Vector2f size;
         for(auto child : _children) 
         {
             auto childBound = child->_getBound();
@@ -402,39 +326,42 @@ namespace rat
         return size;
     }
 
-    sf::Vector2u Widget::_getBound() const
+    sf::Vector2f Widget::_getBound() const
     {
         if(_isFullyDeactivated) return {};
 
-        auto size = static_cast<sf::Vector2f>(getSize());
-        auto position = static_cast<sf::Vector2f>(getPosition());
+        auto size = getSize();
+        auto position = getPosition();
         auto origin = getOrigin();
 
         if(_props.hasPosition)
         {
-            position = {0.f, 0.f};
-            origin = {0.f, 0.f};
+            position = {0, 0};
+            origin = {0, 0};
         }
 
-        auto width = (unsigned int)(position.x + size.x - origin.x);
-        auto height = (unsigned int)(position.y + size.y - origin.y);
+        auto width = (position.x + size.x - origin.x);
+        auto height = (position.y + size.y - origin.y);
 
         return {width, height};
     }
     
 
-    sf::Vector2u Widget::_getSize() const {
+    sf::Vector2f Widget::_getSize() const {
         return {0u, 0u};
     }
 
-    sf::Vector2u Widget::getSize() const {
+    sf::Vector2f Widget::getSize() const {
         return _size;
     }
 
     void Widget::setPadding(const sf::Vector2f& padding)
     {
         _padding = padding;
-        _aboutToRecalculate = true;
+        if(_parent) _parent->_aboutToRecalculate = true;
+        _isPosChanged = true;
+        _propPosMustBeenRecalculated = true;
+
     }
 	void Widget::setPadding(float width, float height)
     {
@@ -445,16 +372,16 @@ namespace rat
         return _padding;
     }
 
-    sf::Vector2i Widget::getInnerSize() const
+    sf::Vector2f Widget::getInnerSize() const
     {
         auto size = getSize();
         auto minSize = getMinimalSize();
         size.x = std::max(size.x, minSize.x);
         size.y = std::max(size.y, minSize.y);
-        return static_cast<sf::Vector2i>(size) - (static_cast<sf::Vector2i>(getPadding()) * 2);
+        return size - (getPadding() * 2.f);
     }
 
-	sf::Vector2u Widget::getMinimalSize() const
+	sf::Vector2f Widget::getMinimalSize() const
     {
         if(!_isMinSizeSet) return {};
         return _minSize;
@@ -516,12 +443,14 @@ namespace rat
         if(_isFullyDeactivated) return;
         _isFullyDeactivated = true;
         if(_parent) _parent->_aboutToRecalculate = true;
+        if(_parent) _parent->_isPosChanged = true;
     }
     void Widget::fullyActivate()
     {
         if(!_isFullyDeactivated) return;
         _isFullyDeactivated = false;
         if(_parent) _parent->_aboutToRecalculate = true;
+        if(_parent) _parent->_isPosChanged = true;
     }
     bool Widget::isFullyDeactivated() const
     {
@@ -530,8 +459,7 @@ namespace rat
 
     void Widget::move(const sf::Vector2f& offset) 
     {
-        sf::Transformable::move(offset);
-        if(_parent) _parent->_aboutToRecalculate = true;   
+        setPosition(getPosition() + offset);  
     }
     void Widget::move(float offsetX, float offsetY) 
     {
@@ -539,13 +467,22 @@ namespace rat
     }
     void Widget::setPosition(const sf::Vector2f& offset) 
     {
-        sf::Transformable::setPosition(int(offset.x), int(offset.y));
-        //sf::Transformable::setPosition(round(offset.x), round(offset.y));
-        if(_parent) _parent->_aboutToRecalculate = true;   
+        gui::FamilyTransform::setPosition(offset);
+        if(_parent) _parent->_aboutToRecalculate = true;
+        _isPosChanged = true;
     }
     void Widget::setPosition(float x, float y) 
     {
         setPosition({x, y});
+    }
+
+    const sf::Vector2f& Widget::getPosition() const
+    {
+        return gui::FamilyTransform::getPosition();
+    }
+    const sf::Vector2f& Widget::getGlobalPosition() const
+    {
+        return gui::FamilyTransform::getGlobalPosition();
     }
 
     void Widget::setPropPosition(const sf::Vector2f& propPos)
@@ -556,6 +493,7 @@ namespace rat
         _props.position.y = std::max(0.f, std::min(1.f, _props.position.y));
 
         _propPosMustBeenRecalculated = true;
+        _isPosChanged = true;
     }
 	void Widget::setPropPosition(float propX, float propY)
     {
@@ -586,19 +524,27 @@ namespace rat
     void Widget::setOrigin(const sf::Vector2f& origin)
     {
         _props.hasOrigin = false;
-        _origin = origin;
+        gui::FamilyTransform::setOrigin(origin);
         _recalcOrigin();
+        _isPosChanged = true;
+        if(_parent) _parent->_aboutToRecalculate = true;
     }
 	void Widget::setOrigin(float x, float y)
     {
         setOrigin({x, y});
     }
 
+    sf::Vector2f Widget::getOrigin() const
+    {
+        return gui::FamilyTransform::getOrigin();
+    }
+
 	void Widget::setPropOrigin(const sf::Vector2f& prop)
     {
         _props.hasOrigin = true;
         _props.origin = prop;
-        _recalcOrigin();
+        _aboutToRecalculate = true;
+        _isPosChanged = true;
     }
 	void Widget::setPropOrigin(float x, float y)
     {
@@ -609,23 +555,21 @@ namespace rat
     {
         if(_props.hasOrigin)
         {
-            auto size = static_cast<sf::Vector2f>(getSize());
-            _origin = {size.x * _props.origin.x, size.y * _props.origin.y};
+            auto size = getSize();
+            gui::FamilyTransform::setOrigin(float(float(size.x) * _props.origin.x), float(float(size.y) * _props.origin.y));
         }
-        sf::Transformable::setOrigin(_origin);
-        if(_parent) _parent->_aboutToRecalculate = true;
     }
         
 
-    void Widget::setSize(sf::Vector2u size)
+    void Widget::setSize(sf::Vector2f size)
     {
         _isMinSizeSet = true;
         _minSize = size;
         _aboutToRecalculate = true;
     }
-	void Widget::setSize(size_t width, size_t height)
+	void Widget::setSize(float width, float height)
     {
-        setSize({(unsigned int)width, (unsigned int)height});
+        setSize({width, height});
     }
 	void Widget::lockSize()
     {
@@ -690,16 +634,8 @@ namespace rat
     {
         _areChildrenPenetrable = true;
     }
-    
 
-    sf::Vector2f Widget::_winProp{1.f, 1.f};
-
-	void Widget::setWinProp(sf::Vector2f prop)
-    {
-        _winProp = prop;
-    }
-
-    void Widget::invokeToUpdatePropPosition()
+    void Widget::invokeToCalcPropPosition()
     {
         if(_childrenPropSizesMustBeenRecalculated)
         {
@@ -707,9 +643,34 @@ namespace rat
             _childrenPropSizesMustBeenRecalculated = false;
         }
         
-        for(auto* child : _children) child->invokeToUpdatePropPosition();
+        for(auto* child : _children) child->invokeToCalcPropPosition();
 
         if(_propPosMustBeenRecalculated) _updatePropPosition();
+    }
+
+	void Widget::_updatePropPosition()
+    {
+        if(!_props.hasPosition) return;
+        if(!_parent) return;
+
+        auto size = getSize();
+        auto origin = getOrigin();
+        auto parentSize = _parent ->_getInnerSize();
+
+        auto posRange = parentSize - size;
+
+        const float x = posRange.x * _props.position.x + origin.x;
+        const float y = posRange.y * _props.position.y + origin.y;
+
+        gui::FamilyTransform::setPosition(x, y);
+
+        _propPosMustBeenRecalculated = false;
+        _isPosChanged = true;
+    }
+
+    sf::Vector2f Widget::_getInnerSize() const
+    {
+        return gui::FamilyTransform::getSize() - (_padding * 2.f);
     }
 
     void Widget::forceToUpdatePropSize()
@@ -723,27 +684,35 @@ namespace rat
     {
         if(!(_props.hasSize && _interface)) return;
 
-        auto updatedSize = static_cast<sf::Vector2u>(_interface->getSizeByPropSize(_props.size));
+        auto updatedSize = _interface->getSizeByPropSize(_props.size);
 
         setSize(updatedSize);
     }
-	void Widget::_updatePropPosition()
+
+    void Widget::invokeToCalcPosition()
     {
-        if(!_props.hasPosition) return;
-        if(!_parent) return;
+        if(_isPosChanged)
+        {
+            _recalcPos();
+            _recalcChildrenPos();
+            _isPosChanged = false;
+        }
+        for(auto* child : _children) child->invokeToCalcPosition();
+    }
 
-        auto size = getSize();
-        auto origin = getOrigin();
-        auto parentSize = _parent->getSize() - static_cast<sf::Vector2u>(_parent->getPadding() * 2.f);
+    void Widget::_recalcChildrenPos()
+    {
+        for(auto* child : _children)
+        {
+            child->applyFamilyTrans(getGlobalPosition() + _padding, getDrawPosition() + _padding);
+        }
+    }
 
-        auto posRange = parentSize - size;
-
-        const float x = float(posRange.x) * _props.position.x + origin.x;
-        const float y = float(posRange.y) * _props.position.y + origin.y;
-
-        sf::Transformable::setPosition(x, y);
-
-        _propPosMustBeenRecalculated = false;
+    void Widget::applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos)
+    {
+        gui::FamilyTransform::applyParentPosition(globalPos, drawPos);
+        //std::cout << "x: " << globalPos.x << " y: " << globalPos.y << " x: " << drawPos.x << " y: " << drawPos.y << '\n';
+        _isPosChanged = true;
     }
     
     

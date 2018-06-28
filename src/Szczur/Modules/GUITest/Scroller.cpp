@@ -1,6 +1,7 @@
 #include "Scroller.hpp"
 
 #include <cmath>
+#include <iomanip>
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -8,7 +9,6 @@ namespace rat
 {
     void Scroller::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        states.transform *= getTransform();
         target.draw(_path, states);
         target.draw(_scroller, states);
         target.draw(_upperBound, states);
@@ -17,8 +17,8 @@ namespace rat
 
     void Scroller::setPosition(float x, float y)
     {
+        gui::FamilyTransform::setPosition(x, y);
         _position = {x, y};
-        sf::Transformable::setPosition(_position);        
        _recalcAll();
     }
     void Scroller::setPosition(const sf::Vector2f& position)
@@ -27,7 +27,7 @@ namespace rat
     }
     void Scroller::setScrollerPosition(const sf::Vector2f& position)
     {
-        _scroller.setPosition(position);
+        _scroller.setPosition(position + gui::FamilyTransform::getDrawPosition());
         _recalcScrollerPos();
     }
     void Scroller::setScrollerHeightProp(float prop)
@@ -40,7 +40,19 @@ namespace rat
             _recalcScrollerSize();
         }
     }
+
+    sf::FloatRect Scroller::getBound() const
+    {
+        return {_position, _size};
+    }
     
+
+    void Scroller::applyFamilyTransform(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos)
+    {
+        gui::FamilyTransform::applyParentPosition(globalPos, drawPos);
+
+        _recalcAll();
+    }
     
     
 
@@ -95,12 +107,12 @@ namespace rat
     
     
 
-    void Scroller::setSize(int width, int height)
+    void Scroller::setSize(float width, float height)
     {
         setSize({width, height});
     }
     
-    void Scroller::setSize(const sf::Vector2i& size)
+    void Scroller::setSize(const sf::Vector2f& size)
     {
         _size = size;
         _recalcAll();
@@ -119,12 +131,12 @@ namespace rat
         _recalcAll();
     }
 
-    sf::Vector2u Scroller::getSize() const
+    sf::Vector2f Scroller::getSize() const
     {
-        return sf::Vector2u(_size);
+        return sf::Vector2f(_size);
     }
 
-    sf::Vector2i Scroller::getScrollerSize() const
+    sf::Vector2f Scroller::getScrollerSize() const
     {
         return _scroller.getSize();
     }
@@ -135,35 +147,46 @@ namespace rat
     
     
 
-    void Scroller::input(sf::Event event)
+    void Scroller::input(const sf::Event& event)
     {
         
         switch (event.type)
         {
             case sf::Event::MouseMoved:
             {
+                const auto scPos = _getScrollerGlobalPos();
+                const auto scSize = _scroller.getSize();
+
+                const sf::Vector2f mousePos{float(event.mouseMove.x), float(event.mouseMove.y)};
                 if(_hasBeenClicked)
                 {
-                    _clickedShift = sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _scroller.getPosition();
+                    _clickedShift = mousePos - scPos;
                     _hasBeenClicked = false;
                 }
                 if(_isClicked)
                 {
-                    setScrollerPosition(sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - _clickedShift);
+                    const auto newGlobalPos = mousePos - _clickedShift;
+                    const auto newPos = newGlobalPos - (getGlobalPosition() - getDrawPosition()); 
+                    std::cout << std::setw(8) << "GlobalPos" << "x:" << getGlobalPosition().x << '\t' << getGlobalPosition().y << '\n' <<
+                    "DrawPos x: " << getDrawPosition().x << '\t' << getDrawPosition().y << '\n' <<
+                    "GlobalMousePos x: " << newGlobalPos.x << '\t' << newGlobalPos.y << '\n' <<
+                    "NewPos x: " << newPos.x << '\t' << newPos.y << '\n';
+                    setScrollerPosition(newPos);
                 }
-                event.mouseMove.x -= ((_size.x - _scroller.getSize().x)/2) + _scroller.getPosition().x;
-                event.mouseMove.y -= (_scroller.getPosition().y);
 
-                bool isMouseOverlap = event.mouseMove.x >= 0 &&
-                    event.mouseMove.x <= _scroller.getSize().x /* * _winProp.x */&&
-                    event.mouseMove.y >= 0 &&
-                    event.mouseMove.y <= _scroller.getSize().y /* * _winProp.y*/;
+                bool isMouseOverlap = mousePos.x >= scPos.x &&
+                    mousePos.x <= scPos.x + scSize.x &&
+                    mousePos.y >= scPos.y &&
+                    mousePos.y <= scPos.y + scSize.y;
 
                 if(isMouseOverlap)
                 {
                     _isHovered = true;
                 }
-                else _isHovered = false;
+                else 
+                {
+                    _isHovered = false;
+                }
 
             } break;
 
@@ -181,6 +204,11 @@ namespace rat
                 _isClicked = false;
             }
         }
+    }
+
+    sf::Vector2f Scroller::_getScrollerGlobalPos() const
+    {
+        return _scroller.getPosition() - gui::FamilyTransform::getDrawPosition() + gui::FamilyTransform::getGlobalPosition();
     }
 
     void Scroller::_recalcPathSize()
@@ -206,13 +234,13 @@ namespace rat
         float xShift = (width - pathWidth) / 2.f;
         float newX = xShift;
 
-        _path.setPosition(newX, _getRealBoundLength());
+        _path.setPosition(sf::Vector2f{newX, _getRealBoundLength()} + gui::FamilyTransform::getDrawPosition());
     }
 
     void Scroller::_recalcScrollerSize()
     {
         auto innerTexSize = _scroller.getInnerTextureRect();
-        sf::Vector2i texSize = {innerTexSize.left * 2, innerTexSize.top * 2};
+        sf::Vector2f texSize = {float(innerTexSize.left * 2), float(innerTexSize.top * 2)};
         float scale = float(_size.x) / float(texSize.x);
         _scroller.setScale(scale, scale);
 
@@ -236,14 +264,18 @@ namespace rat
         float maxTop = _path.getGlobalBounds().top;
         float maxBottom = maxTop + realPathLength;
 
+        const auto drawPos = gui::FamilyTransform::getDrawPosition();
+
+        std::cout << "MaxTop: " << maxTop << " maxBottom: " << maxBottom << '\n';
+
         if(newY < maxTop) newY = maxTop;
         if(newY > maxBottom) newY = maxBottom;
 
         float scrollerWidth = _scroller.getSize().x;
-        float width = float(_size.x);
+        float width = _size.x;
 
         float xShift = (width - scrollerWidth) / 2.f;
-        newX = xShift;
+        newX = xShift + drawPos.x;
 
         _scroller.setPosition(newX, newY);
 
@@ -254,17 +286,17 @@ namespace rat
     
     void Scroller::_recalcScrollerPosByProp()
     {
-        auto scrollerPos = _scroller.getPosition();
         auto realPathLength = _getRealPathLength();
         float maxTop = _path.getGlobalBounds().top;
 
-        _scroller.setPosition(scrollerPos.x, maxTop + (realPathLength * _proportion));
+        _scroller.setPosition(0.f, maxTop + (realPathLength * _proportion));
     }
 
     void Scroller::_recalcBoundPos()
     {
         float boundHeight = _bottomBound.getGlobalBounds().height;
-        _bottomBound.setPosition(0.f, float(_size.y));
+        _upperBound.setPosition(gui::FamilyTransform::getDrawPosition());
+        _bottomBound.setPosition(sf::Vector2f{0.f, float(_size.y)} + gui::FamilyTransform::getDrawPosition());
     }
     void Scroller::_recalcBoundSize()
     {

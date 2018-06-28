@@ -15,16 +15,31 @@ namespace rat
     {
         if(_texture)
         {        
-            states.transform *= getTransform();
-
+            const auto oldPos = _sprite.getPosition();
             for(int y = 0; y < _elementAmount.y; y++)
                 for(int x = 0; x < _elementAmount.x; x++)
                 {
-                    _sprite.setPosition(float(x) * _elementDim.x, float(y) * _elementDim.y);
+                    _sprite.setPosition(oldPos + sf::Vector2f{float(x) * _elementDim.x, float(y) * _elementDim.y});
                     target.draw(_sprite, states);
                 }
+            _sprite.setPosition(oldPos);
         }
+    }
 
+    void Patch::setBasePosition(const sf::Vector2f& basePosition)
+    {
+        _sprite.move(-_basePos);
+        _basePos = basePosition;
+        _sprite.move(_basePos);
+
+    }
+    void Patch::setPosition(const sf::Vector2f& position)
+    {
+        _sprite.setPosition(_basePos + position);
+    }
+    void Patch::setPosition(float x, float y)
+    {
+        setPosition({x, y});
     }
     
     void Patch::setScale(float x, float y)
@@ -36,14 +51,14 @@ namespace rat
         _scale = scale;
         if(_texture) _recalcRecurrence();
     }
-    const sf::Vector2i& Patch::getSize() const
+    const sf::Vector2f& Patch::getSize() const
     {
         return _size;
     }
-    sf::Vector2i Patch::getElementSize() const
+    sf::Vector2f Patch::getElementSize() const
     {
         sf::Vector2f texSize = {(float)_sprite.getTextureRect().width, (float)_sprite.getTextureRect().height};
-        return { int(texSize.x * _scale.x), int(texSize.y * _scale.y) };
+        return { texSize.x * _scale.x, texSize.y * _scale.y };
     }
     
     
@@ -52,7 +67,7 @@ namespace rat
         _texture = nullptr;
 
         if(!_isTextureRectSet) setTextureRect({{0, 0}, static_cast<sf::Vector2i>(texture->getSize())});        
-        if(!_isSizeSet) setSize( static_cast<sf::Vector2i>(texture->getSize()) );                        
+        if(!_isSizeSet) setSize( static_cast<sf::Vector2f>(texture->getSize()) );                        
 
         _texture = texture;
         _sprite.setTexture(*texture);
@@ -60,22 +75,22 @@ namespace rat
         _recalcRecurrence();
     }
 
-    void Patch::setWidth(int width)
+    void Patch::setWidth(float width)
     {
         setSize(width, _size.y);
     }
-    void Patch::setHeight(int height)
+    void Patch::setHeight(float height)
     {
         setSize(_size.x, height);
     }
     
-    void Patch::setSize(sf::Vector2i size)
+    void Patch::setSize(sf::Vector2f size)
     {
         setSize(size.x, size.y);
     }
     
 
-    void Patch::setSize(int x, int y)
+    void Patch::setSize(float x, float y)
     {
         _size = {x, y};
         _isSizeSet = true;
