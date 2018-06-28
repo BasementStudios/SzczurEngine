@@ -13,7 +13,7 @@ namespace rat {
 
         static void initScript(Script& script);
 
-        void setScrollerTexture(sf::Texture* texture, int boundsHeight = 140);
+        void setScrollerTexture(sf::Texture* texture, float boundsHeight = 140);
         void setPathTexture(sf::Texture* texture);
         void setBoundsTexture(sf::Texture* texture);        
 
@@ -23,10 +23,10 @@ namespace rat {
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _update(float deltaTime) override;
 		virtual void _input(const sf::Event& event) override;
-        virtual sf::Vector2i _getSize() const override;
+        virtual sf::Vector2f _getSize() const override;
 		virtual void _calculateSize() override;
 
-        virtual sf::Vector2i _getChildrenSize() override;
+        virtual sf::Vector2f _getChildrenSize() override;
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         virtual void _recalcChildrenPos() override;
@@ -35,13 +35,13 @@ namespace rat {
         mutable sf::RenderTexture _renderTexture;
         mutable sf::Sprite _displaySprite;
 
-        int _offset;
+        float _offset;
         float _scrollSpeed{7.f};
 
         Scroller _scroller;
-        sf::Vector2i _minScrollSize{30, 50};
+        sf::Vector2f _minScrollSize{30, 50};
 
-        int _childrenHeight{0};
+        float _childrenHeight{0};
         float _childrenHeightProp{1.f};
 
         virtual void _callback(CallbackType type) override;

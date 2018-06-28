@@ -17,14 +17,14 @@ namespace rat
     public:
         BaseBar();
         BaseBar(Widget* base);
-        void setPosition(int x, int y);
-        void setPosition(const sf::Vector2i& position);
-        sf::Vector2i getPosition() const;
-        void setSize(const sf::Vector2i& size);
-        void setSize(int width, int height);
-        sf::Vector2i getSize() const;
-        void move(int offsetX, int offsetY);
-        void move(const sf::Vector2i& offset);
+        void setPosition(float x, float y);
+        void setPosition(const sf::Vector2f& position);
+        sf::Vector2f getPosition() const;
+        void setSize(const sf::Vector2f& size);
+        void setSize(float width, float height);
+        sf::Vector2f getSize() const;
+        void move(float offsetX, float offsetY);
+        void move(const sf::Vector2f& offset);
         void setParent(Widget* parent);
         void deactivate();
         void activate();

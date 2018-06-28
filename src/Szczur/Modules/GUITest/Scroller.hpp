@@ -3,11 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+#include "Szczur/Modules/GUI/Widget/FamilyTransform.hpp"
+
 #include "NinePatch.hpp"
 
 namespace rat
 {
-    class Scroller : public sf::Drawable, public sf::Transformable
+    class Scroller : public sf::Drawable, protected gui::FamilyTransform
     {
     public:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -21,23 +23,27 @@ namespace rat
 
         void setScrollerPropHeight(float propY);
 
-        void setSize(const sf::Vector2i& size);
-        void setSize(int width, int height);
+        void setSize(const sf::Vector2f& size);
+        void setSize(float width, float height);
         void setWidthProportion(float proportion);
         void setScrollerHeightProp(float prop);
         void setBoundShiftProportion(float proportion);
 
-        sf::Vector2u getSize() const;
-        sf::Vector2i getScrollerSize() const;
+        sf::Vector2f getSize() const;
+        sf::Vector2f getScrollerSize() const;
         sf::Vector2f getScrollerPosition() const;
 
         void setProportion(float proportion);
         void moveProportion(float proportionOffset);
         float getProportion() const;
 
+        sf::FloatRect getBound() const;
+
         void setScrollerPosition(const sf::Vector2f& position);
 
-        void input(sf::Event event);
+        void applyFamilyTransform(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
+
+        void input(const sf::Event& event);
     private:
         bool _isClicked{false};
         bool _hasBeenClicked{false};
@@ -57,10 +63,10 @@ namespace rat
 
         float _widthProp{1.f};
         float _scrollerHeightProp{1.f};
-        int _scrollerLength{60};
+        float _scrollerLength{60.f};
 
-        sf::Vector2i _size{0, 0};
-        sf::Vector2f _position{0.f, 0.f};
+        sf::Vector2f _size;
+        sf::Vector2f _position;
 
 
         float _proportion{0.f};   
@@ -79,6 +85,8 @@ namespace rat
         float _getRealBoundLength() const;
 
         void _recalcAll();
+
+        sf::Vector2f _getScrollerGlobalPos() const;
 
     };
 }

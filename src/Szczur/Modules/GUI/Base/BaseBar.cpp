@@ -13,23 +13,23 @@ namespace rat
     {
         _base = base;
     }
-    void BaseBar::setPosition(const sf::Vector2i& position)
+    void BaseBar::setPosition(const sf::Vector2f& position)
     {
         setPosition(position.x, position.y);
     }
-    void BaseBar::move(int offsetX, int offsetY)
+    void BaseBar::move(float offsetX, float offsetY)
     {
         move({offsetX, offsetY});
     }
-    void BaseBar::move(const sf::Vector2i& offset)
+    void BaseBar::move(const sf::Vector2f& offset)
     {
         setPosition(_base->getPosition() + offset);
     }
-    void BaseBar::setPosition(int x, int y)
+    void BaseBar::setPosition(float x, float y)
     {
         _base->setPosition(x, y);
     }
-    sf::Vector2i BaseBar::getPosition() const
+    sf::Vector2f BaseBar::getPosition() const
     {
         return _base->getPosition();
     }
@@ -55,15 +55,15 @@ namespace rat
     {
         parent->add(_base);
     }
-    void BaseBar::setSize(const sf::Vector2i& size)
+    void BaseBar::setSize(const sf::Vector2f& size)
     {
         _base->setSize(size);
     }
-    void BaseBar::setSize(int width, int height)
+    void BaseBar::setSize(float width, float height)
     {
         setSize({width, height});
     }
-    sf::Vector2i BaseBar::getSize() const
+    sf::Vector2f BaseBar::getSize() const
     {
         auto width = std::max(_base->getSize().x, _base->getMinimalSize().x);
         auto height = std::max(_base->getSize().y, _base->getMinimalSize().y);

@@ -50,12 +50,12 @@ namespace rat {
         object.init();
     }
 
-    sf::Vector2i TextWidget::_getSize() const 
+    sf::Vector2f TextWidget::_getSize() const 
     {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<int>(rect.left + rect.width),
-            static_cast<int>(rect.top + rect.height)
+            static_cast<float>(rect.left + rect.width),
+            static_cast<float>(rect.top + rect.height)
         };
     }
 

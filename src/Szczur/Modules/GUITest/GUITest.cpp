@@ -7,6 +7,7 @@
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
+#include "Szczur/Modules/GUI/TextWidget.hpp"
 
 
 namespace rat
@@ -35,6 +36,7 @@ namespace rat
 
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
+        gui.addAsset<sf::Font>("Assets/GUITest/arrial.ttf");
 
         _widget = gui.addInterface();
 
@@ -49,14 +51,14 @@ namespace rat
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
         scroll->setPropSize(0.5f, 0.5f);
-        scroll->setPropPosition(1.f, 0.f);
+        scroll->setPropPosition(0.5f, 0.5f);
 
-
+        /*
         auto* image = new ImageWidget;
         image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
         image->setPropSize(0.15f, 0.15f);
         //image->setPropPosition(0.5f, 1.f);
-        _widget->add(image);
+        _widget->add(image);*/
         
         list = new ListWidget;
         list->makeReversed();
@@ -66,13 +68,14 @@ namespace rat
         list->setPropSize(0.3f, 1.f);
         list->setAutoBetweenPadding();
 
-
+        /*
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             auto* widgeto = (*list)[1];
             if(randomBool) widgeto->fullyDeactivate();
             else widgeto->fullyActivate();
+            std::cout << "Kek\n";
             randomBool = !randomBool;
-        });
+        });*/
 
         float size = 0.1f;
         for(int i = 0; i < 4; i++)
@@ -90,6 +93,12 @@ namespace rat
                 w->setColor({255, 255, 255}, 1.f);
             });
         }
+
+        fps = new TextWidget;
+        _widget->add(fps);
+        fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/arrial.ttf"));
+        fps->setCharacterSize(20u);
+        fps->setColor({255, 255, 255});
 
     }
     
@@ -154,7 +163,10 @@ namespace rat
         }
         //list->setPropSize(0.3f, _prop);
 
-        std::cout << 1.f/deltaTime << '\n';
+        //std::cout << 1.f/deltaTime << '\n';
+        fps->setString(std::to_string(1.f/deltaTime));
+        fps->setString("KEKEKEKEKEKEKEK");
+        std::cout << fps->getSize().x << '\n';
     }
     void GUITest::render()
     {

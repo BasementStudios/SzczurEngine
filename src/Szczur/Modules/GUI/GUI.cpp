@@ -20,7 +20,7 @@ namespace rat {
         auto winSize = window.getSize();
         _canvas.create(winSize.x, winSize.y); 
 
-        _root.setSize(static_cast<sf::Vector2i>(winSize));
+        _root.setSize(static_cast<sf::Vector2f>(winSize));
         _root.makeChildrenUnresizable();
     }
 
@@ -67,7 +67,7 @@ namespace rat {
 
             _canvas.create(winSize.x, winSize.y);
 
-            _root.setSize(static_cast<sf::Vector2i>(winSize));
+            _root.setSize(static_cast<sf::Vector2f>(winSize));
 
             for(auto* interface : _interfaces)
             {

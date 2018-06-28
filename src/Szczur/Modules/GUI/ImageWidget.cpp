@@ -56,9 +56,9 @@ namespace rat {
         return nullptr;
     }
 
-    sf::Vector2i ImageWidget::_getSize() const 
+    sf::Vector2f ImageWidget::_getSize() const 
     {
-        if(_hasTexture) return {(int)_sprite.getGlobalBounds().width, (int)_sprite.getGlobalBounds().height};
+        if(_hasTexture) return {(float)_sprite.getGlobalBounds().width, (float)_sprite.getGlobalBounds().height};
         return {};
     }
 

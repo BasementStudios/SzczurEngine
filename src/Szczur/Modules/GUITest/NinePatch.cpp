@@ -26,7 +26,7 @@ namespace rat
     {
         if(_texture)
         {
-            states.transform *= getTransform();
+            //states.transform *= getTransform();
 
             target.draw(_topLeftCorner, states);
             target.draw(_topBar, states);
@@ -245,6 +245,8 @@ namespace rat
 
     void NinePatch::setPosition(const sf::Vector2f& position)
     {
+        _pos = position;
+
         _topBar.setBasePosition(position);
         _bottomBar.setBasePosition(position);
         _leftBar.setBasePosition(position);
@@ -259,9 +261,14 @@ namespace rat
     {
         setPosition({x, y});
     }
+
+    const sf::Vector2f& NinePatch::getPosition() const
+    {
+        return _pos;
+    }
     
 
-    void NinePatch::setSize(const sf::Vector2i& size)
+    void NinePatch::setSize(const sf::Vector2f& size)
     {
         _isSizeSet = true;
         _size = size;
@@ -269,12 +276,12 @@ namespace rat
         _recalcSpritesPos();
     }
 
-    void NinePatch::setSize(int x, int y)
+    void NinePatch::setSize(float x, float y)
     {
         setSize({x, y});
     }
 
-    sf::Vector2i NinePatch::getSize() const
+    sf::Vector2f NinePatch::getSize() const
     {
         return _size;
     }
@@ -300,19 +307,19 @@ namespace rat
         setScale({x, y});
     }
 
-    sf::Vector2i NinePatch::getInnerPathSize() const
+    sf::Vector2f NinePatch::getInnerPathSize() const
     {
-        return _inner.getElementSize();
+        return static_cast<sf::Vector2f>(_inner.getElementSize());
     }
-    sf::Vector2i NinePatch::getInnerSize() const
+    sf::Vector2f NinePatch::getInnerSize() const
     {
         return _inner.getSize();
     }
 
-    sf::Vector2i NinePatch::getCornersCombinedSize() const
+    sf::Vector2f NinePatch::getCornersCombinedSize() const
     {
-        int width = _topLeftCorner.getElementSize().x + _topRightCorner.getElementSize().x;
-        int height = _topLeftCorner.getElementSize().y + _bottomLeftCorner.getElementSize().y;
+        float width = float(_topLeftCorner.getElementSize().x + _topRightCorner.getElementSize().x);
+        float height = float(_topLeftCorner.getElementSize().y + _bottomLeftCorner.getElementSize().y);
         return {width, height};
     }
 

@@ -20,7 +20,7 @@ namespace rat
         _aboutToRecalculate = true;
         _isPosChanged = true;
     }
-    void ListWidget::setBetweenPadding(int padding)
+    void ListWidget::setBetweenPadding(float padding)
     {
         _betweenWidgetsPadding = padding;
         _aboutToRecalculate = true;
@@ -52,25 +52,24 @@ namespace rat
 
     void ListWidget::_recalcChildrenPos()
     {
-        auto basePos = gui::FamilyTransform::getAbsolutePosition();
+        auto basePos = gui::FamilyTransform::getGlobalPosition();
         basePos += getPadding();
         auto drawPos = gui::FamilyTransform::getDrawPosition();
         drawPos += getPadding();
 
         bool isHorizontal = _positioning == Positioning::Horizontal;
 
-        int i = _isReversed ? _children.size() - 1 : 0;
-        int iEnd = _isReversed ? -1 : _children.size();
-        int iAddon = _isReversed ? -1 : 1;
+        float i = _isReversed ? _children.size() - 1 : 0;
+        float iEnd = _isReversed ? -1 : int(_children.size());
+        float iAddon = _isReversed ? -1 : 1;
 
         for(; i != iEnd; i += iAddon)
         {
-            std::cout << i << '\n';
             auto* child = _children[i];
             child->applyFamilyTrans(basePos, drawPos);
 
 
-            int addon = isHorizontal ? 
+            float addon = isHorizontal ? 
             child->getPosition().x + child->getSize().x - child->getOrigin().x + _betweenWidgetsPadding : 
             child->getPosition().y + child->getSize().y - child->getOrigin().y + _betweenWidgetsPadding;
 
@@ -89,7 +88,7 @@ namespace rat
 
 
 
-    sf::Vector2i ListWidget::_getChildrenSize()
+    sf::Vector2f ListWidget::_getChildrenSize()
     {
         if(_hasAutoBetweenPad) _betweenWidgetsPadding = 0;
         _updateChildrenSize();
@@ -103,7 +102,7 @@ namespace rat
         bool isHorizontal = _positioning == Positioning::Horizontal;        
         for(auto* child : _children)
         {
-            int addon = isHorizontal ? 
+            float addon = isHorizontal ? 
             child->getPosition().x + child->getSize().x - child->getOrigin().x + _betweenWidgetsPadding : 
             child->getPosition().y + child->getSize().y - child->getOrigin().y + _betweenWidgetsPadding;
 

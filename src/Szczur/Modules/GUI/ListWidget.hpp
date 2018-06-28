@@ -9,7 +9,7 @@ namespace rat
     class ListWidget : public Widget
     {
     public:
-        void setBetweenPadding(int padding);
+        void setBetweenPadding(float padding);
         void setAutoBetweenPadding();
 
         void makeVertical();
@@ -22,15 +22,15 @@ namespace rat
 
     protected:
         virtual void _calculateSize() override;
-        virtual sf::Vector2i _getChildrenSize() override;
+        virtual sf::Vector2f _getChildrenSize() override;
 
         virtual void _recalcChildrenPos() override;
     private:
-        int _betweenWidgetsPadding{0};
+        float _betweenWidgetsPadding{0};
         bool _hasAutoBetweenPad{false};
 
         void _updateChildrenSize();
-        sf::Vector2i _childrenSize;
+        sf::Vector2f _childrenSize;
 
         void _calculateAutoBetweenPad();
 

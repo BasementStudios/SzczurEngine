@@ -33,7 +33,7 @@ namespace rat {
         );
         object.init();
     }
-    void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture, int boundsHeight)
+    void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture, float boundsHeight)
     {
         _scroller.setScrollerTexture(texture, boundsHeight);
     }
@@ -54,7 +54,7 @@ namespace rat {
         return _scrollSpeed;
     }
 
-    sf::Vector2i ScrollAreaWidget::_getSize() const {
+    sf::Vector2f ScrollAreaWidget::_getSize() const {
         return getMinimalSize();
     }
 
@@ -86,7 +86,9 @@ namespace rat {
 
         auto basePos = static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition());
 
-        _scroller.setPosition(basePos + sf::Vector2f{float(barX), 0});
+        _scroller.applyFamilyTransform(gui::FamilyTransform::getGlobalPosition(), gui::FamilyTransform::getDrawPosition());
+
+        _scroller.setPosition(float(barX), 0);
         _displaySprite.setPosition(basePos + sf::Vector2f(getPadding()));
     }
 
@@ -94,7 +96,7 @@ namespace rat {
     {
         for(auto* child : _children)
         {
-            child->gui::FamilyTransform::applyParentPosition(gui::FamilyTransform::getAbsolutePosition(), {0, -_offset});
+            child->applyFamilyTrans(gui::FamilyTransform::getGlobalPosition() + getPadding(), {0, _offset});
         }
     }
 
@@ -111,17 +113,18 @@ namespace rat {
         }
         
         _scroller.input(event);
+        //_scroller.inputMouseMoved()
         
 
         if(oldProp != _scroller.getProportion())
         {
-            _offset = int(maxOffset * _scroller.getProportion());
+            _offset = float(maxOffset * _scroller.getProportion());
             _isPosChanged = true;
         }
     }
 
 
-    sf::Vector2i ScrollAreaWidget::_getChildrenSize()
+    sf::Vector2f ScrollAreaWidget::_getChildrenSize()
     {
         return {};
     }
@@ -137,7 +140,7 @@ namespace rat {
         float barWidth = float(_minScrollSize.x);
         _scroller.setSize(_minScrollSize.x, size.y);
 
-        sf::Vector2u rTexSize = { size.x - _minScrollSize.x - (unsigned int)(getPadding().x * 2.f), size.y - (unsigned int)(getPadding().y * 2.f) };
+        sf::Vector2u rTexSize = { (unsigned int)(size.x - _minScrollSize.x - (getPadding().x * 2.f)), (unsigned int)(size.y - (getPadding().y * 2.f)) };
 
         auto* window = detail::globalPtr<Window>; 
         window->pushGLStates(); 

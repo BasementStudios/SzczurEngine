@@ -62,39 +62,39 @@ namespace rat
 		void input(const sf::Event& event);
 		void invokeInput(const sf::Event& event);
 
-		sf::Vector2i getSize() const;
-		sf::Vector2i getMinimalSize() const;
+		sf::Vector2f getSize() const;
+		sf::Vector2f getMinimalSize() const;
 
-		void move(const sf::Vector2i& offset);
-		void move(int offsetX, int offsetY);
-		void setPosition(const sf::Vector2i& offset);
-		void setPosition(int x, int y);
-		const sf::Vector2i& getPosition() const;
-		const sf::Vector2i& getGlobalPosition() const;
+		void move(const sf::Vector2f& offset);
+		void move(float offsetX, float offsetY);
+		void setPosition(const sf::Vector2f& offset);
+		void setPosition(float x, float y);
+		const sf::Vector2f& getPosition() const;
+		const sf::Vector2f& getGlobalPosition() const;
 
 		void setPropPosition(const sf::Vector2f& propPos);
 		void setPropPosition(float propX, float propY);
 
-		virtual void setPadding(const sf::Vector2i& padding);
-		virtual void setPadding(int width, int height);
-		sf::Vector2i getPadding() const;
+		virtual void setPadding(const sf::Vector2f& padding);
+		virtual void setPadding(float width, float height);
+		sf::Vector2f getPadding() const;
 
-		sf::Vector2i getInnerSize() const;
+		sf::Vector2f getInnerSize() const;
 
 		void setColor(const sf::Color& color);
 		void setColor(const sf::Color& color, float inTime);
 		void resetColor();
 		sf::Color getColor() const; 
 		
-		void setOrigin(const sf::Vector2i& origin);
-		void setOrigin(int x, int y);
-		sf::Vector2i getOrigin() const;
+		void setOrigin(const sf::Vector2f& origin);
+		void setOrigin(float x, float y);
+		sf::Vector2f getOrigin() const;
 
 		void setPropOrigin(const sf::Vector2f& prop);
 		void setPropOrigin(float x, float y);
 
-		void setSize(sf::Vector2i size);
-		void setSize(int width, int height);
+		void setSize(sf::Vector2f size);
+		void setSize(float width, float height);
 
 		void setPropSize(const sf::Vector2f& propSize);
 		void setPropSize(float widthProp, float widthHeight);
@@ -119,7 +119,7 @@ namespace rat
 		void forceToUpdatePropSize();
 		void invokeToCalcPosition();
 
-		void applyFamilyTrans(const sf::Vector2i& globalPos, const sf::Vector2i& drawPos);
+		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
 
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
@@ -132,7 +132,7 @@ namespace rat
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
-		virtual sf::Vector2i _getSize() const;
+		virtual sf::Vector2f _getSize() const;
 		virtual void _calculateSize() {}
 		virtual void _setColor(const sf::Color& color) {}
 		virtual void _addWidget(Widget* widget) {}
@@ -141,14 +141,14 @@ namespace rat
 		virtual void _recalcChildrenPos();
 		virtual void _recalcPos() {}
 
-		virtual sf::Vector2i _getInnerSize() const;
+		virtual sf::Vector2f _getInnerSize() const;
 
-		virtual sf::Vector2i _getChildrenSize();
+		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		bool _onPressed();
 		void _onRealesed();
-		void _onMoved(const sf::Vector2i& mousePos);
+		void _onMoved(const sf::Vector2f& mousePos);
 		bool _aboutToRecalculate;
 		bool _isPosChanged{false};
 
@@ -159,16 +159,16 @@ namespace rat
 
 		bool _isFullyDeactivated{false};
 
-		sf::Vector2i _size;
+		sf::Vector2f _size;
 
 		Widget* _parent;
 
-		sf::Vector2i _minSize;
+		sf::Vector2f _minSize;
 		bool _isMinSizeSet{false};
 
 		ProportionalDimes _props;
 
-		sf::Vector2i _padding;
+		sf::Vector2f _padding;
 
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
@@ -195,7 +195,7 @@ namespace rat
 		bool _areChildrenPenetrable{false}; //lenny
 		bool _areChildrenResizing{true};
 
-		sf::Vector2i _getBound() const;
+		sf::Vector2f _getBound() const;
 
 		void _updatePropSize();
 

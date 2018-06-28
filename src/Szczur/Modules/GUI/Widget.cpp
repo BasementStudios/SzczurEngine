@@ -124,7 +124,8 @@ namespace rat
     {
         switch(event.type)
         {
-            case sf::Event::MouseMoved: _onMoved(sf::Vector2i{event.mouseMove.x, event.mouseMove.y}); break;
+            case sf::Event::MouseMoved: system("cls"); std::cout << event.mouseMove.x << " " << event.mouseMove.y << '\n';
+            _onMoved(sf::Vector2f{float(event.mouseMove.x), float(event.mouseMove.y)}); break;
             case sf::Event::MouseButtonPressed: _onPressed(); break;
             case sf::Event::MouseButtonReleased: _onRealesed(); break;
         }
@@ -160,7 +161,7 @@ namespace rat
         _isPressed = false;
         _callback(CallbackType::onRelease);    
     }
-	void Widget::_onMoved(const sf::Vector2i& mousePos)
+	void Widget::_onMoved(const sf::Vector2f& mousePos)
     {
         if(!_isActivated || _isFullyDeactivated) return;
 
@@ -286,7 +287,7 @@ namespace rat
             _size.y = std::max(_size.y, _minSize.y);
         }
 
-        auto chSize = static_cast<sf::Vector2i>(_padding * 2);
+        auto chSize = static_cast<sf::Vector2f>(_padding * 2.f);
         if(_areChildrenResizing)
         {
             chSize += _getChildrenSize();
@@ -308,12 +309,14 @@ namespace rat
             _childrenPropSizesMustBeenRecalculated = true;
         }
 
+        gui::FamilyTransform::setSize(_size);
+
         _aboutToRecalculate = false;
     }
 
-	sf::Vector2i Widget::_getChildrenSize()
+	sf::Vector2f Widget::_getChildrenSize()
     {
-        sf::Vector2i size;
+        sf::Vector2f size;
         for(auto child : _children) 
         {
             auto childBound = child->_getBound();
@@ -324,7 +327,7 @@ namespace rat
         return size;
     }
 
-    sf::Vector2i Widget::_getBound() const
+    sf::Vector2f Widget::_getBound() const
     {
         if(_isFullyDeactivated) return {};
 
@@ -345,15 +348,15 @@ namespace rat
     }
     
 
-    sf::Vector2i Widget::_getSize() const {
+    sf::Vector2f Widget::_getSize() const {
         return {0u, 0u};
     }
 
-    sf::Vector2i Widget::getSize() const {
+    sf::Vector2f Widget::getSize() const {
         return _size;
     }
 
-    void Widget::setPadding(const sf::Vector2i& padding)
+    void Widget::setPadding(const sf::Vector2f& padding)
     {
         _padding = padding;
         if(_parent) _parent->_aboutToRecalculate = true;
@@ -361,25 +364,25 @@ namespace rat
         _propPosMustBeenRecalculated = true;
 
     }
-	void Widget::setPadding(int width, int height)
+	void Widget::setPadding(float width, float height)
     {
         setPadding({width, height});
     }
-    sf::Vector2i Widget::getPadding() const
+    sf::Vector2f Widget::getPadding() const
     {
         return _padding;
     }
 
-    sf::Vector2i Widget::getInnerSize() const
+    sf::Vector2f Widget::getInnerSize() const
     {
         auto size = getSize();
         auto minSize = getMinimalSize();
         size.x = std::max(size.x, minSize.x);
         size.y = std::max(size.y, minSize.y);
-        return static_cast<sf::Vector2i>(size) - (static_cast<sf::Vector2i>(getPadding()) * 2);
+        return size - (getPadding() * 2.f);
     }
 
-	sf::Vector2i Widget::getMinimalSize() const
+	sf::Vector2f Widget::getMinimalSize() const
     {
         if(!_isMinSizeSet) return {};
         return _minSize;
@@ -441,44 +444,46 @@ namespace rat
         if(_isFullyDeactivated) return;
         _isFullyDeactivated = true;
         if(_parent) _parent->_aboutToRecalculate = true;
+        if(_parent) _parent->_isPosChanged = true;
     }
     void Widget::fullyActivate()
     {
         if(!_isFullyDeactivated) return;
         _isFullyDeactivated = false;
         if(_parent) _parent->_aboutToRecalculate = true;
+        if(_parent) _parent->_isPosChanged = true;
     }
     bool Widget::isFullyDeactivated() const
     {
         return _isFullyDeactivated;
     }
 
-    void Widget::move(const sf::Vector2i& offset) 
+    void Widget::move(const sf::Vector2f& offset) 
     {
         setPosition(getPosition() + offset);  
     }
-    void Widget::move(int offsetX, int offsetY) 
+    void Widget::move(float offsetX, float offsetY) 
     {
         move({offsetX, offsetY});
     }
-    void Widget::setPosition(const sf::Vector2i& offset) 
+    void Widget::setPosition(const sf::Vector2f& offset) 
     {
         gui::FamilyTransform::setPosition(offset);
         if(_parent) _parent->_aboutToRecalculate = true;
         _isPosChanged = true;
     }
-    void Widget::setPosition(int x, int y) 
+    void Widget::setPosition(float x, float y) 
     {
         setPosition({x, y});
     }
 
-    const sf::Vector2i& Widget::getPosition() const
+    const sf::Vector2f& Widget::getPosition() const
     {
         return gui::FamilyTransform::getPosition();
     }
-    const sf::Vector2i& Widget::getGlobalPosition() const
+    const sf::Vector2f& Widget::getGlobalPosition() const
     {
-        return gui::FamilyTransform::getAbsolutePosition();
+        return gui::FamilyTransform::getGlobalPosition();
     }
 
     void Widget::setPropPosition(const sf::Vector2f& propPos)
@@ -517,7 +522,7 @@ namespace rat
         setPropSize({widthProp, heightProp});
     }
 
-    void Widget::setOrigin(const sf::Vector2i& origin)
+    void Widget::setOrigin(const sf::Vector2f& origin)
     {
         _props.hasOrigin = false;
         gui::FamilyTransform::setOrigin(origin);
@@ -525,12 +530,12 @@ namespace rat
         _isPosChanged = true;
         if(_parent) _parent->_aboutToRecalculate = true;
     }
-	void Widget::setOrigin(int x, int y)
+	void Widget::setOrigin(float x, float y)
     {
         setOrigin({x, y});
     }
 
-    sf::Vector2i Widget::getOrigin() const
+    sf::Vector2f Widget::getOrigin() const
     {
         return gui::FamilyTransform::getOrigin();
     }
@@ -552,18 +557,18 @@ namespace rat
         if(_props.hasOrigin)
         {
             auto size = getSize();
-            gui::FamilyTransform::setOrigin(int(float(size.x) * _props.origin.x), int(float(size.y) * _props.origin.y));
+            gui::FamilyTransform::setOrigin(float(float(size.x) * _props.origin.x), float(float(size.y) * _props.origin.y));
         }
     }
         
 
-    void Widget::setSize(sf::Vector2i size)
+    void Widget::setSize(sf::Vector2f size)
     {
         _isMinSizeSet = true;
         _minSize = size;
         _aboutToRecalculate = true;
     }
-	void Widget::setSize(int width, int height)
+	void Widget::setSize(float width, float height)
     {
         setSize({width, height});
     }
@@ -655,8 +660,8 @@ namespace rat
 
         auto posRange = parentSize - size;
 
-        const int x = int(float(posRange.x) * _props.position.x) + origin.x;
-        const int y = int(float(posRange.y) * _props.position.y) + origin.y;
+        const float x = float(float(posRange.x) * _props.position.x) + origin.x;
+        const float y = float(float(posRange.y) * _props.position.y) + origin.y;
 
         gui::FamilyTransform::setPosition(x, y);
 
@@ -664,9 +669,9 @@ namespace rat
         _isPosChanged = true;
     }
 
-    sf::Vector2i Widget::_getInnerSize() const
+    sf::Vector2f Widget::_getInnerSize() const
     {
-        return gui::FamilyTransform::getSize() - (_padding * 2);
+        return gui::FamilyTransform::getSize() - (_padding * 2.f);
     }
 
     void Widget::forceToUpdatePropSize()
@@ -687,30 +692,28 @@ namespace rat
 
     void Widget::invokeToCalcPosition()
     {
-        std::cout << "Jolo\n";
         if(_isPosChanged)
         {
             _recalcPos();
-        std::cout << "Bolo\n";
             _recalcChildrenPos();
-            for(auto* child : _children) child->_isPosChanged = true;
             _isPosChanged = false;
         }
         for(auto* child : _children) child->invokeToCalcPosition();
-        std::cout << "Kolo\n";
     }
 
     void Widget::_recalcChildrenPos()
     {
         for(auto* child : _children)
         {
-            child->gui::FamilyTransform::applyParentPosition(getAbsolutePosition(), getDrawPosition());
+            child->applyFamilyTrans(getGlobalPosition() + _padding, getDrawPosition() + _padding);
         }
     }
 
-    void Widget::applyFamilyTrans(const sf::Vector2i& globalPos, const sf::Vector2i& drawPos)
+    void Widget::applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos)
     {
         gui::FamilyTransform::applyParentPosition(globalPos, drawPos);
+        //std::cout << "x: " << globalPos.x << " y: " << globalPos.y << " x: " << drawPos.x << " y: " << drawPos.y << '\n';
+        _isPosChanged = true;
     }
     
     

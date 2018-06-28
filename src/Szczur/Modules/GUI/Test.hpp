@@ -154,7 +154,7 @@ namespace rat {
 
                     auto size = tab["size"];
                     if(size.valid())
-                        widget->setSize( sf::Vector2i{ size[1], size[2] } );
+                        widget->setSize( sf::Vector2f{ size[1], size[2] } );
 
                     if(tab["fontSize"].valid())
                         widget->setCharacterSize(tab["fontSize"]);

@@ -119,12 +119,12 @@ namespace rat {
         
     }
 
-    sf::Vector2i TextAreaWidget::_getSize() const 
+    sf::Vector2f TextAreaWidget::_getSize() const 
     {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<int>(rect.left + rect.width),
-            static_cast<int>(rect.top + rect.height)
+            static_cast<float>(rect.left + rect.width),
+            static_cast<float>(rect.top + rect.height)
         };
     }
 
