@@ -96,7 +96,7 @@ namespace rat {
     {
         for(auto* child : _children)
         {
-            child->applyFamilyTrans(gui::FamilyTransform::getGlobalPosition() + getPadding(), {0, _offset});
+            child->applyFamilyTrans(gui::FamilyTransform::getGlobalPosition() + getPadding() + sf::Vector2f{0, _offset}, {0, _offset});
         }
     }
 

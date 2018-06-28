@@ -26,7 +26,7 @@ namespace rat {
         virtual void _calculateSize() override;
         virtual void _setColor(const sf::Color& color) override;
 
-        virtual void _recalcChildrenPos() override;
+        virtual void _recalcPos() override;
     private:
         sf::Sprite _sprite; 
 

@@ -86,7 +86,7 @@ namespace rat {
         _sprite.setColor(color);
     }
 
-    void ImageWidget::_recalcChildrenPos()
+    void ImageWidget::_recalcPos()
     {
         _sprite.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }

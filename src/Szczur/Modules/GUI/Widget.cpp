@@ -124,8 +124,7 @@ namespace rat
     {
         switch(event.type)
         {
-            case sf::Event::MouseMoved: system("cls"); std::cout << event.mouseMove.x << " " << event.mouseMove.y << '\n';
-            _onMoved(sf::Vector2f{float(event.mouseMove.x), float(event.mouseMove.y)}); break;
+            case sf::Event::MouseMoved: _onMoved(sf::Vector2f{float(event.mouseMove.x), float(event.mouseMove.y)}); break;
             case sf::Event::MouseButtonPressed: _onPressed(); break;
             case sf::Event::MouseButtonReleased: _onRealesed(); break;
         }
