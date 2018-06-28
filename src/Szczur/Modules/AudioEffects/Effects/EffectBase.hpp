@@ -1,7 +1,7 @@
 #pragma once
 
 #define AL_ALEXT_PROTOTYPES 
-#include <OpenAL/efx.h>
+#include <efx.h>
 
 namespace rat
 {

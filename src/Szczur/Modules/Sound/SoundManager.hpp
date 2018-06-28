@@ -1,10 +1,5 @@
 #pragma once
 
-#include<memory>
-#include <fstream>
-
-#include <SFML/Audio.hpp>
-
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -32,7 +27,7 @@ namespace rat
         bool newSound(const std::string& fileName, const std::string& name);
 
         void eraseSounds();
-        void eraseSingleSoundByID(int i);
+        void eraseSingleSoundByID(unsigned int i);
         void eraseSingleSound(const std::string& name);
 
         int getSoundID(const std::string& name) const;

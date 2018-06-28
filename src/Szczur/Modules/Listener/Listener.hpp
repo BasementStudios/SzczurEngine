@@ -8,7 +8,9 @@ namespace rat
 {
 	class Listener : public Module<Script>
 	{ 
-		
+
+        float _offsetZ {0};
+
     public:
 
         Listener();
@@ -27,6 +29,9 @@ namespace rat
 
         void setUpVector(float x, float y, float z);
         sf::Vector3f getUpVector();
+
+        float getOffsetZ() const;
+        void setOffsetZ(float offsetZ);
 
 	};
 }
