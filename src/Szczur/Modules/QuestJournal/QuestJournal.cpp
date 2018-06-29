@@ -21,26 +21,22 @@ namespace rat
        
         _interface = gui.addInterface();
 
-        ////v
-
-        _scroller.add(&_list);
-        _list.setBetweenPadding(20.f);
-        _list.setPropSize(0.6f, 1.f);
-        _interface->add(&_scroller);
+        _scroller = new ScrollAreaWidget;
+        _list = new ListWidget;
+        _scroller->add(_list);
+        _list->setBetweenPadding(20.f);
+        _list->setPropSize(0.6f, 1.f);
+        _interface->add(_scroller);
 
         _interface->setSizingWidthToHeightProportion(1.f);
 
-        ////v
-        _fileLoader = std::make_shared<FileLoader>(); //traitor
-        std::cout << "Kekunio\n";
+        _fileLoader = std::make_shared<FileLoader>(); 
         _stepManager = std::make_shared<StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
-        ////^
+      
         _descriptionManager = std::make_shared<DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
         
         _questName = std::make_shared<QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
 
-
-        ////^
 
         _stepManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"),
@@ -49,11 +45,11 @@ namespace rat
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
-        _scroller.setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        _scroller.setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        _scroller.setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-        _scroller.setPropSize(0.7f, 0.5f);
-        _scroller.setPropPosition(0.1f, 0.85f);
+        _scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        _scroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        _scroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+        _scroller->setPropSize(0.7f, 0.5f);
+        _scroller->setPropPosition(0.1f, 0.85f);
         addQuest(0);
         addStep(2);
         addStep(3);
@@ -98,7 +94,7 @@ namespace rat
         
         );
         widget->setFont(getModule<GUI>().getAsset<sf::Font>("Assets/GUITest/testfont.otf"));
-        _list.add(widget);
+        _list->add(widget);
         
         _stepManager->setQuest(quest);
         _descriptionManager->setQuest(quest);

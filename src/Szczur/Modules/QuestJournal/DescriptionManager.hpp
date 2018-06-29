@@ -26,8 +26,8 @@ namespace rat
         private:
             std::shared_ptr<std::vector<std::string> > _descriptions;
             sf::Font* _font;
-            ScrollAreaWidget _scroller;
+            ScrollAreaWidget *_scroller;
             std::shared_ptr<Quest> _quest;
-            ListWidget _list;
+            ListWidget *_list;
     };
 }
