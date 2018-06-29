@@ -261,6 +261,9 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 {
 	if (ImGui::CollapsingHeader("Armature##armature_component"))
 	{
+		//Component::drawOriginSetter(&ArmatureComponent::setOrigin);
+		Component::drawOriginSetter<ArmatureComponent>(&ArmatureComponent::setOrigin);
+
 		// Armature data holder
 		auto& armatures = scenes.getArmatureDisplayDataHolder();
 
@@ -320,6 +323,44 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
 		}
 	}
+}
+
+void ArmatureComponent::setOrigin(int vertical, int horizontal)
+{
+	if (!_armature || !_armature->getArmature())
+		return;
+
+	auto size = _armature->getBoundingBox();
+
+	glm::vec2 pos;
+
+	switch (vertical)
+	{
+		case -1:
+			pos.x = -size.width / 2.f;
+			break;
+		case 0:
+			pos.x = 0;
+			break;
+		case 1:
+			pos.x = size.width / 2.f;
+			break;
+	}
+
+	switch (horizontal)
+	{
+		case -1:
+			pos.y = -size.height / 2.f;
+			break;
+		case 0:
+			pos.y = 0;
+			break;
+		case 1:
+			pos.y = size.height / 2.f;
+			break;
+	}
+
+	getEntity()->setOrigin(glm::vec3(pos, getEntity()->getOrigin().z));
 }
 
 }

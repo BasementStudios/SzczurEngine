@@ -115,6 +115,11 @@ public:
 	float getSpeed() { return _speed; }
 
 private:
+	// @vertical: -1 left, 0 center, 1 right
+	// @horizontal: -1 top, 0 center, 1 bottom
+	void setOrigin(int vertical = 0, int horizontal = 0);
+
+private:
 	SpriteDisplayData* _spriteDisplayData = nullptr;
 	sf3d::VertexArray _vertices{ 4 };
 

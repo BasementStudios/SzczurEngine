@@ -166,6 +166,8 @@ namespace rat {
 	void AnimatedSpriteComponent::renderHeader(ScenesManager& scenes, Entity* object) {
 		if(ImGui::CollapsingHeader("Animated Sprite##animated_sprite_component")) 
 		{
+			Component::drawOriginSetter<AnimatedSpriteComponent>(&AnimatedSpriteComponent::setOrigin);
+
 			// Sprite data holder
 			auto& sprites = object->getScene()->getSpriteDisplayDataHolder();
 
@@ -280,5 +282,41 @@ namespace rat {
 
 
 		object.init();
+	}
+
+	void AnimatedSpriteComponent::setOrigin(int vertical, int horizontal)
+	{
+		auto size = _frameSize;
+
+		glm::vec2 pos;
+
+		switch (vertical)
+		{
+			case 1:
+				pos.x = 0;
+				break;
+			case 0:
+				pos.x = size.x / 2;
+				break;
+			case -1:
+				pos.x = size.x;
+				break;
+		}
+
+		switch (horizontal)
+		{
+			case 1:
+				pos.y = 0;
+				break;
+			case 0:
+				pos.y = size.y / 2;
+				break;
+			case -1:
+				pos.y = size.y;
+				break;
+		}
+
+		getEntity()->setOrigin(glm::vec3(pos, getEntity()->getOrigin().z));
+
 	}
 }

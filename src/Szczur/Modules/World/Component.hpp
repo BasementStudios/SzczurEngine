@@ -83,6 +83,70 @@ public:
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object);
 
+protected:
+	template<typename T>
+	void drawOriginSetter(std::function<void(T*, int, int)> func)
+	{
+		// origin
+		float size = 16.f;
+
+		T* thisa = static_cast<T*>(this);
+
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0.f, 0.f });
+		{
+			// top
+			{
+				if (ImGui::Button("##left_top", { size, size }))
+					func(thisa, -1, -1);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("##top", { size, size }))
+					func(thisa, 0, -1);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("##right_top", { size, size }))
+					func(thisa, 1, -1);
+			}
+
+			// center
+			{
+				if (ImGui::Button("##left", { size, size }))
+					func(thisa, -1, 0);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("##center", { size, size }))
+					func(thisa, 0, 0);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("##right", { size, size }))
+					func(thisa, 1, 0);
+			}
+
+			// bottom
+			{
+				if (ImGui::Button("##left_bottom", { size, size }))
+					func(thisa, -1, 1);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("##bottom", { size, size }))
+					func(thisa, 0, 1);
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("##right_bottom", { size, size }))
+					func(thisa, 1, 1);
+			}
+		}
+		ImGui::PopStyleVar();
+
+		ImGui::Spacing();
+	}
+
 private:
 
 	Hash64_t _id;
