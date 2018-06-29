@@ -7,7 +7,7 @@ namespace rat {
 	class ArmorSlots
 	{
 	public:
-		ArmorSlots(sf::Texture* frameText, sf::Vector2u frameSize, sf::Texture* upText, sf::Texture* downText, Equipment* equipment);
+		ArmorSlots(sf::Texture* frameText, sf::Vector2f frameSize, sf::Texture* upText, sf::Texture* downText, Equipment* equipment);
 
 		void setParent(Widget* newBase);
 		void setPosition(sf::Vector2f position);

@@ -4,20 +4,20 @@
 #include "Equipment.hpp"
 
 namespace rat {
-	AmuletSlot::AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2u slotSize, Equipment* equipment) {
+	AmuletSlot::AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2f slotSize, Equipment* equipment) {
 		
 		_slotSize = slotSize;
 
 		_leftArrow = new ImageWidget;
 		_leftArrow->setTexture(upText);
 		_addWidget(_leftArrow);
-		_leftArrow->setSize(sf::Vector2u(slotSize.x / 2.5f, slotSize.y / 2.5f));
+		_leftArrow->setSize(sf::Vector2f(slotSize.x / 2.5f, slotSize.y / 2.5f));
 		_leftArrow->setPosition(sf::Vector2f(0.f, slotSize.y + 5));
 
 		_rightArrow = new ImageWidget;
 		_rightArrow->setTexture(downText);
 		_addWidget(_rightArrow);
-		_rightArrow->setSize(sf::Vector2u(slotSize.x / 2.5f, slotSize.y / 2.5f));
+		_rightArrow->setSize(sf::Vector2f(slotSize.x / 2.5f, slotSize.y / 2.5f));
 		_rightArrow->setPosition(sf::Vector2f(slotSize.x - slotSize.x / 2.5f, slotSize.y + 5));
 
 		_slot = new ImageWidget;

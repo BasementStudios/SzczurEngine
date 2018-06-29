@@ -5,7 +5,7 @@
 #include "EquipmentObject.hpp"
 
 namespace rat {
-	ItemPreview::ItemPreview(sf::Texture* backroundText, sf::Vector2u size, sf::Font* font) : size(size)
+	ItemPreview::ItemPreview(sf::Texture* backroundText, sf::Vector2f size, sf::Font* font) : size(size)
 	{
 		_background = new ImageWidget;
 		_background->setTexture(backroundText);
@@ -32,15 +32,15 @@ namespace rat {
 
 	void ItemPreview::minimalize() {
 		
-		_itemImage->setSize(sf::Vector2u(0u, 0u));		//need to rework this
+		_itemImage->setSize(sf::Vector2f(0u, 0u));		//need to rework this
 
 		_itemName->setString("");
-		_itemName->setSize(sf::Vector2u(0u, 0u));		//it's retarded i know
+		_itemName->setSize(sf::Vector2f(0u, 0u));		//it's retarded i know
 
 		_itemDescription->setString("");
-		_itemDescription->setSize(sf::Vector2u(0u, 0u));
+		_itemDescription->setSize(sf::Vector2f(0u, 0u));
 
-		_background->setSize(sf::Vector2u(0u, 0u));
+		_background->setSize(sf::Vector2f(0u, 0u));
 	}
 
 	void ItemPreview::setPosition(sf::Vector2f pos) {
@@ -49,15 +49,15 @@ namespace rat {
 
 	void ItemPreview::setItem(EquipmentObject* item) {
 		_background->setSize(size);
-		_itemImage->setSize(sf::Vector2u(size.y, size.y));
+		_itemImage->setSize(sf::Vector2f(size.y, size.y));
 		_itemImage->setTexture(item->getTexture());
 		_itemName->setString(item->getName());
 		_itemName->setPosition(sf::Vector2f(size.y + 10.f, 10.f));
-		_itemName->setSize(sf::Vector2u(2* size.y - 10, 20u));
+		_itemName->setSize(sf::Vector2f(2* size.y - 10, 20u));
 
 		_itemDescription->setString(item->getDescription());
 		_itemDescription->setPosition(sf::Vector2f(size.y + 10.f, 20.f + _itemName->getCharacterSize()));
-		_itemDescription->setSize(sf::Vector2u(2 * size.y - 10,50u));
+		_itemDescription->setSize(sf::Vector2f(2 * size.y - 10,50u));
 	}
 
 }

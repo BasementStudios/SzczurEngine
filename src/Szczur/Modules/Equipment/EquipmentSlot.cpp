@@ -13,12 +13,12 @@ namespace rat {
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);
 	}
-	void EquipmentSlot::setSize(const sf::Vector2u& size)
+	void EquipmentSlot::setSize(const sf::Vector2f& size)
 	{
 		_slotImage->setSize(size);
 		_itemImage->setSize(size);
 	}
-	void EquipmentSlot::setSize(unsigned int width, unsigned int height)
+	void EquipmentSlot::setSize(float width, float height)
 	{
 		setSize({ width, height });
 	}
@@ -39,7 +39,7 @@ namespace rat {
 	}
 
 	void EquipmentSlot::setItemPosition(sf::Vector2f pos) {
-		_itemImage->setPosition(pos + static_cast<sf::Vector2f>(_itemImage->getSize() / 2u));
+		_itemImage->setPosition(pos + _itemImage->getSize() / 2.f);
 	}
 	void EquipmentSlot::resetItemPosition() {
 		_itemImage->setPosition(sf::Vector2f(0.f, 0.f));

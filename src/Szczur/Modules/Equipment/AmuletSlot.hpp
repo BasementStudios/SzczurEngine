@@ -8,7 +8,7 @@ namespace rat {
 	class AmuletSlot : public BaseBar
 	{
 	public:
-		AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2u slotSize, Equipment* equipment);
+		AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2f slotSize, Equipment* equipment);
 		void addAmulet(WearableItem* amulet);
 		bool removeAmulet(std::string name);
 
@@ -26,6 +26,6 @@ namespace rat {
 		ImageWidget* _leftArrow;
 		ImageWidget* _rightArrow;
 
-		sf::Vector2u _slotSize;
+		sf::Vector2f _slotSize;
 	};
 }

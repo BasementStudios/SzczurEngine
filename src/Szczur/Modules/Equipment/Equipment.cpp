@@ -58,7 +58,7 @@ namespace rat {
 		_base->add(_equipmentFrame);
 
 		_equipmentFrame->setPosition(sf::Vector2f(window.getSize().x / 10 * 3, window.getSize().y / 10 * 3.5f)); //base equipment widget
-		_equipmentFrame->setSize(sf::Vector2u(window.getSize().x / 10 * 4, window.getSize().y / 10 * 6.5f));
+		_equipmentFrame->setSize(sf::Vector2f(window.getSize().x / 10 * 4, window.getSize().y / 10 * 6.5f));
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 70);
 
 		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {100u, 100u}, gui.getAsset<sf::Texture>("Assets/Equipment/leftArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/rightArrow.png"), this);

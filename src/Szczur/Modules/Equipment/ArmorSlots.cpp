@@ -7,7 +7,7 @@
 #include "WearableItem.hpp"
 
 namespace rat {
-	ArmorSlots::ArmorSlots(sf::Texture* frameText, sf::Vector2u frameSize, sf::Texture* upArrow, sf::Texture* downArrow, Equipment* equipment) {
+	ArmorSlots::ArmorSlots(sf::Texture* frameText, sf::Vector2f frameSize, sf::Texture* upArrow, sf::Texture* downArrow, Equipment* equipment) {
 		_base = new Widget;
 		
 		_amuletSlot = new AmuletSlot(frameText, upArrow, downArrow, frameSize, equipment);

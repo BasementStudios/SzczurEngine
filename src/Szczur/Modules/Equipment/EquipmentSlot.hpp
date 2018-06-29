@@ -11,8 +11,8 @@ namespace rat {
 	public:
 		EquipmentSlot();
 
-		void setSize(const sf::Vector2u& size);
-		void setSize(unsigned int width, unsigned int height);
+		void setSize(const sf::Vector2f& size);
+		void setSize(float width, float height);
 		void setTexture(sf::Texture*);
 		void setParent(Widget* parent);
 		void setPosition(sf::Vector2f pos);

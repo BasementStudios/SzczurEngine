@@ -30,7 +30,7 @@ namespace rat
 			newSlot->setParent(_base);
 			newSlot->setTexture(_frameText);
 			newSlot->setPosition(sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y));
-			newSlot->setSize(static_cast<sf::Vector2u>(_frameSize));
+			newSlot->setSize(static_cast<sf::Vector2f>(_frameSize));
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
 					this->onMouseButtonPressed(newSlot);
@@ -96,7 +96,7 @@ namespace rat
 			_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getPosition());// -_frameSize / 2;
 			_itemHeldWidget->setPosition(_slotHeld->getPosition());
 			_itemHeldWidget->setTexture(_slotHeld->getItem()->getTexture());
-			_itemHeldWidget->setSize(static_cast<sf::Vector2u>(_frameSize));
+			_itemHeldWidget->setSize(static_cast<sf::Vector2f>(_frameSize));
 			_itemHeldWidget->resetColor();
 			clickedObj->removeItem();
 			_equipment->disableItemPreview();
@@ -118,7 +118,7 @@ namespace rat
 			_itemSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
-			_itemHeldWidget->setSize(sf::Vector2u(0u, 0u));
+			_itemHeldWidget->setSize(sf::Vector2f(0u, 0u));
 			_itemHeldWidget->setPosition(sf::Vector2f(0.f, 0.f));
 		}
 		else if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && _slotDropped->getItem()) {	//swaping items
@@ -126,14 +126,14 @@ namespace rat
 			_slotDropped->setItem(_itemHeld);
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
-			_itemHeldWidget->setSize(sf::Vector2u(0u, 0u));
+			_itemHeldWidget->setSize(sf::Vector2f(0u, 0u));
 			_itemHeldWidget->setPosition(sf::Vector2f(0.f, 0.f));
 		}
 		else if (_isMouseButtonHeld) {
 			_slotHeld->setItem(_itemHeld);
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
-			_itemHeldWidget->setSize(sf::Vector2u(0u, 0u));
+			_itemHeldWidget->setSize(sf::Vector2f(0u, 0u));
 			_itemHeldWidget->setPosition(sf::Vector2f(0.f, 0.f));
 		}
 		_equipment->canPreviewBeInstantiated = true;
