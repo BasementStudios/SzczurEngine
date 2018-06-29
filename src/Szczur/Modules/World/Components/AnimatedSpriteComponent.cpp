@@ -103,7 +103,7 @@ namespace rat {
 
 	void AnimatedSpriteComponent::update(ScenesManager& scenes, float deltaTime)
 	{
-		if (_spriteDisplayData == nullptr)
+		if (_spriteDisplayData == nullptr || _columns == 0 || _speed == 0)
 			return;
 
 		// 30 frames per sec
