@@ -148,6 +148,8 @@ namespace rat
 		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		Widget* _parent{nullptr};
+
 		bool _onPressed();
 		void _onRealesed();
 		void _onMoved(const sf::Vector2f& mousePos);
@@ -162,8 +164,6 @@ namespace rat
 		bool _isFullyDeactivated{false};
 
 		sf::Vector2f _size;
-
-		sf::Vector2u _minSize;
 
 		sf::Vector2f _minSize;
 		bool _isMinSizeSet{false};
