@@ -15,6 +15,7 @@ namespace rat {
         _scroller.setWidthProportion(2.1f);
         setSize(10 + _minScrollSize.x, _minScrollSize.y);
         _aboutToRecalculate = true;
+        resetScrollerPosition();
     }
 
     void ScrollAreaWidget::initScript(Script& script) {
@@ -52,6 +53,13 @@ namespace rat {
 
     float ScrollAreaWidget::getScrollSpeed() const {
         return _scrollSpeed;
+    }
+
+    void ScrollAreaWidget::resetScrollerPosition()
+    {
+        _scroller.setProportion(0.f);
+        _offset = 0.f;
+        _isPosChanged = true;
     }
 
     sf::Vector2f ScrollAreaWidget::_getSize() const {

@@ -54,12 +54,12 @@ namespace rat
         scroll->setPropPosition(0.5f, 0.5f);
         scroll->setPropPosition({0.7f, 0.8f}, 3.f);
 
-        /*
+        
         auto* image = new ImageWidget;
         image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
         image->setPropSize(0.15f, 0.15f);
         //image->setPropPosition(0.5f, 1.f);
-        _widget->add(image);*/
+        _widget->add(image);
         
         list = new ListWidget;
         list->makeReversed();
@@ -69,14 +69,10 @@ namespace rat
         list->setPropSize(0.3f, 1.f);
         list->setAutoBetweenPadding();
 
-        /*
-        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            auto* widgeto = (*list)[1];
-            if(randomBool) widgeto->fullyDeactivate();
-            else widgeto->fullyActivate();
-            std::cout << "Kek\n";
-            randomBool = !randomBool;
-        });*/
+        
+        image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
+            scroll->resetScrollerPosition();
+        });
 
         float size = 0.1f;
         for(int i = 0; i < 4; i++)
