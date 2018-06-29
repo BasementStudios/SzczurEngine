@@ -8,8 +8,11 @@ namespace rat {
 	{
 	}
 
-	void EquipmentObject::setIcon(std::string path) {
+	void EquipmentObject::setIcon(sf::Texture* text) {
+		_objectIcon = text;
+	}
 
+	void EquipmentObject::setIcon(std::string path) {
 	}
 
 	void EquipmentObject::setName(std::string name) {

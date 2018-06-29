@@ -15,7 +15,7 @@ namespace rat {
 
 		void initScript(Script& script);
 
-		void setCallback(sol::function firstCallback, sol::function secondCallback);
+		void setCallback(std::string pathToFile);
 
 		void activate();
 		void deactivate();

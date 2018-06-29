@@ -13,7 +13,7 @@ namespace rat {
 
 		void setIsUseble(bool isUsable);
 
-		void setCallback(sol::function firstCallback);
+		void setCallback(std::string);
 
 		bool useItem();
 	private:

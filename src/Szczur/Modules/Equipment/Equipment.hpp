@@ -12,7 +12,7 @@
 #include "UsableItem.hpp"
 namespace rat
 {
-	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview;
+	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; class RingSlider; class ItemManager;
 	class Equipment : public Module<Window, Input, GUI, Script> {
 	public:
 
@@ -27,6 +27,9 @@ namespace rat
 		void disableItemPreview();
 
 		bool canPreviewBeInstantiated;
+
+		void setNewItemPath(std::string);
+		void reloadItemList();
 
 		UsableItem* createUsableItem(std::string nameId);	//creating new item and adding it to list
 		WearableItem* createWearableItem(std::string nameId);
@@ -48,6 +51,8 @@ namespace rat
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
 		ItemPreview* _itemPreview;
+		RingSlider* _ringSlider;
+		ItemManager* _itemManager;
 
 		Window& mainWindow;
 		sf3d::RenderWindow& window;

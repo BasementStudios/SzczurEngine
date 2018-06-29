@@ -8,9 +8,10 @@
 
 namespace rat {
 
+
 	class ImageWidget;
 
-	class EquipmentObject : public BaseBar {
+	class EquipmentObject {
 	public:
 		EquipmentObject(std::string nameId);
 
@@ -22,6 +23,8 @@ namespace rat {
 		//cos z tekstura
 		void setName(std::string name);
 		void setDescription(std::string description);
+		//void setIcon(std::string path);
+		void setIcon(sf::Texture* text);
 		void setIcon(std::string path);
 
 		virtual ~EquipmentObject() {}

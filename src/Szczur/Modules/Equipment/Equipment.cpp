@@ -7,6 +7,9 @@
 #include "ArmorSlots.hpp"
 #include "ItemPreview.hpp"
 #include "EquipmentObject.hpp"
+#include "RingSlider.hpp"
+
+#include "ItemManager.hpp"
 
 namespace rat {
 	Equipment::Equipment()
@@ -50,6 +53,9 @@ namespace rat {
 	}
 
 	void Equipment::init() {
+		_itemManager->setNewPath("Assets/Equipment/item.json");
+		_listOfObjects = _itemManager->loadFromFile();
+
 		auto& gui = getModule<GUI>(); 
 
 		_base = gui.addInterface();
@@ -68,6 +74,10 @@ namespace rat {
 		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), { 62, 62 }, this);
 		_normalSlots->setParent(_base);
 		_normalSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 3.4, window.getSize().y / 1.6f));
+
+		_ringSlider = new RingSlider(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), { 70u, 70u }, gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"), gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"), gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"), this, window.getSize().y / 10 * 5.5f);
+		_ringSlider->setParent(_equipmentFrame);
+		_ringSlider->setPosition(sf::Vector2f(window.getSize().x / 10.f * 3.2f, window.getSize().y / 20.f));
 
 		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), {270, 90}, gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
 		_itemPreview->setParent(_base);
@@ -110,19 +120,19 @@ namespace rat {
 	//	_listOfObjects[nameId] = newObject;	//cos z tymi jsonami
 	//}
 
-	UsableItem* Equipment::createUsableItem(std::string nameId) {
-		UsableItem* temp = new UsableItem(nameId);
-		_listOfObjects[nameId] = temp;
-		temp->initScript(getModule<Script>());
-		return temp;
-	}
+	//UsableItem* Equipment::createUsableItem(std::string nameId) {
+	//	UsableItem* temp = new UsableItem(nameId);
+	//	_listOfObjects[nameId] = temp;
+	//	temp->initScript(getModule<Script>());
+	//	return temp;
+	//}
 
-	WearableItem* Equipment::createWearableItem(std::string nameId) {
-		WearableItem* temp = new WearableItem(nameId);
-		_listOfObjects[nameId] = temp;
-		temp->initScript(getModule<Script>());
-		return temp;
-	}
+	//WearableItem* Equipment::createWearableItem(std::string nameId) {
+	//	WearableItem* temp = new WearableItem(nameId);
+	//	_listOfObjects[nameId] = temp;
+	//	temp->initScript(getModule<Script>());
+	//	return temp;
+	//}
 
 	UsableItem* Equipment::getUsableItem(std::string nameId) {
 		UsableItem* temp = dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
@@ -155,7 +165,7 @@ namespace rat {
 			_armorSlots->setWeapon(item);
 			break;
 		case equipmentObjectType::ring:
-			//to implement
+			_ringSlider->addItem(item);
 			break;
 		}
 	}
@@ -169,8 +179,7 @@ namespace rat {
 			case equipmentObjectType::amulet:
 				return _armorSlots->removeAmulet(item->getNameId());
 			case equipmentObjectType::ring:
-				//todo
-				return true;
+				return false;
 			}
 		return false;
 	}
@@ -210,6 +219,11 @@ namespace rat {
 	int Equipment::getSlotsAmount() {
 		return _normalSlots->getSlotsAmount();
 	}
-	/*
-	void setRingsLimit(int newCapacity);*/
+	
+	void Equipment::setNewItemPath(std::string newPath){
+		_itemManager->setNewPath(newPath);
+	}
+	void Equipment::reloadItemList() {
+		_listOfObjects = _itemManager->loadFromFile();
+	}
 }
