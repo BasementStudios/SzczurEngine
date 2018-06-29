@@ -2,6 +2,13 @@
 
 #include <string>
 #include <iostream>
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -50,15 +57,15 @@ namespace rat {
         _aboutToRecalculate = true;
     }
 
-    const sf::Texture* ImageWidget::getTexture() const 
-    {
-        if(_hasTexture) return _sprite.getTexture();
-        return nullptr;
+    const sf::Texture* ImageWidget::getTexture() const  
+    { 
+        if(_hasTexture) return _sprite.getTexture(); 
+        return nullptr; 
     }
 
-    sf::Vector2u ImageWidget::_getSize() const 
+    sf::Vector2f ImageWidget::_getSize() const 
     {
-        if(_hasTexture) return {(unsigned int)_sprite.getGlobalBounds().width, (unsigned int)_sprite.getGlobalBounds().height};
+        if(_hasTexture) return {(float)_sprite.getGlobalBounds().width, (float)_sprite.getGlobalBounds().height};
         return {};
     }
 
@@ -84,6 +91,11 @@ namespace rat {
     void ImageWidget::_setColor(const sf::Color& color)
     {
         _sprite.setColor(color);
+    }
+
+    void ImageWidget::_recalcPos()
+    {
+        _sprite.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }
     
     

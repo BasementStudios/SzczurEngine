@@ -1,11 +1,20 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+namespace sf {
+    class RenderTarget;
+    class RenderStates;
+    class Color;
+}
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+
+namespace rat {
+    class Script;
+}
 
 #include "Widget.hpp"
 
 namespace rat {
-    class Script;
     class ImageWidget : public Widget
     {
     public:
@@ -21,10 +30,12 @@ namespace rat {
         void setScale(const sf::Vector2f& scale);
     
     protected:
-        virtual sf::Vector2u _getSize() const override;
+        virtual sf::Vector2f _getSize() const override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _calculateSize() override;
         virtual void _setColor(const sf::Color& color) override;
+
+        virtual void _recalcPos() override;
     private:
         sf::Sprite _sprite; 
 

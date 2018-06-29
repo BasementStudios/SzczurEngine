@@ -11,7 +11,7 @@
 
 namespace rat
 {
-    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget;
+    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
         using Tab_t = TransformAnimationBase;
@@ -29,9 +29,12 @@ namespace rat
         float _shift{0.7f};
         sf::Vector2f _size{30, 30.f};
 
+        bool randomBool{false};
+
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};
+        TextWidget* fps{nullptr};
     };
 
 }

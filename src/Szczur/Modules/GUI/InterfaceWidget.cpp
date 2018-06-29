@@ -35,16 +35,16 @@ namespace rat
 
     void InterfaceWidget::updateSizeByWindowSize(const sf::Vector2u& winSize)
     {
-        setSize(winSize);
+        setSize(static_cast<sf::Vector2f>(winSize));
         _updateSizeProportion();
         _updateSizingSize();
 
         forceToUpdatePropSize();
     }
 
-    sf::Vector2i InterfaceWidget::getSizeByPropSize(const sf::Vector2f& propSize) const
+    sf::Vector2f InterfaceWidget::getSizeByPropSize(const sf::Vector2f& propSize) const
     {
-        return { int(_sizingSize.x * propSize.x), int(_sizingSize.y * propSize.y) };
+        return { float(_sizingSize.x * propSize.x), float(_sizingSize.y * propSize.y) };
     }
 
     void InterfaceWidget::_updateSizeProportion()
@@ -56,11 +56,11 @@ namespace rat
         {
             if(wth > _widthToHeightProp)
             {
-                size.x = (unsigned int)(float(size.y) * _widthToHeightProp);
+                size.x = (float)(float(size.y) * _widthToHeightProp);
             }
             else
             {
-                size.y = (unsigned int)(float(size.x) / _widthToHeightProp);
+                size.y = (float)(float(size.x) / _widthToHeightProp);
             }
             setSize(size);
         }
@@ -72,7 +72,7 @@ namespace rat
 
     void InterfaceWidget::_updateSizingSize()
     {
-        auto innerSize = static_cast<sf::Vector2f>(getMinimalSize()) - (getPadding() * 2.f);
+        auto innerSize = static_cast<sf::Vector2f>(getMinimalSize() - (getPadding() * 2.f));
 
         _sizingSize = innerSize;
 

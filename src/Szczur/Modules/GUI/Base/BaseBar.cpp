@@ -55,15 +55,15 @@ namespace rat
     {
         parent->add(_base);
     }
-    void BaseBar::setSize(const sf::Vector2u& size)
+    void BaseBar::setSize(const sf::Vector2f& size)
     {
         _base->setSize(size);
     }
-    void BaseBar::setSize(unsigned int width, unsigned int height)
+    void BaseBar::setSize(float width, float height)
     {
         setSize({width, height});
     }
-    sf::Vector2u BaseBar::getSize() const
+    sf::Vector2f BaseBar::getSize() const
     {
         auto width = std::max(_base->getSize().x, _base->getMinimalSize().x);
         auto height = std::max(_base->getSize().y, _base->getMinimalSize().y);
@@ -79,13 +79,6 @@ namespace rat
         addon.setParent(_base);
     }
     
-    void BaseBar::_setWidgetSize(ImageWidget* widget, float x, float y)
-    {
-        auto* texture = widget->getTexture();
-        if(!texture) return;
-        auto size = static_cast<sf::Vector2f>(texture->getSize());
-        widget->setScale({x/size.x, y/size.y});
-    }
     void BaseBar::deactivate()
     {
         _base->deactivate();

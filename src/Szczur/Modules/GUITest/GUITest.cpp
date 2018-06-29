@@ -7,6 +7,7 @@
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
+#include "Szczur/Modules/GUI/TextWidget.hpp"
 
 
 namespace rat
@@ -35,6 +36,7 @@ namespace rat
 
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
+        gui.addAsset<sf::Font>("Assets/GUITest/arrial.ttf");
 
         _widget = gui.addInterface();
 
@@ -49,15 +51,16 @@ namespace rat
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
         scroll->setPropSize(0.5f, 0.5f);
-        scroll->setPropPosition(1.f, 0.f);
+        scroll->setPropPosition(0.5f, 0.5f);
+        scroll->setPropPosition({0.7f, 0.8f}, 3.f);
 
-
+        
         auto* image = new ImageWidget;
         image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
         image->setPropSize(0.15f, 0.15f);
         //image->setPropPosition(0.5f, 1.f);
         _widget->add(image);
-        /*
+        
         list = new ListWidget;
         list->makeReversed();
         //list->setBetweenPadding(20.f);
@@ -66,13 +69,9 @@ namespace rat
         list->setPropSize(0.3f, 1.f);
         list->setAutoBetweenPadding();
 
-
-        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            //auto* addon = new Widget;
-            //addon->setPosition(0.f, 20.f);
-            //addon->setPropSize(0.1f, 0.1f);
-            //list->add(addon);
-            list->popBack();
+        
+        image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
+            scroll->resetScrollerPosition();
         });
 
         float size = 0.1f;
@@ -90,7 +89,13 @@ namespace rat
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
                 w->setColor({255, 255, 255}, 1.f);
             });
-        }*/
+        }
+
+        fps = new TextWidget;
+        _widget->add(fps);
+        fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/arrial.ttf"));
+        fps->setCharacterSize(20u);
+        fps->setColor({255, 255, 255});
 
     }
     
@@ -99,8 +104,7 @@ namespace rat
     {
         const auto& window = getModule<Window>().getWindow();
 
-        auto mousePos = sf::Mouse::getPosition(window);
-
+        [[maybe_unused]] auto mousePos = sf::Mouse::getPosition(window);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             _scale-= deltaTime * 0.4f;
@@ -153,9 +157,6 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
-        //list->setPropSize(0.3f, _prop);
-
-        std::cout << 1.f/deltaTime << '\n';
     }
     void GUITest::render()
     {
