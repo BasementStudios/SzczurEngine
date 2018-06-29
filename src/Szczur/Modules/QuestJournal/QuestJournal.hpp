@@ -28,16 +28,25 @@ namespace rat
 
             void refresh(std::string questName);
 
+            void finishQuest(std::string name);
+
+            void displayDoneList();
+            void displayNormalList();
+
             void turnON();
             void turnOFF();
 
         private:
 
-            ImageWidget *ButtonWidget;
+            ImageWidget *_doneSwitch;
+            ImageWidget *_switch;
+            ImageWidget *_ButtonWidget;
 
             std::vector<std::shared_ptr<TextWidget> > _widgets;
             ListWidget *_list;
+            ListWidget * _doneList;
             ScrollAreaWidget *_scroller;
+            ScrollAreaWidget *_doneScroller;
 
             InterfaceWidget* _interface{nullptr};
             std::shared_ptr<FileLoader> _fileLoader;
@@ -47,8 +56,14 @@ namespace rat
             std::shared_ptr<QuestName> _questName;
 
             std::vector<std::shared_ptr<Quest> > _quests;
+            
+            std::vector<std::shared_ptr<Quest> > _doneQuests;
+
+
+
             std::vector<std::shared_ptr<Quest> >::iterator it;
             
+            sf::Font *_font;
     };
 }
 
