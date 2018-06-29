@@ -108,8 +108,7 @@ namespace rat
     {
         const auto& window = getModule<Window>().getWindow();
 
-        auto mousePos = sf::Mouse::getPosition(window);
-
+        [[maybe_unused]] auto mousePos = sf::Mouse::getPosition(window);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             _scale-= deltaTime * 0.4f;

@@ -2,6 +2,13 @@
 
 #include <string>
 #include <iostream>
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -50,10 +57,10 @@ namespace rat {
         _aboutToRecalculate = true;
     }
 
-    const sf::Texture* ImageWidget::getTexture() const 
-    {
-        if(_hasTexture) return _sprite.getTexture();
-        return nullptr;
+    const sf::Texture* ImageWidget::getTexture() const  
+    { 
+        if(_hasTexture) return _sprite.getTexture(); 
+        return nullptr; 
     }
 
     sf::Vector2f ImageWidget::_getSize() const 

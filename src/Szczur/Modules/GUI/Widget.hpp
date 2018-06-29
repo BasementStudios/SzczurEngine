@@ -163,7 +163,7 @@ namespace rat
 
 		sf::Vector2f _size;
 
-		Widget* _parent;
+		sf::Vector2u _minSize;
 
 		sf::Vector2f _minSize;
 		bool _isMinSizeSet{false};

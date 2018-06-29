@@ -1,11 +1,20 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+namespace sf {
+    class RenderTarget;
+    class RenderStates;
+    class Color;
+}
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+
+namespace rat {
+    class Script;
+}
 
 #include "Widget.hpp"
 
 namespace rat {
-    class Script;
     class ImageWidget : public Widget
     {
     public:
