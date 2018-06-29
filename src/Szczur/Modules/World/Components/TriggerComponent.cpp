@@ -16,8 +16,7 @@ namespace rat {
         _input(detail::globalPtr<Input>->getManager()) {
 	}
 
-	std::unique_ptr<Component> TriggerComponent::copy(Entity* newParent) const
-	{
+	std::unique_ptr<Component> TriggerComponent::copy(Entity* newParent) const {
 		auto ptr = std::make_unique<TriggerComponent>(*this);
 
 		ptr->setEntity(newParent);
@@ -43,6 +42,8 @@ namespace rat {
 
 			return false;
 		}
+
+		return false;
 	}
 
 	void TriggerComponent::setRadius(float radius) {
@@ -53,13 +54,11 @@ namespace rat {
 		return _radius;
 	}
 
-	void TriggerComponent::setRectSize(const glm::vec2& size)
-	{
+	void TriggerComponent::setRectSize(const glm::vec2& size) {
 		_rectSize = size;
 	}
 
-	const glm::vec2& TriggerComponent::getRectSize() const
-	{
+	const glm::vec2& TriggerComponent::getRectSize() const {
 		return _rectSize;
 	}
 
@@ -74,6 +73,8 @@ namespace rat {
 			case 1: return ChangeScene;
 			case 2: return Overlaping;
 		}
+
+		return None;
 	}
 
 	void TriggerComponent::loadFromConfig(Json& config) {
@@ -129,13 +130,11 @@ namespace rat {
 		}
 	}
 
-	void TriggerComponent::setShapeType(Shape shape)
-	{
+	void TriggerComponent::setShapeType(Shape shape) {
 		_triggerShape = shape;
 	}
 
-	const TriggerComponent::Shape& TriggerComponent::getShapeType()
-	{
+	const TriggerComponent::Shape& TriggerComponent::getShapeType() {
 		return _triggerShape;
 	}
 
@@ -188,8 +187,7 @@ namespace rat {
         }
     }
 
-    void TriggerComponent::initScript(ScriptClass<Entity>& entity, Script& script)
-    {
+    void TriggerComponent::initScript(ScriptClass<Entity>& entity, Script& script) {
         auto object = script.newClass<TriggerComponent>("TriggerComponent", "World");
 
 		// Main
