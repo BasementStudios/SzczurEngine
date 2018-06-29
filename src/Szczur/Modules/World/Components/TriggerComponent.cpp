@@ -192,6 +192,9 @@ namespace rat {
     {
         auto object = script.newClass<TriggerComponent>("TriggerComponent", "World");
 
+		// Main
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
 		// Entity
 		entity.set("trigger", &Entity::getComponentAs<TriggerComponent>);
 		entity.set("addTriggerComponent", [&] (Entity& e) {return (TriggerComponent*)e.addComponent<TriggerComponent>(); });

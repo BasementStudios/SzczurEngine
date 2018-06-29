@@ -88,7 +88,9 @@ void ColliderComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 {
 	auto object = script.newClass<ColliderComponent>("ColliderComponent", "World");
 
+	// Main
 	object.set("move", &ColliderComponent::move);
+	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
 	entity.set("addColidderComponent", [&] (Entity& e) {return (ColliderComponent*)e.addComponent<ColliderComponent>(); });

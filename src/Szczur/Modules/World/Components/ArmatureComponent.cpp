@@ -49,7 +49,6 @@ void ArmatureComponent::setArmatureDisplayData(ArmatureDisplayData* armatureDisp
 
 void ArmatureComponent::setArmature(const std::string& armatureName)
 {
-
 	if (armatureName.empty())
 		return;
 
@@ -245,8 +244,8 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("playOnce", &ArmatureComponent::playOnce);
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
-	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 	object.set("setArmature", &ArmatureComponent::setArmature);
+	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
 	entity.set("armature", &Entity::getComponentAs<ArmatureComponent>);
