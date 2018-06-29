@@ -33,7 +33,7 @@ public:
 	///
 	~ArmatureComponent();
 
-// Getters
+// Getters and setters
 
 	///
 	ArmatureDisplayData* getArmatureDisplayData();
@@ -52,6 +52,9 @@ public:
 	
 	///
 	void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData, bool deleteOld = true);
+
+	///
+	void setArmature(const std::string& armatureName);
 
 	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const;

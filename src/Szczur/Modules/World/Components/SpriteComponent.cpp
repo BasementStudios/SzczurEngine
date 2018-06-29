@@ -33,7 +33,8 @@ namespace rat {
 		_spriteDisplayData = spriteDisplayData;
 	}
 
-	void SpriteComponent::setTexture(const std::string& texturePath) {
+	void SpriteComponent::setTexture(const std::string& texturePath)
+	{
 		auto* data = detail::globalPtr<World>->getScenes().getTextureDataHolder().getData(texturePath);
 		setSpriteDisplayData(data);
 	}

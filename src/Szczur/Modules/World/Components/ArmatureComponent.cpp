@@ -47,6 +47,51 @@ void ArmatureComponent::setArmatureDisplayData(ArmatureDisplayData* armatureDisp
 	}
 }
 
+void ArmatureComponent::setArmature(const std::string& armatureName)
+{
+
+	if (armatureName.empty())
+		return;
+
+	auto directory = "Assets\\Armatures\\" + armatureName;
+
+	auto& armatures = getEntity()->getScene()->getScenes()->getArmatureDisplayDataHolder();
+
+	// find armature
+	auto armature = std::find_if(armatures.begin(), armatures.end(), [&] (auto& armature) { return armature.getFolderPath() == directory; });
+
+	ArmatureDisplayData* it = nullptr;
+
+	// if not found create new
+	if (armature == armatures.end())
+	{
+		try
+		{
+			it = &armatures.emplace_back(directory);
+		}
+		catch (std::exception& ex)
+		{
+			LOG_EXCEPTION(ex);
+			return;
+		}
+	}
+	else
+	{
+		it = &(*armature);
+	}
+
+	// try set armature data
+	try
+	{
+		setArmatureDisplayData(it);
+	}
+	catch (std::exception& ex)
+	{
+		setArmatureDisplayData(nullptr, false);
+		LOG_EXCEPTION(ex);
+	}
+}
+
 ArmatureDisplayData* ArmatureComponent::getArmatureDisplayData()
 {
 	return _armatureDisplayData;
@@ -92,30 +137,10 @@ const void* ArmatureComponent::getFeature(Component::Feature_e feature) const
 void ArmatureComponent::loadFromConfig(Json& config)
 {
 	Component::loadFromConfig(config);
-	auto& armatureDisplayDataHolder = getEntity()->getScene()->getScenes()->getArmatureDisplayDataHolder();
 	auto name = mapUtf8ToWindows1250(config["armatureDisplayData"].get<std::string>());
 	if (name != "")
 	{
-		bool found{ false };
-		for (auto& it : armatureDisplayDataHolder)
-		{
-			if (name == it.getName())
-			{
-				setArmatureDisplayData(&it);
-				found = true;
-			}
-		}
-		if (!found)
-		{
-			try
-			{
-				setArmatureDisplayData(&(armatureDisplayDataHolder.emplace_back("Assets\\Armatures\\" + name)));
-			}
-			catch (const std::exception& exc)
-			{
-				LOG_EXCEPTION(exc);
-			}
-		}
+		setArmature(name);
 
 		if (_armature && _armature->getAnimation())
 		{
@@ -221,6 +246,7 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+	object.set("setArmature", &ArmatureComponent::setArmature);
 
 	// Entity
 	entity.set("armature", &Entity::getComponentAs<ArmatureComponent>);
@@ -241,35 +267,10 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		{
 			// Path to direcotry with armature files
 			std::string directory = scenes.getRelativePathFromExplorer("Select armature file", ".\\Assets");
-			directory = std::experimental::filesystem::path(directory).parent_path().string();
 
-			// Load armature form directory
-			if (directory != "")
+			if (!directory.empty())
 			{
-				try
-				{
-					auto armature = std::find_if(armatures.begin(), armatures.end(), [directory] (auto& armature) { return armature.getFolderPath() == directory; });
-
-					ArmatureDisplayData* it = nullptr;
-					if (armature == armatures.end())
-					{
-						// Create new
-						it = &armatures.emplace_back(directory);
-					}
-					else
-					{
-						// Use exisiting
-						it = &(*armature);
-					}
-
-					setArmatureDisplayData(it);
-				}
-				catch (const std::exception& exc)
-				{
-					setArmatureDisplayData(nullptr, false);
-
-					LOG_EXCEPTION(exc);
-				}
+				setArmature(std::experimental::filesystem::path(directory).parent_path().filename().string());
 			}
 		}
 
