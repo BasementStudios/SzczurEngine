@@ -1,6 +1,8 @@
 #pragma once
 #include "EquipmentObject.hpp"
 #include <sol.hpp>
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat {
 	enum equipmentObjectType {
 		amulet, armor, weapon, ring
@@ -10,6 +12,8 @@ namespace rat {
 	{
 	public:
 		WearableItem(std::string nameId);
+
+		void initScript(Script& script);
 
 		void setCallback(sol::function firstCallback, sol::function secondCallback);
 

@@ -22,19 +22,14 @@ namespace rat {
 		//cos z tekstura
 		void setName(std::string name);
 		void setDescription(std::string description);
+		void setIcon(std::string path);
 
-		void setCallback(sol::function firstCallback);
-		void setCallback(sol::function firstCallback, sol::function secondCallback);
+		virtual ~EquipmentObject() {}
 
 		/*bool useItem();
 		void activate();
 		void deactivate();*/
 	private:
-		sol::function callback1;
-		sol::function callback2;
-
-		bool has2Callbacks;
-		bool usable;
 
 		sf::Texture* _objectIcon;
 		std::string _objectDescription, _objectName, _objectNameId;

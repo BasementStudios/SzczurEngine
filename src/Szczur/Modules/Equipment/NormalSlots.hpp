@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
-
+#include "UsableItem.hpp"
 
 namespace rat {	
 	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment;
@@ -13,7 +13,7 @@ namespace rat {
 	public:
 		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize, Equipment* equipment);
 
-		void addItem(UsebleItem* item);
+		void addItem(EquipmentObject* item);
 		bool removeItem(sf::String itemName);
 		void resizeSlots(size_t newSize);
 		void setParent(Widget* newBase);
@@ -40,7 +40,7 @@ namespace rat {
 		//std::pair<bool, EquipmentSlot*> isMouseOverSlot(sf::Vector2i position, bool freeSlot);
 		std::shared_ptr<EquipmentSlot> _slotHeld;
 		std::shared_ptr<EquipmentSlot> _slotDropped;
-		UsebleItem* _itemHeld;
+		EquipmentObject* _itemHeld;
 		ImageWidget* _itemHeldWidget;
 
 		bool _isMouseButtonHeld;

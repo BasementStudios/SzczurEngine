@@ -5,11 +5,22 @@ namespace rat {
 		: EquipmentObject(nameId)
 	{
 	}
+
+	void UsableItem::initScript(Script& script) {
+		auto object = script.newClass<UsableItem>("usableItem", "Equipment");//, "../NewClass.lua");
+		object.set("setName", &EquipmentObject::setName);
+		object.set("setDescription", &EquipmentObject::setDescription);
+		object.set("setIcon", &EquipmentObject::setIcon);
+		object.set("setIsUsable", &UsableItem::setIsUseble);
+		object.set("setCallback", &UsableItem::setCallback);
+		object.init();
+	}
+
 	void UsableItem::setIsUseble(bool isUsable) {
 		_isUsable = isUsable;
 	}
 
-	void UsableItem::setCallback(sol::function firstCallback) {
+	void UsableItem::setCallback(sol::function firstCallback)  {
 		_callback = firstCallback;
 	}
 

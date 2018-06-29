@@ -3,7 +3,6 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Equipment.hpp"
-#include "UsableItem.hpp"
 
 namespace rat
 {
@@ -59,7 +58,7 @@ namespace rat
 	void NormalSlots::setParent(Widget* newBase) {
 		newBase->add(_base);
 	}
-	void NormalSlots::addItem(UsebleItem* item) {
+	void NormalSlots::addItem(EquipmentObject* item) {
 		if (_freeSlots.size() > 0) {
 			_freeSlots[0]->setItem(item);
 			_itemSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
@@ -158,7 +157,7 @@ namespace rat
 			_timeFromLastClick = 0.f;
 			if (_slotDropped) {
 				if (_slotDropped->getItem()) {
-					if (_slotDropped->getItem()->useItem()) {
+					if (dynamic_cast<UsableItem*>(_slotDropped->getItem())->useItem()) {
 						removeItem(_slotDropped->getItem()->getNameId());
 					}
 				}

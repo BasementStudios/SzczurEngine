@@ -6,6 +6,7 @@
 #include "EquipmentSlot.hpp"
 #include "ArmorSlots.hpp"
 #include "ItemPreview.hpp"
+#include "EquipmentObject.hpp"
 
 namespace rat {
 	Equipment::Equipment()
@@ -27,19 +28,19 @@ namespace rat {
 		module.set("ITEM_TYPE_ARMOR", equipmentObjectType::armor);
 		module.set("ITEM_TYPE_AMULET", equipmentObjectType::amulet);
 		module.set("ITEM_TYPE_RING", equipmentObjectType::ring);
-		module.set("ITEM_TYPE_OTHER", equipmentObjectType::other);
 
-		auto object = script.newClass<EquipmentObject>("item", "Equipment");//, "../NewClass.lua");
-
-		module.set_function("createItem", &Equipment::createItem, this);
-
-		module.set_function("addItem", &Equipment::addItem, this);
-		module.set_function("removeItem", &Equipment::removeItem, this);
+		module.set_function("createUsableItem", &Equipment::createUsableItem, this);
+		module.set_function("createWearableItem", &Equipment::createWearableItem, this);
+		module.set_function("addUsableItem", &Equipment::addUsableItem, this);
+		module.set_function("addWearableItem", &Equipment::addWearableItem, this);
+		module.set_function("removeUsableItem", &Equipment::removeUsableItem, this);
+		module.set_function("removeWearableItem", &Equipment::removeWearableItem, this);
+		module.set_function("getUsableItem", &Equipment::getUsableItem, this);
+		module.set_function("getWearableItem", &Equipment::getWearableItem, this);
 		module.set_function("getItemTable", &Equipment::getItemsList, this);
 		module.set_function("getFreeSlotsAmount", &Equipment::getFreeSlotsAmount, this);
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
-		//module.set_function("setCallback", sol::overload(sol::resolve<void(std::string, sol::function)>(&Equipment::setCallback), sol::resolve<void(std::string, sol::function, sol::function)>(&Equipment::setCallback)), this);
 
 		script.scriptFile("test.lua");
 
@@ -50,19 +51,6 @@ namespace rat {
 
 	void Equipment::init() {
 		auto& gui = getModule<GUI>(); 
-
-		gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/slot.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/zbroja.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/miecz.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/amulet1.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/amulet2.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/zwoj.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/potion.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/rightArrow.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/leftArrow.png");
-		gui.addAsset<sf::Texture>("Assets/Equipment/szczegoly.png");
-		gui.addAsset<sf::Font>("Assets/Equipment/NotoMono.ttf");
 
 		_base = gui.addInterface();
 
@@ -115,75 +103,80 @@ namespace rat {
 		isPreviewOn = false;
 	}
 
-	void Equipment::createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble) {
-		auto& gui = getModule<GUI>();
-		gui.addAsset<sf::Texture>(iconPath);		
-		EquipmentObject* newObject = new EquipmentObject(nameId, name, description, gui.getAsset<sf::Texture>(iconPath), type, isUseble);
-		_listOfObjects[nameId] = newObject;	//cos z tymi jsonami
+	//void Equipment::createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble) {
+	//	auto& gui = getModule<GUI>();
+	//	gui.addAsset<sf::Texture>(iconPath);		
+	//	EquipmentObject* newObject = new EquipmentObject(nameId, name, description, gui.getAsset<sf::Texture>(iconPath), type, isUseble);
+	//	_listOfObjects[nameId] = newObject;	//cos z tymi jsonami
+	//}
+
+	UsableItem* Equipment::createUsableItem(std::string nameId) {
+		UsableItem* temp = new UsableItem(nameId);
+		_listOfObjects[nameId] = temp;
+		temp->initScript(getModule<Script>());
+		return temp;
 	}
 
-	void Equipment::setCallback(std::string nameId, sol::function firstCallback) {
-		auto item = _listOfObjects.find(nameId);
-		if (item != _listOfObjects.end()) {
-			if (item->second->getType() == equipmentObjectType::other) {
-				item->second->setCallback(firstCallback);
-			}
+	WearableItem* Equipment::createWearableItem(std::string nameId) {
+		WearableItem* temp = new WearableItem(nameId);
+		_listOfObjects[nameId] = temp;
+		temp->initScript(getModule<Script>());
+		return temp;
+	}
+
+	UsableItem* Equipment::getUsableItem(std::string nameId) {
+		UsableItem* temp = dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
+		if (temp) {
+			return temp;
 		}
 	}
 
-	void Equipment::setCallback(std::string nameId, sol::function firstCallback, sol::function secondCallback) {
-		auto item = _listOfObjects.find(nameId);
-		if (item != _listOfObjects.end()) {
-			if (item->second->getType() != equipmentObjectType::other) {
-				item->second->setCallback(firstCallback, secondCallback);
-			}
+	WearableItem* Equipment::getWearableItem(std::string nameId) {
+		WearableItem* temp = dynamic_cast<WearableItem*>(_listOfObjects.find(nameId)->second);
+		if (temp) {
+			return temp;
 		}
 	}
 
-	bool Equipment::addItem(std::string nameId) {
-		auto item = _listOfObjects.find(nameId);
-		if (item != _listOfObjects.end()) {
-			switch (item->second->getType()) {
-			case equipmentObjectType::other:
-				_normalSlots->addItem(item->second);
-				return true;
-			case equipmentObjectType::armor:
-				_armorSlots->setArmor(item->second);
-				return true;
-			case equipmentObjectType::weapon:
-				_armorSlots->setWeapon(item->second);
-				return true;
-			case equipmentObjectType::amulet:
-				_armorSlots->addAmulet(item->second);
-				return true;
-			case equipmentObjectType::ring:
-				//todo
-				return true;
-			}
-		}
-		else {
-			return false;
+	void Equipment::addUsableItem(UsableItem* item) {
+		_normalSlots->addItem(item);
+	}
+
+	void Equipment::addWearableItem(WearableItem* item) {
+		switch (item->getType())
+		{
+		case equipmentObjectType::amulet:
+			_armorSlots->addAmulet(item);
+			break;
+		case equipmentObjectType::armor:
+			_armorSlots->setArmor(item);
+			break;
+		case equipmentObjectType::weapon:
+			_armorSlots->setWeapon(item);
+			break;
+		case equipmentObjectType::ring:
+			//to implement
+			break;
 		}
 	}
 
-	bool Equipment::removeItem(std::string nameId) {
-		auto item = _listOfObjects.find(nameId);
-		if (item != _listOfObjects.end()) {
-			switch (item->second->getType()) {
-			case equipmentObjectType::other:			
-				return _normalSlots->removeItem(item->first);
+	bool Equipment::removeWearableItem(WearableItem* item) {
+			switch (item->getType()) {
 			case equipmentObjectType::armor:
 				return false;		//you cannot remove either weapon or armor
 			case equipmentObjectType::weapon:
 				return false;
 			case equipmentObjectType::amulet:
-				return _armorSlots->removeAmulet(item->first);
+				return _armorSlots->removeAmulet(item->getNameId());
 			case equipmentObjectType::ring:
 				//todo
 				return true;
 			}
-		}
 		return false;
+	}
+
+	bool Equipment::removeUsableItem(UsableItem* item) {
+		return _normalSlots->removeItem(item->getNameId());
 	}
 
 	sol::table Equipment::getItemsList() {

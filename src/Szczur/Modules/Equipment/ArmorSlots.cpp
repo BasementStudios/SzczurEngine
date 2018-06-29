@@ -4,6 +4,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "AmuletSlot.hpp"
 #include "Equipment.hpp"
+#include "WearableItem.hpp"
 
 namespace rat {
 	ArmorSlots::ArmorSlots(sf::Texture* frameText, sf::Vector2u frameSize, sf::Texture* upArrow, sf::Texture* downArrow, Equipment* equipment) {
@@ -46,16 +47,16 @@ namespace rat {
 	}
 
 	void ArmorSlots::setArmor(EquipmentObject* armor) {
-		if (_armorSlot->getItem()) _armorSlot->getItem()->deactivate();
+		if (_armorSlot->getItem()) dynamic_cast<WearableItem*>(_armorSlot->getItem())->deactivate();
 		_armorSlot->setItem(armor);
-		armor->activate();
+		dynamic_cast<WearableItem*>(armor)->activate();
 	}
 
 	void ArmorSlots::setPosition(sf::Vector2f position) {
 		_base->setPosition(position);
 	}
 
-	void ArmorSlots::addAmulet(EquipmentObject* amulet) {
+	void ArmorSlots::addAmulet(WearableItem* amulet) {
 		_amuletSlot->addAmulet(amulet);
 	}
 
@@ -63,18 +64,18 @@ namespace rat {
 		return _amuletSlot->removeAmulet(name);
 	}
 
-	EquipmentObject* ArmorSlots::getChosenAmulet() {
+	WearableItem* ArmorSlots::getChosenAmulet() {
 		return _amuletSlot->getChosenAmulet();
 	}
 
-	std::vector<EquipmentObject*> ArmorSlots::getAmuletList() {
+	std::vector<WearableItem*> ArmorSlots::getAmuletList() {
 		return _amuletSlot->getAmuletList();
 	}
 
 	void ArmorSlots::setWeapon(EquipmentObject* weapon) {
-		if (_weaponSlot->getItem()) _weaponSlot->getItem()->deactivate();
+		if (_weaponSlot->getItem()) dynamic_cast<WearableItem*>(_weaponSlot->getItem())->deactivate();
 		_weaponSlot->setItem(weapon);
-		weapon->activate();
+		dynamic_cast<WearableItem*>(weapon)->activate();
 	}
 
 	EquipmentSlot* ArmorSlots::getArmorSlot() {

@@ -8,7 +8,8 @@
 
 #include <vector>
 
-#include "EquipmentObject.hpp"
+#include "WearableItem.hpp"
+#include "UsableItem.hpp"
 namespace rat
 {
 	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview;
@@ -27,18 +28,19 @@ namespace rat
 
 		bool canPreviewBeInstantiated;
 
-		void createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble = true);	//creating new item and adding it to list
-		bool addItem(std::string nameId);
-		bool removeItem(std::string nameId);
+		UsableItem* createUsableItem(std::string nameId);	//creating new item and adding it to list
+		WearableItem* createWearableItem(std::string nameId);
+		UsableItem* getUsableItem(std::string nameId);
+		WearableItem* getWearableItem(std::string nameId);
+		void addUsableItem(UsableItem* item);
+		void addWearableItem(WearableItem* item);
+		bool removeUsableItem(UsableItem* item);
+		bool removeWearableItem(WearableItem* item);
 		sol::table getItemsList();
 		int getFreeSlotsAmount();
 		void resizeSlots(int newCapacity);
 		int getSlotsAmount();
 		void setRingsLimit(int newCapacity);
-
-
-		void setCallback(std::string nameId, sol::function firstCallback);
-		void setCallback(std::string nameId, sol::function firstCallback, sol::function secondCallback);
 
 		//cos z tym jsonem
 

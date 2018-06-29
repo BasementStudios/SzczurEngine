@@ -8,8 +8,16 @@ namespace rat {
 	{
 	}
 
-	void setName(std::string name);
-	void setDescription(std::string description);
+	void EquipmentObject::setIcon(std::string path) {
+
+	}
+
+	void EquipmentObject::setName(std::string name) {
+		_objectName = name;
+	}
+	void EquipmentObject::setDescription(std::string description) {
+		_objectDescription = description;
+	}
 
 	sf::Texture* EquipmentObject::getTexture() {
 		return _objectIcon;

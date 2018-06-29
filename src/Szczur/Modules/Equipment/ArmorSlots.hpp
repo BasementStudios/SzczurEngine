@@ -3,7 +3,7 @@
 #include <vector>
 
 namespace rat {
-	class EquipmentObject; class Widget; class EquipmentSlot; class AmuletSlot; class Equipment;
+	class EquipmentObject; class Widget; class EquipmentSlot; class AmuletSlot; class Equipment; class WearableItem;
 	class ArmorSlots
 	{
 	public:
@@ -15,15 +15,15 @@ namespace rat {
 		void setArmor(EquipmentObject* armor);
 		void setWeapon(EquipmentObject* weapon);
 
-		void addAmulet(EquipmentObject* amulet);
+		void addAmulet(WearableItem* amulet);
 		bool removeAmulet(sf::String name);
 
-		EquipmentObject* getChosenAmulet();
+		WearableItem* getChosenAmulet();
 
 		EquipmentSlot* getArmorSlot();
 		EquipmentSlot* getWeaponSlot();
 
-		std::vector<EquipmentObject*> getAmuletList();
+		std::vector<WearableItem*> getAmuletList();
 	private:
 		EquipmentSlot* _armorSlot;
 		EquipmentSlot* _weaponSlot;
