@@ -59,9 +59,9 @@ namespace rat
 
         bool isHorizontal = _positioning == Positioning::Horizontal;
 
-        float i = _isReversed ? _children.size() - 1 : 0;
-        float iEnd = _isReversed ? -1 : int(_children.size());
-        float iAddon = _isReversed ? -1 : 1;
+        int i = _isReversed ? int(_children.size()) - 1 : 0;
+        int iEnd = _isReversed ? -1 : int(_children.size());
+        int iAddon = _isReversed ? -1 : 1;
 
         for(; i != iEnd; i += iAddon)
         {
@@ -152,5 +152,22 @@ namespace rat
 
         auto numOfPaddings = float(_children.size() - 1);
         _betweenWidgetsPadding = freeSpace / numOfPaddings;
+    }
+
+    void ListWidget::_clear()
+    {
+        _isPosChanged = true;
+    }
+    sf::Vector2f ListWidget::_getInnerSize() const
+    {
+        const auto size = getSize();
+        if(_positioning == Positioning::Horizontal)
+        {
+            return { size.x / 2.f, 0.f };
+        }
+        else
+        {
+            return { 0.f, size.y / 2.f };
+        }
     }
 }
