@@ -53,7 +53,7 @@ void Trace::resume()
 	_pause = false;
 }
 
-void Trace::loadFromConfig(const Json& config, Entity* entity)
+void Trace::loadFromConfig(Json& config, Entity* entity)
 {
 	Json::array_t jsonTimelines = config["timelines"];
 
@@ -63,7 +63,16 @@ void Trace::loadFromConfig(const Json& config, Entity* entity)
 	{
 		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>());
 		timeline->Loop = jsonTimeline["loop"];
-		timeline->SpeedMultiplier = jsonTimeline["speedMultiplier"];
+
+		if (jsonTimeline.find("speedMultiplier") != jsonTimeline.end())
+		{
+			timeline->SpeedMultiplier = jsonTimeline["speedMultiplier"];
+		}
+
+		if (jsonTimeline.find("showLines") != jsonTimeline.end())
+		{
+			timeline->ShowLines = jsonTimeline["showLines"];
+		}
 
 		Json::array_t jsonActions = jsonTimeline["actions"];
 
@@ -122,6 +131,19 @@ void Trace::loadFromConfig(const Json& config, Entity* entity)
 
 		_timelines.push_back(std::move(timeline));
 	}
+
+	if (config.find("currentTimeline") != config.end())
+	{
+		int currentTimelineId = config["currentTimeline"];
+
+		auto timeline = std::find_if(_timelines.begin(), _timelines.end(), [&] (auto& timeline) { return currentTimelineId == timeline->getId(); });
+
+		if (timeline != _timelines.end())
+		{
+			_currentTimeline = (*timeline).get();
+			_currentTimeline->start();
+		}
+	}
 }
 
 void Trace::saveToConfig(Json& config) const
@@ -140,6 +162,7 @@ void Trace::saveToConfig(Json& config) const
 		jsonTimeline["id"] = timeline->getId();
 		jsonTimeline["loop"] = timeline->Loop;
 		jsonTimeline["speedMultiplier"] = timeline->SpeedMultiplier;
+		jsonTimeline["showLines"] = timeline->ShowLines;
 
 		auto jsonActions = Json::array();
 

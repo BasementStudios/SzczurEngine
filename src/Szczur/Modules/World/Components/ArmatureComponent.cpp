@@ -143,8 +143,11 @@ void ArmatureComponent::loadFromConfig(Json& config)
 
 		if (_armature && _armature->getAnimation())
 		{
-			_armature->getAnimation()->play(config["animationMame"]);
-			_armature->getAnimation()->timeScale = config["speed"];
+			if (config.find("animationMame") != config.end())
+				_armature->getAnimation()->play(config["animationMame"].get<std::string>());
+
+			if (config.find("speed") != config.end())
+				_armature->getAnimation()->timeScale = config["speed"];
 		}
 	}
 }
