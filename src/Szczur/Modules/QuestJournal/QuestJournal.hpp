@@ -2,6 +2,7 @@
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "StepsManager.hpp"
@@ -11,7 +12,7 @@
 
 namespace rat
 {
-    class TextWidget;
+    class TextWidget; class ImageWidget;
     class QuestJournal : public Module<Window,GUI>
     {
         public:
@@ -26,7 +27,13 @@ namespace rat
             void moveIterator(std::string questName);
 
             void refresh(std::string questName);
+
+            void turnON();
+            void turnOFF();
+
         private:
+
+            ImageWidget *ButtonWidget;
 
             std::vector<std::shared_ptr<TextWidget> > _widgets;
             ListWidget *_list;

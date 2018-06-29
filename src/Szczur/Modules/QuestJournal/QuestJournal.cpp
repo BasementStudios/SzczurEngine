@@ -19,8 +19,15 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
        
-        _interface = gui.addInterface();
+        ButtonWidget = new ImageWidget;
+        ButtonWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        ButtonWidget->setCallback(Widget::CallbackType::onPress,[this](auto){
+            this->turnOFF();
+        });
 
+        _interface = gui.addInterface();
+        
+        _interface->add(ButtonWidget);
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
         _scroller->add(_list);
@@ -133,5 +140,17 @@ namespace rat
             }
         }
      
+    }
+
+    void QuestJournal::turnOFF()
+    {
+        _interface->invisible();
+        _interface->deactivate();
+    }
+
+    void QuestJournal::turnON()
+    {
+        _interface->activate();
+        _interface->visible();
     }
 }
