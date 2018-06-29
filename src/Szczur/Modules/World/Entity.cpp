@@ -58,6 +58,7 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<AnimatedSpriteComponent>()) comp->update(scenes, deltaTime);
 
 	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
 		if(getScene()->getScenes()->isGameRunning()) { 
