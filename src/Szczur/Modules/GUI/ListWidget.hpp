@@ -10,18 +10,33 @@ namespace rat
     {
     public:
         void setBetweenPadding(float padding);
+        void setAutoBetweenPadding();
+
+        void makeVertical();
+        void makeHorizontal();
+
+        void makeFronted();
+        void makeReversed();
+
+        void popBack(size_t amount = 1);
+
     protected:
-        virtual void _addWidget(Widget* widget) override;
         virtual void _calculateSize() override;
-        virtual sf::Vector2u _getChildrenSize() override;
-        virtual sf::Vector2f _getChildShiftByIndex(size_t index) const override;
+        virtual sf::Vector2f _getChildrenSize() override;
+        virtual void _clear() override;
+        virtual sf::Vector2f _getInnerSize() const override;
 
-        virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;
+        virtual void _recalcChildrenPos() override;
     private:
-        std::vector<float> _shifts;
-        bool _areShiftsCurrent{false};
-        float _betweenWidgetsPadding{0.f};
+        float _betweenWidgetsPadding{0};
+        bool _hasAutoBetweenPad{false};
 
-        void _updateShifts();
+        void _updateChildrenSize();
+        sf::Vector2f _childrenSize;
+
+        void _calculateAutoBetweenPad();
+
+        enum class Positioning { Horizontal, Vertical } _positioning{Positioning::Vertical};
+        bool _isReversed{false};
     };
 }

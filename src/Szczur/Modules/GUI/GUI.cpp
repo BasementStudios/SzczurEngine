@@ -17,9 +17,11 @@ namespace rat {
         initScript();
         auto& mainWindow = getModule<Window>();
         auto& window = mainWindow.getWindow();
-        mainWindow.pushGLStates(); 
-        _canvas.create(window.getSize().x, window.getSize().y); 
-        mainWindow.popGLStates();
+        auto winSize = window.getSize();
+        _canvas.create(winSize.x, winSize.y); 
+
+        _root.setSize(static_cast<sf::Vector2f>(winSize));
+        _root.makeChildrenUnresizable();
     }
 
     void GUI::initScript() {
@@ -43,28 +45,36 @@ namespace rat {
         LOG_INFO(this, "Module GUI destructed")
     }
 
-    Widget* GUI::addInterface() {
+    InterfaceWidget* GUI::addInterface() 
+    {
         auto* interface = new InterfaceWidget;
         
         _root.add(interface);
+        interface->updateSizeByWindowSize(static_cast<sf::Vector2u>(_root.getMinimalSize()));
+        interface->setPropPosition(0.5f, 0.5f);
         _interfaces.emplace_back(interface);
         return interface;
     }
     
-    void GUI::input(const sf::Event& event) {
+    void GUI::input(const sf::Event& event) 
+    {
         if(event.type == sf::Event::Resized)
         {
-            sf::Vector2u winSize = { event.size.width, event.size.height };
+            sf::Vector2u winSize = { (unsigned int)(event.size.width), (unsigned int)(event.size.height) };
 
-            sf::Vector2f winProp = { float(event.size.width) / float(_standartWindowSize.x),
-            float(event.size.height) / float(_standartWindowSize.y) };
-            Widget::setWinProp(winProp);
+            auto& mainWindow = getModule<Window>();
+            mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
+
+            _canvas.create(winSize.x, winSize.y);
+
+            _root.setSize(static_cast<sf::Vector2f>(winSize));
 
             for(auto* interface : _interfaces)
             {
                 interface->updateSizeByWindowSize(winSize);
             }
         }
+        
         _root.invokeInput(event);
         _root.input(event);
     }
@@ -72,6 +82,8 @@ namespace rat {
     void GUI::update(float deltaTime) 
     {
         _root.invokeToCalculate();
+        _root.invokeToCalcPropPosition();
+        _root.invokeToCalcPosition();
         _root.update(deltaTime);
     }
 

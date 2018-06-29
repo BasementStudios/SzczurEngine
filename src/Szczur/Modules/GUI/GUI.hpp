@@ -26,7 +26,7 @@ namespace rat {
         void update(float deltaTime=1.f/60.f);
         void render();
 
-        Widget* addInterface();
+        InterfaceWidget* addInterface();
 
         template<typename T>
         T* getAsset(const std::string& key);

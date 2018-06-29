@@ -1,86 +1,173 @@
 #include "ListWidget.hpp"
 
+#include <algorithm>
+#include <functional>
+
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
-    void ListWidget::_addWidget(Widget* widget)
+    void ListWidget::popBack(size_t amount)
     {
-        _shifts.push_back(0.f);
-        _areShiftsCurrent = false;
+        if(_children.size() < amount)
+        {
+            LOG_ERROR("ListWidget::popBack can't pop ", amount, " children");
+            return;
+        }
+        
+        _children.erase(_children.end() - amount, _children.end());
+
+        _aboutToRecalculate = true;
+        _isPosChanged = true;
     }
     void ListWidget::setBetweenPadding(float padding)
     {
         _betweenWidgetsPadding = padding;
-        _areShiftsCurrent = false;
         _aboutToRecalculate = true;
+        _isPosChanged = true;
     }
-    void ListWidget::_updateShifts()
+    void ListWidget::makeVertical()
     {
-        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");
-        for(size_t i = 0; i < _shifts.size(); ++i)
+        _positioning = Positioning::Vertical;
+        _aboutToRecalculate = true;
+        _isPosChanged = true;
+    }
+    void ListWidget::makeHorizontal()
+    {
+        _positioning = Positioning::Horizontal;
+        _aboutToRecalculate = true;
+        _isPosChanged = true;
+    }
+    void ListWidget::makeFronted()
+    {
+        _isReversed = false;
+        _isPosChanged = true;
+    }
+    void ListWidget::makeReversed()
+    {
+        _isReversed = true;
+        _isPosChanged = true;
+    }
+
+
+    void ListWidget::_recalcChildrenPos()
+    {
+        auto basePos = gui::FamilyTransform::getGlobalPosition();
+        basePos += getPadding();
+        auto drawPos = gui::FamilyTransform::getDrawPosition();
+        drawPos += getPadding();
+
+        bool isHorizontal = _positioning == Positioning::Horizontal;
+
+        int i = _isReversed ? int(_children.size()) - 1 : 0;
+        int iEnd = _isReversed ? -1 : int(_children.size());
+        int iAddon = _isReversed ? -1 : 1;
+
+        for(; i != iEnd; i += iAddon)
         {
             auto* child = _children[i];
-            
-            _shifts[i] = float(child->getSize().y) + child->getPosition().y - child->getPadding().y + _betweenWidgetsPadding;
+            child->applyFamilyTrans(basePos, drawPos);
+
+
+            float addon = isHorizontal ? 
+            child->getPosition().x + child->getSize().x - child->getOrigin().x + _betweenWidgetsPadding : 
+            child->getPosition().y + child->getSize().y - child->getOrigin().y + _betweenWidgetsPadding;
+
+            if(isHorizontal) 
+            {
+                basePos.x += addon;
+                drawPos.x += addon;
+            }
+            else
+            {
+                basePos.y += addon;
+                drawPos.y += addon;
+            }
         }
-
-        _areShiftsCurrent = true;
     }
 
-    void ListWidget::_drawChildren(sf::RenderTarget& target, sf::RenderStates states) const
+
+
+    sf::Vector2f ListWidget::_getChildrenSize()
     {
-        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");        
-        for(size_t i = 0; i < _shifts.size(); ++i)
-        {
-            target.draw(*_children[i], states);
-            states.transform.translate(0.f, _shifts[i]);
-        }
+        if(_hasAutoBetweenPad) _betweenWidgetsPadding = 0;
+        _updateChildrenSize();
+        return _childrenSize;
     }
 
-    sf::Vector2u ListWidget::_getChildrenSize()
+    void ListWidget::_updateChildrenSize()
     {
-        LOG_ERROR_IF(_shifts.size() != _children.size(), "Shifts and children are not synchronized...");        
-        if(!_areShiftsCurrent || _aboutToRecalculate) _updateShifts();
+        _childrenSize = {0, 0};
 
-        auto otherDim = float(Widget::_getChildrenSize().x);
-        float childrenShiftedDim = 0.f;
-
-        for(auto& shift : _shifts)
-        {
-            childrenShiftedDim += shift;
-        }
-        if(_shifts.size() > 0) childrenShiftedDim -= _betweenWidgetsPadding;
-
-        return {(unsigned int)otherDim, (unsigned int)childrenShiftedDim};
-    }
-
-    void ListWidget::_calculateSize()
-    {
-        if(!_areShiftsCurrent) _updateShifts();
-    }
-
-    sf::Vector2f ListWidget::_getChildShiftByIndex(size_t index) const
-    {
-        return {0.f, _shifts[index]};
-    }
-
-/*
-    void ListWidget::_onMovedChildren(sf::Event event)
-    {
-        size_t i = 0;
+        bool isHorizontal = _positioning == Positioning::Horizontal;        
         for(auto* child : _children)
         {
-            auto childPos = child->getPosition();
-            sf::Event tempEvent(event);
-            tempEvent.mouseMove.x -= int(childPos.x * _winProp.x);
-            tempEvent.mouseMove.y -= int(childPos.y * _winProp.y);
+            float addon = isHorizontal ? 
+            child->getPosition().x + child->getSize().x - child->getOrigin().x + _betweenWidgetsPadding : 
+            child->getPosition().y + child->getSize().y - child->getOrigin().y + _betweenWidgetsPadding;
 
-            child->_onMoved(tempEvent);
+            if(isHorizontal) _childrenSize.x += addon;
+            else _childrenSize.y += addon;
+        }
 
-            event.mouseMove.y -= int(_shifts[i] * _winProp.y);
-            i++;
+        if(isHorizontal)
+        {
+            _childrenSize.x -= _betweenWidgetsPadding;
+            _childrenSize.y = Widget::_getChildrenSize().y;
+        }
+        else
+        {
+            _childrenSize.y -= _betweenWidgetsPadding;
+            _childrenSize.x = Widget::_getChildrenSize().x;
         }
     }
-    */
+    void ListWidget::setAutoBetweenPadding()
+    {
+        _hasAutoBetweenPad = true;
+        _aboutToRecalculate = true;
+    }
+    
+
+    void ListWidget::_calculateSize()
+    {    
+        if(_hasAutoBetweenPad)
+        {
+            if(_children.size() < 2) return;            
+            _calculateAutoBetweenPad();
+        }
+    }
+
+    void ListWidget::_calculateAutoBetweenPad()
+    {
+        float freeSpace;
+        if(_positioning == Positioning::Horizontal)
+        {
+            freeSpace = getSize().x - _childrenSize.x;
+        }
+        else
+        {
+            freeSpace = getSize().y - _childrenSize.y;
+        }
+        if(freeSpace <= 0.f) return;
+
+        auto numOfPaddings = float(_children.size() - 1);
+        _betweenWidgetsPadding = freeSpace / numOfPaddings;
+    }
+
+    void ListWidget::_clear()
+    {
+        _isPosChanged = true;
+    }
+    sf::Vector2f ListWidget::_getInnerSize() const
+    {
+        const auto size = getSize();
+        if(_positioning == Positioning::Horizontal)
+        {
+            return { size.x / 2.f, 0.f };
+        }
+        else
+        {
+            return { 0.f, size.y / 2.f };
+        }
+    }
 }

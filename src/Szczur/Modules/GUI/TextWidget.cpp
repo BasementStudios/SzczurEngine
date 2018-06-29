@@ -50,25 +50,28 @@ namespace rat {
         object.init();
     }
 
-    sf::Vector2u TextWidget::_getSize() const {
+    sf::Vector2f TextWidget::_getSize() const 
+    {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<unsigned int>(rect.left + rect.width),
-            static_cast<unsigned int>(rect.top + rect.height)
+            static_cast<float>(rect.left + rect.width),
+            static_cast<float>(rect.top + rect.height)
         };
     }
 
-    void TextWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    void TextWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const 
+    {
         target.draw(_text, states);
     }
 
-    void TextWidget::setColor(const sf::Color& newColor) {
+    void TextWidget::setColor(const sf::Color& newColor)
+    {
         _text.setFillColor(newColor);
     }
 
     void TextWidget::addLetter(char letter) {
         _text.setString( _text.getString() + letter );
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     void TextWidget::removeLast() {
@@ -77,7 +80,7 @@ namespace rat {
             str.erase( str.getSize()-1, 1 );
             _text.setString(str);
         }
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     size_t TextWidget::getLength() {
@@ -92,12 +95,12 @@ namespace rat {
         //_text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
         //_aboutToRecalculate=true;
         _text.setString(getUnicodeString(str));
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     void TextWidget::setFont(sf::Font* font) {
         _text.setFont(*font);
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     const sf::Font* TextWidget::getFont() const {
@@ -106,7 +109,7 @@ namespace rat {
 
     void TextWidget::setCharacterSize(unsigned int size) {
         _text.setCharacterSize(size);
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     unsigned int TextWidget::getCharacterSize() const {
@@ -120,6 +123,11 @@ namespace rat {
         if(auto it = _callbacks.find(type); it != _callbacks.end()) {
             std::invoke(it->second, this);
         }
+    }
+
+    void TextWidget::_recalcPos()
+    {
+        _text.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }
 
 }

@@ -42,7 +42,7 @@ namespace rat
         {
             auto innerRect = _ninePatch.getInnerTextureRect();
             sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
-            sf::Vector2f padding = {rectPadding.x * _scale.x, rectPadding.y * _scale.y};
+            sf::Vector2f padding = {float(rectPadding.x * _scale.x), float(rectPadding.y * _scale.y)};
             Widget::setPadding(padding);
         }
     }
@@ -58,7 +58,7 @@ namespace rat
         _ninePatch.setColor(color);
     }
     
-	sf::Vector2u WindowWidget::_getSize() const
+	sf::Vector2f WindowWidget::_getSize() const
     {
         return _minWinSize;
     }
@@ -77,20 +77,25 @@ namespace rat
 	void WindowWidget::_calculateSize()
     {
         _calcPatchesAmount();
-        auto size = static_cast<sf::Vector2u>(getSize());
+        auto size = getSize();
         size.x = std::max(_minWinSize.x, size.x);
         size.y = std::max(_minWinSize.y, size.y);
-        _ninePatch.setSize(static_cast<sf::Vector2i>(size));
+        _ninePatch.setSize(size);
     }
     void WindowWidget::_calcPatchesAmount()
     {
         if(_isPathesAmountSet)
         {
             auto innerElSize = _ninePatch.getInnerPathSize();
-            sf::Vector2i innerSize = {innerElSize.x * int(_patchesAmount.x), innerElSize.y * int(_patchesAmount.y)};
+            sf::Vector2f innerSize = {innerElSize.x * float(_patchesAmount.x), innerElSize.y * float(_patchesAmount.y)};
             auto newSize = innerSize + _ninePatch.getCornersCombinedSize();
-            _minWinSize = static_cast<sf::Vector2u>(newSize);
+            _minWinSize = newSize;
         }
+    }
+
+    void WindowWidget::_recalcPos()
+    {
+        _ninePatch.setPosition(sf::Vector2f(gui::FamilyTransform::getDrawPosition()));
     }
 
 

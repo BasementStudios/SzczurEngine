@@ -15,7 +15,7 @@ namespace rat {
 
         void setString(const std::string& text);
 
-        void setSize(sf::Vector2u size);
+        void setTextSize(sf::Vector2u size);
 
         void setFont(sf::Font* font);
 
@@ -26,12 +26,13 @@ namespace rat {
     protected:
         virtual void _update(float deltaTime) override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-        virtual sf::Vector2u _getSize() const override;
+        virtual sf::Vector2f _getSize() const override;
+        virtual void _recalcPos() override;
     private:
-        bool _toWrap;
-
         sf::Text _text;
         sf::Vector2u _size;
+
+        bool _toWrap;
 
         sf::String& _wrapText(sf::String& temp);
         virtual void _callback(CallbackType type) override;

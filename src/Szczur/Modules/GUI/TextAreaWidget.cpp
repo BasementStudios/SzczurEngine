@@ -51,7 +51,7 @@ namespace rat {
         object.setProperty(
             "size",
             [](TextAreaWidget& owner){return owner._size;},
-            [](TextAreaWidget& owner, sol::table tab){ owner.setSize(sf::Vector2u{tab[1], tab[2]}); }
+            [](TextAreaWidget& owner, sol::table tab){ owner.setTextSize(sf::Vector2u{tab[1], tab[2]}); }
         );
         
         object.init();
@@ -64,23 +64,21 @@ namespace rat {
         calculateSize();
     }
 
-    void TextAreaWidget::setSize(sf::Vector2u size) {
+    void TextAreaWidget::setTextSize(sf::Vector2u size) {
         _size = size;
         _toWrap = true;
         _aboutToRecalculate = true;
-        calculateSize();
     }
 
     void TextAreaWidget::setFont(sf::Font* font) {
         _text.setFont(*font);
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     void TextAreaWidget::setCharacterSize(size_t size) {
         _text.setCharacterSize(size);
         _toWrap = true;
         _aboutToRecalculate = true;
-        calculateSize();
     }
 
     void TextAreaWidget::setColor(const sf::Color& color) {
@@ -93,10 +91,11 @@ namespace rat {
 
     sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
         _toWrap = false;
-        for(size_t i = 0; i<temp.getSize(); ++i)
+        for(size_t i = 0; i < temp.getSize(); ++i)
             if(temp[i] == '\n')
                 temp[i] = ' ';
-        for(size_t i = _size.x; i<temp.getSize(); i+=_size.x) {
+        for(size_t i = _size.x; i < temp.getSize(); i += _size.x) 
+        {
             auto x = i;
             while(temp[x] != ' ') {
                 if(--x == 0u) {
@@ -120,12 +119,18 @@ namespace rat {
         
     }
 
-    sf::Vector2u TextAreaWidget::_getSize() const {
+    sf::Vector2f TextAreaWidget::_getSize() const 
+    {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<unsigned int>(rect.left + rect.width),
-            static_cast<unsigned int>(rect.top + rect.height)
+            static_cast<float>(rect.left + rect.width),
+            static_cast<float>(rect.top + rect.height)
         };
+    }
+
+    void TextAreaWidget::_recalcPos()
+    {
+        _text.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }
 
     void TextAreaWidget::_callback(CallbackType type) {
