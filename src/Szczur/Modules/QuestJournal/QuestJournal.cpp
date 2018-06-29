@@ -3,7 +3,7 @@ namespace rat
 {
     QuestJournal::QuestJournal()
     {
-        LOG_INFO("QuestJournal module initialized");
+        LOG_INFO("QuestJournal module initializing...");
 
         it = _quests.begin();
 
@@ -21,6 +21,7 @@ namespace rat
        
         _interface = gui.addInterface();
 
+        ////v
 
         _scroller.add(&_list);
         _list.setBetweenPadding(20.f);
@@ -29,11 +30,17 @@ namespace rat
 
         _interface->setSizingWidthToHeightProportion(1.f);
 
-        _fileLoader = std::make_shared<FileLoader>();
+        ////v
+        _fileLoader = std::make_shared<FileLoader>(); //traitor
+        std::cout << "Kekunio\n";
         _stepManager = std::make_shared<StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        ////^
         _descriptionManager = std::make_shared<DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
         
         _questName = std::make_shared<QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+
+
+        ////^
 
         _stepManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
                                     gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"),
@@ -62,6 +69,8 @@ namespace rat
         addDescription(3);
         addDescription(4);
         addDescription(5);
+
+        LOG_INFO("QuestJournal module initialized");
     }
 
     QuestJournal::~QuestJournal()

@@ -3,7 +3,7 @@ namespace rat
 {
     FileLoader::FileLoader()
     {
-        std::fstream file("C:/Szczur/SzczurEngine/src/Szczur/Modules/QuestJournal/Steps.txt");
+        std::fstream file("Assets/QuestJournal/Steps.txt");
         std::string line;
         while(file.eof() == false)
         {
@@ -12,7 +12,7 @@ namespace rat
             steps.push_back(line);
         }
         file.close();
-        file.open("C:/Szczur/SzczurEngine/src/Szczur/Modules/QuestJournal/Descriptions.txt");
+        file.open("Assets/QuestJournal/Descriptions.txt");
         while(file.eof() == false)
         {
             getline(file,line);
