@@ -8,7 +8,8 @@ namespace journal
     :_font(font)
     {
         _widget = new TextWidget;
-        _widget->setPropPosition(0.60f,0.1);
+       // _widget->setPropPosition(0.60f,0.1);
+       _widget->setPropPosition(0.60f,0.05);
         _widget->setColor(sf::Color::White);
         _widget->setFont(_font);
         interface->add(_widget);

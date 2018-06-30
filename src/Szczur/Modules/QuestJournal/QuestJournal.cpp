@@ -14,40 +14,65 @@ namespace rat
         auto& gui = getModule<GUI>();
 
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
-        gui.addAsset<sf::Font>("Assets/GUITest/testfont.otf");
+        gui.addAsset<sf::Font>("Assets/GUITest/arial.ttf");
         gui.addAsset<sf::Texture>("Assets/Test/Scroller.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
+        gui.addAsset<sf::Texture>("Assets/Test/ButtonTest.png");
 
-
-        _font = gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf");
+        _font = gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf");
         _ButtonWidget = new ImageWidget;
-        _ButtonWidget->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        _ButtonWidget->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"));
         _ButtonWidget->setCallback(Widget::CallbackType::onPress,[this](auto){
             this->turnOFF();
         });
+        _ButtonWidget->setPropSize(0.07,0.07);
 
         _doneSwitch = new ImageWidget;
-        _doneSwitch->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        _doneSwitch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"));
         _doneSwitch->setPropPosition(0.01f,0.47f);
         _doneSwitch->setCallback(Widget::CallbackType::onPress, [this](auto){
-                this->displayDoneList();
+                this->displayNormalList();   
         });
+        _doneSwitch->setPropSize(0.1,0.1);
 
         _switch = new ImageWidget;
-        _switch->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
+        _switch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"));
         _switch->setPropPosition(0.01f,0.6f);
         _switch->setCallback(Widget::CallbackType::onPress, [this](auto){
-                this->displayNormalList();
+                this->displayDoneList();
         });
-
+         _switch->setPropSize(0.1,0.1);
 
 
         _interface = gui.addInterface();
-        
+
         _interface->add(_ButtonWidget);
         _interface->add(_switch);
         _interface->add(_doneSwitch);
+
+        for(int k=0;k<4;k++)
+        {
+            _ninePatchWidget[k] = new WindowWidget;
+            _ninePatchWidget[k]->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"),190);
+            _ninePatchWidget[k]->setPropSize(0.3f,0.3f);
+            _interface->add(_ninePatchWidget[k]);
+            _ninePatchWidget[k]->setPropPosition(0.9f,k*0.11f);
+        }
+        _ninePatchWidget[0]->setPropPosition(0.07f,0.07f);
+        _ninePatchWidget[0]->setPropSize(0.5f,0.35f);
+
+        _ninePatchWidget[1]->setPropPosition(0.60f,0.04);
+        _ninePatchWidget[1]->setPropSize(0,0);
+
+        _ninePatchWidget[2]->setPropPosition(0.97f, 0.88f);
+        _ninePatchWidget[2]->setPropSize(0.75f, 0.9f);
+
+        _ninePatchWidget[3]->setPropPosition(0.08f, 0.9f);
+        _ninePatchWidget[3]->setPropSize(0.75f, 0.55f);
+
+
+ 
 
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
@@ -70,11 +95,11 @@ namespace rat
         _interface->setSizingWidthToHeightProportion(1.f);
 
         _fileLoader = std::make_shared<journal::FileLoader>(); 
-        _stepManager = std::make_shared<journal::StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        _stepManager = std::make_shared<journal::StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_interface);
       
-        _descriptionManager = std::make_shared<journal::DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        _descriptionManager = std::make_shared<journal::DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_interface);
         
-        _questName = std::make_shared<journal::QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        _questName = std::make_shared<journal::QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_interface);
 
 
         _stepManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
@@ -113,14 +138,17 @@ namespace rat
         addDescription(5);
 
         addQuest(13);
+        addDescription(6);
         addStep(15);
         addStep(16);
 
         addQuest(18);
+        addDescription(7);
         addStep(20);
         addStep(21);
 
         finishQuest("MISJA 2");
+        displayNormalList();
 
         LOG_INFO("QuestJournal module initialized");
     }

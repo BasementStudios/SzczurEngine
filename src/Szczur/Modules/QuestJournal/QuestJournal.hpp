@@ -3,6 +3,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "StepsManager.hpp"
@@ -12,7 +13,7 @@
 
 namespace rat
 {
-    class TextWidget; class ImageWidget;
+    class TextWidget; class ImageWidget; class WindowWidget;
     class QuestJournal : public Module<Window,GUI>
     {
         public:
@@ -41,6 +42,8 @@ namespace rat
             ImageWidget *_doneSwitch;
             ImageWidget *_switch;
             ImageWidget *_ButtonWidget;
+
+            WindowWidget *_ninePatchWidget[7];
 
             std::vector<std::shared_ptr<TextWidget> > _widgets;
             ListWidget *_list;
