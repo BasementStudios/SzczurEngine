@@ -16,6 +16,13 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
+	initModule<GUI>();
+	initModule<QuestJournal>();
+	#ifdef GUI_TEST
+	{
+		initModule<GUITest>();
+	}
+	#endif
 	initModule<QuestLog>();
 
 	// For testing `Script`

@@ -1,0 +1,23 @@
+MISJA 1 
+---
+1   KROK 1 dla misji 1
+2   KROK 2 dla misji 1
+3   KROK 3 dla misji 1
+4   KROK 4 dla misji 1
+---
+MISJA 2
+---
+1   KROK 1 dla misji 2
+2   KROK 2 dla misji 2
+3   KROK 3 dla misji 2
+---
+MISJA 3
+---
+1   KROK 1 DLA MISJI 3
+2   KROK 2 DLA MISJI 3
+---
+MISJA 4
+---
+1   KROK 1 DLA MISJI 4
+2   KROK 2 DLA MISJI 4
+---

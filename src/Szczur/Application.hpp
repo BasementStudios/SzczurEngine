@@ -4,6 +4,12 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/QuestJournal/QuestJournal.hpp"
+
+#ifdef GUI_TEST
+#include "Szczur/Modules/GUITest/GUITest.hpp"
+#endif
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/QuestLog/QuestLog.hpp"
 namespace rat
@@ -60,7 +66,11 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, QuestLog> _modules;
+	ModulesHolder<Window, Input, Script, GUI, QuestJournal
+	#ifdef GUI_TEST
+	,GUITest 
+	#endif
+	> _modules;
 	Clock _mainClock;
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
