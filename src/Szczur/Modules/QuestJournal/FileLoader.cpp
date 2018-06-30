@@ -1,6 +1,9 @@
 #include "FileLoader.hpp"
 namespace rat
 {
+namespace journal
+{
+
     FileLoader::FileLoader()
     {
         std::fstream file("Assets/QuestJournal/Steps.txt");
@@ -48,4 +51,5 @@ namespace rat
         }
         return text;
     }
+}
 }

@@ -7,6 +7,8 @@
 
 namespace rat
 {
+namespace journal
+{
     class Quest
     {
         public:
@@ -31,4 +33,5 @@ namespace rat
 
             std::shared_ptr<FileLoader> _fileLoader;
     };
+}
 }

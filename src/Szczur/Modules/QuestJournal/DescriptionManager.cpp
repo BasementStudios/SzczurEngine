@@ -1,6 +1,8 @@
 #include "DescriptionManager.hpp"
 namespace rat
 {
+namespace journal
+{
     DescriptionManager::DescriptionManager(sf::Font *font,InterfaceWidget* interface)
     :_font(font)
     {
@@ -59,4 +61,5 @@ namespace rat
         _scroller->setPathTexture(t2);
         _scroller->setBoundsTexture(t3);
     }
+}
 }

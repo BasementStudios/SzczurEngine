@@ -4,6 +4,8 @@
 
 namespace rat
 {
+namespace journal
+{
     class FileLoader
     {
         public:
@@ -18,4 +20,6 @@ namespace rat
             std::vector<std::string> descriptions;
 
     };
+
+}
 }

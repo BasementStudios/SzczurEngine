@@ -2,6 +2,8 @@
 
 namespace rat
 {
+namespace journal
+{
     QuestName::QuestName(sf::Font *font,InterfaceWidget *interface)
     :_font(font)
     {
@@ -23,4 +25,5 @@ namespace rat
         _questName = _quest->getQuestName();
         _widget->setString(_questName);
     }
+}
 }
