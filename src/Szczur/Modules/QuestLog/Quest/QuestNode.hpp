@@ -42,8 +42,8 @@ namespace rat
         void setName(const std::string& name);
         const std::string& getName() const;
 
-        void setTitleIndex(int index);
-        void setDescriptionIndex(int index);
+        void addTitle(int index);
+        void addDescription(int index);
 
         Function_t onActivate;
         Function_t onBlocked;

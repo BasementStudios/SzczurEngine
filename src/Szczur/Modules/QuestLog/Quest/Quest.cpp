@@ -53,7 +53,8 @@ namespace rat
     {
         std::cout << "Quest Started\n";
         _state = State::Active;
-        _rootNode->activate();
+        _rootNode->nextStep();
+        std::cout << "kek\n";
     }
     void Quest::finish()
     {
@@ -89,7 +90,7 @@ namespace rat
         
     QuestTitle* Quest::addSubtitle(const TitleInfo& info)
     {
-        //if(_state != State::Active) return nullptr;
+        //if(_state != State;::Active) return nullptr;
         auto* gui = _owner.getGUI();
         return gui->addSubtitle(info);
     }

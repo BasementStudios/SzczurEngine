@@ -96,6 +96,7 @@ namespace rat
         _doneScroller->setPropSize(0.7f, 0.5f);
         _doneScroller->setPropPosition(0.1f, 0.85f);
 
+/*
         addQuest(0);
         addStep(2);
         addStep(3);
@@ -121,6 +122,7 @@ namespace rat
         addStep(21);
 
         finishQuest("MISJA 2");
+        */
 
         LOG_INFO("QuestJournal module initialized");
     }

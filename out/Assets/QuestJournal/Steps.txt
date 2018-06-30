@@ -5,11 +5,13 @@ MISJA 1
 3   KROK 3 dla misji 1
 4   KROK 4 dla misji 1
 ---
-MISJA 2
+Nemo
 ---
-1   KROK 1 dla misji 2
-2   KROK 2 dla misji 2
-3   KROK 3 dla misji 2
+1   Znajdz Nemo
+2   Zabij rekina lub go omin
+3   Zbierz truchlo
+4   Zbij z nim pione
+5   Pokonaj rekina
 ---
 MISJA 3
 ---

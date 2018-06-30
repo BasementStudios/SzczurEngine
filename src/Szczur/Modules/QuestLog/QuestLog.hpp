@@ -55,11 +55,17 @@ namespace rat
         //Widget* _widget{nullptr};
         //std::unique_ptr<QuestGUI> _title;
 
+        float timer = 0.f;
+        bool toStep = false;
+        int count = 0;
+
         std::unordered_map<std::string, Quest_t> _quests;
 
         Requirements _reqs;
 
         void _debugCounterTest();
+
+        void testQuest();
     };
 
 }

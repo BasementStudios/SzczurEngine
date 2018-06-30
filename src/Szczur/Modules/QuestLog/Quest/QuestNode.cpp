@@ -198,12 +198,12 @@ namespace rat
         }
     }
 
-    void QuestNode::setTitleIndex(int index)
+    void QuestNode::addTitle(int index)
     {
         _titleIndex = index;
         _hasTitle = true;
     }
-    void QuestNode::setDescriptionIndex(int index)
+    void QuestNode::addDescription(int index)
     {
         _descriptionIndex = index;
         _hasDescription = true;

@@ -24,8 +24,12 @@ alb alb alb alb alb alb alb alb alb alb
 <<<koniec opisu dla misji 2!!!>>>
 ---
 _5
-uwaga teraz podaje trzeci opis dla misji 2
-bla bla bla bla bla bla bla bla bla bla
-alb alb alb alb alb alb alb alb alb alb
-<<<koniec opisu dla misji 2!!!>>>
+Karion Poczal szukac nemo
+Ciekawe zadanie
 ---
+_6
+Karion zabił rekina
+_7
+Karion znalazl w jego wnetrzosciach ciekawy przedmiot...
+_8
+Karion zbił z rekinem pione
