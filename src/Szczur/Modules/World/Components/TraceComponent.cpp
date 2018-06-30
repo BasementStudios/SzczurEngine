@@ -17,7 +17,7 @@ namespace rat
 TraceComponent::TraceComponent(Entity* parent)
   : Component { parent, fnv1a_64("TraceComponent"), "TraceComponent" }
 {
-	_trace = std::make_shared<Trace>();
+	_trace = std::make_shared<Trace>(getEntity());
 }
 
 void TraceComponent::pause()
@@ -49,7 +49,7 @@ void TraceComponent::loadFromConfig(Json& config)
 {
 	Component::loadFromConfig(config);
 	
-	_trace->loadFromConfig(config, this->getEntity());
+	_trace->loadFromConfig(config);
 
 	_currentTimeline = nullptr;
 	_currentAction = nullptr;

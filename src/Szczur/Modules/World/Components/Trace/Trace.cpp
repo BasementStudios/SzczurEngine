@@ -10,7 +10,8 @@
 namespace rat
 {
 
-Trace::Trace()
+Trace::Trace(Entity* _entity)
+	: _entity(_entity)
 {
 
 }
@@ -22,7 +23,7 @@ Trace::~Trace()
 
 void Trace::addTimeline()
 {
-	_timelines.emplace_back(std::make_unique<Timeline>(++_lastId));
+	_timelines.emplace_back(std::make_unique<Timeline>(++_lastId, _entity));
 }
 
 void Trace::removeTimeline(Timeline* timeline)
@@ -53,7 +54,7 @@ void Trace::resume()
 	_pause = false;
 }
 
-void Trace::loadFromConfig(Json& config, Entity* entity)
+void Trace::loadFromConfig(Json& config)
 {
 	Json::array_t jsonTimelines = config["timelines"];
 
@@ -61,7 +62,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 
 	for (auto& jsonTimeline : jsonTimelines)
 	{
-		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>());
+		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>(), _entity);
 		timeline->Loop = jsonTimeline["loop"];
 
 		if (jsonTimeline.find("speedMultiplier") != jsonTimeline.end())
@@ -82,7 +83,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 			{
 				case Action::Move:
 				{
-					auto moveAction = new MoveAction(entity);
+					auto moveAction = new MoveAction(_entity);
 
 					moveAction->UseCurrentPosition = jsonAction["useCurrentPosition"];
 					moveAction->Start.x = jsonAction["start"]["x"];
@@ -101,7 +102,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 				} break;
 				case Action::Anim:
 				{
-					auto animAction = new AnimAction(entity);
+					auto animAction = new AnimAction(_entity);
 
 					animAction->AnimationName = jsonAction["animationName"].get<std::string>();
 					animAction->FadeInTime = jsonAction["FadeInTime"];
@@ -112,7 +113,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 				} break;
 				case Action::Wait:
 				{
-					auto waitAction = new WaitAction(entity);
+					auto waitAction = new WaitAction(_entity);
 
 					waitAction->TimeToWait = jsonAction["timeToWait"];
 
@@ -120,7 +121,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 				} break;
 				case Action::Script:
 				{
-					auto scriptAction = new ScriptAction(entity);
+					auto scriptAction = new ScriptAction(_entity);
 
 					scriptAction->ScriptFilePath = jsonAction["filePath"].get<std::string>();
 

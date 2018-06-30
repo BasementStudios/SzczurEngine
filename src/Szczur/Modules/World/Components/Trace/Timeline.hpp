@@ -24,6 +24,8 @@ public:
 	float SpeedMultiplier = 1.f;
 
 private:
+	Entity* _entity = nullptr;
+
 	int _id;
 
 	Container_t _actions;
@@ -35,7 +37,7 @@ private:
 	sf3d::VertexArray _vertexArray{ 1 };
 
 public:
-	Timeline(int id);
+	Timeline(int id, Entity* entity);
 	~Timeline();
 
 	void addAction(Action* action);

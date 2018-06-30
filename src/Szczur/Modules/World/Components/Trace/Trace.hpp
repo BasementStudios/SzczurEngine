@@ -19,6 +19,8 @@ class Timeline;
 class Trace
 {
 private:
+	Entity* _entity = nullptr;
+
 	std::vector<std::unique_ptr<Timeline>> _timelines;
 
 	int _lastId = -1;
@@ -28,7 +30,7 @@ private:
 	Timeline* _currentTimeline = nullptr;
 
 public:
-	Trace();
+	Trace(Entity* entity);
 	~Trace();
 
 	void addTimeline();
@@ -44,7 +46,7 @@ public:
 
 	bool isPlaying() { return !_pause; }
 
-	void loadFromConfig(Json& config, Entity* entity);
+	void loadFromConfig(Json& config);
 	void saveToConfig(Json& config) const;
 
 	void update(float deltaTime);

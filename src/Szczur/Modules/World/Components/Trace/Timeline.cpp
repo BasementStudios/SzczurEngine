@@ -8,8 +8,8 @@
 namespace rat
 {
 
-Timeline::Timeline(int id)
-	: _id(id)
+Timeline::Timeline(int id, Entity* entity)
+	: _id(id), _entity(entity)
 {
 	_vertexArray.setPrimitveType(GL_LINES);
 }
@@ -83,7 +83,7 @@ void Timeline::updateVertexArray()
 {
 	int i = 0;
 
-	glm::vec3 lastPosition = { 0.f, 0.f, 0.f };
+	glm::vec3 lastPosition = _entity->getPosition();
 
 	for (auto& action : _actions)
 	{
