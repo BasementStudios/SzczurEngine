@@ -153,17 +153,17 @@ namespace rat
         auto numOfPaddings = float(_children.size() - 1);
         _betweenWidgetsPadding = freeSpace / numOfPaddings;
     }
+
     void ListWidget::_clear()
     {
         _isPosChanged = true;
     }
-
     sf::Vector2f ListWidget::_getInnerSize() const
     {
-        const auto size = getSize(); 
+        const auto size = getSize();
         if(_positioning == Positioning::Horizontal)
         {
-            return {size.x / 2.f, 0.f};
+            return { size.x / 2.f, 0.f };
         }
         else
         {
