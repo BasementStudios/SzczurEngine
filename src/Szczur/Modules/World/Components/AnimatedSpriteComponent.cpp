@@ -292,26 +292,26 @@ namespace rat {
 
 		switch (vertical)
 		{
-			case 1:
+			case -1:
 				pos.x = 0;
 				break;
 			case 0:
 				pos.x = size.x / 2;
 				break;
-			case -1:
+			case 1:
 				pos.x = size.x;
 				break;
 		}
 
 		switch (horizontal)
 		{
-			case 1:
+			case -1:
 				pos.y = 0;
 				break;
 			case 0:
 				pos.y = size.y / 2;
 				break;
-			case -1:
+			case 1:
 				pos.y = size.y;
 				break;
 		}
