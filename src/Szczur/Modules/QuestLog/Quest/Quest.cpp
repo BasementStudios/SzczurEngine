@@ -53,7 +53,7 @@ namespace rat
     {
         std::cout << "Quest Started\n";
         _state = State::Active;
-        _rootNode->start();
+        _rootNode->activate();
     }
     void Quest::finish()
     {
@@ -84,7 +84,16 @@ namespace rat
         j["state"] = static_cast<int>(_state);
         j["reqs"] = _reqs.getJson();
 
-        j["root"] = _rootNode->getJson();
+        json ns;
+
+        for(auto& [name, node] : _nodes)
+        {
+            ns.emplace(name, node->getSaveJson());
+        }
+
+        j["nodes"] = ns;
+
+        //j["root"] = _rootNode->getJson();
 
         return j;
     }
@@ -93,7 +102,7 @@ namespace rat
         _state = static_cast<State>(j["state"]);
 
         _loadReqsFromJson(j["reqs"]);
-        _loadRootFromJson(j["root"]);
+        _loadNodesFromJson(j["root"]);
     }
 
     void Quest::_loadReqsFromJson(nlohmann::json& j)
@@ -102,24 +111,25 @@ namespace rat
         _reqs.loadFromJson(j);
     }
 
-    void Quest::_loadRootFromJson(nlohmann::json& j)
+    void Quest::_loadNodesFromJson(nlohmann::json& j)
     {
-        _resetNodesReqs();
-        _rootNode->loadFromJson(j);
-        /* 
-        if(_state == State::Active)
+        for(auto i = j.begin(); i != j.end(); ++i)
         {
-            _activateRootsGUI();
+            std::string name = i.key();
+            auto found = _nodes.find(name);
+            if(found == _nodes.end())
+            {
+                assert(false);
+            }
+            auto& node = found->second;
+            json jNode = i.value();
+            node->loadSaveFromJson(jNode);
         }
-        */
     }
 
     void Quest::_resetNodesReqs()
     {
-        for(auto& [name, node] : _nodes)
-        {
-            node->reset();
-        }
+        
     }
 /*
     void Quest::_activateRootsGUI()
@@ -154,4 +164,25 @@ namespace rat
 
     object.init();
 }
+
+    void QuestNode::initScript(Script& script) 
+    {
+        auto object = script.newClass<QuestNode>("QuestNode", "QuestLog");
+
+        // Main
+        object.set("getName", &QuestNode::getName);
+        object.set("addStep", &QuestNode::addStep);
+        //object.set("addBrancher", &QuestNode::addBrancher);
+        object.set("addSubNode", &QuestNode::addSubNode);
+        object.set("addNode", &QuestNode::addNode);
+        object.set("nextStep", &QuestNode::nextStep);
+        //object.set("getReqs", &QuestNode::getReqs);
+
+        // Callbacks
+        object.set("onActivate", &QuestNode::onActivate);
+        object.set("onBlock", &QuestNode::onBlocked);
+        object.set("onFinish", &QuestNode::onFinished);
+
+        object.init();
+    }
 }

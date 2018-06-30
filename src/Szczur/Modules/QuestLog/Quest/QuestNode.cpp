@@ -1,417 +1,232 @@
 #include "QuestNode.hpp"
 
-#include "Quest.hpp"
+#include <algorithm>
 
-#include "Szczur/Utility/Logger.hpp"
+#include "Quest.hpp"
 
 using namespace nlohmann;
 
 namespace rat
 {
-    using Node_t = std::unique_ptr<QuestNode>;
-    QuestNode::QuestNode(Quest* parentQuest, const std::string& name) 
+    QuestNode::QuestNode(Quest* baseQuest, Type type, const std::string& name) 
     :
-    QuestNode(parentQuest, Type::Starting, name)
-    {}
-    QuestNode::QuestNode(Quest* parentQuest, Type type, const std::string& name) 
-    :
-    _parentQuest(parentQuest),
+    _baseQuest(baseQuest),
     _type(type)
     {
-        _parentQuest->addNode(name, std::move(std::unique_ptr<QuestNode>(this)));
+        _baseQuest->addNode(name, std::move(std::unique_ptr<QuestNode>(this)));
     }
+
+    QuestNode::QuestNode(Quest* baseQuest, const std::string& name) 
+    :
+    QuestNode(baseQuest, Type::Base, name)
+    {}
+
 
     QuestNode* QuestNode::addStep(const std::string& name)
     {
-        auto step = new QuestNode(_parentQuest, Type::Step, name);
-
+        auto* step = new QuestNode(_baseQuest, name);
         return addNode(step);
     }
+
     QuestNode* QuestNode::addSubNode(const std::string& name)
     {
-        auto* subNode = new QuestNode(_parentQuest, Type::Starting, name);
-
-        return addNode(subNode);
-    }
-    QuestNode* QuestNode::addBrancher(const std::string& name)
-    {
-        auto* brancher = new QuestNode(_parentQuest, Type::Brancher, name);
-
-        return addNode(brancher);
+        auto* req = new QuestNode(_baseQuest, Type::Base, name);
+        return addNode(req);
     }
 
     QuestNode* QuestNode::addNode(QuestNode* node)
     {
-
-        if(node->_type == Type::Starting)
+        const auto nodeName = node->getName();
+        if(node->_type == Type::Step)
         {
-            _requirmentNodes.emplace_back(node);
-        }
-        else if(_type == Type::Brancher) 
-        {
-            _nextNodes.emplace_back(node);
+            _nextNodesNames.emplace(nodeName);
         }
         else
         {
-            if(_nextNodes.size() == 0) _nextNodes.emplace_back(node);
-            else _nextNodes.back() = node;
-        } 
+            _reqNodes.emplace(nodeName, false);
+        }
 
         return node;
     }
-    
 
-    void QuestNode::start()
+    void QuestNode::activate()
     {
-        if(_isFinished()) return;
-        if(_state == State::Blocked) return;
-        _state = State::Chosen;
-        if(_onActivate.valid())
-        {
-            _onActivate();
-        }
+        _state = State::InProgress;
+        if(onActivate.valid()) onActivate();
     }
-
-    void QuestNode::nextStep(size_t nextNodeIndex)
+    void QuestNode::resume()
     {
-        if(!_reqs.isFullySuited()) return;
-        if(_isFinished() || _state == State::Blocked) return;
-        if(!_canBeFinished()) return;
-
-        if(_type == Type::Step)
-        {
-            _state = State::Finished;
-            if(_onFinished.valid())
-            {
-                _onFinished();
-            }
-            //_onFinishedGUISet();
-        }
-        if(_nextNodes.size() == 0)
-        {
-            if(_type == Type::Step)
-            {
-                _startingNode->finish();
-            }
-            else
-            {
-                finish();
-            }
-        }
-        else
-        {
-            _activateNextNode(nextNodeIndex);
-        }
+        
     }
-    
-    void QuestNode::finish()
-    {
-        if(_isFinished()) return;
-        if(!_canBeFinished()) return;        
-        if(_type == Type::Starting)
-        {
-            _state = State::Finished;
-            if(_onFinished.valid())
-            {
-                _onFinished();
-            }
-           // _onFinishedGUISet();
-
-            if(_parentNode)
-            {
-                _parentNode->nextStep();
-            }
-            else
-            {
-                _parentQuest->finish();
-            }
-        }
-        else
-        {
-            _startingNode->finish();
-        }
-    }
-    bool QuestNode::_canBeFinished() const
-    {
-        for(auto& reqNode : _requirmentNodes)
-        {
-            if(!reqNode->_isFinished()) return false;
-        }
-
-        return true;
-    }
-    bool QuestNode::_isFinished() const{
-        return _state == State::Finished;
-    }
-
-    void QuestNode::_activateNextNode(size_t nextNodeIndex)
-    {
-        if(_nextNodes.size() <= nextNodeIndex) nextNodeIndex = 0;
-
-        for(size_t i = 0; i < _nextNodes.size(); i++)
-        {
-            if(i == nextNodeIndex) break;
-            _nextNodes[i]->_block();
-        }
-
-        auto* nextNode = _nextNodes[nextNodeIndex];
-
-        _fillChildWithLove(nextNode);
-        nextNode->_activate();
-    }
-    void QuestNode::_fillChildWithLove(QuestNode* child)
-    {
-        if(_type == Type::Starting)
-        {
-            child->_startingNode = this;
-        }
-        else 
-        {
-            child->_startingNode = _startingNode;
-        }
-
-        if(child->_type == Type::Starting)
-        {
-            child->_parentNode = this;
-        }
-    }
-
-    void QuestNode::_activate(QuestNode* parent)
-    {
-        if(parent) _parentNode = parent;
-
-
-        if(_type != Type::Starting)
-        {
-            _startingNode->_currentChildNode = this;
-        }
-
-        //_onActivateGUISet();
-        if(_state == State::Finished)
-        {
-            if(_onFinished.valid())
-            {
-                _onFinished();
-            }
-        }
-        else
-        {
-            _state = State::Activated;
-            if(_onActivate.valid())
-            {
-                _onActivate();
-            }
-        }
-
-        for(auto* req : _requirmentNodes)
-        {
-            req->_activate(this);
-        }
-    }
-/*
-    void QuestNode::_onActivateGUISet()
-    {   
-        TitleInfo info;
-
-        if(_type == Type::Starting)
-        {
-            if(_parentNode == nullptr)
-            {
-                info.makeTitle(_title + "kek");
-                _parentQuest->setTitle(info);
-            }
-            else
-            {
-                info.makeReq(_title + "kek", _state == State::Finished);
-                _titleGUI = _parentQuest->addSubtitle(info);
-            }
-        }
-        else
-        {
-            if(_startingNode->_parentNode == nullptr)
-            {
-                info.makeTitle(_title + "kek");
-                _parentQuest->setTitle(info);
-            }
-            else
-            {
-                info.makeReq(_title + "kek", _state == State::Finished);
-                _titleGUI = _parentQuest->addSubtitle(info);
-            }
-        }
-        LOG_INFO("_onActivateGUISet ", _name, " has beed activated", _title);
-    }
-    /*
-    void QuestNode::_onFinishedGUISet()
-    {
-        if(_type == Type::Starting)
-        {
-            TitleInfo info;
-            info.makeReq(_title, true);
-            if(_titleGUI)
-                _titleGUI->setTitle(info);
-        }
-    }
-*/
-    void QuestNode::setActivateCallback(Function_t onActivate)
-    {
-        _onActivate = onActivate;
-    }
-    void QuestNode::setBlockedCallback(Function_t onBlocked)
-    {
-        _onBlocked = onBlocked;        
-    }
-    void QuestNode::setFinishedCallback(Function_t onFinished)
-    {
-        _onFinished = onFinished;
-    }
-
-    void QuestNode::_block()
+    void QuestNode::block()
     {
         _state = State::Blocked;
-        _onBlocked();
+        if(onBlocked.valid()) onBlocked();
+    }
+
+    void QuestNode::nextStep(const std::string& name)
+    {
+        if(onFinished.valid()) onFinished();
+
+        if(_nextNodesNames.size() == 0)
+        {
+            if(_hasBrancher)
+            {
+                auto* brancherNode = _baseQuest->getNode(_brancherNodeName);
+                brancherNode->_suitReqNode(getName());
+            }
+            else if(_hasBaseNode)
+            {
+                auto* baseNode = _baseQuest->getNode(_baseNodeName);
+                baseNode->_finish();
+            }
+            else
+            {
+                _baseQuest->finish();
+            }
+        }
+        else
+        {
+            std::string nextNodeName;
+            if(name == "")
+            {
+                nextNodeName = *(_nextNodesNames.begin());
+            }
+            else
+            {
+                nextNodeName = name;
+            }
+            auto* nextNode = _baseQuest->getNode(nextNodeName);
+            
+            _blockNextNodesWithout(nextNodeName);
+            
+            nextNode->activate();
+        }
+    }
+
+    void QuestNode::_blockNextNodesWithout(const std::string& name)
+    {
+        for(const auto& nodeName : _nextNodesNames)
+        {
+            if(nodeName == name) continue;
+
+            auto* node = _baseQuest->getNode(nodeName);
+            node->block();
+        }
     }
     
-    void QuestNode::setTitle(const std::string& title)
+
+    const std::string& QuestNode::getName() const
     {
-        _title = title;
+        return _name;
     }
     void QuestNode::setName(const std::string& name)
     {
         _name = name;
     }
 
-   
-    void QuestNode::resume()
+    void QuestNode::_suitReqNode(const std::string& name)
     {
-        if(_currentChildNode)
+        if(auto node = _reqNodes.find(name); node == _reqNodes.end())
         {
-            _currentChildNode->resume();
+            LOG_ERROR("Cannot find req node: \"", name, "\" to suit");
+            assert(false);
         }
         else
         {
-            if(_state == State::Finished)
+            node->second = true;
+            _tryNextStep();
+        }
+    }
+    void QuestNode::_tryNextStep()
+    {
+        if(_areAllReqNodesSuited())
+        {
+            nextStep();
+        }
+    }
+    bool QuestNode::_areAllReqNodesSuited() const
+    {
+        return std::all_of(_reqNodes.begin(), _reqNodes.end(), [](const auto& req){
+            return req.second;
+        });
+    }
+    void QuestNode::_finish()
+    {
+        auto* quest = _baseQuest;
+        _state = State::Finished;
+
+        if(_type == Type::Base)
+        {
+            if(_hasBrancher)
             {
-                if(_onFinished.valid())
-                {
-                    _onFinished();
-                }
+                auto* brancher = quest->getNode(_brancherNodeName);
+                brancher->_suitReqNode(getName());
             }
             else
             {
-                if(_onActivate.valid())
-                {
-                    _onActivate();
-                }
+                quest->finish();
             }
-            for(auto req : _requirmentNodes)
-            {
-                req->resume();
-            }
+        }
+        else if(_hasBaseNode)
+        {
+            auto* base = quest->getNode(_baseNodeName);
+            base->_finish();
         }
     }
 
-    const std::string& QuestNode::getName() const
-    {
-        return _name;
-    }
-    
 
-    json QuestNode::getJson() const
+    json QuestNode::getSaveJson() const
     {
         json j;
 
         j["state"] = static_cast<int>(_state);
-
-        bool hasCurrent = bool(_currentChildNode);
-        j["hasCurrent"] = hasCurrent;
-        if(hasCurrent)
-        {
-            j["current"] = _currentChildNode->getJson();
-            j["currentsName"] = _currentChildNode->getName();
-        }
-
-        j["requeirmentNodes"] = _getRequirmentNodesJson();
+        if(_hasBaseNode) j["baseNode"] = _baseNodeName;
+        if(_hasBrancher) j["brancherNode"] = _brancherNodeName;
 
         j["reqs"] = _reqs.getJson();
 
+        //j["reqNodes"] = _getReqNodesJson();
+        //j["nextNodes"] = _getNextNodesJson();
+
         return j;
     }
 
-    json QuestNode::_getRequirmentNodesJson() const
+    nlohmann::json QuestNode::_getReqNodesJson() const
     {
-        json j;
-        for(auto req : _requirmentNodes)
-        {
-            j.emplace_back(req->getJson());
-        }
-        return j;
+        return json(_reqNodes);
+    }
+    nlohmann::json QuestNode::_getNextNodesJson() const
+    {
+        return json(_nextNodesNames);
     }
 
-    void QuestNode::loadFromJson(nlohmann::json& j)
+    void QuestNode::loadSaveFromJson(nlohmann::json& j)
     {
         _state = static_cast<State>(j["state"]);
 
-        if(j["hasCurrent"])
+        if(j.find("baseNode") != j.end()) 
         {
-            auto& jCur = j["current"];
-            std::string currentName = j["currentsName"];
-
-            _currentChildNode = _parentQuest->getNode(currentName);
-            _currentChildNode->loadFromJson(jCur);
-            _fillChildWithLove(_currentChildNode);
+            _baseNodeName = j["baseNode"];
+            _hasBaseNode = true;
+        }
+        else
+        {
+            _baseNodeName = {};
+            _hasBaseNode = false;
         }
 
-
-        _loadRequirmentNodesFromJson(j["requeirmentNodes"]);
+        if(j.find("brancherNode") != j.end()) 
+        {
+            _brancherNodeName = j["brancherNode"];
+            _hasBrancher = true;
+        }
+        else
+        {
+            _brancherNodeName = {};
+            _hasBrancher = false;
+        }
 
         _reqs.loadFromJson(j["reqs"]);
-    }
-
-    void QuestNode::_loadRequirmentNodesFromJson(nlohmann::json& j)
-    {
-        LOG_ERROR_IF(j.size() != _requirmentNodes.size(), "Node \"", _name, "\" cannot load requirment nodes properly...");
-        for(int i = 0; i < j.size(); i++)
-        {
-            auto req = _requirmentNodes[i];
-            req->loadFromJson(j[i]);
-            _fillChildWithLove(req);
-            req->_activate(this);
-        }
-    }
-
-    void QuestNode::reset()
-    {
-        _state = State::Inactivated;
-        _startingNode = nullptr;
-        _reqs.resetValues();
-    }
-
-    Requirements& QuestNode::getReqs()
-    {
-        return _reqs;
-    }
-
-    
-void QuestNode::initScript(Script& script) 
-{
-        auto object = script.newClass<QuestNode>("QuestNode", "QuestLog");
-
-        // Main
-        object.set("getName", &QuestNode::getName);
-        object.set("addStep", &QuestNode::addStep);
-        object.set("addBrancher", &QuestNode::addBrancher);
-        object.set("addSubNode", &QuestNode::addSubNode);
-        object.set("addNode", &QuestNode::addNode);
-        object.set("setTitle", &QuestNode::setTitle);
-        object.set("nextStep", &QuestNode::nextStep);
-        object.set("getReqs", &QuestNode::getReqs);
-
-        // Callbacks
-        object.set("onActivate", &QuestNode::_onActivate);
-        object.set("onBlock", &QuestNode::_onBlocked);
-        object.set("onFinish", &QuestNode::_onFinished);
-
-        object.init();
     }
 }

@@ -62,7 +62,7 @@ namespace rat
         
         QuestLog& _owner;
 
-        void _loadRootFromJson(nlohmann::json& j);
+        void _loadNodesFromJson(nlohmann::json& j);
         void _loadReqsFromJson(nlohmann::json& j);
         void _resetNodesReqs();
 
