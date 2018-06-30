@@ -180,6 +180,8 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						_currentTimeline = nullptr;
 					else
 						_currentTimeline = timeline.get();
+
+					_currentAction = nullptr;
 				}
 
 				if (activeTimeline)
