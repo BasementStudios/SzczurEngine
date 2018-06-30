@@ -84,6 +84,9 @@ public:
 	///
 	void setSpeed(float speed);
 
+	///
+	bool isPlaying();
+
 // Scripts
 
 	///

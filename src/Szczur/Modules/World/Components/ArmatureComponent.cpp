@@ -235,6 +235,13 @@ void ArmatureComponent::setFlipX(bool flipX)
 void ArmatureComponent::setSpeed(float speed)
 {
 	_armature->getAnimation()->timeScale = speed;
+
+bool ArmatureComponent::isPlaying()
+{
+	if (_armature)
+	{
+		return _armature->getAnimation()->isPlaying();
+	}
 }
 
 void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
@@ -247,6 +254,7 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("playOnce", &ArmatureComponent::playOnce);
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
+	object.set("isPlaying", &ArmatureComponent::isPlaying);
 	object.set("setArmature", &ArmatureComponent::setArmature);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
