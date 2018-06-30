@@ -212,6 +212,11 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 {
 	if (_armature)
 	{
+		if (_isPlayingOnceAnimation)
+		{
+			_armature->getAnimation()->fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
+		}
+
 		if (auto anim = _armature->getAnimation(); anim && anim->isPlaying())
 		{
 			auto lastAnimation = anim->getLastAnimationState();
@@ -234,7 +239,11 @@ void ArmatureComponent::setFlipX(bool flipX)
 
 void ArmatureComponent::setSpeed(float speed)
 {
-	_armature->getAnimation()->timeScale = speed;
+	if (_armature)
+	{
+		_armature->getAnimation()->timeScale = speed;
+	}
+}
 
 bool ArmatureComponent::isPlaying()
 {
