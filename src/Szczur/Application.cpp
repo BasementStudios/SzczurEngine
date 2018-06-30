@@ -113,8 +113,11 @@ bool Application::input()
 {
 	sf::Event event;
 
-	while (getModule<Window>().getWindow().pollEvent(event)) {
+	while (getModule<Window>().getWindow().pollEvent(event)) 
+	{
 		getModule<Input>().getManager().processEvent(event);
+
+		getModule<GUI>().input(event);
 
 		#ifdef EDITOR
 		{
@@ -134,7 +137,7 @@ bool Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-	getModule<QuestLog>().update(deltaTime);
+	getModule<GUI>().update(deltaTime);
 	/*
 		Put other updates here
 	*/
@@ -156,7 +159,7 @@ void Application::update()
 void Application::render()
 {
 	getModule<Window>().clear();
-	getModule<QuestLog>().render();
+	getModule<GUI>().render();
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
