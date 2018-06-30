@@ -240,7 +240,7 @@ namespace rat {
 			ImGui::Checkbox("Auto update size", &_autoUpdateFrameSize);
 			ImGui::InputFloat2("Frame size", &_frameSize[0], 1);
 
-			ImGui::DragFloat("Speed", &_speed, 0.05f, 0.1f, 100.f);
+			ImGui::DragFloat("Speed", &_speed, 0.05f, 0.1f, 9999999.f);
 		}
 	}
 
