@@ -12,10 +12,11 @@ namespace rat {
 		EquipmentSlot();
 
 		void setSize(const sf::Vector2f& size);
-		void setSize(float width, float height);
+		void setPropSize(const sf::Vector2f& size);
 		void setTexture(sf::Texture*);
 		void setParent(Widget* parent);
 		void setPosition(sf::Vector2f pos);
+		void setPropPosition(sf::Vector2f pos);
 
 		void setItemPosition(sf::Vector2f pos);
 		void resetItemPosition();

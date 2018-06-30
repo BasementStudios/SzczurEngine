@@ -7,17 +7,25 @@
 #include "WearableItem.hpp"
 
 namespace rat {
-	RingSlider::RingSlider(sf::Texture* frameText, sf::Vector2f frameSize, sf::Texture* pathText, sf::Texture* boundsText, sf::Texture* scrollText, Equipment* equipment, float length) 
+	RingSlider::RingSlider(sf::Texture* frameText, sf::Vector2f frameSize, sf::Texture* pathText, sf::Texture* boundsText, sf::Texture* scrollText, Equipment* equipment, sf::Texture* border, float length) 
 		: _length(length), _equipment(equipment), _slotTexture(frameText), _slotSize(frameSize)
 	{
 		_base = new Widget;
 
-		_scroll = new ScrollAreaWidget();		//bug: dodaje jakies kropki nw czemu
-		_scroll->setPropSize(0.09f, 0.55f);
+		_border = new ImageWidget;
+		_border->setTexture(border);
+		_border->setSize(50.f + frameSize.x, 420.f);
+		_base->add(_border);
+
+		_scroll = new ScrollAreaWidget();
+		//_scroll->setPropOrigin(.0f, .0f);
+		//_scroll->setPropSize(0.09f, 0.65f);
+		_scroll->setSize(40.f + frameSize.x, 400.f);
+		_scroll->setPosition({5.f, 10.f});
 		_scroll->setBoundsTexture(boundsText);
 		_scroll->setPathTexture(pathText);
 		_scroll->setScrollerTexture(scrollText);
-		_base->add(_scroll);
+		_base->add(_scroll);	
 
 	}
 
@@ -25,8 +33,8 @@ namespace rat {
 		newBase->add(_base);
 	}
 
-	void RingSlider::setPosition(sf::Vector2f pos) {
-		_base->setPosition(pos);
+	void RingSlider::setPropPosition(sf::Vector2f pos) {
+		_base->setPropPosition(pos);
 	}
 
 	void RingSlider::addItem(WearableItem* item) {
@@ -36,7 +44,7 @@ namespace rat {
 		temp->setParent(_scroll);
 		temp->setSize(_slotSize);
 		temp->setTexture(_slotTexture);
-		temp->setPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (_slotSize.y + 10)));
+		temp->setPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (_slotSize.y + 10.f) + 20.f));
 		temp->setItem(item);
 		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this](Widget* owner) {
 			this->_equipment->disableItemPreview();

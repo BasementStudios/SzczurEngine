@@ -12,8 +12,9 @@ namespace rat {
 	{
 	public:
 		WearableItem(std::string nameId);
+		~WearableItem();
 
-		void initScript(Script& script);
+		static void initScript(Script& script);
 
 		void setCallback(std::string pathToFile);
 
@@ -22,9 +23,12 @@ namespace rat {
 
 		void setType(equipmentObjectType type);
 		equipmentObjectType getType();
-	private:
+
 		sol::function _callback1;
 		sol::function _callback2;
+	private:
+		std::string pathToScript;
+		
 
 		equipmentObjectType _objectType;
 	};

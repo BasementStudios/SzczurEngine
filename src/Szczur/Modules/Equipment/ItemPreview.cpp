@@ -24,6 +24,15 @@ namespace rat {
 		_itemDescription->setFont(font);
 		_itemDescription->setColor(sf::Color::White);
 		_itemDescription->setCharacterSize(15);
+
+		_background->setSize(size);
+		_itemImage->setSize(sf::Vector2f(size.y, size.y));
+
+		_itemName->setPosition(sf::Vector2f(size.y + 10.f, 10.f));
+		_itemName->setSize(sf::Vector2f(2 * size.y - 10, 20.f));
+
+		_itemDescription->setTextSize(sf::Vector2u(18u, 4u));
+		_itemDescription->setPosition(sf::Vector2f(size.y + 10.f, 20.f + _itemName->getCharacterSize()));
 	}
 
 	void ItemPreview::setParent(Widget* base) {
@@ -32,39 +41,20 @@ namespace rat {
 
 	void ItemPreview::minimalize() {
 		
-		_itemImage->setSize(sf::Vector2f(0.f, 0.f));		//need to rework this
-
-		_itemName->setString("");
-		_itemName->setSize(sf::Vector2f(0.f, 0.f));		//it's retarded i know
-
-		_itemDescription->setString("");
-		_itemDescription->setSize(sf::Vector2f(0.f, 0.f));
-
-		_background->setSize(sf::Vector2f(0.f, 0.f));
-		isObjectApllied = false;
-		_item = nullptr;
+		_background->fullyDeactivate();
 	}
 
 	void ItemPreview::setPosition(sf::Vector2f pos) {
-		_background->setPosition(pos);
-		if (_item && !isObjectApllied) {
-			isObjectApllied = true;
-			_background->setSize(size);
-			_itemImage->setSize(sf::Vector2f(size.y, size.y));
-			_itemImage->setTexture(_item->getTexture());
-
-			_itemName->setString(_item->getName());
-			_itemName->setPosition(sf::Vector2f(size.y + 10.f, 10.f));
-			_itemName->setSize(sf::Vector2f(2 * size.y - 10, 20.f));
-
-			_itemDescription->setTextSize(sf::Vector2u(2 * size.y - 10, 50.f));
-			_itemDescription->setString(_item->getDescription());
-			_itemDescription->setPosition(sf::Vector2f(size.y + 10.f, 20.f + _itemName->getCharacterSize()));			
-		}
+		_background->setPosition(pos);			
+		
 	}
 
 	void ItemPreview::setItem(EquipmentObject* item) {
-		_item = item;
+		_background->fullyActivate();
+
+		_itemDescription->setString(item->getDescription());
+		_itemName->setString(item->getName());
+		_itemImage->setTexture(item->getTexture());
 	}
 
 }

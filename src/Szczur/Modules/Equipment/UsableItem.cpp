@@ -6,32 +6,38 @@ namespace rat {
 	{
 	}
 
+	UsableItem::~UsableItem() {
+
+	}
+
 	void UsableItem::initScript(Script& script) {
-		auto object = script.newClass<UsableItem>("usableItem", "Equipment");//, "../NewClass.lua");
+		auto object = script.newClass<UsableItem>("UsableItem", "Equipment");//, "../NewClass.lua");
 		object.set("setName", &EquipmentObject::setName);
 		object.set("setDescription", &EquipmentObject::setDescription);
 		object.set("setIcon", &EquipmentObject::setIcon);
 		object.set("setIsUsable", &UsableItem::setIsUseble);
 		object.set("setCallback", &UsableItem::setCallback);
+		object.set("callback1", &UsableItem::_callback);
 		object.init();
 	}
 
 	void UsableItem::setIsUseble(bool isUsable) {
 		_isUsable = isUsable;
+		LOG_INFO("isUsable has been set: ", isUsable);
 	}
 
-	void UsableItem::setCallback(sol::function firstCallback)  {
-		_callback = firstCallback;
+	void UsableItem::setCallback(std::string path)  {
+		pathToScript = path;
 	}
 
 	bool UsableItem::useItem() {
 		if (_callback.valid()) {
 			if (_isUsable) {
-				_callback();
+				_callback(this);
 				return true;
 			}
 			else {
-				_callback();
+				_callback(this);
 				return false;
 			}
 		}

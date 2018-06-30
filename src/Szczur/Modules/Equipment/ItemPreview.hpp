@@ -13,7 +13,6 @@ namespace rat {
 		void setParent(Widget* base);
 		void setPosition(sf::Vector2f pos);
 	private:
-		EquipmentObject* _item;
 		bool isObjectApllied;
 
 		ImageWidget* _background;

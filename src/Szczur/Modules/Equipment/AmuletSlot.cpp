@@ -57,11 +57,11 @@ namespace rat {
 			_amuletImage->setTexture(amulet->getTexture());
 		}
 	}
-	bool AmuletSlot::removeAmulet(std::string name) {
+	bool AmuletSlot::removeAmulet(std::string nameId) {
 		for (size_t i = 0; i < _amulets.size(); i++)
 		{
-			if (_amulets[i]->getName() == name) {
-				if (_chosenAmulet->getName() == name) {
+			if (_amulets[i]->getName() == nameId) {
+				if (_chosenAmulet->getName() == nameId) {
 					if (_amulets[i - 1])		//there is some other amulet to display
 					{
 						_chosenAmulet->deactivate();
@@ -97,20 +97,26 @@ namespace rat {
 	void AmuletSlot::leftArrowClicked() {
 		for (size_t i = 0; i < _amulets.size(); i++)
 		{
-			if (_amulets[i] == _chosenAmulet && i + 1 < _amulets.size()) {
-				if (_amulets[i + 1]) {
-					_amuletImage->resetColor();
-					_chosenAmulet->deactivate();
-					_chosenAmulet = _amulets[i + 1];
-					_chosenAmulet->activate();
-					_amuletImage->setTexture(_chosenAmulet->getTexture());
-					break;
+			if (_amulets[i] == _chosenAmulet) {
+				if (i + 1 < _amulets.size()) {
+					if (_amulets[i + 1]) {
+						_amuletImage->resetColor();
+						if (_chosenAmulet)
+							_chosenAmulet->deactivate();
+						_chosenAmulet = _amulets[i + 1];
+						_chosenAmulet->activate();
+						_amuletImage->setTexture(_chosenAmulet->getTexture());
+						break;
+					}
 				}
-				else {	//setting nullptr as chosen amulet
+				else {
+					//setting nullptr as chosen amulet
+					if(_chosenAmulet)
 					_chosenAmulet->deactivate();
-					_chosenAmulet = _amulets[i + 1];
+					_chosenAmulet = _amulets[0];
 					_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
 					break;
+
 				}
 			}
 		}
@@ -118,19 +124,32 @@ namespace rat {
 	void AmuletSlot::rightArrowClicked() {
 		for (size_t i = 0; i < _amulets.size(); i++)
 		{
-			if (_amulets[i] == _chosenAmulet && i != 0) {
-				if (_amulets[i - 1]) {
-					_amuletImage->resetColor();
-					_chosenAmulet->deactivate();
-					_chosenAmulet = _amulets[i - 1];
-					_chosenAmulet->activate();
-					_amuletImage->setTexture(_chosenAmulet->getTexture());
+			if (_amulets[i] == _chosenAmulet) {
+				if (i != 0) {
+					if (_amulets[i - 1]) {
+						_amuletImage->resetColor();
+						if (_chosenAmulet)
+							_chosenAmulet->deactivate();
+						_chosenAmulet = _amulets[i - 1];
+						_chosenAmulet->activate();
+						_amuletImage->setTexture(_chosenAmulet->getTexture());
+					}
+					else {
+						if (_chosenAmulet)
+						_chosenAmulet->deactivate();
+						_chosenAmulet = _amulets[i - 1];
+						_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
+						break;
+					}
 				}
 				else {
-					_chosenAmulet->deactivate();
-					_chosenAmulet = _amulets[i - 1];
-					_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
-					break;
+					if (_amulets[_amulets.size() - 1] && _amulets.size() > 1) {
+						_amuletImage->resetColor();
+						_chosenAmulet = _amulets[_amulets.size() - 1];
+						_chosenAmulet->activate();
+						_amuletImage->setTexture(_chosenAmulet->getTexture());
+						break;
+					}
 				}
 			}
 		}

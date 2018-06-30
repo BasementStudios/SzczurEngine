@@ -6,30 +6,35 @@ namespace rat {
 	{
 	}
 
+	WearableItem::~WearableItem() {
+
+	}
+
 	void WearableItem::initScript(Script& script) {
-		auto object = script.newClass<WearableItem>("wearableItem", "Equipment");
+		auto object = script.newClass<WearableItem>("WearableItem", "Equipment");
 		object.set("setName", &EquipmentObject::setName);
 		object.set("setDescription", &EquipmentObject::setDescription);
 		object.set("setIcon", &EquipmentObject::setIcon);
 		object.set("setCallback", &WearableItem::setCallback);
 		object.set("setType", &WearableItem::setType);
 		object.set("setIcon", &EquipmentObject::setIcon);
+		object.set("callback1", &WearableItem::_callback1);
+		object.set("callback2", &WearableItem::_callback2);
 		object.init();
 	}
 
-	void WearableItem::setCallback(sol::function firstCallback, sol::function secondCallback) {
-		_callback1 = firstCallback;
-		_callback2 = secondCallback;
+	void WearableItem::setCallback(std::string path) {
+		pathToScript = path;
 	}
 
 	void WearableItem::activate() {
 		if (_callback1.valid()) {
-			_callback1();
+			_callback1(this);
 		}
 	}
 	void WearableItem::deactivate() {
 		if (_callback2.valid()) {
-			_callback2();
+			_callback2(this);
 		}
 	}
 

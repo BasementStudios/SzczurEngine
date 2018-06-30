@@ -52,8 +52,8 @@ namespace rat {
 		dynamic_cast<WearableItem*>(armor)->activate();
 	}
 
-	void ArmorSlots::setPosition(sf::Vector2f position) {
-		_base->setPosition(position);
+	void ArmorSlots::setPropPosition(sf::Vector2f position) {
+		_base->setPropPosition(position);
 	}
 
 	void ArmorSlots::addAmulet(WearableItem* amulet) {

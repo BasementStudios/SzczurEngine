@@ -22,6 +22,7 @@ namespace rat
 		void render();
 
 		Equipment();
+		~Equipment();
 
 		void enableItemPreview(EquipmentObject* item);
 		void disableItemPreview();
@@ -31,8 +32,8 @@ namespace rat
 		void setNewItemPath(std::string);
 		void reloadItemList();
 
-		UsableItem* createUsableItem(std::string nameId);	//creating new item and adding it to list
-		WearableItem* createWearableItem(std::string nameId);
+		//UsableItem* createUsableItem(std::string nameId);	//creating new item and adding it to list
+		//WearableItem* createWearableItem(std::string nameId);
 		UsableItem* getUsableItem(std::string nameId);
 		WearableItem* getWearableItem(std::string nameId);
 		void addUsableItem(UsableItem* item);
@@ -43,7 +44,6 @@ namespace rat
 		int getFreeSlotsAmount();
 		void resizeSlots(int newCapacity);
 		int getSlotsAmount();
-		void setRingsLimit(int newCapacity);
 
 		//cos z tym jsonem
 
@@ -54,15 +54,15 @@ namespace rat
 		RingSlider* _ringSlider;
 		ItemManager* _itemManager;
 
-		Window& mainWindow;
-		sf3d::RenderWindow& window;
+		Window& _mainWindow;
+		sf3d::RenderWindow& _window;
 
 		Widget* _base{ nullptr };
 		WindowWidget* _equipmentFrame{ nullptr };
 
 		sf::RenderTexture _canvas;
 
-		bool isPreviewOn = false;
+		bool _isPreviewOn = false;
 
 		std::map<std::string, EquipmentObject*> _listOfObjects;
 	};

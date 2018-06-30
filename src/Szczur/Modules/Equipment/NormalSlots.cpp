@@ -18,7 +18,7 @@ namespace rat
 		size_t y = 0;
 		for (size_t i = 0; i < _slotAmount; i++)
 		{
-			if (i % 5 == 0 && i != 0)
+			if (i % 4 == 0 && i != 0)
 			{
 				y++;
 				x = 0;
@@ -29,7 +29,7 @@ namespace rat
 			newSlot->index = i;
 			newSlot->setParent(_base);
 			newSlot->setTexture(_frameText);
-			newSlot->setPosition(sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y));
+			newSlot->setPosition(sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y)); //{ 0.045f, 0.08f});//
 			newSlot->setSize(static_cast<sf::Vector2f>(_frameSize));
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
@@ -45,7 +45,7 @@ namespace rat
 					equipment->enableItemPreview(newSlot->getItem());
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
-				_slotDropped = nullptr;
+				_removeSlotDropped(newSlot.get());
 				if (newSlot->getItem())
 					equipment->disableItemPreview();
 			});
@@ -80,8 +80,8 @@ namespace rat
 			return false;
 	}
 
-	void NormalSlots::setPosition(sf::Vector2f pos) {
-		_base->setPosition(pos);
+	void NormalSlots::setPropPosition(sf::Vector2f pos) {
+		_base->setPropPosition(pos);
 	}
 
 	sf::Vector2f NormalSlots::getPosition() {
@@ -146,28 +146,40 @@ namespace rat
 		checkForDoubleClick(deltaTime);
 	}
 
-	void NormalSlots::checkForDoubleClick(float deltaTime) {
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !_isCountingToDoubleClickEnabled)
+	void NormalSlots::checkForDoubleClick(float deltaTime) {	//jak sie nie pusci to caly czs fireuje
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !_isCountingToDoubleClickEnabled && !_isLeftMouseButtonPressed) {
 			_isLeftMouseButtonPressed = true;
-		if (_isLeftMouseButtonPressed && !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			//LOG_INFO("mouseButton pressed");
+		}
+		if (_isLeftMouseButtonPressed && !sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			_isLeftMouseButtonPressed = false;
+			//LOG_INFO("mouseButton released");
 			_isCountingToDoubleClickEnabled = true;
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && _isCountingToDoubleClickEnabled && _timeFromLastClick <= 0.7f) {
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && _isCountingToDoubleClickEnabled && _timeFromLastClick <= 0.6f) {
+			LOG_INFO("double click");
 			_isCountingToDoubleClickEnabled = false;
 			_timeFromLastClick = 0.f;
 			if (_slotDropped) {
 				if (_slotDropped->getItem()) {
 					if (dynamic_cast<UsableItem*>(_slotDropped->getItem())->useItem()) {
 						removeItem(_slotDropped->getItem()->getNameId());
+						_equipment->disableItemPreview();
 					}
 				}
 			}
 		}
-		else if (_isCountingToDoubleClickEnabled && _timeFromLastClick <= 0.7f)
+		else if (_isCountingToDoubleClickEnabled && _timeFromLastClick <= 0.6f)
 			_timeFromLastClick += deltaTime;
-		else if (_isCountingToDoubleClickEnabled && _timeFromLastClick >= 0.7f) {
+		else if (_isCountingToDoubleClickEnabled && _timeFromLastClick >= 0.6f) {
 			_isCountingToDoubleClickEnabled = false;
 			_timeFromLastClick = 0.f;
+		}
+	}
+
+	void NormalSlots::_removeSlotDropped(EquipmentSlot* slot) {
+		if (_slotDropped.get() == slot) {
+			_slotDropped = nullptr;
 		}
 	}
 

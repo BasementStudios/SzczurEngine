@@ -18,9 +18,10 @@ namespace rat {
 		_slotImage->setSize(size);
 		_itemImage->setSize(size);
 	}
-	void EquipmentSlot::setSize(float width, float height)
+	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
-		setSize({ width, height });
+		_slotImage->setPropSize(size);
+		_itemImage->setPropSize(size);
 	}
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {
@@ -56,6 +57,11 @@ namespace rat {
 	void EquipmentSlot::setPosition(sf::Vector2f pos) {
 		_base->setPosition(pos);
 	}
+
+	void EquipmentSlot::setPropPosition(sf::Vector2f pos) {
+		_base->setPropPosition(pos);
+	}
+
 	sf::Vector2f EquipmentSlot::getPosition() {
 		return _base->getPosition();
 	}

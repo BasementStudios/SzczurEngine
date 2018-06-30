@@ -21,10 +21,12 @@ namespace rat {
 		int getFreeSlotsAmount();
 		int getSlotsAmount();
 
-		void setPosition(sf::Vector2f);
+		void setPropPosition(sf::Vector2f);
 		sf::Vector2f getPosition();
 
 		void update(float deltaTime);
+
+		void _removeSlotDropped(EquipmentSlot*);
 	private:
 		unsigned int _slotAmount;
 		sf::Vector2i _frameSize;

@@ -20,11 +20,11 @@ namespace rat {
 	private:
 		std::vector<WearableItem*> _amulets;
 
-		WearableItem* _chosenAmulet;
-		ImageWidget* _slot;
-		ImageWidget* _amuletImage;
-		ImageWidget* _leftArrow;
-		ImageWidget* _rightArrow;
+		WearableItem* _chosenAmulet = nullptr;
+		ImageWidget* _slot = nullptr;
+		ImageWidget* _amuletImage = nullptr;
+		ImageWidget* _leftArrow = nullptr;
+		ImageWidget* _rightArrow = nullptr;
 
 		sf::Vector2f _slotSize;
 	};

@@ -8,8 +8,9 @@ namespace rat {
 	{
 	public:
 		UsableItem(std::string nameId);
+		~UsableItem();
 
-		void initScript(Script& script);
+		static void initScript(Script& script);
 
 		void setIsUseble(bool isUsable);
 
@@ -17,6 +18,7 @@ namespace rat {
 
 		bool useItem();
 	private:
+		std::string pathToScript;
 		sol::function _callback;
 
 		bool _isUsable = true;

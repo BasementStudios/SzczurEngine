@@ -4,10 +4,15 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
-#include <boost/assign.hpp>
-
 namespace rat {
-	std::map<std::string, EquipmentObject*> ItemManager::loadFromFile()
+
+	ItemManager::ItemManager() {
+		_enumMap.insert(std::make_pair("weapon", equipmentObjectType::weapon));
+		_enumMap.insert(std::make_pair("armor", equipmentObjectType::armor));
+		_enumMap.insert(std::make_pair("ring", equipmentObjectType::ring));
+		_enumMap.insert(std::make_pair("amulet", equipmentObjectType::amulet));
+	}
+	std::map<std::string, EquipmentObject*> ItemManager::loadFromFile(Script& script)
 	{
 		std::map<std::string, EquipmentObject*> temp;
 
@@ -17,47 +22,82 @@ namespace rat {
 
 		if (file.good()) {
 			file >> config;
-
 			if (auto& items = config["items"]; !items.is_null()) {
+				try {
+					for (auto itr = config["items"].begin(); itr != config["items"].end(); ++itr) {
+						//wearable item
+						auto& item = itr.value();
 
-				for (auto& item : items) {
-					//wearable item
-					if (!item["type"].is_null() && item["type"].get<std::string>() == "wearable") {
-						WearableItem* newItem = new WearableItem(item.get<std::string>());
-						if (!item["icon"].is_null()) { newItem->setIcon(item["icon"].get<std::string>()); }
-						else { assert(false); }	//item file is invalid
-						if (!item["script"].is_null()) { newItem->setCallback(item["script"].get<std::string>()); }
-						else { assert(false);}
-						if (!item["category"].is_null()) {
-							if (enumMap.find(item["category"].get<std::string>()) != enumMap.end()) { newItem->setType(enumMap.find(item["category"].get<std::string>())->second); }
+						if (auto& type = item["type"]; !item["type"].is_null()) {
+							std::string typeData = type;
+
+							// Create new item
+							EquipmentObject* newItem = nullptr;
+							if (typeData == "wearable") newItem = new WearableItem(itr.key());
+							else if (typeData == "usable") newItem = new UsableItem(itr.key());
+
+							// Load category
+							if (typeData == "wearable") {
+								if (auto& var = item["category"]; !var.is_null()) {
+									if (auto result = _enumMap.find(var); result != _enumMap.end()) {
+										static_cast<WearableItem*>(newItem)->setType(result->second);
+									}
+									else { assert(false); }
+								}
+							}
+
+							// Load isUsable
+							if (typeData == "usable") {
+								if (auto& var = item["isUsable"]; !var.is_null()) {
+									static_cast<UsableItem*>(newItem)->setIsUseble(var.get<bool>());
+								}
+							}
+
+							// Load icon
+							if (auto& var = item["icon"]; !var.is_null()) {
+								newItem->setIcon(var);
+							}
+							else { assert(false); }	//item file is invalid
+
+							// Load name and description
+							std::string language = "pl";
+							if (auto& var = item[language]; !var.is_null()) {
+								// Name
+								if (auto& name = var["name"]; !name.is_null()) {
+									newItem->setName(name);
+								}
+								else { assert(false); }
+
+								// Description
+								if (auto& description = var["description"]; !description.is_null()) {
+									newItem->setDescription(description);
+								}
+								else { assert(false); }
+							}
+
+							// Load script
+							if (auto& var = item["script"]; !var.is_null()) {
+								if (typeData == "wearable") {
+									script.get()["THIS"] = static_cast<WearableItem*>(newItem);
+								}
+								else if (typeData == "usable") {
+									script.get()["THIS"] = static_cast<UsableItem*>(newItem);
+								}
+								script.scriptFile(var);
+								script.get()["THIS"] = sol::nil;
+							}
 							else { assert(false); }
+
+							temp.insert(std::make_pair(itr.key(), newItem));
 						}
-						if (!item["pl"]["name"].is_null()) { newItem->setName(item["pl"]["name"].get<std::string>()); }
-						else { assert(false); }
-						if (!item["pl"]["description"].is_null()) { newItem->setDescription(item["pl"]["description"].get<std::string>()); }
-						else { assert(false); }
-						temp.insert(std::make_pair(item.get<std::string>(), newItem));
-					}
-					//usable item
-					if (!item["type"].is_null() && item["type"].get<std::string>() == "usable") {
-						UsableItem* newItem = new UsableItem(item.get<std::string>());
-						if (!item["icon"].is_null()) { newItem->setIcon(item["icon"].get<std::string>()); }
-						else { assert(false); }	//item file is invalid
-						if (!item["script"].is_null()) { newItem->setCallback(item["script"].get<std::string>()); }
-						else { assert(false); }
-						if (!item["pl"]["name"].is_null()) { newItem->setName(item["pl"]["name"].get<std::string>()); }
-						else { assert(false); }
-						if (!item["pl"]["description"].is_null()) { newItem->setDescription(item["pl"]["description"].get<std::string>()); }
-						else { assert(false); }
-						temp.insert(std::make_pair(item.get<std::string>(), newItem));
 					}
 				}
-
+				catch (nlohmann::json::exception e) {
+					LOG_EXCEPTION(e);
+				}
+				return temp;
 			}
-			return temp;
-
 		}
-
 	}
 	void ItemManager::setNewPath(std::string newPath)
 	{

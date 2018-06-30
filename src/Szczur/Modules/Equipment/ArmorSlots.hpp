@@ -10,7 +10,7 @@ namespace rat {
 		ArmorSlots(sf::Texture* frameText, sf::Vector2f frameSize, sf::Texture* upText, sf::Texture* downText, Equipment* equipment);
 
 		void setParent(Widget* newBase);
-		void setPosition(sf::Vector2f position);
+		void setPropPosition(sf::Vector2f position);
 
 		void setArmor(EquipmentObject* armor);
 		void setWeapon(EquipmentObject* weapon);

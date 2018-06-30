@@ -13,14 +13,29 @@
 
 namespace rat {
 	Equipment::Equipment()
-	: mainWindow(getModule<Window>()), window(mainWindow.getWindow())
+	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow())
 	{
-		mainWindow.pushGLStates();
-		_canvas.create(window.getSize().x, window.getSize().y);
-		mainWindow.popGLStates();
+		LOG_INFO("Initializing Equipment module");
+		_mainWindow.pushGLStates();
+		_canvas.create(_window.getSize().x, _window.getSize().y);
+		_mainWindow.popGLStates();
 	
-		init();
 		initScript();
+		init();		
+		LOG_INFO("Module Equipment initialized");
+		getModule<Script>().scriptFile("test.lua");
+
+		/*WearableItem* item = new WearableItem("aaa");
+		item->setName("aaa");
+		item->setIcon("Assets/Equipment/amulet1.png");
+		item->setType(equipmentObjectType::weapon);
+		_listOfObjects.insert(std::make_pair(("aaa"), item));
+
+		addWearableItem(item);*/
+	}
+
+	Equipment::~Equipment() {
+		LOG_INFO("Module Input destructed");
 	}
 
 	void Equipment::initScript() {
@@ -32,8 +47,6 @@ namespace rat {
 		module.set("ITEM_TYPE_AMULET", equipmentObjectType::amulet);
 		module.set("ITEM_TYPE_RING", equipmentObjectType::ring);
 
-		module.set_function("createUsableItem", &Equipment::createUsableItem, this);
-		module.set_function("createWearableItem", &Equipment::createWearableItem, this);
 		module.set_function("addUsableItem", &Equipment::addUsableItem, this);
 		module.set_function("addWearableItem", &Equipment::addWearableItem, this);
 		module.set_function("removeUsableItem", &Equipment::removeUsableItem, this);
@@ -45,17 +58,13 @@ namespace rat {
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
 
-		script.scriptFile("test.lua");
-
+		script.initClasses<WearableItem, UsableItem>();
 		//module.set_function("a", &NewModule::a, this);
 		//module.set_function("functionName", [&](int a, int b){return a+b;});
 		//auto object = script.newClass<NewClass>("NewClass", "NewModule", "../NewClass.lua");
 	}
 
 	void Equipment::init() {
-		_itemManager->setNewPath("Assets/Equipment/item.json");
-		_listOfObjects = _itemManager->loadFromFile();
-
 		auto& gui = getModule<GUI>(); 
 
 		_base = gui.addInterface();
@@ -63,54 +72,61 @@ namespace rat {
 		_equipmentFrame = new WindowWidget();
 		_base->add(_equipmentFrame);
 
-		_equipmentFrame->setPosition(sf::Vector2f(window.getSize().x / 10 * 3, window.getSize().y / 10 * 3.5f)); //base equipment widget
-		_equipmentFrame->setSize(sf::Vector2f(window.getSize().x / 10 * 4, window.getSize().y / 10 * 6.5f));
-		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 70);
+		//_equipmentFrame->setPosition(sf::Vector2f(_window.getSize().x / 10 * 3, _window.getSize().y / 10 * 3.5f)); //base equipment widget
+		_equipmentFrame->setPropPosition(0.5f, 1.f);
+		_equipmentFrame->setPropSize(.4f, .5f);
+		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
 
-		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {100u, 100u}, gui.getAsset<sf::Texture>("Assets/Equipment/leftArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/rightArrow.png"), this);
+		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {90u, 90u}, gui.getAsset<sf::Texture>("Assets/Equipment/leftArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/rightArrow.png"), this);
 		_armorSlots->setParent(_equipmentFrame);
-		_armorSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 0.3, window.getSize().y / 20));
+		_armorSlots->setPropPosition({0.0f, 0.0f});
 
 		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), { 62, 62 }, this);
-		_normalSlots->setParent(_base);
-		_normalSlots->setPosition(sf::Vector2f(window.getSize().x / 10 * 3.4, window.getSize().y / 1.6f));
+		_normalSlots->setParent(_equipmentFrame);
+		_normalSlots->setPropPosition(sf::Vector2f(0.1f, 0.95f));
 
-		_ringSlider = new RingSlider(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), { 70u, 70u }, gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"), gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"), gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"), this, window.getSize().y / 10 * 5.5f);
+		_ringSlider = new RingSlider(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), { 70u, 70u }, gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"), gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"), gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"), this, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), _window.getSize().y / 10 * 8.f);
 		_ringSlider->setParent(_equipmentFrame);
-		_ringSlider->setPosition(sf::Vector2f(window.getSize().x / 10.f * 3.2f, window.getSize().y / 20.f));
+		_ringSlider->setPropPosition({ 1.5f, 0.0f });
 
 		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), {270, 90}, gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
 		_itemPreview->setParent(_base);
 		_itemPreview->minimalize();
+
+		_itemManager = new ItemManager;
+		_itemManager->setNewPath("Assets/Equipment/items.json");
+		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
+
+		//_equipmentFrame->setPropPosition(sf::Vector2f(0.f, 0.f), 5.f);
 	}
 
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
-		if (isPreviewOn)
-			_itemPreview->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+		if (_isPreviewOn)
+			_itemPreview->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(_window)));
 	}
 
 	void Equipment::render() {
-		mainWindow.pushGLStates();
+		_mainWindow.pushGLStates();
 
 		_canvas.clear(sf::Color::Transparent);
 		_canvas.display();
 
-		mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
+		_mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
 
-		mainWindow.popGLStates();
+		_mainWindow.popGLStates();
 	}
 
 	void Equipment::enableItemPreview(EquipmentObject* item) {
 		if (canPreviewBeInstantiated) {
 			_itemPreview->setItem(item);
-			isPreviewOn = true;
+			_isPreviewOn = true;
 		}
 	}
 
 	void Equipment::disableItemPreview() {
 		_itemPreview->minimalize();
-		isPreviewOn = false;
+		_isPreviewOn = false;
 	}
 
 	//void Equipment::createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble) {
@@ -120,25 +136,26 @@ namespace rat {
 	//	_listOfObjects[nameId] = newObject;	//cos z tymi jsonami
 	//}
 
-	//UsableItem* Equipment::createUsableItem(std::string nameId) {
-	//	UsableItem* temp = new UsableItem(nameId);
-	//	_listOfObjects[nameId] = temp;
-	//	temp->initScript(getModule<Script>());
-	//	return temp;
-	//}
+	/*UsableItem* Equipment::createUsableItem(std::string nameId) {
+		UsableItem* temp = new UsableItem(nameId);
+		_listOfObjects[nameId] = temp;
+		temp->initScript(getModule<Script>());
+		return temp;
+	}
 
-	//WearableItem* Equipment::createWearableItem(std::string nameId) {
-	//	WearableItem* temp = new WearableItem(nameId);
-	//	_listOfObjects[nameId] = temp;
-	//	temp->initScript(getModule<Script>());
-	//	return temp;
-	//}
+	WearableItem* Equipment::createWearableItem(std::string nameId) {
+		WearableItem* temp = new WearableItem(nameId);
+		_listOfObjects[nameId] = temp;
+		temp->initScript(getModule<Script>());
+		return temp;
+	}*/
 
 	UsableItem* Equipment::getUsableItem(std::string nameId) {
 		UsableItem* temp = dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
 		if (temp) {
 			return temp;
 		}
+		return nullptr;
 	}
 
 	WearableItem* Equipment::getWearableItem(std::string nameId) {
@@ -146,6 +163,7 @@ namespace rat {
 		if (temp) {
 			return temp;
 		}
+		return nullptr;
 	}
 
 	void Equipment::addUsableItem(UsableItem* item) {
@@ -224,6 +242,6 @@ namespace rat {
 		_itemManager->setNewPath(newPath);
 	}
 	void Equipment::reloadItemList() {
-		_listOfObjects = _itemManager->loadFromFile();
+		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 	}
 }
