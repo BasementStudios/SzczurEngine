@@ -40,19 +40,41 @@ namespace rat
         if(node->_type == Type::Step)
         {
             _nextNodesNames.emplace(nodeName);
+            if(_type == Type::Base)
+            {
+                node->_setBaseNode(getName());
+            }
+            else
+            {
+                assert(_hasBaseNode);
+                node->_setBaseNode(_baseNodeName);
+            }
         }
         else
         {
             _reqNodes.emplace(nodeName, false);
+            node->_setBrancherNode(getName());
         }
 
         return node;
+    }
+
+    void QuestNode::_setBaseNode(const std::string& baseNodeName)
+    {
+        _hasBaseNode = true;
+        _baseNodeName = baseNodeName;
+    }
+    void QuestNode::_setBrancherNode(const std::string& brancherNodeName)
+    {
+        _hasBrancher = true;
+        _brancherNodeName = brancherNodeName;
     }
 
     void QuestNode::activate()
     {
         _state = State::InProgress;
         if(onActivate.valid()) onActivate();
+        if(_hasTitle) _baseQuest->addTitle(_titleIndex);
     }
     void QuestNode::resume()
     {
@@ -67,6 +89,7 @@ namespace rat
     void QuestNode::nextStep(const std::string& name)
     {
         if(onFinished.valid()) onFinished();
+        if(_hasDescription) _baseQuest->addDescription(_descriptionIndex);
 
         if(_nextNodesNames.size() == 0)
         {
@@ -173,6 +196,17 @@ namespace rat
             auto* base = quest->getNode(_baseNodeName);
             base->_finish();
         }
+    }
+
+    void QuestNode::setTitleIndex(int index)
+    {
+        _titleIndex = index;
+        _hasTitle = true;
+    }
+    void QuestNode::setDescriptionIndex(int index)
+    {
+        _descriptionIndex = index;
+        _hasDescription = true;
     }
 
 

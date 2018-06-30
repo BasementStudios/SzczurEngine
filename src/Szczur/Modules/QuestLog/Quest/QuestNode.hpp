@@ -42,6 +42,9 @@ namespace rat
         void setName(const std::string& name);
         const std::string& getName() const;
 
+        void setTitleIndex(int index);
+        void setDescriptionIndex(int index);
+
         Function_t onActivate;
         Function_t onBlocked;
         Function_t onFinished;
@@ -71,15 +74,23 @@ namespace rat
 
         std::string _baseNodeName;
         bool _hasBaseNode{false};
+        void _setBaseNode(const std::string& baseNodeName);
 
         std::string _brancherNodeName;
         bool _hasBrancher{false};
+        void _setBrancherNode(const std::string& brancherNodeName);
 
         bool _hasOnActivatePath{false};
         bool _hasOnBlockPath{false};
         bool _hasOnFinishPath{false};
 
         Quest* _baseQuest{nullptr};
+
+        bool _hasTitle{false};
+        int _titleIndex{-1};
+
+        bool _hasDescription{false};
+        int _descriptionIndex{-1};
 
 
         nlohmann::json _getReqNodesJson() const;

@@ -4,6 +4,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/QuestJournal/QuestJournal.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -17,7 +18,7 @@
 
 namespace rat 
 {
-    class QuestLog : public Module<Input, Window, Script>
+    class QuestLog : public Module<Input, Window, Script, QuestJournal>
     {
         using Quest_t = std::unique_ptr<Quest>;
     public:
@@ -44,9 +45,13 @@ namespace rat
 
         void initScript();
 
+        void activateQuest(const std::string& name);
+        void addQuestTitle(const std::string& questName, int index);
+        void addQuestDescription(const std::string& questName, int index);
+
     private:
 
-        std::unique_ptr<Quest> _quest;
+        //std::unique_ptr<Quest> _quest;
         //Widget* _widget{nullptr};
         //std::unique_ptr<QuestGUI> _title;
 

@@ -153,6 +153,37 @@ namespace rat
         //script.scriptFile("quests/testowyQuest.lua");
         
     }
+
+    void QuestLog::activateQuest(const std::string& name)
+    {
+        if(auto found = _quests.find(name); found == _quests.end())
+        {
+            LOG_ERROR("Cannot activate quest \"", name, "\"");
+            assert(false);
+        }
+        else
+        {
+            auto& quest = found->second;
+            quest->start();
+
+            auto journal = getModule<QuestJournal>();
+            journal.addQuest(quest->getNameIndex());
+        }
+    }
+
+    void QuestLog::addQuestTitle(const std::string& questName, int index)
+    {
+        auto journal = getModule<QuestJournal>();
+
+        journal.addStep((unsigned int)(index));
+    }
+    void QuestLog::addQuestDescription(const std::string& questName, int index)
+    {
+        auto journal = getModule<QuestJournal>();
+
+        journal.addDescription((unsigned int)(index));
+
+    }
     
 }
 

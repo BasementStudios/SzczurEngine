@@ -36,6 +36,9 @@ namespace rat
 
         void setName(const std::string& name);
         const std::string& getName() const;
+
+        void setNameIndex(unsigned int index);
+        unsigned int getNameIndex() const;
         
 
         //void setSubtitle
@@ -52,6 +55,9 @@ namespace rat
 
         static void initScript(Script& script);
 
+        void addTitle(int index);
+        void addDescription(int index);
+
     private:
         std::unordered_map<std::string, Node_t> _nodes;
         QuestNode* _rootNode;
@@ -67,6 +73,8 @@ namespace rat
         void _resetNodesReqs();
 
         //void _activateRootsGUI();
+
+        unsigned int _nameIndex{0};
 
         Requirements _reqs;
     };

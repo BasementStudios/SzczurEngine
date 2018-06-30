@@ -60,6 +60,24 @@ namespace rat
         _state = State::Finished;
         std::cout << "Jo Jo, you finished Quest\n";
     }
+
+    void Quest::setNameIndex(unsigned int index)
+    {
+        _nameIndex = index;
+    }
+    unsigned int Quest::getNameIndex() const
+    {
+        return _nameIndex;
+    }
+
+    void Quest::addTitle(int index)
+    {
+        _owner.addQuestTitle(getName(), index);
+    }
+    void Quest::addDescription(int index)
+    {
+        _owner.addQuestDescription(getName(), index);
+    }
 /*
     void Quest::setTitle(const TitleInfo& info)
     {      
