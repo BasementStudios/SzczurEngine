@@ -6,7 +6,11 @@
 
 namespace rat
 {
-    class TextWidget;
+
+class TextWidget;
+
+namespace journal
+{
     class QuestName
     {
         public:
@@ -21,4 +25,5 @@ namespace rat
             TextWidget * _widget;
             
     };
+}
 }

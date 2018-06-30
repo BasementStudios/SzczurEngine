@@ -9,8 +9,12 @@
 
 namespace rat
 {
+    
+class TextWidget; class ScrollAreaWidget;class ListWidget;
+
+namespace journal
+{
     class Quest;
-    class TextWidget; class ScrollAreaWidget;class ListWidget;
     class DescriptionManager
     {
         public:
@@ -30,4 +34,5 @@ namespace rat
             std::shared_ptr<Quest> _quest;
             ListWidget *_list;
     };
+}
 }

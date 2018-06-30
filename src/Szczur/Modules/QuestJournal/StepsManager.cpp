@@ -2,6 +2,8 @@
 
 namespace rat
 {
+namespace journal
+{
     StepsManager::StepsManager(sf::Font *font,InterfaceWidget* interface)
     :_font(font)
     {
@@ -61,5 +63,5 @@ namespace rat
             _list->add(widget);
         }
     }
-
+}
 }

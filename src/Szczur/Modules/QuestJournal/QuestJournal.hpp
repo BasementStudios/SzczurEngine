@@ -49,19 +49,19 @@ namespace rat
             ScrollAreaWidget *_doneScroller;
 
             InterfaceWidget* _interface{nullptr};
-            std::shared_ptr<FileLoader> _fileLoader;
+            std::shared_ptr<journal::FileLoader> _fileLoader;
 
-            std::shared_ptr<StepsManager> _stepManager;
-            std::shared_ptr<DescriptionManager> _descriptionManager;
-            std::shared_ptr<QuestName> _questName;
+            std::shared_ptr<journal::StepsManager> _stepManager;
+            std::shared_ptr<journal::DescriptionManager> _descriptionManager;
+            std::shared_ptr<journal::QuestName> _questName;
 
-            std::vector<std::shared_ptr<Quest> > _quests;
+            std::vector<std::shared_ptr<journal::Quest> > _quests;
             
-            std::vector<std::shared_ptr<Quest> > _doneQuests;
+            std::vector<std::shared_ptr<journal::Quest> > _doneQuests;
 
 
 
-            std::vector<std::shared_ptr<Quest> >::iterator it;
+            std::vector<std::shared_ptr<journal::Quest> >::iterator it;
             
             sf::Font *_font;
     };

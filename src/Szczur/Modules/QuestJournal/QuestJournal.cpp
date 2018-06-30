@@ -69,12 +69,12 @@ namespace rat
 
         _interface->setSizingWidthToHeightProportion(1.f);
 
-        _fileLoader = std::make_shared<FileLoader>(); 
-        _stepManager = std::make_shared<StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        _fileLoader = std::make_shared<journal::FileLoader>(); 
+        _stepManager = std::make_shared<journal::StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
       
-        _descriptionManager = std::make_shared<DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        _descriptionManager = std::make_shared<journal::DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
         
-        _questName = std::make_shared<QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
+        _questName = std::make_shared<journal::QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/testfont.otf"),_interface);
 
 
         _stepManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),
@@ -132,7 +132,7 @@ namespace rat
 
     void QuestJournal::addQuest(const unsigned int &i)
     {
-        std::shared_ptr<Quest> quest= std::make_shared<Quest>(_fileLoader);
+        std::shared_ptr<journal::Quest> quest= std::make_shared<journal::Quest>(_fileLoader);
         quest->setQuestName(i);
         _quests.push_back(quest);
         it = _quests.end()-1;

@@ -2,6 +2,8 @@
 
 namespace rat
 {
+namespace journal
+{
     Quest::Quest(std::shared_ptr<FileLoader> loader)
     : _fileLoader(loader)
     {
@@ -42,4 +44,5 @@ namespace rat
     {
         return _steps;
     }
+}
 }
