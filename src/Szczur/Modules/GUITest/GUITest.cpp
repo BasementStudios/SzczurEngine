@@ -1,6 +1,6 @@
 #include "GUITest.hpp"
 
-#include "StressTester.hpp"
+//#include "StressTester.hpp"
 
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"

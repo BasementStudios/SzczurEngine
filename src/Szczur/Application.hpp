@@ -66,7 +66,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI, QuestJournal
+	ModulesHolder<Window, Input, Script, GUI, QuestJournal, QuestLog
 	#ifdef GUI_TEST
 	,GUITest 
 	#endif
