@@ -36,7 +36,7 @@ namespace rat
 
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
-        gui.addAsset<sf::Font>("Assets/GUITest/arrial.ttf");
+        gui.addAsset<sf::Font>("Assets/GUITest/lumos.ttf");
 
         _widget = gui.addInterface();
 
@@ -93,9 +93,10 @@ namespace rat
 
         fps = new TextWidget;
         _widget->add(fps);
-        fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/arrial.ttf"));
-        fps->setCharacterSize(20u);
+        fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
+        fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
+        fps->setString("60.0");
 
     }
     
@@ -157,6 +158,9 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
+
+        fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
+        fps->setPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
     }
     void GUITest::render()
     {
