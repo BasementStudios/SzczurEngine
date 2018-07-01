@@ -43,12 +43,12 @@ void Timeline::removeAction(Action* action)
 
 	_actions.erase(std::remove_if(_actions.begin(), _actions.end(), [action] (auto& it) { return action == it.get(); }));
 	_currentActionIndex = 0;
-	_finished = false;
+	_status = Status::Playing;
 }
 
 void Timeline::update(float deltaTime)
 {
-	if (!_finished && _currentActionIndex < _actions.size())
+	if (_status == Status::Playing && _currentActionIndex < _actions.size())
 	{
 		auto& currentAction = _actions[_currentActionIndex];
 		currentAction->update(deltaTime, this);
@@ -72,7 +72,7 @@ void Timeline::update(float deltaTime)
 				}
 				else
 				{
-					_finished = true;
+					_status = Status::Stopped;
 				}
 			}
 		}
@@ -127,7 +127,7 @@ void Timeline::start()
 	if (_actions.size() == 0)
 		return;
 
-	_finished = false;
+	_status = Playing;
 	_currentActionIndex = 0;
 	auto& currentAction = _actions[_currentActionIndex];
 	currentAction->start();

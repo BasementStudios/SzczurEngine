@@ -17,6 +17,13 @@ class Timeline
 	using Container_t = std::vector<std::unique_ptr<Action>>;
 
 public:
+	enum Status
+	{
+		Playing = 0,
+		Paused,
+		Stopped
+	};
+
 	bool Loop = false;
 
 	bool ShowLines = false;
@@ -32,7 +39,7 @@ private:
 
 	int _currentActionIndex = 0;
 
-	bool _finished = false;
+	Status _status = Playing;
 
 	sf3d::VertexArray _vertexArray{ 1 };
 
@@ -49,7 +56,9 @@ public:
 
 	void start();
 
-	bool finished() { return _finished; }
+	void setStatus(Status status) { _status = status; }
+
+	const Status& getStatus() const { return _status; }
 
 	auto& getActions() { return _actions; }
 

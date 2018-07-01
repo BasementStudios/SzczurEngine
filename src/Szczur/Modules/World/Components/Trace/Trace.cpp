@@ -39,19 +39,6 @@ void Trace::removeTimeline(Timeline* timeline)
 void Trace::setCurrentTimeline(Timeline* timeline)
 {
 	_currentTimeline = timeline;
-
-	if (_currentTimeline)
-		_currentTimeline->start();
-}
-
-void Trace::pause()
-{
-	_pause = true;
-}
-
-void Trace::resume()
-{
-	_pause = false;
 }
 
 void Trace::loadFromConfig(Json& config)
@@ -226,7 +213,7 @@ void Trace::saveToConfig(Json& config) const
 
 void Trace::update(float deltaTime)
 {
-	if (_currentTimeline && !_pause)
+	if (_currentTimeline)
 	{
 		_currentTimeline->update(deltaTime);
 	}

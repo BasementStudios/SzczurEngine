@@ -25,8 +25,6 @@ private:
 
 	int _lastId = -1;
 
-	bool _pause = false;
-
 	Timeline* _currentTimeline = nullptr;
 
 public:
@@ -40,11 +38,6 @@ public:
 	auto getCurrentTimeline() { return _currentTimeline; }
 
 	auto& getTimelines() { return _timelines; }
-
-	void pause();
-	void resume();
-
-	bool isPlaying() { return !_pause; }
 
 	void loadFromConfig(Json& config);
 	void saveToConfig(Json& config) const;

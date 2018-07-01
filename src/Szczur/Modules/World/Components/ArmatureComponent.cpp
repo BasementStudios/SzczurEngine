@@ -251,6 +251,8 @@ bool ArmatureComponent::isPlaying()
 	{
 		return _armature->getAnimation()->isPlaying();
 	}
+
+	return false;
 }
 
 void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
