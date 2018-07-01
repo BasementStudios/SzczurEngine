@@ -40,6 +40,9 @@ public:
 	/// Add to selected entities
 	void addSelected(Entity* id);
 
+	///
+	void removedSelected(Entity* id);
+
 	/// clear selected entites
 	void clearSelected();
 

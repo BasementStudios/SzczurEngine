@@ -180,6 +180,18 @@ namespace rat {
 		}
 	}
 
+	void ObjectsList::removedSelected(Entity* entity)
+	{
+		auto& it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity);
+
+		if (it != _selectedEntities.end())
+		{
+			_selectedEntities.erase(it);
+		}
+
+		//std::remove(_selectedEntities.begin(), _selectedEntities.end(), entity);
+	}
+
 	void ObjectsList::clearSelected()
 	{
 		_selectedEntities.clear();

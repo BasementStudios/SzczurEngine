@@ -124,10 +124,14 @@ private:
 	///
 	void _render();
 
+	///
+	glm::vec2 getFixedMousePos(const sf::Vector2i& pos);
+
 private:
 
 // Select fix
 	sf::Vector2i _defaultWindowSize;
+
 // Origins
 
     sf3d::CircleShape _originCirIn, _originCirOut, _originCirInSel, _originCirOutSel;
@@ -167,6 +171,13 @@ private:
 
 	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
 	glm::vec2 _vec2Clipboard{0.f,0.f};
+
+// Draging
+
+	bool _isDragging = false;
+	sf::Vector2i _dragLastPos;
+	Entity* _entityToUnselect = nullptr;
+	glm::vec3 _entityToUnselectPos;
 };
 
 	

@@ -115,7 +115,7 @@ namespace rat {
 			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
 			if(_ifRenderDialogEditor) _dialogEditor->update();
 			if(_ifRenderAudioEditor) _audioEditor->render();
-		
+			
 
 			scene = _scenes.getCurrentScene();
 			
@@ -132,30 +132,62 @@ namespace rat {
 
 		if(!ImGui::IsAnyWindowHovered()) {
 			if(input.isPressed(Mouse::Left)) {
-				auto mouse = input.getMousePosition();
+				auto mouse = getFixedMousePos(input.getMousePosition());
+				
+				auto linear = window.getLinerByScreenPos(mouse);
 
-				const auto& size = detail::globalPtr<Window>->getWindow().getSize();
-
-				sf::Vector2i currentWindowSize(size.x, size.y);
-
-				mouse.x = (mouse.x * _defaultWindowSize.x) / currentWindowSize.x;
-				mouse.y = (mouse.y * _defaultWindowSize.y) / currentWindowSize.y;
-
-				auto linear = window.getLinerByScreenPos({ (float)mouse.x, (float)mouse.y });
-
-				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
-					if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-						if(_currentCamera && entity.getID() == _currentCamera->getID()) 
+				_scenes.getCurrentScene()->forEach([&] (const std::string&, Entity& entity) {
+					if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f })) {
+						if (_currentCamera && entity.getID() == _currentCamera->getID())
 							return;
 
-						if (input.isKept(rat::Keyboard::LShift))
-							_objectsList.addSelected(_scenes.getCurrentScene()->getEntity(entity.getID()));
-						else
-							_objectsList.select(entity.getID());
+						if (_objectsList.isEntitySelected(&entity)) {
+							_entityToUnselect = &entity;
+							_entityToUnselectPos = entity.getPosition();
+						}
+						else {
+							if (input.isKept(rat::Keyboard::LShift))
+								_objectsList.addSelected(&entity);
+							else
+								_objectsList.select(entity.getID());
+						}
+
+						_isDragging = true;
+						_dragLastPos = input.getMousePosition();
 					}
 				});
+			}
 
+			if (input.isReleased(Mouse::Left)) {
+				_isDragging = false;
 
+				if (_entityToUnselect != nullptr) {
+					if (_entityToUnselectPos == _entityToUnselect->getPosition()) {
+						_objectsList.removedSelected(_entityToUnselect);
+
+						_entityToUnselect = nullptr;
+					}
+				}
+			}
+
+			if (input.isKept(Mouse::Left)) {
+				if (_isDragging) {
+					auto mouse = input.getMousePosition();
+
+					auto offset = mouse - _dragLastPos;
+
+					if (_objectsList.isAnySingleEntitySelected()) {
+						auto entity = _objectsList.getSelectedEntity();
+						entity->move(glm::vec3(offset.x, -offset.y, 0.f));
+					}
+					else if (_objectsList.isGroupSelected()) {
+						for (auto& entity : _objectsList.getSelectedEntities()) {
+							entity->move(glm::vec3(offset.x, -offset.y, 0.f));
+						}
+					}
+
+					_dragLastPos = mouse;
+				}
 			}
 		}
 
@@ -247,5 +279,16 @@ namespace rat {
 				rotating = false;
 			}
 		}
+	}
+
+	glm::vec2 LevelEditor::getFixedMousePos(const sf::Vector2i& pos) {
+		glm::vec2 result;
+		
+		const auto& size = detail::globalPtr<Window>->getWindow().getSize();
+
+		result.x = (pos.x * _defaultWindowSize.x) / size.x;
+		result.y = (pos.y * _defaultWindowSize.y) / size.y;
+
+		return result;
 	}
 }
