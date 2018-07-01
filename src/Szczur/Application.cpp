@@ -18,7 +18,6 @@ void Application::init()
 	initModule<Script>();
 	initModule<AudioEffects>();
 	initModule<Music>();
-	initModule<SoundManager>();
 	initModule<Listener>();
 
 

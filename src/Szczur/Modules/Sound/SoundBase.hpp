@@ -15,22 +15,20 @@ namespace rat
         struct
         {
             Second_t beginTime {0};
-            Second_t endTime {0};
+            Second_t endTime   {0};
         } offset;
 
-        Second_t _length {0};
+        Second_t _length      {0};
+        Second_t _playingTime {0};
 
-        std::string _name {""};
-
-        float _volume {100};
-        float _pitch {1};
-
+        std::string _name     {""};
         std::string _fileName {""};
 
-        Second_t playingTime {0};
+        float _volume {100};
+        float _pitch  {1};
             
-        sf::SoundBuffer buffer;
-        RatSound sound;
+        sf::SoundBuffer _buffer;
+        RatSound _sound;
 
     public:
 
@@ -70,14 +68,16 @@ namespace rat
         const std::string getName() const;
         std::string getFileName() const;
 
+        void load(const std::string& fileName);
+
         template <typename T>
 		T& getEffect() {
-            return sound.getEffect<T>();
+            return _sound.getEffect<T>();
         }
 
         template <typename T>
     	void cleanEffect() {
-            sound.cleanEffect<T>();
+            _sound.cleanEffect<T>();
         }
 
     private:

@@ -14,8 +14,7 @@ namespace rat
         RatSound()
             : AudioEffect(m_source) 
         {
-            setRelativeToListener(true);
-            setAttenuation(0);
+            
         }
 
     };

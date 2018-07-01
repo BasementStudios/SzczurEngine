@@ -1,5 +1,7 @@
 #include "SoundBase.hpp"
 
+#include <nlohmann/json.hpp>
+
 namespace rat
 {
     bool SoundBase::init(const std::string& fileName, const std::string& name)
@@ -10,7 +12,7 @@ namespace rat
         if (!loadBuffer())
             return false;
 
-        _length = buffer.getDuration().asSeconds();
+        _length = _buffer.getDuration().asSeconds();
 
         offset.beginTime = 0;
         offset.endTime   = _length;
@@ -21,7 +23,7 @@ namespace rat
     void SoundBase::setVolume(float volume)
     {
         _volume = volume;
-        sound.setVolume(volume);
+        _sound.setVolume(volume);
     }
 
     float SoundBase::getVolume() const
@@ -32,85 +34,85 @@ namespace rat
     void SoundBase::setPitch(float pitch)
     {
         _pitch = pitch;
-        sound.setPitch(pitch);
+        _sound.setPitch(pitch);
     }
 
     float SoundBase::getPitch() const
     {
-        return sound.getPitch();
+        return _sound.getPitch();
     }
 
     bool SoundBase::isRelativeToListener() const
     {
-        return sound.isRelativeToListener();
+        return _sound.isRelativeToListener();
     } 
 
     void SoundBase::setRelativeToListener(bool relative)
     {
-        sound.setRelativeToListener(relative);
+        _sound.setRelativeToListener(relative);
     }
 
     float SoundBase::getAttenuation() const
     {
-        return sound.getAttenuation();
+        return _sound.getAttenuation();
     }
 
     void SoundBase::setAttenuation(float attenuation) 
     {
-        sound.setAttenuation(attenuation);
+        _sound.setAttenuation(attenuation);
     }
 
     float SoundBase::getMinDistance() const
     {
-        return sound.getMinDistance();
+        return _sound.getMinDistance();
     }
 
     void SoundBase::setPosition(float x, float y, float z) 
     {
-        sound.setPosition(x, y, z);
+        _sound.setPosition(x, y, z);
     }
 
     sf::Vector3f SoundBase::getPosition() const
     {
-        return sound.getPosition();
+        return _sound.getPosition();
     }
 
     void SoundBase::setMinDistance(float minDistance) 
     {
-        sound.setMinDistance(minDistance);
+        _sound.setMinDistance(minDistance);
     }
 
     void SoundBase::setLoop(bool loop)
     {
-        sound.setLoop(loop);
+        _sound.setLoop(loop);
     }
 
     bool SoundBase::getLoop() const
     {
-        return sound.getLoop();
+        return _sound.getLoop();
     }
 
     void SoundBase::play()
     {
-        sound.setBuffer(buffer);
-        sound.play();
+        _sound.setBuffer(_buffer);
+        _sound.play();
 
-        if (playingTime > offset.beginTime && playingTime < offset.endTime)
-            sound.setPlayingOffset(sf::seconds(playingTime));
+        if (_playingTime > offset.beginTime && _playingTime < offset.endTime)
+            _sound.setPlayingOffset(sf::seconds(_playingTime));
         else
-            sound.setPlayingOffset(sf::seconds(offset.beginTime)); 
+            _sound.setPlayingOffset(sf::seconds(offset.beginTime)); 
     }
 
     void SoundBase::pause()
     {
-        sound.pause();
-        playingTime = sound.getPlayingOffset().asSeconds();
+        _sound.pause();
+        _playingTime = _sound.getPlayingOffset().asSeconds();
     }
 
     void SoundBase::stop()
     {
-        playingTime = 0;
-        sound.stop();
+        _playingTime = 0;
+        _sound.stop();
     }
 
     const std::string SoundBase::getName() const
@@ -125,7 +127,7 @@ namespace rat
 
     bool SoundBase::loadBuffer()
     {
-        return buffer.loadFromFile(getPath());
+        return _buffer.loadFromFile(_fileName);
     }
 
     void SoundBase::setOffset(Second_t beginT, Second_t endT)
@@ -166,8 +168,23 @@ namespace rat
         return offset.endTime;
     }
 
-    std::string SoundBase::getPath() const
+    void SoundBase::load(const std::string& fileName) 
     {
-        return "Assets/Sounds/" + _fileName + ".flac";
+        nlohmann::json j;
+        std::ifstream file(fileName);    
+
+        if (file.is_open()) {
+            file >> j;
+            file.close();
+
+            init(j["Name"], j["FileName"]);
+
+            setVolume(j["Volume"]);
+            setPitch(j["Pitch"]);
+            setOffset(j["BeginTime"], j["EndTime"]);
+            setAttenuation(j["Attenuation"]);
+            setMinDistance(j["MinDistance"]);
+            setRelativeToListener(j["Relative"]);
+        }
     }
 }
