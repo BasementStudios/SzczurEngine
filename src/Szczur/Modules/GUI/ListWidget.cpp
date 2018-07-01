@@ -139,6 +139,10 @@ namespace rat
             if(_children.size() < 2) return;            
             _calculateAutoBetweenPad();
         }
+        else
+        {
+            _recalcChildrenPos();
+        }
     }
 
     void ListWidget::_calculateAutoBetweenPad()

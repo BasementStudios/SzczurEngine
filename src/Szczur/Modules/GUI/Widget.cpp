@@ -11,7 +11,7 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
-//#undef GUI_DEBUG
+#undef GUI_DEBUG
 
 namespace rat 
 {
@@ -303,7 +303,11 @@ namespace rat
 
         if(_size != oldSize)
         {
-            if(_parent) _parent->_aboutToRecalculate = true;
+            if(_parent)
+            {
+                _parent->_aboutToRecalculate = true;
+                //_parent->_isPosChanged = true;
+            }
             _childrenPropSizesMustBeenRecalculated = true;
         }
 
