@@ -73,10 +73,11 @@ namespace rat {
 		_base->add(_equipmentFrame);
 
 		//_equipmentFrame->setPosition(sf::Vector2f(_window.getSize().x / 10 * 3, _window.getSize().y / 10 * 3.5f)); //base equipment widget
-		_equipmentFrame->setPropPosition(0.5f, 1.f);
+		//_equipmentFrame->setPropPosition(0.5f, 1.f);	
+		_equipmentFrame->setPosition(384.f, 220.f); //{384.f ,220.f }
 		_equipmentFrame->setPropSize(.4f, .5f);
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
-
+	
 		_armorSlots = new ArmorSlots(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), {90u, 90u}, gui.getAsset<sf::Texture>("Assets/Equipment/leftArrow.png"), gui.getAsset<sf::Texture>("Assets/Equipment/rightArrow.png"), this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPropPosition({0.0f, 0.0f});
@@ -97,13 +98,27 @@ namespace rat {
 		_itemManager->setNewPath("Assets/Equipment/items.json");
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
-		//_equipmentFrame->setPropPosition(sf::Vector2f(0.f, 0.f), 5.f);
+		_equipmentPosition = _equipmentFrame->getPosition();
 	}
 
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
 		if (_isPreviewOn)
 			_itemPreview->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(_window)));
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && _isEquipmentHidden && _equipmentFrame->getPosition().y == _window.getSize().y) {
+			LOG_INFO("1");
+			_equipmentFrame->setPositionInTime({ 384.f ,220.f }, .2f);
+			_isEquipmentHidden = false;
+			_equipmentFrame->fullyActivate();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && !_isEquipmentHidden && _equipmentFrame->getPosition().y == _equipmentPosition.y) {
+			LOG_INFO("2");
+			_equipmentFrame->setPositionInTime({ _equipmentFrame->getPosition().x, static_cast<float>(_window.getSize().y) }, .2f);
+			_isEquipmentHidden = true;			
+		}
+		if(_equipmentFrame->getPosition().y == _window.getSize().y && _equipmentFrame->isActivated() && !sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+			_equipmentFrame->fullyDeactivate();
 	}
 
 	void Equipment::render() {

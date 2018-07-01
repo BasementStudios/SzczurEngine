@@ -15,6 +15,7 @@ namespace rat {
 
 		void addItem(EquipmentObject* item);
 		bool removeItem(sf::String itemName);
+		bool removeItem(int index);
 		void resizeSlots(size_t newSize);
 		void setParent(Widget* newBase);
 		itemMap_t getItemMap();
@@ -26,7 +27,7 @@ namespace rat {
 
 		void update(float deltaTime);
 
-		void _removeSlotDropped(EquipmentSlot*);
+		void _removeSlotDropped(std::shared_ptr<EquipmentSlot>);
 	private:
 		unsigned int _slotAmount;
 		sf::Vector2i _frameSize;

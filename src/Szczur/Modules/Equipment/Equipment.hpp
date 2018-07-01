@@ -44,9 +44,6 @@ namespace rat
 		int getFreeSlotsAmount();
 		void resizeSlots(int newCapacity);
 		int getSlotsAmount();
-
-		//cos z tym jsonem
-
 	private:
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
@@ -63,6 +60,9 @@ namespace rat
 		sf::RenderTexture _canvas;
 
 		bool _isPreviewOn = false;
+		bool _isEquipmentHidden = false;
+
+		sf::Vector2f _equipmentPosition;
 
 		std::map<std::string, EquipmentObject*> _listOfObjects;
 	};

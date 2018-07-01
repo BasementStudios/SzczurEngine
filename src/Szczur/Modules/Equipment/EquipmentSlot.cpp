@@ -13,6 +13,16 @@ namespace rat {
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);
 	}
+
+	void EquipmentSlot::setItemColor(sf::Color color) {
+		_itemImage->setColor(color);
+	}
+
+	void EquipmentSlot::resetItemColor() {
+		_itemImage->resetColor();
+		LOG_INFO("color reseted");
+	}
+
 	void EquipmentSlot::setSize(const sf::Vector2f& size)
 	{
 		_slotImage->setSize(size);

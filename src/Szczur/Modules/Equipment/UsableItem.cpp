@@ -23,7 +23,6 @@ namespace rat {
 
 	void UsableItem::setIsUseble(bool isUsable) {
 		_isUsable = isUsable;
-		LOG_INFO("isUsable has been set: ", isUsable);
 	}
 
 	void UsableItem::setCallback(std::string path)  {

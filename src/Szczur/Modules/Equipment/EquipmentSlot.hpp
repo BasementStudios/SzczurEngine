@@ -13,7 +13,11 @@ namespace rat {
 
 		void setSize(const sf::Vector2f& size);
 		void setPropSize(const sf::Vector2f& size);
+
 		void setTexture(sf::Texture*);
+		void setItemColor(sf::Color color);
+		void resetItemColor();
+
 		void setParent(Widget* parent);
 		void setPosition(sf::Vector2f pos);
 		void setPropPosition(sf::Vector2f pos);
@@ -34,7 +38,7 @@ namespace rat {
 		sf::Vector2f getPosition();
 
 	private:
-		bool isUseble = true;
+		bool isUseble = true;	//is this slot accessible
 
 		ImageWidget* _slotImage;
 		ImageWidget* _itemImage;
