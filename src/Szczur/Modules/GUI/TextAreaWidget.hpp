@@ -29,10 +29,10 @@ namespace rat {
         virtual sf::Vector2f _getSize() const override;
         virtual void _recalcPos() override;
     private:
-        bool _toWrap;
-
         sf::Text _text;
         sf::Vector2u _size;
+
+        bool _toWrap;
 
         sf::String& _wrapText(sf::String& temp);
         virtual void _callback(CallbackType type) override;

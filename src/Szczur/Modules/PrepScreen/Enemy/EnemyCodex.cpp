@@ -21,10 +21,10 @@ namespace rat
 
     void EnemyCodex::_testInit()
     {
-        _addEnemy("Stefan", "Assets/Test/Enemy.png", 10);
-        _addEnemy("Maciek", "Assets/Test/Enemy.png", 13);
-        _addEnemy("PsychoX", "Assets/Test/Enemy.png", 11);
-        _addEnemy("Hefa", "Assets/Test/Enemy.png", 3);
+        _addEnemy("Stefan", "Assets/Test/Enemy1.png", 10);
+        _addEnemy("Maciek", "Assets/Test/Enemy2.png", 13);
+        _addEnemy("PsychoX", "Assets/Test/Enemy3.png", 11);
+        _addEnemy("Hefa", "Assets/Test/Enemy4.png", 3);
     }
     void EnemyCodex::_addEnemy(const std::string& name, const std::string& path, int hp)
     {

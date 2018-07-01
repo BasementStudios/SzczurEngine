@@ -60,7 +60,7 @@ namespace rat
         _infoBar->makeChildrenPenetrable();
         _addWidget(_infoBar);
 
-        _name->setCharacterSize(20);
+        _name->setCharacterSize(12);
         _name->setPropPosition(0.f, 0.f);
         _infoBar->add(_name);
 
@@ -168,7 +168,7 @@ namespace rat
         auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
         _iconWindow->setTexture(barTex, 6);
         _infoBar->setTexture(barTex, 6);
-        _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
+        _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _costBar.loadAssetsFromGUI(gui);
     }
     

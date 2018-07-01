@@ -53,13 +53,14 @@ namespace rat
 
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
+        scroll->setPropPosition({0.7f, 0.8f}, 3.f);
 
-        /*
+        
         auto* image = new ImageWidget;
         image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
         image->setPropSize(0.15f, 0.15f);
         //image->setPropPosition(0.5f, 1.f);
-        _widget->add(image);*/
+        _widget->add(image);
         
         list = new ListWidget;
         list->makeReversed();
@@ -69,14 +70,10 @@ namespace rat
         list->setPropSize(0.3f, 1.f);
         list->setAutoBetweenPadding();
 
-        /*
-        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            auto* widgeto = (*list)[1];
-            if(randomBool) widgeto->fullyDeactivate();
-            else widgeto->fullyActivate();
-            std::cout << "Kek\n";
-            randomBool = !randomBool;
-        });*/
+        
+        image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
+            scroll->resetScrollerPosition();
+        });
 
         float size = 0.1f;
         for(int i = 0; i < 4; i++)
@@ -108,8 +105,7 @@ namespace rat
     {
         const auto& window = getModule<Window>().getWindow();
 
-        auto mousePos = sf::Mouse::getPosition(window);
-
+        [[maybe_unused]] auto mousePos = sf::Mouse::getPosition(window);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             _scale-= deltaTime * 0.4f;
@@ -162,7 +158,6 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
-        std::cout << 1.f/deltaTime << '\n';
     }
     void GUITest::render()
     {

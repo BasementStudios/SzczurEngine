@@ -25,7 +25,7 @@ namespace rat
 
         _costAmount = new TextWidget;
         _costAmount->setPropPosition(0.5f, 0.5f);
-        _costAmount->setCharacterSize(18);
+        _costAmount->setCharacterSize(10);
         _costPP->add(_costAmount);
 
         GlyphTypes glyphs;
@@ -76,11 +76,11 @@ namespace rat
         GlyphesConverter converter;
         for(auto& [glyph, widget] : _glyphs)
         {
-            const std::string path = "Assets/Test/" + converter.toString(glyph) + "Glyph.png";
+            const std::string path = "Assets/PrepScreen/" + converter.toString(glyph) + "Glyph.png";
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
         }        
-        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
+        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _costPP->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png"));
     }
    

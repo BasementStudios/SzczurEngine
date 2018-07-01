@@ -27,9 +27,13 @@ namespace rat
             _onClick();
         });
         _container->makeChildrenPenetrable();
-        _container->add(_glyph);
-        _glyph->setPropSize(0.08f, 0.08f);
-        _glyph->setPropPosition(0.5f, 0.5f);
+        auto* glyphHandler = new Widget;
+        glyphHandler->setPropSize(0.1f, 0.1f);
+        glyphHandler->setPropPosition(0.5f, 0.5f);
+        _container->add(glyphHandler);
+        glyphHandler->add(_glyph);
+        _glyph->setPropSize(0.1f, 0.1f);
+        _glyph->setPropPosition(0.5f, 1.f);
         //_glyph->setPosition(10.f, 10.f);
 
 
@@ -46,14 +50,14 @@ namespace rat
     }
     void GlyphBar::initAssetsViaGUI(GUI& gui)
     {
-        const std::string path = "Assets/Test/";
+        const std::string path = "Assets/PrepScreen/";
 
         for(size_t i = 0; i < _glyphTextures.size(); i++)
         {
             _glyphTextures[i] = gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) /*+ to_string(i) + */+ "Glyph.png");
         }
 
-        _container->setTexture(gui.getAsset<sf::Texture>(path + "GlyphCircle.png"));
+        _container->setTexture(gui.getAsset<sf::Texture>("Assets/Test/GlyphCircle.png"));
         _glyph->setTexture(gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) + "Glyph.png"));
         _amountState->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
     }
@@ -79,6 +83,11 @@ namespace rat
     void GlyphBar::setAmount(size_t activated, size_t total)
     {
         _amountState->setString(std::to_string(activated) + "/" + std::to_string(total));
+
+        float prop = total == 0 ? 0.f : float(activated) / float(total);
+
+        //_glyph->setPropTextureRect({ sf::Vector2f{0.f, prop}, sf::Vector2f{1.f, prop} });
+        //_glyph->setPropSize(0.08f, prop * 0.08f);
     }
 
 }

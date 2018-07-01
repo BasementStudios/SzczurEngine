@@ -19,6 +19,8 @@ namespace rat {
 
         void setScrollSpeed(float speed);
         float getScrollSpeed() const;
+
+        void resetScrollerPosition();
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _update(float deltaTime) override;

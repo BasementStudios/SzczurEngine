@@ -23,6 +23,8 @@ namespace rat
     protected:
         virtual void _calculateSize() override;
         virtual sf::Vector2f _getChildrenSize() override;
+        virtual void _clear() override;
+        virtual sf::Vector2f _getInnerSize() const override;
 
         virtual void _recalcChildrenPos() override;
     private:

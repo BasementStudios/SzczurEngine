@@ -231,10 +231,11 @@ namespace rat
         _base->setSizingWidthToHeightProportion(1.f);
 
         auto* list = new ListWidget;
+        _base->add(list);
         list->setPropPosition(0.5f, 0.f);
+        //list->setPosition(100.f, 100.f);
         list->setPropSize(0.f, 1.f);
         list->setAutoBetweenPadding();
-        _base->add(list);
 
         _glyphArea.setParent(list);
         _glyphArea.setPropPosition(0.5f, 0.f);
@@ -248,7 +249,7 @@ namespace rat
         mainList->makeHorizontal();
         mainList->setPropSize(1.6f, 0.f);
         mainList->setAutoBetweenPadding();
-        //mainList->setPropPosition(0.5f, 0.f);
+        mainList->setPropPosition(0.5f, 0.f);
 
         _profArea.setParent(mainList);
         //_profArea.setPropPosition(0.f, 0.5f);
@@ -290,9 +291,11 @@ namespace rat
         //_glyphArea.setParent(_base);
         
 
-        addPP(12);
+        addPP(14);
         //takePP(3);
 
+        addGlyph(GlyphID::Wrath);
+        addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
         activateGlyph(GlyphID::Wrath);
         
@@ -359,11 +362,12 @@ namespace rat
         GlyphTypes glyphTypes;
         for(auto& type : glyphTypes)
         {
-            const std::string typePath = path + type + "Glyph.png";
+            const std::string typePath = "Assets/PrepScreen/" + type + "Glyph.png";
             gui.addAsset<sf::Texture>(typePath);
         }
 
         gui.addAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
+        gui.addAsset<sf::Font>("Assets/fonts/anirm.ttf");
         _codex.initAssetsViaGUI(gui);
         _enemyCodex.initAssetsViaGUI(gui);
     }

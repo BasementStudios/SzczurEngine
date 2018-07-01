@@ -17,11 +17,11 @@ namespace rat
     :
     BaseBar()
     {
-        setPropOrigin(0.5f, 0.f);
+        //setPropOrigin(0.5f, 0.f);
         _border = new WindowWidget;
         _addWidget(_border);
-        _border->setScale(0.35f, 0.35f);
-        _border->setPadding(10.f, 3.f);
+        _border->setScale(0.3f, 0.3f);
+        _border->setPadding(20.f, 2.f);
         //_border->setPatchAmount(1, 1);
 
         _ppsList = new ListWidget;
@@ -120,6 +120,6 @@ namespace rat
         _containerTex = gui.getAsset<sf::Texture>("Assets/Test/GlyphCircle.png");
         auto* borderTex = gui.getAsset<sf::Texture>("Assets/Test/GrayPPWindow.png");
         _border->setTexture(borderTex, 144, 76);
-        _border->setPadding(0.f, 0.f);
+        //_border->setPadding(20.f, 10.f);
     }
 }

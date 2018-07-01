@@ -69,11 +69,13 @@ namespace rat
 		void move(float offsetX, float offsetY);
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
+		void setPositionInTime(const sf::Vector2f& offset, float inTime);
 		const sf::Vector2f& getPosition() const;
 		const sf::Vector2f& getGlobalPosition() const;
 
 		void setPropPosition(const sf::Vector2f& propPos);
 		void setPropPosition(float propX, float propY);
+		void setPropPosition(const sf::Vector2f& propPos, float inTime);
 
 		virtual void setPadding(const sf::Vector2f& padding);
 		virtual void setPadding(float width, float height);
@@ -146,6 +148,8 @@ namespace rat
 		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		Widget* _parent{nullptr};
+
 		bool _onPressed();
 		void _onRealesed();
 		void _onMoved(const sf::Vector2f& mousePos);
@@ -160,8 +164,6 @@ namespace rat
 		bool _isFullyDeactivated{false};
 
 		sf::Vector2f _size;
-
-		Widget* _parent;
 
 		sf::Vector2f _minSize;
 		bool _isMinSizeSet{false};
