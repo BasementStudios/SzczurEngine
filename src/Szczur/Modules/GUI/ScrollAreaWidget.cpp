@@ -70,7 +70,8 @@ namespace rat {
 
     void ScrollAreaWidget::resetScrollerPositionInTime(float time)
     {
-        auto scrollAnim = std::make_unique<ScrollAnim_t>(this, &setScrollerProp);
+		auto setter = static_cast<void (ScrollAreaWidget::*)(float)>(&ScrollAreaWidget::setScrollerProp);
+        auto scrollAnim = std::make_unique<ScrollAnim_t>(this, setter);
         scrollAnim->setAnim(_scroller.getProportion(), 0.f, time);
         _addAnimation(std::move(scrollAnim));
     }
