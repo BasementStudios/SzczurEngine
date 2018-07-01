@@ -100,6 +100,12 @@ private:
 	///
 	void _renderComponentsManager();
 
+	///
+	void _renderSingleProperty();
+
+	///
+	void _renderGroupProperty();
+
     ///
     void _prepareOrigins();
 

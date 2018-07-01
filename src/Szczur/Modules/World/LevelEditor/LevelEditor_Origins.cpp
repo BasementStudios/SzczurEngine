@@ -77,7 +77,7 @@ namespace rat {
 
 		// Render origins for background group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("background")) {
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if(_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
 			else {
@@ -87,7 +87,7 @@ namespace rat {
 
 		// Render origins for path group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("path")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if (_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
 			else {
@@ -97,7 +97,7 @@ namespace rat {
 
 		// Render origins for foreground group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if (_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
 			else {
@@ -107,7 +107,7 @@ namespace rat {
 
 		// Render origins for single group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if (_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
 			else {
@@ -117,7 +117,7 @@ namespace rat {
 
 		// Render origins for entries group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("entries")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if (_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginCircle(entity->getPosition(), true, target);
 			}
 			else {

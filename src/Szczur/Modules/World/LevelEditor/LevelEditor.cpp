@@ -128,14 +128,22 @@ namespace rat {
 		updateCurrentCamera();
 
 		if(!ImGui::IsAnyWindowHovered()) {
-			auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
 			if(input.isPressed(Mouse::Left)) {
+				auto linear = window.getLinerByScreenPos({ (float)mouse.x, (float)mouse.y });
+
 				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
 					if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-						if(_currentCamera && entity.getID() == _currentCamera->getID()) return;
-						_objectsList.select(entity.getID());
+						if(_currentCamera && entity.getID() == _currentCamera->getID()) 
+							return;
+
+						if (input.isKept(rat::Keyboard::LShift))
+							_objectsList.addSelected(_scenes.getCurrentScene()->getEntity(entity.getID()));
+						else
+							_objectsList.select(entity.getID());
 					}
 				});
+
+
 			}
 		}
 

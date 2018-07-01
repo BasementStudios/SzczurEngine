@@ -20,8 +20,24 @@ namespace rat {
     	return _scenes.getCurrentScene()->getEntity(_selectedEntityID);
     }
 
-	bool ObjectsList::isEntitySelected() {
+	bool ObjectsList::isAnySingleEntitySelected() {
 		return _selectedEntityID != -1;
+	}
+
+	bool ObjectsList::isAnyEntitySelected()
+	{
+		return isAnySingleEntitySelected() || isGroupSelected();
+	}
+
+	bool ObjectsList::isEntitySelected(Entity* entity)
+	{
+		if (_selectedEntityID == entity->getID())
+			return true;
+
+		if (std::find(_selectedEntities.begin(), _selectedEntities.end(), entity) != _selectedEntities.end())
+			return true;
+
+		return false;
 	}
 
 	void ObjectsList::unselect() {
@@ -66,7 +82,7 @@ namespace rat {
 				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
 					addObjectToCurrentGroup();
 				}
-				if(isEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
+				if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
 					ImGui::SameLine();
 					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
 						duplicateObject(_selectedEntityID);
@@ -139,11 +155,44 @@ namespace rat {
 	}
 
 	void ObjectsList::select(Entity* object) {
+		clearSelected();
+
 		_selectedEntityID = object->getID();
 	}
 
 	void ObjectsList::select(int id) {
+		clearSelected();
 		_selectedEntityID = id;
+	}
+
+	void ObjectsList::addSelected(Entity* entity) {
+		if (isAnySingleEntitySelected())
+		{
+			_selectedEntities.push_back(getSelectedEntity());
+			unselect();
+		}
+
+		if (auto& it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
+			_selectedEntities.push_back(entity);
+		}
+		else {
+			_selectedEntities.erase(it);
+		}
+	}
+
+	void ObjectsList::clearSelected()
+	{
+		_selectedEntities.clear();
+	}
+
+	const std::vector<Entity*>& ObjectsList::getSelectedEntities()
+	{
+		return _selectedEntities;
+	}
+
+	bool ObjectsList::isGroupSelected()
+	{
+		return !_selectedEntities.empty();
 	}
 
 	void ObjectsList::addObject(const std::string& groupName) {

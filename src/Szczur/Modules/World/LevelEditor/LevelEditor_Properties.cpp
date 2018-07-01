@@ -22,56 +22,31 @@ namespace rat {
 
 	void LevelEditor::_renderProperties() {
 
-		// Object isn't selected
-		if(!_objectsList.isEntitySelected()) return;
-		bool openWindow = true; 
+		bool isSingleSelected = _objectsList.isAnySingleEntitySelected();
+		bool isGroupSelected = _objectsList.isGroupSelected();
 
-		// Current scene
-		auto* scene = _scenes.getCurrentScene();
-		
-		// Selected object
-		Entity* focusedObject = _objectsList.getSelectedEntity();
+		// Object isn't selected
+		if (!isSingleSelected && !isGroupSelected)
+			return;
+
+		bool openWindow = true; 
 
 		// Begin of properties window
 		if(ImGui::Begin("Properties", &openWindow)) {
 
-			// Change components
-			if(focusedObject->getGroup() != "entries") {
-				if(ImGui::Button("Change components...")) {
-					ImGui::OpenPopup("Change components...##modal");
-					ImGui::SetNextWindowSize(ImVec2(300,300));
-				}
+			if (isSingleSelected) {
+				_renderSingleProperty();
 			}
-			if(_scenes.isGameRunning()) { 
-				ImGui::SameLine(); 
-				if(ImGui::Button("Update status##properties")) { 
-					_scenes.saveEntityToConfig(focusedObject, _scenes.getRunConfig()); 
-					printMenuBarInfo(std::string("Updated status for: ")+focusedObject->getName()); 
-				}
+			else if (isGroupSelected) {
+				_renderGroupProperty();
 			}
-			_renderComponentsManager();
-
-			// Render headers for components
-			if(focusedObject) {                
-				if(auto* object = focusedObject->getComponentAs<BaseComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<SpriteComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<AnimatedSpriteComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<CameraComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<ArmatureComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<ColliderComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<ScriptableComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<InteractableComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
-				if(auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
-
-			}
-
 		}
 		ImGui::End();
 
 		// Unselect object after close properties window
 		if(openWindow == false) {
 			_objectsList.unselect();
+			_objectsList.clearSelected();
 		}
 	}
 
@@ -130,6 +105,70 @@ namespace rat {
 			ImGui::Checkbox("Trace", &choosed[7]);
 
 			ImGui::EndPopup();
+		}
+	}
+
+	void LevelEditor::_renderSingleProperty() {
+		// Selected object
+		Entity* focusedObject = _objectsList.getSelectedEntity();
+
+		// Change components
+		if (focusedObject->getGroup() != "entries") {
+			if (ImGui::Button("Change components...")) {
+				ImGui::OpenPopup("Change components...##modal");
+				ImGui::SetNextWindowSize(ImVec2(300, 300));
+			}
+		}
+		if (_scenes.isGameRunning()) {
+			ImGui::SameLine();
+			if (ImGui::Button("Update status##properties")) {
+				_scenes.saveEntityToConfig(focusedObject, _scenes.getRunConfig());
+				printMenuBarInfo(std::string("Updated status for: ") + focusedObject->getName());
+			}
+		}
+		_renderComponentsManager();
+
+		// Render headers for components
+		if (focusedObject) {
+			if (auto* object = focusedObject->getComponentAs<BaseComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<SpriteComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<AnimatedSpriteComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<CameraComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<ArmatureComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<ColliderComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<ScriptableComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<InteractableComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
+
+		}
+
+	}
+
+	void LevelEditor::_renderGroupProperty() {
+		static glm::vec3 currentOffset;
+		static glm::vec3 lastOffset;
+
+		ImGui::Text("Selected: %d", _objectsList.getSelectedEntities().size());
+
+		if (ImGui::DragFloat3("Offset", &currentOffset[0])) {
+			auto delta = currentOffset - lastOffset;
+
+			for (auto entity : _objectsList.getSelectedEntities())
+			{
+				entity->move(delta);
+			}
+
+			lastOffset = currentOffset;
+		}
+
+		if (ImGui::TreeNodeEx("Selected entities", ImGuiTreeNodeFlags_DefaultOpen)) {
+			for (auto entity : _objectsList.getSelectedEntities())
+			{
+				ImGui::BulletText("%s", entity->getName().c_str());
+			}
+
+			ImGui::TreePop();
 		}
 	}
 }
