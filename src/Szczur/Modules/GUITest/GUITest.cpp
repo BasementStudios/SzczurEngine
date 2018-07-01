@@ -53,7 +53,7 @@ namespace rat
 
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
-        scroll->setPropPosition({0.7f, 0.8f}, 3.f);
+        scroll->setPositionInTime({0.f, 600.f}, 3.f);
 
         
         auto* image = new ImageWidget;
@@ -72,7 +72,7 @@ namespace rat
 
         
         image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPosition();
+            scroll->resetScrollerPositionInTime(0.2f);
         });
 
         float size = 0.1f;
@@ -85,10 +85,10 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColor({0, 0, 0}, 1.f);
+                w->setColorInTime({0, 0, 0}, 1.f);
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColor({255, 255, 255}, 1.f);
+                w->setColorInTime({255, 255, 255}, 1.f);
             });
         }
 
@@ -161,7 +161,17 @@ namespace rat
         }
 
         fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
-        fps->setPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
+        //fps->setPosition();
+
+        //list->setGlobalPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
     }
     void GUITest::render()
     {
@@ -169,7 +179,7 @@ namespace rat
 
         mainWindow.pushGLStates();
 
-       _canvas.clear(sf::Color::Transparent);
+        _canvas.clear(sf::Color::Transparent);
         _canvas.display();
 
         mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));

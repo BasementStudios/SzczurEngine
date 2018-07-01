@@ -81,7 +81,8 @@ namespace rat {
         _aboutToRecalculate = true;
     }
 
-    void TextAreaWidget::setColor(const sf::Color& color) {
+    void TextAreaWidget::_setColor(const sf::Color& color) 
+    {
         _text.setFillColor(color);
     }
 

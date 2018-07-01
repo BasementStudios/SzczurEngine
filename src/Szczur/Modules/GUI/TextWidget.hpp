@@ -16,8 +16,6 @@ namespace rat {
 
         static void initScript(Script& script);
 
-        void setColor(const sf::Color& newColor);
-
         size_t getLength();
 
         void addLetter(char letter);
@@ -38,6 +36,7 @@ namespace rat {
         virtual sf::Vector2f _getSize() const override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _recalcPos() override;
+        virtual void _setColor(const sf::Color& color) override;
     private:
         virtual void _callback(CallbackType type) override;
 

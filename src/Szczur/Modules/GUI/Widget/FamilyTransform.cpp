@@ -69,6 +69,18 @@ namespace gui
                 point.y < _globalPos.y + _size.y; 
     }
 
+    sf::Vector2f FamilyTransform::getPosByGlobal(const sf::Vector2f& globalPos) const
+    {
+        return globalPos - (_globalPos - _pos);
+    }
+    void FamilyTransform::setGlobalPos(const sf::Vector2f& globalPos)
+    {
+        auto pos = globalPos - (_globalPos - _pos);
+        _globalPos = globalPos;
+        _drawPos += (pos - _pos);
+        _pos = pos;
+    }
+
     const sf::Vector2f& FamilyTransform::getGlobalPosition() const
     {
         return _globalPos;

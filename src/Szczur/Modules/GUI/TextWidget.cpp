@@ -64,9 +64,9 @@ namespace rat {
         target.draw(_text, states);
     }
 
-    void TextWidget::setColor(const sf::Color& newColor)
+    void TextWidget:: _setColor(const sf::Color& color)
     {
-        _text.setFillColor(newColor);
+        _text.setFillColor(color);
     }
 
     void TextWidget::addLetter(char letter) {

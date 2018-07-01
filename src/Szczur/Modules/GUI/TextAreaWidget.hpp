@@ -21,13 +21,12 @@ namespace rat {
 
         void setCharacterSize(size_t size);
 
-        void setColor(const sf::Color& color);
-
     protected:
         virtual void _update(float deltaTime) override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual sf::Vector2f _getSize() const override;
         virtual void _recalcPos() override;
+        virtual void _setColor(const sf::Color& color) override;
     private:
         sf::Text _text;
         sf::Vector2u _size;

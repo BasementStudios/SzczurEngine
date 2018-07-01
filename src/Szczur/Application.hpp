@@ -53,7 +53,7 @@ public:
 	///
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
-
+	
 	///
 	template <typename U>
 	U& getModule();
