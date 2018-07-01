@@ -28,21 +28,21 @@ namespace rat
         });
         _ButtonWidget->setPropSize(0.07,0.07);
 
-        _doneSwitch = new ImageWidget;
-        _doneSwitch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"));
-        _doneSwitch->setPropPosition(0.01f,0.47f);
-        _doneSwitch->setCallback(Widget::CallbackType::onPress, [this](auto){
+        _switch = new WindowWidget;
+        _switch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"),60);
+        _switch->setPropPosition(0.01f,0.47f);
+        _switch->setCallback(Widget::CallbackType::onPress, [this](auto){
                 this->displayNormalList();   
         });
-        _doneSwitch->setPropSize(0.1,0.1);
+        _switch->setPropSize(0.2,0.1);
 
-        _switch = new ImageWidget;
-        _switch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"));
-        _switch->setPropPosition(0.01f,0.6f);
-        _switch->setCallback(Widget::CallbackType::onPress, [this](auto){
+        _doneSwitch = new WindowWidget;
+        _doneSwitch->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"),60);
+        _doneSwitch->setPropPosition(0.01f,0.6f);
+        _doneSwitch->setCallback(Widget::CallbackType::onPress, [this](auto){
                 this->displayDoneList();
         });
-         _switch->setPropSize(0.1,0.1);
+         _doneSwitch->setPropSize(0.2,0.1);
 
 
         _interface = gui.addInterface();
@@ -55,24 +55,25 @@ namespace rat
         {
             _ninePatchWidget[k] = new WindowWidget;
             _ninePatchWidget[k]->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"),190);
-            _ninePatchWidget[k]->setPropSize(0.3f,0.3f);
-            _interface->add(_ninePatchWidget[k]);
-            _ninePatchWidget[k]->setPropPosition(0.9f,k*0.11f);
         }
-        _ninePatchWidget[0]->setPropPosition(0.07f,0.07f);
-        _ninePatchWidget[0]->setPropSize(0.5f,0.35f);
 
-        _ninePatchWidget[1]->setPropPosition(0.60f,0.04);
-        _ninePatchWidget[1]->setPropSize(0,0);
+        _ninePatchWidget[0]->setPropPosition(0.27f,0.07f);
+        _ninePatchWidget[0]->setPropSize(0.46f,0.35f);
+        _interface->add(_ninePatchWidget[0]);
+
 
         _ninePatchWidget[2]->setPropPosition(0.97f, 0.88f);
         _ninePatchWidget[2]->setPropSize(0.75f, 0.9f);
+        _interface->add(_ninePatchWidget[2]);
 
-        _ninePatchWidget[3]->setPropPosition(0.08f, 0.9f);
-        _ninePatchWidget[3]->setPropSize(0.75f, 0.55f);
+        _ninePatchWidget[3]->setPropPosition(0.25f, 0.9f);
+        _ninePatchWidget[3]->setPropSize(0.55f, 0.55f);
+        _interface->add(_ninePatchWidget[3]);
 
-
- 
+        _ninePatchWidget[1]->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ButtonTest.png"),60);
+        _ninePatchWidget[1]->setPropPosition(0.847f,0.04);
+        _ninePatchWidget[1]->setPropSize(0.45f,0.1f);
+        _interface->add(_ninePatchWidget[1]);
 
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
@@ -112,14 +113,38 @@ namespace rat
         _scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         _scroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         _scroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-        _scroller->setPropSize(0.7f, 0.5f);
-        _scroller->setPropPosition(0.1f, 0.85f);
+        _scroller->setPropSize(0.47f, 0.5f);
+        _scroller->setPropPosition(0.26f, 0.85f);
 
         _doneScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         _doneScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         _doneScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-        _doneScroller->setPropSize(0.7f, 0.5f);
-        _doneScroller->setPropPosition(0.1f, 0.85f);
+        _doneScroller->setPropSize(0.47f, 0.5f);
+        _doneScroller->setPropPosition(0.26f, 0.85f);
+
+        _done = new TextWidget;
+        _done->setFont(_font);
+        _done->setString("Wykonane");
+        _done->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+        _done->setCharacterSize(20);
+        _done->setCallback(Widget::CallbackType::onPress, [this](auto){
+                this->displayDoneList();
+        });
+        _done->setPropPosition(0.42f,0.57f);
+        
+        _doneSwitch->add(_done);
+
+        _actual = new TextWidget;
+        _actual->setFont(_font);
+        _actual->setString("Obecne");
+        _actual->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+        _actual->setCharacterSize(20);
+        _actual->setCallback(Widget::CallbackType::onPress, [this](auto){
+                this->displayNormalList();   
+        });
+        _actual->setPropPosition(0.42f,0.57f);
+        
+        _switch->add(_actual);
 
         addQuest(0);
         addStep(2);
@@ -158,7 +183,7 @@ namespace rat
         LOG_INFO("QuestJournal module destructed");
     }
 
-    void QuestJournal::addQuest(const unsigned int &i)
+    void QuestJournal::addQuest(unsigned int i)
     {
         std::shared_ptr<journal::Quest> quest= std::make_shared<journal::Quest>(_fileLoader);
         quest->setQuestName(i);
@@ -169,31 +194,32 @@ namespace rat
         widget = new TextWidget;
         widget->setString(quest->getQuestName());
         widget->setCharacterSize(30);
-        widget->setColor(sf::Color::White);
+        widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
                 refresh(widget->getString());
         }
         );
         widget->setFont(getModule<GUI>().getAsset<sf::Font>("Assets/GUITest/testfont.otf"));
         _list->add(widget);
+        _normalTextWidgets.push_back(widget);
         
-        _stepManager->setQuest(quest);
-        _descriptionManager->setQuest(quest);
-        _questName->setQuest(quest);
+       // _stepManager->setQuest(quest);
+        //_descriptionManager->setQuest(quest);
+        //_questName->setQuest(quest);
 
     }
 
-    void QuestJournal::addStep(const unsigned int &i)
+    void QuestJournal::addStep(unsigned int i)
     {
         (*it)->nextStep(i);
     }
 
-    void QuestJournal::addDescription(const unsigned int &descriptionNumber)
+    void QuestJournal::addDescription(unsigned int descriptionNumber)
     {
         (*it)->addQuestDescription(descriptionNumber);
     }
 
-    void QuestJournal::moveIterator(std::string questName)
+    void QuestJournal::moveIterator(const std::string& questName)
     {
         for(it = _quests.begin();it!=_quests.end();it++)
         {
@@ -201,30 +227,51 @@ namespace rat
                 return;
         }
     }
-    void QuestJournal::refresh(std::string questName)
+    void QuestJournal::refresh(const std::string& questName)
     {
-        for(auto i : _quests)
+        for(auto i :_normalTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+        for(auto i :_doneTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
+        for(auto i : _normalTextWidgets)
         {
-            if(i->getQuestName()==questName)
+            if(i->getString() == questName)
             {
-               
-                    _stepManager->setQuest(i);
-                    _descriptionManager->setQuest(i);
-                    _questName->setQuest(i);
-                    return;
+                i->setColor(sf::Color::White);
+                for(auto i : _quests)
+                {
+                    if(i->getQuestName()==questName)
+                    {
+                    
+                        _stepManager->setQuest(i);
+                        _descriptionManager->setQuest(i);
+                        _questName->setQuest(i);
+                        return;
+                    }
+                }
             }
         }
-        for(auto i : _doneQuests)
+    
+        for(auto i : _doneTextWidgets)
         {
-            if(i->getQuestName()==questName)
+            if(i->getString() == questName)
             {
-                    _stepManager->setQuest(i);
-                    _descriptionManager->setQuest(i);
-                    _questName->setQuest(i);
-                    return;
-            }
-        }
+                i->setColor(sf::Color::White);
+                for(auto i : _doneQuests)
+                {
+                    if(i->getQuestName()==questName)
+                    {
+                        _stepManager->setQuest(i);
+                        _descriptionManager->setQuest(i);
+                        _questName->setQuest(i);
+                        return;
+                    }
+                }
      
+            }
+        }
+       
     }
 
     void QuestJournal::turnOFF()
@@ -239,7 +286,7 @@ namespace rat
         _interface->visible();
     }
 
-    void QuestJournal::finishQuest(std::string name)
+    void QuestJournal::finishQuest(const std::string& name)
     {
         for(auto i = _quests.begin(); i != _quests.end();i++)
         {
@@ -247,22 +294,22 @@ namespace rat
             {
                 TextWidget* widget;
 
-
                 _doneQuests.push_back(*i);
                 
                 widget = new TextWidget;
                 widget->setString((*i)->getQuestName());
                 widget->setFont(_font);
                 widget->setCharacterSize(25);
-                widget->setColor(sf::Color::White);
+                widget->setColor(sf::Color(135, 89, 247 ,255));
                 widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
                     refresh(widget->getString());
                 });
                 _doneList->add(widget);
-
+                _doneTextWidgets.push_back(widget);
 
                 _quests.erase(i);
                 _list->clear();
+                _normalTextWidgets.clear();
                 
                 for(auto k = _quests.begin();k != _quests.end();k++)
                 {
@@ -270,11 +317,12 @@ namespace rat
                     widget->setString((*k)->getQuestName());
                     widget->setFont(_font);
                     widget->setCharacterSize(25);
-                    widget->setColor(sf::Color::White);
+                    widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
                     widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
                         refresh(widget->getString());
                     });
                     _list->add(widget);
+                    _normalTextWidgets.push_back(widget);
                 }
                 return;
             }
@@ -288,6 +336,15 @@ namespace rat
 
         _scroller->activate();
         _scroller->visible();
+
+        _questName->clear();
+        _descriptionManager->clear();
+        _stepManager->clear();
+
+        for(auto i :_normalTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+        for(auto i :_doneTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
     }
 
     void QuestJournal::displayDoneList()
@@ -297,5 +354,14 @@ namespace rat
 
         _doneScroller->activate();
         _doneScroller->visible();
+
+        _questName->clear();
+        _descriptionManager->clear();
+        _stepManager->clear();
+
+        for(auto i :_normalTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+        for(auto i :_doneTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
     }
 }

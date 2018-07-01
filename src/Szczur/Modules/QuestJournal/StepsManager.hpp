@@ -22,6 +22,8 @@ namespace journal
             void setScrollTextures(sf::Texture *t1,sf::Texture *t2,sf::Texture *t3);
 
             void setQuest(std::shared_ptr<Quest> quest);
+
+            void clear();
         private:
             std::shared_ptr<std::vector<std::string> > _steps;
             sf::Font* _font;

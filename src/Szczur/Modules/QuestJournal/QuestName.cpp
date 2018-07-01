@@ -9,8 +9,8 @@ namespace journal
     {
         _widget = new TextWidget;
        // _widget->setPropPosition(0.60f,0.1);
-       _widget->setPropPosition(0.60f,0.05);
-        _widget->setColor(sf::Color::White);
+       _widget->setPropPosition(0.63f,0.06f);
+        _widget->setColor(sf::Color(135, 89, 247 ,255));
         _widget->setFont(_font);
         interface->add(_widget);
     }
@@ -25,6 +25,11 @@ namespace journal
         _quest = quest;
         _questName = _quest->getQuestName();
         _widget->setString(_questName);
+    }
+
+    void QuestName::clear()
+    {
+        _widget->setString("");   
     }
 }
 }

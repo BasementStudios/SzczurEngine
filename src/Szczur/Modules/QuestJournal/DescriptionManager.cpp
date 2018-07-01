@@ -9,8 +9,8 @@ namespace journal
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
         interface->add(_scroller);
-        _scroller->setPropSize(0.7f, 0.83f);
-        _scroller->setPropPosition(0.94f, 0.85f);
+        _scroller->setPropSize(0.7f, 0.6f);
+        _scroller->setPropPosition(0.94f, 0.9f);
         _list->setBetweenPadding(20.f);
         _list->setPropSize(0.6f, 1.f);
         _list->makeReversed();
@@ -32,8 +32,8 @@ namespace journal
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(25);
-            widget->setColor(sf::Color::White);
+            widget->setCharacterSize(17);
+            widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
     }
@@ -49,8 +49,8 @@ namespace journal
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(25);
-            widget->setColor(sf::Color::White);
+            widget->setCharacterSize(17);
+            widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
     }
@@ -60,6 +60,11 @@ namespace journal
         _scroller->setScrollerTexture(t1);
         _scroller->setPathTexture(t2);
         _scroller->setBoundsTexture(t3);
+    }
+
+    void DescriptionManager::clear()
+    {
+        _list->clear();
     }
 }
 }

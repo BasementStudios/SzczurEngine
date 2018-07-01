@@ -16,7 +16,9 @@ namespace journal
         public:
             QuestName(sf::Font *font,InterfaceWidget *interface);
             ~QuestName();
-        
+
+            void clear();
+
             void setQuest(std::shared_ptr<Quest> quest);
         private:
             sf::Font* _font;

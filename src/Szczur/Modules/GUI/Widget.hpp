@@ -14,7 +14,7 @@
 #include "ProportionalDimes.hpp"
 #include "Widget/FamilyTransform.hpp"
 
-#define GUI_DEBUG 1
+//#define GUI_DEBUG 1
 
 namespace rat 
 {

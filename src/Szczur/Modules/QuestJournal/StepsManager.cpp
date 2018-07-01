@@ -12,7 +12,7 @@ namespace journal
         _list = new ListWidget;
         interface->add(_scroller);
         _scroller->setPropSize(0.4f, 0.3f);
-        _scroller->setPropPosition(0.1f, 0.1f);
+        _scroller->setPropPosition(0.28f, 0.1f);
         _list->setBetweenPadding(20.f);
         _list->setPropSize(0.3f, 1.f);
 
@@ -34,8 +34,8 @@ namespace journal
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(25);
-            widget->setColor(sf::Color::White);
+            widget->setCharacterSize(17);
+            widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
    
@@ -58,10 +58,15 @@ namespace journal
             widget = new TextWidget;
             widget->setString(*i);
             widget->setFont(_font);
-            widget->setCharacterSize(25);
-            widget->setColor(sf::Color::White);
+            widget->setCharacterSize(17);
+            widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
+    }
+
+    void StepsManager::clear()
+    {
+        _list->clear();
     }
 }
 }
