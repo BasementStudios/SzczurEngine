@@ -52,6 +52,9 @@ namespace rat
         WindowWidget* _infoBar{nullptr};
         TextWidget* _name{nullptr};
 
+        WindowWidget* _titleWindow{nullptr};
+        TextWidget* _title{nullptr};
+
         static sf::Vector2u _size; 
     };
 }

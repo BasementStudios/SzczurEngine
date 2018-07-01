@@ -86,8 +86,8 @@ namespace rat
 
         float prop = total == 0 ? 0.f : float(activated) / float(total);
 
-        //_glyph->setPropTextureRect({ sf::Vector2f{0.f, prop}, sf::Vector2f{1.f, prop} });
-        //_glyph->setPropSize(0.08f, prop * 0.08f);
+        _glyph->setPropTextureRect({ sf::Vector2f{0.f, prop}, sf::Vector2f{1.f, prop} });
+        _glyph->setPropSize(0.13f, prop * 0.13f);
     }
 
 }

@@ -27,7 +27,7 @@ namespace rat
     BaseBar( [this]
         {
             auto* base = new ListWidget; 
-            base->makeHorizontal();
+            //base->makeHorizontal();
             base->makeChildrenPenetrable();
             base->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
                 _onClick();
@@ -46,9 +46,13 @@ namespace rat
         _infoBar = new WindowWidget;
         _name = new TextWidget;
 
+        auto* list = new ListWidget;
+        list->makeHorizontal();
+        _addWidget(list);
+
         _iconWindow->setPropSize(0.09f, 0.09f);
         _iconWindow->setScale(0.3f, 0.3f);
-        _addWidget(_iconWindow);        
+        list->add(_iconWindow);       
         
         _icon->setPropSize(0.08f, 0.08f);
         _icon->setPropPosition(0.5f, 0.5f);
@@ -58,7 +62,8 @@ namespace rat
         _infoBar->setScale(0.3f, 0.3f);
         _infoBar->setPadding(5, 5);
         _infoBar->makeChildrenPenetrable();
-        _addWidget(_infoBar);
+        _infoBar->makeChildrenUnresizable();
+        list->add(_infoBar);
 
         _name->setCharacterSize(12);
         _name->setPropPosition(0.f, 0.f);
@@ -67,6 +72,23 @@ namespace rat
         _costBar.setParent(_infoBar);
         _costBar.setPropPosition(0.f, 1.f);
 
+        _titleWindow = new WindowWidget;
+        _titleWindow->setPropSize(0.3f, 0.f);
+        _titleWindow->setPadding(0.f, 5.f);
+        _titleWindow->setScale(0.3f, 0.3f);
+        _addWidget(_titleWindow);
+
+
+        _title = new TextWidget;
+        _title->setCharacterSize(12);
+        _title->setColor({255, 255, 255});
+        _title->setPropPosition(0.5f, 0.5f);
+        _title->setString("Hejjjj");
+
+        _titleWindow->add(_title);
+
+        _titleWindow->fullyDeactivate();
+        
         _getBase()->fullyDeactivate();
     }
 
@@ -87,6 +109,8 @@ namespace rat
         {
             _getBase()->fullyActivate();
         }  
+
+        _titleWindow->fullyDeactivate();
     }
     void SkillBar::removeSkill()
     {
@@ -103,6 +127,7 @@ namespace rat
             if(isBought)
             {
                 _getBase()->fullyDeactivate();
+                _titleWindow->fullyDeactivate();
             }
             else
             {
@@ -114,11 +139,11 @@ namespace rat
         _canBeBought = _prepScreen.canSkillBeBought(_skill);
         if(_canBeBought)
         {
-            _getBase()->setColorInTime({255, 255, 255}, 0.3f);
+            _getBase()->setColorInTime({255, 255, 255}, 0.1f);
         }
         else
         {
-            _getBase()->setColorInTime({125, 125, 125}, 0.3f);
+            _getBase()->setColorInTime({125, 125, 125}, 0.1f);
         }
     }
     
@@ -131,12 +156,26 @@ namespace rat
 
     void SkillBar::_onClick()
     {      
-        if(!_skill) return;
-        if(_isKnownAsBought) return;
-
-        if(_prepScreen.canSkillBeBought(_skill))
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            _prepScreen.buySkill(_skill);
+            if(!_skill) return;
+            if(_isKnownAsBought) return;
+
+            if(_prepScreen.canSkillBeBought(_skill))
+            {
+                _prepScreen.buySkill(_skill);
+            }
+        }
+        else
+        {
+            if(_titleWindow->isFullyDeactivated())
+            {
+                _titleWindow->fullyActivate();
+            }
+            else
+            {
+                _titleWindow->fullyDeactivate();
+            }
         }
     }
 
@@ -151,7 +190,7 @@ namespace rat
     {
         if(_canBeBought)
         {
-            _getBase()->setColorInTime({180, 180, 180}, 0.3f);
+            _getBase()->setColorInTime({180, 180, 180}, 0.1f);
             _prepScreen.dimPPsNeededToBuySkill(_skill);
         }
     }
@@ -159,7 +198,7 @@ namespace rat
     {
         if(_canBeBought)
         {
-            _getBase()->setColorInTime({255, 255, 255}, 0.3f);
+            _getBase()->setColorInTime({255, 255, 255}, 0.1f);
             _prepScreen.normPPsNeededToBuySkill(_skill);
         }
     }
@@ -170,7 +209,9 @@ namespace rat
         auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
         _iconWindow->setTexture(barTex, 6);
         _infoBar->setTexture(barTex, 6);
+        _titleWindow->setTexture(barTex, 6);
         _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
+        _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _costBar.loadAssetsFromGUI(gui);
     }
     
