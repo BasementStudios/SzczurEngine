@@ -168,4 +168,9 @@ namespace rat {
             std::invoke(it->second, this);
     }
 
+    sf::Vector2f ScrollAreaWidget::_getInnerSize() const
+    {
+        return {float(_renderTexture.getSize().x), 0.f};
+    }
+
 }

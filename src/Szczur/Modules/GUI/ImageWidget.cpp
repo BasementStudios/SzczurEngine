@@ -83,6 +83,8 @@ namespace rat {
 
         sf::IntRect texRect = { pos, size };
 
+        _aboutToRecalculate = true;
+
         _sprite.setTextureRect(texRect);
     }
     const sf::Texture* ImageWidget::getTexture() const  
@@ -106,7 +108,7 @@ namespace rat {
     {
         if(!_hasTexture) return;
 
-        auto texSize = static_cast<sf::Vector2f>(_sprite.getTexture()->getSize());
+        auto texSize = sf::Vector2f{float(_sprite.getTextureRect().width), float(_sprite.getTextureRect().height)};
         sf::Vector2f scale = {1.f, 1.f};
         if(_isMinSizeSet)
         {

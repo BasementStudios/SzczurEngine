@@ -13,7 +13,7 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
-//#undef GUI_DEBUG
+#undef GUI_DEBUG
 
 namespace rat 
 {
@@ -486,6 +486,20 @@ namespace rat
         _addAnimation(std::move(animPos));
     }
     
+    sf::Vector2f Widget::getPosByGlobalPos(const sf::Vector2f& globalPos) const
+    {
+        return gui::FamilyTransform::getPosByGlobal(globalPos);
+    }
+    void Widget::setGlobalPosition(const sf::Vector2f& globalPos)
+    {
+        gui::FamilyTransform::setGlobalPos(globalPos);
+        _isPosChanged = true;
+        if(_parent) _parent->_aboutToRecalculate = true;
+    }
+    void Widget::setGlobalPosition(float globalX, float globalY)
+    {
+        setGlobalPosition({globalX, globalY});
+    }
 
     const sf::Vector2f& Widget::getPosition() const
     {

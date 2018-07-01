@@ -160,7 +160,17 @@ namespace rat
         }
 
         fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
-        fps->setPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
+        //fps->setPosition();
+
+        //list->setGlobalPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
     }
     void GUITest::render()
     {
@@ -168,7 +178,7 @@ namespace rat
 
         mainWindow.pushGLStates();
 
-       _canvas.clear(sf::Color::Transparent);
+        _canvas.clear(sf::Color::Transparent);
         _canvas.display();
 
         mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));

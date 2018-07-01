@@ -33,6 +33,8 @@ namespace rat {
         
         virtual void _recalcChildrenPos() override;
         virtual void _recalcPos() override;     
+
+        virtual sf::Vector2f _getInnerSize() const override;
     private:
         mutable sf::RenderTexture _renderTexture;
         mutable sf::Sprite _displaySprite;

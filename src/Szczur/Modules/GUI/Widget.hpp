@@ -77,6 +77,10 @@ namespace rat
 		void setPropPosition(float propX, float propY);
 		void setPropPosition(const sf::Vector2f& propPos, float inTime);
 
+		sf::Vector2f getPosByGlobalPos(const sf::Vector2f& globalPos) const;
+		void setGlobalPosition(const sf::Vector2f& globalPos);
+		void setGlobalPosition(float globalX, float globalY);
+
 		virtual void setPadding(const sf::Vector2f& padding);
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
