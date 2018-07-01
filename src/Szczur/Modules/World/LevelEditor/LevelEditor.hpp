@@ -126,6 +126,8 @@ private:
 
 private:
 
+// Select fix
+	sf::Vector2i _defaultWindowSize;
 // Origins
 
     sf3d::CircleShape _originCirIn, _originCirOut, _originCirInSel, _originCirOutSel;

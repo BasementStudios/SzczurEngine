@@ -40,6 +40,10 @@ namespace rat {
 		_audioEditor = detail::globalPtr<AudioEditor>;
 
         _prepareOrigins();
+
+		const auto& videoMode = detail::globalPtr<Window>->getVideoMode();
+
+		_defaultWindowSize = sf::Vector2i(videoMode.width, videoMode.height);
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -123,12 +127,20 @@ namespace rat {
 		auto* scene = _scenes.getCurrentScene();
 		auto& window = detail::globalPtr<Window>->getWindow();
 		
-		auto mouse = input.getMousePosition();
 
 		updateCurrentCamera();
 
 		if(!ImGui::IsAnyWindowHovered()) {
 			if(input.isPressed(Mouse::Left)) {
+				auto mouse = input.getMousePosition();
+
+				const auto& size = detail::globalPtr<Window>->getWindow().getSize();
+
+				sf::Vector2i currentWindowSize(size.x, size.y);
+
+				mouse.x = (mouse.x * _defaultWindowSize.x) / currentWindowSize.x;
+				mouse.y = (mouse.y * _defaultWindowSize.y) / currentWindowSize.y;
+
 				auto linear = window.getLinerByScreenPos({ (float)mouse.x, (float)mouse.y });
 
 				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
