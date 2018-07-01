@@ -83,6 +83,14 @@ public:
 	///
 	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
+	///
+	void play();
+
+	///
+	void setLoop(bool loop) { _loop = loop; }
+
+	///
+	bool isLoop() { return _loop; }
 
 	///
 	void setFrameNum(int frames) { _frames = frames; }
@@ -123,9 +131,13 @@ private:
 	SpriteDisplayData* _spriteDisplayData = nullptr;
 	sf3d::VertexArray _vertices{ 4 };
 
+	bool _isPlaying = true;
+
 	int _currentFrame = 0;
 	int _frames = 1;
 	bool _autoUpdateFrames = true;
+
+	bool _loop = true;
 
 	glm::vec2 _frameSize;
 	bool _autoUpdateFrameSize = true;

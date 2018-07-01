@@ -70,6 +70,9 @@ namespace rat {
 			setSpriteDisplayData(data);
 		}
 
+		if (config.find("loop") != config.end())
+			_loop = config["loop"];
+
 		_frames = config["frames"];
 
 		_autoUpdateFrames = config["autoUpdateFrames"];
@@ -87,6 +90,8 @@ namespace rat {
 	{
 		Component::saveToConfig(config);
 		config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";
+
+		config["loop"] = _loop;
 
 		config["frames"] = _frames;
 		config["autoUpdateFrames"] = _autoUpdateFrames;
@@ -106,6 +111,9 @@ namespace rat {
 		if (_spriteDisplayData == nullptr || _columns == 0 || _speed == 0)
 			return;
 
+		if (!_isPlaying)
+			return;
+
 		// 30 frames per sec
 		if (_lastUpdate.getElapsedTime().asSeconds() < 30 / 1000.f / _speed)
 			return;
@@ -121,14 +129,19 @@ namespace rat {
 		++_currentFrame;
 
 		if (_currentFrame >= _frames)
-			_currentFrame = 0;
+		{
+			if (_loop)
+				_currentFrame = 0;
+			else
+				_isPlaying = false;
+		}
 
 		_lastUpdate.restart();
 	}
 
 	void AnimatedSpriteComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	{
-		if(_spriteDisplayData)
+		if(_spriteDisplayData && _isPlaying)
 		{
 			states.transform *= getEntity()->getTransform();
 			states.texture = &_spriteDisplayData->getTexture();
@@ -200,6 +213,20 @@ namespace rat {
 
 			ImGui::Separator();
 
+			if (ImGui::Checkbox("Loop", &_loop))
+			{
+				play();
+			}
+
+			if (!_loop)
+			{
+				ImGui::SameLine();
+				if (ImGui::Button("Play"))
+				{
+					play();
+				}
+			}
+
 			ImGui::Checkbox("Auto update frames", &_autoUpdateFrames);
 			ImGui::InputInt("Frames", &_frames);
 
@@ -249,8 +276,12 @@ namespace rat {
 		auto object = script.newClass<AnimatedSpriteComponent>("SpriteComponent", "World");
 
 		// Main
+		object.set("play", &AnimatedSpriteComponent::play);
 
 		// getters and setters
+		object.set("setLoop", &AnimatedSpriteComponent::setLoop);
+		object.set("isLoop", &AnimatedSpriteComponent::isLoop);
+
 		object.set("setFrameNum", &AnimatedSpriteComponent::setFrameNum);
 		object.set("getFrameNum", &AnimatedSpriteComponent::getFrameNum);
 
@@ -282,6 +313,13 @@ namespace rat {
 
 
 		object.init();
+	}
+
+	void AnimatedSpriteComponent::play()
+	{
+		_isPlaying = true;
+		_currentFrame = 0;
+		_lastUpdate.restart();
 	}
 
 	void AnimatedSpriteComponent::setOrigin(int vertical, int horizontal)
