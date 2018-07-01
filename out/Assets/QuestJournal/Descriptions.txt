@@ -1,37 +1,60 @@
 ---
 _1
-uwaga teraz podaje pierwszy opis dla misji 1
-bla bla bla bla bla bla bla bla bla bla
-alb alb alb alb alb alb alb alb alb alb
-<<<koniec opisu dla misji 1!!!>>>
+W mieście Khorinis przebywa grupa paladynów. Mają ze sobą
+potężny artefakt, Oko Innosa, którego moc pomoże pokonać 
+smoki. Trzeba tylko ich przekonać o zagrożeniu...
+Bezimienny za radą nekromanty udaje się do miasta
+portowego Khorinis by skontaktować się ze stacjonującym 
+tam oddziałem paladynów. 
 ---
 _2
-uwaga teraz podaje drugi opis dla misji 1
-bla bla bla bla bla bla bla bla bla bla
-alb alb alb alb alb alb alb alb alb alb
-<<<koniec opisu dla misji 1!!!>>>
+Po rozmowie z dowódcą paladynów bohater musi wyruszyć do 
+Górniczej Doliny po dowód na istnienie smoków. Jednak 
+kapitan Garond nie chce napisać listu do Hagena od razu.
+Bohater musi najpierw uzyskać informacje o wydobytej 
+rudzie od grup kopaczy wysłanych przez 
+Garonda.
 ---
 _3
-TEN QUEST JEST NA LIŚCIE 
-WYKONANYCH MISJI
+Gdy Bezimienny wraca i pokazuje Lordowi Hagenowi list od
+Garonda. Ten wysyła go do klasztoru po odbiór Oka Innosa.
+Bohater dociera do klasztoru, gdzie okazuje się, że święty
+artefakt został skradziony przez opętanego nowicjusza Pedra.
+Bezimienny rusza w pościg śladem martwych nowicjuszy.
+Odnajduje uszkodzone Oko, po uprzednim zabiciu grupy 
+poszukiwaczy odprawiających mroczny rytuał przy Słonecznym
+Kręgu.
 ---
 _4
-uwaga teraz podaje drugi opis dla misji 2
-bla bla bla bla bla bla bla bla bla bla
-alb alb alb alb alb alb alb alb alb alb
-<<<koniec opisu dla misji 2!!!>>>
+Pyrokar wysyła bohatera do Vatrasa, aby ten znalazł sposób
+naprawy Oka Innosa. Kapłan Adanosa tłumaczy, że jedyny 
+sposób na przywrócenie Oku jego mocy to połączenie mocy 
+trzech bogów. Reprezentować Innosa będzie Pyrokar, Adanosa
+Vatras, a reprezentantem Beliara będzie nekromanta Xardas. 
 ---
 _5
-uwaga teraz podaje trzeci opis dla misji 2
-bla bla bla bla bla bla bla bla bla bla
-alb alb alb alb alb alb alb alb alb alb
-<<<koniec opisu dla misji 2!!!>>>
+Kupiec Jora został okradziony przez członka gildii złodziei. 
+W związku z tym Bezimienny pyta się go, czy nie zgłosił już 
+tego straży miejskiej. Kupiec zaś odpowiada,nże tak, jednak 
+bezskutecznie.
 ---
 _6
-uwaga opis z polskimi znakami!
-ĘÓŚĄŁŻŹĆŃ
+Gdy bohater postanawia pomóc kupcowi zaczepia podejrzanego 
+ten zaczyna uciekać. Przestępca zostaje schwytany dopiero 
+za koszarami. Prosi, żeby bohater go nie wydawał lordowi Andre.
+Po krótkiej rozmowie ze złodziejem, główny bohater odbiera 
+skradzione złoto i wyrusza by zwrócić je właścicielowi.
 ---
 _7
-ĘÓŚĄŁŻŹĆŃ
-ęóśąłżźćń
+Bohater pyta Hakona, co wie na temat bandytów. Handlarz
+odpowiada, że napadli go w drodze do miasta. Podobno ta
+grupa jest nodpowiedzialna za wiele ataków w okolicy farmy
+Akila. Ze straży miejskiej w działaniu brał udział Pablo,
+lecz nie zdołał znaleźć ich kryjówki. Bezimienny deklaruje
+pomoc, a Hakon oferuje w zamian sto sztuk złota.
+---
+_8
+Po pierwszej walce z bohaterem, Alrik stwierdza, że lepiej
+jest mu walczyć jego mieczem, niż starym kijem. Oddał go
+jednak kupcowi Jorze za parę pochodni i jedzenie.
 ---

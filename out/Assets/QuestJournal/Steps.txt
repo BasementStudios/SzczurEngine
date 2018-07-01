@@ -1,23 +1,29 @@
-MISJA 1 
+Oko Innosa
 ---
-1   KROK 1 dla misji 1
-2   KROK 2 dla misji 1
-3   KROK 3 dla misji 1
-4   KROK 4 dla misji 1
+1   Dostań się do Khorinis
+2   Porozmawiaj z Lordem Hagenem
+3   Udaj się do górniczej doliny
+4   Zanieś list od Garonda do 
+	 paladynów w Khorinis
+5   Odzyskaj oko Innosa
+6   Znajdź sposób, aby naprawić artefakt
 ---
-MISJA 2
+Bezczelny zlodziej
 ---
-1   KROK 1 dla misji 2
-2   KROK 2 dla misji 2
-3   KROK 3 dla misji 2
+1   Dowiedz się kto stoi za kradzieżą
+2   Schwytaj uciekiniera i zabierz złoto
+3   Oddaj złoto do kupca
 ---
-MISJA 3
+Bandyci
 ---
-1   KROK 1 DLA MISJI 3
-2   KROK 2 DLA MISJI 3
+1   Porozmawiaj z Hakonem na placu targowym
+2   Idź do kryjówki bandytów w lesie i zabij
+     przebywających w niej bandytów.
 ---
-MISJA 4
+Miecz Alrika
 ---
-1   KROK 1 DLA MISJI 4
-2   KROK 2 DLA MISJI 4
+1   Porozmawiaj z Alrikiem po
+	 pierwszej walce.
+2   Porozmawiaj z Jorą na placu targowym i zdobądź
+	 od niego miecz Alrika.
 ---

@@ -151,28 +151,33 @@ namespace rat
         addStep(3);
         addStep(4);
         addStep(5);
+        addStep(6);
+        addStep(7);
         addDescription(1);
         addDescription(2);
-
-        addQuest(7);
-        addStep(9);
-        addStep(10);
-        addStep(11);
         addDescription(3);
         addDescription(4);
+
+
+        addQuest(10);
+        addStep(12);
+        addStep(13);
+        addStep(14);
+
         addDescription(5);
-
-        addQuest(13);
         addDescription(6);
-        addStep(15);
-        addStep(16);
 
-        addQuest(18);
+        addQuest(16);
+        addStep(18);
         addDescription(7);
-        addStep(20);
-        addStep(21);
 
-        finishQuest("MISJA 2");
+        addQuest(22);
+        addStep(24);
+        addStep(25);
+        addDescription(8);
+    
+        finishQuest(_fileLoader->getStep(10));
+
         displayNormalList();
 
         LOG_INFO("QuestJournal module initialized");
@@ -229,6 +234,7 @@ namespace rat
     }
     void QuestJournal::refresh(const std::string& questName)
     {
+
         for(auto i :_normalTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
@@ -261,7 +267,7 @@ namespace rat
                 for(auto i : _doneQuests)
                 {
                     if(i->getQuestName()==questName)
-                    {
+                    {   
                         _stepManager->setQuest(i);
                         _descriptionManager->setQuest(i);
                         _questName->setQuest(i);
@@ -345,6 +351,9 @@ namespace rat
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
+        _actual->setColor(sf::Color::White);
+        _done->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
     }
 
     void QuestJournal::displayDoneList()
@@ -363,5 +372,8 @@ namespace rat
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
+        _done->setColor(sf::Color::White);
+        _actual->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
     }
 }

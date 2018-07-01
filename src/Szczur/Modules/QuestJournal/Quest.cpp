@@ -30,7 +30,7 @@ namespace journal
         _steps.push_back(_fileLoader->getStep(i));
     }
 
-    std::string Quest::getQuestName()
+    std::string& Quest::getQuestName()
     {
         return _questName;
     }

@@ -39,7 +39,6 @@ namespace rat
 
         private:
 
-
             TextWidget *_done;
             TextWidget *_actual;
 
@@ -47,7 +46,7 @@ namespace rat
             WindowWidget *_switch;
             ImageWidget *_ButtonWidget;
 
-            WindowWidget *_ninePatchWidget[7];
+            WindowWidget *_ninePatchWidget[4];
 
             std::vector<TextWidget*>  _normalTextWidgets;
             std::vector<TextWidget* > _doneTextWidgets;
@@ -69,8 +68,6 @@ namespace rat
             std::vector<std::shared_ptr<journal::Quest> > _doneQuests;
 
             std::vector<std::string> _texturePath;
-
-
 
             std::vector<std::shared_ptr<journal::Quest> >::iterator it;
             

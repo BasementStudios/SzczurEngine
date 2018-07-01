@@ -20,7 +20,7 @@ namespace journal
 
             void nextStep(const unsigned int &i);
 
-            std::string getQuestName();
+            std::string& getQuestName();
 
             std::vector<std::string> & getDescription();
 
