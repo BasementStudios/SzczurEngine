@@ -14,7 +14,7 @@
 namespace rat
 {
     class TextWidget; class ImageWidget; class WindowWidget;
-    class QuestJournal : public Module<Window, GUI>
+    class QuestJournal : public Module<Window, GUI, Input>
     {
         public:
             QuestJournal();
@@ -34,10 +34,14 @@ namespace rat
             void displayDoneList();
             void displayNormalList();
 
+            void update();
+
             void turnON();
             void turnOFF();
 
         private:
+
+            bool _isRunning = false;
 
             TextWidget *_done;
             TextWidget *_actual;

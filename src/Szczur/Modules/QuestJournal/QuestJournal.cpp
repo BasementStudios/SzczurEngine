@@ -191,8 +191,9 @@ namespace rat
     void QuestJournal::addQuest(unsigned int i)
     {
         std::shared_ptr<journal::Quest> quest= std::make_shared<journal::Quest>(_fileLoader);
-        quest->setQuestName(i);
+        quest->setQuestName(i); ///
         _quests.push_back(quest);
+        
         it = _quests.end()-1;
         
         TextWidget* widget;
@@ -234,48 +235,39 @@ namespace rat
     }
     void QuestJournal::refresh(const std::string& questName)
     {
-
         for(auto i :_normalTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
 
+        std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
         for(auto i : _normalTextWidgets)
         {
             if(i->getString() == questName)
             {
                 i->setColor(sf::Color::White);
-                for(auto i : _quests)
-                {
-                    if(i->getQuestName()==questName)
-                    {
-                    
-                        _stepManager->setQuest(i);
-                        _descriptionManager->setQuest(i);
-                        _questName->setQuest(i);
-                        return;
-                    }
-                }
+
+                _stepManager->setQuest(*k);
+                _descriptionManager->setQuest(*k);
+                _questName->setQuest(*k);
+                return;          
             }
+            k++;
         }
-    
+
+        k = _doneQuests.begin();
         for(auto i : _doneTextWidgets)
         {
             if(i->getString() == questName)
             {
                 i->setColor(sf::Color::White);
-                for(auto i : _doneQuests)
-                {
-                    if(i->getQuestName()==questName)
-                    {   
-                        _stepManager->setQuest(i);
-                        _descriptionManager->setQuest(i);
-                        _questName->setQuest(i);
-                        return;
-                    }
-                }
-     
+ 
+                _stepManager->setQuest(*k);
+                _descriptionManager->setQuest(*k);
+                _questName->setQuest(*k);
+                return;
             }
+            k++;
         }
        
     }
@@ -284,12 +276,14 @@ namespace rat
     {
         _interface->invisible();
         _interface->deactivate();
+        _isRunning = false;
     }
 
     void QuestJournal::turnON()
     {
         _interface->activate();
         _interface->visible();
+        _isRunning = true;
     }
 
     void QuestJournal::finishQuest(const std::string& name)
@@ -305,6 +299,7 @@ namespace rat
                 widget = new TextWidget;
                 widget->setString((*i)->getQuestName());
                 widget->setFont(_font);
+
                 widget->setCharacterSize(25);
                 widget->setColor(sf::Color(135, 89, 247 ,255));
                 widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
@@ -375,5 +370,16 @@ namespace rat
 
         _done->setColor(sf::Color::White);
         _actual->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+    }
+
+    void QuestJournal::update()
+    {
+        if(!_isRunning)
+        {   
+            if(getModule<Input>().getManager().isPressed(Keyboard::J))
+            {
+                turnON();
+            }
+        }
     }
 }

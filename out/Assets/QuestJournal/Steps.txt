@@ -8,13 +8,13 @@ Oko Innosa
 5   Odzyskaj oko Innosa
 6   Znajdź sposób, aby naprawić artefakt
 ---
-Bezczelny zlodziej
+Bezczelny złodziej
 ---
 1   Dowiedz się kto stoi za kradzieżą
 2   Schwytaj uciekiniera i zabierz złoto
 3   Oddaj złoto do kupca
 ---
-Bandyci
+Napad bandytów
 ---
 1   Porozmawiaj z Hakonem na placu targowym
 2   Idź do kryjówki bandytów w lesie i zabij
