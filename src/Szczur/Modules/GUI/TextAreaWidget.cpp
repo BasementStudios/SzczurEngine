@@ -123,8 +123,8 @@ namespace rat {
     {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<float>(rect.left + rect.width),
-            static_cast<float>(rect.top + rect.height)
+            static_cast<float>(rect.width),
+            static_cast<float>(rect.height)
         };
     }
 
