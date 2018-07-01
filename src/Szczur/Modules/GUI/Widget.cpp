@@ -7,8 +7,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include "TransformAnimBasics/ColorAnim.hpp"
-#include "TransformAnimBasics/PosAnim.hpp"
 #include "InterfaceWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
@@ -305,7 +303,11 @@ namespace rat
 
         if(_size != oldSize)
         {
-            if(_parent) _parent->_aboutToRecalculate = true;
+            if(_parent)
+            {
+                _parent->_aboutToRecalculate = true;
+                //_parent->_isPosChanged = true;
+            }
             _childrenPropSizesMustBeenRecalculated = true;
         }
 
@@ -397,9 +399,9 @@ namespace rat
             child->setColor(color);
         }
     }
-	void Widget::setColor(const sf::Color& color, float inTime)
+	void Widget::setColorInTime(const sf::Color& color, float inTime)
     {
-        auto animCol = std::make_unique<ColorAnim>();
+        auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
         animCol->setAnim(getColor(), color, inTime);
         _addAnimation(std::move(animCol));
     }
@@ -468,6 +470,7 @@ namespace rat
     }
     void Widget::setPosition(const sf::Vector2f& offset) 
     {
+        _props.hasPosition = false;
         gui::FamilyTransform::setPosition(offset);
         if(_parent) _parent->_aboutToRecalculate = true;
         _isPosChanged = true;
@@ -479,13 +482,27 @@ namespace rat
 
 	void Widget::setPositionInTime(const sf::Vector2f& offset, float inTime)
     {
-        _props.hasPosition = false;
+        auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPosition);
 
-        auto animPos = std::make_unique<PositionAnim>();
-        animPos->setAnim(getPosition(), offset, inTime);
-        _addAnimation(std::move(animPos));
+        auto posAnim = std::make_unique<PosAnim_t>(this, setter);
+        posAnim->setAnim(getPosition(), offset, inTime);
+        _addAnimation(std::move(posAnim));
     }
     
+    sf::Vector2f Widget::getPosByGlobalPos(const sf::Vector2f& globalPos) const
+    {
+        return gui::FamilyTransform::getPosByGlobal(globalPos);
+    }
+    void Widget::setGlobalPosition(const sf::Vector2f& globalPos)
+    {
+        gui::FamilyTransform::setGlobalPos(globalPos);
+        _isPosChanged = true;
+        if(_parent) _parent->_aboutToRecalculate = true;
+    }
+    void Widget::setGlobalPosition(float globalX, float globalY)
+    {
+        setGlobalPosition({globalX, globalY});
+    }
 
     const sf::Vector2f& Widget::getPosition() const
     {
@@ -513,11 +530,11 @@ namespace rat
 
 	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
     {
-        _props.hasPosition = true;
+        auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPropPosition);
 
-        auto animPos = std::make_unique<PositionAnim>();
-        animPos->setAnim(_props.position, propPos, inTime);
-        _addAnimation(std::move(animPos));
+        auto posAnim = std::make_unique<PosAnim_t>(this, setter);
+        posAnim->setAnim(_props.position, propPos, inTime);
+        _addAnimation(std::move(posAnim));
     }
     
 
@@ -613,38 +630,27 @@ namespace rat
             _currentAnimations |= type;
         }
     }
+
+    void Widget::_abortAnimation(gui::AnimBase::Type type)
+    {
+        if(!(type & _currentAnimations)) return;
+        _currentAnimations &= (~type);
+        auto newEnd = std::remove_if(_animations.begin(), _animations.end(), [type](Animation_t& anim){
+            return anim->getType() == type;
+        });
+        _animations.erase(newEnd, _animations.end());
+    }
+
 	void Widget::_updateAnimations(float dt)
     {
         for(auto& anim : _animations)
         {
             anim->update(dt);
         }
+
         for(auto& anim : _animations)
         {
-            auto type = anim->getType();
-            auto* animPtr = anim.get();
-            
-            switch (type)
-            {
-                case TransformAnimationBase::Types::Color:
-                {
-                    auto* animCol = static_cast<ColorAnim*>(animPtr);
-                    setColor(animCol->getActualColor());
-                } break;
-                case TransformAnimationBase::Types::Pos:
-                {
-                    auto* animPos = static_cast<PositionAnim*>(animPtr);
-                    if(_props.hasPosition) setPropPosition(animPos->getActualPos());
-                    else setPosition(animPos->getActualPos());
-                } break;
-            
-                default:
-                    break;
-            }
-        }
-        for(auto& anim : _animations)
-        {
-            if(anim->isAnimationOver())
+            if(!anim->isAlive())
             {
                 auto type = anim->getType();
                 _currentAnimations &= (~type);
@@ -652,7 +658,7 @@ namespace rat
         }        
         auto newEnd = std::remove_if(_animations.begin(), _animations.end(), [](Animation_t& anim){
 
-            return anim->isAnimationOver();
+            return !anim->isAlive();
         });
         _animations.erase(newEnd, _animations.end());
     }

@@ -54,8 +54,8 @@ namespace rat {
     {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<float>(rect.left + rect.width),
-            static_cast<float>(rect.top + rect.height)
+            static_cast<float>(rect.width),
+            static_cast<float>(rect.height)
         };
     }
 
@@ -64,9 +64,9 @@ namespace rat {
         target.draw(_text, states);
     }
 
-    void TextWidget::setColor(const sf::Color& newColor)
+    void TextWidget:: _setColor(const sf::Color& color)
     {
-        _text.setFillColor(newColor);
+        _text.setFillColor(color);
     }
 
     void TextWidget::addLetter(char letter) {

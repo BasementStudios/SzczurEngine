@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <cassert>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -49,14 +50,50 @@ namespace rat {
         {
             _sprite.setTexture(*texture);
             _hasTexture = true;
+            if(_hasPropTexRect) _calcPropTexRect();
         }
         else
         {
+            LOG_ERROR("Texture given to ImageWidget is nullptr");
             _hasTexture = false;
         }
         _aboutToRecalculate = true;
     }
 
+    void ImageWidget::removeTexture()
+    {
+        _hasTexture = false;
+        _aboutToRecalculate = true;
+    }
+
+    void ImageWidget::setTextureRect(const sf::IntRect& rect)
+    {
+        _hasPropTexRect = false;
+        _sprite.setTextureRect(rect);
+    }
+    void ImageWidget::setPropTextureRect(const sf::FloatRect& propRect)
+    {
+        _hasPropTexRect = true;
+        _propTexRect = propRect;
+        _calcPropTexRect();
+    }
+
+    void ImageWidget::_calcPropTexRect()
+    {
+        assert(_hasPropTexRect);
+        if(!_hasTexture) return;
+
+        auto texSize = static_cast<sf::Vector2f>(_sprite.getTexture()->getSize());
+
+        sf::Vector2i pos( int(_propTexRect.left * texSize.x), int(_propTexRect.top * texSize.y) );
+        sf::Vector2i size( int(_propTexRect.width * texSize.x), int(_propTexRect.height * texSize.y) );
+
+        sf::IntRect texRect = { pos, size };
+
+        _aboutToRecalculate = true;
+
+        _sprite.setTextureRect(texRect);
+    }
     const sf::Texture* ImageWidget::getTexture() const  
     { 
         if(_hasTexture) return _sprite.getTexture(); 
@@ -78,7 +115,7 @@ namespace rat {
     {
         if(!_hasTexture) return;
 
-        auto texSize = static_cast<sf::Vector2f>(_sprite.getTexture()->getSize());
+        auto texSize = sf::Vector2f{float(_sprite.getTextureRect().width), float(_sprite.getTextureRect().height)};
         sf::Vector2f scale = {1.f, 1.f};
         if(_isMinSizeSet)
         {
@@ -97,6 +134,8 @@ namespace rat {
     {
         _sprite.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }
+
+    
     
     
 }

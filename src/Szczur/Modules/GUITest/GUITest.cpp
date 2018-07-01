@@ -36,7 +36,7 @@ namespace rat
 
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
-        gui.addAsset<sf::Font>("Assets/GUITest/arrial.ttf");
+        gui.addAsset<sf::Font>("Assets/GUITest/lumos.ttf");
 
         _widget = gui.addInterface();
 
@@ -52,7 +52,7 @@ namespace rat
 
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
-        scroll->setPropPosition({0.7f, 0.8f}, 3.f);
+        scroll->setPositionInTime({0.f, 600.f}, 3.f);
 
         
         auto* image = new ImageWidget;
@@ -71,7 +71,7 @@ namespace rat
 
         
         image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPosition();
+            scroll->resetScrollerPositionInTime(0.2f);
         });
 
         float size = 0.1f;
@@ -84,18 +84,19 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColor({0, 0, 0}, 1.f);
+                w->setColorInTime({0, 0, 0}, 1.f);
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColor({255, 255, 255}, 1.f);
+                w->setColorInTime({255, 255, 255}, 1.f);
             });
         }
 
         fps = new TextWidget;
         _widget->add(fps);
-        fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/arrial.ttf"));
-        fps->setCharacterSize(20u);
+        fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
+        fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
+        fps->setString("60.0");
 
     }
     
@@ -157,6 +158,19 @@ namespace rat
             _size.y -= deltaTime * 150.f;
             if(_size.y < 0.f) _size.y = 0.f;
         }
+
+        fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
+        //fps->setPosition();
+
+        //list->setGlobalPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        // list->setGlobalPosition(1280.f / 4.f, 360.f);
     }
     void GUITest::render()
     {
@@ -164,7 +178,7 @@ namespace rat
 
         mainWindow.pushGLStates();
 
-       _canvas.clear(sf::Color::Transparent);
+        _canvas.clear(sf::Color::Transparent);
         _canvas.display();
 
         mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));

@@ -13,6 +13,7 @@
 
 #include "ProportionalDimes.hpp"
 #include "Widget/FamilyTransform.hpp"
+#include "TransformAnimBasics/Anim.hpp"
 
 #define GUI_DEBUG 1
 
@@ -41,8 +42,12 @@ namespace rat
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 		using CallbacksLuaContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 		using Children_t = std::vector<Widget*>;
-		using Animation_t = std::unique_ptr<TransformAnimationBase>;
+
+		using Animation_t = std::unique_ptr<gui::AnimBase>;
 		using AnimationsContainer_t = std::vector<Animation_t>;
+
+		using PosAnim_t = gui::Anim<Widget, gui::AnimBase::Type::Pos, sf::Vector2f>;
+		using ColorAnim_t = gui::Anim<Widget, gui::AnimBase::Type::Color, sf::Color>;
 
 		void setParent(Widget* parent);
 		void setInterface(const InterfaceWidget* interface);
@@ -77,6 +82,10 @@ namespace rat
 		void setPropPosition(float propX, float propY);
 		void setPropPosition(const sf::Vector2f& propPos, float inTime);
 
+		sf::Vector2f getPosByGlobalPos(const sf::Vector2f& globalPos) const;
+		void setGlobalPosition(const sf::Vector2f& globalPos);
+		void setGlobalPosition(float globalX, float globalY);
+
 		virtual void setPadding(const sf::Vector2f& padding);
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
@@ -84,7 +93,7 @@ namespace rat
 		sf::Vector2f getInnerSize() const;
 
 		void setColor(const sf::Color& color);
-		void setColor(const sf::Color& color, float inTime);
+		void setColorInTime(const sf::Color& color, float inTime);
 		void resetColor();
 		sf::Color getColor() const; 
 		
@@ -148,6 +157,9 @@ namespace rat
 		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		void _addAnimation(Animation_t animation);
+		void _abortAnimation(gui::AnimBase::Type type);
+
 		Widget* _parent{nullptr};
 
 		bool _onPressed();
@@ -189,7 +201,6 @@ namespace rat
 
 		AnimationsContainer_t _animations;
 		size_t _currentAnimations{0};
-		void _addAnimation(Animation_t animation);
 		void _updateAnimations(float dt);
 
 		sf::Color _color;

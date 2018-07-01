@@ -27,7 +27,12 @@ namespace rat {
 
         const sf::Texture* getTexture() const;
 
+        void removeTexture();
+
         void setScale(const sf::Vector2f& scale);
+
+        void setTextureRect(const sf::IntRect& rect);
+        void setPropTextureRect(const sf::FloatRect& propRect);
     
     protected:
         virtual sf::Vector2f _getSize() const override;
@@ -37,7 +42,12 @@ namespace rat {
 
         virtual void _recalcPos() override;
     private:
-        sf::Sprite _sprite; 
+        sf::Sprite _sprite;
+
+        sf::FloatRect _propTexRect;
+        bool _hasPropTexRect{false};
+
+        void _calcPropTexRect();
 
         bool _hasTexture{false};
     };
