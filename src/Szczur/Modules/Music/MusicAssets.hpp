@@ -18,16 +18,10 @@ namespace rat
 
     public:
 
-        MusicAssets();
-
         void load(const std::string& name);
         void unload(const std::string& name);
 
         RatMusic& get(const std::string& name);
-
-    private:
-
-        std::string getPath(const std::string& fileName) const;
 
     };
 

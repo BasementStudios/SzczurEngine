@@ -72,12 +72,21 @@ namespace rat
 		module.set("Single", PlayingMode::Single);
 	}
 
+	MusicAssets* Music::getAssetsManager()
+	{
+		return &_assets;
+	}
+
+	const Playlist::Container_t& Music::getPlaylist(const std::string& key)
+	{
+		return _playlists[fnv1a_32(key.c_str())]->getContainerRef();
+	};
+
 	void Music::loadPlaylistFromJson(const std::string& filePath)
 	{
 		nlohmann::json j;
 
-		std::string path = MUSIC_DEFAULT_PATH;
-		std::ifstream file(path + "Playlists/" + filePath + ".json");
+		std::ifstream file(filePath);
         if (file.is_open()) {
             file >> j;
         }
@@ -103,16 +112,16 @@ namespace rat
 			addToPlaylist(key, it);
 	}
 
-	void Music::addToPlaylist(const std::string& key, const std::string& fileName)
+	void Music::addToPlaylist(const std::string& key, const std::string& name)
 	{
-		_assets.load(fileName);
-		auto&& base = MusicBase(_assets.get(fileName));
+		_assets.load(name);
+		auto&& base = MusicBase(_assets.get(name));
 		_playlists[fnv1a_32(key.c_str())]->add(std::move(base));
 
-		LOG_INFO("Added ", fileName, " to playlist ", key);
+		LOG_INFO("Added ", name, " to playlist ", key);
 	}
 
-	void Music::removeFromPlaylist(const std::string& key, const std::string& fileName) 
+	void Music::removeFromPlaylist(const std::string& key, const std::string& name) 
 	{
 		auto hashKey = fnv1a_32(key.c_str()); 
 
@@ -121,7 +130,7 @@ namespace rat
 				it = 0;
 		}
 
-		if (fileName.empty()) {
+		if (name.empty()) {
 
 			for (auto& it : _playlists[hashKey]->getContainerRef())
 				unLoad(it->getName());
@@ -129,12 +138,12 @@ namespace rat
 			_playlists.erase(hashKey);
 		}
 		else {
-			_playlists[hashKey]->remove(fileName);
-			unLoad(fileName);
+			_playlists[hashKey]->remove(name);
+			unLoad(name);
 		}
 	}
 
-	void Music::play(unsigned int musicTrack, const std::string& key, const std::string& fileName)
+	void Music::play(unsigned int musicTrack, const std::string& key, const std::string& name)
 	{
 		auto hashKey      = fnv1a_32(key.c_str());
 		auto samePlaylist = (_currentPlaylistKeys[musicTrack] == hashKey);
@@ -146,15 +155,15 @@ namespace rat
 			}
 		}
 
-		if (_currentPlaylistKeys[musicTrack] == 0 || (fileName == "" && samePlaylist))
-			_playlists[hashKey]->play(fileName);
+		if (_currentPlaylistKeys[musicTrack] == 0 || (name == "" && samePlaylist))
+			_playlists[hashKey]->play(name);
 		else {
 			auto currentPlaying = _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying();
 
-			if (currentPlaying->getName() != fileName || (_playlists[_currentPlaylistKeys[musicTrack]]->getStatus() == Playlist::Status::Stopped && samePlaylist))
-				_playlists[hashKey]->play(currentPlaying, fileName);
+			if (currentPlaying->getName() != name || (_playlists[_currentPlaylistKeys[musicTrack]]->getStatus() == Playlist::Status::Stopped && samePlaylist))
+				_playlists[hashKey]->play(currentPlaying, name);
 			else if (!samePlaylist)
-				_playlists[hashKey]->play(_playlists[hashKey]->getID(fileName), currentPlaying->getTimeLeft());
+				_playlists[hashKey]->play(_playlists[hashKey]->getID(name), currentPlaying->getTimeLeft());
 			
 			if (!samePlaylist)
 				_playlists[_currentPlaylistKeys[musicTrack]]->stopUpdates();
@@ -196,14 +205,14 @@ namespace rat
 		return nullptr;
 	}
 
-	RatMusic& Music::get(const std::string& fileName) 
+	RatMusic& Music::get(const std::string& name) 
 	{
-		return _assets.get(fileName);
+		return _assets.get(name);
 	}
 
-	bool Music::includes(const std::string& key, const std::string& fileName)
+	bool Music::includes(const std::string& key, const std::string& name)
 	{
-		return _playlists[fnv1a_32(key.c_str())]->includes(fileName);
+		return _playlists[fnv1a_32(key.c_str())]->includes(name);
 	}
 
 	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
@@ -217,7 +226,7 @@ namespace rat
 		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);
 	}
 
-	void Music::setVolume(float volume, const std::string& key, const std::string& fileName)
+	void Music::setVolume(float volume, const std::string& key, const std::string& name)
 	{
 		if (key.empty()) {
 			for (auto& it : _playlists) {
@@ -225,21 +234,21 @@ namespace rat
 			}
 		}
 		else
-			_playlists[fnv1a_32(key.c_str())]->setVolume(volume, fileName);
+			_playlists[fnv1a_32(key.c_str())]->setVolume(volume, name);
 	}
 
-	float Music::getVolume(const std::string& fileName)
+	float Music::getVolume(const std::string& name)
 	{
-		return _assets.get(fileName).getVolume();
+		return _assets.get(name).getVolume();
 	}
 
-	void Music::unLoad(const std::string& fileName)
+	void Music::unLoad(const std::string& name)
 	{
-		auto& music = _assets.get(fileName);
+		auto& music = _assets.get(name);
 		music.decrementCounter();
 
 		if (!music.getCounterValue())
-			_assets.unload(fileName);
+			_assets.unload(name);
 	}
 
 	void Music::setGlobalEffects()
