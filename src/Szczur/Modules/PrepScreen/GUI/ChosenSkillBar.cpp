@@ -24,7 +24,7 @@ namespace rat
         _border->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
             if(hasSkill())
             {
-                _icon->setColor({125, 125, 125}, 0.5f);
+                _icon->setColorInTime({125, 125, 125}, 0.5f);
             }
 
         });
@@ -32,7 +32,7 @@ namespace rat
         _border->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
             if(hasSkill())
             {
-                _icon->setColor({255, 255, 255}, 0.5f);
+                _icon->setColorInTime({255, 255, 255}, 0.5f);
             }
         });
 

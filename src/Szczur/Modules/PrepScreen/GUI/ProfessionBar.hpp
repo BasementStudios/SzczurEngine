@@ -21,11 +21,16 @@ namespace rat
         void initAssetsViaGUI(GUI& gui);
 
         const std::string& getProfession() const;
+
+        void unchoose();
     private:
         PrepScreen& _prepScreen;
         ImageWidget* _icon{nullptr};
         WindowWidget* _window{nullptr};
         std::string _profession;
+
+        bool _isChosen{false};
+        bool _isHovered{false};
 
         void _onClick();
     };

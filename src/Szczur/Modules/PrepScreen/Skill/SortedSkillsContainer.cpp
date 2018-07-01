@@ -87,7 +87,7 @@ namespace rat
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end())
         {
-            LOG_ERROR("Wrong profession name \"", profession, "\"");
+            //LOG_ERROR("Wrong profession name \"", profession, "\"");
             return {};
         }
         Skills_t wholeProf;
@@ -98,7 +98,6 @@ namespace rat
                 wholeProf.emplace_back(skill);
             }
         }
-        std::cout << wholeProf.size() << " KEKE\n";
 
         _sort(wholeProf);
         return wholeProf;

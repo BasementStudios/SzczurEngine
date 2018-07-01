@@ -27,6 +27,7 @@ namespace rat
 
         void setSkills(const std::vector<const Skill*>& skills);
         void recalculateSkillsAvailability();
+        void resetScroller();
 
     private:
         SkillBars_t _skillBars;

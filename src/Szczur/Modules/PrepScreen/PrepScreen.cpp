@@ -168,10 +168,19 @@ namespace rat
 
     void PrepScreen::setProfession(const std::string& profession)
     {
-        auto skills = _sortedSkills.getWholeProfession(profession);
-        _skillArea.setSkills(skills);
+        if(_currentProf == profession)
+        {
+            _skillArea.resetScroller();
+        }
+        else
+        {
+            _profArea.unchooseAll();
+            _currentProf = profession;
+            auto skills = _sortedSkills.getWholeProfession(profession);
+            _skillArea.setSkills(skills);
 
-        _calcSkillsGUI();
+            _calcSkillsGUI();
+        }
     }
 
     void PrepScreen::dimPPsNeededToBuySkill(const Skill* skill)
@@ -272,27 +281,7 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-
-        //_grayPPArea.setParent(_base);
-        
-        //_grayPPArea.setPosition(1280.f/2.f, 120);
-
-        //_grayPPArea.recalculate();
-
-        
-
-        _initSkillArea();
-        _initChosenSkillArea();
-        _initProfArea();
-        _initColorFilterArea();
-        _initEnemyArea();
-
-        //_glyphArea.setPosition(1280.f/2.f, 10.f);
-        //_glyphArea.setParent(_base);
-        
-
         addPP(14);
-        //takePP(3);
 
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
@@ -302,43 +291,6 @@ namespace rat
         setProfession("Range");
     }
 
-    void PrepScreen::_initSkillArea()
-    {
-        //_skillArea.setParent(_base);
-        //_skillArea.setPosition(200.f, 150.f);
-        
-    }
-
-    void PrepScreen::_initProfArea()
-    {
-        //_profArea.setParent(_base);
-        //_profArea.setPosition(40.f, 150.f);
-        
-        
-    }
-    
-    void PrepScreen::_initChosenSkillArea()
-    {
-        //_chosenSkillArea.setParent(_base);
-        //_chosenSkillArea.setPosition(200.f, 600.f);
-        
-    }
-    void PrepScreen::_initColorFilterArea()
-    {
-        /*
-        _colorFilterArea.setParent(_base);f_//coloredPPsBar(_source),
-        _colorFilterArea.setPosition(500.f, 200.f);
-        _colorFilterArea.initAssetsViaGUI(getModule<GUI>());
-        _colorFilterArea.setWidth(250.f);   
-        */
-    }
-
-    void PrepScreen::_initEnemyArea()
-    {
-        //_enemyArea.setParent(_base);
-        //_enemyArea.setPosition(900.f, 150.f);
-        
-    }
 
     void PrepScreen::_loadAssetsFromGUI()
     {

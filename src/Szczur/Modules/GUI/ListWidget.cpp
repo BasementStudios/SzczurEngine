@@ -66,6 +66,8 @@ namespace rat
         for(; i != iEnd; i += iAddon)
         {
             auto* child = _children[i];
+             
+            if(child->isFullyDeactivated()) continue;
             child->applyFamilyTrans(basePos, drawPos);
 
 
@@ -102,6 +104,8 @@ namespace rat
         bool isHorizontal = _positioning == Positioning::Horizontal;        
         for(auto* child : _children)
         {
+            if(child->isFullyDeactivated()) continue;
+
             float addon = isHorizontal ? 
             child->getPosition().x + child->getSize().x - child->getOrigin().x + _betweenWidgetsPadding : 
             child->getPosition().y + child->getSize().y - child->getOrigin().y + _betweenWidgetsPadding;

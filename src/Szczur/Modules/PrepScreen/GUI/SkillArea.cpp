@@ -29,6 +29,7 @@ namespace rat
 
         _skillsScroller = new ScrollAreaWidget;
         _skillsScroller->setPropSize(0.375f, 0.5f);
+        _skillsScroller->setPropPosition(0.5f, 0.5f);
         _border->add(_skillsScroller);
 
         _skillsList = new ListWidget;
@@ -44,6 +45,11 @@ namespace rat
             skillBar->setParent(_skillsList);
             _skillBars.emplace_back(std::move(skillBar));
         }
+    }
+
+    void SkillArea::resetScroller()
+    {
+        _skillsScroller->resetScrollerPositionInTime(0.3f);
     }
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
@@ -73,6 +79,7 @@ namespace rat
         {
             _skillBars[i]->setSkill(skills[i]);
         }
+        _skillsScroller->resetScrollerPosition();
     }
 
     void SkillArea::recalculateSkillsAvailability()

@@ -11,7 +11,7 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
-#undef GUI_DEBUG
+//#undef GUI_DEBUG
 
 namespace rat 
 {

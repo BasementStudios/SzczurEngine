@@ -32,4 +32,9 @@ namespace rat
             _profBars.emplace_back(std::move(profBar));
         }
     }
+
+    void ProfessionArea::unchooseAll()
+    {
+        for(auto& bar : _profBars) bar->unchoose();
+    }
 }

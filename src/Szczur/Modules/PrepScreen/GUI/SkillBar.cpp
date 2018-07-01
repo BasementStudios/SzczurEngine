@@ -66,6 +66,8 @@ namespace rat
 
         _costBar.setParent(_infoBar);
         _costBar.setPropPosition(0.f, 1.f);
+
+        _getBase()->fullyDeactivate();
     }
 
     void SkillBar::setSkill(const Skill* skill)
@@ -112,11 +114,11 @@ namespace rat
         _canBeBought = _prepScreen.canSkillBeBought(_skill);
         if(_canBeBought)
         {
-            _getBase()->setColor({255, 255, 255}, 0.3f);
+            _getBase()->setColorInTime({255, 255, 255}, 0.3f);
         }
         else
         {
-            _getBase()->setColor({125, 125, 125}, 0.3f);
+            _getBase()->setColorInTime({125, 125, 125}, 0.3f);
         }
     }
     
@@ -149,7 +151,7 @@ namespace rat
     {
         if(_canBeBought)
         {
-            _getBase()->setColor({180, 180, 180}, 0.3f);
+            _getBase()->setColorInTime({180, 180, 180}, 0.3f);
             _prepScreen.dimPPsNeededToBuySkill(_skill);
         }
     }
@@ -157,7 +159,7 @@ namespace rat
     {
         if(_canBeBought)
         {
-            _getBase()->setColor({255, 255, 255}, 0.3f);
+            _getBase()->setColorInTime({255, 255, 255}, 0.3f);
             _prepScreen.normPPsNeededToBuySkill(_skill);
         }
     }

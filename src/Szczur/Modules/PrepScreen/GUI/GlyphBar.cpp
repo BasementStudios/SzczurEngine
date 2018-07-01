@@ -22,7 +22,7 @@ namespace rat
         _amountState = new TextWidget;
 
         _addWidget(_container);
-        _container->setPropSize(0.125f, 0.125f);
+        _container->setPropSize(0.15f, 0.15f);
         _container->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
         });
@@ -32,13 +32,13 @@ namespace rat
         glyphHandler->setPropPosition(0.5f, 0.5f);
         _container->add(glyphHandler);
         glyphHandler->add(_glyph);
-        _glyph->setPropSize(0.1f, 0.1f);
+        _glyph->setPropSize(0.13f, 0.13f);
         _glyph->setPropPosition(0.5f, 1.f);
         //_glyph->setPosition(10.f, 10.f);
 
 
         _container->add(_amountState);
-        _amountState->setPropPosition(1.f, 1.f);
+        _amountState->setPropPosition(13.f, 13.f);
         _amountState->setCharacterSize(17);
         _amountState->setColor(sf::Color::White);
     }

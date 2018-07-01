@@ -88,17 +88,11 @@ namespace rat
         std::set<const Skill*> _boughtSkills;
         const Skill* _dimedPPsSkill{nullptr};
 
+        std::string _currentProf;
+
 
         EnemyArea _enemyArea;
         EnemyCodex _enemyCodex;
-
-        void _initProfessionBar(GUI& gui);
-        void _initSkillArea();
-        void _initProfArea();
-        void _initChosenSkillArea();
-        void _initColorFilterArea();
-
-        void _initEnemyArea();
 
         void _loadAssetsFromGUI();
         void _initAssetsViaGUI();

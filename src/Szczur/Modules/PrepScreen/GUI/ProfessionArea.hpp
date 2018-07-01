@@ -16,8 +16,10 @@ namespace rat
     public:
         ProfessionArea(PrepScreen& prepScreen);
         void initAssetsViaGUI(GUI& gui);
+        void unchooseAll();
     private:
         std::vector<std::unique_ptr<ProfessionBar>> _profBars;
+
 
         void _initProfBars(PrepScreen& prepScreen);
     };
