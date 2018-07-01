@@ -27,6 +27,8 @@ namespace rat {
 
         const sf::Texture* getTexture() const;
 
+        void removeTexture();
+
         void setScale(const sf::Vector2f& scale);
 
         void setTextureRect(const sf::IntRect& rect);

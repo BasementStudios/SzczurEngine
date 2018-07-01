@@ -54,8 +54,15 @@ namespace rat {
         }
         else
         {
+            LOG_ERROR("Texture given to ImageWidget is nullptr");
             _hasTexture = false;
         }
+        _aboutToRecalculate = true;
+    }
+
+    void ImageWidget::removeTexture()
+    {
+        _hasTexture = false;
         _aboutToRecalculate = true;
     }
 
