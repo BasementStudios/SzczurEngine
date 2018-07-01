@@ -71,7 +71,7 @@ namespace rat
 
         
         image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPosition();
+            scroll->resetScrollerPositionInTime(0.2f);
         });
 
         float size = 0.1f;

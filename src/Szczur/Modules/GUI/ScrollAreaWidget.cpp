@@ -57,9 +57,22 @@ namespace rat {
 
     void ScrollAreaWidget::resetScrollerPosition()
     {
-        _scroller.setProportion(0.f);
-        _offset = 0.f;
+        setScrollerProp(0.f);
+    }
+
+    void ScrollAreaWidget::setScrollerProp(float prop)
+    {
+        float maxOffset = -(_childrenHeight - _getSize().y);
+        _scroller.setProportion(prop);
+        _offset = float(maxOffset * prop);
         _isPosChanged = true;
+    }
+
+    void ScrollAreaWidget::resetScrollerPositionInTime(float time)
+    {
+        auto scrollAnim = std::make_unique<ScrollAnim_t>(this, &setScrollerProp);
+        scrollAnim->setAnim(_scroller.getProportion(), 0.f, time);
+        _addAnimation(std::move(scrollAnim));
     }
 
     sf::Vector2f ScrollAreaWidget::_getSize() const {

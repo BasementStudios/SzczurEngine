@@ -5,9 +5,12 @@
 #include "Widget.hpp"
 #include "Szczur/Modules/GUITest/Scroller.hpp"
 
-namespace rat {
+namespace rat 
+{
     class Script;
-    class ScrollAreaWidget : public Widget {
+    class ScrollAreaWidget : public Widget 
+    {
+        using ScrollAnim_t = gui::Anim<ScrollAreaWidget, gui::AnimBase::Type::Scroll, float>;
     public:
         ScrollAreaWidget();
 
@@ -21,6 +24,8 @@ namespace rat {
         float getScrollSpeed() const;
 
         void resetScrollerPosition();
+        void resetScrollerPositionInTime(float time);
+        void setScrollerProp(float prop);
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _update(float deltaTime) override;
