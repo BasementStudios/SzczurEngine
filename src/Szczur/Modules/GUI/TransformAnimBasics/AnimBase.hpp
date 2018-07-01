@@ -27,6 +27,7 @@ namespace gui
         bool isAlive() const { return _isAlive; }
 
         void setHoldTime(float time) { _maxTime = time; }
+        Type getType() const { return _type; }
     protected:
         float _getTimeProp() const { return _currentTime / _maxTime; }
 

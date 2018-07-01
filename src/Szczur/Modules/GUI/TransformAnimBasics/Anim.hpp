@@ -11,68 +11,71 @@ namespace rat
 {
 namespace gui
 {
-    template<typename W, typename T>
+    template<typename W, AnimBase::Type type, typename T>
     class Anim : public AnimBase
     {
-    using Setter_t =  std::function<void(W*, const T&)>;
     public:
-        Anim(Setter_t setter, W* owner, AnimBase::Type type)
+        using Setter_t =  std::function<void (W*, const T&)>;
+        Anim(W* owner, Setter_t setter)
         :
         AnimBase(type),
         _owner(owner),
         _setter(setter)
         {
         }
-        void setBounds(const T& fromValue, const T& toValue)
+        void setAnim(const T& fromValue, const T& toValue, float inTime)
         {
             _start = fromValue;
             _end = toValue;
+            setHoldTime(inTime);
         }
 
     protected:
         virtual void _finish() override
         {
-            std::invoke(_setter, _owner, _end);
+            _setter(_owner, _end);
         }
         virtual void _update() override
         {
             float prop = _getTimeProp();
             auto value = (_end - _start) * prop + _start;
-            std::invoke(_setter, _owner, value);
+            _setter(_owner, value);
         }
 
     
     private:
-        W const * _owner{nullptr};
+        W  * const _owner{nullptr};
         const Setter_t _setter;
 
         T _start;
         T _end;
     };
 
-    template<typename W>
-    class Anim<W, sf::Color> : public AnimBase
+    template<typename W, AnimBase::Type type>
+    class Anim<W, type, sf::Color> : public AnimBase
     {
-    using Setter_t =  std::function<void(W*, const sf::Color&)>;
-    using ColorArray_t = std::array<sf::Uint8, 3>;
+        using ColorArray_t = std::array<sf::Uint8, 3>;
     public:
-        Anim(Setter_t setter, W* owner, AnimBase::Type type)
+        using Setter_t = std::function<void (W*, const sf::Color&)>;
+
+        Anim(W* owner, Setter_t setter)
         :
         AnimBase(type),
         _owner(owner),
         _setter(setter)
         {
         }
-        void setBounds(const sf::Color& fromValue, const sf::Color& toValue)
+        void setAnim(const sf::Color& fromValue, const sf::Color& toValue, float inTime)
         {
             _start = fromColorToArray(fromValue);
             _end = fromColorToArray(toValue);
+            setHoldTime(inTime);
         }
 
     protected:
         virtual void _finish() override
         {
-            std::invoke(_setter, _owner,  fromArrayToColor(_end));
+            _setter(_owner,  fromArrayToColor(_end));
         }
         virtual void _update() override
         {
@@ -89,12 +92,13 @@ namespace gui
                 c[i] = sf::Uint8(float(_start[i]) + addon);
             }
 
-            std::invoke(_setter, _owner, fromArrayToColor(c));
+            //std::invoke(_setter, _owner, fromArrayToColor(c));
+            _setter(_owner, fromArrayToColor(c));
         }
 
     
     private:
-        W const * _owner{nullptr};
+        W * const _owner{nullptr};
         const Setter_t _setter;
 
         ColorArray_t _start;

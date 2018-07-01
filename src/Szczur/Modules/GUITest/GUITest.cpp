@@ -52,7 +52,7 @@ namespace rat
 
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
-        scroll->setPropPosition({0.7f, 0.8f}, 3.f);
+        scroll->setPositionInTime({0.f, 600.f}, 3.f);
 
         
         auto* image = new ImageWidget;
@@ -84,10 +84,10 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColor({0, 0, 0}, 1.f);
+                w->setColorInTime({0, 0, 0}, 1.f);
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColor({255, 255, 255}, 1.f);
+                w->setColorInTime({255, 255, 255}, 1.f);
             });
         }
 
