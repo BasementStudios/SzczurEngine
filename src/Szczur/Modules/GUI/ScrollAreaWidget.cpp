@@ -123,8 +123,6 @@ namespace rat {
 
     void ScrollAreaWidget::_input(const sf::Event& event) 
     {
-        float maxOffset = -(_childrenHeight - _getSize().y);
-
         float oldProp = _scroller.getProportion();
 
         if(_isHovered && event.type == sf::Event::MouseWheelScrolled) 
@@ -135,12 +133,11 @@ namespace rat {
         
         _scroller.input(event);
         //_scroller.inputMouseMoved()
+        float newProp = _scroller.getProportion();
         
-
-        if(oldProp != _scroller.getProportion())
+        if(oldProp != newProp)
         {
-            _offset = float(maxOffset * _scroller.getProportion());
-            _isPosChanged = true;
+            setScrollerProp(newProp);
         }
     }
 
