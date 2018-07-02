@@ -7,6 +7,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "Animation/Anim.hpp"
+
 #include "InterfaceWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
@@ -399,11 +401,17 @@ namespace rat
             child->setColor(color);
         }
     }
+    void Widget::setColorInTime(const sf::Color& color, const gui::AnimData& data)
+    {
+		using ColorAnim_t = gui::Anim<Widget, gui::AnimType::Color, sf::Color>;        
+        auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
+        animCol->setAnim(getColor(), color, data);
+        _addAnimation(std::move(animCol));
+    }
+    
 	void Widget::setColorInTime(const sf::Color& color, float inTime)
     {
-        auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
-        animCol->setAnim(getColor(), color, inTime);
-        _addAnimation(std::move(animCol));
+        setColorInTime(color, gui::AnimData{inTime});
     }
     
     
@@ -480,13 +488,21 @@ namespace rat
         setPosition({x, y});
     }
 
-	void Widget::setPositionInTime(const sf::Vector2f& offset, float inTime)
+
+    void Widget::setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data)
     {
+        using PosAnim_t = gui::Anim<Widget, gui::AnimType::Pos, sf::Vector2f>;
         auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPosition);
 
         auto posAnim = std::make_unique<PosAnim_t>(this, setter);
-        posAnim->setAnim(getPosition(), offset, inTime);
+        posAnim->setAnim(getPosition(), offset, data);
         _addAnimation(std::move(posAnim));
+    }
+    
+
+	void Widget::setPositionInTime(const sf::Vector2f& offset, float inTime)
+    {
+        setPositionInTime(offset, gui::AnimData(inTime));
     }
     
     sf::Vector2f Widget::getPosByGlobalPos(const sf::Vector2f& globalPos) const
@@ -517,8 +533,6 @@ namespace rat
     {
         _props.hasPosition = true;
         _props.position = propPos;
-        _props.position.x = std::max(0.f, std::min(1.f, _props.position.x));
-        _props.position.y = std::max(0.f, std::min(1.f, _props.position.y));
 
         _propPosMustBeenRecalculated = true;
         _isPosChanged = true;
@@ -528,13 +542,20 @@ namespace rat
         setPropPosition({propX, propY});
     }
 
-	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+	void Widget::setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data)
     {
+        using PosAnim_t = gui::Anim<Widget, gui::AnimType::Pos, sf::Vector2f>;
+        
         auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPropPosition);
 
         auto posAnim = std::make_unique<PosAnim_t>(this, setter);
-        posAnim->setAnim(_props.position, propPos, inTime);
+        posAnim->setAnim(_props.position, propPos, data);
         _addAnimation(std::move(posAnim));
+    }
+    
+	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+    {
+        setPropPosition(propPos, gui::AnimData(inTime));
     }
     
 
@@ -631,7 +652,7 @@ namespace rat
         }
     }
 
-    void Widget::_abortAnimation(gui::AnimBase::Type type)
+    void Widget::_abortAnimation(gui::AnimType type)
     {
         if(!(type & _currentAnimations)) return;
         _currentAnimations &= (~type);

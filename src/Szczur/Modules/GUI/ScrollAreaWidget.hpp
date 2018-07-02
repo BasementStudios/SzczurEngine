@@ -8,9 +8,9 @@
 namespace rat 
 {
     class Script;
+    namespace gui { class AnimData; }
     class ScrollAreaWidget : public Widget 
     {
-        using ScrollAnim_t = gui::Anim<ScrollAreaWidget, gui::AnimBase::Type::Scroll, float>;
     public:
         ScrollAreaWidget();
 
@@ -25,6 +25,7 @@ namespace rat
 
         void resetScrollerPosition();
         void resetScrollerPositionInTime(float time);
+        void resetScrollerPositionInTime(const gui::AnimData& data);
         void setScrollerProp(float prop);
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
