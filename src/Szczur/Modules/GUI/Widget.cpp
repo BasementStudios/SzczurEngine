@@ -528,13 +528,18 @@ namespace rat
         setPropPosition({propX, propY});
     }
 
-	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+	void Widget::setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data)
     {
         auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPropPosition);
 
         auto posAnim = std::make_unique<PosAnim_t>(this, setter);
-        posAnim->setAnim(_props.position, propPos, inTime);
+        posAnim->setAnim(_props.position, propPos, data);
         _addAnimation(std::move(posAnim));
+    }
+    
+	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+    {
+        setPropPosition(propPos, gui::AnimData(inTime));
     }
     
 

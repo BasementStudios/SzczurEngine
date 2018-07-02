@@ -29,6 +29,12 @@ namespace gui
             _end = toValue;
             setHoldTime(inTime);
         }
+        void setAnim(const T& fromValue, const T& toValue, const AnimData& data)
+        {
+            _start = fromValue;
+            _end = toValue;
+            setAnimData(data);
+        }
 
     protected:
         virtual void _finish() override
