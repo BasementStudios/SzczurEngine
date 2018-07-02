@@ -32,7 +32,11 @@ namespace gui
 
         EaseInBounce,
         EaseOutBounce,
-        EaseInOutBounce
+        EaseInOutBounce,
+
+        EaseInExpo,
+        EaseOutExpo,
+        EaseInOutExpo
     };
     struct EasingFuncs
     {
@@ -77,6 +81,13 @@ namespace gui
                 case Easing::EaseInOutBounce: return [](float t){ return t < 0.5f ? 8 * pow( 2, 8.f * (t - 1.f) ) * abs( sin( t * glm::pi<float>() * 7.f ) ) : 1.f - 8.f * pow( 2, -8.f * t ) * abs( sin( t * glm::pi<float>() * 7.f ) ); };
                     break;
                 
+                case Easing::EaseInExpo: return [](float t){ return (pow(2, 8.f * t ) - 1.f) / 255.f; };
+                    break;
+                case Easing::EaseOutExpo: return [](float t){ return 1.f - pow(2, -8.f * t ); };
+                    break;
+                case Easing::EaseInOutExpo: return [](float t){ return t < 0.5f ? ((pow(2, 16.f * t ) - 1.f) / 510.f) : (1.f - 0.5f * pow( 2, -16.f * (t - 0.5f) )); };
+                    break;
+
                 default:
                 return [](float){return 1.f; };
                     break;

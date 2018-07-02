@@ -54,31 +54,17 @@ namespace rat
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
 
-        // scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseOutElastic, [scroll](){
-        //     scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseOutElastic, [scroll](){
-        //         scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInBounce, [scroll](){
-        //             scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseOutBounce, [scroll](){
-        //                     scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutBounce, [scroll](){
+        scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
+            scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
+                scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
+                    scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
+                            scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutBounce, [scroll](){
             
-        //                 }});
-        //             }});
-        //         }});
-        //     }});
-        // }});
-        //scroll->setPositionInTime({0.f, 600.f}, 3.f);
-
-        // scroll->setPropPosition(0.0f, 0.0f);
-        // scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutCubic}, [scroll](){
-        //     scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseInQuint}, [scroll](){
-        //         scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInOutQuad}, [scroll](){
-        //             scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseInOutQuart}, [scroll](){
-        //                 scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutCubic}, [scroll](){
-            
-        //                 };)
-        //             };)
-        //         };)
-        //     };)
-        // });
+                        }});
+                    }});
+                }});
+            }});
+        }});
 
         
         auto* image = new ImageWidget;
