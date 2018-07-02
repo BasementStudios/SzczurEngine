@@ -101,10 +101,10 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColorInTime({0, 0, 0}, {1.f, gui::Easing::EaseInQuint});
+                w->setColorInTime({0, 0, 0}, {1.f, gui::Easing::EaseInCubic});
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColorInTime({255, 255, 255}, {1.f, gui::Easing::EaseInOutBounce});
+                w->setColorInTime({255, 255, 255}, {1.f, gui::Easing::EaseInCubic});
             });
         }
 

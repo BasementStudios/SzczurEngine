@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include "AnimBase.hpp"
+#include "BetweenGetter.hpp"
 
 namespace rat
 {
