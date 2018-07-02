@@ -70,12 +70,33 @@ namespace rat {
     {
         _hasPropTexRect = false;
         _sprite.setTextureRect(rect);
+        _aboutToRecalculate = true;
+        if(_isStaticTexPositing && _isFullyTexSizing) _calcStaticSizing();
     }
     void ImageWidget::setPropTextureRect(const sf::FloatRect& propRect)
     {
         _hasPropTexRect = true;
         _propTexRect = propRect;
         _calcPropTexRect();
+        if(_isStaticTexPositing && _isFullyTexSizing) _calcStaticSizing();
+    }
+
+    void ImageWidget::setFullyTexSizing()
+    {
+        _isFullyTexSizing = true;
+        if(_hasPropTexRect) _aboutToRecalculate = true;
+    }
+
+    void ImageWidget::setStaticTexPositing()
+    {
+        _isStaticTexPositing = true;
+        if(_hasPropTexRect && _isFullyTexSizing) _calcStaticSizing();
+    }
+    void ImageWidget::_calcStaticSizing()
+    {
+        assert(_isStaticTexPositing && _isFullyTexSizing);
+        auto texRect = _sprite.getTextureRect();
+        _sprite.setOrigin({-float(texRect.left), -float(texRect.top)});
     }
 
     void ImageWidget::_calcPropTexRect()
@@ -115,7 +136,15 @@ namespace rat {
     {
         if(!_hasTexture) return;
 
-        auto texSize = sf::Vector2f{float(_sprite.getTextureRect().width), float(_sprite.getTextureRect().height)};
+        sf::Vector2f texSize;
+        if(_isFullyTexSizing)
+        {
+            texSize = static_cast<sf::Vector2f>(_sprite.getTexture()->getSize());
+        }
+        else
+        {
+            texSize = sf::Vector2f{float(_sprite.getTextureRect().width), float(_sprite.getTextureRect().height)};
+        }
         sf::Vector2f scale = {1.f, 1.f};
         if(_isMinSizeSet)
         {

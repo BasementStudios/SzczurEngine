@@ -33,6 +33,9 @@ namespace rat {
 
         void setTextureRect(const sf::IntRect& rect);
         void setPropTextureRect(const sf::FloatRect& propRect);
+
+        void setFullyTexSizing();
+        void setStaticTexPositing();
     
     protected:
         virtual sf::Vector2f _getSize() const override;
@@ -46,8 +49,11 @@ namespace rat {
 
         sf::FloatRect _propTexRect;
         bool _hasPropTexRect{false};
+        bool _isFullyTexSizing{false};
+        bool _isStaticTexPositing{false};
 
         void _calcPropTexRect();
+        void _calcStaticSizing();
 
         bool _hasTexture{false};
     };
