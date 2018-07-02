@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <string>
+#include <iostream>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
@@ -63,7 +64,7 @@ namespace gui
                 notStarted = false;
                 prop = float(from.size()) / float(from.size() + to.size());
                 inverProp = 1.f / prop;
-                eInverProp = 1.f * (1.f - prop);
+                eInverProp = 1.f / (1.f - prop);
                 maxSI = float(from.size()) - 1.f;
                 maxEI = float(to.size()) - 1.f;
             }

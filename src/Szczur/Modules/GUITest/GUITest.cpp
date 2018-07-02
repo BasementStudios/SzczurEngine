@@ -87,9 +87,6 @@ namespace rat
         list->setAutoBetweenPadding();
 
         
-        image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPositionInTime({0.5f, gui::Easing::EaseInOutQuint});
-        });
 
         float size = 0.1f;
         for(int i = 0; i < 4; i++)
@@ -113,8 +110,10 @@ namespace rat
         fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
         fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
-        fps->setString("60.0");
-
+        fps->setString("ABCDEFG");
+        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
+            fps->setStringInTime("Ten tekst pojawi sie po anmacji wiec no", 4.f);
+        });
     }
     
     
@@ -176,7 +175,7 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
-        fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
+        //fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
 
         image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
     }
