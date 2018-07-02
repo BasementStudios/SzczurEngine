@@ -87,6 +87,24 @@ namespace rat {
         _root.update(deltaTime);
     }
 
+    sf::Texture* GUI::getTexture(const std::string& key)
+    {
+        return getAsset<sf::Texture>(key);
+    }
+    sf::Font* GUI::getFont(const std::string& key)
+    {
+        return getAsset<sf::Font>(key);
+    }
+
+    void GUI::addTexture(const std::string& key)
+    {
+        addAsset<sf::Texture>(key);
+    }
+    void GUI::addFont(const std::string& key)
+    {
+        addAsset<sf::Font>(key);
+    }
+
     void GUI::render() {
         auto& mainWindow = getModule<Window>();
 

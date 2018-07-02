@@ -48,8 +48,8 @@ namespace rat
         _widget->add(scroll);
 
         scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+        scroll->setPathTexture(gui.getTexture("Assets/Test/ScrollerBar.png"));
+        scroll->setBoundsTexture(gui.getTexture("Assets/Test/ScrollerBound.png"));
 
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.0f, 0.0f);

@@ -10,8 +10,6 @@
 #include "InterfaceWidget.hpp"
 
 #include "GuiAssetsManager.hpp"
-
-
  
 namespace rat {
     class GUI : public Module<Input, Window, Script> { 
@@ -31,8 +29,14 @@ namespace rat {
         template<typename T>
         T* getAsset(const std::string& key);
 
+        sf::Texture* getTexture(const std::string& key);
+        sf::Font* getFont(const std::string& key);
+
         template<typename T>
         void addAsset(const std::string& path);
+
+        void addTexture(const std::string& key);
+        void addFont(const std::string& key);
     private:
         //std::vector<Interface*> _interfaces;
         Widget _root;
