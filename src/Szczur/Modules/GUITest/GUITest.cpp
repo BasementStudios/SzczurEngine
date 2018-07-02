@@ -9,6 +9,7 @@
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 
+#include "Szczur/Modules/GUI/Animation/Anim.hpp"
 
 namespace rat
 {
@@ -38,6 +39,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/GUITest/Blue.png");
         gui.addAsset<sf::Texture>("Assets/GUITest/Red.png");
         gui.addAsset<sf::Font>("Assets/GUITest/lumos.ttf");
+        gui.addTexture("Assets/GUITest/Cubic.png");
 
         _widget = gui.addInterface();
 
@@ -48,18 +50,33 @@ namespace rat
         _widget->add(scroll);
 
         scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+        scroll->setPathTexture(gui.getTexture("Assets/Test/ScrollerBar.png"));
+        scroll->setBoundsTexture(gui.getTexture("Assets/Test/ScrollerBound.png"));
 
         scroll->setPropSize(0.5f, 0.5f);
-        scroll->setPropPosition(0.5f, 0.5f);
-        scroll->setPositionInTime({0.f, 600.f}, 3.f);
+        scroll->setPropPosition(1.0f, 1.0f);
+
+        //auto gui::AnimData{4.f, gui::Easing::EaseInQuad, [](){}};
+
+        // scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInBack, [scroll](){
+        //     scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseInOutBack, [scroll](){
+        //         scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseOutBack, [scroll](){
+        //             scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseInBack, [scroll](){
+        //                     scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInBack, [scroll](){
+            
+        //                 }});
+        //             }});
+        //         }});
+        //     }});
+        // }});
 
         
-        auto* image = new ImageWidget;
-        image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
-        image->setPropSize(0.15f, 0.15f);
-        //image->setPropPosition(0.5f, 1.f);
+        image = new ImageWidget;
+        image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Cubic.png"));
+        image->setPropSize(0.3f, 0.3f);
+        image->setFullyTexSizing();
+        image->setStaticTexPositing();
+        image->setPropPosition(0.5f, 0.5f);
         _widget->add(image);
         
         list = new ListWidget;
@@ -72,7 +89,7 @@ namespace rat
 
         
         image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPositionInTime(0.2f);
+            scroll->resetScrollerPositionInTime({0.5f, gui::Easing::EaseInOutQuint});
         });
 
         float size = 0.1f;
@@ -85,10 +102,10 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColorInTime({0, 0, 0}, 1.f);
+                w->setColorInTime({0, 0, 0}, {1.f, gui::Easing::EaseInQuint});
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColorInTime({255, 255, 255}, 1.f);
+                w->setColorInTime({255, 255, 255}, {1.f, gui::Easing::EaseInOutBounce});
             });
         }
 
@@ -161,17 +178,8 @@ namespace rat
         }
 
         fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
-        //fps->setPosition();
 
-        //list->setGlobalPosition(sf::Vector2f(sf::Mouse::getPosition(getModule<Window>().getWindow())));
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
-        // list->setGlobalPosition(1280.f / 4.f, 360.f);
+        image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
     }
     void GUITest::render()
     {
