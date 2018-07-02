@@ -36,7 +36,11 @@ namespace gui
 
         EaseInExpo,
         EaseOutExpo,
-        EaseInOutExpo
+        EaseInOutExpo,
+
+        EaseInCirc,
+        EaseOutCirc,
+        EaseInOutCirc
     };
     struct EasingFuncs
     {
@@ -47,30 +51,35 @@ namespace gui
             {
                 case Easing::Linear: return [](float t){ return t; };
                     break;
+
                 case Easing::EaseInQuad: return [](float t){ return t * t; };
                     break;
                 case Easing::EaseOutQuad: return [](float t){ return t * (2.f - t); };
                     break;
                 case Easing::EaseInOutQuad: return [](float t){ return t < 0.5f ? (2.f * t * t) : (-1.f + (4.f - 2.f * t ) * t); };
                     break;
+
                 case Easing::EaseInCubic: return [](float t){ return t * t * t; };
                     break;
                 case Easing::EaseOutCubic: return [](float t){ t -= 1.f; return t * t * t + 1.f; };
                     break;
                 case Easing::EaseInOutCubic: return [](float t){ return t < 0.5f ? (4.f * t * t * t) : (t - 1.f)*(2.f * t - 2.f)*(2.f * t - 2.f) + 1.f; };
                     break;
+                    
                 case Easing::EaseInQuart: return [](float t){ return t * t * t *t; };
                     break;
                 case Easing::EaseOutQuart: return [](float t){ t -= 1.f; return 1.f - t * t * t * t; };
                     break;
                 case Easing::EaseInOutQuart: return [](float t){ return t < 0.5f ? (8.f * t * t * t * t) : 1.f - 8.f * (--t) * t * t * t; };
                     break;
+
                 case Easing::EaseInQuint: return [](float t){ return t * t * t * t * t; };
                     break;
                 case Easing::EaseOutQuint: return [](float t){ return 1.f + (--t) * t * t * t * t; };
                     break;
                 case Easing::EaseInOutQuint: return [](float t){ return t < 0.5f ? 16.f * t * t * t * t * t : 1.f + 16.f * (--t) * t * t * t * t; };
                     break;
+
                 case Easing::EaseOutElastic: return [](float t){ float p = 0.3f; return pow(2,-10.f * t) * sin((t - p / 4.f)*(2.f * glm::pi<float>()) / p) + 1.f; };
                     break;
                 
@@ -88,12 +97,35 @@ namespace gui
                 case Easing::EaseInOutExpo: return [](float t){ return t < 0.5f ? ((pow(2, 16.f * t ) - 1.f) / 510.f) : (1.f - 0.5f * pow( 2, -16.f * (t - 0.5f) )); };
                     break;
 
+                case Easing::EaseInCirc: return [](float t){ return 1.f - sqrt( 1.f - t ); };
+                    break;
+                case Easing::EaseOutCirc: return [](float t){ return sqrt( t ); };
+                    break;
+                case Easing::EaseInOutCirc: return [](float t){ return t < 0.5f ? ((1.f - sqrt( 1.f - 2.f * t )) * 0.5f) : ((1.f + sqrt( 2.f * t - 1.f )) * 0.5f); };
+                    break;
+
                 default:
                 return [](float){return 1.f; };
                     break;
             }
         }
     };
+
+//     double easeInCirc( double t ) {
+//     return 1 - sqrt( 1 - t );
+// }
+
+// double easeOutCirc( double t ) {
+//     return sqrt( t );
+// }
+
+// double easeInOutCirc( double t ) {
+//     if( t < 0.5 ) {
+//         return (1 - sqrt( 1 - 2 * t )) * 0.5;
+//     } else {
+//         return (1 + sqrt( 2 * t - 1 )) * 0.5;
+//     }
+// }
 
     struct AnimData
     {

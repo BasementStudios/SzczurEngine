@@ -54,9 +54,9 @@ namespace rat
         scroll->setPropSize(0.5f, 0.5f);
         scroll->setPropPosition(0.5f, 0.5f);
 
-        scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
-            scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
-                scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
+        scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInCirc, [scroll](){
+            scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseOutCirc, [scroll](){
+                scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInOutCirc, [scroll](){
                     scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseInExpo, [scroll](){
                             scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutBounce, [scroll](){
             
