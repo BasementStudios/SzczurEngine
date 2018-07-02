@@ -126,7 +126,6 @@ namespace rat {
 	void LevelEditor::update(InputManager& input, Camera& camera) {
 		auto* scene = _scenes.getCurrentScene();
 		auto& window = detail::globalPtr<Window>->getWindow();
-		
 
 		updateCurrentCamera();
 
@@ -153,13 +152,26 @@ namespace rat {
 						}
 
 						_isDragging = true;
-						_dragLastPos = input.getMousePosition();
+
+						_draggingEntity = &entity;
+
+						if (_draggingEntity != nullptr) {
+							glm::vec3 projection;
+
+							if (_isDepthDragging)
+								projection = linear.getProjectionY(_draggingEntity->getPosition());
+							else
+								projection = linear.getProjectionZ(_draggingEntity->getPosition());
+
+							_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+						}
 					}
 				});
 			}
 
 			if (input.isReleased(Mouse::Left)) {
 				_isDragging = false;
+				_draggingEntity = nullptr;
 
 				if (_entityToUnselect != nullptr) {
 					if (_entityToUnselectPos == _entityToUnselect->getPosition()) {
@@ -172,22 +184,54 @@ namespace rat {
 
 			if (input.isKept(Mouse::Left)) {
 				if (_isDragging) {
-					auto mouse = input.getMousePosition();
+					auto mouse = getFixedMousePos(input.getMousePosition());
+					auto linear = window.getLinerByScreenPos(mouse);
 
-					auto offset = mouse - _dragLastPos;
+					glm::vec3 projection;
+					glm::vec3 offset;
+
+					if (_isDepthDragging) {
+						projection = linear.getProjectionY(_draggingEntity->getPosition());
+						offset = glm::vec3(projection.x - _dragLastPos.x, 0.f, projection.z - _dragLastPos.y);
+						_dragLastPos = glm::vec2(projection.x, projection.z);
+
+					}
+					else {
+						projection = linear.getProjectionZ(_draggingEntity->getPosition());
+						offset = glm::vec3(projection.x - _dragLastPos.x, projection.y - _dragLastPos.y, 0.f);
+						_dragLastPos = glm::vec2(projection.x, projection.y);
+					}
 
 					if (_objectsList.isAnySingleEntitySelected()) {
 						auto entity = _objectsList.getSelectedEntity();
-						entity->move(glm::vec3(offset.x, -offset.y, 0.f));
+						entity->move(offset);
 					}
 					else if (_objectsList.isGroupSelected()) {
 						for (auto& entity : _objectsList.getSelectedEntities()) {
-							entity->move(glm::vec3(offset.x, -offset.y, 0.f));
+							entity->move(offset);
 						}
 					}
-
-					_dragLastPos = mouse;
 				}
+			}
+		}
+
+		if (input.isPressed(Keyboard::Z)) {
+			_isDepthDragging = !_isDepthDragging;
+
+			if (_draggingEntity != nullptr) {
+				auto mouse = getFixedMousePos(input.getMousePosition());
+
+				auto linear = window.getLinerByScreenPos(mouse);
+
+				glm::vec3 projection;
+
+				if (_isDepthDragging)
+					projection = linear.getProjectionY(_draggingEntity->getPosition());
+				else
+					projection = linear.getProjectionZ(_draggingEntity->getPosition());
+
+				_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+
 			}
 		}
 

@@ -175,7 +175,10 @@ private:
 // Draging
 
 	bool _isDragging = false;
-	sf::Vector2i _dragLastPos;
+	glm::vec2 _dragLastPos;
+	Entity* _draggingEntity = nullptr;
+	bool _isDepthDragging = true;
+
 	Entity* _entityToUnselect = nullptr;
 	glm::vec3 _entityToUnselectPos;
 };

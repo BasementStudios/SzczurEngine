@@ -201,8 +201,19 @@ namespace rat {
 				ImGui::TextColored({0.75f, 0.30f, 0.63f, 1.0f - _menuInfoClock.getElapsedTime().asSeconds()/6.0f}, _menuInfo.c_str());
 			}
 
-			ImGui::SameLine(ImGui::GetWindowWidth()-72);
+			ImGui::SameLine(ImGui::GetWindowWidth() - 220);
+
+			if (_isDepthDragging)
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.01f, 0.53f, 0.82f, 1.f)); // cyan
+			else
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.94f, 0.42f, 0.0f, 1.f)); // orange
+
+			ImGui::Text((std::string("[Z] Drag move in: ") + (_isDepthDragging ? "depth" : "plane")).c_str());
+			ImGui::PopStyleColor();
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 72);
 			ImGui::Text((std::to_string((int)ImGui::GetIO().Framerate)+" FPS").c_str());
+
 		}
 		ImGui::EndMainMenuBar();
     }

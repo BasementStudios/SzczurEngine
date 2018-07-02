@@ -42,6 +42,8 @@ namespace rat {
 
 	void ObjectsList::unselect() {
 		_selectedEntityID = -1;
+
+		_selectedEntities.clear();
 	}
 
 	void ObjectsList::render(bool& ifRender) {
@@ -169,7 +171,7 @@ namespace rat {
 		if (isAnySingleEntitySelected())
 		{
 			_selectedEntities.push_back(getSelectedEntity());
-			unselect();
+			_selectedEntityID = -1;
 		}
 
 		if (auto& it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
