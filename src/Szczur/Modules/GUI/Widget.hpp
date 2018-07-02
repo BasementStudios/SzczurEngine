@@ -13,14 +13,13 @@
 
 #include "ProportionalDimes.hpp"
 #include "Widget/FamilyTransform.hpp"
-#include "TransformAnimBasics/Anim.hpp"
 
 #define GUI_DEBUG 1
 
 namespace rat 
 {
 	class InterfaceWidget;
-	class TransformAnimationBase;
+	namespace gui { class AnimBase; class AnimData; enum AnimType : int; }
 
 	class Widget : public sf::Drawable, protected gui::FamilyTransform
 	{
@@ -45,9 +44,6 @@ namespace rat
 
 		using Animation_t = std::unique_ptr<gui::AnimBase>;
 		using AnimationsContainer_t = std::vector<Animation_t>;
-
-		using PosAnim_t = gui::Anim<Widget, gui::AnimBase::Type::Pos, sf::Vector2f>;
-		using ColorAnim_t = gui::Anim<Widget, gui::AnimBase::Type::Color, sf::Color>;
 
 		void setParent(Widget* parent);
 		void setInterface(const InterfaceWidget* interface);
@@ -161,7 +157,7 @@ namespace rat
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		void _addAnimation(Animation_t animation);
-		void _abortAnimation(gui::AnimBase::Type type);
+		void _abortAnimation(gui::AnimType type);
 
 		Widget* _parent{nullptr};
 

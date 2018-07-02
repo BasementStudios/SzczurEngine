@@ -6,6 +6,8 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
+#include "Animation/Anim.hpp"
+
 namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :
     Widget(),
@@ -70,6 +72,7 @@ namespace rat {
 
     void ScrollAreaWidget::resetScrollerPositionInTime(const gui::AnimData& data)
     {
+        using ScrollAnim_t = gui::Anim<ScrollAreaWidget, gui::AnimType::Scroll, float>;
         auto setter = static_cast<void (ScrollAreaWidget::*)(float)>(&ScrollAreaWidget::setScrollerProp);
         auto scrollAnim = std::make_unique<ScrollAnim_t>(this, setter);
 

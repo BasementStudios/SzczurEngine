@@ -9,6 +9,7 @@
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 
+#include "Szczur/Modules/GUI/Animation/Anim.hpp"
 
 namespace rat
 {

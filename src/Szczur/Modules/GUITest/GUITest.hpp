@@ -12,7 +12,6 @@ namespace rat
     class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
-        using Tab_t = TransformAnimationBase;
     public:
         GUITest();
         void init();

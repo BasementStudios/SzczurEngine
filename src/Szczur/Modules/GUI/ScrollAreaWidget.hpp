@@ -8,9 +8,9 @@
 namespace rat 
 {
     class Script;
+    namespace gui { class AnimData; }
     class ScrollAreaWidget : public Widget 
     {
-        using ScrollAnim_t = gui::Anim<ScrollAreaWidget, gui::AnimBase::Type::Scroll, float>;
     public:
         ScrollAreaWidget();
 

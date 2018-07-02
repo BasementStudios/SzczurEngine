@@ -6,17 +6,17 @@ namespace rat
 {
 namespace gui
 {
+    enum AnimType : int
+    {
+        Pos = 1 << 0,
+        Color = 1 << 1,
+        Scroll = 1 << 2
+    };
     class AnimBase
     {
     public:
-        enum Type
-        {
-            Pos = 1 << 0,
-            Color = 1 << 1,
-            Scroll = 1 << 2
-        };
 
-        AnimBase(Type type) : _type{type} {}
+        AnimBase(AnimType type) : _type{type} {}
 
         void update(float dt)
         {
@@ -46,7 +46,7 @@ namespace gui
         {
             _data = data;
         }
-        Type getType() const { return _type; }
+        AnimType getType() const { return _type; }
     protected:
         float _getTimeProp() const { return _easing(_currentTime / _data.inTime); }
 
@@ -61,7 +61,7 @@ namespace gui
         std::function<float(float)> _easing;
         bool _isAlive{true};
 
-        const Type _type;
+        const AnimType _type;
     };
 }
 }

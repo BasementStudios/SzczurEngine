@@ -7,6 +7,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "Animation/Anim.hpp"
+
 #include "InterfaceWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
@@ -401,6 +403,7 @@ namespace rat
     }
     void Widget::setColorInTime(const sf::Color& color, const gui::AnimData& data)
     {
+		using ColorAnim_t = gui::Anim<Widget, gui::AnimType::Color, sf::Color>;        
         auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
         animCol->setAnim(getColor(), color, data);
         _addAnimation(std::move(animCol));
@@ -485,8 +488,10 @@ namespace rat
         setPosition({x, y});
     }
 
+
     void Widget::setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data)
     {
+        using PosAnim_t = gui::Anim<Widget, gui::AnimType::Pos, sf::Vector2f>;
         auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPosition);
 
         auto posAnim = std::make_unique<PosAnim_t>(this, setter);
@@ -541,6 +546,8 @@ namespace rat
 
 	void Widget::setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data)
     {
+        using PosAnim_t = gui::Anim<Widget, gui::AnimType::Pos, sf::Vector2f>;
+        
         auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPropPosition);
 
         auto posAnim = std::make_unique<PosAnim_t>(this, setter);
@@ -647,7 +654,7 @@ namespace rat
         }
     }
 
-    void Widget::_abortAnimation(gui::AnimBase::Type type)
+    void Widget::_abortAnimation(gui::AnimType type)
     {
         if(!(type & _currentAnimations)) return;
         _currentAnimations &= (~type);

@@ -11,7 +11,7 @@ namespace rat
 {
 namespace gui
 {
-    template<typename W, AnimBase::Type type, typename T>
+    template<typename W, AnimType type, typename T>
     class Anim : public AnimBase
     {
     public:
@@ -57,7 +57,7 @@ namespace gui
         T _end;
     };
 
-    template<typename W, AnimBase::Type type>
+    template<typename W, AnimType type>
     class Anim<W, type, sf::Color> : public AnimBase
     {
         using ColorArray_t = std::array<sf::Uint8, 3>;
