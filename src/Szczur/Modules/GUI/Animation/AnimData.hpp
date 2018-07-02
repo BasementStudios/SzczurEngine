@@ -43,6 +43,10 @@ namespace gui
         EaseInElastic,
         EaseOutElastic,
         EaseInOutElastic,
+
+        EaseInSine,
+        EaseOutSine,
+        EaseInOutSine
     };
     struct EasingFuncs
     {
@@ -125,6 +129,13 @@ namespace gui
                 };
                     break;
 
+                case Easing::EaseInSine: return [](float t){ return sin( 1.5707963f * t ); };
+                break;
+                case Easing::EaseOutSine: return [](float t){ return 1.f + sin( 1.5707963f * (t - 1.f) ); };
+                    break;
+                case Easing::EaseInOutSine: return [](float t){ return 0.5f * (1.f + sin( 3.1415926f * (t - 0.5f) ) ); };
+                    break;
+
                 default:
                 return [](float){return 1.f; };
                     break;
@@ -132,27 +143,16 @@ namespace gui
         }
     };
 
-// double easeInElastic( double t ) {
-//     double t2 = t * t;
-//     return t2 * t2 * sin( t * PI * 4.5 );
+// double easeInSine( double t ) {
+// 	return sin( 1.5707963 * t );
 // }
 
-// double easeOutElastic( double t ) {
-//     double t2 = (t - 1) * (t - 1);
-//     return 1 - t2 * t2 * cos( t * PI * 4.5 );
+// double easeOutSine( double t ) {
+// 	return 1 + sin( 1.5707963 * (--t) );
 // }
 
-// double easeInOutElastic( double t ) {
-//     double t2;
-//     if( t < 0.45 ) {
-//         t2 = t * t;
-//         return 8 * t2 * t2 * sin( t * PI * 9 );
-//     } else if( t < 0.55 ) {
-//         return 0.5 + 0.75 * sin( t * PI * 4 );
-//     } else {
-//         t2 = (t - 1) * (t - 1);
-//         return 1 - 8 * t2 * t2 * sin( t * PI * 9 );
-//     }
+// double easeInOutSine( double t ) {
+// 	return 0.5 * (1 + sin( 3.1415926 * (t - 0.5) ) );
 // }
 
     struct AnimData
