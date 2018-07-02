@@ -46,7 +46,6 @@ namespace rat {
 		// Unselect object after close properties window
 		if(openWindow == false) {
 			_objectsList.unselect();
-			_objectsList.clearSelected();
 		}
 	}
 
@@ -151,7 +150,13 @@ namespace rat {
 
 		ImGui::Text("Selected: %d", _objectsList.getSelectedEntities().size());
 
-		if (ImGui::DragFloat3("Offset", &currentOffset[0])) {
+		ImGui::SameLine();
+		if (ImGui::SmallButton("Unselect all##group"))
+		{
+			_objectsList.clearSelected();
+		}
+
+		if (ImGui::DragFloat3("Offset##group", &currentOffset[0])) {
 			auto delta = currentOffset - lastOffset;
 
 			for (auto entity : _objectsList.getSelectedEntities())
@@ -162,10 +167,25 @@ namespace rat {
 			lastOffset = currentOffset;
 		}
 
-		if (ImGui::TreeNodeEx("Selected entities", ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (ImGui::TreeNodeEx("Selected entities##group", ImGuiTreeNodeFlags_DefaultOpen)) {
 			for (auto entity : _objectsList.getSelectedEntities())
 			{
-				ImGui::BulletText("%s", entity->getName().c_str());
+				ImGui::Bullet();
+
+				ImGui::SameLine();
+
+				ImGui::Text("%s", entity->getName().c_str());
+				
+				ImGui::SameLine();
+
+				ImGui::PushID(entity);
+				if (ImGui::SmallButton("Unselect##group"))
+				{
+					_objectsList.removedSelected(entity);
+					ImGui::PopID();
+					break;
+				}
+				ImGui::PopID();
 			}
 
 			ImGui::TreePop();
