@@ -533,8 +533,6 @@ namespace rat
     {
         _props.hasPosition = true;
         _props.position = propPos;
-        _props.position.x = std::max(0.f, std::min(1.f, _props.position.x));
-        _props.position.y = std::max(0.f, std::min(1.f, _props.position.y));
 
         _propPosMustBeenRecalculated = true;
         _isPosChanged = true;

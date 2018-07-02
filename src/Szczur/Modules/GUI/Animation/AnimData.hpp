@@ -28,8 +28,6 @@ namespace gui
         EaseOutQuint,
         EaseInOutQuint,
 
-        EaseOutElastic,
-
         EaseInBounce,
         EaseOutBounce,
         EaseInOutBounce,
@@ -40,7 +38,11 @@ namespace gui
 
         EaseInCirc,
         EaseOutCirc,
-        EaseInOutCirc
+        EaseInOutCirc,
+
+        EaseInElastic,
+        EaseOutElastic,
+        EaseInOutElastic,
     };
     struct EasingFuncs
     {
@@ -80,9 +82,6 @@ namespace gui
                 case Easing::EaseInOutQuint: return [](float t){ return t < 0.5f ? 16.f * t * t * t * t * t : 1.f + 16.f * (--t) * t * t * t * t; };
                     break;
 
-                case Easing::EaseOutElastic: return [](float t){ float p = 0.3f; return pow(2,-10.f * t) * sin((t - p / 4.f)*(2.f * glm::pi<float>()) / p) + 1.f; };
-                    break;
-                
                 case Easing::EaseInBounce: return [](float t){ return pow( 2, 6.f * (t - 1.f) ) * abs( sin( t * glm::pi<float>() * 3.5f )); };
                     break;
                 case Easing::EaseOutBounce: return [](float t){ return 1.f - pow( 2, -6.f * t ) * abs( cos( t * glm::pi<float>() * 3.5f ) ); };
@@ -104,6 +103,28 @@ namespace gui
                 case Easing::EaseInOutCirc: return [](float t){ return t < 0.5f ? ((1.f - sqrt( 1.f - 2.f * t )) * 0.5f) : ((1.f + sqrt( 2.f * t - 1.f )) * 0.5f); };
                     break;
 
+                case Easing::EaseInElastic: return [](float t){ float t2 = t * t; return t2 * t2 * sin( t * glm::pi<float>() * 4.5f ); };
+                    break;
+                case Easing::EaseOutElastic: return [](float t){ float t2 = (t - 1.f) * (t - 1.f); return 1.f - t2 * t2 * cos( t * glm::pi<float>() * 4.5f ); };
+                    break;
+                case Easing::EaseInOutElastic: return [](float t){
+                    if(t < 0.45f)
+                    {
+                        float t2 = t * t;
+                        return 8.f * t2 * t2 * sin( t * glm::pi<float>() * 9.f );
+                    }
+                    else if(t < 0.55f)
+                    {
+                        return 0.5f + 0.75f * sin( t * glm::pi<float>() * 4.f );
+                    }
+                    else
+                    {
+                        float t2 = (t - 1) * (t - 1);
+                        return 1.f - 8.f * t2 * t2 * sin( t * glm::pi<float>() * 9.f );
+                    }
+                };
+                    break;
+
                 default:
                 return [](float){return 1.f; };
                     break;
@@ -111,19 +132,26 @@ namespace gui
         }
     };
 
-//     double easeInCirc( double t ) {
-//     return 1 - sqrt( 1 - t );
+// double easeInElastic( double t ) {
+//     double t2 = t * t;
+//     return t2 * t2 * sin( t * PI * 4.5 );
 // }
 
-// double easeOutCirc( double t ) {
-//     return sqrt( t );
+// double easeOutElastic( double t ) {
+//     double t2 = (t - 1) * (t - 1);
+//     return 1 - t2 * t2 * cos( t * PI * 4.5 );
 // }
 
-// double easeInOutCirc( double t ) {
-//     if( t < 0.5 ) {
-//         return (1 - sqrt( 1 - 2 * t )) * 0.5;
+// double easeInOutElastic( double t ) {
+//     double t2;
+//     if( t < 0.45 ) {
+//         t2 = t * t;
+//         return 8 * t2 * t2 * sin( t * PI * 9 );
+//     } else if( t < 0.55 ) {
+//         return 0.5 + 0.75 * sin( t * PI * 4 );
 //     } else {
-//         return (1 + sqrt( 2 * t - 1 )) * 0.5;
+//         t2 = (t - 1) * (t - 1);
+//         return 1 - 8 * t2 * t2 * sin( t * PI * 9 );
 //     }
 // }
 
