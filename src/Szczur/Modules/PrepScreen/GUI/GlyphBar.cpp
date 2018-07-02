@@ -32,8 +32,6 @@ namespace rat
         _glyph->setPropPosition(0.5f, 0.5f);
         _glyph->setStaticTexPositing();
         _glyph->setFullyTexSizing();
-        //_glyph->setPosition(10.f, 10.f);
-
 
         _container->add(_amountState);
         _amountState->setPropPosition(13.f, 13.f);
