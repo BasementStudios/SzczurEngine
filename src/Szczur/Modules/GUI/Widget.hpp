@@ -75,6 +75,7 @@ namespace rat
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
 		void setPositionInTime(const sf::Vector2f& offset, float inTime);
+		void setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data);
 		const sf::Vector2f& getPosition() const;
 		const sf::Vector2f& getGlobalPosition() const;
 
@@ -95,6 +96,7 @@ namespace rat
 
 		void setColor(const sf::Color& color);
 		void setColorInTime(const sf::Color& color, float inTime);
+		void setColorInTime(const sf::Color& color, const gui::AnimData& data);
 		void resetColor();
 		sf::Color getColor() const; 
 		

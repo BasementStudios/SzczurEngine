@@ -399,11 +399,16 @@ namespace rat
             child->setColor(color);
         }
     }
-	void Widget::setColorInTime(const sf::Color& color, float inTime)
+    void Widget::setColorInTime(const sf::Color& color, const gui::AnimData& data)
     {
         auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
-        animCol->setAnim(getColor(), color, inTime);
+        animCol->setAnim(getColor(), color, data);
         _addAnimation(std::move(animCol));
+    }
+    
+	void Widget::setColorInTime(const sf::Color& color, float inTime)
+    {
+        setColorInTime(color, gui::AnimData{inTime});
     }
     
     
@@ -480,13 +485,19 @@ namespace rat
         setPosition({x, y});
     }
 
-	void Widget::setPositionInTime(const sf::Vector2f& offset, float inTime)
+    void Widget::setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data)
     {
         auto setter = static_cast<void (Widget::*)(const sf::Vector2f&)>(&Widget::setPosition);
 
         auto posAnim = std::make_unique<PosAnim_t>(this, setter);
-        posAnim->setAnim(getPosition(), offset, inTime);
+        posAnim->setAnim(getPosition(), offset, data);
         _addAnimation(std::move(posAnim));
+    }
+    
+
+	void Widget::setPositionInTime(const sf::Vector2f& offset, float inTime)
+    {
+        setPositionInTime(offset, gui::AnimData(inTime));
     }
     
     sf::Vector2f Widget::getPosByGlobalPos(const sf::Vector2f& globalPos) const

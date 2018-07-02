@@ -51,19 +51,19 @@ namespace rat
         scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
         scroll->setPropSize(0.5f, 0.5f);
-        scroll->setPropPosition(0.0f, 0.0f);
+        scroll->setPropPosition(0.5f, 0.5f);
 
-        scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseOutElastic, [scroll](){
-            scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseOutElastic, [scroll](){
-                scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInBounce, [scroll](){
-                    scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseOutBounce, [scroll](){
-                            scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutBounce, [scroll](){
+        // scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseOutElastic, [scroll](){
+        //     scroll->setPropPosition({0.5f, 0.5f}, {3.f, gui::Easing::EaseOutElastic, [scroll](){
+        //         scroll->setPropPosition({0.f, 0.5f}, {3.f, gui::Easing::EaseInBounce, [scroll](){
+        //             scroll->setPropPosition({0.f, 0.f}, {3.f, gui::Easing::EaseOutBounce, [scroll](){
+        //                     scroll->setPropPosition({0.5f, 0.f}, {3.f, gui::Easing::EaseInOutBounce, [scroll](){
             
-                        }});
-                    }});
-                }});
-            }});
-        }});
+        //                 }});
+        //             }});
+        //         }});
+        //     }});
+        // }});
         //scroll->setPositionInTime({0.f, 600.f}, 3.f);
 
         // scroll->setPropPosition(0.0f, 0.0f);
@@ -96,7 +96,7 @@ namespace rat
 
         
         image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPositionInTime(0.2f);
+            scroll->resetScrollerPositionInTime({0.5f, gui::Easing::EaseInOutQuint});
         });
 
         float size = 0.1f;
@@ -109,10 +109,10 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColorInTime({0, 0, 0}, 1.f);
+                w->setColorInTime({0, 0, 0}, {1.f, gui::Easing::EaseInQuint});
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColorInTime({255, 255, 255}, 1.f);
+                w->setColorInTime({255, 255, 255}, {1.f, gui::Easing::EaseInOutBounce});
             });
         }
 

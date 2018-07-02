@@ -11,19 +11,25 @@ namespace gui
     enum class Easing
     {
         Linear,
+        
         EaseInQuad,
         EaseOutQuad,
         EaseInOutQuad,
+
         EaseInCubic,
         EaseOutCubic,
         EaseInOutCubic,
+
         EaseInQuart,
         EaseOutQuart,
         EaseInOutQuart,
+
         EaseInQuint,
         EaseOutQuint,
         EaseInOutQuint,
+
         EaseOutElastic,
+
         EaseInBounce,
         EaseOutBounce,
         EaseInOutBounce

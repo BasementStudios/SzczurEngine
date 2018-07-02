@@ -71,11 +71,18 @@ namespace gui
         _setter(setter)
         {
         }
+
         void setAnim(const sf::Color& fromValue, const sf::Color& toValue, float inTime)
         {
             _start = fromColorToArray(fromValue);
             _end = fromColorToArray(toValue);
             setHoldTime(inTime);
+        }
+        void setAnim(const sf::Color& fromValue, const sf::Color& toValue, const AnimData& data)
+        {
+            _start = fromColorToArray(fromValue);
+            _end = fromColorToArray(toValue);
+            setAnimData(data);
         }
 
     protected:
