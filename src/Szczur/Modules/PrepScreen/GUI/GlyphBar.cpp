@@ -27,13 +27,11 @@ namespace rat
             _onClick();
         });
         _container->makeChildrenPenetrable();
-        auto* glyphHandler = new Widget;
-        glyphHandler->setPropSize(0.1f, 0.1f);
-        glyphHandler->setPropPosition(0.5f, 0.5f);
-        _container->add(glyphHandler);
-        glyphHandler->add(_glyph);
+        _container->add(_glyph);
         _glyph->setPropSize(0.13f, 0.13f);
-        _glyph->setPropPosition(0.5f, 1.f);
+        _glyph->setPropPosition(0.5f, 0.5f);
+        _glyph->setStaticTexPositing();
+        _glyph->setFullyTexSizing();
         //_glyph->setPosition(10.f, 10.f);
 
 
@@ -86,8 +84,7 @@ namespace rat
 
         float prop = total == 0 ? 0.f : float(activated) / float(total);
 
-        _glyph->setPropTextureRect({ sf::Vector2f{0.f, prop}, sf::Vector2f{1.f, prop} });
-        _glyph->setPropSize(0.13f, prop * 0.13f);
+        _glyph->setPropTextureRect({ sf::Vector2f{0.f, 1.f - prop}, sf::Vector2f{1.f, prop} });
     }
 
 }
