@@ -58,6 +58,7 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<BattleComponent>()) comp->update(scenes, deltaTime);
 
 	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
 		if(getScene()->getScenes()->isGameRunning()) { 
@@ -72,6 +73,7 @@ void Entity::render(sf3d::RenderTarget& canvas)
 		canvas.draw(*ptr);
 	}
 
+	if (auto* comp = getComponentAs<BattleComponent>()) comp->render(canvas);
 	if (auto* comp = getComponentAs<TraceComponent>()) comp->render(canvas);
 }
 

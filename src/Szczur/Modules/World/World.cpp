@@ -38,8 +38,10 @@ void World::update(float deltaTime)
 		getScenes().getCurrentScene()->update(deltaTime);
 	}
 	#ifdef EDITOR
-		if(_doEditor)
+		if(_doEditor) {
 			_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
+			getModule<Battle>().updateEditor();
+		}
 	#endif
 
 	_levelEditor.updateCamera(getModule<Camera>());

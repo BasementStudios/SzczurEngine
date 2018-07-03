@@ -7,6 +7,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Camera/Camera.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Battle/Battle.hpp"
 
 #ifdef EDITOR
 	#include "LevelEditor/LevelEditor.hpp"
@@ -15,7 +16,7 @@
 namespace rat
 {
 
-class World : public Module<Window, Input, Camera, Script>
+class World : public Module<Window, Input, Camera, Script, Battle>
 {
 public:
 

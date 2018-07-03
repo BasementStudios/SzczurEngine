@@ -95,8 +95,8 @@ namespace rat {
 			}
 		}
 
-		// Render origins for foreground group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
+		// Render origins for single group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
 			if(_objectsList.getSelectedID() == entity->getID()) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
@@ -105,8 +105,8 @@ namespace rat {
 			}
 		}
 
-		// Render origins for single group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
+		// Render origins for battles group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("battles")) {			
 			if(_objectsList.getSelectedID() == entity->getID()) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
@@ -122,6 +122,16 @@ namespace rat {
 			}
 			else {
 				_renderOriginCircle(entity->getPosition(), false, target);
+			}
+		}
+
+		// Render origins for foreground group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginRectangle(entity->getPosition(), true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), false, target);
 			}
 		}
 

@@ -177,6 +177,7 @@ private:
 
 	size_t _id;
 	std::string _name;
+	Battle* _battleModule;
 	ScenesManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;

@@ -25,6 +25,9 @@ Scene::Scene(ScenesManager* parent)
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
 {
+
+	_battleModule = detail::globalPtr<Battle>;
+
 	_collectingHolder.emplace_back("background", EntitiesHolder_t{}); 
 	_collectingHolder.emplace_back("path", EntitiesHolder_t{}); 
 	_collectingHolder.emplace_back("single", EntitiesHolder_t{}); 
@@ -44,11 +47,20 @@ void Scene::update(float deltaTime)
 {
 	_parent->getTextureDataHolder().loadAll();
 	for (auto& holder : getAllEntities())
-	{
+	{		
+		if(_battleModule->isActiveScene()) {
+			if(holder.first != "background" || holder.first == "foreground" ) {
+				continue;
+			}
+		}	
 		for (auto& entity : holder.second)
 		{
 			entity->update(*getScenes(), deltaTime);
 		}
+	}
+
+	if(_battleModule->isActiveScene()) {
+		_battleModule->update(deltaTime);
 	}
 
 	/*for(auto& ent : getEntities("single")) {
@@ -70,6 +82,14 @@ void Scene::render(sf3d::RenderTarget& canvas)
 {
 	for (auto& holder : getAllEntities())
 	{
+		if(holder.first == "battles") {
+			_battleModule->render(canvas);
+		}
+		if(_battleModule->isActiveScene()) {
+			if(holder.first != "background" || holder.first == "foreground" ) {
+				continue;
+			}
+		}		
 		for (auto& entity : holder.second)
 		{
 			entity->render(canvas);
@@ -110,6 +130,10 @@ Entity* Scene::addEntity(const std::string& group)
 	auto* base = entity->addComponent<BaseComponent>();
 	if(group == "entries") {
 		dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+	}
+	else if(group == "battles") {
+		dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+		auto* battle = entity->addComponent<BattleComponent>();
 	}
 	#endif //EDITOR
 

@@ -64,6 +64,7 @@ namespace rat {
 				if(auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<AudioComponent>()) object->renderHeader(_scenes, focusedObject);
+				if(auto* object = focusedObject->getComponentAs<BattleComponent>()) object->renderHeader(_scenes, focusedObject);
 
 			}
 
