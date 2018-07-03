@@ -28,7 +28,7 @@ namespace rat
         _border->setPadding(11.f, 11.f);
 
         _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setPropSize(0.375f, 0.65f);
+        _skillsScroller->setPropSize(0.375f, 0.65f); //0.65f
         _skillsScroller->setPropPosition(0.5f, 0.5f);
         _border->add(_skillsScroller);
 
