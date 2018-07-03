@@ -24,6 +24,8 @@ namespace rat
         void setTexture(const sf::Texture* texture, int paddingWidth, int paddingHeight);
         void setTexture(const sf::Texture* texture, const sf::IntRect& rect);
 
+        const sf::Texture* getTexture() const;
+
         void setSize(const sf::Vector2f& size);
         void setSize(float x, float y);
         sf::Vector2f getSize() const;

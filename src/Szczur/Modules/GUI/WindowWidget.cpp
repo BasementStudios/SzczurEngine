@@ -1,5 +1,7 @@
 #include "WindowWidget.hpp"
 
+#include <cassert>
+
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -45,6 +47,28 @@ namespace rat
             sf::Vector2f padding = {float(rectPadding.x * _scale.x), float(rectPadding.y * _scale.y)};
             Widget::setPadding(padding);
         }
+    }
+
+    void WindowWidget::setMainPatchPropSize(const sf::Vector2f& propSize)
+    {
+        _isMainPatchPropSizeSet = true;
+        _mainPathPropSize = propSize;
+        _calcMainPatchSize();
+    }
+    void WindowWidget::_calcMainPatchSize()
+    {
+        assert(_isMainPatchPropSizeSet);
+        if(auto* tex = _ninePatch.getTexture(); tex != nullptr)
+        {
+            auto size = static_cast<sf::Vector2f>(tex->getSize());
+
+            sf::Vector2f scale = {_mainPathPropSize.x / size.x, _mainPathPropSize.y / size.y};
+            setScale(scale);
+        }
+    }
+    void WindowWidget::_recalcElementsPropSize()
+    {
+        if(_isMainPatchPropSizeSet) _calcMainPatchSize();
     }
     
 
