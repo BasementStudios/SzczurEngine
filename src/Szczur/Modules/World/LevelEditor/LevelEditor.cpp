@@ -147,6 +147,8 @@ namespace rat {
 							}
 							else {
 								_objectsList.addSelected(&entity);
+
+								_setupGroup();
 							}
 						}
 						else {
@@ -184,6 +186,8 @@ namespace rat {
 					if (_entityToUnselectPos == _entityToUnselect->getPosition()) {
 						_objectsList.removedSelected(_entityToUnselect);
 
+						_setupGroup();
+
 						_entityToUnselect = nullptr;
 					}
 				}
@@ -214,9 +218,16 @@ namespace rat {
 						entity->move(offset);
 					}
 					else if (_objectsList.isGroupSelected()) {
-						for (auto& entity : _objectsList.getSelectedEntities()) {
+						_groupOrigin = glm::vec3();
+
+						auto& group = _objectsList.getSelectedEntities();
+
+						for (auto& entity : group) {
 							entity->move(offset);
+							_groupOrigin += entity->getPosition();
 						}
+
+						_groupOrigin /= group.size();
 					}
 				}
 			}
@@ -341,5 +352,30 @@ namespace rat {
 		result.y = (pos.y * _defaultWindowSize.y) / size.y;
 
 		return result;
+	}
+
+	void LevelEditor::_setupGroup() {
+		_currentGroupPosition = glm::vec3();
+		_lastGroupPosition = glm::vec3();
+		_currentGroupRotation = glm::vec3();
+		_lastGroupRotation = glm::vec3();
+
+		_updateGroup();
+	}
+
+	void LevelEditor::_updateGroup()
+	{
+		_groupOrigin = glm::vec3();
+		_selectedEntitesBackup.clear();
+
+		auto group = _objectsList.getSelectedEntities();
+
+		for (auto entity : group)
+		{
+			_groupOrigin += entity->getPosition();
+			_selectedEntitesBackup.emplace_back(entity, entity->getPosition(), entity->getRotation());
+		}
+
+		_groupOrigin /= group.size();
 	}
 }

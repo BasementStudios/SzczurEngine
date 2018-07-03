@@ -4,6 +4,8 @@
 
 #include <imgui.h>
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
 
 #include "../ScenesManager.hpp"
 #include "../Entity.hpp"
@@ -145,26 +147,62 @@ namespace rat {
 	}
 
 	void LevelEditor::_renderGroupProperty() {
-		static glm::vec3 currentOffset;
-		static glm::vec3 lastOffset;
+		if (ImGui::Button("Undo##group"))
+		{
+			_groupOrigin = glm::vec3();
+			for (auto& tuple : _selectedEntitesBackup)
+			{
+				auto entity = std::get<0>(tuple);
+
+				entity->setPosition(std::get<1>(tuple));
+				entity->setRotation(std::get<2>(tuple));
+				_groupOrigin += entity->getPosition();
+			}
+			_groupOrigin /= _selectedEntitesBackup.size();
+		}
 
 		ImGui::Text("Selected: %d", _objectsList.getSelectedEntities().size());
 
 		ImGui::SameLine();
-		if (ImGui::SmallButton("Unselect all##group"))
-		{
+		if (ImGui::SmallButton("Unselect all##group")) {
 			_objectsList.clearSelected();
 		}
 
-		if (ImGui::DragFloat3("Offset##group", &currentOffset[0])) {
-			auto delta = currentOffset - lastOffset;
+		if (ImGui::DragFloat3("Offset##group", &_currentGroupPosition[0])) {
+			auto delta = _currentGroupPosition - _lastGroupPosition;
 
-			for (auto entity : _objectsList.getSelectedEntities())
-			{
+			_groupOrigin = glm::vec3();
+			auto& group = _objectsList.getSelectedEntities();
+
+			for (auto entity : group) {
 				entity->move(delta);
+				_groupOrigin += entity->getPosition();
 			}
 
-			lastOffset = currentOffset;
+			_groupOrigin /= group.size();
+
+			_lastGroupPosition = _currentGroupPosition;
+		}
+
+		if (ImGui::DragFloat3("Rotation##group", &_currentGroupRotation[0]))
+		{
+			for (auto entity : _objectsList.getSelectedEntities())
+			{
+				auto rotation = entity->getRotation() + (_currentGroupRotation - _lastGroupPosition);
+				entity->setRotation(rotation);
+
+				auto rotOffset = glm::radians(_currentGroupRotation - _lastGroupPosition);
+
+				auto offset = entity->getPosition() - _groupOrigin;
+
+				offset = glm::rotateX(offset, rotOffset.x);
+				offset = glm::rotateY(offset, rotOffset.y);
+				offset = glm::rotateZ(offset, rotOffset.z);
+
+				entity->setPosition(_groupOrigin + offset);
+			}
+
+			_lastGroupPosition = _currentGroupRotation;
 		}
 
 		if (ImGui::TreeNodeEx("Selected entities##group", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -182,6 +220,7 @@ namespace rat {
 				if (ImGui::SmallButton("Unselect##group"))
 				{
 					_objectsList.removedSelected(entity);
+					_updateGroup();
 					ImGui::PopID();
 					break;
 				}

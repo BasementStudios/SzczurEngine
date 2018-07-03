@@ -2,6 +2,8 @@
 //#ifdef EDITOR
 #pragma once
 
+#include <tuple>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../Components/ArmatureComponent.hpp"
@@ -127,6 +129,12 @@ private:
 	///
 	glm::vec2 _getFixedMousePos(const sf::Vector2i& pos);
 
+	///
+	void _setupGroup();
+
+	///
+	void _updateGroup();
+
 private:
 
 // Select fix
@@ -134,7 +142,7 @@ private:
 
 // Origins
 
-    sf3d::CircleShape _originCirIn, _originCirOut, _originCirInSel, _originCirOutSel;
+    sf3d::CircleShape _originCirIn, _originCirOut, _originCirInSel, _originCirOutSel, _groupOriginCir;
     sf3d::RectangleShape _originRectIn, _originRectOut, _originRectInSel, _originRectOutSel;
  
 
@@ -178,6 +186,17 @@ private:
 	glm::vec2 _dragLastPos;
 	Entity* _draggingEntity = nullptr;
 	bool _isDepthDragging = true;
+
+	glm::vec3 _groupOrigin;
+
+	// property window
+	glm::vec3 _currentGroupPosition;
+	glm::vec3 _lastGroupPosition;
+	glm::vec3 _currentGroupRotation;
+	glm::vec3 _lastGroupRotation;
+
+	// pos, rotation
+	std::vector<std::tuple<Entity*, glm::vec3, glm::vec3>> _selectedEntitesBackup;
 
 	Entity* _entityToUnselect = nullptr;
 	glm::vec3 _entityToUnselectPos;

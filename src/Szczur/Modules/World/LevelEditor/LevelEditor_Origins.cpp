@@ -40,6 +40,10 @@ namespace rat {
 		_originCirInSel.setRadius(40.f);
 		_originCirInSel.setOrigin({40.f, 40.f, -10.f});
 		_originCirInSel.setColor({0.1f, 1.f, 0.4f, 0.6f});
+		// group
+		_groupOriginCir.setRadius(20.f);
+		_groupOriginCir.setOrigin({ 20.f, 20.f, 0.f });
+		_groupOriginCir.setColor({ 1.f, 0.3f, 1.f, 0.4f });
 	}
 
 	void LevelEditor::_renderOriginRectangle(const glm::vec3& position, bool selected, sf3d::RenderTarget& target) {
@@ -74,6 +78,11 @@ namespace rat {
 
 	void LevelEditor::_renderOrigins(sf3d::RenderTarget& target) {
 
+		if (_objectsList.isGroupSelected())
+		{
+			_groupOriginCir.setPosition(_groupOrigin);
+			target.draw(_groupOriginCir);
+		}
 
 		// Render origins for background group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("background")) {
