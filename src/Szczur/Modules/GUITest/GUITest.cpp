@@ -112,7 +112,11 @@ namespace rat
         fps->setColor({255, 255, 255});
         fps->setString("ABCDEFG");
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            fps->setStringInTime("Ten tekst pojawi sie po anmacji wiec no", 4.f);
+            if(randomBool)
+                image->setPropTextureRectInTime({{0.5f, 0.5f},{0.f, 0.f}}, {3.f, gui::Easing::EaseInOutBounce});
+            else
+                image->setPropTextureRectInTime({{0.f, 0.f},{1.f, 1.f}}, {3.f, gui::Easing::EaseInOutElastic});
+            randomBool = !randomBool;
         });
     }
     
@@ -177,7 +181,7 @@ namespace rat
 
         //fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
 
-        image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
+        //image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
     }
     void GUITest::render()
     {
