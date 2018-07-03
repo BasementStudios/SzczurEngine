@@ -1,0 +1,16 @@
+{
+	"pawns": {
+		"karion": {
+			"armature": "Assets/Armatures/Cedmin",
+			"scale": 0.2,
+			"radius": 100.0,
+			"origin": [100.0, 400.0]
+		},
+		"pig": {
+			"armature": "Assets/Armatures/Pig",
+			"scale": 0.15,
+			"radius": 150.0,
+			"origin": [300.0, 1000.0]
+		}
+	}
+}
