@@ -12,8 +12,8 @@ namespace journal
             FileLoader();
             ~FileLoader();
 
-            std::string getStep(const unsigned int &i);
-            std::string getDescription(const unsigned int &a);
+            std::string getStep(unsigned int i);
+            std::string getDescription(unsigned int a);
 
         private:
             std::vector<std::string> steps;
