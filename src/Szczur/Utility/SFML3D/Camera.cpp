@@ -9,6 +9,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp> // radians, cos, sin
 
+#include "Szczur/Utility/Logger.hpp"
+
 namespace sf3d
 {
 
