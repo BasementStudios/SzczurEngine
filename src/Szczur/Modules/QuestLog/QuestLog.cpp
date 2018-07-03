@@ -39,6 +39,7 @@ namespace rat
         }
         if(toStep)
         {
+            /*
             auto* q = getQuest("Nemo");
             switch(count)
             {
@@ -48,7 +49,8 @@ namespace rat
                 case 3: q->getNode("FindSth")->nextStep(); break;
                 default: break;
             }
-            //std::cout << "count: " << count << '\n'; 
+            //std::cout << "count: " << count << '\n';
+            */
             count++;
             toStep = false;
         }

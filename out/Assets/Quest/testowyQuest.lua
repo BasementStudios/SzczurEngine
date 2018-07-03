@@ -27,3 +27,7 @@ findSth.onBlock = function () print("Nie atakujemy, po co") end
 local goAround = sharkChoice:addStep("GoAround")
 goAround:addTitle(31)
 goAround:addDescription(69)
+
+QuestLog.startQuest("Nemo")
+sharkChoice:nextStep("Kill")
+kill:nextStep()
