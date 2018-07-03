@@ -121,7 +121,7 @@ public:
 	#ifdef EDITOR
 		std::string currentFilePath;
 		std::string getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter="", bool saveButton = false);
-		void menuSave();
+		bool menuSave();
 	#endif
 
 private:

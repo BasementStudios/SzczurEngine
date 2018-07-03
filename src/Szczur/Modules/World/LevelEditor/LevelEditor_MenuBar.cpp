@@ -115,8 +115,9 @@ namespace rat {
 				}
 				if(!_scenes.isGameRunning()) {
 					if(ImGui::MenuItem("Save", "F1")) {
-						_scenes.menuSave();
-	                    printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+						if (_scenes.menuSave()) {
+							printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
+						}
 					}
 					if(ImGui::MenuItem("Save As")) {
 						std::string relative = _scenes.getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);

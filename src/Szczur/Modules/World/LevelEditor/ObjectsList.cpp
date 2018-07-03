@@ -168,17 +168,13 @@ namespace rat {
 	}
 
 	void ObjectsList::addSelected(Entity* entity) {
-		if (isAnySingleEntitySelected())
-		{
+		if (isAnySingleEntitySelected()) {
 			_selectedEntities.push_back(getSelectedEntity());
 			_selectedEntityID = -1;
 		}
 
 		if (auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
 			_selectedEntities.push_back(entity);
-		}
-		else {
-			_selectedEntities.erase(it);
 		}
 	}
 

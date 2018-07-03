@@ -131,7 +131,7 @@ namespace rat {
 
 		if(!ImGui::IsAnyWindowHovered()) {
 			if(input.isPressed(Mouse::Left)) {
-				auto mouse = getFixedMousePos(input.getMousePosition());
+				auto mouse = _getFixedMousePos(input.getMousePosition());
 				
 				auto linear = window.getLinerByScreenPos(mouse);
 
@@ -140,22 +140,26 @@ namespace rat {
 						if (_currentCamera && entity.getID() == _currentCamera->getID())
 							return;
 
-						if (_objectsList.isEntitySelected(&entity)) {
-							_entityToUnselect = &entity;
-							_entityToUnselectPos = entity.getPosition();
+						if (input.isKept(rat::Keyboard::LShift)) {
+							if (_objectsList.isEntitySelected(&entity)) {
+								_entityToUnselect = &entity;
+								_entityToUnselectPos = entity.getPosition();
+							}
+							else {
+								_objectsList.addSelected(&entity);
+							}
 						}
 						else {
-							if (input.isKept(rat::Keyboard::LShift))
-								_objectsList.addSelected(&entity);
-							else
-								_objectsList.select(entity.getID());
+							_objectsList.select(entity.getID());
 						}
 
-						_isDragging = true;
+						if (_objectsList.isGroupSelected()) {
+							_draggingEntity = &entity;
+						}
 
-						_draggingEntity = &entity;
+						if (&entity == _draggingEntity) {
+							_isDragging = true;
 
-						if (_draggingEntity != nullptr) {
 							glm::vec3 projection;
 
 							if (_isDepthDragging)
@@ -165,15 +169,18 @@ namespace rat {
 
 							_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
 						}
+
+						_draggingEntity = &entity;
 					}
 				});
 			}
 
 			if (input.isReleased(Mouse::Left)) {
 				_isDragging = false;
-				_draggingEntity = nullptr;
 
-				if (_entityToUnselect != nullptr) {
+				//_draggingEntity = nullptr;
+
+				if (_entityToUnselect != nullptr && input.isKept(rat::Keyboard::LShift)) {
 					if (_entityToUnselectPos == _entityToUnselect->getPosition()) {
 						_objectsList.removedSelected(_entityToUnselect);
 
@@ -184,7 +191,7 @@ namespace rat {
 
 			if (input.isKept(Mouse::Left)) {
 				if (_isDragging) {
-					auto mouse = getFixedMousePos(input.getMousePosition());
+					auto mouse = _getFixedMousePos(input.getMousePosition());
 					auto linear = window.getLinerByScreenPos(mouse);
 
 					glm::vec3 projection;
@@ -219,7 +226,7 @@ namespace rat {
 			_isDepthDragging = !_isDepthDragging;
 
 			if (_draggingEntity != nullptr) {
-				auto mouse = getFixedMousePos(input.getMousePosition());
+				auto mouse = _getFixedMousePos(input.getMousePosition());
 
 				auto linear = window.getLinerByScreenPos(mouse);
 
@@ -325,7 +332,7 @@ namespace rat {
 		}
 	}
 
-	glm::vec2 LevelEditor::getFixedMousePos(const sf::Vector2i& pos) {
+	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {
 		glm::vec2 result;
 		
 		const auto& size = detail::globalPtr<Window>->getWindow().getSize();

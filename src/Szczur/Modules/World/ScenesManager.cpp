@@ -349,7 +349,7 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 }
 
 #ifdef EDITOR
-	void ScenesManager::menuSave() {
+	bool ScenesManager::menuSave() {
 		if(currentFilePath == "") {
 			std::string relative = getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
 			// std::cout<<"--s-"<<relative<<std::endl;
@@ -357,6 +357,7 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 				try {
 					saveToFile(relative);
 					currentFilePath = relative;
+					return true;
 				}
 				catch (const std::exception& exc)
 				{
@@ -367,12 +368,15 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 		else {
 			try {
 				saveToFile(currentFilePath);
+				return true;
 			}
 			catch (const std::exception& exc)
 			{
 				LOG_EXCEPTION(exc);
 			}
 		}
+
+		return false;
 	}
 
 	std::string ScenesManager::getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {

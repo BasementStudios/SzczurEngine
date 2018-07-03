@@ -125,7 +125,7 @@ private:
 	void _render();
 
 	///
-	glm::vec2 getFixedMousePos(const sf::Vector2i& pos);
+	glm::vec2 _getFixedMousePos(const sf::Vector2i& pos);
 
 private:
 
@@ -172,7 +172,7 @@ private:
 	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
 	glm::vec2 _vec2Clipboard{0.f,0.f};
 
-// Draging
+// Dragging
 
 	bool _isDragging = false;
 	glm::vec2 _dragLastPos;
