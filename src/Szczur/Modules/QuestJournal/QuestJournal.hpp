@@ -20,7 +20,7 @@ namespace rat
             QuestJournal();
             ~QuestJournal();
 
-            void addQuest(unsigned int i);
+            void addQuest(unsigned int questID);
             void addStep(unsigned int i);
 
             void addDescription(unsigned int descriptionNumber);

@@ -12,7 +12,8 @@ namespace journal
             FileLoader();
             ~FileLoader();
 
-            std::string getStep(unsigned int i);
+            std::string getStep(unsigned int questID, unsigned int stepID);
+            std::string getQuestName(unsigned int questID);
             std::string getDescription(unsigned int a);
 
         private:

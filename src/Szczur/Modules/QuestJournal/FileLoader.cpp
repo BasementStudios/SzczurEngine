@@ -1,4 +1,5 @@
 #include "FileLoader.hpp"
+
 namespace rat
 {
 namespace journal
@@ -28,9 +29,54 @@ namespace journal
 
     }
 
-    std::string FileLoader::getStep(unsigned int i)
+    std::string FileLoader::getStep(unsigned int questID, unsigned int stepID)
     {
-        return steps[i];
+        std::string look = "_" + std::to_string(questID);
+        std::string base;
+        int g;
+        for(auto k = steps.begin(); k!= steps.end();k++)
+        {
+            base = "";
+            if(k->operator[](0)=='_')
+            {
+                g = 0;
+                while(k->operator[](g) != ' ')
+                {
+                    base+=k->operator[](g);
+                    g++;
+                }
+                if(base == look)
+                {
+                    return std::string(*(k+(stepID+2)));
+                }
+            }
+        }
+        return " ";
+    }
+
+    std::string FileLoader::getQuestName(unsigned int questID)
+    {
+        std::string look = "_" + std::to_string(questID);
+        std::string base;
+        int g;
+        for(auto k = steps.begin(); k!= steps.end();k++)
+        {
+            base = "";
+            if(k->operator[](0)=='_')
+            {
+                g = 0;
+                while(k->operator[](g) != ' ')
+                {
+                    base+=k->operator[](g);
+                    g++;
+                }
+                if(base == look)
+                {
+                    return std::string(*k);
+                }
+            }
+        }
+        return " ";
     }
 
     std::string FileLoader::getDescription(unsigned int a)

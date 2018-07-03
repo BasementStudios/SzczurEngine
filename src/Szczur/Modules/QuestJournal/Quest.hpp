@@ -12,14 +12,16 @@ namespace journal
     class Quest
     {
         public:
-            Quest(std::shared_ptr<FileLoader> loader);
+            Quest(std::shared_ptr<FileLoader> loader, unsigned int questID);
             ~Quest();
             void setQuestName(unsigned int i);
             void setQuestName(const std::string& name);
 
             void addQuestDescription(unsigned int descriptionNumber);
 
-            void nextStep(unsigned int i);
+            void nextStep(unsigned int stepID);
+
+            unsigned int getID();
 
             std::string& getQuestName();
 
@@ -27,12 +29,16 @@ namespace journal
 
             std::vector<std::string> & getSteps();
 
+            void formatName();
+
         private:
+
             std::string _questName;
             std::vector<std::string> _steps;
             std::vector<std::string> _descriptions;
 
             std::shared_ptr<FileLoader> _fileLoader;
+            unsigned int _questID;
     };
 }
 }
