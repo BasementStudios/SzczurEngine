@@ -111,31 +111,23 @@ namespace rat {
 		if(_spriteDisplayData) {
 			states.transform *= getEntity()->getTransform();
 
-			if (_parallax)
-			{
-				auto camera = detail::globalPtr<Camera>->getView();
-
-				states.transform.translate(_parallaxValue * camera.getCenter().x, 0.f, 0.f);
-			}
+			// @todo parallaxa, ale ustawiana przy `draw` przez `states` z X kamery.
 
 			target.draw(*_spriteDisplayData, states);
 		}
 	}
 
-	void SpriteComponent::renderHeader(ScenesManager& scenes, Entity* object) {
-		if(ImGui::CollapsingHeader("Sprite##sprite_component")) {
-
-			// Sprite data holder
-			auto& sprites = object->getScene()->getSpriteDisplayDataHolder();
-
+	void SpriteComponent::renderHeader(ScenesManager& scenes, Entity* object)
+	{
+		if (ImGui::CollapsingHeader("Sprite##sprite_component")) {
 			// Load texture button
-			if(ImGui::Button("Load texture...##sprite_component")) {
+			if (ImGui::Button("Load texture...##sprite_component")) {
 				
 				// Path to .png file
 			    std::string file = scenes.getRelativePathFromExplorer("Select texture", ".\\Assets", "Images (*.png, *.jpg, *.psd|*.png;*.jpg;*.psd");
 			    
 				// Load file to sprite data holder
-				if(file != "") {
+				if (file != "") {
 					auto* data = scenes.getTextureDataHolder().getData(file);
 					setSpriteDisplayData(data);
 					// try {
@@ -156,8 +148,7 @@ namespace rat {
 			ImGui::Text(getSpriteDisplayData() ? mapWindows1250ToUtf8(getSpriteDisplayData()->getName()).c_str() : "None");
 
 			ImGui::Checkbox("Parallax", &_parallax);
-			if (_parallax)
-			{
+			if (_parallax) {
 				ImGui::DragFloat("Value##parallax", &_parallaxValue);
 			}
 		}

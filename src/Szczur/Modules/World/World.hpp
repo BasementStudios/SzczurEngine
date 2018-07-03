@@ -3,7 +3,6 @@
 #include "ScenesManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
-#include "Szczur/Modules/Camera/Camera.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 #ifdef EDITOR
@@ -13,7 +12,7 @@
 namespace rat
 {
 
-class World : public Module<Window, Input, Camera, Script>
+class World : public Module<Window, Input, Script>
 {
 public:
 
@@ -65,8 +64,6 @@ public:
 private:
 
 	bool _doEditor{true};
-
-	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
 
 	ScenesManager _scenes;
 

@@ -49,6 +49,7 @@ namespace rat {
 			case 1: return ChangeScene;
 			case 2: return Overlaping;
 		}
+		return None;
 	}
 
 	void TriggerComponent::loadFromConfig(Json& config) {

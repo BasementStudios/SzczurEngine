@@ -1,20 +1,22 @@
 #pragma once
 
 #include <vector>
-#include <memory>
+#include <memory> // unique_ptr
 
 #include <Json/json.hpp>
-
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
-
 using Json = nlohmann::json;
+
+namespace sf3d {
+	class RenderTarget;
+	class RenderStates;
+}
+namespace rat {
+	class Entity;
+	class Timeline;
+}
 
 namespace rat
 {
-
-class Entity;
-class Timeline;
 
 class Trace
 {
@@ -44,7 +46,7 @@ public:
 
 	bool isPlaying() { return !_pause; }
 
-	void loadFromConfig(const Json& config, Entity* entity);
+	void loadFromConfig(Json& config, Entity* entity);
 	void saveToConfig(Json& config) const;
 
 	void update(float deltaTime);

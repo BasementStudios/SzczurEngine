@@ -438,8 +438,6 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						ImGui::Text("Action: Anim");
 						ImGui::Separator();
 
-						static char animName[64] = { 0 };
-
 						if (ImGui::BeginCombo("Animation", animAction->AnimationName.c_str()))
 						{
 							if (auto arm = object->getComponentAs<ArmatureComponent>(); arm && arm->getArmature())

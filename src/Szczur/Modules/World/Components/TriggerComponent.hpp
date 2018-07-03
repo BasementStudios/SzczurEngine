@@ -23,10 +23,8 @@ public:
 		TypesCount 
 	} type{None};
 
-	///
-	union {
-		struct{ size_t sceneId; size_t entranceId; };
-	};
+	size_t sceneId; 
+	size_t entranceId;
 
 	///
 	TriggerComponent(Entity* parent);

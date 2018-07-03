@@ -15,7 +15,6 @@ void Application::init()
 	initModule<Music>();
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
-	initModule<Camera>();
 	initModule<World>();
 	initModule<GUI>();
 	initModule<Dialog>();
@@ -83,7 +82,6 @@ void Application::update()
 	#endif
 
 	getModule<World>().update(deltaTime);
-	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();
 	getModule<Cinematics>().update();
 }
@@ -94,7 +92,7 @@ void Application::render()
 	getModule<Window>().getWindow().clear(22.f, 20.f, 28.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	getModule<World>().render();
-
+	
 	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
 	getModule<Window>().popGLStates();

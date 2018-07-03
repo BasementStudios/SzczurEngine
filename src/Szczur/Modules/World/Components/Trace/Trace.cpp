@@ -53,7 +53,7 @@ void Trace::resume()
 	_pause = false;
 }
 
-void Trace::loadFromConfig(const Json& config, Entity* entity)
+void Trace::loadFromConfig(Json& config, Entity* entity)
 {
 	Json::array_t jsonTimelines = config["timelines"];
 

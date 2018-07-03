@@ -45,7 +45,7 @@ public:
 	void update(ScenesManager& scenes, float deltaTime);
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 
 	///
 	size_t getID() const;
@@ -156,7 +156,7 @@ public:
 	const ComponentsHolder_t& getComponents() const;
 
 	///
-	virtual void loadFromConfig(const Json& config, bool withNewID = false);
+	virtual void loadFromConfig(Json& config, bool withNewID = false);
 
 	///
 	virtual void saveToConfig(Json& config) const;

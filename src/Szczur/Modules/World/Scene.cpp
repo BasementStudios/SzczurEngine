@@ -10,6 +10,8 @@
 
 // Components
 #include "Components/ScriptableComponent.hpp"
+#include "Components/CameraComponent.hpp"
+#include "Components/PointLightComponent.hpp"
 
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -51,27 +53,27 @@ void Scene::update(float deltaTime)
 		}
 	}
 
-	/*for(auto& ent : getEntities("single")) {
-		if(auto* comp = ent->getComponentAs<CameraComponent>()) {
-			auto* camera = detail::globalPtr<Camera>;
-			sf3d::View view{camera->getView()};
-			auto delta = ent->getPosition() - view.getCenter();
-			auto deltaRotation = ent->getRotation() - view.getRotation();
-			float smoothness{comp->getSmoothness()};
-			if(smoothness != 0.f) {
-				view.move(delta/smoothness);
-				view.rotate(deltaRotation/smoothness);
-			}
-		}
-	}*/
+	if (Entity* cameraEntity = getCamera()) {
+		cameraEntity->getComponentAs<CameraComponent>()->updateCamera();
+	}
 }
 
 void Scene::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	for (auto& holder : getAllEntities())
-	{
-		for (auto& entity : holder.second)
-		{
+	// Register light components to shader
+	target.resetLightPoints();
+	for (auto& holder : this->getAllEntities()) {
+		for (auto& entity : holder.second) {
+			if (PointLightComponent* component = entity->getComponentAs<PointLightComponent>()) {
+				target.registerLightPoint(component);
+				component->setPosition(entity->getPosition());
+			}
+		}
+	}
+	
+	// Draw the entites
+	for (auto& holder : this->getAllEntities()) {
+		for (auto& entity : holder.second) {
 			entity->draw(target, states);
 		}
 	}
@@ -411,20 +413,52 @@ const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() cons
 	return _spriteDisplayDataHolder;
 }
 
-void Scene::setPlayerID(size_t id)
+// Player
+Entity* Scene::getPlayer()
 {
-	_playerID = id;
-	_player = getEntity(id);
+	return _player;
+}
+const Entity* Scene::getPlayer() const
+{
+	return _player;
+}
+void Scene::setPlayer(Entity* player)
+{
+	_player = player;
 }
 
-size_t Scene::getPlayerID() const
+// CurrentCamera
+Entity* Scene::getCurrentCamera()
 {
-	return _playerID;
+	return _currentCamera;
+}
+const Entity* Scene::getCurrentCamera() const
+{
+	return _currentCamera;
+}
+void Scene::setCurrentCamera(Entity* camera)
+{
+	_currentCamera = camera;
 }
 
-void Scene::loadFromConfig(const Json& config, bool withNewID)
+Entity* Scene::getCamera()
 {
-	_id = withNewID ? getUniqueID<Scene>() : config["id"].get<size_t>();
+	if (!_currentCamera) {
+		// @todo ! ja pierdole te kontenery
+		for (auto& entity : getEntities("single")) {
+			// @todo . Zrobić changeCamera i pozwolić na wiele kamer.
+			if (entity->hasComponent<CameraComponent>()) {
+				_currentCamera = entity.get();
+			}
+		}
+	}
+	return _currentCamera;
+}
+
+//170
+void Scene::loadFromConfig(Json& config, bool withNewID)
+{
+	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>(); 
 	_name = config["name"].get<std::string>();
 
 	size_t maxId = 0u;
@@ -441,14 +475,25 @@ void Scene::loadFromConfig(const Json& config, bool withNewID)
 		}
 	}
 
+	if (!config["player"].is_null()) {
+		// @todo @warn There is already _player loaded in ScenesManager, so here probably is obcsle.
+		_player = getEntity(config["player"].get<int>());
+	}
+	else {
+		_player = nullptr;
+	}
+
 	trySettingInitialUniqueID<Scene>(_id);
 }
 
 void Scene::saveToConfig(Json& config) const
 {
+	// Scene informations 
 	config["id"] = getID();
 	config["name"] = getName();
-	config["player"] = getPlayerID();
+	
+	// Save player entity ID 
+	config["player"] = getPlayer()->getID();
 
 	Json& groups = config["groups"] = Json::object();
 

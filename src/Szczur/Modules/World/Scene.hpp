@@ -58,7 +58,7 @@ public:
 	void update(float deltaTime);
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 
 	///
 	size_t getID() const;
@@ -132,17 +132,21 @@ public:
 	///
 	const SpriteDisplayDataHolder_t& getSpriteDisplayDataHolder() const;
 
-	///
-	void setPlayerID(size_t id);
+	/// Provides access to player object
+	Entity* getPlayer();
+	const Entity* getPlayer() const;
+	void setPlayer(Entity* player);
 
-	///
-	size_t getPlayerID() const;
+	/// Provides access to current camera
+	Entity* getCurrentCamera();
+	const Entity* getCurrentCamera() const;
+	void setCurrentCamera(Entity* camera);
 
+	/// Get any camera if no current present
+	Entity* getCamera();
+	
 	///
-	void loadFromConfig(const Json& config, bool withNewID = false);
-
-	///
-	void loadFromConfig(Json& config);
+	void loadFromConfig(Json& config, bool withNewID = false);
 
 	///
 	void saveToConfig(Json& config) const;
@@ -179,8 +183,11 @@ private:
 	ScenesManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
-	size_t _playerID{ 0u };
-	Entity* _player = nullptr;
+	
+	size_t _playerID {0u};
+	Entity* _player {nullptr};
+
+	Entity* _currentCamera {nullptr};
 };
 
 }

@@ -3,7 +3,7 @@
 #include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
-#include "szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 
 #include <glm/glm.hpp>
 

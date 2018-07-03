@@ -10,9 +10,13 @@
 #include <ImGui/imgui.h>
 // #include <NodeEditor/NodeEditor.h>
 
+#include "Szczur/Utility/Convert/GLMStreams.hpp"
+
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/SFML3D/CircleShape.hpp"
+#include "Szczur/Utility/SFML3D/Linear.hpp"
+#include "Szczur/Utility/SFML3D/Camera.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
@@ -58,35 +62,6 @@ namespace rat {
 
 	ObjectsList& LevelEditor::getObjectsList() {
 		return _objectsList;
-	}
-
-	void LevelEditor::updateCurrentCamera()
-	{
-		_currentCamera = nullptr;
-
-		for (auto& ent : _scenes.getCurrentScene()->getEntities("single"))
-		{
-			if (auto* comp = ent->getComponentAs<CameraComponent>())
-			{
-				if (_objectsList.getSelectedID() == ent->getID() || comp->getLock())
-				{
-					_currentCamera = ent.get();
-				}
-			}
-		}
-	}
-
-	void LevelEditor::updateCamera(Camera& camera)
-	{
-		sf3d::View view{ camera.getView() };
-		if (_currentCamera)
-			camera.setView(_currentCamera->getComponentAs<CameraComponent>()->getRecalculatedView(view));
-		else
-		{
-			view.setRotation(_freeCamera.rotation);
-			view.setCenter(_freeCamera.position);
-			camera.setView(view);
-		}
 	}
 
 	void LevelEditor::render(sf3d::RenderTarget& target) {
@@ -271,108 +246,105 @@ namespace rat {
 		});
 	}
 
-	void LevelEditor::update(InputManager& input, Camera& camera) {
-		auto* scene = _scenes.getCurrentScene();
-		auto& window = detail::globalPtr<Window>->getWindow();
-		
+	void LevelEditor::update(InputManager& input, Window& windowModule) {
+		auto& window = windowModule.getWindow();
 		auto mouse = input.getMousePosition();
+		Entity* cameraEntity = nullptr;
+		
+		// Find selected camera
+		for (auto& entity : _scenes.getCurrentScene()->getEntities("single")) { 
+			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
+                if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
+                    cameraEntity = entity.get(); 
+                } 
+            } 
+        } 
 
-		updateCurrentCamera();
+		// Use camera for rendering
+		//	@todo , This should be done when changing camera only...
+		if (cameraEntity) {
+			window.setCamera(cameraEntity->getComponentAs<CameraComponent>());
+		}
+		else {
+			window.setCamera(_freeCamera);
+		}
 
-		if(!ImGui::IsAnyWindowHovered()) {
+		// Object selection
+		if (!ImGui::IsAnyWindowHovered()) {
 			auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
-			if(input.isPressed(Mouse::Left)) {
+			if (input.isPressed(Mouse::Left)) {
 				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
 					if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-						if(_currentCamera && entity.getID() == _currentCamera->getID()) return;
+						if(cameraEntity && entity.getID() == cameraEntity->getID()) return;
 						_objectsList.select(entity.getID());
 					}
 				});
 			}
 		}
 
-		// _scenes.getCurrentScene()->forEach([this, scene, &_currentCamera](const std::string&, Entity& entity){
+		// _scenes.getCurrentScene()->forEach([this, scene, &cameraEntity](const std::string&, Entity& entity){
 		// 	if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
 		// 		if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
-		// 			_currentCamera = &entity;
+		// 			cameraEntity = &entity;
 		// 	}
 		// });
 		
-		if(ImGui::IsAnyItemActive() == false) {
-			if(_currentCamera)
-				_currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
-			else
-				_freeCamera.processEvents(input);
+		// Camera movement
+		if (ImGui::IsAnyItemActive() == false) {
+			sf3d::Camera* camera;
+			
+			// Choose the camera to move
+			if (cameraEntity) {
+				camera = cameraEntity->getComponentAs<CameraComponent>();
+			}
+			else {
+				camera = &_freeCamera;
+			}
+			
+			// Velocity
+			float velocity = 50.f; // @todo , should be const in class
+			/**/ if (input.isKept(Keyboard::LShift)) velocity = 200.f;
+			else if (input.isKept(Keyboard::LAlt)) velocity = 10.f;
+
+			// Movement
+			if (input.isKept(Keyboard::W)) 			camera->bartek({0.f, 0.f,  velocity});
+			if (input.isKept(Keyboard::S)) 			camera->bartek({0.f, 0.f, -velocity});
+			if (input.isKept(Keyboard::D)) 			camera->bartek({ velocity, 0.f, 0.f});
+			if (input.isKept(Keyboard::A)) 			camera->bartek({-velocity, 0.f, 0.f});
+			if (input.isKept(Keyboard::Space)) 		camera->bartek({0.f,  velocity, 0.f});
+			if (input.isKept(Keyboard::LControl)) 	camera->bartek({0.f, -velocity, 0.f});
+			
+			// Rotating
+			if (_cameraRotating) {
+				camera->rotate({
+					(mouse.y - _cameraPreviousMouseOffset.y) / 10.f, 
+					(mouse.x - _cameraPreviousMouseOffset.x) / 10.f, // @todo , should be const in class
+					0.f
+				});
+				_cameraPreviousMouseOffset = mouse;
+			}
+			if (!ax::NodeEditor::IsActive()) {
+				if (input.isPressed(Mouse::Right)) {
+					_cameraRotating = true;
+					_cameraPreviousMouseOffset = input.getMousePosition();
+				}
+			}
+			if (input.isReleased(Mouse::Right)) {
+				_cameraRotating = false;
+			}
+			
+			if (cameraEntity) {
+				// Update entity position to position updated by camera
+				//	@warn There shouldn't be even any reason to do that, but this needed because of how World works.
+				Entity* entity = cameraEntity->getComponentAs<CameraComponent>()->getEntity();
+				entity->setPosition(camera->getPosition());
+				entity->setRotation(camera->getRotation());
+			}
 		}
 
-		if(input.isReleased(Keyboard::F1)) {
+		if (input.isReleased(Keyboard::F1)) {
 			_scenes.menuSave();
-			printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
-		}
-	}
-
-	void FreeCamera::processEvents(InputManager& input) {
-
-		if (detail::globalPtr<Dialog>->isDialogPlaying())
-		 	return;
-
-		velocity = 50.f;
-		if(input.isKept(Keyboard::LShift)) {
-			velocity = 200.f;
-		}
-
-		if(input.isKept(Keyboard::W)) {
-			move({
-				velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::cos(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::S))
-			move({
-				-velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::cos(glm::radians(rotation.y))
-			});
-		if(input.isKept(Keyboard::D)) {
-			move(glm::vec3{
-				velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::sin(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::A)) {
-			move(glm::vec3{
-				-velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::sin(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::Space))
-			move({0.f, velocity, 0.f});
-		if(input.isKept(Keyboard::LControl))
-			move({0.f, -velocity, 0.f});
-		if(rotating) {
-			auto mouse = input.getMousePosition();
-			rotate({
-				(mouse.y - previousMouse.y)/10.f,
-				(mouse.x - previousMouse.x)/10.f,
-				0.f
-			});
-			previousMouse = mouse;
-		}
-
-		if(!ax::NodeEditor::IsActive())
-		{
-			if (input.isPressed(Mouse::Right))
-			{
-				rotating = true;
-				previousMouse = input.getMousePosition();
-			}
-			if (input.isReleased(Mouse::Right))
-			{
-				rotating = false;
-			}
+			printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
 		}
 	}
 }

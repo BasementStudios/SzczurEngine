@@ -27,7 +27,7 @@ Scene* ScenesManager::addScene()
 	// Add default player
 	Entity* player = scene->addEntity("single");
 	player->setName("Player");
-	scene->setPlayerID(player->getID());
+	scene->setPlayer(player);
 	
 	// Add default camera
 	Entity* camera = scene->addEntity("single");
@@ -124,7 +124,8 @@ bool ScenesManager::setCurrentScene(size_t id)
 			);
 		}
 
-		detail::globalPtr<World>->getLevelEditor().updateCurrentCamera();
+		Window* window = detail::globalPtr<Window>;
+		window->getWindow().setCamera(getCurrentScene()->getCamera()->getComponentAs<CameraComponent>());
 
 		return true;
 	}
@@ -154,36 +155,36 @@ void ScenesManager::loadFromConfig(Json& config) {
 
 	Json& scenes = config["scenes"];
 
-	for (auto& current : scenes)
-	{
+	for (auto& current : scenes) {
 		auto* scene = addScene();
 		scene->removeAllEntities();
 		scene->loadFromConfig(current);
 
 		bool foundPlayer = false;
 		bool foundCamera = false;
-		for(auto& ent : scene->getEntities("single")) {
-			if(ent->getName() == "Player") {
+		
+		for (auto& entity : scene->getEntities("single")) {
+			if (entity->getName() == "Player") {
 				foundPlayer = true;
-				scene->setPlayerID(ent->getID());
+				scene->setPlayer(entity.get());
 			}
-			else if(ent->getName() == "Camera") {
+			else if (entity->getName() == "Camera") {
 				foundCamera = true;
 			}
 		}
-		if(!foundPlayer) {
+
+		if (!foundPlayer) {
 			Entity* player = scene->addEntity("single");
 			player->setName("Player");
-			scene->setPlayerID(player->getID());
+			scene->setPlayer(player);
 		}
-		if(!foundCamera) {			
+		if (!foundCamera) {			
 			Entity* camera = scene->addEntity("single");
 			camera->addComponent<CameraComponent>();
 			camera->setName("Camera");
 			camera->setPosition({ 0.f, 1160.f, 3085.f });
 			camera->setRotation({ 15.f, 0.f, 0.f });
 		}
-
 	}
 }
 
@@ -268,7 +269,7 @@ void ScenesManager::addPlayer()
 
 	Entity* player = scene->addEntity("single");
 	player->setName("Player");
-	scene->setPlayerID(player->getID());
+	scene->setPlayer(player);
 }
 
 void ScenesManager::addCamera()

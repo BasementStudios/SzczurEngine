@@ -17,65 +17,6 @@ namespace rat {
 		
 	}
 
-	void CameraComponent::processEvents(InputManager& input) {
-		float velocity = _velocity;
-		auto* object = getEntity();
-		if(input.isKept(Keyboard::LShift)) {
-			velocity = 200.f;
-		}
-		auto rotation = object->getRotation();
-
-		if(input.isKept(Keyboard::W)) {
-			object->move({
-				velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::cos(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::S))
-			object->move({
-				-velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::cos(glm::radians(rotation.y))
-			});
-		if(!_stickTo || _stickToX) {
-			if(input.isKept(Keyboard::D)) {
-				object->move(glm::vec3{
-					velocity * glm::cos(glm::radians(rotation.y)),
-					0.f,
-					velocity * glm::sin(glm::radians(rotation.y))
-				});
-			}
-			if(input.isKept(Keyboard::A)) {
-				object->move(glm::vec3{
-					-velocity * glm::cos(glm::radians(rotation.y)),
-					0.f,
-					-velocity * glm::sin(glm::radians(rotation.y))
-				});
-			}
-		}
-		if(input.isKept(Keyboard::Space))
-			object->move({0.f, velocity, 0.f});
-		if(input.isKept(Keyboard::LControl))
-			object->move({0.f, -velocity, 0.f});
-		if(_rotating) {
-			auto mouse = input.getMousePosition();
-			object->rotate({
-				(mouse.y - _previousMouse.y)/10.f,
-				(mouse.x - _previousMouse.x)/10.f,
-				0.f
-			});
-			_previousMouse = mouse;
-		}
-		if(input.isPressed(Mouse::Right)) {
-			_rotating = true;
-			_previousMouse = input.getMousePosition();
-		}
-		if(input.isReleased(Mouse::Right)) {
-			_rotating = false;
-		}
-	}
-
 	std::unique_ptr<Component> CameraComponent::copy(Entity* newParent) const {
 		auto ptr = std::make_unique<CameraComponent>(*this);
 
@@ -234,33 +175,31 @@ namespace rat {
 		return _smoothness;
 	}
 
-	sf3d::View CameraComponent::getRecalculatedView(sf3d::View baseView) {
+	void CameraComponent::updateCamera() {
 		auto* entity = getEntity();
-		if(_type == None) {
-			baseView.setCenter(entity->getPosition());
-			baseView.setRotation(entity->getRotation());
+		if (_type == None) {
+			this->setPosition(entity->getPosition());
+			this->setRotation(entity->getRotation());
 		}
-		else if(_type == Smooth) {
+		else if (_type == Smooth) {
 			if(_smoothness >= 1.f) {
-				auto delta = entity->getPosition() - baseView.getCenter();
-				auto deltaRotation = entity->getRotation() - baseView.getRotation();
-				baseView.move(delta / _smoothness);
-				baseView.rotate(deltaRotation / _smoothness);
-
+				auto delta = entity->getPosition() - this->getPosition();
+				auto deltaRotation = entity->getRotation() - this->getRotation();
+				this->move(delta / _smoothness);
+				this->rotate(deltaRotation / _smoothness);
 			}
 		}
-		else if(_type == Linear) {
+		else if (_type == Linear) {
 			auto position = entity->getPosition();
-			auto direction = position - baseView.getCenter();
-			float length = glm::sqrt(direction.x*direction.x + direction.y*direction.y);
+			auto direction = position - this->getPosition();
+			float length = glm::sqrt(direction.x * direction.x + direction.y * direction.y);
 			direction /= length;
 			if(length <= _linear)
-				baseView.setCenter(position);
+				this->setPosition(position);
 			else
-				baseView.move(direction*_linear);
-			baseView.setRotation(entity->getRotation());
+				this->move(direction * _linear);
+			this->setRotation(entity->getRotation());
 		}
-		return baseView;
 	}
 
 	void CameraComponent::initScript(ScriptClass<Entity>& entity, Script& script)
@@ -296,6 +235,7 @@ namespace rat {
 			case Smooth: return "Smooth";
 			case Linear: return "Linear";
 		}
+		return "None";
 	}
 	size_t CameraComponent::enumTypeToSize_t() const {
 		return static_cast<size_t>(_type);

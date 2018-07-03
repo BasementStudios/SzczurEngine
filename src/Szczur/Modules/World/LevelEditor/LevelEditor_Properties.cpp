@@ -8,13 +8,16 @@
 #include "../ScenesManager.hpp"
 #include "../Entity.hpp"
 #include "../Scene.hpp"
-#include "../Components/TraceComponent.hpp"
+#include "../Components/BaseComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
+#include "../Components/CameraComponent.hpp"
 #include "../Components/ArmatureComponent.hpp"
+#include "../Components/ColliderComponent.hpp"
 #include "../Components/ScriptableComponent.hpp"
 #include "../Components/InteractableComponent.hpp"
 #include "../Components/TriggerComponent.hpp"
-#include "../Components/BaseComponent.hpp"
+#include "../Components/TraceComponent.hpp"
+#include "../Components/PointLightComponent.hpp"
 #include "../Components/AudioComponent.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
@@ -26,9 +29,6 @@ namespace rat {
 		// Object isn't selected
 		if(!_objectsList.isEntitySelected()) return;
 		bool openWindow = true; 
-
-		// Current scene
-		auto* scene = _scenes.getCurrentScene();
 		
 		// Selected object
 		Entity* focusedObject = _objectsList.getSelectedEntity();
@@ -63,8 +63,8 @@ namespace rat {
 				if(auto* object = focusedObject->getComponentAs<InteractableComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
+				if(auto* object = focusedObject->getComponentAs<PointLightComponent>()) object->renderHeader(_scenes, focusedObject);
 				if(auto* object = focusedObject->getComponentAs<AudioComponent>()) object->renderHeader(_scenes, focusedObject);
-
 			}
 
 		}
@@ -82,7 +82,7 @@ namespace rat {
 			auto* entity = _objectsList.getSelectedEntity();
 
 			// Choosed components
-			static bool choosed[7]{};
+			static bool choosed[10]{};
 			if(ImGui::IsWindowAppearing()) {
 				choosed[0] = entity->hasComponent<SpriteComponent>();
 				choosed[1] = entity->hasComponent<ArmatureComponent>();
@@ -91,7 +91,8 @@ namespace rat {
 				choosed[4] = entity->hasComponent<InteractableComponent>();
 				choosed[5] = entity->hasComponent<TriggerComponent>();
 				choosed[6] = entity->hasComponent<TraceComponent>();
-				choosed[6] = entity->hasComponent<AudioComponent>();
+				choosed[7] = entity->hasComponent<AudioComponent>();
+				choosed[8] = entity->hasComponent<PointLightComponent>();
 			}
 
 
@@ -110,6 +111,7 @@ namespace rat {
 				UPDATE_COMPONENT(TriggerComponent, 5);
 				UPDATE_COMPONENT(TraceComponent, 6);
 				UPDATE_COMPONENT(AudioComponent, 7);
+				UPDATE_COMPONENT(PointLightComponent, 8);
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -129,6 +131,7 @@ namespace rat {
 			ImGui::Checkbox("Trigger", &choosed[5]);
 			ImGui::Checkbox("Trace", &choosed[6]);
 			ImGui::Checkbox("Audio", &choosed[7]);
+			ImGui::Checkbox("Light", &choosed[8]);
 
 			ImGui::EndPopup();
 		}

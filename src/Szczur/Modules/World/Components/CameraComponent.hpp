@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/SFML3D/View.hpp"
+#include "Szczur/Utility/SFML3D/Camera.hpp"
 
 #include "../Component.hpp"
 
@@ -15,14 +15,11 @@ class Script;
 class Listener;
 template<class T> class ScriptClass;
 
-class CameraComponent : public Component {
+class CameraComponent : public Component, public sf3d::Camera {
 public:
 
     ///
     CameraComponent(Entity* parent);
-
-    ///
-    void processEvents(InputManager& input);
 
     ///
     virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
@@ -61,13 +58,13 @@ public:
     ///
     void update(ScenesManager& scenes, float deltaTime);
 
-    sf3d::View getRecalculatedView(sf3d::View baseView);;
+    /// 
+    void updateCamera();
 
     ///
     static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
-    bool _rotating{false};
     bool _locked{false};
 	float _velocity{50.f};
 
@@ -93,8 +90,6 @@ private:
 	size_t enumTypeToSize_t() const;
 
 	Type size_tToEnumType(size_t type) const;
-
-    sf::Vector2i _previousMouse;
 
     Entity* _stickTo{nullptr};
 

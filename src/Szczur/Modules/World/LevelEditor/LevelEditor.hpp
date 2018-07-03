@@ -1,6 +1,13 @@
 
-//#ifdef EDITOR
 #pragma once
+//#ifdef EDITOR
+
+#include <boost/container/flat_map.hpp>
+
+#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
+#include "Szczur/Utility/SFML3D/CircleShape.hpp"
+#include "Szczur/Utility/SFML3D/Camera.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
@@ -11,42 +18,14 @@
 #include "../Data/SpriteDisplayData.hpp"
 #include "../Data/ArmatureDisplayData.hpp"
 #include "../ScenesManager.hpp"
-
-#include <boost/container/flat_map.hpp>
-#include "Szczur/Modules/Camera/Camera.hpp"
-
 #include "ObjectsList.hpp"
 #include "SpriteDisplayDataManager.hpp"
 #include "ArmatureDisplayDataManager.hpp"
-
-#include <Szczur/Utility/SFML3D/RectangleShape.hpp>
-#include <Szczur/Utility/SFML3D/CircleShape.hpp>
 
 namespace rat {
 class DialogEditor;
 class AudioEditor;
 class InputManager;
-
-struct FreeCamera {
-public:
-	
-	///
-	void move(const glm::vec3& offset) {position += offset;}
-
-	///
-	void rotate(const glm::vec3& offset) {rotation += offset;}
-
-	///
-	void processEvents(InputManager& input);
-
-public:
-
-	glm::vec3 position{0.f, 0.f, 0.f};
-	glm::vec3 rotation{0.f, 0.f, 0.f};
-	bool rotating{false};
-	float velocity{50.f};
-	sf::Vector2i previousMouse{0, 0};
-};
 
 class LevelEditor {
 public:
@@ -62,7 +41,7 @@ public:
 	void render(sf3d::RenderTarget& target);
 
 	///
-	void update(InputManager& input, Camera& camera);
+	void update(InputManager& input, Window& camera);
 
 	///
 	void printMenuBarInfo(const std::string& text);
@@ -84,12 +63,9 @@ public:
 
 	void updateCurrentCamera();
 
-	void updateCamera(Camera& camera);
+	void updateCamera(sf3d::Camera& camera);
 
 private:
-
-	///
-	void _processEventsForFreeCamera(InputManager& input);
 	
 	///
 	void _renderMenuBar();
@@ -125,16 +101,20 @@ private:
 // World
 
 	ScenesManager& _scenes;
-	Entity* _currentCamera{ nullptr };
 
 // Parts of editor
 
-	FreeCamera _freeCamera;
 	ObjectsList _objectsList;
 	SpriteDisplayDataManager _spriteDisplayDataManager;
 	ArmatureDisplayDataManager _armatureDisplayDataManager;
 	DialogEditor* _dialogEditor = nullptr;
 	AudioEditor* _audioEditor = nullptr;
+
+// Free camera
+
+	sf3d::Camera _freeCamera;
+	bool _cameraRotating {false};
+	sf::Vector2i _cameraPreviousMouseOffset {0, 0};
 
 // Menu info
 
