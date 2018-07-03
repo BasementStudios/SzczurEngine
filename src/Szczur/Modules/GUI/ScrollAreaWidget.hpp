@@ -51,6 +51,9 @@ namespace rat
         Scroller _scroller;
         sf::Vector2f _minScrollSize{30, 50};
 
+        void _recalcScroller();
+        float _scrollerProp{0.f};
+
         float _childrenHeight{0};
         float _childrenHeightProp{1.f};
 
