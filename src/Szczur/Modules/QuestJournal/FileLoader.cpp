@@ -47,7 +47,25 @@ namespace journal
                 }
                 if(base == look)
                 {
-                    return std::string(*(k+(stepID+2)));
+                    base = "";
+                    std::string n = *(k+(stepID+2));
+                    while(n.find(std::string("\\n")) != std::string::npos)
+                    {
+
+                        size_t pos = n.find("\\n");
+                        for(size_t p = 0; p <pos;p++)
+                        {
+                            base+=n[0];
+                            n.erase(0,1);
+                        }
+                        base += "\n";
+                        n.erase(0,2);
+                    }
+                    if(base.empty()) 
+                        return n;
+                    else
+                       return base+n;
+                    
                 }
             }
         }

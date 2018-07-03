@@ -177,8 +177,9 @@ namespace rat
     
         finishQuest(2);
 
-        moveIterator(1);
-        addStep(0);
+        //moveIterator(1);
+      //  addStep(0);
+        
         
         displayNormalList();
 
