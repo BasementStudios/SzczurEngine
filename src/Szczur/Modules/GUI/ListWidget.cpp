@@ -2,8 +2,11 @@
 
 #include <algorithm>
 #include <functional>
+#include <cassert>
 
 #include "Szczur/Utility/Logger.hpp"
+
+#include "InterfaceWidget.hpp"
 
 namespace rat
 {
@@ -88,7 +91,28 @@ namespace rat
         }
     }
 
+    void ListWidget::_calcPropBetweenPad()
+    {
+        assert(_hasPropBetweenPad);
+        if(!_interface) return;
 
+        auto size = _interface->getSizeByPropSize({_propBetweenPad, 0.f});
+
+        setBetweenPadding(size.x);
+    }
+
+    void ListWidget::setPropBetweenPad(float propPad)
+    {
+        _propBetweenPad = propPad;
+        _hasPropBetweenPad = true;
+        if(_interface) _calcPropBetweenPad();
+        else _elementsPropSizeMustBeenCalculated = true;
+    }
+
+    void ListWidget::_recalcElementsPropSize()
+    {
+        if(_hasPropBetweenPad) _calcPropBetweenPad();
+    }
 
     sf::Vector2f ListWidget::_getChildrenSize()
     {

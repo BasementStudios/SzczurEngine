@@ -177,11 +177,15 @@ namespace rat {
         _scroller.setSize(_minScrollSize.x, size.y);
 
         sf::Vector2u rTexSize = { (unsigned int)(size.x - _minScrollSize.x - (getPadding().x * 2.f)), (unsigned int)(size.y - (getPadding().y * 2.f)) };
+        std::cout << "New size: " << rTexSize.x << " " << rTexSize.y << '\n';
+        if(rTexSize != _renderTexture.getSize())
+        {
+            auto* window = detail::globalPtr<Window>; 
+            window->pushGLStates(); 
+            _renderTexture.create(rTexSize.x, rTexSize.y); 
+            window->popGLStates();
+        }
 
-        auto* window = detail::globalPtr<Window>; 
-        window->pushGLStates(); 
-        _renderTexture.create(rTexSize.x, rTexSize.y); 
-        window->popGLStates();
 
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
         _childrenHeightProp = _childrenHeight/float(size.y);
