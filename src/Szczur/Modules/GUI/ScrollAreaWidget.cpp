@@ -68,6 +68,7 @@ namespace rat {
         _scroller.setProportion(prop);
         _offset = float(maxOffset * prop);
         _isPosChanged = true;
+        _aboutToRecalculate = true;
     }
 
     void ScrollAreaWidget::resetScrollerPositionInTime(const gui::AnimData& data)

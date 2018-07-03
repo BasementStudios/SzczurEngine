@@ -12,7 +12,7 @@ namespace journal
         _scroller->setPropSize(0.7f, 0.6f);
         _scroller->setPropPosition(0.94f, 0.9f);
         _list->setBetweenPadding(20.f);
-        _list->setPropSize(0.6f, 1.f);
+        _list->setPropSize(0.6f, 0.f);
         _list->makeReversed();
         _scroller->add(_list);
     }
@@ -36,6 +36,8 @@ namespace journal
             widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
+        _scroller->resetScrollerPosition();
+
     }
 
     void DescriptionManager::setQuest(std::shared_ptr<Quest> quest)

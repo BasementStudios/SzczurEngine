@@ -14,7 +14,7 @@ namespace journal
         _scroller->setPropSize(0.4f, 0.3f);
         _scroller->setPropPosition(0.28f, 0.1f);
         _list->setBetweenPadding(20.f);
-        _list->setPropSize(0.3f, 1.f);
+        _list->setPropSize(0.3f, 0.f);
 
         _scroller->add(_list);
     }
@@ -38,6 +38,7 @@ namespace journal
             widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
+        _scroller->resetScrollerPosition();
    
     }
     void StepsManager::setScrollTextures(sf::Texture *t1,sf::Texture *t2,sf::Texture *t3)

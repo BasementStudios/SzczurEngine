@@ -83,9 +83,9 @@ namespace rat
         _doneScroller->add(_doneList);
 
         _list->setBetweenPadding(20.f);
-        _list->setPropSize(0.6f, 1.f);
+        _list->setPropSize(0.6f, 0.f);
         _doneList->setBetweenPadding(20.f);
-        _doneList->setPropSize(0.6f,1.f);
+        _doneList->setPropSize(0.6f, 0.f);
 
         _scroller->deactivate();
         _scroller->invisible();
@@ -349,6 +349,8 @@ namespace rat
 
         _actual->setColor(sf::Color::White);
         _done->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
+        _scroller->resetScrollerPosition();
     }
 
     void QuestJournal::displayDoneList()
