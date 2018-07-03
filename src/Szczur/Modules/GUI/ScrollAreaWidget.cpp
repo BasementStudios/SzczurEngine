@@ -6,6 +6,8 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
+#include "Animation/Anim.hpp"
+
 namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :
     Widget(),
@@ -57,9 +59,39 @@ namespace rat {
 
     void ScrollAreaWidget::resetScrollerPosition()
     {
-        _scroller.setProportion(0.f);
-        _offset = 0.f;
+        setScrollerProp(0.f);
+    }
+
+    void ScrollAreaWidget::setScrollerProp(float prop)
+    {
+        _scrollerProp = prop;
+        if(_aboutToRecalculate) return;
+        _recalcScroller();
+    }
+
+    void ScrollAreaWidget::_recalcScroller()
+    {
+        float maxOffset = -(_childrenHeight - _getSize().y);
+        _scroller.setProportion(_scrollerProp);
+        _offset = float(maxOffset * _scrollerProp);
         _isPosChanged = true;
+        //_aboutToRecalculate = true;
+    }
+
+    void ScrollAreaWidget::resetScrollerPositionInTime(const gui::AnimData& data)
+    {
+        using ScrollAnim_t = gui::Anim<ScrollAreaWidget, gui::AnimType::Scroll, float>;
+        auto setter = static_cast<void (ScrollAreaWidget::*)(float)>(&ScrollAreaWidget::setScrollerProp);
+        auto scrollAnim = std::make_unique<ScrollAnim_t>(this, setter);
+
+        scrollAnim->setAnim(_scroller.getProportion(), 0.f, data);
+        _addAnimation(std::move(scrollAnim));
+    }
+    
+
+    void ScrollAreaWidget::resetScrollerPositionInTime(float time)
+    {
+        resetScrollerPositionInTime(gui::AnimData{time});
     }
 
     sf::Vector2f ScrollAreaWidget::_getSize() const {
@@ -110,8 +142,6 @@ namespace rat {
 
     void ScrollAreaWidget::_input(const sf::Event& event) 
     {
-        float maxOffset = -(_childrenHeight - _getSize().y);
-
         float oldProp = _scroller.getProportion();
 
         if(_isHovered && event.type == sf::Event::MouseWheelScrolled) 
@@ -122,12 +152,11 @@ namespace rat {
         
         _scroller.input(event);
         //_scroller.inputMouseMoved()
+        float newProp = _scroller.getProportion();
         
-
-        if(oldProp != _scroller.getProportion())
+        if(oldProp != newProp)
         {
-            _offset = float(maxOffset * _scroller.getProportion());
-            _isPosChanged = true;
+            setScrollerProp(newProp);
         }
     }
 
@@ -158,6 +187,8 @@ namespace rat {
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
         _childrenHeightProp = _childrenHeight/float(size.y);
         _scroller.setScrollerHeightProp(_childrenHeightProp);
+
+        _recalcScroller();
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) 
@@ -166,6 +197,11 @@ namespace rat {
             std::invoke(it->second, this);
         if(auto it = _callbacks.find(type); it != _callbacks.end())
             std::invoke(it->second, this);
+    }
+
+    sf::Vector2f ScrollAreaWidget::_getInnerSize() const
+    {
+        return {float(_renderTexture.getSize().x), 0.f};
     }
 
 }

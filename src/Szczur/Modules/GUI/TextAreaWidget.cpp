@@ -81,7 +81,8 @@ namespace rat {
         _aboutToRecalculate = true;
     }
 
-    void TextAreaWidget::setColor(const sf::Color& color) {
+    void TextAreaWidget::_setColor(const sf::Color& color) 
+    {
         _text.setFillColor(color);
     }
 
@@ -123,8 +124,8 @@ namespace rat {
     {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<float>(rect.left + rect.width),
-            static_cast<float>(rect.top + rect.height)
+            static_cast<float>(rect.width),
+            static_cast<float>(rect.height)
         };
     }
 

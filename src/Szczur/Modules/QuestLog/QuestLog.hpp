@@ -38,8 +38,8 @@ namespace rat
         void load(const std::string& path);
         void save(const std::string& path) const;
 
-        nlohmann::json getJson() const;
-        void loadFromJson(nlohmann::json& j);
+        nlohmann::json getSaveJson() const;
+        void loadFromSaveJson(nlohmann::json& j);
 
         Requirements& getReqs();
 
@@ -48,6 +48,7 @@ namespace rat
         void activateQuest(const std::string& name);
         void addQuestTitle(const std::string& questName, int index);
         void addQuestDescription(const std::string& questName, int index);
+        void finishQuest(const std::string& name);
 
     private:
 

@@ -30,9 +30,9 @@ namespace rat
     void QuestLog::update(float dt)
     {
         timer += dt;
-        std::cout << timer << '\n';
+        //std::cout << timer << '\n';
 
-        if(timer > 3.f)
+        if(timer > 2.f)
         {
             timer = 0.f;
             toStep = true;
@@ -48,7 +48,7 @@ namespace rat
                 case 3: q->getNode("FindSth")->nextStep(); break;
                 default: break;
             }
-            std::cout << "count: ", count, '\n'; 
+            //std::cout << "count: " << count << '\n'; 
             count++;
             toStep = false;
         }
@@ -106,7 +106,7 @@ namespace rat
 
         json j;
         in >> j;
-        loadFromJson(j);
+        loadFromSaveJson(j);
     }
     void QuestLog::save(const std::string& path) const
     {
@@ -118,21 +118,21 @@ namespace rat
             return;
         }
 
-        out << std::setw(4) << getJson();
+        out << std::setw(4) << getSaveJson();
     }
 
-    json QuestLog::getJson() const
+    json QuestLog::getSaveJson() const
     {
         json j;
 
         for(auto& [name, quest] : _quests)
         {
-            j[name] = quest->getJson();
+            j[name] = quest->getSaveJson();
         }
 
         return j;
     }
-    void QuestLog::loadFromJson(nlohmann::json& j)
+    void QuestLog::loadFromSaveJson(nlohmann::json& j)
     {
         LOG_INFO("Loading QuestLog...");
         for(auto i = j.begin(); i != j.end(); i++)
@@ -144,7 +144,7 @@ namespace rat
                 LOG_ERROR("Quest \"", name, "\" hasn't been created. Maybe it has been removed...?");
                 continue;
             }
-            quest->loadFromJson(i.value());
+            quest->loadFromSaveJson(i.value());
         }
         LOG_INFO("Loaded QuestLog.");
     }
@@ -168,12 +168,13 @@ namespace rat
         module.set_function("save", &QuestLog::save, this);
         module.set_function("addQuest", &QuestLog::addQuest, this);
         module.set_function("getQuest", &QuestLog::getQuest, this);
+        module.set_function("startQuest", &QuestLog::activateQuest, this);
         module.set_function("getReqs", &QuestLog::getReqs, this);
 
         script.initClasses<Requirements, Quest, QuestNode>();
 
 
-        //script.scriptFile("quests/testowyQuest.lua");
+        script.scriptFile("Assets/Quest/testowyQuest.lua");
         
     }
 
@@ -181,63 +182,84 @@ namespace rat
     {
         if(auto found = _quests.find(name); found == _quests.end())
         {
-            LOG_ERROR("Cannot activate quest \"", name, "\"");
+            LOG_ERROR("Cannot find quest \"", name, "\" to activate");
             assert(false);
         }
         else
         {
             auto& quest = found->second;
+            auto& journal = getModule<QuestJournal>();
+            std::cout << "Quest with name index: " << quest->getNameIndex() << " activated\n\n";
+
             quest->start();
 
-            auto journal = getModule<QuestJournal>();
-            journal.addQuest(1);
+            //journal.addQuest(1);
+        }
+    }
+
+    void QuestLog::finishQuest(const std::string& name)
+    {
+        if(auto found = _quests.find(name); found == _quests.end())
+        {
+            LOG_ERROR("Cannot find quest \"", name, "\" to finish");
+            assert(false);
+        }
+        else
+        {
+            auto& quest = found->second;
+            auto& journal = getModule<QuestJournal>();
+            std::cout << "Quest with name index: " << quest->getNameIndex() << " finished\n\n";
+
+            //quest->start();
+
+            //journal.addQuest(1);
         }
     }
 
     void QuestLog::addQuestTitle(const std::string& questName, int index)
     {
-        std::cout << "jeb\n";
-        auto journal = getModule<QuestJournal>();
-        journal.moveIterator(questName);
+        auto& journal = getModule<QuestJournal>();
+        //journal.moveIterator(questName);
 
-        journal.addStep((unsigned int)(index));
+        //journal.addStep((unsigned int)(index));
+        std::cout << "Step: " << index << " from quest " << questName << " added\n\n";
     }
     void QuestLog::addQuestDescription(const std::string& questName, int index)
     {
-        std::cout << "jebDesc\n";
-        auto journal = getModule<QuestJournal>();
-        journal.moveIterator(questName);
-        std::cout << "jebDesc\n";
+        auto& journal = getModule<QuestJournal>();
+        //journal.moveIterator(questName);
 
-        journal.addDescription((unsigned int)(index));
-        std::cout << "jebDesc\n";
+        //journal.addDescription((unsigned int)(index));
 
+        std::cout << "Desc: " << index << " from quest " << questName << " added\n\n";
     }
 
     void QuestLog::testQuest()
     {
-        auto* nemo =  addQuest("Nemo");
+        /*
+        auto* nemo = addQuest("Nemo");
+        nemo->setNameIndex(0);
 
         auto* root = nemo->getRoot();
-        root->addDescription(5);
+        root->addDescription(0);
 
         auto* sharkChoice = root->addStep("SharkChoice");
         sharkChoice->addTitle(0);
 
         auto* kill = sharkChoice->addStep("Kill");
         kill->addTitle(4);
-        kill->addDescription(6);
+        kill->addDescription(1);
 
         auto* findSth = kill->addStep("FindSth");
-        findSth->addTitle(2);
-        findSth->addDescription(7);
+        findSth->addTitle(1);
+        findSth->addDescription(2);
 
 
         auto* goAround = sharkChoice->addStep("GoAround");
-        goAround->addTitle(3);
-        goAround->addDescription(8);
+        goAround->addTitle(31);
+        goAround->addDescription(31);
 
-
+*/
 
     }
     

@@ -166,11 +166,7 @@ namespace rat
                 if(_isClicked)
                 {
                     const auto newGlobalPos = mousePos - _clickedShift;
-                    const auto newPos = newGlobalPos - (getGlobalPosition() - getDrawPosition()); 
-                    //std::cout << std::setw(8) << "GlobalPos" << "x:" << getGlobalPosition().x << '\t' << getGlobalPosition().y << '\n' <<
-                    //"DrawPos x: " << getDrawPosition().x << '\t' << getDrawPosition().y << '\n' <<
-                    //"GlobalMousePos x: " << newGlobalPos.x << '\t' << newGlobalPos.y << '\n' <<
-                    //"NewPos x: " << newPos.x << '\t' << newPos.y << '\n';
+                    const auto newPos = newGlobalPos - (getGlobalPosition()); 
                     setScrollerPosition(newPos);
                 }
 
@@ -290,6 +286,7 @@ namespace rat
         float maxTop = _path.getGlobalBounds().top;
 
         _scroller.setPosition(0.f, maxTop + (realPathLength * _proportion));
+        _recalcScrollerPos();
     }
 
     void Scroller::_recalcBoundPos()

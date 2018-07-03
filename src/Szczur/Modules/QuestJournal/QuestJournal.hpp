@@ -3,6 +3,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
+#include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "StepsManager.hpp"
@@ -12,37 +13,48 @@
 
 namespace rat
 {
-    class TextWidget; class ImageWidget;
-    class QuestJournal : public Module<Window,GUI>
+    class TextWidget; class ImageWidget; class WindowWidget;
+    class QuestJournal : public Module<Window, GUI, Input>
     {
         public:
             QuestJournal();
             ~QuestJournal();
 
-            void addQuest(const unsigned int &i);
-            void addStep(const unsigned int &i);
+            void addQuest(unsigned int i);
+            void addStep(unsigned int i);
 
-            void addDescription(const unsigned int &descriptionNumber);
+            void addDescription(unsigned int descriptionNumber);
 
-            void moveIterator(std::string questName);
+            void moveIterator(const std::string& questName);
 
-            void refresh(std::string questName);
+            void refresh(const std::string& questName);
 
-            void finishQuest(std::string name);
+            void finishQuest(const std::string& name);
 
             void displayDoneList();
             void displayNormalList();
+
+            void update();
 
             void turnON();
             void turnOFF();
 
         private:
 
-            ImageWidget *_doneSwitch;
-            ImageWidget *_switch;
+            bool _isRunning = false;
+
+            TextWidget *_done;
+            TextWidget *_actual;
+
+            WindowWidget *_doneSwitch;
+            WindowWidget *_switch;
             ImageWidget *_ButtonWidget;
 
-            std::vector<std::shared_ptr<TextWidget> > _widgets;
+            WindowWidget *_ninePatchWidget[4];
+
+            std::vector<TextWidget*>  _normalTextWidgets;
+            std::vector<TextWidget* > _doneTextWidgets;
+
             ListWidget *_list;
             ListWidget * _doneList;
             ScrollAreaWidget *_scroller;
@@ -59,7 +71,7 @@ namespace rat
             
             std::vector<std::shared_ptr<journal::Quest> > _doneQuests;
 
-
+            std::vector<std::string> _texturePath;
 
             std::vector<std::shared_ptr<journal::Quest> >::iterator it;
             

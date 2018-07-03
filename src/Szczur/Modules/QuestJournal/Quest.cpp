@@ -15,22 +15,22 @@ namespace journal
 
     }
 
-    void Quest::setQuestName(const unsigned int &i)
+    void Quest::setQuestName(unsigned int i)
     {
         _questName = _fileLoader->getStep(i);
     }
     
-    void Quest::addQuestDescription(const unsigned int &descriptionNumber)
+    void Quest::addQuestDescription(unsigned int descriptionNumber)
     {
         _descriptions.push_back(_fileLoader->getDescription(descriptionNumber));
     }
 
-    void Quest::nextStep(const unsigned int &i)
+    void Quest::nextStep(unsigned int i)
     {
         _steps.push_back(_fileLoader->getStep(i));
     }
 
-    std::string Quest::getQuestName()
+    std::string& Quest::getQuestName()
     {
         return _questName;
     }
@@ -43,6 +43,11 @@ namespace journal
     std::vector<std::string> & Quest::getSteps()
     {
         return _steps;
+    }
+
+    void Quest::setQuestName(const std::string& name)
+    {
+        _questName = name;
     }
 }
 }

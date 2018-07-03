@@ -14,7 +14,8 @@ namespace rat
     {
     public:
         void addCounter(const std::string& name, int maxValue);
-        virtual void advanceCounter(const std::string& name, int value = 1);
+        virtual void advanceCounter(const std::string& name, int value);
+        void setCounter(const std::string& name, int value);
         int getValueFromCounter(const std::string& name) const;
         bool isCounterFull(const std::string& name);
 

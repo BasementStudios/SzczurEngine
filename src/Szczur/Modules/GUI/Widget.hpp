@@ -14,12 +14,12 @@
 #include "ProportionalDimes.hpp"
 #include "Widget/FamilyTransform.hpp"
 
-#define GUI_DEBUG 1
+//#define GUI_DEBUG 1
 
 namespace rat 
 {
 	class InterfaceWidget;
-	class TransformAnimationBase;
+	namespace gui { class AnimBase; class AnimData; enum AnimType : int; }
 
 	class Widget : public sf::Drawable, protected gui::FamilyTransform
 	{
@@ -41,7 +41,8 @@ namespace rat
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
 		using CallbacksLuaContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 		using Children_t = std::vector<Widget*>;
-		using Animation_t = std::unique_ptr<TransformAnimationBase>;
+
+		using Animation_t = std::unique_ptr<gui::AnimBase>;
 		using AnimationsContainer_t = std::vector<Animation_t>;
 
 		void setParent(Widget* parent);
@@ -70,12 +71,18 @@ namespace rat
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
 		void setPositionInTime(const sf::Vector2f& offset, float inTime);
+		void setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data);
 		const sf::Vector2f& getPosition() const;
 		const sf::Vector2f& getGlobalPosition() const;
 
 		void setPropPosition(const sf::Vector2f& propPos);
 		void setPropPosition(float propX, float propY);
 		void setPropPosition(const sf::Vector2f& propPos, float inTime);
+		void setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data);
+
+		sf::Vector2f getPosByGlobalPos(const sf::Vector2f& globalPos) const;
+		void setGlobalPosition(const sf::Vector2f& globalPos);
+		void setGlobalPosition(float globalX, float globalY);
 
 		virtual void setPadding(const sf::Vector2f& padding);
 		virtual void setPadding(float width, float height);
@@ -84,7 +91,8 @@ namespace rat
 		sf::Vector2f getInnerSize() const;
 
 		void setColor(const sf::Color& color);
-		void setColor(const sf::Color& color, float inTime);
+		void setColorInTime(const sf::Color& color, float inTime);
+		void setColorInTime(const sf::Color& color, const gui::AnimData& data);
 		void resetColor();
 		sf::Color getColor() const; 
 		
@@ -148,6 +156,9 @@ namespace rat
 		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		void _addAnimation(Animation_t animation);
+		void _abortAnimation(gui::AnimType type);
+
 		Widget* _parent{nullptr};
 
 		bool _onPressed();
@@ -189,7 +200,6 @@ namespace rat
 
 		AnimationsContainer_t _animations;
 		size_t _currentAnimations{0};
-		void _addAnimation(Animation_t animation);
 		void _updateAnimations(float dt);
 
 		sf::Color _color;

@@ -27,6 +27,7 @@ namespace journal
 
             void setQuest(std::shared_ptr<Quest> quest);
 
+            void clear();
         private:
             std::shared_ptr<std::vector<std::string> > _descriptions;
             sf::Font* _font;

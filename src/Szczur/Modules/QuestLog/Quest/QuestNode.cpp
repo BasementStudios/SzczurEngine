@@ -21,10 +21,14 @@ namespace rat
     QuestNode(baseQuest, Type::Base, name)
     {}
 
+    bool QuestNode::isInProgress() const
+    {
+        return _state == State::InProgress;
+    }
 
     QuestNode* QuestNode::addStep(const std::string& name)
     {
-        auto* step = new QuestNode(_baseQuest, name);
+        auto* step = new QuestNode(_baseQuest, Type::Step, name);
         return addNode(step);
     }
 
@@ -75,6 +79,7 @@ namespace rat
         _state = State::InProgress;
         if(onActivate.valid()) onActivate();
         if(_hasTitle) _baseQuest->addTitle(_titleIndex);
+        if(_hasDescription) _baseQuest->addDescription(_descriptionIndex);
     }
     void QuestNode::resume()
     {
@@ -89,7 +94,6 @@ namespace rat
     void QuestNode::nextStep(const std::string& name)
     {
         if(onFinished.valid()) onFinished();
-        if(_hasDescription) _baseQuest->addDescription(_descriptionIndex);
 
         if(_nextNodesNames.size() == 0)
         {
@@ -105,6 +109,7 @@ namespace rat
             }
             else
             {
+                std::cout << "Node \"" << _name << "\" finishes quest \"" << _baseQuest->getName() << "\"...\n\n";
                 _baseQuest->finish();
             }
         }
@@ -262,5 +267,34 @@ namespace rat
         }
 
         _reqs.loadFromJson(j["reqs"]);
+    }
+
+    Requirements& QuestNode::getReqs()
+    {
+        return _reqs;
+    }
+
+    void QuestNode::initScript(Script& script) 
+    {
+        auto object = script.newClass<QuestNode>("QuestNode", "QuestLog");
+
+        // Main
+        object.set("getName", &QuestNode::getName);
+        object.set("addStep", &QuestNode::addStep);
+        object.set("addSubnode", &QuestNode::addSubNode);
+        object.set("addNode", &QuestNode::addNode);
+        object.set("nextStep", &QuestNode::nextStep);
+        object.set("getReqs", &QuestNode::getReqs);
+
+        object.set("addDescription", &QuestNode::addDescription);
+        object.set("addTitle", &QuestNode::addTitle);
+
+
+        // Callbacks
+        object.set("onActivate", &QuestNode::onActivate);
+        object.set("onBlock", &QuestNode::onBlocked);
+        object.set("onFinish", &QuestNode::onFinished);
+
+        object.init();
     }
 }

@@ -24,8 +24,6 @@ namespace rat
         auto found = _nodes.find(nodeName);
         if(found == _nodes.end()) return nullptr;
 
-        std::cout << "Looked for: " << nodeName << " Found: " << found->second->getName() << "\n";
-
         return found->second.get();
     }
     void Quest::addNode(std::string nodeName, Node_t node)
@@ -53,13 +51,13 @@ namespace rat
     {
         std::cout << "Quest Started\n";
         _state = State::Active;
+        _rootNode->activate();
         _rootNode->nextStep();
-        std::cout << "kek\n";
     }
     void Quest::finish()
     {
         _state = State::Finished;
-        std::cout << "Jo Jo, you finished Quest\n";
+        _owner.finishQuest(getName());
     }
 
     void Quest::setNameIndex(unsigned int index)
@@ -79,24 +77,8 @@ namespace rat
     {
         _owner.addQuestDescription(getName(), index);
     }
-/*
-    void Quest::setTitle(const TitleInfo& info)
-    {      
-        auto* gui = _owner.getGUI();
-        gui->resetSubtitles();
 
-        gui->setTitle(info);
-    }
-        
-    QuestTitle* Quest::addSubtitle(const TitleInfo& info)
-    {
-        //if(_state != State;::Active) return nullptr;
-        auto* gui = _owner.getGUI();
-        return gui->addSubtitle(info);
-    }
-*/
-
-    json Quest::getJson() const
+    json Quest::getSaveJson() const
     {
         json j;
         
@@ -116,12 +98,12 @@ namespace rat
 
         return j;
     }
-    void Quest::loadFromJson(nlohmann::json& j)
+    void Quest::loadFromSaveJson(nlohmann::json& j)
     {
         _state = static_cast<State>(j["state"]);
 
         _loadReqsFromJson(j["reqs"]);
-        _loadNodesFromJson(j["root"]);
+        _loadNodesFromJson(j["nodes"]);
     }
 
     void Quest::_loadReqsFromJson(nlohmann::json& j)
@@ -150,14 +132,6 @@ namespace rat
     {
         
     }
-/*
-    void Quest::_activateRootsGUI()
-    {
-        auto gui = _owner.getGUI();
-        gui->resetSubtitles();
-        _rootNode->resume();
-    }
-*/
     void Quest::setName(const std::string& name)
     {
         _name = name;
@@ -172,35 +146,16 @@ namespace rat
         return _reqs;
     }
 
-    void Quest::initScript(Script& script) {
-    auto object = script.newClass<Quest>("Quest", "QuestLog");
-
-    // Main
-    object.set("getNode", &Quest::getNode);
-    //object.set("setTitle", &Quest::setTitle);
-    object.set("getRoot", &Quest::getRoot);
-    object.set("getReqs", &Quest::getReqs);
-
-    object.init();
-}
-
-    void QuestNode::initScript(Script& script) 
+    void Quest::initScript(Script& script) 
     {
-        auto object = script.newClass<QuestNode>("QuestNode", "QuestLog");
+        auto object = script.newClass<Quest>("Quest", "QuestLog");
 
         // Main
-        object.set("getName", &QuestNode::getName);
-        object.set("addStep", &QuestNode::addStep);
-        //object.set("addBrancher", &QuestNode::addBrancher);
-        object.set("addSubNode", &QuestNode::addSubNode);
-        object.set("addNode", &QuestNode::addNode);
-        object.set("nextStep", &QuestNode::nextStep);
-        //object.set("getReqs", &QuestNode::getReqs);
-
-        // Callbacks
-        object.set("onActivate", &QuestNode::onActivate);
-        object.set("onBlock", &QuestNode::onBlocked);
-        object.set("onFinish", &QuestNode::onFinished);
+        object.set("getNode", &Quest::getNode);
+        //object.set("setTitle", &Quest::setTitle);
+        object.set("getRoot", &Quest::getRoot);
+        object.set("getReqs", &Quest::getReqs);
+        object.set("setNameIndex", &Quest::setNameIndex);
 
         object.init();
     }

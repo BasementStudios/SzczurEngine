@@ -49,9 +49,13 @@ namespace rat
         Function_t onBlocked;
         Function_t onFinished;
 
+        bool isInProgress() const;
+
         nlohmann::json getSaveJson() const;
 
         void loadSaveFromJson(nlohmann::json& j);
+
+        Requirements& getReqs();
 
     private:
         State _state{State::Inactivated};

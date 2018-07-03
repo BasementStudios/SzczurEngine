@@ -25,6 +25,9 @@ namespace gui
         const sf::Vector2f& getGlobalPosition() const;
         const sf::Vector2f& getDrawPosition() const;
 
+        sf::Vector2f getPosByGlobal(const sf::Vector2f& globalPos) const;
+        void setGlobalPos(const sf::Vector2f& globalPos);
+
 
         void applyParentPosition(const sf::Vector2f& globalPosition, const sf::Vector2f& drawPos);
 

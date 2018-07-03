@@ -139,6 +139,12 @@ void Application::update()
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<GUI>().update(deltaTime);
 	getModule<QuestLog>().update(deltaTime);
+	getModule<QuestJournal>().update();
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().update(deltaTime);
+	}
+	#endif
 	/*
 		Put other updates here
 	*/

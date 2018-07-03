@@ -48,8 +48,8 @@ namespace rat
         void testLoad(std::ifstream& in);
         void testSave(std::ofstream& out);
 
-        nlohmann::json getJson() const;
-        void loadFromJson(nlohmann::json& j);
+        nlohmann::json getSaveJson() const;
+        void loadFromSaveJson(nlohmann::json& j);
 
         Requirements& getReqs();
 

@@ -11,7 +11,7 @@ namespace rat
         auto found = _counters.find(name);
         if(found != _counters.end())
         {
-            LOG_INFO("Counter \"", name, "\" already exist.");
+            LOG_ERROR("Counter \"", name, "\" already exist.");
             return;
         }
         _counters.emplace(name, Counter{0, maxValue});
@@ -21,11 +21,24 @@ namespace rat
         auto found = _counters.find(name);
         if(found == _counters.end())
         {
-            LOG_INFO("Counter \"", name, "\" doesn't exists.");
+            LOG_ERROR("Counter \"", name, "\" doesn't exists.");
             return;
         }
         bool wasFull = found->second.isFull();
         found->second.current += value;
+        if(!wasFull && found->second.isFull()) ++_fullCountersAmount;
+        if(wasFull && !found->second.isFull()) --_fullCountersAmount;
+    }
+    void Requirements::setCounter(const std::string& name, int value)
+    {
+        auto found = _counters.find(name);
+        if(found == _counters.end())
+        {
+            LOG_ERROR("Counter \"", name, "\" doesn't exists.");
+            return;
+        }
+        bool wasFull = found->second.isFull();
+        found->second.current = value;
         if(!wasFull && found->second.isFull()) ++_fullCountersAmount;
         if(wasFull && !found->second.isFull()) --_fullCountersAmount;
     }
@@ -34,7 +47,7 @@ namespace rat
         auto found = _counters.find(name);
         if(found == _counters.end())
         {
-            LOG_INFO("Counter \"", name, "\" doesn't exist.");
+            LOG_ERROR("Counter \"", name, "\" doesn't exist.");
             return 0;
         }
         return found->second.current;
@@ -44,7 +57,7 @@ namespace rat
         auto found = _counters.find(name);
         if(found == _counters.end())
         {
-            LOG_INFO("Counter \"", name, "\" doesn't exist.");
+            LOG_ERROR("Counter \"", name, "\" doesn't exist.");
             return 0;
         }
         return found->second.isFull();
@@ -60,7 +73,7 @@ namespace rat
         auto found = _reqs.find(name);
         if(found != _reqs.end())
         {
-            LOG_INFO("Requirement \"", name, "\" already exists.");
+            LOG_ERROR("Requirement \"", name, "\" already exists.");
             return;
         }
         _reqs.emplace(name, false);
@@ -70,7 +83,7 @@ namespace rat
         auto found = _reqs.find(name);
         if(found == _reqs.end())
         {
-            LOG_INFO("Requirement \"", name, "\" doesn't exist.");
+            LOG_ERROR("Requirement \"", name, "\" doesn't exist.");
             return false;
         }
         return found->second;
@@ -80,7 +93,7 @@ namespace rat
         auto found = _reqs.find(name);
         if(found == _reqs.end())
         {
-            LOG_INFO("Requirement \"", name, "\" doesn't exist.");
+            LOG_ERROR("Requirement \"", name, "\" doesn't exist.");
             return;
         }
         bool wasSuited = found->second;
@@ -155,7 +168,9 @@ namespace rat
 
             // Main
             object.set("addCounter", &Requirements::addCounter);
-            object.set("getValueFromCounter", &Requirements::getValueFromCounter);
+            object.set("setCounter", &Requirements::setCounter);
+            object.set("advanceCounter", &Requirements::advanceCounter);
+            object.set("getFromCounter", &Requirements::getValueFromCounter);
             object.set("addReq", &Requirements::addReq);
             object.set("isReqSuited", &Requirements::isReqSuited);
             object.set("suitReq", &Requirements::suitReq);
