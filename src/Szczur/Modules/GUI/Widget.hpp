@@ -150,6 +150,7 @@ namespace rat
 
 		virtual void _recalcChildrenPos();
 		virtual void _recalcPos() {}
+		virtual void _recalcElementsPropSize() {}
 
 		virtual sf::Vector2f _getInnerSize() const;
 

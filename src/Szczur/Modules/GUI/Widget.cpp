@@ -736,11 +736,16 @@ namespace rat
 
     void Widget::_updatePropSize()
     {
-        if(!(_props.hasSize && _interface)) return;
+        if(_interface)
+        {
+            _recalcElementsPropSize();
 
-        auto updatedSize = _interface->getSizeByPropSize(_props.size);
-
-        setSize(updatedSize);
+            if(_props.hasSize)
+            {
+                auto updatedSize = _interface->getSizeByPropSize(_props.size);
+                setSize(updatedSize);
+            }
+        }
     }
 
     void Widget::invokeToCalcPosition()
