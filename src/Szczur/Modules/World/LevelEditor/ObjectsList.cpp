@@ -174,7 +174,7 @@ namespace rat {
 			_selectedEntityID = -1;
 		}
 
-		if (auto& it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
+		if (auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
 			_selectedEntities.push_back(entity);
 		}
 		else {
@@ -184,7 +184,7 @@ namespace rat {
 
 	void ObjectsList::removedSelected(Entity* entity)
 	{
-		auto& it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity);
+		auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity);
 
 		if (it != _selectedEntities.end())
 		{
