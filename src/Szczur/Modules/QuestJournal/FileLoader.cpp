@@ -28,12 +28,12 @@ namespace journal
 
     }
 
-    std::string FileLoader::getStep(const unsigned int &i)
+    std::string FileLoader::getStep(unsigned int i)
     {
         return steps[i];
     }
 
-    std::string FileLoader::getDescription(const unsigned int &a)
+    std::string FileLoader::getDescription(unsigned int a)
     {
         unsigned int i=0;
         std::string text="";

@@ -83,9 +83,9 @@ namespace rat
         _doneScroller->add(_doneList);
 
         _list->setBetweenPadding(20.f);
-        _list->setPropSize(0.6f, 0.f);
+        _list->setPropSize(0.6f, 1.f);
         _doneList->setBetweenPadding(20.f);
-        _doneList->setPropSize(0.6f, 0.f);
+        _doneList->setPropSize(0.6f,1.f);
 
         _scroller->deactivate();
         _scroller->invisible();
@@ -176,7 +176,7 @@ namespace rat
         addStep(25);
         addDescription(8);
     
-        finishQuest(_fileLoader->getStep(10));
+        finishQuest(10);
 
         displayNormalList();
 
@@ -233,6 +233,17 @@ namespace rat
                 return;
         }
     }
+
+    void QuestJournal::moveIterator(unsigned int id)
+    {
+        std::string questName = _fileLoader->getStep(id);
+
+        for(it = _quests.begin();it!=_quests.end();it++)
+        {
+            if((*it)->getQuestName() == questName)    
+                return;
+        }
+    }
     void QuestJournal::refresh(const std::string& questName)
     {
         for(auto i :_normalTextWidgets)
@@ -272,6 +283,46 @@ namespace rat
        
     }
 
+    void QuestJournal::refresh(unsigned int id)
+    {
+
+        std::string questName = _fileLoader->getStep(id);
+        for(auto i :_normalTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+        for(auto i :_doneTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
+        std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
+        for(auto i : _normalTextWidgets)
+        {
+            if(i->getString() == questName)
+            {
+                i->setColor(sf::Color::White);
+
+                _stepManager->setQuest(*k);
+                _descriptionManager->setQuest(*k);
+                _questName->setQuest(*k);
+                return;          
+            }
+            k++;
+        }
+
+        k = _doneQuests.begin();
+        for(auto i : _doneTextWidgets)
+        {
+            if(i->getString() == questName)
+            {
+                i->setColor(sf::Color::White);
+ 
+                _stepManager->setQuest(*k);
+                _descriptionManager->setQuest(*k);
+                _questName->setQuest(*k);
+                return;
+            }
+            k++;
+        }
+    }
+
     void QuestJournal::turnOFF()
     {
         _interface->invisible();
@@ -288,6 +339,51 @@ namespace rat
 
     void QuestJournal::finishQuest(const std::string& name)
     {
+        for(auto i = _quests.begin(); i != _quests.end();i++)
+        {
+            if((*i)->getQuestName()==name)
+            {
+                TextWidget* widget;
+
+                _doneQuests.push_back(*i);
+                
+                widget = new TextWidget;
+                widget->setString((*i)->getQuestName());
+                widget->setFont(_font);
+
+                widget->setCharacterSize(25);
+                widget->setColor(sf::Color(135, 89, 247 ,255));
+                widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                    refresh(widget->getString());
+                });
+                _doneList->add(widget);
+                _doneTextWidgets.push_back(widget);
+
+                _quests.erase(i);
+                _list->clear();
+                _normalTextWidgets.clear();
+                
+                for(auto k = _quests.begin();k != _quests.end();k++)
+                {
+                    widget = new TextWidget;
+                    widget->setString((*k)->getQuestName());
+                    widget->setFont(_font);
+                    widget->setCharacterSize(25);
+                    widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+                    widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                        refresh(widget->getString());
+                    });
+                    _list->add(widget);
+                    _normalTextWidgets.push_back(widget);
+                }
+                return;
+            }
+        }
+    }
+
+    void QuestJournal::finishQuest(unsigned int id)
+    {
+        std::string name = _fileLoader->getStep(id);
         for(auto i = _quests.begin(); i != _quests.end();i++)
         {
             if((*i)->getQuestName()==name)
@@ -349,8 +445,6 @@ namespace rat
 
         _actual->setColor(sf::Color::White);
         _done->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
-
-        _scroller->resetScrollerPosition();
     }
 
     void QuestJournal::displayDoneList()

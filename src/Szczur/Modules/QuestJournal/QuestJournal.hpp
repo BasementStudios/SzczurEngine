@@ -26,10 +26,13 @@ namespace rat
             void addDescription(unsigned int descriptionNumber);
 
             void moveIterator(const std::string& questName);
+            void moveIterator(unsigned int id);
 
             void refresh(const std::string& questName);
+            void refresh(unsigned int id);
 
             void finishQuest(const std::string& name);
+            void finishQuest(unsigned int id);
 
             void displayDoneList();
             void displayNormalList();
