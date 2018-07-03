@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 
 namespace sf3d {
 	class Transform {
@@ -26,6 +26,7 @@ namespace sf3d {
 		void operator*=(const glm::vec3& value);
 
 		glm::mat4& getMatrix();
+		const glm::mat4& getMatrix() const;
 	
 	private:
 		glm::mat4 _mat;

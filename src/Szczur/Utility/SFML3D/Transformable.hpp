@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Transform.hpp"
+#include <glm/vec3.hpp>
 
 namespace sf3d {
+	class Transform;
 
 class Transformable {
 public:

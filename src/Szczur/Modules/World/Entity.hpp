@@ -156,7 +156,7 @@ public:
 	const ComponentsHolder_t& getComponents() const;
 
 	///
-	virtual void loadFromConfig(Json& config);
+	virtual void loadFromConfig(const Json& config, bool withNewID = false);
 
 	///
 	virtual void saveToConfig(Json& config) const;

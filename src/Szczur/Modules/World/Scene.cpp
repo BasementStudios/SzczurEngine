@@ -422,15 +422,9 @@ size_t Scene::getPlayerID() const
 	return _playerID;
 }
 
-Entity* Scene::getPlayer()
+void Scene::loadFromConfig(const Json& config, bool withNewID)
 {
-	return _player;
-}
-
-//170
-void Scene::loadFromConfig(Json& config)
-{
-	_id = config["id"];
+	_id = withNewID ? getUniqueID<Scene>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
 	size_t maxId = 0u;
@@ -443,18 +437,10 @@ void Scene::loadFromConfig(Json& config)
 	{
 		for (Json& current : it.value())
 		{
-			addEntity(it.key())->loadFromConfig(current);
+			addEntity(it.key())->loadFromConfig(current, true);
 		}
 	}
 
-	if(!config["player"].is_null()) {
-		setPlayerID(config["player"].get<int>());
-	}
-	else {
-		_playerID = 0;
-		_player = nullptr;
-	}
-	
 	trySettingInitialUniqueID<Scene>(_id);
 }
 

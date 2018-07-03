@@ -1,12 +1,15 @@
 #include "VertexArray.hpp"
 
+#include <stdexcept> // out_of_range
+
 #include <glad/glad.h>
+
 #include "Vertex.hpp"
 
 namespace sf3d {
 	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
-	_storageUsage(storageUsage),
-	_vertices(size) {
+	_vertices(size),
+	_storageUsage(storageUsage) {
 		glGenBuffers(1, &_VBO);
 		glGenVertexArrays(1, &_VAO);
 

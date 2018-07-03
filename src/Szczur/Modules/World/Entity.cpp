@@ -166,9 +166,9 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 	return _holder;
 }
 
-void Entity::loadFromConfig(Json& config)
+void Entity::loadFromConfig(const Json& config, bool withNewID)
 {
-	_id = config["id"];
+	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
 	setPosition({
@@ -199,10 +199,6 @@ void Entity::loadFromConfig(Json& config)
 	{
 		if(component["name"] == "BaseComponent") base = true;
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
-	}
-
-	if(base == false) {		
-		addComponent<BaseComponent>();
 	}
 
 	trySettingInitialUniqueID<Entity>(_id);

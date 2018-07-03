@@ -139,7 +139,7 @@ public:
 	size_t getPlayerID() const;
 
 	///
-	Entity* getPlayer();
+	void loadFromConfig(const Json& config, bool withNewID = false);
 
 	///
 	void loadFromConfig(Json& config);
