@@ -20,8 +20,12 @@ namespace rat
         //setPropOrigin(0.5f, 0.f);
         _border = new WindowWidget;
         _addWidget(_border);
-        _border->setScale(0.3f, 0.3f);
-        _border->setPadding(20.f, 2.f);
+        //_border->setScale(0.6f, 0.6f);
+        _border->setMainPatchPropSize({0.326f, 0.0772f});
+        _border->setPropSize(0.f, 0.0772f);
+        _border->setPropPadding(0.035f, 0.f);
+        //_border->setMainPatchPropSize({0.3, 0.05});
+        //_border->setPadding(20.f, 2.f);
         //_border->setPatchAmount(1, 1);
 
         _ppsList = new ListWidget;

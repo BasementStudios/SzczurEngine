@@ -20,7 +20,10 @@ namespace rat
         _window = new WindowWidget;
         _addWidget(_window);
         _window->makeChildrenPenetrable();
-        _window->setPadding(10.f, 10.f);
+        _window->setPadding(0.f, 0.f);
+        _window->setMainPatchPropSize({0.1625f, 0.1625f});
+        _window->setPropSize({0.1625f, 0.1625f});
+        _window->makeChildrenUnresizable();
 
         _icon = new ImageWidget;
 

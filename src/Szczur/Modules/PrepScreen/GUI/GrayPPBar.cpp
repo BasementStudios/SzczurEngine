@@ -9,11 +9,11 @@ namespace rat
     {
         _container = new ImageWidget;
         _addWidget(_container);
-        _container->setPropSize(0.0425f, 0.0425f);
+        _container->setPropSize(0.06f, 0.06f);
 
         _pp = new ImageWidget;
         _container->add(_pp);
-        _pp->setPropSize(0.035f, 0.035);
+        _pp->setPropSize(0.05f, 0.05f);
         _pp->setPropPosition(0.5f, 0.5f);
     }
 

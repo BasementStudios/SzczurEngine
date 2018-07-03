@@ -25,10 +25,12 @@ namespace rat
     {
         _border = new WindowWidget;
         _addWidget(_border);
-        _border->setPadding(11.f, 11.f);
+        //_border->setPadding(11.f, 11.f);
+        _border->setMainPatchPropSize({0.1625f, 0.1625f});
+        _border->setPropSize(0.48f, 0.735764f);
 
         _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setPropSize(0.375f, 0.65f); //0.65f
+        _skillsScroller->setPropSize(0.43f, 0.68f); //0.65f
         _skillsScroller->setPropPosition(0.5f, 0.5f);
         _border->add(_skillsScroller);
 

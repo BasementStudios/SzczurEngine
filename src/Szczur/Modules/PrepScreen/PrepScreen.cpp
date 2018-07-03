@@ -260,19 +260,21 @@ namespace rat
         mainList->setAutoBetweenPadding();
         mainList->setPropPosition(0.5f, 0.f);
 
-        _profArea.setParent(mainList);
+        auto* skillList = new ListWidget;
+        skillList->makeHorizontal();
+        skillList->setPropBetweenPad(0.0288387f);
+        mainList->add(skillList);
+
+        _profArea.setParent(skillList);
         //_profArea.setPropPosition(0.f, 0.5f);
 
-        _skillArea.setParent(mainList);
+        _skillArea.setParent(skillList);
        // _skillArea.setPropPosition(0.f, 0.5f);
 
         _chosenSkillArea.setParent(mainList);
         
         _enemyArea.setParent(mainList);
         //_enemyArea.setPropPosition(0.f, 0.5f);
-
-
-
         test();
     }
 
@@ -286,6 +288,10 @@ namespace rat
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
+        addGlyph(GlyphID::Wearines);
+        addGlyph(GlyphID::Wearines);
+        addGlyph(GlyphID::Wearines);
+        addGlyph(GlyphID::Wearines);
         activateGlyph(GlyphID::Wrath);
         
         setProfession("Range");
