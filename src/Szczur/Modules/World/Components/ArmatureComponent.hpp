@@ -32,7 +32,7 @@ namespace rat
 
         dragonBones::SF3DArmatureDisplay* getArmature();
 
-        virtual std::unique_ptr<Component> copy() const;
+        virtual std::unique_ptr<Component> copy(Entity* newParent) const;
 
         virtual void* getFeature(Component::Feature_e feature) override;
 

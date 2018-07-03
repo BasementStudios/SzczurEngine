@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <tuple>
 
 #include "Szczur/Utility/Logger.hpp"
@@ -32,6 +31,14 @@ struct NthElement<0u, T, Ts...> { using type = T; };
 template <size_t N, typename... Ts>
 using NthElement_t = typename NthElement<N, Ts...>::type;
 
+///
+template <typename... Ts>
+constexpr size_t StorageSizeFor();
+
+///
+template <typename... Ts>
+constexpr size_t StorageAlignFor();
+
 }
 
 template <typename... Ts>
@@ -39,7 +46,7 @@ class ModulesHolder
 {
 public:
 
-	using Holder_t = std::aligned_storage_t<(0u + ... + sizeof(Ts)), std::max({ alignof(Ts)... })>;
+	using Holder_t = std::aligned_storage_t<detail::StorageSizeFor<Ts...>(), detail::StorageAlignFor<Ts...>()>;
 
 	///
 	ModulesHolder();

@@ -46,8 +46,12 @@ namespace rat
         return _armature;
     }
 
-    std::unique_ptr<Component> ArmatureComponent::copy() const {
-        return std::make_unique<ArmatureComponent>(*this);
+    std::unique_ptr<Component> ArmatureComponent::copy(Entity* newParent) const {
+        auto ptr = std::make_unique<ArmatureComponent>(*this);
+
+        ptr->setEntity(newParent);
+
+        return ptr;
     }
 
     void* ArmatureComponent::getFeature(Component::Feature_e feature) {

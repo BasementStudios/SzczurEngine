@@ -7,7 +7,7 @@ namespace detail
 template <typename InputIt>
 size_t getUnicodeBytesCount(InputIt begin, InputIt end)
 {
-	size_t n{ 0 };
+	size_t n = 0u;
 
 	while (begin != end)
 	{
@@ -52,7 +52,7 @@ void utf8ToUnicode(InputIt begin, InputIt end, OutputIt dst)
 		}
 		else
 		{
-			helper = 0;
+			helper = 0u;
 
 			if ((*begin & 0xF0) == 0xF0)
 			{
@@ -84,25 +84,25 @@ void utf8ToUnicode(InputIt begin, InputIt end, OutputIt dst)
 template <typename InputIt>
 size_t getUtf8BytesCount(InputIt begin, InputIt end)
 {
-	size_t n{ 0 };
+	size_t n = 0u;
 
 	while (begin != end)
 	{
 		if ((~*begin & 0xFFFFFF80) == 0xFFFFFF80)
 		{
-			++n;
+			n += 1u;
 		}
 		else if ((~*begin & 0xFFFFF800) == 0xFFFFF800)
 		{
-			n += 2;
+			n += 2u;
 		}
 		else if ((~*begin & 0xFFFF0000) == 0xFFFF0000)
 		{
-			n += 3;
+			n += 3u;
 		}
 		else
 		{
-			n += 4;
+			n += 4u;
 		}
 
 		++begin;

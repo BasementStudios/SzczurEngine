@@ -3,9 +3,10 @@
 #include <memory>
 #include <vector>
 
-#include <json.hpp>
+#include <Json/json.hpp>
 using Json = nlohmann::json;
 
+#include "UniqueID.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 namespace rat
@@ -42,7 +43,7 @@ public:
 	virtual ~Component() = default;
 
 	///
-	virtual std::unique_ptr<Component> copy() const = 0;
+	virtual std::unique_ptr<Component> copy(Entity* newParent) const = 0;
 
 	///
 	Hash64_t getComponentID() const;
@@ -58,6 +59,9 @@ public:
 
 	///
 	const std::string& getName() const;
+
+	///
+	void setEntity(Entity* entity);
 
 	///
 	Entity* getEntity();

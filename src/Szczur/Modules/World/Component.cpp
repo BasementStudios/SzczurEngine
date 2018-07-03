@@ -37,6 +37,11 @@ const std::string& Component::getName() const
 	return _name;
 }
 
+void Component::setEntity(Entity* entity)
+{
+	_parent = entity;
+}
+
 Entity* Component::getEntity()
 {
 	return _parent;
@@ -52,6 +57,8 @@ void Component::loadFromConfig(const Json& config)
 	_id = config["id"];
 	_features = config["features"];
 	_name = config["name"].get<std::string>();
+
+	trySettingInitialUniqueID<Component>(_id);
 }
 
 void Component::saveToConfig(Json& config) const

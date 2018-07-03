@@ -12,7 +12,7 @@ namespace rat
 {
 
 Scene::Scene()
-	: _id { _getUniqueID() }
+	: _id { getUniqueID<Scene>() }
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _collectingHolder { { "background", {} }, { "foreground", {} }, { "path", {} }, { "single", {} } }
 {
@@ -64,7 +64,17 @@ const std::string& Scene::getName() const
 
 Entity* Scene::addEntity(const std::string& group)
 {
-	return &getEntities(group).emplace_back(this);
+	return &getEntities(group).emplace_back(this, group);
+}
+
+Entity* Scene::duplicateEntity(size_t id)
+{
+	if (auto ptr = getEntity(id); ptr != nullptr)
+	{
+		return &getEntities(ptr->getGroup()).emplace_back(*ptr);
+	}
+
+	return nullptr;
 }
 
 bool Scene::removeEntity(const std::string& group, size_t id)
@@ -195,6 +205,31 @@ const Entity* Scene::getEntity(const std::string& group, size_t id) const
 	return nullptr;
 }
 
+bool Scene::hasEntity(size_t id)
+{
+	if (_find("single", id) != getEntities("single").end())
+	{
+		return true;
+	}
+
+	if (_find("path", id) != getEntities("path").end())
+	{
+		return true;
+	}
+
+	if (_find("foreground", id) != getEntities("foreground").end())
+	{
+		return true;
+	}
+
+	if (_find("background", id) != getEntities("background").end())
+	{
+		return true;
+	}
+
+	return false;
+}
+
 bool Scene::hasEntity(const std::string& group, size_t id)
 {
 	return _find(group, id) != getEntities(group).end();
@@ -220,29 +255,29 @@ const Scene::CollectingHolder_t& Scene::getAllEntities() const
 	return _collectingHolder;
 }
 
-Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayData()
+Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder()
 {
 	return _spriteDisplayDataHolder;
 }
 
-const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayData() const
+const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() const
 {
 	return _spriteDisplayDataHolder;
 }
 
-Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayData()
+Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder()
 {
 	return _armatureDisplayDataHolder;
 }
 
-const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayData() const
+const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() const
 {
 	return _armatureDisplayDataHolder;
 }
 
-void Scene::loadFromConfig(const Json& config)
+void Scene::loadFromConfig(const Json& config, bool withNewID)
 {
-	_id = config["id"];
+	_id = withNewID ? getUniqueID<Scene>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
 	const Json& groups = config["groups"];
@@ -251,9 +286,11 @@ void Scene::loadFromConfig(const Json& config)
 	{
 		for (const Json& current : it.value())
 		{
-			addEntity(it.key())->loadFromConfig(current);
+			addEntity(it.key())->loadFromConfig(current, true);
 		}
 	}
+
+	trySettingInitialUniqueID<Scene>(_id);
 }
 
 void Scene::saveToConfig(Json& config) const
@@ -275,24 +312,6 @@ void Scene::saveToConfig(Json& config) const
 			entity.saveToConfig(current);
 		}
 	}
-}
-
-void Scene::forEach(const std::function<void(const std::string& group, Entity& entity)>& function)
-{
-	for (auto& group : _collectingHolder)
-	{
-		for (auto& entity : group.second)
-		{
-			std::invoke(function, group.first, entity);
-		}
-	}
-}
-
-size_t Scene::_getUniqueID()
-{
-	static size_t id = 0;
-
-	return ++id;
 }
 
 typename Scene::EntitiesHolder_t::iterator Scene::_find(const std::string& group, size_t id)

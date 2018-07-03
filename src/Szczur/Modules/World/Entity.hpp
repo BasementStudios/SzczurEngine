@@ -17,7 +17,7 @@ public:
 	using ComponentsHolder_t = std::vector<std::unique_ptr<Component>>;
 
 	///
-	Entity(Scene* parent);
+	Entity(Scene* parent, const std::string& group);
 
 	///
 	Entity(const Entity& rhs);
@@ -44,6 +44,12 @@ public:
 	size_t getID() const;
 
 	///
+	void setGroup(const std::string& group);
+
+	///
+	const std::string& getGroup() const;
+
+	///
 	void setName(const std::string& name);
 
 	///
@@ -56,23 +62,10 @@ public:
 	const Scene* getScene() const;
 
 	///
-	Component* addComponent(std::unique_ptr<Component> component)
-	{
-		if (auto ptr = getComponent(component->getComponentID()); ptr != nullptr)
-		{
-			LOG_WARNING("Entity ( ", getID(), " ) ", std::quoted(getName()), " already has ", ComponentTraits::getNameFromIdentifier(ptr->getComponentID()), " component, existing one returned");
-
-			return ptr;
-		}
-
-		return _holder.emplace_back(std::move(component)).get();
-	}
+	Component* addComponent(std::unique_ptr<Component> component);
 
 	///
-	Component* addComponent(Hash64_t componentID)
-	{
-		return addComponent(ComponentTraits::createFromComponentID(this, componentID));
-	}
+	Component* addComponent(Hash64_t componentID);
 
 	///
 	template <typename T>
@@ -82,20 +75,10 @@ public:
 	}
 
 	///
-	void removeAllComponents();
+	bool removeComponent(Hash64_t componentID);
 
 	///
-	bool removeComponent(Hash64_t componentID)
-	{
-		if (auto it = _findByComponentID(componentID); it != _holder.end())
-		{
-			_holder.erase(it);
-
-			return true;
-		}
-
-		return false;
-	}
+	void removeAllComponents();
 
 	///
 	template <typename T>
@@ -105,15 +88,7 @@ public:
 	}
 
 	///
-	Component* getComponent(Hash64_t componentID) const
-	{
-		if (auto it = _findByComponentID(componentID); it != _holder.end())
-		{
-			return it->get();
-		}
-
-		return nullptr;
-	}
+	Component* getComponent(Hash64_t componentID) const;
 
 	///
 	template <typename T>
@@ -158,10 +133,7 @@ public:
 	}
 
 	///
-	bool hasComponent(Hash64_t componentID) const
-	{
-		return _findByComponentID(componentID) != _holder.end();
-	}
+	bool hasComponent(Hash64_t componentID) const;
 
 	///
 	template <typename T>
@@ -171,18 +143,18 @@ public:
 	}
 
 	///
+	ComponentsHolder_t& getComponents();
+
+	///
 	const ComponentsHolder_t& getComponents() const;
 
 	///
-	virtual void loadFromConfig(const Json& config);
+	virtual void loadFromConfig(const Json& config, bool withNewID = false);
 
 	///
 	virtual void saveToConfig(Json& config) const;
 
 private:
-
-	///
-	static size_t _getUniqueID();
 
 	///
 	typename ComponentsHolder_t::iterator _findByComponentID(size_t id);
@@ -197,6 +169,7 @@ private:
 	typename ComponentsHolder_t::const_iterator _findByFeature(Component::Feature_e feature) const;
 
 	size_t _id;
+	std::string _group;
 	std::string _name;
 	Scene* _parent;
 	ComponentsHolder_t _holder;
