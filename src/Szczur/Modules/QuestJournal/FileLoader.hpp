@@ -14,7 +14,7 @@ namespace journal
 
             std::string getStep(unsigned int questID, unsigned int stepID);
             std::string getQuestName(unsigned int questID);
-            std::string getDescription(unsigned int a);
+            std::string getDescription(unsigned int questID, unsigned int descriptionID);
 
         private:
             std::vector<std::string> steps;

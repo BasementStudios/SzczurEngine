@@ -1,11 +1,9 @@
 _0 Oko Innosa
 ---
-0   Dostań się do
-	 Khorinis
+0   Dostań się do Khorinis
 1   Porozmawiaj z Lordem Hagenem
 2   Udaj się do górniczej doliny
-3   Zanieś list od Garonda do 
-	 paladynów w Khorinis
+3   Zanieś list od Garonda do paladynów w Khorinis
 4   Odzyskaj oko Innosa
 5   Znajdź sposób, aby naprawić artefakt
 ---
@@ -17,16 +15,11 @@ _1 Bezczelny złodziej
 ---
 _2 Napad bandytów
 ---
-0   1 Porozmawiaj z Hakonem na placu
-	 targowym
-1   2 Idź do kryjówki bandytów w lesie i zabij
-     przebywających w niej bandytów.
+0   Porozmawiaj z Hakonem na placu targowym
+1   Idź do kryjówki bandytów w lesie i zabij przebywających w niej bandytów.
 ---
 _3 Miecz Alrika
 ---
-0   1 Porozmawiaj z Alrikiem po
-	 pierwszej walce.
-1   2 Porozmawiaj z Jorą na placu 
-	 targowym i zdobądź od niego 
-	  miecz Alrika.
+0   Porozmawiaj z Alrikiem po pierwszej walce.
+1   Porozmawiaj z Jorą na placu targowym i zdobądź od niego miecz Alrika.
 ---

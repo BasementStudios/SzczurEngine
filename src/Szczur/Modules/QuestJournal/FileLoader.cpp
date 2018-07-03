@@ -79,21 +79,38 @@ namespace journal
         return " ";
     }
 
-    std::string FileLoader::getDescription(unsigned int a)
+    std::string FileLoader::getDescription(unsigned int questID, unsigned int descriptionID)
     {
         unsigned int i=0;
         std::string text="";
-
-        while(descriptions[i] != "_"+std::to_string(a))
+        std::string base;
+        int g;
+        std::vector<std::string>::iterator k;
+        for(k = descriptions.begin(); k!= descriptions.end(); k++)
         {
-            i++;
+            if(k->operator[](0) == '_')
+            {
+                g=0;
+                base = "";
+                while(k->operator[](g) != ' ')
+                {
+                    base+=k->operator[](g);
+                    g++;
+                }
+                if("_"+ std::to_string(questID) == base)
+                {
+                    break;
+                }
+            }
         }
-        i++;
-
-        while(descriptions[i] != "---")
+        while(*k != std::to_string(descriptionID))
+            k++;
+        k++;
+        while(*k!= "---")
         {
-            text+=descriptions[i] + "\n";
-            i++;
+            text+=*k;
+            text += "\n";
+            k++;
         }
         return text;
     }

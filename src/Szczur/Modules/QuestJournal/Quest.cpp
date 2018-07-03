@@ -21,9 +21,9 @@ namespace journal
         _questName = _fileLoader->getQuestName(i);
     }
     
-    void Quest::addQuestDescription(unsigned int descriptionNumber)
+    void Quest::addQuestDescription(unsigned int descriptionID)
     {
-        _descriptions.push_back(_fileLoader->getDescription(descriptionNumber));
+        _descriptions.push_back(_fileLoader->getDescription(_questID, descriptionID));
     }
 
     void Quest::nextStep(unsigned int stepID)

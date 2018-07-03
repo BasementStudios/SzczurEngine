@@ -17,7 +17,7 @@ namespace journal
             void setQuestName(unsigned int i);
             void setQuestName(const std::string& name);
 
-            void addQuestDescription(unsigned int descriptionNumber);
+            void addQuestDescription(unsigned int descriptionID);
 
             void nextStep(unsigned int stepID);
 

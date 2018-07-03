@@ -146,40 +146,40 @@ namespace rat
         
         _switch->add(_actual);
 
-     /*   addQuest(0);
+        addQuest(0);
         addStep(0);
         addStep(1);
         addStep(2);
         addStep(3);
         addStep(4);
         addStep(5);
+        addDescription(0);
         addDescription(1);
         addDescription(2);
         addDescription(3);
-        addDescription(4);
 
 
         addQuest(1);
         addStep(0);
         addStep(1);
         addStep(2);
-        addDescription(5);
-        addDescription(6);
+        addDescription(0);
+        addDescription(1);
 
         addQuest(2);
         addStep(0);
-        addDescription(7);
+        addDescription(0);
 
         addQuest(3);
         addStep(0);
         addStep(1);
-        addDescription(8);
+        addDescription(0);
     
         finishQuest(2);
 
         moveIterator(1);
         addStep(0);
-        */
+        
         displayNormalList();
 
         LOG_INFO("QuestJournal module initialized");
