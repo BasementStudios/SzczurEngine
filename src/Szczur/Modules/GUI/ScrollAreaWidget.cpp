@@ -64,9 +64,16 @@ namespace rat {
 
     void ScrollAreaWidget::setScrollerProp(float prop)
     {
+        _scrollerProp = prop;
+        if(_aboutToRecalculate) return;
+        _recalcScroller();
+    }
+
+    void ScrollAreaWidget::_recalcScroller()
+    {
         float maxOffset = -(_childrenHeight - _getSize().y);
-        _scroller.setProportion(prop);
-        _offset = float(maxOffset * prop);
+        _scroller.setProportion(_scrollerProp);
+        _offset = float(maxOffset * _scrollerProp);
         _isPosChanged = true;
     }
 
@@ -179,6 +186,8 @@ namespace rat {
         _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
         _childrenHeightProp = _childrenHeight/float(size.y);
         _scroller.setScrollerHeightProp(_childrenHeightProp);
+
+        _recalcScroller();
     }
 
     void ScrollAreaWidget::_callback(CallbackType type) 
