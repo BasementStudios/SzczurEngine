@@ -3,8 +3,6 @@
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 
-#include "Szczur/Modules/GUI/TransformAnimBasics/ColorAnim.hpp"
-
 #include "NinePatch.hpp"
 #include "Patch.hpp"
 #include "Scroller.hpp"
@@ -14,7 +12,6 @@ namespace rat
     class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
-        using Tab_t = TransformAnimationBase;
     public:
         GUITest();
         void init();
@@ -31,6 +28,7 @@ namespace rat
 
         bool randomBool{false};
 
+        ImageWidget* image{nullptr};
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};

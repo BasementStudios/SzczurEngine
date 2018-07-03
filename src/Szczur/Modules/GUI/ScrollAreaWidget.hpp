@@ -5,9 +5,12 @@
 #include "Widget.hpp"
 #include "Szczur/Modules/GUITest/Scroller.hpp"
 
-namespace rat {
+namespace rat 
+{
     class Script;
-    class ScrollAreaWidget : public Widget {
+    namespace gui { class AnimData; }
+    class ScrollAreaWidget : public Widget 
+    {
     public:
         ScrollAreaWidget();
 
@@ -21,6 +24,9 @@ namespace rat {
         float getScrollSpeed() const;
 
         void resetScrollerPosition();
+        void resetScrollerPositionInTime(float time);
+        void resetScrollerPositionInTime(const gui::AnimData& data);
+        void setScrollerProp(float prop);
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _update(float deltaTime) override;
@@ -33,6 +39,8 @@ namespace rat {
         
         virtual void _recalcChildrenPos() override;
         virtual void _recalcPos() override;     
+
+        virtual sf::Vector2f _getInnerSize() const override;
     private:
         mutable sf::RenderTexture _renderTexture;
         mutable sf::Sprite _displaySprite;

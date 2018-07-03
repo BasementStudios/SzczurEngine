@@ -4,6 +4,9 @@
 #include <string>
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
+
+#include "Animation/Anim.hpp"
+
 namespace rat {
     TextWidget::TextWidget() :
     Widget(),
@@ -54,8 +57,8 @@ namespace rat {
     {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<float>(rect.left + rect.width),
-            static_cast<float>(rect.top + rect.height)
+            static_cast<float>(rect.width),
+            static_cast<float>(rect.height)
         };
     }
 
@@ -64,9 +67,9 @@ namespace rat {
         target.draw(_text, states);
     }
 
-    void TextWidget::setColor(const sf::Color& newColor)
+    void TextWidget:: _setColor(const sf::Color& color)
     {
-        _text.setFillColor(newColor);
+        _text.setFillColor(color);
     }
 
     void TextWidget::addLetter(char letter) {
@@ -91,11 +94,26 @@ namespace rat {
         return _text.getString().toAnsiString();
     }
 
-    void TextWidget::setString(const std::string& str) {
-        //_text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
-        //_aboutToRecalculate=true;
+    void TextWidget::setString(const std::string& str) 
+    {
         _text.setString(getUnicodeString(str));
         _aboutToRecalculate = true;
+    }
+
+    void TextWidget::setStringInTime(const std::string& str, const gui::AnimData& data)
+    {
+        if(str == getString()) return;
+
+        using TextAnim_t = gui::Anim<TextWidget, gui::AnimType::Text, std::string>;
+        auto setter = static_cast<void (TextWidget::*)(const std::string&)>(&TextWidget::setString);
+
+        auto textAnim = std::make_unique<TextAnim_t>(this, setter);
+        textAnim->setAnim(getString(), str, data);
+        _addAnimation(std::move(textAnim)); 
+    }
+    void TextWidget::setStringInTime(const std::string& str, float time)
+    {
+        setStringInTime(str, gui::AnimData{time});
     }
 
     void TextWidget::setFont(sf::Font* font) {
