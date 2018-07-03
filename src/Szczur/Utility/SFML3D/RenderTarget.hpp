@@ -1,60 +1,123 @@
 #pragma once
-#include <SFML/Graphics/Color.hpp>
-#include "RenderStates.hpp"
-#include "View.hpp"
-#include "Linear.hpp"
-#include "ShaderProgram.hpp"
 
+/** @file RenderTarget.hpp
+ ** @author Tomasz (Knayder) Jatkowski 
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
+#include <vector>
+
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+
+#include <glad/glad.h> // GLbitfield
+
+namespace sf {
+	class Color;
+}
+#include "RenderStates.hpp"
+#include "Camera.hpp"
 namespace sf3d {
-	struct Vertex;
 	class VertexArray;
 	class Drawable;
+	class LightPoint;
+	class Linear;
+	class ShaderProgram;
+}
 
-	class RenderTarget {
-	public:
-		RenderTarget();
-		RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
-		~RenderTarget();
+namespace sf3d
+{
 
-		void create(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
+/// Performs render operations
+class RenderTarget
+{
+	/* Variables */
+private:
+	glm::uvec2 size;
 
-		void setProgram(ShaderProgram* program);
+	RenderStates defaultStates;
+	
+	Camera* camera {nullptr};
+	Camera* defaultCamera;
+	
+	glm::mat4 projectionMatrix;
 
-		void clear(float r, float g, float b, float a, GLbitfield flags);
-		void clear(const sf::Color& color, GLbitfield flags);
+	float renderDistance {100.f};
 
-		void draw(const Drawable& drawable, RenderStates states);
-		void draw(const Drawable& drawable);
+	float positionFactor;
 
-		void draw(const VertexArray& vertices, RenderStates states);
-		void draw(const VertexArray& vertices);
+	float FOVy;
+	float FOVx;
+	float halfFOVxTan;
+	float halfFOVyTan;
 
-		void simpleDraw(const VertexArray& vertices, RenderStates states);
-		void simpleDraw(const VertexArray& vertices);
-		void simpleDraw(Drawable& drawable);
+	std::vector<LightPoint*> lightPoints;
 
-		const View& getDefaultView() const;
-		const View& getView() const;
-		void setView(const View& view);
-
-		Linear getLinerByScreenPos(const glm::vec2& pos) const;
-
+	char uniformNameBuffer[64];
 
 
-	private:
-		void _setBasicValues();
-		virtual bool _setActive(bool state = true);
 
-		RenderStates _states;
+	/* Properties */
+public:
+	/// Default render states, used if no other provided to `draw` functions
+	RenderStates getDefaultRenderStates() const;
+	void setDefaultRenderStates(const RenderStates& states);
+	void setDefaultShaderProgram(ShaderProgram* program);
 
-		glm::uvec2 _windowSize;
+	/// Current camera object which define what to render
+	Camera* getCamera();
+	const Camera* getCamera() const;
+	void setCamera(Camera* camera);
+	void setCamera(Camera& camera);
 
-		float _FOVy;
-		float _FOVx;
-		float _halfFOVxTan;
-		float _halfFOVyTan;
-		View _view;
-		View _defaultView;
-		glm::mat4 _projection;
-	};
+	/// Field of view
+	float getFOV() const;
+	void setFOV(float fov);
+
+	/// Render distance
+	void setRenderDistance(float maxRenderDistance, float minRenderDistance = 0.1f);
+	float getRenderDistance() const; // @todo ? co z `minRenderDistance`?
+	
+
+
+	/* Operators */
+public:
+	RenderTarget();
+
+	RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
+
+	~RenderTarget();
+
+
+
+	/* Methods */
+public:
+	void create(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
+	
+	virtual bool _setActive(bool state = true);
+
+	void updatePerspective();
+
+	// Clearing
+	void clear(float r, float g, float b, float a, GLbitfield flags);
+	void clear(const sf::Color& color, GLbitfield flags);
+
+	// Drawing drawables
+	void draw(const Drawable& drawable, const RenderStates& states);
+	void draw(const Drawable& drawable);
+
+	// Drawing vertices
+	void draw(const VertexArray& vertices, const RenderStates& states);
+	void draw(const VertexArray& vertices);
+	
+	// Interaction
+	Linear getLinerByScreenPos(const glm::vec2& pos) const;
+	
+	// Light points
+	void resetLightPoints();
+	void registerLightPoint(LightPoint* lightPoint);
+	void applyLightPoints(ShaderProgram* shaderProgram);
+};
+
 }

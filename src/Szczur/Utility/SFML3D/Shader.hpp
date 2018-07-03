@@ -5,9 +5,10 @@
 #include <iomanip>
 #include <vector>
 
-#include "Szczur/Utility/Logger.hpp"
-
+#include <glm/glm.hpp>
 #include <glad/glad.h>
+
+#include "Szczur/Utility/Logger.hpp"
 
 namespace sf3d
 {
