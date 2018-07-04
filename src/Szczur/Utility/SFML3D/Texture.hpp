@@ -3,7 +3,7 @@
 #include <string>
 
 #include <glad.h>
-#include <glm/glm.hpp>
+#include <glm/vec2.hpp>
 
 namespace sf3d {
 	class Texture {

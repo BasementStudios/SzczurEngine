@@ -6,5 +6,7 @@ namespace sf3d {
 		shader(shader),
 		transform(transform),
 		texture(texture) {}
+	
+	const RenderStates RenderStates::Default {};
 
 }
