@@ -99,6 +99,9 @@ public:
 
 	void updatePerspective();
 
+	/// Helper function to scale matrix coords propertly
+	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
+
 	// Clearing
 	void clear(float r, float g, float b, float a, GLbitfield flags);
 	void clear(const sf::Color& color, GLbitfield flags);

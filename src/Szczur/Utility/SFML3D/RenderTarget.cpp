@@ -154,6 +154,15 @@ void RenderTarget::updatePerspective()
 	);
 }
 
+/// Helper function to scale matrix coords propertly
+glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
+{
+	matrix[3][0] *= this->positionFactor;
+	matrix[3][1] *= this->positionFactor;
+	matrix[3][2] *= this->positionFactor;
+	return matrix;
+}
+
 // Clearing
 void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags)
 {
@@ -172,7 +181,7 @@ void RenderTarget::clear(const sf::Color& color, GLbitfield flags)
 	}
 }
 
-// Drawing drawables
+// Drawing drawables in perspective projection
 void RenderTarget::draw(const Drawable& drawable, const RenderStates& states)
 {
 	drawable.draw(*this, states);
@@ -182,18 +191,10 @@ void RenderTarget::draw(const Drawable& drawable)
 	this->draw(drawable, this->defaultStates);
 }
 
-glm::mat4 ps(glm::mat4 m, float f) // @todo ! move it in vaild place... xd
-{
-	m[3][0] *= f;
-	m[3][1] *= f;
-	m[3][2] *= f;
-	return m;
-}
-
-// Drawing vertices
+// Drawing vertices in perspective projection
 void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 {
-	if (vertices.getSize() > 0 && _setActive()) {
+	if (vertices.getSize() > 0 && this->_setActive()) {
 		vertices.update();
 		
 		// Shader selection
@@ -208,8 +209,8 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 			shaderProgram->use(); 
 			
 			// Model, view. projection matrixes
-			shaderProgram->setUniform("model",			ps(states.transform.getMatrix(), this->positionFactor));
-			shaderProgram->setUniform("view",			ps(camera->getViewMatrix(), this->positionFactor));
+			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
+			shaderProgram->setUniform("view",			scaleMatrixCoords(camera->getViewMatrix()));
 			shaderProgram->setUniform("projection", 	this->projectionMatrix);
 			shaderProgram->setUniform("positionFactor", this->positionFactor);
 
@@ -220,7 +221,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 				{
 					// Diffuse
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, states.texture->getID());
+					states.texture->bind();
 					shaderProgram->setUniform("material.diffuseTexture", states.texture->getID());
 
 					// Specular // @todo . specular
@@ -243,6 +244,8 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 		glBindVertexArray(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		states.texture->unbind();
 	}
 }
 void RenderTarget::draw(const VertexArray& vertices)
