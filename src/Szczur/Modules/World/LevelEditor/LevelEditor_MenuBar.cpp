@@ -11,7 +11,9 @@
 
 #include <imgui.h>
 
+#ifdef OS_WINDOWS
 #include <shellapi.h>
+#endif
 
 namespace rat {
 
