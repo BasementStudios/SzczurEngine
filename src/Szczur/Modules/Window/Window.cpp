@@ -91,10 +91,7 @@ void Window::setFullscreen(bool state)
 /* Operators */
 // Constructors
 Window::Window()
-	: window(
-		{1280, 800}, "Szczur3D"
-		// @todo ! tu brakuje tego ShaderProgram dla Window :|
-	) // @warn @todo . usunąc to i używać init
+: 	window({1280, 800}, "SzczurEngine")
 {
 	LOG_INFO("Initializing Window module");
 	this->init();
@@ -147,6 +144,7 @@ void Window::render()
 void Window::recreateWindow()
 {
 	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	this->setFramerateLimit(this->framerateLimit);
 }
 
 // clear
