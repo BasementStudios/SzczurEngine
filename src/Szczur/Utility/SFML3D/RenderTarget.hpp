@@ -11,7 +11,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <glad/glad.h> // GLbitfield
+#include <glad.h> // GLbitfield
 
 namespace sf {
 	class Color;

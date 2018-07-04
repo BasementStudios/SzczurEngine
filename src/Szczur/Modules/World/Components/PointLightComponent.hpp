@@ -9,7 +9,7 @@
 #include <variant>
 
 #include <glm/vec3.hpp>
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 
 namespace rat {

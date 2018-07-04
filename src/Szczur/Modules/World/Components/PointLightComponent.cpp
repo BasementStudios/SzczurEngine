@@ -5,7 +5,7 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 #include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>

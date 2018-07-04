@@ -1,7 +1,8 @@
 #pragma once
-#include <sol2/sol.hpp>
 
-#include <glm/glm.hpp>
+#include <sol.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 #include "../Component.hpp"
 

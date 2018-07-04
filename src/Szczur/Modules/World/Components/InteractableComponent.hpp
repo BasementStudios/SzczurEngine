@@ -1,19 +1,21 @@
 #pragma once
 
-#include "../Component.hpp"
+#include <memory> // unique_ptr
 
-#include <sol2/sol.hpp>
-
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <sol.hpp>
 
 namespace rat {
-class Script;
-class ScenesManger;
-class InputManager;
+    class ScenesManger;
+    class InputManager;
+    class Entity;
+    class Script;
+    template<class T> class ScriptClass;
+}
+#include "../Component.hpp"
 
-class Script;
-class Entity;
-template<class T> class ScriptClass;
+namespace rat
+{
 
 class InteractableComponent : public Component {
 public:
