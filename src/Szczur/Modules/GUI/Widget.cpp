@@ -13,7 +13,7 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
-//#undef GUI_DEBUG
+#undef GUI_DEBUG
 
 namespace rat 
 {
@@ -78,10 +78,11 @@ namespace rat
     void Widget::setInterface(const InterfaceWidget* interface)
     {
         _interface = interface;
-        if(_propSizeMustBeenCalculatedViaInterface && _interface)
+        if((_propSizeMustBeenCalculatedViaInterface || _elementsPropSizeMustBeenCalculated) && _interface)
         {
             _updatePropSize();
             _propSizeMustBeenCalculatedViaInterface = false;
+            _elementsPropSizeMustBeenCalculated = false;
         }
 
         for(auto* child : _children)
@@ -375,6 +376,25 @@ namespace rat
     sf::Vector2f Widget::getPadding() const
     {
         return _padding;
+    }
+
+    void Widget::setPropPadding(const sf::Vector2f& propPad)
+    {
+        _propPadding = propPad;
+        _hasPropPadding = true;
+        if(_interface) _calcPropPadding();
+        else _elementsPropSizeMustBeenCalculated = true;
+    }
+    void Widget::setPropPadding(float propWidth, float propHeight)
+    {
+        setPropPadding({propWidth, propHeight});
+    }
+    void Widget::_calcPropPadding()
+    {
+        assert(_interface);
+        assert(_hasPropPadding);
+        auto padding = _interface->getSizeByPropSize(_propPadding);
+        setPadding(padding);
     }
 
     sf::Vector2f Widget::getInnerSize() const
@@ -744,6 +764,10 @@ namespace rat
             {
                 auto updatedSize = _interface->getSizeByPropSize(_props.size);
                 setSize(updatedSize);
+            }
+            if(_hasPropPadding)
+            {
+                _calcPropPadding();
             }
         }
     }

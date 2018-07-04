@@ -4,6 +4,8 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
+#include "InterfaceWidget.hpp"
+
 namespace rat
 {
     WindowWidget::WindowWidget()
@@ -12,17 +14,23 @@ namespace rat
     {
         setScale({0.2f, 0.2f});
     }
+
+    void WindowWidget::setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight)
+    {
+        _ninePatch.setTexture(texture, paddingWidth, paddingHeight);
+        if(_isMainPatchPropSizeSet && _interface) _calcMainPatchSize();
+        //_calcPadding();
+    }
     
     void WindowWidget::setTexture(sf::Texture* texture, int padding)
     {
-        _ninePatch.setTexture(texture, padding);
-        _calcPadding();
+        setTexture(texture, padding, padding);
     }
     void WindowWidget::setScale(const sf::Vector2f& scale)
     {
         _ninePatch.setScale(scale);
         _scale = scale;
-        _calcPadding();
+        //_calcPadding();
     }
     void WindowWidget::setScale(float x, float y)
     {
@@ -53,16 +61,19 @@ namespace rat
     {
         _isMainPatchPropSizeSet = true;
         _mainPathPropSize = propSize;
-        _calcMainPatchSize();
+        if(_interface) _calcMainPatchSize();
+        else _elementsPropSizeMustBeenCalculated = true;
     }
     void WindowWidget::_calcMainPatchSize()
     {
         assert(_isMainPatchPropSizeSet);
+        assert(_interface);
         if(auto* tex = _ninePatch.getTexture(); tex != nullptr)
         {
-            auto size = static_cast<sf::Vector2f>(tex->getSize());
+            auto texSize = static_cast<sf::Vector2f>(tex->getSize());
+            auto size = _interface->getSizeByPropSize(_mainPathPropSize);
 
-            sf::Vector2f scale = {_mainPathPropSize.x / size.x, _mainPathPropSize.y / size.y};
+            sf::Vector2f scale = {size.x / texSize.x, size.y / texSize.y};
             setScale(scale);
         }
     }
