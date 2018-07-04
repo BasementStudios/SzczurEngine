@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <memory> // unique_ptr
+#include <string>
 
 #include <sol.hpp>
 
