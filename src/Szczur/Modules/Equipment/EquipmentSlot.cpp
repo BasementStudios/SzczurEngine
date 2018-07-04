@@ -7,11 +7,28 @@ namespace rat {
 		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
+		_highlightFrameImage = new ImageWidget();
+		_nullWidget = new Widget;
 		_base->add(_slotImage);
 		_base->add(_itemImage);
+		_base->add(_highlightFrameImage);
+		_base->add(_nullWidget);
+
+		setHighlight(false);
 	}
 	void EquipmentSlot::setTexture(sf::Texture* text) {
 		_slotImage->setTexture(text);
+	}
+
+	void EquipmentSlot::setHighlightTexture(sf::Texture* text) {
+		_highlightFrameImage->setTexture(text);
+	}
+
+	void EquipmentSlot::setHighlight(bool state) {
+		if (state && isUsable)
+			_highlightFrameImage->fullyActivate();
+		else
+			_highlightFrameImage->fullyDeactivate();
 	}
 
 	void EquipmentSlot::setItemColor(sf::Color color) {
@@ -20,18 +37,21 @@ namespace rat {
 
 	void EquipmentSlot::resetItemColor() {
 		_itemImage->resetColor();
-		LOG_INFO("color reseted");
 	}
 
 	void EquipmentSlot::setSize(const sf::Vector2f& size)
 	{
 		_slotImage->setSize(size);
 		_itemImage->setSize(size);
+		_highlightFrameImage->setSize(size);
+		_nullWidget->setSize(size);
 	}
 	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
 		_slotImage->setPropSize(size);
 		_itemImage->setPropSize(size);
+		_highlightFrameImage->setPropSize(size);
+		_nullWidget->setPropSize(size);
 	}
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {
@@ -56,8 +76,12 @@ namespace rat {
 		_itemImage->setPosition(sf::Vector2f(0.f, 0.f));
 	}
 
-	Widget* EquipmentSlot::getItemWidget() {
+	ImageWidget* EquipmentSlot::getItemWidget() {
 		return _itemImage;
+	}
+
+	Widget* EquipmentSlot::getWidget() {
+		return _nullWidget;
 	}
 
 	void EquipmentSlot::setParent(Widget* parent) {
@@ -72,6 +96,10 @@ namespace rat {
 		_base->setPropPosition(pos);
 	}
 
+	void EquipmentSlot::setPropOrigin(sf::Vector2f newOrigin) {
+		_base->setPropOrigin(newOrigin);
+	}
+
 	sf::Vector2f EquipmentSlot::getPosition() {
 		return _base->getPosition();
 	}
@@ -79,16 +107,16 @@ namespace rat {
 	void EquipmentSlot::setStatus(bool newState) {
 		if (newState) {
 			_slotImage->resetColor();
-			isUseble = true;
+			isUsable = true;
 		}
 		else {
 			removeItem();
 			_slotImage->setColor(sf::Color::Color(170, 170, 170));
-			isUseble = false;
+			isUsable = false;
 		}
 	}
 
 	bool EquipmentSlot::getStatus(){
-		return isUseble;
+		return isUsable;
 	}
 }

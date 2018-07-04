@@ -3,7 +3,7 @@
         "sword": {
             "pl": {
                 "name": "Miecz",
-                "description": "To jest super miecz."
+                "description": "To jest tak dobry miecz ze nie miesci sie w jednej linijce"
             },
             "eng": {                    
                 "name": "Miecz",
@@ -17,7 +17,7 @@
 	    "armor": {
             "pl": {
                 "name": "zbroja",
-                "description": "To jest super zbroja"
+                "description": "To jest tak dobra zbroja ze nie miesci sie w jednej linijce a nawet ma dluzszy opis od miecza"
             },
             "eng": {                    
                 "name": "Miecz",
@@ -35,10 +35,9 @@
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": ""
             },
             "type": "usable",
-			"isUsable": false,
             "icon": "Assets/Equipment/potion/potion.png",
             "script": "Assets/Equipment/potion/potion.lua"
         },
@@ -52,7 +51,6 @@
                 "description": "To jest"
             },
             "type": "usable",
-			"isUsable": true,
             "icon": "Assets/Equipment/potion2/potion2.png",
             "script": "Assets/Equipment/potion2/potion2.lua"
         },

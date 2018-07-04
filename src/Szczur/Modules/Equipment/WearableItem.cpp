@@ -15,16 +15,10 @@ namespace rat {
 		object.set("setName", &EquipmentObject::setName);
 		object.set("setDescription", &EquipmentObject::setDescription);
 		object.set("setIcon", &EquipmentObject::setIcon);
-		object.set("setCallback", &WearableItem::setCallback);
-		object.set("setType", &WearableItem::setType);
 		object.set("setIcon", &EquipmentObject::setIcon);
 		object.set("callback1", &WearableItem::_callback1);
 		object.set("callback2", &WearableItem::_callback2);
 		object.init();
-	}
-
-	void WearableItem::setCallback(std::string path) {
-		pathToScript = path;
 	}
 
 	void WearableItem::activate() {

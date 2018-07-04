@@ -12,7 +12,7 @@
 #include "UsableItem.hpp"
 namespace rat
 {
-	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; class RingSlider; class ItemManager;
+	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; class RingSlider; class ItemManager; class InterfaceWidget;
 	class Equipment : public Module<Window, Input, GUI, Script> {
 	public:
 
@@ -54,7 +54,7 @@ namespace rat
 		Window& _mainWindow;
 		sf3d::RenderWindow& _window;
 
-		Widget* _base{ nullptr };
+		InterfaceWidget* _base{ nullptr };
 		WindowWidget* _equipmentFrame{ nullptr };
 
 		sf::RenderTexture _canvas;

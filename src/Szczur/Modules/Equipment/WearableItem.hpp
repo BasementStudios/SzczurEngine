@@ -16,8 +16,6 @@ namespace rat {
 
 		static void initScript(Script& script);
 
-		void setCallback(std::string pathToFile);
-
 		void activate();
 		void deactivate();
 
@@ -26,10 +24,7 @@ namespace rat {
 
 		sol::function _callback1;
 		sol::function _callback2;
-	private:
-		std::string pathToScript;
-		
-
+	private:		
 		equipmentObjectType _objectType;
 	};
 }

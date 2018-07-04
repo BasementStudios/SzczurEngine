@@ -11,7 +11,7 @@ namespace rat {
 	class NormalSlots			//part of equipment for normal items looking like a grid
 	{
 	public:
-		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize, Equipment* equipment);
+		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment);
 
 		void addItem(EquipmentObject* item);
 		bool removeItem(sf::String itemName);
@@ -33,6 +33,7 @@ namespace rat {
 		sf::Vector2i _frameSize;
 
 		Widget* _base;
+
 
 		sf::Texture* _frameText;
 

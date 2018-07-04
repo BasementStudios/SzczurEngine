@@ -46,13 +46,6 @@ namespace rat {
 								}
 							}
 
-							// Load isUsable
-							if (typeData == "usable") {
-								if (auto& var = item["isUsable"]; !var.is_null()) {
-									static_cast<UsableItem*>(newItem)->setIsUseble(var.get<bool>());
-								}
-							}
-
 							// Load icon
 							if (auto& var = item["icon"]; !var.is_null()) {
 								newItem->setIcon(var);

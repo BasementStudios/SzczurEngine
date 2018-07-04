@@ -3,33 +3,36 @@
 #include "SFML/Graphics.hpp"
 
 namespace rat {
-	class EquipmentSlot; class Equipment; class Widget; class ScrollAreaWidget; class WearableItem; class ImageWidget;
+	class EquipmentSlot; class Equipment; class Widget; class ScrollAreaWidget; class WearableItem; class WindowWidget; class GUI; class EquipmentObject;
 	class RingSlider
 	{
 	public:
+
 		RingSlider(
-			sf::Texture* frameText,
 			sf::Vector2f frameSize,
-			sf::Texture* pathText,
-			sf::Texture* boundsText,
-			sf::Texture* scrollText,
-			Equipment* equipment,
-			sf::Texture* border,
-			float length
+			Equipment* equipment
 		);
+
+		void initAssetsViaGUI(GUI& gui);
 
 		void addItem(WearableItem* item);
 
 		void setParent(Widget* newBase);
 
 		void setPropPosition(sf::Vector2f);
+		void setPosition(sf::Vector2f);
 
 		Equipment* _equipment;
+
+		std::vector<EquipmentObject*> getSelectedRings();
+		std::vector<EquipmentObject*> getRingsList();
 
 		void selectRing(EquipmentSlot* slot);
 	private:	
 		sf::Vector2f _slotSize;
 		sf::Texture* _slotTexture;
+		sf::Texture* _slotChosenTexture;
+		sf::Texture* _highlightTexture;
 
 		std::vector<EquipmentSlot*> _ringSlots;
 		std::vector<EquipmentSlot*> _selectedSlots;
@@ -37,7 +40,7 @@ namespace rat {
 
 		ScrollAreaWidget* _scroll;
 		Widget* _base;
-		ImageWidget* _border;
+		WindowWidget* _border;
 
 		float _length;
 		

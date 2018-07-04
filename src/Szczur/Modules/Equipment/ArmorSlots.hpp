@@ -3,11 +3,13 @@
 #include <vector>
 
 namespace rat {
-	class EquipmentObject; class Widget; class EquipmentSlot; class AmuletSlot; class Equipment; class WearableItem;
+	class EquipmentObject; class Widget; class EquipmentSlot; class AmuletSlot; class Equipment; class WearableItem; class GUI;
 	class ArmorSlots
 	{
 	public:
-		ArmorSlots(sf::Texture* frameText, sf::Vector2f frameSize, sf::Texture* upText, sf::Texture* downText, Equipment* equipment);
+		ArmorSlots(sf::Vector2f frameSize, Equipment* equipment);
+
+		void initAssetsViaGUI(GUI& gui);
 
 		void setParent(Widget* newBase);
 		void setPropPosition(sf::Vector2f position);

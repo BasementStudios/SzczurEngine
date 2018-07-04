@@ -12,15 +12,11 @@ namespace rat {
 
 		static void initScript(Script& script);
 
-		void setIsUseble(bool isUsable);
-
-		void setCallback(std::string);
-
 		bool useItem();
 	private:
 		std::string pathToScript;
 		sol::function _callback;
 
-		bool _isUsable = true;
+		sol::function _isUsable;
 	};
 }

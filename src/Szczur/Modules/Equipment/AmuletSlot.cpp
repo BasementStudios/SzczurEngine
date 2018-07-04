@@ -4,30 +4,32 @@
 #include "Equipment.hpp"
 
 namespace rat {
-	AmuletSlot::AmuletSlot(sf::Texture* slotText, sf::Texture* upText, sf::Texture* downText, sf::Vector2f slotSize, Equipment* equipment) {
+	AmuletSlot::AmuletSlot(sf::Vector2f slotSize, Equipment* equipment) {
 		
 		_slotSize = slotSize;
 
-		_leftArrow = new ImageWidget;
-		_leftArrow->setTexture(upText);
-		_addWidget(_leftArrow);
-		_leftArrow->setSize(sf::Vector2f(slotSize.x / 2.5f, slotSize.y / 2.5f));
-		_leftArrow->setPosition(sf::Vector2f(0.f, slotSize.y + 5));
-
-		_rightArrow = new ImageWidget;
-		_rightArrow->setTexture(downText);
-		_addWidget(_rightArrow);
-		_rightArrow->setSize(sf::Vector2f(slotSize.x / 2.5f, slotSize.y / 2.5f));
-		_rightArrow->setPosition(sf::Vector2f(slotSize.x - slotSize.x / 2.5f, slotSize.y + 5));
+		setPropSize({ slotSize.x, 0.165f});
 
 		_slot = new ImageWidget;
-		_slot->setTexture(slotText);
+		//_slot->setTexture(slotText);
 		_addWidget(_slot);
-		_slot->setSize(slotSize);
+		_slot->setPropSize(slotSize);
 
 		_amuletImage = new ImageWidget;
 		_addWidget(_amuletImage);
-		_amuletImage->setSize(slotSize);
+		_amuletImage->setPropSize(slotSize);
+
+		_leftArrow = new ImageWidget;
+		//_leftArrow->setTexture(upText);
+		_addWidget(_leftArrow);
+		_leftArrow->setPropSize(sf::Vector2f(slotSize.x / 2.5f, slotSize.y / 2.5f));
+		_leftArrow->setPropPosition({0.f, 1.f});//sf::Vector2f(0.f, slotSize.y));	// + 5)
+
+		_rightArrow = new ImageWidget;
+		//_rightArrow->setTexture(downText);
+		_addWidget(_rightArrow);
+		_rightArrow->setPropSize(sf::Vector2f(slotSize.x / 2.5f, slotSize.y / 2.5f));
+		_rightArrow->setPropPosition({ 1.f, 1.f }); //sf::Vector2f(slotSize.x - slotSize.x / 2.5f, slotSize.y));
 
 		_leftArrow->setCallback(Widget::CallbackType::onPress, [this](Widget* owner) {
 			leftArrowClicked();
@@ -39,15 +41,30 @@ namespace rat {
 		_amuletImage->setCallback(Widget::CallbackType::onHoverOut, [equipment, this](Widget* owner) {
 			if (getChosenAmulet())
 				equipment->disableItemPreview();
+			_highlight->fullyDeactivate();
 		});
 
 		_amuletImage->setCallback(Widget::CallbackType::onHoverIn, [equipment, this](Widget* owner) {
 			if (getChosenAmulet())
 				equipment->enableItemPreview(getChosenAmulet());
+			_highlight->fullyActivate();
 		});
+
+		_highlight = new ImageWidget;
+		_highlight->setPropSize(slotSize);
+		_addWidget(_highlight);
+		_highlight->fullyDeactivate();
 
 		_amulets.push_back(nullptr);
 	}
+
+	void AmuletSlot::initAssetsViaGUI(GUI& gui) {
+		_slot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"));
+		_rightArrow->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/rightArrow.png"));
+		_leftArrow->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/leftArrow.png"));
+		_highlight->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
+	}
+
 	void AmuletSlot::addAmulet(WearableItem* amulet) {
 		_amulets.push_back(amulet);
 		if (_chosenAmulet == nullptr) {

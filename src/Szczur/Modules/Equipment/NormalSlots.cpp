@@ -10,10 +10,11 @@ namespace rat
 		return lhs->index < rhs->index;
 	}
 
-	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Vector2i frameSize, Equipment* equipment)
+	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment)
 		: _slotAmount(slotNumber), _frameText(frameText), _frameSize(frameSize), _equipment(equipment)
 	{
 		_base = new Widget;
+		_base->setPropSize({4 * 0.086f, _slotAmount / 4 * 0.086f });
 		size_t x = 0;
 		size_t y = 0;
 		for (size_t i = 0; i < _slotAmount; i++)
@@ -29,13 +30,14 @@ namespace rat
 			newSlot->index = i;
 			newSlot->setParent(_base);
 			newSlot->setTexture(_frameText);
-			newSlot->setPosition(sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y)); //{ 0.045f, 0.08f});//
-			newSlot->setSize(static_cast<sf::Vector2f>(_frameSize));
-			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
+			newSlot->setPropPosition({x * .33f, y * .25f});//sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y)); x * (_base->getSize().x / 4), y * (_base->getSize().y / (_slotAmount / 4))
+			newSlot->setPropSize({0.078f, 0.078f});//static_cast<sf::Vector2f>(_frameSize));
+			newSlot->setHighlightTexture(highlightText);
+			newSlot->getWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
 					this->onMouseButtonPressed(newSlot);
 			});
-			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onRelease, [this, newSlot](Widget* owner) {
+			newSlot->getWidget()->setCallback(Widget::CallbackType::onRelease, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
 					this->onMouseButtonReleased();
 			});
@@ -43,17 +45,19 @@ namespace rat
 				_slotDropped = newSlot;
 				if (newSlot->getItem())
 					equipment->enableItemPreview(newSlot->getItem());
+				newSlot->setHighlight(true);
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
 				_removeSlotDropped(newSlot);
 				if (newSlot->getItem())
 					equipment->disableItemPreview();
+				newSlot->setHighlight(false);
 			});
 			x++;
 		}
 		_itemHeldWidget = new ImageWidget;
 		_base->add(_itemHeldWidget);
-		_itemHeldWidget->setSize(static_cast<sf::Vector2f>(_frameSize));
+		_itemHeldWidget->setPropSize({ 0.078f, 0.078f });
 
 	}
 	void NormalSlots::setParent(Widget* newBase) {
@@ -141,9 +145,13 @@ namespace rat
 			_itemHeldWidget->fullyDeactivate();
 		}
 		else if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && _slotDropped->getItem()) {	//swaping items
+			_itemSlots.erase(_itemHeld->getNameId());
+			_itemSlots.erase(_slotDropped->getItem()->getNameId());
 			_slotHeld->removeItem();
 			_slotHeld->setItem(_slotDropped->getItem());
 			_slotDropped->setItem(_itemHeld);
+			_itemSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
+			_itemSlots.insert(std::make_pair(_slotHeld->getItem()->getNameId(), _slotHeld.get()));
 			_isMouseButtonHeld = false;
 			_slotHeld = nullptr;
 			_itemHeldWidget->fullyDeactivate();
@@ -209,12 +217,12 @@ namespace rat
 	}
 
 	void NormalSlots::resizeSlots(size_t newSize) {
-		if (newSize != _slotAmount) {
+		if (newSize != _slotAmount && newSize <= _allSlots.size()) {
 			if (newSize > _slotAmount) {
 				for (size_t i = _slotAmount; i < newSize; i++)
 				{
-					_allSlots[i - 1]->setStatus(true);
-					_freeSlots.push_back(_allSlots[i - 1]);
+					_allSlots[i]->setStatus(true);
+					_freeSlots.push_back(_allSlots[i]);
 				}
 			}
 			else {
@@ -225,7 +233,12 @@ namespace rat
 							_itemSlots.erase(_allSlots[i - 1]->getItem()->getNameId());
 						}
 						else {
-							_freeSlots.erase(_freeSlots.begin() + i - 1);
+							for (auto it = _freeSlots.begin(); it != _freeSlots.end(); ++it) {
+								if (*it == _allSlots[i - 1]) {
+									_freeSlots.erase(it);
+									break;
+								}
+							}
 						}
 						_allSlots[i - 1]->setStatus(false);
 					}
