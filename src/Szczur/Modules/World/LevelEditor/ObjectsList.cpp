@@ -1,6 +1,6 @@
 #include "ObjectsList.hpp"
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #include "../ScenesManager.hpp"
 #include "../Entity.hpp"
@@ -20,12 +20,30 @@ namespace rat {
     	return _scenes.getCurrentScene()->getEntity(_selectedEntityID);
     }
 
-	bool ObjectsList::isEntitySelected() {
+	bool ObjectsList::isAnySingleEntitySelected() {
 		return _selectedEntityID != -1;
+	}
+
+	bool ObjectsList::isAnyEntitySelected()
+	{
+		return isAnySingleEntitySelected() || isGroupSelected();
+	}
+
+	bool ObjectsList::isEntitySelected(Entity* entity)
+	{
+		if (_selectedEntityID == entity->getID())
+			return true;
+
+		if (std::find(_selectedEntities.begin(), _selectedEntities.end(), entity) != _selectedEntities.end())
+			return true;
+
+		return false;
 	}
 
 	void ObjectsList::unselect() {
 		_selectedEntityID = -1;
+
+		_selectedEntities.clear();
 	}
 
 	void ObjectsList::render(bool& ifRender) {
@@ -66,7 +84,7 @@ namespace rat {
 				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
 					addObjectToCurrentGroup();
 				}
-				if(isEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
+				if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
 					ImGui::SameLine();
 					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
 						duplicateObject(_selectedEntityID);
@@ -139,11 +157,52 @@ namespace rat {
 	}
 
 	void ObjectsList::select(Entity* object) {
+		clearSelected();
+
 		_selectedEntityID = object->getID();
 	}
 
 	void ObjectsList::select(int id) {
+		clearSelected();
 		_selectedEntityID = id;
+	}
+
+	void ObjectsList::addSelected(Entity* entity) {
+		if (isAnySingleEntitySelected()) {
+			_selectedEntities.push_back(getSelectedEntity());
+			_selectedEntityID = -1;
+		}
+
+		if (auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
+			_selectedEntities.push_back(entity);
+		}
+	}
+
+	void ObjectsList::removedSelected(Entity* entity)
+	{
+		auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity);
+
+		if (it != _selectedEntities.end())
+		{
+			_selectedEntities.erase(it);
+		}
+
+		//std::remove(_selectedEntities.begin(), _selectedEntities.end(), entity);
+	}
+
+	void ObjectsList::clearSelected()
+	{
+		_selectedEntities.clear();
+	}
+
+	const std::vector<Entity*>& ObjectsList::getSelectedEntities()
+	{
+		return _selectedEntities;
+	}
+
+	bool ObjectsList::isGroupSelected()
+	{
+		return !_selectedEntities.empty();
 	}
 
 	void ObjectsList::addObject(const std::string& groupName) {

@@ -8,7 +8,7 @@
 #include "Scene.hpp"
 #include "Data/TextureDataHolder.hpp"
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 
 namespace rat
@@ -86,7 +86,7 @@ public:
 	void saveToConfig(Json& config);
 
 	///
-	void saveEntityToConfig(Entity& entity, Json& config);
+  	void saveEntityToConfig(Entity* entity, Json& config);
 
 	///
 	void loadFromFile(const std::string& filepath);
@@ -121,7 +121,7 @@ public:
 	#ifdef EDITOR
 		std::string currentFilePath;
 		std::string getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter="", bool saveButton = false);
-		void menuSave();
+		bool menuSave();
 	#endif
 
 private:

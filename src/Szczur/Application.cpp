@@ -7,6 +7,7 @@ namespace rat
 
 void Application::init()
 {
+	// Powodzenia PsychoX!
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
@@ -54,8 +55,18 @@ bool Application::input()
 		#endif
 
 		if (event.type == sf::Event::Closed) {
-			getModule<Window>().getWindow().close();
-			return false;
+			auto result = MsgBox::show(getModule<Window>().getWindow().getSystemHandle(), "Do you want to save the world?", "SzczurEngine", MsgBox::Icon::Question, MsgBox::Button::YesNoCancel);
+
+			switch (result)
+			{
+				case MsgBox::Result::Yes:
+					getModule<World>().getScenes().menuSave();
+				case MsgBox::Result::No:
+					getModule<Window>().getWindow().close();
+					break;
+				case MsgBox::Result::Cancel:
+					break;
+			}
 		}
 	}
 	return true;

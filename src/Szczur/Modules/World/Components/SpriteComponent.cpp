@@ -1,5 +1,7 @@
 #include "SpriteComponent.hpp"
 
+#include <experimental/filesystem>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
@@ -31,7 +33,8 @@ namespace rat {
 		_spriteDisplayData = spriteDisplayData;
 	}
 
-	void SpriteComponent::setTexture(const std::string& texturePath) {
+	void SpriteComponent::setTexture(const std::string& texturePath)
+	{
 		auto* data = detail::globalPtr<World>->getScenes().getTextureDataHolder().getData(texturePath);
 		setSpriteDisplayData(data);
 	}
@@ -117,9 +120,14 @@ namespace rat {
 		}
 	}
 
-	void SpriteComponent::renderHeader(ScenesManager& scenes, Entity* object)
-	{
-		if (ImGui::CollapsingHeader("Sprite##sprite_component")) {
+	void SpriteComponent::renderHeader(ScenesManager& scenes, Entity* object) {
+		if(ImGui::CollapsingHeader("Sprite##sprite_component")) {
+
+			Component::drawOriginSetter<SpriteComponent>(&SpriteComponent::setOrigin);
+
+			// Sprite data holder
+			auto& sprites = object->getScene()->getSpriteDisplayDataHolder();
+
 			// Load texture button
 			if (ImGui::Button("Load texture...##sprite_component")) {
 				
@@ -142,10 +150,19 @@ namespace rat {
 				}
 			}
 
+			// Change entity name
+			if(getSpriteDisplayData()) {
+				ImGui::SameLine();
+				if(ImGui::Button("Change entity name")) {
+					getEntity()->setName(std::experimental::filesystem::path(getSpriteDisplayData()->getName()).stem().string());
+				}
+			}
+
 			// Show path to .png file
 			ImGui::Text("Path:");
 			ImGui::SameLine();
 			ImGui::Text(getSpriteDisplayData() ? mapWindows1250ToUtf8(getSpriteDisplayData()->getName()).c_str() : "None");
+
 
 			ImGui::Checkbox("Parallax", &_parallax);
 			if (_parallax) {
@@ -170,5 +187,43 @@ namespace rat {
 		entity.set("sprite", &Entity::getComponentAs<SpriteComponent>);
 
 		object.init();
+	}
+
+	void SpriteComponent::setOrigin(int vertical, int horizontal)
+	{
+		if (_spriteDisplayData == nullptr)
+			return;
+
+		auto size = _spriteDisplayData->getTexture().getSize();
+
+		glm::vec2 pos;
+
+		switch (vertical)
+		{
+			case -1:
+				pos.x = 0;
+				break;
+			case 0:
+				pos.x = size.x / 2;
+				break;
+			case 1:
+				pos.x = size.x;
+				break;
+		}
+
+		switch (horizontal)
+		{
+			case -1:
+				pos.y = 0;
+				break;
+			case 0:
+				pos.y = size.y / 2;
+				break;
+			case 1:
+				pos.y = size.y;
+				break;
+		}
+
+		getEntity()->setOrigin(glm::vec3(pos, getEntity()->getOrigin().z));
 	}
 }

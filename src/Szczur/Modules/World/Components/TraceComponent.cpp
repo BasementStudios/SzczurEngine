@@ -17,17 +17,7 @@ namespace rat
 TraceComponent::TraceComponent(Entity* parent)
   : Component { parent, fnv1a_64("TraceComponent"), "TraceComponent" }
 {
-	_trace = std::make_shared<Trace>();
-}
-
-void TraceComponent::pause()
-{
-	_trace->pause();
-}
-
-void TraceComponent::resume()
-{
-	_trace->resume();
+	_trace = std::make_shared<Trace>(getEntity());
 }
 
 void TraceComponent::setTimeline(int id)
@@ -40,16 +30,43 @@ void TraceComponent::setTimeline(int id)
 		_trace->setCurrentTimeline((*timeline).get());
 }
 
+void TraceComponent::play()
+{
+	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	{
+		tm->start();
+	}
+}
+
 void TraceComponent::stop()
 {
-	_trace->setCurrentTimeline(nullptr);
+	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	{
+		tm->setStatus(Timeline::Stopped);
+	}
+}
+
+void TraceComponent::pause()
+{
+	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	{
+		tm->setStatus(Timeline::Paused);
+	}
+}
+
+void TraceComponent::resume()
+{
+	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	{
+		tm->setStatus(Timeline::Playing);
+	}
 }
 
 void TraceComponent::loadFromConfig(Json& config)
 {
 	Component::loadFromConfig(config);
 	
-	_trace->loadFromConfig(config, this->getEntity());
+	_trace->loadFromConfig(config);
 
 	_currentTimeline = nullptr;
 	_currentAction = nullptr;
@@ -80,10 +97,11 @@ void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
 
 	// Main
+	object.set("play", &TraceComponent::play);
+	object.set("stop", &TraceComponent::stop);
 	object.set("pause", &TraceComponent::pause);
 	object.set("resume", &TraceComponent::resume);
 	object.set("setTimeline", &TraceComponent::setTimeline);
-	object.set("stop", &TraceComponent::stop);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
@@ -117,32 +135,50 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 		ImGui::SameLine();
 
-		auto playStopButtonText = _trace->getCurrentTimeline() == nullptr ? "Play" : "Stop";
+		std::string playStopButtonText = "Play";
 
-		if (ImGui::Button(playStopButtonText))
+		if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+		{
+			if (tm->getStatus() == Timeline::Playing)
+				playStopButtonText = "Stop";
+		}
+
+		if (ImGui::Button(playStopButtonText.c_str()))
 		{
 			if (_currentTimeline)
 			{
-				if (_trace->getCurrentTimeline() == nullptr)
-					_trace->setCurrentTimeline(_currentTimeline);
+				_trace->setCurrentTimeline(_currentTimeline);
+
+				if (_currentTimeline->getStatus() == Timeline::Playing)
+					stop();
 				else
-					_trace->setCurrentTimeline(nullptr);
+					play();
+			}
+			else
+			{
+				stop();
+				_trace->setCurrentTimeline(nullptr);
 			}
 		}
 
 		ImGui::SameLine();
 
-		auto pauseResumeButtonText = _trace->isPlaying() ? "Pause" : "Resume";
+		std::string pauseResumeButtonText = "Pause";
 
-		if (ImGui::Button(pauseResumeButtonText))
+		if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
 		{
-			if (_trace->isPlaying())
+			if (tm->getStatus() == Timeline::Paused)
+				pauseResumeButtonText = "Resume";
+		}
+
+		if (ImGui::Button(pauseResumeButtonText.c_str()))
+		{
+			if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
 			{
-				_trace->pause();
-			}
-			else
-			{
-				_trace->resume();
+				if (tm->getStatus() == Timeline::Playing)
+					pause();
+				else if (tm->getStatus() == Timeline::Paused)
+					resume();
 			}
 		}
 
@@ -180,6 +216,8 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						_currentTimeline = nullptr;
 					else
 						_currentTimeline = timeline.get();
+
+					_currentAction = nullptr;
 				}
 
 				if (activeTimeline)

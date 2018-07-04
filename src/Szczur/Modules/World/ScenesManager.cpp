@@ -12,6 +12,9 @@
 #include "Components/ScriptableComponent.hpp"
 
 #include <Szczur/Modules/World/World.hpp>
+#include <Szczur/Modules/Cinematics/Cinematics.hpp> 
+#include <Szczur/Modules/Music/Music.hpp> 
+#include <Szczur/Modules/Sound/SoundManager.hpp> 
 
 namespace rat
 {
@@ -34,7 +37,7 @@ Scene* ScenesManager::addScene()
 	camera->addComponent<CameraComponent>();
 	camera->setName("Camera");
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
-	camera->setRotation({ 15.f, 0.f, 0.f });
+	camera->setRotation({ 0.f, 0.f, 0.f });
 
 	return scene;
 }
@@ -202,19 +205,29 @@ void ScenesManager::saveToConfig(Json& config) {
 	}
 }
 
-void ScenesManager::saveEntityToConfig(Entity& entity, Json& config) {
-	// config["currentSceneID"] = getCurrentSceneID();
-	// Json& scenes = config["scenes"];
-
+void ScenesManager::saveEntityToConfig(Entity* entity, Json& config) { 
+	Json& scenes = config["scenes"]; 
+	int sceneID = entity->getScene()->getID(); 
 	
-
-	// for (auto& scene : _holder)
-	// {
-	// 	scenes.push_back(Json::object());
-	// 	Json& current = scenes.back();
-
-	// 	scene->saveToConfig(current);
-	// }
+	for(auto& scene : scenes) { 
+		if(scene["id"].get<int>() == sceneID) { 
+			auto& group = scene["groups"][entity->getGroup()]; 
+			if(!group.is_null()) { 
+				for(auto& ent : group) { 
+					if(ent["id"].get<int>() == entity->getID()) 
+					{ 
+						ent.clear(); 
+						entity->saveToConfig(ent); 
+						return; 
+					} 
+				} 
+			} 
+	  		// Add with normal way 
+			group.push_back(Json::object()); 
+			entity->saveToConfig(group.back()); 
+			return; 
+		} 
+	} 
 }
 
 void ScenesManager::loadFromFile(const std::string& filepath)
@@ -300,7 +313,11 @@ void ScenesManager::runGame() {
 
 void ScenesManager::stopGame() {
 	if(_gameIsRunning) {
-
+ 
+	    detail::globalPtr<Cinematics>->stop(); 
+	    detail::globalPtr<Music>->stop(); 
+	    detail::globalPtr<SoundManager>->stop(); 
+	
 		#ifdef EDITOR
 		detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
 		#endif //EDITOR
@@ -333,7 +350,7 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 }
 
 #ifdef EDITOR
-	void ScenesManager::menuSave() {
+	bool ScenesManager::menuSave() {
 		if(currentFilePath == "") {
 			std::string relative = getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
 			// std::cout<<"--s-"<<relative<<std::endl;
@@ -341,6 +358,7 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 				try {
 					saveToFile(relative);
 					currentFilePath = relative;
+					return true;
 				}
 				catch (const std::exception& exc)
 				{
@@ -351,12 +369,15 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 		else {
 			try {
 				saveToFile(currentFilePath);
+				return true;
 			}
 			catch (const std::exception& exc)
 			{
 				LOG_EXCEPTION(exc);
 			}
 		}
+
+		return false;
 	}
 
 	std::string ScenesManager::getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
@@ -364,12 +385,12 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 
 		std::string file;
 		if(saveButton) 
-            file = FileDialog::getSaveFileName(title, directory, filter);
+			file = FileDialog::getSaveFileName(title, directory, filter);
 		else 
-            file = FileDialog::getOpenFileName(title, directory, filter);
+			file = FileDialog::getOpenFileName(title, directory, filter);
 
 		if(file == "") 
-            return "";
+			return "";
 
 		std::string current = filesystem::current_path().string();
 

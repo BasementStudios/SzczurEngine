@@ -33,6 +33,12 @@ public:
 // Manipulations
 
 	///
+	void play();
+
+	///
+	void stop();
+
+	///
 	void pause();
 
 	///
@@ -40,9 +46,6 @@ public:
 
 	///
 	void setTimeline(int id);
-
-	///
-	void stop();
 
 // Config
 

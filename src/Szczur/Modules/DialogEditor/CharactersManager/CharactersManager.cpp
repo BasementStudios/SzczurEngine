@@ -3,7 +3,7 @@
 #include <fstream>
 #include <experimental/filesystem>
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Utility/Logger.hpp"

@@ -33,7 +33,7 @@ public:
 	///
 	~ArmatureComponent();
 
-// Getters
+// Getters and setters
 
 	///
 	ArmatureDisplayData* getArmatureDisplayData();
@@ -52,6 +52,9 @@ public:
 	
 	///
 	void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData, bool deleteOld = true);
+
+	///
+	void setArmature(const std::string& armatureName);
 
 	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const;
@@ -81,6 +84,9 @@ public:
 	///
 	void setSpeed(float speed);
 
+	///
+	bool isPlaying();
+
 // Scripts
 
 	///
@@ -96,6 +102,11 @@ public:
 
 	///
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
+
+private:
+	// @vertical: -1 left, 0 center, 1 right
+	// @horizontal: -1 top, 0 center, 1 bottom
+	void setOrigin(int vertical = 0, int horizontal = 0);
 
 private:
 	dragonBones::SF3DArmatureDisplay* _armature = nullptr;

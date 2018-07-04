@@ -7,7 +7,7 @@
 #include <shellapi.h>
 #endif
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 // #include <NodeEditor/NodeEditor.h>
 
 #include "Szczur/Utility/Convert/GLMStreams.hpp"
@@ -42,6 +42,12 @@ namespace rat {
 		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
 		_audioEditor = detail::globalPtr<AudioEditor>;
+
+        _prepareOrigins();
+
+		const auto& videoMode = detail::globalPtr<Window>->getVideoMode();
+
+		_defaultWindowSize = sf::Vector2i(videoMode.width, videoMode.height);
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -84,7 +90,7 @@ namespace rat {
 			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
 			if(_ifRenderDialogEditor) _dialogEditor->update();
 			if(_ifRenderAudioEditor) _audioEditor->render();
-		
+			
 
 			scene = _scenes.getCurrentScene();
 			
@@ -92,167 +98,14 @@ namespace rat {
 		}
 	}
 
-	void LevelEditor::_renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target) {
-		originRect.setSize({100.f, 100.f});
-		originRect.setPosition(position);
-		originRect.setOrigin({50.f, 50.f, -10.f});
-
-		if(selected) {
-			originRect.setColor({1.f, 0.3f, 1.f, 0.4f});
-			target.draw(originRect);
-
-			originRect.move({0.f, 0.f, 0.1f});
-			originRect.setSize({80.f, 80.f});
-			originRect.setOrigin({40.f, 40.f, -10.f});
-		}
-		else {
-			originRect.setColor({0.6f, 0.f, 0.7f, 0.4f});
-			target.draw(originRect);
-
-			originRect.move({0.f, 0.f, 0.1f});
-			originRect.setSize({70.f, 70.f});
-			originRect.setOrigin({35.f, 35.f, -10.f});
-		}
-
-		originRect.setColor(color);
-		target.draw(originRect);
-	}
-
-	void LevelEditor::_renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target) {
-		originCircle.setRadius(50.f);
-		originCircle.setPosition(position);
-		originCircle.setOrigin({50.f, 50.f, -10.f});
-
-		if(selected) {
-			originCircle.setColor({1.f, 0.3f, 1.f, 0.4f});
-			target.draw(originCircle);
-
-			originCircle.move({0.f, 0.f, 0.1f});
-			originCircle.setRadius(40.f);
-			originCircle.setOrigin({40.f, 40.f, -10.f});
-		}
-		else {
-			originCircle.setColor({0.6f, 0.f, 0.7f, 0.4f});
-			target.draw(originCircle);
-
-			originCircle.move({0.f, 0.f, 0.1f});
-			originCircle.setRadius(35.f);
-			originCircle.setOrigin({35.f, 35.f, -10.f});
-		}
-
-		originCircle.setColor(color);
-		target.draw(originCircle);
-	}
-
-
-	void LevelEditor::_renderOrigins(sf3d::RenderTarget& target) {
-
-
-		// Render origins for background group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("background")) {
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
-			}
-			else {
-				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
-			}
-		}
-
-		// Render origins for path group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("path")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
-			}
-			else {
-				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
-			}
-		}
-
-		// Render origins for foreground group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
-			}
-			else {
-				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
-			}
-		}
-
-		// Render origins for single group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginRectangle(entity->getPosition(), {0.f, 1.f, 1.f, 0.6f}, true, target);
-			}
-			else {
-				_renderOriginRectangle(entity->getPosition(), {1.f, 1.f, 0.f, 0.6f}, false, target);
-			}
-		}
-
-		// Render origins for entries group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("entries")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginCircle(entity->getPosition(), {0.1f, 1.f, 0.4f, 0.6f}, true, target);
-			}
-			else {
-				_renderOriginCircle(entity->getPosition(), {0.05f, 0.7f, 0.4f, 0.6f}, false, target);
-			}
-		}
-
-		sf3d::CircleShape circ;
-		sf3d::CircleShape circ2;
-		circ.rotate({-90.f, 0.f, 0.f});
-		circ.setColor({1.f, 0.f, 1.f, 0.2f});
-		circ2.setColor({0.f, 1.f, 0.f, 0.2f});
-		circ2.setRadius(50.f);
-		
-		circ2.setOrigin({50.f, 50.f, 0.f});
-		_scenes.getCurrentScene()->forEach([&](const std::string& group, Entity& entity){
-			if(auto* comp = entity.getComponentAs<InteractableComponent>(); comp != nullptr) {
-				circ.setColor({1.f, 0.f, 1.f, 0.2f});
-				circ.setPosition(entity.getPosition() + glm::vec3{0.f, comp->getHeight(), 0.f});
-				float r = comp->getDistance();
-				circ.setRadius(r);
-				circ.setOrigin({r, r, 0.f});
-				target.draw(circ);
-			}
-			if(auto* comp = entity.getComponentAs<TriggerComponent>(); comp != nullptr) {
-				circ.setColor({1.f, 1.f, 0.f, 0.2f});
-				circ.setPosition(entity.getPosition());
-				float r = comp->getRadius();
-				circ.setRadius(r);
-				circ.setOrigin({r, r, 0.f});
-				target.draw(circ);
-			}
-			if(auto* comp = entity.getComponentAs<ColliderComponent>(); comp != nullptr) {
-				if (comp->isCircleCollider()) {
-					circ.setColor({ 0.13f, 0.59f, 0.95f, 0.2f });
-					circ.setPosition(entity.getPosition());
-					float r = comp->getCircleRadius();
-					circ.setRadius(r);
-					circ.setOrigin({ r, r, 0.f });
-					target.draw(circ);
-				}
-				if (comp->isBoxCollider()) {
-					sf3d::RectangleShape rect;
-					rect.rotate({ -90.f, 0.f, 0.f });
-					rect.setColor({ 0.3f, 0.69f, 0.31f, 0.2f });
-					rect.setPosition(entity.getPosition() + glm::vec3(0.f, 10.f, 0.f));
-					auto& size = comp->getBoxSize();
-					rect.setSize(size);
-					rect.setOrigin({ size.x / 2.f, size.y / 2.f, 0.f });
-					target.draw(rect);
-				}
-			}
-		});
-	}
-
 	void LevelEditor::update(InputManager& input, Window& windowModule) {
+		auto* scene = _scenes.getCurrentScene();
 		auto& window = windowModule.getWindow();
 		auto mouse = input.getMousePosition();
 		Entity* cameraEntity = nullptr;
 		
 		// Find selected camera
-		for (auto& entity : _scenes.getCurrentScene()->getEntities("single")) { 
+		for (auto& entity : scene->getEntities("single")) { 
 			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
                 if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
                     cameraEntity = entity.get(); 
@@ -271,23 +124,128 @@ namespace rat {
 
 		// Object selection
 		if (!ImGui::IsAnyWindowHovered()) {
-			auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
 			if (input.isPressed(Mouse::Left)) {
-				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
-					if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-						if(cameraEntity && entity.getID() == cameraEntity->getID()) return;
-						_objectsList.select(entity.getID());
+				auto mouse = _getFixedMousePos(input.getMousePosition());
+				
+				auto linear = window.getLinerByScreenPos(mouse);
+
+				scene->forEach([&] (const std::string&, Entity& entity) {
+					if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f })) {
+						if (cameraEntity && entity.getID() == cameraEntity->getID())
+							return;
+
+						if (input.isKept(rat::Keyboard::LShift)) {
+							if (_objectsList.isEntitySelected(&entity)) {
+								_entityToUnselect = &entity;
+								_entityToUnselectPos = entity.getPosition();
+							}
+							else {
+								_objectsList.addSelected(&entity);
+
+								_setupGroup();
+							}
+						}
+						else {
+							_objectsList.select(entity.getID());
+						}
+
+						if (_objectsList.isGroupSelected()) {
+							_draggingEntity = &entity;
+						}
+
+						if (&entity == _draggingEntity) {
+							_isDragging = true;
+
+							glm::vec3 projection;
+
+							if (_isDepthDragging)
+								projection = linear.getProjectionY(_draggingEntity->getPosition());
+							else
+								projection = linear.getProjectionZ(_draggingEntity->getPosition());
+
+							_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+						}
+
+						_draggingEntity = &entity;
 					}
 				});
 			}
+
+			if (input.isReleased(Mouse::Left)) {
+				_isDragging = false;
+
+				//_draggingEntity = nullptr;
+
+				if (_entityToUnselect != nullptr && input.isKept(rat::Keyboard::LShift)) {
+					if (_entityToUnselectPos == _entityToUnselect->getPosition()) {
+						_objectsList.removedSelected(_entityToUnselect);
+
+						_setupGroup();
+
+						_entityToUnselect = nullptr;
+					}
+				}
+			}
+
+			if (input.isKept(Mouse::Left)) {
+				if (_isDragging) {
+					auto mouse = _getFixedMousePos(input.getMousePosition());
+					auto linear = window.getLinerByScreenPos(mouse);
+
+					glm::vec3 projection;
+					glm::vec3 offset;
+
+					if (_isDepthDragging) {
+						projection = linear.getProjectionY(_draggingEntity->getPosition());
+						offset = glm::vec3(projection.x - _dragLastPos.x, 0.f, projection.z - _dragLastPos.y);
+						_dragLastPos = glm::vec2(projection.x, projection.z);
+
+					}
+					else {
+						projection = linear.getProjectionZ(_draggingEntity->getPosition());
+						offset = glm::vec3(projection.x - _dragLastPos.x, projection.y - _dragLastPos.y, 0.f);
+						_dragLastPos = glm::vec2(projection.x, projection.y);
+					}
+
+					if (_objectsList.isAnySingleEntitySelected()) {
+						auto entity = _objectsList.getSelectedEntity();
+						entity->move(offset);
+					}
+					else if (_objectsList.isGroupSelected()) {
+						_groupOrigin = glm::vec3();
+
+						auto& group = _objectsList.getSelectedEntities();
+
+						for (auto& entity : group) {
+							entity->move(offset);
+							_groupOrigin += entity->getPosition();
+						}
+
+						_groupOrigin /= group.size();
+					}
+				}
+			}
 		}
 
-		// _scenes.getCurrentScene()->forEach([this, scene, &cameraEntity](const std::string&, Entity& entity){
-		// 	if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
-		// 		if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
-		// 			cameraEntity = &entity;
-		// 	}
-		// });
+		if (input.isPressed(Keyboard::Z)) {
+			_isDepthDragging = !_isDepthDragging;
+
+			if (_draggingEntity != nullptr) {
+				auto mouse = _getFixedMousePos(input.getMousePosition());
+
+				auto linear = window.getLinerByScreenPos(mouse);
+
+				glm::vec3 projection;
+
+				if (_isDepthDragging)
+					projection = linear.getProjectionY(_draggingEntity->getPosition());
+				else
+					projection = linear.getProjectionZ(_draggingEntity->getPosition());
+
+				_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+
+			}
+		}
 		
 		// Camera movement
 		if (ImGui::IsAnyItemActive() == false) {
@@ -342,9 +300,51 @@ namespace rat {
 			}
 		}
 
+		// Keys
 		if (input.isReleased(Keyboard::F1)) {
-			_scenes.menuSave();
-			printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
+			if (_scenes.isGameRunning()) {
+				printMenuBarInfo("Cannot save while game is running");
+			}
+			else {
+				_scenes.menuSave();
+				printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
+			}
 		}
+	}
+
+	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {
+		glm::vec2 result;
+		
+		const auto& size = detail::globalPtr<Window>->getWindow().getSize();
+
+		result.x = (pos.x * _defaultWindowSize.x) / size.x;
+		result.y = (pos.y * _defaultWindowSize.y) / size.y;
+
+		return result;
+	}
+
+	void LevelEditor::_setupGroup() {
+		_currentGroupPosition = glm::vec3();
+		_lastGroupPosition = glm::vec3();
+		_currentGroupRotation = glm::vec3();
+		_lastGroupRotation = glm::vec3();
+
+		_updateGroup();
+	}
+
+	void LevelEditor::_updateGroup()
+	{
+		_groupOrigin = glm::vec3();
+		_selectedEntitesBackup.clear();
+
+		auto group = _objectsList.getSelectedEntities();
+
+		for (auto entity : group)
+		{
+			_groupOrigin += entity->getPosition();
+			_selectedEntitesBackup.emplace_back(entity, entity->getPosition(), entity->getRotation());
+		}
+
+		_groupOrigin /= group.size();
 	}
 }

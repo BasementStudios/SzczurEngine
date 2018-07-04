@@ -27,12 +27,12 @@ Scene::Scene(ScenesManager* parent)
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
 {
-	_collectingHolder.emplace("foreground", EntitiesHolder_t{});
-	_collectingHolder.emplace("battles", EntitiesHolder_t{});
-	_collectingHolder.emplace("entries", EntitiesHolder_t{});
-	_collectingHolder.emplace("single", EntitiesHolder_t{});
-	_collectingHolder.emplace("path", EntitiesHolder_t{});
-	_collectingHolder.emplace("background", EntitiesHolder_t{});
+	_collectingHolder.emplace_back("background", EntitiesHolder_t{}); 
+	_collectingHolder.emplace_back("path", EntitiesHolder_t{}); 
+	_collectingHolder.emplace_back("single", EntitiesHolder_t{}); 
+	_collectingHolder.emplace_back("entries", EntitiesHolder_t{}); 
+	_collectingHolder.emplace_back("battles", EntitiesHolder_t{}); 
+	_collectingHolder.emplace_back("foreground", EntitiesHolder_t{}); 
 
 	for (auto& holder : getAllEntities())
 	{
@@ -114,6 +114,14 @@ Entity* Scene::addEntity(const std::string& group)
 		dynamic_cast<BaseComponent*>(base)->positionOnly(true);
 	}
 	#endif //EDITOR
+
+	return entity;
+}
+
+
+Entity* Scene::addRawEntity(const std::string& group)
+{
+	auto* entity = getEntities(group).emplace_back(std::make_unique<Entity>(this, group)).get();
 
 	return entity;
 }
@@ -383,15 +391,21 @@ bool Scene::hasEntity(const std::string& group, size_t id)
 	return _find(group, id) != getEntities(group).end();
 }
 
-Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group)
-{
-	return getAllEntities().at(group);
-}
+Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group) 
+{ 
+	for(auto& gr : getAllEntities()) { 
+		if(gr.first == group) return gr.second; 
+	} 
+	return getAllEntities()[0].second; 
+} 
 
-const Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group) const
-{
-	return getAllEntities().at(group);
-}
+const Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group) const 
+{ 
+	for(auto& gr : getAllEntities()) { 
+		if(gr.first == group) return gr.second; 
+	} 
+	return getAllEntities()[0].second; 
+} 
 
 Scene::CollectingHolder_t& Scene::getAllEntities()
 {
@@ -471,7 +485,7 @@ void Scene::loadFromConfig(Json& config, bool withNewID)
 	{
 		for (Json& current : it.value())
 		{
-			addEntity(it.key())->loadFromConfig(current, true);
+			addRawEntity(it.key())->loadFromConfig(current);
 		}
 	}
 

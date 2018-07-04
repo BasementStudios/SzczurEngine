@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string>
 
 namespace rat {
@@ -19,7 +20,13 @@ public:
     Entity* getSelectedEntity();
 
     /// Return true if any object is selected
-    bool isEntitySelected();
+    bool isAnySingleEntitySelected();
+
+	///
+	bool isAnyEntitySelected();
+
+	///
+	bool isEntitySelected(Entity* entity);
 
     /// Unselect selected object
     void unselect();
@@ -29,6 +36,21 @@ public:
 
     /// Select specific object by id
     void select(int id);
+
+	/// Add to selected entities
+	void addSelected(Entity* id);
+
+	///
+	void removedSelected(Entity* id);
+
+	/// clear selected entites
+	void clearSelected();
+
+	/// 
+	const std::vector<Entity*>& getSelectedEntities();
+
+	///
+	bool isGroupSelected();
 
     /// Create new object in group
     void addObject(const std::string& groupName);
@@ -52,5 +74,7 @@ private:
     std::string _tab;
     int _selectedEntityID = -1;
     int _contextMenuEntityID = -1;
+
+	std::vector<Entity*> _selectedEntities;
 };
 }

@@ -4,7 +4,7 @@
 
 #include <Szczur/Modules/Script/Script.hpp>
 
-#include <Sol/sol.hpp>
+#include <sol2/sol.hpp>
 
 namespace rat {
 

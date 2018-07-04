@@ -44,6 +44,8 @@ public:
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
+
+	sf::FloatRect getBoundingBox();
 };
 
 DRAGONBONES_NAMESPACE_END

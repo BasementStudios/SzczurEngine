@@ -117,8 +117,10 @@ namespace rat
 	void Playlist::clear() 
 	{
 		_status = Status::Stopped;
+
 		for (auto it : _playlist)
 			it->stop();
+
 		_currentID = 0;
 		_playlist.clear();
 	}
@@ -189,8 +191,9 @@ namespace rat
 				_currentID = 0;
 			play(_currentID);
 		}
-		if (_playingMode == PlayingMode::Random) 
+		else if (_playingMode == PlayingMode::Random) {
 			play(getRandomId());
+		}
 	}
 
 	void Playlist::unPause() 
@@ -218,9 +221,12 @@ namespace rat
 	void Playlist::setPlaylistToPlaying(int id)
 	{
 		_currentID = id;
+
 		if (!hasBeenEverPlayed)
 			hasBeenEverPlayed = true;
+
 		setGlobalEffects();
+		
 		_status = Status::Playing;
 	}
 

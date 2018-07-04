@@ -65,6 +65,8 @@ namespace rat {
 		if(auto& var = config["limit"]["right"]; !var.is_null()) _limit.right = var;
 		if(auto& var = config["limitedRange"]; !var.is_null()) _limitedRange = var;
 		if(auto& var = config["type"]; !var.is_null()) _type = size_tToEnumType(var);
+		if(auto& var = config["sticked_id"]; !var.is_null()) _stickedID = var;
+        if(auto& var = config["no_move"]; !var.is_null()) _noMove = var;
 		if(auto& var = config["smoothness"]; !var.is_null() && _type == Smooth) _smoothness = var;
 		if(auto& var = config["linear"]; !var.is_null() && _type == Linear) _linear = var;
 
@@ -83,6 +85,8 @@ namespace rat {
 		config["limit"]["left"] = _limit.left;
 		config["limit"]["right"] = _limit.right;
 		config["limitedRange"] = _limitedRange;
+		config["sticked_id"] = (_stickTo==nullptr ? 0 : _stickTo->getID());
+        config["no_move"] = _noMove;
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
@@ -113,6 +117,7 @@ namespace rat {
 			bool locked = getLock();
 			ImGui::Checkbox("Locked##camera_component", &locked);
 			setLock(locked);
+			ImGui::Checkbox("No move##camera_component", &_noMove);
 			
 			// Set lock on player
 			ImGui::Text(
@@ -125,10 +130,12 @@ namespace rat {
 			if(ImGui::Button("Stick To Player##camera_component")) {
 				stickToPlayer();
 			}
-			ImGui::SameLine();
-			if(ImGui::Button("Stick to None##camera_component")) {
-				stickTo(nullptr);
-			}
+			if(_stickTo != nullptr) {
+                ImGui::SameLine();
+                if(ImGui::Button("Unstick##camera_component")) {
+                    stickTo(nullptr);
+                }
+            }
 
 			ImGui::Checkbox("Limited Range##camera_component", &_limitedRange);
 			if(_limitedRange) {
@@ -141,9 +148,14 @@ namespace rat {
 
     void CameraComponent::update(ScenesManager& scenes, float deltaTime) {
 		auto* entity = getEntity();
-		auto* player = entity->getScene()->getPlayer();
-		if(player == nullptr) return;
-
+		// auto* player = getEntity()->getScene()->getPlayer();
+        // if(player == nullptr) return;
+ 
+        if(_stickedID != 0) {
+            _stickTo = getEntity()->getScene()->getEntity(_stickedID);
+            _stickedID = 0;
+        }
+        
 		if(_stickTo) {
 			auto curPos = getEntity()->getPosition();
 			curPos.x = _stickTo->getPosition().x;

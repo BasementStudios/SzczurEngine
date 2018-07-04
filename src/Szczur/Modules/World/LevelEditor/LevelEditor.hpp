@@ -9,6 +9,8 @@
 #include "Szczur/Utility/SFML3D/Camera.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 
+#include <tuple>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../Components/ArmatureComponent.hpp"
@@ -77,26 +79,48 @@ private:
 	void _renderComponentsManager();
 
 	///
+	void _renderSingleProperty();
+
+	///
+	void _renderGroupProperty();
+
+    ///
+    void _prepareOrigins();
+
+	///
 	void _renderOrigins(sf3d::RenderTarget& target);
 
-	///
-	void _renderOriginRectangle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
-
-	///
-	void _renderOriginCircle(const glm::vec3& position, const glm::vec4& color, bool selected, sf3d::RenderTarget& target);
-
+    ///
+    void _renderOriginRectangle(const glm::vec3& position, bool selected, sf3d::RenderTarget& target);
+ 
+    ///
+    void _renderOriginCircle(const glm::vec3& position, bool selected, sf3d::RenderTarget& target);
+ 
 	///
 	void _renderPlayBar();
 
 	///
 	void _render();
 
+	///
+	glm::vec2 _getFixedMousePos(const sf::Vector2i& pos);
+
+	///
+	void _setupGroup();
+
+	///
+	void _updateGroup();
+
 private:
 
-// World
+// Select fix
+	sf::Vector2i _defaultWindowSize;
 
-	sf3d::CircleShape originCircle;
-	sf3d::RectangleShape originRect;
+// Origins
+
+    sf3d::CircleShape _originCirIn, _originCirOut, _originCirInSel, _originCirOutSel, _groupOriginCir;
+    sf3d::RectangleShape _originRectIn, _originRectOut, _originRectInSel, _originRectOutSel;
+ 
 
 // World
 
@@ -135,6 +159,27 @@ private:
 
 	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
 	glm::vec2 _vec2Clipboard{0.f,0.f};
+
+// Dragging
+
+	bool _isDragging = false;
+	glm::vec2 _dragLastPos;
+	Entity* _draggingEntity = nullptr;
+	bool _isDepthDragging = true;
+
+	glm::vec3 _groupOrigin;
+
+	// property window
+	glm::vec3 _currentGroupPosition;
+	glm::vec3 _lastGroupPosition;
+	glm::vec3 _currentGroupRotation;
+	glm::vec3 _lastGroupRotation;
+
+	// pos, rotation
+	std::vector<std::tuple<Entity*, glm::vec3, glm::vec3>> _selectedEntitesBackup;
+
+	Entity* _entityToUnselect = nullptr;
+	glm::vec3 _entityToUnselectPos;
 };
 
 	

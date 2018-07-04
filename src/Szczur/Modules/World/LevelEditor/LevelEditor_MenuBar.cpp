@@ -9,7 +9,7 @@
 
 #include <Szczur/ImGuiStyler.hpp>
 
-#include <ImGui/imgui.h>
+#include <imgui.h>
 
 #include <shellapi.h>
 
@@ -113,26 +113,29 @@ namespace rat {
 						}
 					}
 				}
-				if(ImGui::MenuItem("Save", "F1")) {
-					_scenes.menuSave();
-                    printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
-				}
-				if(ImGui::MenuItem("Save As")) {
-					std::string relative = _scenes.getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
-					// std::cout<<"--s-"<<relative<<std::endl;
-					if(relative != "") {
-						try {
-							_scenes.saveToFile(relative);
-							_scenes.currentFilePath = relative;
-							printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+				if(!_scenes.isGameRunning()) {
+					if(ImGui::MenuItem("Save", "F1")) {
+						if (_scenes.menuSave()) {
+							printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
 						}
-						catch (const std::exception& exc)
-						{
-							LOG_EXCEPTION(exc);
+					}
+					if(ImGui::MenuItem("Save As")) {
+						std::string relative = _scenes.getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+						// std::cout<<"--s-"<<relative<<std::endl;
+						if(relative != "") {
+							try {
+								_scenes.saveToFile(relative);
+								_scenes.currentFilePath = relative;
+								printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+							}
+							catch (const std::exception& exc)
+							{
+								LOG_EXCEPTION(exc);
+							}
 						}
 					}
 				}
-
+				
 				if (ImGui::MenuItem("Show in explorer")) {
 					std::string current = std::experimental::filesystem::current_path().string();
 
@@ -182,10 +185,10 @@ namespace rat {
 				{
 					world->setEditor(!world->isEditor());
 				}
-				// if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) {
-				// 	_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
-				// 	LOG_INFO(_ifShowImGuiDemoWindow)
-				// }
+				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) 
+				{
+					_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
+				}
 
 				ImGui::EndMenu();
 			}
@@ -199,8 +202,19 @@ namespace rat {
 				ImGui::TextColored({0.75f, 0.30f, 0.63f, 1.0f - _menuInfoClock.getElapsedTime().asSeconds()/6.0f}, _menuInfo.c_str());
 			}
 
-			ImGui::SameLine(ImGui::GetWindowWidth()-72);
+			ImGui::SameLine(ImGui::GetWindowWidth() - 220);
+
+			if (_isDepthDragging)
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.01f, 0.53f, 0.82f, 1.f)); // cyan
+			else
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.94f, 0.42f, 0.0f, 1.f)); // orange
+
+			ImGui::Text((std::string("[Z] Drag move in: ") + (_isDepthDragging ? "depth" : "plane")).c_str());
+			ImGui::PopStyleColor();
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - 72);
 			ImGui::Text((std::to_string((int)ImGui::GetIO().Framerate)+" FPS").c_str());
+
 		}
 		ImGui::EndMainMenuBar();
     }

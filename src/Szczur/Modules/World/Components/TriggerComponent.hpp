@@ -1,5 +1,5 @@
 #pragma once
-#include <Sol/sol.hpp>
+#include <sol2/sol.hpp>
 
 #include <glm/glm.hpp>
 
@@ -23,6 +23,12 @@ public:
 		TypesCount 
 	} type{None};
 
+	///
+	enum class Shape {
+		Circle = 0,
+		Rectangle
+	};
+
 	size_t sceneId; 
 	size_t entranceId;
 
@@ -42,10 +48,22 @@ public:
 	virtual void saveToConfig(Json& config) const override;
 
 	///
+	void setShapeType(Shape shape);
+
+	///
+	const Shape& getShapeType();
+
+	///
 	void setRadius(float radius);
 
 	///
 	float getRadius() const;
+
+	///
+	void setRectSize(const glm::vec2& size);
+
+	///
+	const glm::vec2& getRectSize() const;
 
 	///
 	static std::string enumToString(size_t en);
@@ -64,7 +82,14 @@ public:
 
 private:
 	InputManager& _input;
-	float _radius{10.f};
+
+	Shape _triggerShape = Shape::Circle;
+
+	float _radius = 100.f;
+	glm::vec2 _rectSize = { 200.f, 200.f };
+
+	bool _changingSceneWithFade = true;
+	float _fadeTime = 1.f;
 
 	bool _isPlayerInside = false;
 	sol::function _enterCallback;

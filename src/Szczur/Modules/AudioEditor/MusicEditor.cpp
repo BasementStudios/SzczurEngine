@@ -1,13 +1,13 @@
 #include "MusicEditor.hpp"
 
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>
+
 #include <string>
 #include <fstream> // ifstream, ofstream
 #include <algorithm> // find, replace
 
-#include <Json/json.hpp>
-
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include <nlohmann/json.hpp>
 
 namespace rat
 {
@@ -205,8 +205,8 @@ namespace rat
 
                 auto& song = _musicAssets->get(currentEditingMusicFile);
 
-                int bpm = static_cast<int>(song._bpm);
-                int fadeTime = static_cast<int>(song._fadeTime);
+                int bpm = static_cast<int>(song.getBPM());
+                int fadeTime = static_cast<int>(song.getFadeTime());
                 float volume = song.getVolume();
 
                 auto nameText = "Name: " + currentEditingMusicFile;
@@ -237,10 +237,10 @@ namespace rat
                 ImGui::Separator();
 
                 if (ImGui::InputInt("BPM", &bpm)) {
-                    song._bpm = bpm;
+                    song.setBPM(bpm);
                 }
                 if (ImGui::InputInt("Fade Time", &fadeTime)) {
-                    song._fadeTime = fadeTime;
+                    song.setFadeTime(fadeTime);
                 }
                 if (ImGui::SliderFloat("Volume", &volume, 0, 100)) {
                     _music.setVolume(volume, currentPlaylist, currentEditingMusicFile);

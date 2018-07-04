@@ -7,27 +7,27 @@
 namespace rat
 {
  
-    ArmatureDisplayData::ArmatureDisplayData(const std::string& path)
-        : _folderPath(path)
-    {
-        _name = std::experimental::filesystem::path(path).filename().string();
+ArmatureDisplayData::ArmatureDisplayData(const std::string& path)
+    : _folderPath(path)
+{
+    _name = std::experimental::filesystem::path(path).filename().string();
 
-        auto dbFactory = dragonBones::SF3DFactory::get();
+    auto dbFactory = dragonBones::SF3DFactory::get();
 
-        _texture = new sf3d::Texture;
-        _texture->loadFromFile(_folderPath + _textureFilePath);
+    _texture = new sf3d::Texture;
+    _texture->loadFromFile(_folderPath + _textureFilePath);
 
-        dbFactory->loadDragonBonesData(_folderPath + _skeFilePath);
-        dbFactory->loadTextureAtlasData(_folderPath + _textureAtlasFilePath, _texture);
-    }
+    dbFactory->loadDragonBonesData(_folderPath + _skeFilePath, _name);
+    dbFactory->loadTextureAtlasData(_folderPath + _textureAtlasFilePath, _texture, _name);
+}
     
-    ArmatureDisplayData::~ArmatureDisplayData() {
-        auto dbFactory = dragonBones::SF3DFactory::get();
+ArmatureDisplayData::~ArmatureDisplayData() {
+    auto dbFactory = dragonBones::SF3DFactory::get();
 
-        dbFactory->removeDragonBonesData(_name);
-        dbFactory->removeTextureAtlasData(_name);
-        delete _texture;
-    }
+    dbFactory->removeDragonBonesData(_name);
+    dbFactory->removeTextureAtlasData(_name);
+    delete _texture;
+}
  
 }
  

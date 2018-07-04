@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory> // unique_ptr
 
-#include <Json/json.hpp>
+#include <nlohmann/json.hpp>
 using Json = nlohmann::json;
 
 namespace sf3d {
@@ -21,16 +21,16 @@ namespace rat
 class Trace
 {
 private:
+	Entity* _entity = nullptr;
+
 	std::vector<std::unique_ptr<Timeline>> _timelines;
 
 	int _lastId = -1;
 
-	bool _pause = false;
-
 	Timeline* _currentTimeline = nullptr;
 
 public:
-	Trace();
+	Trace(Entity* entity);
 	~Trace();
 
 	void addTimeline();
@@ -41,12 +41,7 @@ public:
 
 	auto& getTimelines() { return _timelines; }
 
-	void pause();
-	void resume();
-
-	bool isPlaying() { return !_pause; }
-
-	void loadFromConfig(Json& config, Entity* entity);
+	void loadFromConfig(Json& config);
 	void saveToConfig(Json& config) const;
 
 	void update(float deltaTime);

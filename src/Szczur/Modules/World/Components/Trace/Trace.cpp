@@ -10,7 +10,8 @@
 namespace rat
 {
 
-Trace::Trace()
+Trace::Trace(Entity* _entity)
+	: _entity(_entity)
 {
 
 }
@@ -22,7 +23,7 @@ Trace::~Trace()
 
 void Trace::addTimeline()
 {
-	_timelines.emplace_back(std::make_unique<Timeline>(++_lastId));
+	_timelines.emplace_back(std::make_unique<Timeline>(++_lastId, _entity));
 }
 
 void Trace::removeTimeline(Timeline* timeline)
@@ -38,22 +39,9 @@ void Trace::removeTimeline(Timeline* timeline)
 void Trace::setCurrentTimeline(Timeline* timeline)
 {
 	_currentTimeline = timeline;
-
-	if (_currentTimeline)
-		_currentTimeline->start();
 }
 
-void Trace::pause()
-{
-	_pause = true;
-}
-
-void Trace::resume()
-{
-	_pause = false;
-}
-
-void Trace::loadFromConfig(Json& config, Entity* entity)
+void Trace::loadFromConfig(Json& config)
 {
 	Json::array_t jsonTimelines = config["timelines"];
 
@@ -61,9 +49,18 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 
 	for (auto& jsonTimeline : jsonTimelines)
 	{
-		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>());
+		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>(), _entity);
 		timeline->Loop = jsonTimeline["loop"];
-		timeline->SpeedMultiplier = jsonTimeline["speedMultiplier"];
+
+		if (jsonTimeline.find("speedMultiplier") != jsonTimeline.end())
+		{
+			timeline->SpeedMultiplier = jsonTimeline["speedMultiplier"];
+		}
+
+		if (jsonTimeline.find("showLines") != jsonTimeline.end())
+		{
+			timeline->ShowLines = jsonTimeline["showLines"];
+		}
 
 		Json::array_t jsonActions = jsonTimeline["actions"];
 
@@ -73,7 +70,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 			{
 				case Action::Move:
 				{
-					auto moveAction = new MoveAction(entity);
+					auto moveAction = new MoveAction(_entity);
 
 					moveAction->UseCurrentPosition = jsonAction["useCurrentPosition"];
 					moveAction->Start.x = jsonAction["start"]["x"];
@@ -92,7 +89,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 				} break;
 				case Action::Anim:
 				{
-					auto animAction = new AnimAction(entity);
+					auto animAction = new AnimAction(_entity);
 
 					animAction->AnimationName = jsonAction["animationName"].get<std::string>();
 					animAction->FadeInTime = jsonAction["FadeInTime"];
@@ -103,7 +100,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 				} break;
 				case Action::Wait:
 				{
-					auto waitAction = new WaitAction(entity);
+					auto waitAction = new WaitAction(_entity);
 
 					waitAction->TimeToWait = jsonAction["timeToWait"];
 
@@ -111,7 +108,7 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 				} break;
 				case Action::Script:
 				{
-					auto scriptAction = new ScriptAction(entity);
+					auto scriptAction = new ScriptAction(_entity);
 
 					scriptAction->ScriptFilePath = jsonAction["filePath"].get<std::string>();
 
@@ -121,6 +118,19 @@ void Trace::loadFromConfig(Json& config, Entity* entity)
 		}
 
 		_timelines.push_back(std::move(timeline));
+	}
+
+	if (config.find("currentTimeline") != config.end())
+	{
+		int currentTimelineId = config["currentTimeline"];
+
+		auto timeline = std::find_if(_timelines.begin(), _timelines.end(), [&] (auto& timeline) { return currentTimelineId == timeline->getId(); });
+
+		if (timeline != _timelines.end())
+		{
+			_currentTimeline = (*timeline).get();
+			_currentTimeline->start();
+		}
 	}
 }
 
@@ -140,6 +150,7 @@ void Trace::saveToConfig(Json& config) const
 		jsonTimeline["id"] = timeline->getId();
 		jsonTimeline["loop"] = timeline->Loop;
 		jsonTimeline["speedMultiplier"] = timeline->SpeedMultiplier;
+		jsonTimeline["showLines"] = timeline->ShowLines;
 
 		auto jsonActions = Json::array();
 
@@ -202,7 +213,7 @@ void Trace::saveToConfig(Json& config) const
 
 void Trace::update(float deltaTime)
 {
-	if (_currentTimeline && !_pause)
+	if (_currentTimeline)
 	{
 		_currentTimeline->update(deltaTime);
 	}

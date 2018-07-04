@@ -52,7 +52,7 @@ namespace rat
 		void pause(int musicTrack = -1);
 		void stop(int musicTrack = -1);
 
-		RatMusic& getCurrentPlaying(unsigned int musicTrack);
+		RatMusic* getCurrentPlaying(unsigned int musicTrack);
 		RatMusic& get(const std::string& fileName);
 
 		bool includes(const std::string& key, const std::string& fileName);

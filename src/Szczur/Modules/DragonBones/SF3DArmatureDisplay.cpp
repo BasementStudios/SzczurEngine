@@ -78,4 +78,39 @@ void SF3DArmatureDisplay::draw(sf3d::RenderTarget& target, sf3d::RenderStates st
 	}
 }
 
+sf::FloatRect SF3DArmatureDisplay::getBoundingBox()
+{
+	auto slots = _armature->getSlots();
+	bool isFirst = true;
+
+	sf::Vector2f min;
+	sf::Vector2f max;
+
+	for (const auto slot : _armature->getSlots())
+	{
+		if (!slot->getVisible() || !slot->getDisplay())
+		{
+			continue;
+		}
+
+		auto display = static_cast<SF3DDisplay*>(slot->getRawDisplay());
+		const auto bounds = display->getBoundingBox();
+		if (isFirst)
+		{
+			isFirst = false;
+			min = { bounds.left, bounds.top };
+			max = { bounds.left + bounds.width, bounds.top + bounds.height };
+		}
+		else
+		{
+			min.x = std::min(min.x, bounds.left);
+			min.y = std::min(min.y, bounds.top);
+			max.x = std::max(max.x, bounds.left + bounds.width);
+			max.y = std::max(max.y, bounds.top + bounds.height);
+		}
+	}
+
+	return sf::FloatRect(min, max - min);
+}
+
 DRAGONBONES_NAMESPACE_END
