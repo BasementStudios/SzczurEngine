@@ -185,9 +185,9 @@ CXXFLAGS_DYNAMIC_LUA    :=
 #   JSON
  PKG_CONFIG_NAME_JSON   := json
 #   GLM
- PKG_CONFIG_NAME_JSON   := glm
+ PKG_CONFIG_NAME_GLM   	:= glm
 #   OpenAL
- PKG_CONFIG_NAME_JSON   := openal
+ PKG_CONFIG_NAME_OPENAL	:= openal
 #   FFMPEG/libavformat
  PKG_CONFIG_NAME_FFMPEG_AV := libavformat
   LDFLAGS_STATIC_FFMPEG_AV := -lavformat -lavcodec -lavutil -lswresample
