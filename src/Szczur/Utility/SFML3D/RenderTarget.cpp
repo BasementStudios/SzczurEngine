@@ -253,6 +253,33 @@ void RenderTarget::draw(const VertexArray& vertices)
 	this->draw(vertices, this->defaultStates);
 }
 
+// "Simple draw"
+void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states) {
+	if (vertices.getSize() > 0 && this->_setActive()) {
+		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
+		if (!(shaderProgram && shaderProgram->isVaild())) {
+			std::cout << "Error: No shader available!\n";
+			return;
+		}
+		shaderProgram->use();
+
+		if (states.texture) {
+			glActiveTexture(GL_TEXTURE0);
+			states.texture->bind();
+		}
+
+		vertices.bind();
+		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+		glBindVertexArray(0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		states.texture->unbind();
+	}
+}
+void RenderTarget::simpleDraw(const VertexArray& vertices) {
+	this->simpleDraw(vertices, this->defaultStates);
+}
+
 // Interaction
 Linear RenderTarget::getLinerByScreenPos(const glm::vec2& pos) const
 {

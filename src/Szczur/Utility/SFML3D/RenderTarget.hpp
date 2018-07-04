@@ -113,6 +113,10 @@ public:
 	// Drawing vertices
 	void draw(const VertexArray& vertices, const RenderStates& states);
 	void draw(const VertexArray& vertices);
+
+	// "Simple draw"
+	void simpleDraw(const VertexArray& vertices, RenderStates states);
+	void simpleDraw(const VertexArray& vertices);
 	
 	// Interaction
 	Linear getLinerByScreenPos(const glm::vec2& pos) const;
