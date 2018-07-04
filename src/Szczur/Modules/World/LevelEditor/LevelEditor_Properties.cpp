@@ -149,22 +149,61 @@ namespace rat {
 			if (auto* object = focusedObject->getComponentAs<PointLightComponent>()) object->renderHeader(_scenes, focusedObject);
 
 		}
+	}
 
+	void LevelEditor::_resetGroupProperties()
+	{
+		_groupOrigin = glm::vec3();
+		for (auto& tuple : _selectedEntitesBackup)
+		{
+			auto entity = std::get<0>(tuple);
+
+			entity->setPosition(std::get<1>(tuple));
+			entity->setRotation(std::get<2>(tuple));
+			_groupOrigin += entity->getPosition();
+		}
+		_groupOrigin /= _selectedEntitesBackup.size();
+	}
+
+	void LevelEditor::_updateGroupProperites(const glm::vec3 & pos, const glm::vec3 & rot)
+	{
+		_groupOrigin = glm::vec3();
+
+		for (auto& tuple : _selectedEntitesBackup)
+		{
+			auto& entity = std::get<0>(tuple);
+			entity->setPosition(std::get<1>(tuple) + _currentGroupPosition);
+			_groupOrigin += entity->getPosition();
+		}
+
+		_groupOrigin /= _selectedEntitesBackup.size();
+
+		for (auto& tuple : _selectedEntitesBackup)
+		{
+			auto& entity = std::get<0>(tuple);
+
+			auto rotation = std::get<2>(tuple) + _currentGroupRotation;
+			entity->setRotation(rotation);
+
+			auto rotOffset = glm::radians(_currentGroupRotation);
+
+			auto offset = entity->getPosition() - _groupOrigin;
+
+			offset = glm::rotateX(offset, rotOffset.x);
+			offset = glm::rotateY(offset, rotOffset.y);
+			offset = glm::rotateZ(offset, rotOffset.z);
+
+			entity->setPosition(_groupOrigin + offset);
+		}
 	}
 
 	void LevelEditor::_renderGroupProperty() {
 		if (ImGui::Button("Undo##group"))
 		{
-			_groupOrigin = glm::vec3();
-			for (auto& tuple : _selectedEntitesBackup)
-			{
-				auto entity = std::get<0>(tuple);
+			_resetGroupProperties();
 
-				entity->setPosition(std::get<1>(tuple));
-				entity->setRotation(std::get<2>(tuple));
-				_groupOrigin += entity->getPosition();
-			}
-			_groupOrigin /= _selectedEntitesBackup.size();
+			_currentGroupPosition = glm::vec3();
+			_currentGroupRotation = glm::vec3();
 		}
 
 		ImGui::Text("Selected: %d", _objectsList.getSelectedEntities().size());
@@ -175,40 +214,12 @@ namespace rat {
 		}
 
 		if (ImGui::DragFloat3("Offset##group", &_currentGroupPosition[0])) {
-			auto delta = _currentGroupPosition - _lastGroupPosition;
-
-			_groupOrigin = glm::vec3();
-			auto& group = _objectsList.getSelectedEntities();
-
-			for (auto entity : group) {
-				entity->move(delta);
-				_groupOrigin += entity->getPosition();
-			}
-
-			_groupOrigin /= group.size();
-
-			_lastGroupPosition = _currentGroupPosition;
+			_updateGroupProperites(_currentGroupPosition, _currentGroupRotation);
 		}
 
 		if (ImGui::DragFloat3("Rotation##group", &_currentGroupRotation[0]))
 		{
-			for (auto entity : _objectsList.getSelectedEntities())
-			{
-				auto rotation = entity->getRotation() + (_currentGroupRotation - _lastGroupPosition);
-				entity->setRotation(rotation);
-
-				auto rotOffset = glm::radians(_currentGroupRotation - _lastGroupPosition);
-
-				auto offset = entity->getPosition() - _groupOrigin;
-
-				offset = glm::rotateX(offset, rotOffset.x);
-				offset = glm::rotateY(offset, rotOffset.y);
-				offset = glm::rotateZ(offset, rotOffset.z);
-
-				entity->setPosition(_groupOrigin + offset);
-			}
-
-			_lastGroupPosition = _currentGroupRotation;
+			_updateGroupProperites(_currentGroupPosition, _currentGroupRotation);
 		}
 
 		if (ImGui::TreeNodeEx("Selected entities##group", ImGuiTreeNodeFlags_DefaultOpen)) {

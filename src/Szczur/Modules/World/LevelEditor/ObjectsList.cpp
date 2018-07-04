@@ -107,6 +107,7 @@ namespace rat {
 				if(ImGui::Selectable(object->getName().c_str(), _selectedEntityID == object->getID())) {
 					if(_selectedEntityID != object->getID()) {
 						_selectedEntityID = object->getID();
+						clearSelected();
 					}
 					else {
 						_selectedEntityID = -1;
@@ -160,6 +161,8 @@ namespace rat {
 		clearSelected();
 
 		_selectedEntityID = object->getID();
+
+
 	}
 
 	void ObjectsList::select(int id) {

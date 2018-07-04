@@ -325,9 +325,7 @@ namespace rat {
 
 	void LevelEditor::_setupGroup() {
 		_currentGroupPosition = glm::vec3();
-		_lastGroupPosition = glm::vec3();
 		_currentGroupRotation = glm::vec3();
-		_lastGroupRotation = glm::vec3();
 
 		_updateGroup();
 	}

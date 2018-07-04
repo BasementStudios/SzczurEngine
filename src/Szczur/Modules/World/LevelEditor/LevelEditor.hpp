@@ -113,6 +113,12 @@ private:
 	///
 	void _updateGroup();
 
+	///
+	void _resetGroupProperties();
+
+	///
+	void _updateGroupProperites(const glm::vec3& pos, const glm::vec3& rot);
+
 private:
 
 // Select fix
@@ -173,9 +179,7 @@ private:
 
 	// property window
 	glm::vec3 _currentGroupPosition;
-	glm::vec3 _lastGroupPosition;
 	glm::vec3 _currentGroupRotation;
-	glm::vec3 _lastGroupRotation;
 
 	// pos, rotation
 	std::vector<std::tuple<Entity*, glm::vec3, glm::vec3>> _selectedEntitesBackup;
