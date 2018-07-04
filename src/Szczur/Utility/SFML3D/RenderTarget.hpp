@@ -39,7 +39,7 @@ private:
 	RenderStates defaultStates;
 	
 	Camera* camera {nullptr};
-	Camera* defaultCamera;
+	Camera* defaultCamera = nullptr;
 	
 	glm::mat4 projectionMatrix;
 
@@ -112,7 +112,7 @@ public:
 	void draw(const VertexArray& vertices);
 	
 	// Interaction
-	Linear getLinerByScreenPos(const glm::vec2& pos) const;
+	Linear getLinearByScreenPos(const glm::vec2& pos) const;
 	
 	// Light points
 	void resetLightPoints();

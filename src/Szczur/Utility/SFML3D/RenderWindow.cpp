@@ -5,7 +5,7 @@
 
 #include <SFML/Window.hpp> // @todo . remove (for Uint32 now)
 #include <SFML/Graphics.hpp>
-#include <glad/glad.h>
+#include <glad.h>
 #include <glm/vec2.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>

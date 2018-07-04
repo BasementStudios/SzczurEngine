@@ -109,9 +109,9 @@ void World::render()
 
 	if (_isChangingScene)
 	{
-		window.pushGLStates();
-		window.draw(_blackScreen);
-		window.popGLStates();
+		target.pushGLStates();
+		target.draw(_blackScreen);
+		target.popGLStates();
 	}
 
 	#ifdef EDITOR

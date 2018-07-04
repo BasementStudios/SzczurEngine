@@ -1,7 +1,7 @@
 #version 330 core
 
 // Definitions and types
-#define MAX_LIGHTS 8
+#define MAX_LIGHTS 20
 #define ENABLE_ATTENUATION
 
 struct Attenuation

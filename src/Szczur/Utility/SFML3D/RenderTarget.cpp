@@ -15,7 +15,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <glad/glad.h>
+#include <glad.h>
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -220,8 +220,9 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 				{
 					// Diffuse
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, states.texture->getID());
-					shaderProgram->setUniform("material.diffuseTexture", states.texture->getID());
+					states.texture->bind();
+					//glBindTexture(GL_TEXTURE_2D, );
+					shaderProgram->setUniform("material.diffuseTexture", 0);
 
 					// Specular // @todo . specular
 					//aderProgram->setUniform("material.specularTexture", ???.texture->getID());
@@ -243,6 +244,9 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 		glBindVertexArray(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		if (states.texture)
+			states.texture->unbind();
 	}
 }
 void RenderTarget::draw(const VertexArray& vertices)
@@ -251,7 +255,7 @@ void RenderTarget::draw(const VertexArray& vertices)
 }
 
 // Interaction
-Linear RenderTarget::getLinerByScreenPos(const glm::vec2& pos) const
+Linear RenderTarget::getLinearByScreenPos(const glm::vec2& pos) const
 {
 	float x = glm::atan(
 		( 2.f * (pos.x / static_cast<float>(this->size.x)) - 1.f) * this->halfFOVxTan
@@ -271,8 +275,8 @@ Linear RenderTarget::getLinerByScreenPos(const glm::vec2& pos) const
 		siny * cosx,
 		-cosy * cosx
 	};
-	rotation = glm::rotateX(rotation, glm::radians(-this->camera->getRotation().x));
-	rotation = glm::rotateY(rotation, glm::radians(-this->camera->getRotation().y));
+	rotation = glm::rotateX(rotation, glm::radians(this->camera->getRotation().x));
+	rotation = glm::rotateY(rotation, glm::radians(this->camera->getRotation().y));
 	return Linear(this->camera->getPosition(), {
 		rotation.x,
 		rotation.y,

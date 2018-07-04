@@ -137,6 +137,8 @@ void Window::init()
 	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
 	this->shaderProgram->linkShaders(frag, vert);
 	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
+
+	setFramerateLimit(60);
 }
 
 // render

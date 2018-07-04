@@ -2,9 +2,12 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include <nlohmann/json_fwd.hpp>
 using Json = nlohmann::json;
+
+#include <imgui.h>
 
 #include "UniqueID.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
