@@ -181,9 +181,6 @@ namespace rat {
 		{
 			Component::drawOriginSetter<AnimatedSpriteComponent>(&AnimatedSpriteComponent::setOrigin);
 
-			// Sprite data holder
-			auto& sprites = object->getScene()->getSpriteDisplayDataHolder();
-
 			// Load texture button
 			if(ImGui::Button("Load texture...")) {
 				

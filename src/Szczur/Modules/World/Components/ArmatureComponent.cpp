@@ -283,9 +283,6 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		//Component::drawOriginSetter(&ArmatureComponent::setOrigin);
 		Component::drawOriginSetter<ArmatureComponent>(&ArmatureComponent::setOrigin);
 
-		// Armature data holder
-		auto& armatures = scenes.getArmatureDisplayDataHolder();
-
 		// Load armature button
 		if (ImGui::Button("Load armature...##armature_component"))
 		{

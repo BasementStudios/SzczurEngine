@@ -17,7 +17,9 @@ class TextureDataHolder
 	struct TextureData {
 		std::unique_ptr<SpriteDisplayData> data;
 		bool reloaded = false;
+#ifndef PSYCHOX
 		std::experimental::filesystem::file_time_type lastWriten;
+#endif
 
 		///
 		TextureData(SpriteDisplayData* data);

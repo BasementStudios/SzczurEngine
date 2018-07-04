@@ -14,15 +14,23 @@ namespace rat {
 
 TextureDataHolder::TextureData::TextureData(SpriteDisplayData* data)
 	: data(data), reloaded(false) {
+#ifndef PSYCHOX
 	lastWriten = std::experimental::filesystem::last_write_time(data->getName());	
+#endif
 }
 
 bool TextureDataHolder::TextureData::checkTime() {
+#ifndef PSYCHOX
 	return lastWriten == std::experimental::filesystem::last_write_time(data->getName());	
+#else
+	return false;
+#endif
 }
 
 void TextureDataHolder::TextureData::updateTime() {
-	lastWriten = std::experimental::filesystem::last_write_time(data->getName());	
+#ifndef PSYCHOX
+	lastWriten = std::experimental::filesystem::last_write_time(data->getName());
+#endif
 }
 
 const sf3d::Texture& TextureDataHolder::getTexture(const std::string& filePath, bool reload) {

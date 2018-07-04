@@ -38,8 +38,8 @@ namespace rat {
 	_objectsList{scenes},
 	_spriteDisplayDataManager{scenes},
 	_armatureDisplayDataManager{scenes} {
-		_freeCamera.move({1000.f,500.f,2000.f});
-		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
+		_freeCamera.move({1000.f,500.f,2000.f}); // @todo . On ratio change there should be update to the camera
+		_freeCamera.setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
 		_audioEditor = detail::globalPtr<AudioEditor>;
 
