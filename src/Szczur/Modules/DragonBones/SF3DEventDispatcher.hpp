@@ -1,6 +1,6 @@
 /** @file SF3DEventDispatcher.hpp
-** @author Piotr Krupa (piotrkrupa06@gmail.com)
-**/
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ **/
 #pragma once
 
 #include <unordered_map>
@@ -42,7 +42,7 @@ public:
 		}
 	}
 
-	virtual bool hasDBEventListener(const std::string& type) const { return true; };
+	virtual bool hasDBEventListener([[maybe_unused]] const std::string& type) const { return true; };
 };
 
 DRAGONBONES_NAMESPACE_END

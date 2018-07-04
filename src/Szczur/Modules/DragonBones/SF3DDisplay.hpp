@@ -9,9 +9,8 @@
 #include <vector>
 
 #include <dragonBones/DragonBonesHeaders.h>
-
-#include <glad.h>
-
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Transform.hpp>
 
