@@ -1,9 +1,7 @@
 #include "VertexArray.hpp"
 
 #include <stdexcept> // out_of_range
-#include <glad.h>
-
-#include <glad.h>
+#include <glad/glad.h>
 
 #include "Vertex.hpp"
 
