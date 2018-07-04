@@ -63,6 +63,7 @@ bool Application::input()
 					getModule<World>().getScenes().menuSave();
 				case MsgBox::Result::No:
 					getModule<Window>().getWindow().close();
+					return false;
 					break;
 				case MsgBox::Result::Cancel:
 					break;
