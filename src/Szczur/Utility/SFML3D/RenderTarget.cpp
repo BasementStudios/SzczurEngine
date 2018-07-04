@@ -273,7 +273,8 @@ void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states) 
 		glBindVertexArray(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		states.texture->unbind();
+		if(states.texture)
+			states.texture->unbind();
 	}
 }
 void RenderTarget::simpleDraw(const VertexArray& vertices) {
