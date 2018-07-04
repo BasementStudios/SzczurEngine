@@ -1,7 +1,9 @@
 #include "Playlist.hpp"
 
-#include <random>
-#include <chrono>
+#include <utility> // move
+#include <memory> // make_shared
+#include <random> // mt19937, uniform_int_distribution
+#include <chrono> // high_resolution_clock
 #include <algorithm>
 
 namespace rat 

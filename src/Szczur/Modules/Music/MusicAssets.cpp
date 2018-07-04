@@ -1,5 +1,7 @@
 #include "MusicAssets.hpp"
 
+#include <string>
+
 namespace rat
 {
     MusicAssets::MusicAssets()

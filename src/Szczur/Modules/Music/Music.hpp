@@ -1,12 +1,14 @@
 #pragma once
 
-#include <memory>
+#include <memory> // unique_ptr
+#include <array>
+#include <string>
+#include <vector>
 
 #include <boost/container/flat_map.hpp>
-#include "Szczur/Utility/Convert/Hash.hpp"
 
 #include "Szczur/Utility/Modules/Module.hpp"
-
+#include "Szczur/Utility/Convert/Hash.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "MusicAssets.hpp"

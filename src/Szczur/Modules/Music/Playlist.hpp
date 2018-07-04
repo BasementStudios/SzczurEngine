@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include <memory>
+#include <memory> // shared_ptr
 
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 

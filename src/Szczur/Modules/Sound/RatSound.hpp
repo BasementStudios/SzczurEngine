@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML/Audio/Sound.hpp"
+#include <SFML/Audio/Sound.hpp>
 
 #include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
 

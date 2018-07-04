@@ -16,7 +16,7 @@ namespace rat
         offset.endTime   = _length;
 
         return true;
-    };
+    }
 
     void SoundBase::setVolume(float volume)
     {

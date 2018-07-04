@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <memory> // unique_ptr
+
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
