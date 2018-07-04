@@ -28,8 +28,8 @@ namespace rat {
         virtual sf::Vector2u _getSize() const override;
     private:
         mutable sf::RenderTexture _renderTexture;
-        float _offset;
         float _scrollSpeed;
+        float _offset;
 
         virtual void _callback(CallbackType type) override;
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

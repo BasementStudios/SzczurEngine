@@ -7,13 +7,13 @@ namespace rat {
     _radius(radius),
     _startRotate(startRotate),
     _fraction(fraction),
-    _basePosition(position),
-    _isMoving(false)
+    _isMoving(false),
+    _basePosition(position)
     {
         sf::Shape::update();
         setPosition(position);
 
-        float angle = -3.14/2.f + startRotate + fraction * 3.141592654f;
+        float angle = -3.141592654f/2.f + startRotate + fraction * 3.141592654f;
 
         _fadeDirection.x = std::cos(angle);
         _fadeDirection.y = std::sin(angle);
@@ -73,14 +73,9 @@ namespace rat {
 }
 
 namespace rat {
-    CircleChooseWidget::CircleChooseWidget() :
-    _toRecreate(false),
-    _radius(10.f),
-    _amount(5u),
-    _color(255,0,255),
-    _gap(5.f) {
-
-    }
+    CircleChooseWidget::CircleChooseWidget()
+        : _toRecreate(false), _amount(5u), _radius(10.f), _gap(5.f), _color(255,0,255)
+    {}
 
     CircleChooseWidget::~CircleChooseWidget() {
         for(auto it : _wedges)

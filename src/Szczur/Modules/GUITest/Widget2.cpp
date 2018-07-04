@@ -127,7 +127,6 @@ namespace rat
     sf::Vector2f Widget2::_getChildrenSize() const
     {
         if(_children.size() == 0) return {0.f, 0.f};
-        sf::Vector2f rightCorner = {_bounds.left + _bounds.width, _bounds.top + _bounds.height};
 
         auto firstsBounds = _children.front()->_bounds;
         sf::Vector2f newRightCorner {firstsBounds.left + firstsBounds.width, firstsBounds.top + firstsBounds.height};

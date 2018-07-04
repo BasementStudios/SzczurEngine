@@ -155,7 +155,6 @@ namespace rat
     void Scroller::_recalcBoundPos()
     {
         _upperBound.setPosition(_position);
-        float boundHeight = _bottomBound.getGlobalBounds().height;
         _bottomBound.setPosition(_position.x, _position.y + float(_size.y));
     }
     void Scroller::_recalcBoundSize()

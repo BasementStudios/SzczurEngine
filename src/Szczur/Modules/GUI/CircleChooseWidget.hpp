@@ -22,9 +22,9 @@ namespace rat {
 
     private:
 
-        float _fraction;
         float _radius;
         float _startRotate;
+        float _fraction;
 
         bool _isMoving;
 

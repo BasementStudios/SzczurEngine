@@ -19,8 +19,8 @@ namespace rat {
     }
 
     InputWidget::InputWidget(sf::Text text, sf::Font* font, size_t maxLength) :
-    _maxLength(maxLength),
     TextWidget(text, font),
+    _maxLength(maxLength),
     _isFocused(false) {
         _background.setSize(static_cast<sf::Vector2f>(getSize()));
         _background.setFillColor(sf::Color(255,0,255));
