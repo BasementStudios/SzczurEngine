@@ -256,6 +256,7 @@ void RenderTarget::draw(const VertexArray& vertices)
 // "Simple draw"
 void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states) {
 	if (vertices.getSize() > 0 && this->_setActive()) {
+		vertices.update();
 		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
 		if (!(shaderProgram && shaderProgram->isVaild())) {
 			std::cout << "Error: No shader available!\n";
