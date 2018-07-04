@@ -11,6 +11,8 @@
 
 #include <tuple>
 
+#include <tuple>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../Components/ArmatureComponent.hpp"

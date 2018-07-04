@@ -347,4 +347,40 @@ namespace rat {
 
 		_groupOrigin /= group.size();
 	}
+
+	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {
+		glm::vec2 result;
+		
+		const auto& size = detail::globalPtr<Window>->getWindow().getSize();
+
+		result.x = (pos.x * _defaultWindowSize.x) / size.x;
+		result.y = (pos.y * _defaultWindowSize.y) / size.y;
+
+		return result;
+	}
+
+	void LevelEditor::_setupGroup() {
+		_currentGroupPosition = glm::vec3();
+		_lastGroupPosition = glm::vec3();
+		_currentGroupRotation = glm::vec3();
+		_lastGroupRotation = glm::vec3();
+
+		_updateGroup();
+	}
+
+	void LevelEditor::_updateGroup()
+	{
+		_groupOrigin = glm::vec3();
+		_selectedEntitesBackup.clear();
+
+		auto group = _objectsList.getSelectedEntities();
+
+		for (auto entity : group)
+		{
+			_groupOrigin += entity->getPosition();
+			_selectedEntitesBackup.emplace_back(entity, entity->getPosition(), entity->getRotation());
+		}
+
+		_groupOrigin /= group.size();
+	}
 }
