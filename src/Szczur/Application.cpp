@@ -7,6 +7,7 @@ namespace rat
 
 void Application::init()
 {
+	// Powodzenia PsychoX!
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
