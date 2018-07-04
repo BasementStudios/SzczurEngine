@@ -23,7 +23,9 @@ namespace sf3d {
 	class Vertex;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderTexture.hpp"
+#include "Szczur/Utility/SFML3D/SimpleSprite.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -40,6 +42,10 @@ class Window : public Module<>
 private:
 	Window_t        window;
 
+	sf3d::RenderTexture renderTexture;
+
+	std::unique_ptr<sf3d::SimpleSprite> renderTextureSprite;
+
 	sf::VideoMode   videoMode		{1280, 720};
 
 	unsigned int	framerateLimit	{60};
@@ -49,6 +55,8 @@ private:
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
 	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
+
+	sf3d::ShaderProgram pShaderProgram;
 
 
 
@@ -114,7 +122,7 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 	// 	3D
-	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
+	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states/* = sf3d::RenderStates::Default*/);
 	void draw(const sf3d::Drawable& drawable);
 	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
 	void draw(const sf3d::VertexArray& vertices);

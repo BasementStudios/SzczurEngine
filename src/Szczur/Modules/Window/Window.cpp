@@ -127,19 +127,36 @@ void Window::init()
 
 	// Default shaders
 	sf3d::FShader frag;
-	frag.loadFromFile("Assets/Shaders/default.frag");
+	frag.loadFromFile("Assets/Shaders/post_processing.frag");
 
 	sf3d::VShader vert;
-	vert.loadFromFile("Assets/Shaders/default.vert");
+	vert.loadFromFile("Assets/Shaders/post_processing.vert");
 
 	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
 	this->shaderProgram->linkShaders(frag, vert);
 	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
+
+	sf3d::FShader pFrag;
+	pFrag.loadFromFile("Assets/Shaders/default.frag");
+
+	sf3d::VShader pVert;
+	pVert.loadFromFile("Assets/Shaders/default.vert");
+
+	pShaderProgram.linkShaders(pFrag, pVert);
+	auto size = window.getSize();
+	renderTexture.create(&pShaderProgram, {size.x, size.y});
+
+	renderTextureSprite = std::make_unique<sf3d::SimpleSprite>();
+
+	renderTextureSprite->setTexture(renderTexture.getTexture());
 }
 
 // render
 void Window::render()
 {
+	glDisable(GL_DEPTH_TEST);
+	this->getWindow().draw(*renderTextureSprite);
+	glEnable(GL_DEPTH_TEST);
 	this->getWindow().display();
 }
 
@@ -152,7 +169,8 @@ void Window::recreateWindow()
 // clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	renderTexture.clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	window.clear(color, GL_COLOR_BUFFER_BIT);
 }
 
 // GL states
@@ -178,19 +196,19 @@ void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::Primi
 // 3D
 void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(drawable, states);
+	renderTexture.draw(drawable, states);
 }
 void Window::draw(const sf3d::Drawable& drawable)
 {
-	this->getWindow().draw(drawable);
+	renderTexture.draw(drawable);
 }
 void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(vertices, states);
+	renderTexture.draw(vertices, states);
 }
 void Window::draw(const sf3d::VertexArray& vertices)
 {
-	this->getWindow().draw(vertices);
+	renderTexture.draw(vertices);
 }
 
 }
