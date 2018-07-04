@@ -7,6 +7,7 @@
  **/
 
 #include <string>
+#include <memory> // unique_ptr
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>

@@ -7,6 +7,7 @@
  **/
 
 #include <string>
+#include <memory> // unique_ptr
 
 namespace sf {
 	class Drawable;
@@ -44,6 +45,7 @@ private:
 	sf::VideoMode   videoMode		{1280, 720};
 
 	unsigned int	framerateLimit	{60};
+	std::unique_ptr<sf3d::ShaderProgram> program;
 
 	std::string     title 			{"SzczurEngine"};
 
