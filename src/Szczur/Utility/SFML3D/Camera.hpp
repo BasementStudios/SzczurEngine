@@ -7,6 +7,8 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "Projections.hpp"
+
 namespace sf3d
 {
 
@@ -22,9 +24,16 @@ private:
 	glm::vec3 upVector;
 	glm::vec3 rightVector;
 	glm::vec3 frontVector;
+	
+	// Projection data
+	float renderDistance;
+	float projectionRatio;
+	ProjectionType projectionType;
+	ProjectionData projectionData;
 
-	// Buffering view matrix product, to avoid recalculations while not manipulating camera.
+	// Buffering matrixes products, to avoid continuous recalculations.
 	glm::mat4 viewMatrix;
+	glm::mat4 projectionMatrix;
 
 	
 
@@ -50,18 +59,42 @@ public:
 	glm::vec3 getRightVector() const;
 	void setRightVector(glm::vec3 vector);
 
-	// @todo ? getTransform
-
 	/// View matrix used to render camera vision
 	glm::mat4 getViewMatrix() const;
-	
+
+	/// Render distance
+	void setRenderDistance(float maxRenderDistance, float minRenderDistance = 0.1f);
+	float getRenderDistance() const; // @todo ? co z `minRenderDistance`?
+
+	/// Ratio 
+	float getRatio() const;
+	void setRatio(float fov);
+
+	/// Data and type of projection used by camera while rendering its view
+	ProjectionType getProjectionType() const;
+	const ProjectionData& getProjectionData() const;
+	void setProjection(ProjectionType type, const ProjectionData& data = PerspectiveData{45.f, 1125.f, 0.f, 720.f});
+	void setProjection(const PerspectiveData& data);
+	void setProjection(const OrthographicData& data);
+
+	/// Projection matrix used to render camera vision
+	glm::mat4 getProjectionMatrix() const;
+
 
 
 	/* Operators */
 public:
 	Camera(
 		glm::vec3 position = glm::vec3(0.f, 0.f, 0.f),
-		glm::vec3 rotation = glm::vec3(0.f, 0.f, 0.f)
+		glm::vec3 rotation = glm::vec3(0.f, 0.f, 0.f),
+		float projectionRatio = (16.f / 9.f),
+		PerspectiveData data = {45.f, 0.f, 0.f, 0.f}
+	);
+	Camera(
+		glm::vec3 position,
+		glm::vec3 rotation,
+		float projectionRatio,
+		OrthographicData data
 	);
 
 
@@ -81,9 +114,11 @@ public:
 	void bartek(glm::vec3 direction);
 
 private:
+	void updateDirectionalVectors();
+
 	void updateViewMatrix();
 
-	void updateDirectionalVectors();
+	void updateProjectionMatrix();
 };
 
 }

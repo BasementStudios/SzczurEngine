@@ -97,6 +97,7 @@ void Window::setFullscreen(bool state)
 /* Operators */
 // Constructors
 Window::Window()
+: 	window({1280, 800}, "SzczurEngine")
 {
 	LOG_INFO("Initializing Window module");
 	this->init();
@@ -137,8 +138,6 @@ void Window::init()
 	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
 	this->shaderProgram->linkShaders(frag, vert);
 	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
-
-	setFramerateLimit(60);
 }
 
 // render
@@ -151,6 +150,7 @@ void Window::render()
 void Window::recreateWindow()
 {
 	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	this->setFramerateLimit(this->framerateLimit);
 }
 
 // clear

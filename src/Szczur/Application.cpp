@@ -1,6 +1,11 @@
 #include "Application.hpp"
 
 #include "Utility/MsgBox.hpp"
+#ifdef EDITOR
+#	include <imgui.h>
+#	include <imgui-SFML.h>
+#   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
+#endif
 
 namespace rat
 {

@@ -127,7 +127,7 @@ namespace rat {
 			if (input.isPressed(Mouse::Left)) {
 				auto mouse = input.getMousePosition();
 				
-				auto linear = window.getLinearByScreenPos({ mouse.x, mouse.y });
+				auto linear = window.getLinearByScreenPosition({ mouse.x, mouse.y });
 
 				scene->forEach([&] (const std::string&, Entity& entity) {
 					if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f })) {
@@ -190,7 +190,7 @@ namespace rat {
 			if (input.isKept(Mouse::Left)) {
 				if (_isDragging) {
 					auto mouse = _getFixedMousePos(input.getMousePosition());
-					auto linear = window.getLinearByScreenPos(mouse);
+					auto linear = window.getLinearByScreenPosition(mouse);
 
 					glm::vec3 projection;
 					glm::vec3 offset;
@@ -233,7 +233,7 @@ namespace rat {
 			if (_draggingEntity != nullptr) {
 				auto mouse = _getFixedMousePos(input.getMousePosition());
 
-				auto linear = window.getLinearByScreenPos(mouse);
+				auto linear = window.getLinearByScreenPosition(mouse);
 
 				glm::vec3 projection;
 
