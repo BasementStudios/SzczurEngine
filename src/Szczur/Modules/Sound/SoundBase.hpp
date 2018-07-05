@@ -29,7 +29,7 @@ namespace rat
         float _volume {100};
         float _pitch  {1};
             
-        sf::SoundBuffer& _buffer;
+        sf::SoundBuffer* _buffer {nullptr};
         RatSound _sound;
 
     public:
@@ -37,7 +37,7 @@ namespace rat
         void init();
         void load(const std::string& name);
         
-        void setBuffer(sf::SoundBuffer& _buffer);
+        void setBuffer(sf::SoundBuffer* _buffer);
 
         static void initScript(Script& script);
 

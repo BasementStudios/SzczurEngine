@@ -23,9 +23,12 @@ namespace rat
 		_buffersHolder.erase(fileName);
     }
 
-    sf::SoundBuffer& SoundAssets::get(const std::string& fileName)
+    sf::SoundBuffer* SoundAssets::get(const std::string& fileName)
 	{
-		return _buffersHolder[fileName];
+        if (_buffersHolder.count(fileName))
+		    return &_buffersHolder[fileName];
+            
+        return nullptr;
 	}
 
 }

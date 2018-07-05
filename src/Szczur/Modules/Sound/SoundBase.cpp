@@ -6,7 +6,7 @@ namespace rat
 {
     void SoundBase::init()
     {
-        _length = _buffer.getDuration().asSeconds();
+        _length = _buffer->getDuration().asSeconds();
 
         offset.beginTime = 0;
         offset.endTime   = _length;
@@ -49,9 +49,12 @@ namespace rat
 		object.init();
     }
 
-    void SoundBase::setBuffer(sf::SoundBuffer& buffer)
+    void SoundBase::setBuffer(sf::SoundBuffer* buffer)
     {
         _buffer = buffer;
+        
+        if(_buffer != nullptr)
+            _sound.setBuffer(*_buffer);
     }
 
     void SoundBase::setVolume(float volume)

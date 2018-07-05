@@ -21,7 +21,7 @@ namespace rat
         void load(const std::string& fileName);
         void unload(const std::string& fileName);
 
-        sf::SoundBuffer& get(const std::string& fileName);
+        sf::SoundBuffer* get(const std::string& fileName);
 
     };
 
