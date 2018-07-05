@@ -12,6 +12,43 @@ namespace rat
         offset.endTime   = _length;
     }
 
+    void SoundBase::initScript(Script& script)
+    {
+        auto object = script.newClass<SoundBase>("SoundBase", "Sound");
+
+        object.set("play", &SoundBase::play);
+		object.set("stop", &SoundBase::stop);
+		object.set("pause", &SoundBase::pause);
+		object.set("getVolume", &SoundBase::getVolume);
+		object.set("setVolume", &SoundBase::setVolume);
+		object.set("getPitch", &SoundBase::getPitch);
+		object.set("setPitch", &SoundBase::setPitch);
+		object.set("isRelativeToListener", &SoundBase::isRelativeToListener);
+		object.set("setRelativeToListener", &SoundBase::setRelativeToListener);
+		object.set("getAttenuation", &SoundBase::getAttenuation);
+		object.set("setAttenuation", &SoundBase::setAttenuation);
+        object.set("getMinDistance", &SoundBase::getMinDistance);
+		object.set("setMinDistance", &SoundBase::setMinDistance);
+		object.set("setPosition", &SoundBase::setPosition);
+        object.set("getPosition", &SoundBase::getPosition);
+        object.set("getLoop", &SoundBase::getLoop);
+        object.set("setLoop", &SoundBase::setLoop);
+        object.set("setOffset", &SoundBase::setOffset);
+        object.set("getLength", &SoundBase::getLength);
+        object.set("getBeginTime", &SoundBase::getBeginTime);
+        object.set("getEndTime", &SoundBase::getEndTime);
+
+        object.set("getEqualizer", &SoundBase::getEffect<Equalizer>);
+		object.set("getReverb", &SoundBase::getEffect<Reverb>);
+		object.set("getEcho", &SoundBase::getEffect<Echo>);
+
+		object.set("cleanEqualizer", &SoundBase::cleanEffect<Equalizer>);
+		object.set("cleanReverb", &SoundBase::cleanEffect<Reverb>);
+		object.set("cleanEcho", &SoundBase::cleanEffect<Echo>);
+
+		object.init();
+    }
+
     void SoundBase::setBuffer(sf::SoundBuffer& buffer)
     {
         _buffer = buffer;

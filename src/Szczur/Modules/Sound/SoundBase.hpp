@@ -39,6 +39,8 @@ namespace rat
         
         void setBuffer(sf::SoundBuffer& _buffer);
 
+        static void initScript(Script& script);
+
         void play();
         void stop();
         void pause();
