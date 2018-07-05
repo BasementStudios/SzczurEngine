@@ -4,21 +4,18 @@
 
 namespace rat
 {
-    bool SoundBase::init(const std::string& fileName, const std::string& name)
+    void SoundBase::init()
     {
-        _fileName = fileName;
-        _name = name;
-
-        if (!loadBuffer())
-            return false;
-
         _length = _buffer.getDuration().asSeconds();
 
         offset.beginTime = 0;
         offset.endTime   = _length;
+    }
 
-        return true;
-    };
+    void SoundBase::setBuffer(sf::SoundBuffer& buffer)
+    {
+        _buffer = buffer;
+    }
 
     void SoundBase::setVolume(float volume)
     {
@@ -104,7 +101,6 @@ namespace rat
 
     void SoundBase::play()
     {
-        _sound.setBuffer(_buffer);
         _sound.play();
 
         if (_playingTime > offset.beginTime && _playingTime < offset.endTime)
@@ -133,11 +129,6 @@ namespace rat
     std::string SoundBase::getFileName() const
     {
         return _fileName;
-    }
-
-    bool SoundBase::loadBuffer()
-    {
-        return _buffer.loadFromFile(_fileName);
     }
 
     void SoundBase::setOffset(Second_t beginT, Second_t endT)
@@ -187,7 +178,8 @@ namespace rat
             file >> j;
             file.close();
 
-            init(j["Name"], j["FileName"]);
+            _fileName = static_cast<std::string>(j["FileName"]);
+            _name = static_cast<std::string>(j["Name"]);
 
             setVolume(j["Volume"]);
             setPitch(j["Pitch"]);

@@ -29,12 +29,15 @@ namespace rat
         float _volume {100};
         float _pitch  {1};
             
-        sf::SoundBuffer _buffer;
+        sf::SoundBuffer& _buffer;
         RatSound _sound;
 
     public:
 
-        bool init(const std::string& fileName, const std::string& name);
+        void init();
+        void load(const std::string& name);
+        
+        void setBuffer(sf::SoundBuffer& _buffer);
 
         void play();
         void stop();
@@ -72,8 +75,6 @@ namespace rat
 
         const std::string getName() const;
         std::string getFileName() const;
-
-        void load(const std::string& fileName);
 
         template <typename T>
 		T& getEffect() {
