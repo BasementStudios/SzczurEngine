@@ -271,8 +271,8 @@ namespace rat {
 		object.set("setRadius", &TriggerComponent::setRadius);
 		object.set("getRadius", &TriggerComponent::getRadius);
 
-		object.set("setRectSize", TriggerComponent::setRectSize);
-		object.set("setRectSize", TriggerComponent::getRectSize);
+		object.set("setRectSize", &TriggerComponent::setRectSize);
+		object.set("setRectSize", &TriggerComponent::getRectSize);
 
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
