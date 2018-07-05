@@ -132,6 +132,8 @@ namespace rat
 		void forceToUpdatePropSize();
 		void invokeToCalcPosition();
 
+		void madePenetrable();
+
 		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
 
 		Widget* operator[](size_t index);
@@ -225,6 +227,8 @@ namespace rat
 		bool _childrenPropSizesMustBeenRecalculated{false};
 		bool _propSizeMustBeenRecalculated{false};
 		bool _propPosMustBeenRecalculated{false};
+
+		bool _isPenetrable{false};
 
 		bool _hasPropPadding{false};
 		sf::Vector2f _propPadding;

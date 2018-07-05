@@ -135,7 +135,6 @@ namespace rat
     bool Widget::_onPressed()
     {
         if(!_isActivated || _isFullyDeactivated) return false;
-        if(!_isHovered) return false;
         
         bool isAnyPressed = false;
         for(auto i = _children.rbegin(); i < _children.rend(); ++i)
@@ -145,8 +144,12 @@ namespace rat
             if(isAnyPressed) break;
         }
         if(isAnyPressed && !_areChildrenPenetrable) return true;
+
+        if(!_isHovered) return false;
+        
         _isPressed = true;
         _callback(CallbackType::onPress);
+        if(_isPenetrable) return false;
         return true;
     }
     void Widget::_onRealesed()
@@ -192,6 +195,11 @@ namespace rat
             _input(event);
             for(auto child : _children) child->input(event);
         }
+    }
+
+    void Widget::madePenetrable()
+    {
+        _isPenetrable = true;
     }
     
 
