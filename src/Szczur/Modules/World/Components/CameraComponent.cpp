@@ -14,7 +14,8 @@ namespace rat {
 	CameraComponent::CameraComponent(Entity* parent) :
 	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"}, 
 	_listener(detail::globalPtr<Listener>) {
-		
+		sf3d::Camera::move({1000.f,500.f,2000.f}); // @todo . On ratio change there should be update to the camera
+		sf3d::Camera::setRenderDistance(300.f);
 	}
 
 	std::unique_ptr<Component> CameraComponent::copy(Entity* newParent) const {
