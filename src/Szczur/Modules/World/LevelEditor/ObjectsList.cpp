@@ -78,24 +78,22 @@ namespace rat {
 			ImGui::Separator();
 
 			// Operations buttons
-			if(_tab != "single") {
-				availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
+			availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
 
-				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
-					addObjectToCurrentGroup();
-				}
-				if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
-					ImGui::SameLine();
-					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
-						duplicateObject(_selectedEntityID);
-					}
-					ImGui::SameLine();
-					if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
-						removeObject(_selectedEntityID);
-					}
-				}
-				ImGui::Separator();
+			if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
+				addObjectToCurrentGroup();
 			}
+			if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
+				ImGui::SameLine();
+				if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
+					duplicateObject(_selectedEntityID);
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
+					removeObject(_selectedEntityID);
+				}
+			}
+			ImGui::Separator();
 
 			// Child for scroll and separate top part
 			ImGui::BeginChild("Objects##list", ImVec2(ImGui::GetContentRegionAvailWidth(), 0), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -138,7 +136,6 @@ namespace rat {
 	}
 
 	bool ObjectsList::_renderObjectPopup(int id) {
-		if(_tab == "single") return false;
 		if(ImGui::BeginPopupContextItem("##object_popup")) {
 			if(ImGui::Selectable("Clone##object_popup")) {
 				duplicateObject(id);
