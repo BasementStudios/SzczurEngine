@@ -207,6 +207,7 @@ void ScenesManager::loadFromConfig(Json& config) {
 
 void ScenesManager::saveToConfig(Json& config) {
 
+	config["version"] = std::string("1.6.7");
 	config["currentSceneID"] = getCurrentSceneID();
 	Json& scenes = config["scenes"] = Json::array();
 
