@@ -31,6 +31,16 @@ namespace rat
         return _volume;
     }
 
+    float SoundBase::GetSoundVolume()
+    {
+        return SoundVolume;
+    }
+
+    void SoundBase::SetSoundVolume(float volume)
+    {
+        SoundVolume = volume;
+    }
+
     void SoundBase::setPitch(float pitch)
     {
         _pitch = pitch;

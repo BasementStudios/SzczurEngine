@@ -11,6 +11,8 @@ namespace rat
         using Second_t = float;
     
     private:
+
+        inline static float SoundVolume {100};
             
         struct
         {
@@ -40,6 +42,9 @@ namespace rat
 
         float getVolume() const;
         void setVolume(float volume);
+
+        static float GetSoundVolume();
+        static void SetSoundVolume(float volume);
 
         float getPitch() const;
         void setPitch(float pitch);
