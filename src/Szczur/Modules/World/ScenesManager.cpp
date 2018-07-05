@@ -10,11 +10,14 @@
 #include "Components/CameraComponent.hpp"
 #include "Components/BaseComponent.hpp"
 #include "Components/ScriptableComponent.hpp"
+#include "Components/PointLightComponent.hpp"
 
 #include <Szczur/Modules/World/World.hpp>
 #include <Szczur/Modules/Cinematics/Cinematics.hpp> 
 #include <Szczur/Modules/Music/Music.hpp> 
 #include <Szczur/Modules/Sound/SoundManager.hpp> 
+
+#include <Szczur/Utility/SFML3D/LightPoint.hpp>
 
 namespace rat
 {
@@ -38,6 +41,17 @@ Scene* ScenesManager::addScene()
 	camera->setName("Camera");
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
 	camera->setRotation({ 0.f, 0.f, 0.f });
+
+	// Add default lighta
+	Entity* sun = scene->addEntity("single");
+	sun->setName("Sun");
+	auto* comp = static_cast<PointLightComponent*>(sun->addComponent<PointLightComponent>());
+	comp->setPosition({ 0.f, 0.f, 0.f });
+	comp->setColor({1.f, 1.f, 1.f});
+	comp->setAttenuation(sf3d::LightPoint::Attenuation{1.f, 0.f, 0.f});
+	comp->setAmbientFactor({1.f, 1.f, 1.f});
+	comp->setDiffuseFactor({1.f, 1.f, 1.f});
+	comp->setSpecularFactor({1.f, 1.f, 1.f});
 
 	return scene;
 }
@@ -292,6 +306,23 @@ void ScenesManager::addCamera()
 	Entity* camera = scene->addEntity("single");
 	camera->addComponent<CameraComponent>();
 	camera->setName("Camera");
+	camera->setPosition({ 0.f, 1160.f, 3085.f });
+	camera->setRotation({ 0.f, 0.f, 0.f });
+}
+
+void ScenesManager::addSun()
+{
+	auto scene = getCurrentScene();
+
+	Entity* sun = scene->addEntity("single");
+	sun->setName("Sun");
+	auto* comp = static_cast<PointLightComponent*>(sun->addComponent<PointLightComponent>());
+	comp->setPosition({ 0.f, 0.f, 0.f });
+	comp->setColor({1.f, 1.f, 1.f});
+	comp->setAttenuation(sf3d::LightPoint::Attenuation{1.f, 0.f, 0.f});
+	comp->setAmbientFactor({1.f, 1.f, 1.f});
+	comp->setDiffuseFactor({1.f, 1.f, 1.f});
+	comp->setSpecularFactor({1.f, 1.f, 1.f});
 }
 
 bool ScenesManager::isGameRunning() {

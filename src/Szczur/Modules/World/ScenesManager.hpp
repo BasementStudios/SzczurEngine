@@ -103,6 +103,9 @@ public:
 	///
 	void addCamera();
 
+	///
+	void addSun();
+
 	/// Run game and save current config
 	void runGame();
 
