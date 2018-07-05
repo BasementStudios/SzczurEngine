@@ -6,6 +6,7 @@
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Music/Music.hpp"
+#include "Szczur/Modules/Sound/Sound.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
 
@@ -63,7 +64,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, Music, AudioEffects, Listener> _modules;
+	ModulesHolder<Window, Input, Script, Music, Sound, AudioEffects, Listener> _modules;
 	sf::Clock _mainClock;
 
 	#ifdef EDITOR
