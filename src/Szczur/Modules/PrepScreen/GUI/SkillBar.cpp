@@ -78,7 +78,7 @@ namespace rat
 
         auto* infos = new Widget;
         infos->setPropSize(prSize.x - prSize.y, prSize.y);
-        infos->setPropPadding(0.0011020408163265f, 0.0011020408163265f);
+        infos->setPropPadding(0.011020408163265f, 0.011020408163265f);
 
         list->add(infos);
 

@@ -10,8 +10,7 @@
 
 namespace rat
 {
-    class ScrollAreaWidget;
-    class GUI; class EnemyCodex; class Enemy;
+    class EnemyCodex; class Enemy;
     class EnemyArea : public BaseBar
     {
     public:
@@ -27,7 +26,9 @@ namespace rat
         std::vector<std::unique_ptr<EnemyBar>> _enemyBars;
 
         WindowWidget* _border{nullptr};
+
         ScrollAreaWidget* _scroller{nullptr};
+        ListWidget* _list{nullptr};
 
         InfoBar _infoBar;
         Enemy* _chosenEnemy{nullptr};
