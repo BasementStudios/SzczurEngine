@@ -83,7 +83,7 @@ namespace rat
 
         float prop = total == 0 ? 0.f : float(activated) / float(total);
 
-        _glyph->setPropTextureRectInTime({ sf::Vector2f{0.f, 1.f - prop}, sf::Vector2f{1.f, prop} , {0.5f, gui::Easing::EaseInOutQuad}});
+        _glyph->setPropTextureRectInTime({ sf::Vector2f{0.f, 1.f - prop}, sf::Vector2f{1.f, prop}} , {0.25f, gui::Easing::EaseInOutQuad});
     }
 
 }

@@ -10,7 +10,9 @@ namespace gui
     {
         Pos = 1 << 0,
         Color = 1 << 1,
-        Scroll = 1 << 2
+        Scroll = 1 << 2,
+        Text = 1 << 3,
+        TexRect = 1 << 4
     };
     class AnimBase
     {

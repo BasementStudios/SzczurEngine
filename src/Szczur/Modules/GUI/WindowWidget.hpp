@@ -12,7 +12,6 @@ namespace rat
         WindowWidget();
         void setTexture(sf::Texture* texture, int padding);
         void setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight);
-
         void setScale(const sf::Vector2f& scale);
         void setScale(float x, float y);
 

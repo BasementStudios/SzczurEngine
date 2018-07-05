@@ -154,15 +154,14 @@ namespace rat
         }
 
         _canBeBought = _prepScreen.canSkillBeBought(_skill);
+        _filter->invisible();
         if(_canBeBought)
         {
-            //_getBase()->setColorInTime({255, 255, 255}, 0.1f);
-            _filter->invisible();
+            _getBase()->setColorInTime({255, 255, 255}, 0.1f);
         }
         else
         {
-            //_getBase()->setColorInTime({125, 125, 125}, 0.1f);
-            _filter->visible();
+            _getBase()->setColorInTime({125, 125, 125}, 0.1f);
         }
     }
     

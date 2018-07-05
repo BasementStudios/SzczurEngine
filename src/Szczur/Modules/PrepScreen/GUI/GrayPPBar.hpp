@@ -18,6 +18,7 @@ namespace rat
         void undim();
 
     private:
+        bool _isTaken{true};
         enum class State { Empty, Full, Dimmed } _state = State::Full;
         ImageWidget* _slot{nullptr};
 

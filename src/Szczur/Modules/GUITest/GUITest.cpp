@@ -88,9 +88,6 @@ namespace rat
         list->setAutoBetweenPadding();
 
         
-        image->setCallback(Widget::CallbackType::onRelease, [scroll](auto){
-            scroll->resetScrollerPositionInTime({0.5f, gui::Easing::EaseInOutQuint});
-        });
 
         float size = 0.1f;
         for(int i = 0; i < 4; i++)
@@ -102,10 +99,10 @@ namespace rat
             w->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Blue.png"));
             
             w->setCallback(Widget::CallbackType::onHoverIn, [w](auto){
-                w->setColorInTime({0, 0, 0}, {1.f, gui::Easing::EaseInQuint});
+                w->setColorInTime({0, 0, 0}, {1.f, gui::Easing::EaseInCubic});
             });
             w->setCallback(Widget::CallbackType::onHoverOut, [w](auto){
-                w->setColorInTime({255, 255, 255}, {1.f, gui::Easing::EaseInOutBounce});
+                w->setColorInTime({255, 255, 255}, {1.f, gui::Easing::EaseInCubic});
             });
         }
 
@@ -114,8 +111,14 @@ namespace rat
         fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
         fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
-        fps->setString("60.0");
-
+        fps->setString("ABCDEFG");
+        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
+            if(randomBool)
+                image->setPropTextureRectInTime({{0.5f, 0.5f},{0.f, 0.f}}, {3.f, gui::Easing::EaseInOutBounce});
+            else
+                image->setPropTextureRectInTime({{0.f, 0.f},{1.f, 1.f}}, {3.f, gui::Easing::EaseInOutElastic});
+            randomBool = !randomBool;
+        });
     }
     
     
@@ -177,9 +180,9 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
-        fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
+        //fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
 
-        image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
+        //image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
     }
     void GUITest::render()
     {

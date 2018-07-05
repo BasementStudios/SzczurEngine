@@ -21,6 +21,7 @@ namespace rat
         if(_isMainPatchPropSizeSet && _interface) _calcMainPatchSize();
         //_calcPadding();
     }
+    
     void WindowWidget::setTexture(sf::Texture* texture, int padding)
     {
         setTexture(texture, padding, padding);

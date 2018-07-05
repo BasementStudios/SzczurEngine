@@ -10,6 +10,8 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "Animation/Anim.hpp"
+
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -79,6 +81,20 @@ namespace rat {
         _propTexRect = propRect;
         _calcPropTexRect();
         if(_isStaticTexPositing && _isFullyTexSizing) _calcStaticSizing();
+    }
+
+    void ImageWidget::setPropTextureRectInTime(const sf::FloatRect& propRect, const gui::AnimData& data)
+    {
+        using TexRectAnim_t = gui::Anim<ImageWidget, gui::AnimType::TexRect, sf::FloatRect>;
+        auto setter = static_cast<void (ImageWidget::*)(const sf::FloatRect&)>(&ImageWidget::setPropTextureRect);
+
+        auto anim = std::make_unique<TexRectAnim_t>(this, setter);
+        anim -> setAnim(_propTexRect, propRect, data);
+        _addAnimation(std::move(anim));
+    }
+    void ImageWidget::setPropTextureRectInTime(const sf::FloatRect& propRect, float time)
+    {
+        setPropTextureRectInTime(propRect, gui::AnimData(time));
     }
 
     void ImageWidget::setFullyTexSizing()

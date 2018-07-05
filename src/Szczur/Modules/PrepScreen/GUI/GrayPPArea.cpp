@@ -77,6 +77,7 @@ namespace rat
         auto ppBar = std::make_unique<GrayPPBar>();
         ppBar->setSlotTextures(_slotTex);
         ppBar->setParent(_ppsList);
+        ppBar->take();
         _pps.emplace_back(std::move(ppBar));
     }
     void GrayPPArea::_removePPBar()
@@ -98,13 +99,13 @@ namespace rat
     void GrayPPArea::dimPPs(size_t amount)
     {
         size_t ppsAmount = _pps.size();
-        if(amount > ppsAmount)
+        if(amount > _activated)
         {
             LOG_ERROR("GrayPPArea::dimPPs tried to dim ", amount, " not existing pps");
             return;
         }
         for(auto& pp : _pps) pp->undim();
-        for(size_t i = ppsAmount - amount; i < ppsAmount; ++i)
+        for(size_t i = _activated - amount; i < _activated; ++i)
         {
             auto& pp = _pps[i];
             pp->dim();

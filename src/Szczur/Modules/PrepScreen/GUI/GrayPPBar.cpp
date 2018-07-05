@@ -20,11 +20,13 @@ namespace rat
     void GrayPPBar::take()
     {
         _state = State::Empty;
+        _isTaken = true;
         _updateTextRect();
     }
     void GrayPPBar::returnTo()
     {
         _state = State::Full;
+        _isTaken = false;
         _updateTextRect();
     }
 
@@ -32,6 +34,7 @@ namespace rat
     {
         _slot->setTexture(tex);
         _state = State::Empty;
+        _isTaken = true;
         _updateTextRect();
     }
 
@@ -42,7 +45,9 @@ namespace rat
     }
     void GrayPPBar::undim()
     {
-        _state = State::Full;
+        if(_isTaken) _state = State::Empty;
+        else _state = State::Full;
+
         _updateTextRect();
     }
 
