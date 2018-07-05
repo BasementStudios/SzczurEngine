@@ -61,10 +61,28 @@ public:
 	float getRadius() const;
 
 	///
-	void setRectSize(const glm::vec2& size);
+	void setRectSize(float x, float y);
 
 	///
 	const glm::vec2& getRectSize() const;
+
+	/// 
+	void setType(Type type);
+
+	///
+	Type getType();
+
+	///
+	void setScene(const std::string& scene);
+
+	///
+	std::string getScene();
+
+	///
+	void setEntrance(const std::string& name);
+
+	///
+	std::string getEntrance();
 
 	///
 	static std::string enumToString(size_t en);

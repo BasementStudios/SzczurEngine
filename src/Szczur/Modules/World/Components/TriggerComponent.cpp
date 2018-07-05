@@ -54,16 +54,71 @@ namespace rat {
 		return _radius;
 	}
 
-	void TriggerComponent::setRectSize(const glm::vec2& size) {
-		_rectSize = size;
+	void TriggerComponent::setRectSize(float x, float y)
+	{
+		_rectSize = { x, y };
 	}
 
 	const glm::vec2& TriggerComponent::getRectSize() const {
 		return _rectSize;
 	}
 
-	std::string TriggerComponent::enumToString(size_t en) {
-		static std::string names[] {"None", "Change scene", "Overlaping"};
+	void TriggerComponent::setType(Type type) {
+		if (type < 0 || type >= Type::TypesCount)
+			type = Type::None;
+		else
+			this->type = type;
+	}
+
+	TriggerComponent::Type TriggerComponent::getType() {
+		return type;
+	}
+
+	void TriggerComponent::setScene(const std::string& name)
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(name); scene != nullptr) {
+			sceneId = scene->getID();
+		}
+	}
+
+	std::string TriggerComponent::getScene()
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
+			return scene->getName();
+		}
+
+		return std::string();
+	}
+
+	void TriggerComponent::setEntrance(const std::string& name)
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
+			auto& entries = scene->getEntities("entries");
+
+			auto entry = std::find_if(entries.begin(), entries.end(), [&] (Entity* entity) { return name == entity->getName(); });
+
+			if (entry != entries.end()) {
+				entranceId = entry->get()->getID();
+			}
+		}
+	}
+
+	std::string TriggerComponent::getEntrance()
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
+			auto entry = scene->getEntity(entranceId);
+
+			if (entry) {
+				return entry->getName();
+			}
+		}
+
+		return std::string();
+	}
+
+	std::string TriggerComponent::enumToString(size_t en)
+	{
+		static std::string names[]{ "None", "Change scene", "Overlaping" };
 		return names[en];
 	}
 
@@ -190,11 +245,35 @@ namespace rat {
         auto object = script.newClass<TriggerComponent>("TriggerComponent", "World");
 
 		// Main
+		object.set("setType", &TriggerComponent::setType);
+		object.set("getType", &TriggerComponent::getType);
+
+
+		// change scene
+		object.set("setScene", &TriggerComponent::setScene);
+		object.set("getScene", &TriggerComponent::getScene);
+
+		object.set("setEntrance", &TriggerComponent::setEntrance);
+		object.set("getEntrance", &TriggerComponent::getEntrance);
+
+
+		// shape
+		object.set("setShapeType", &TriggerComponent::setShapeType);
+		object.set("getShapeType", &TriggerComponent::getShapeType);
+		
+		object.set("setRadius", &TriggerComponent::setRadius);
+		object.set("getRadius", &TriggerComponent::getRadius);
+
+		object.set("setRectSize", TriggerComponent::setRectSize);
+		object.set("setRectSize", TriggerComponent::getRectSize);
+
 		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 		// Entity
 		entity.set("trigger", &Entity::getComponentAs<TriggerComponent>);
 		entity.set("addTriggerComponent", [&] (Entity& e) {return (TriggerComponent*)e.addComponent<TriggerComponent>(); });
+
+		// overlapping
 
 		// enter callback
 		entity.setProperty("onEnter", [](){}, [] (Entity &obj, sol::function func) {
