@@ -27,17 +27,17 @@ namespace rat {
 
 		void update(float deltaTime);
 
-		void _removeSlotDropped(std::shared_ptr<EquipmentSlot>);
 	private:
 		unsigned int _slotAmount;
 		sf::Vector2i _frameSize;
 
 		Widget* _base;
 
+		void _removeSlotDropped(std::shared_ptr<EquipmentSlot>);
 
 		sf::Texture* _frameText;
 
-		itemMap_t _itemSlots;		//slots with items
+		itemMap_t _occupiedSlots;		//slots with items
 		std::vector<EquipmentSlot*> _freeSlots;
 		std::vector<EquipmentSlot*> _allSlots;
 

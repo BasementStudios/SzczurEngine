@@ -15,6 +15,7 @@ namespace rat
 	{
 		_base = new Widget;
 		_base->setPropSize({4 * 0.086f, _slotAmount / 4 * 0.086f });
+		_base->makeChildrenUnresizable();
 		size_t x = 0;
 		size_t y = 0;
 		for (size_t i = 0; i < _slotAmount; i++)
@@ -30,8 +31,8 @@ namespace rat
 			newSlot->index = i;
 			newSlot->setParent(_base);
 			newSlot->setTexture(_frameText);
-			newSlot->setPropPosition({x * .33f, y * .25f});//sf::Vector2f((frameSize.x + 5) * x, (frameSize.y + 5) * y)); x * (_base->getSize().x / 4), y * (_base->getSize().y / (_slotAmount / 4))
-			newSlot->setPropSize({0.078f, 0.078f});//static_cast<sf::Vector2f>(_frameSize));
+			newSlot->setPropPosition({x * .33f, y * .25f});
+			newSlot->setPropSize({0.078f, 0.078f});
 			newSlot->setHighlightTexture(highlightText);
 			newSlot->getWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
@@ -66,18 +67,18 @@ namespace rat
 	void NormalSlots::addItem(EquipmentObject* item) {
 		if (_freeSlots.size() > 0) {
 			_freeSlots[0]->setItem(item);
-			_itemSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
+			_occupiedSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
 			_freeSlots.erase(_freeSlots.begin());
 			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 		}
 	}
 	bool NormalSlots::removeItem(sf::String itemNameId) {
-		auto it = _itemSlots.find(itemNameId);
-		if (it != _itemSlots.end())
+		auto it = _occupiedSlots.find(itemNameId);
+		if (it != _occupiedSlots.end())
 		{
 			it->second->removeItem();
 			_freeSlots.push_back(it->second);
-			_itemSlots.erase(it);
+			_occupiedSlots.erase(it);
 			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 			return true;
 		}
@@ -85,11 +86,11 @@ namespace rat
 			return false;
 	}
 	bool NormalSlots::removeItem(int _index) {
-		for (auto it = _itemSlots.begin(); it != _itemSlots.end(); ++it) {
+		for (auto it = _occupiedSlots.begin(); it != _occupiedSlots.end(); ++it) {
 			if (it->second->index == _index && it->second->getItem()) {
 				it->second->removeItem();
 				_freeSlots.push_back(it->second);
-				_itemSlots.erase(it);
+				_occupiedSlots.erase(it);
 				std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 				return true;
 			}
@@ -106,68 +107,106 @@ namespace rat
 	}
 
 	void NormalSlots::onMouseButtonPressed(std::shared_ptr<EquipmentSlot> clickedObj) {
-		if (!_isMouseButtonHeld && clickedObj->getItem()) {
-			_isMouseButtonHeld = true;
+		if (clickedObj->getItem()) {
+			LOG_INFO("onMousePressed");
+			//setting clicked slot and item
 			_slotHeld = clickedObj;
 			_itemHeld = clickedObj->getItem();
-			_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getPosition());// -_frameSize / 2;
+
+			//setting current mouse position which will be used for positioning picked item widget
+			_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getPosition());
+
+			//activating and setting picked item widget
 			_itemHeldWidget->fullyActivate();
 			_itemHeldWidget->setPosition(_slotHeld->getPosition());
-			_itemHeldWidget->setTexture(_slotHeld->getItem()->getTexture());
-			_itemHeldWidget->resetColor();
+			_itemHeldWidget->setTexture(_itemHeld->getTexture());
+
 			clickedObj->setItemColor(sf::Color::Color(255, 255, 255, 100));
+			
+			//turning off item preview
 			_equipment->disableItemPreview();
 			_equipment->canPreviewBeInstantiated = false;
 		}
 	}
 	void NormalSlots::onMouseButtonReleased() {
-		if (_slotDropped == _slotHeld && _isMouseButtonHeld && _slotDropped->getItem()) {
-			_isMouseButtonHeld = false;
-			_slotHeld->resetItemColor();
-			_slotHeld = nullptr;
-			_itemHeldWidget->fullyDeactivate();
-		}
-		else if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && !_slotDropped->getItem()&& _slotDropped->getStatus()) {	//placing item in free slot
-			_slotHeld->removeItem();
-			_itemSlots.erase(_itemHeld->getNameId());
-			_freeSlots.push_back(_slotHeld.get());
-			_slotDropped->setItem(_itemHeld);
-			for (auto it = _freeSlots.begin(); it < _freeSlots.end(); ++it)
-			{
-				if (*it == _slotDropped.get()) {
-					_freeSlots.erase(it);
-					break;
+		if(_slotHeld){
+			if (_slotDropped) {
+				
+				//dropping item into the same slot
+				if (_slotDropped == _slotHeld) {
+					LOG_INFO("onMouseReleased");
+					//resetting slot colour
+					_slotHeld->resetItemColor();
+
+					_itemHeld = nullptr;
+					_slotHeld = nullptr;
+
+					//deactivating picked item widget
+					_itemHeldWidget->fullyDeactivate();
+				}
+
+				//dropping item in free slot
+				else if (!_slotDropped->getItem() && _slotDropped->getStatus()) {
+					//removing item from first slot
+					removeItem(_slotHeld->index);
+
+					//putting item into new slot
+					_slotDropped->setItem(_itemHeld);
+					for (auto it = _freeSlots.begin(); it < _freeSlots.end(); ++it)
+					{
+						if (*it == _slotDropped.get()) {
+							_freeSlots.erase(it);
+							break;
+						}
+					}
+					_occupiedSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
+
+					_slotHeld = nullptr;
+					_itemHeld = nullptr;
+
+					//deactivating picked item widget
+					_itemHeldWidget->fullyDeactivate();
+				}
+
+				//swaping items between slots
+				else if (_slotDropped->getItem()) {
+					//removing item from first slot
+					removeItem(_slotHeld->index);
+
+					//putting second item into first slot
+					_slotHeld->setItem(_slotDropped->getItem());
+					_occupiedSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotHeld.get()));
+
+					//removing item from second slot
+					removeItem(_slotDropped->index);
+
+					//putting first item into second slot
+					_slotDropped->setItem(_itemHeld);
+					_occupiedSlots.insert(std::make_pair(_itemHeld->getNameId(), _slotDropped.get()));
+
+					_slotHeld = nullptr;
+					_itemHeld = nullptr;
+
+					//deactivating picked item widget
+					_itemHeldWidget->fullyDeactivate();
 				}
 			}
-			_itemSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
-			_isMouseButtonHeld = false;
-			_slotHeld = nullptr;
-			_itemHeldWidget->fullyDeactivate();
+			//mouse isn't over any slot
+			else {
+				_slotHeld->resetItemColor();
+
+				_slotHeld = nullptr;
+				_itemHeld = nullptr;
+
+				_itemHeldWidget->fullyDeactivate();
+			}
+
+			_equipment->canPreviewBeInstantiated = true;
 		}
-		else if (_isMouseButtonHeld && _slotDropped && _slotDropped != _slotHeld && _slotDropped->getItem()) {	//swaping items
-			_itemSlots.erase(_itemHeld->getNameId());
-			_itemSlots.erase(_slotDropped->getItem()->getNameId());
-			_slotHeld->removeItem();
-			_slotHeld->setItem(_slotDropped->getItem());
-			_slotDropped->setItem(_itemHeld);
-			_itemSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
-			_itemSlots.insert(std::make_pair(_slotHeld->getItem()->getNameId(), _slotHeld.get()));
-			_isMouseButtonHeld = false;
-			_slotHeld = nullptr;
-			_itemHeldWidget->fullyDeactivate();
-		}
-		else if (_isMouseButtonHeld) {
-			_isMouseButtonHeld = false;
-			if(_slotHeld->getItem())
-			_slotHeld->resetItemColor();
-			_slotHeld = nullptr;
-			_itemHeldWidget->fullyDeactivate();
-		}
-		_equipment->canPreviewBeInstantiated = true;
 	}
 
 	void NormalSlots::update(float deltaTime) {
-		if (_isMouseButtonHeld) {
+		if (_slotHeld) {
 			_itemHeldWidget->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition() - _originalMousePosition));
 		}
 		checkForDoubleClick(deltaTime);
@@ -209,7 +248,7 @@ namespace rat
 	}
 
 	itemMap_t NormalSlots::getItemMap() {
-		return _itemSlots;
+		return _occupiedSlots;
 	}
 
 	int NormalSlots::getFreeSlotsAmount() {
@@ -230,7 +269,7 @@ namespace rat
 				{
 					if (i != newSize) {
 						if (_allSlots[i - 1]->getItem()) {
-							_itemSlots.erase(_allSlots[i - 1]->getItem()->getNameId());
+							_occupiedSlots.erase(_allSlots[i - 1]->getItem()->getNameId());
 						}
 						else {
 							for (auto it = _freeSlots.begin(); it != _freeSlots.end(); ++it) {

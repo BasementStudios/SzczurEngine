@@ -62,7 +62,7 @@ namespace rat {
 
 	void EquipmentSlot::removeItem() {
 		_itemPlaced = nullptr;
-		_itemImage->setColor(sf::Color::Color(0, 0, 0, 0));
+		_itemImage->removeTexture();
 	}
 
 	EquipmentObject* EquipmentSlot::getItem() {
