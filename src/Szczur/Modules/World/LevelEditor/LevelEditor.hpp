@@ -65,9 +65,14 @@ public:
 	///
 	ObjectsList& getObjectsList();
 
+	///
 	void updateCurrentCamera();
 
-	void updateCamera(sf3d::Camera& camera);
+	///
+	void updateCameraMovement(Entity* cameraEntity, InputManager& input);
+
+	///
+	void changeCameraLock();
 
 private:
 	

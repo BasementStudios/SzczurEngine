@@ -101,7 +101,7 @@ namespace rat {
 	void LevelEditor::update(InputManager& input, Window& windowModule) {
 		auto* scene = _scenes.getCurrentScene();
 		auto& window = windowModule.getWindow();
-		auto mouse = input.getMousePosition();
+		auto mouse = _getFixedMousePos(input.getMousePosition());
 		Entity* cameraEntity = nullptr;
 		
 		// Find selected camera
@@ -125,7 +125,7 @@ namespace rat {
 		// Object selection
 		if (!ImGui::IsAnyWindowHovered()) {
 			if (input.isPressed(Mouse::Left)) {
-				auto mouse = input.getMousePosition();
+				auto mouse = _getFixedMousePos(input.getMousePosition());
 				
 				auto linear = window.getLinearByScreenPosition({ mouse.x, mouse.y });
 
@@ -249,28 +249,64 @@ namespace rat {
 		
 		// Camera movement
 		if (ImGui::IsAnyItemActive() == false) {
+			updateCameraMovement(cameraEntity, input);
+		}
+
+		// Keys
+		if (input.isReleased(Keyboard::F1)) {
+			if (_scenes.isGameRunning()) {
+				printMenuBarInfo("Cannot save while game is running");
+			}
+			else {
+				_scenes.menuSave();
+				printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
+			}
+		}
+
+		if (input.isPressed(Keyboard::F4)) {
+			changeCameraLock();
+		}
+	}
+
+	void LevelEditor::updateCameraMovement(Entity* cameraEntity, InputManager& input)
+	{
+		auto mouse = _getFixedMousePos(input.getMousePosition());
+
+		// Camera movement
 			sf3d::Camera* camera;
 			
 			// Choose the camera to move
 			if (cameraEntity) {
-				camera = cameraEntity->getComponentAs<CameraComponent>();
+			auto* comp = cameraEntity->getComponentAs<CameraComponent>();
+			if(comp->isNoMove()) {
+				return;
+			}
+			camera = static_cast<sf3d::Camera*>(comp);
 			}
 			else {
 				camera = &_freeCamera;
 			}
 			
 			// Velocity
-			float velocity = 50.f; // @todo , should be const in class
-			/**/ if (input.isKept(Keyboard::LShift)) velocity = 200.f;
+		float velocity = 30.f; // @todo , should be const in class
+		/**/ if (input.isKept(Keyboard::LShift)) velocity = 150.f;
 			else if (input.isKept(Keyboard::LAlt)) velocity = 10.f;
 
-			// Movement
-			if (input.isKept(Keyboard::W)) 			camera->bartek({0.f, 0.f,  velocity});
-			if (input.isKept(Keyboard::S)) 			camera->bartek({0.f, 0.f, -velocity});
-			if (input.isKept(Keyboard::D)) 			camera->bartek({ velocity, 0.f, 0.f});
-			if (input.isKept(Keyboard::A)) 			camera->bartek({-velocity, 0.f, 0.f});
-			if (input.isKept(Keyboard::Space)) 		camera->bartek({0.f,  velocity, 0.f});
-			if (input.isKept(Keyboard::LControl)) 	camera->bartek({0.f, -velocity, 0.f});
+		// Natural movement
+		// if (input.isKept(Keyboard::W)) 			camera->bartek({0.f, 0.f,  velocity});
+		// if (input.isKept(Keyboard::S)) 			camera->bartek({0.f, 0.f, -velocity});
+		// if (input.isKept(Keyboard::D)) 			camera->bartek({ velocity, 0.f, 0.f});
+		// if (input.isKept(Keyboard::A)) 			camera->bartek({-velocity, 0.f, 0.f});
+		// if (input.isKept(Keyboard::Space)) 		camera->bartek({0.f,  velocity, 0.f});
+		// if (input.isKept(Keyboard::LControl)) 	camera->bartek({0.f, -velocity, 0.f});
+
+		// "Minecraft" movement
+		if (input.isKept(Keyboard::W)) 			camera->move({0.f, 0.f, -velocity});
+		if (input.isKept(Keyboard::S)) 			camera->move({0.f, 0.f,  velocity});
+		if (input.isKept(Keyboard::D)) 			camera->move({ velocity, 0.f, 0.f});
+		if (input.isKept(Keyboard::A)) 			camera->move({-velocity, 0.f, 0.f});
+		if (input.isKept(Keyboard::Space)) 		camera->move({0.f,  velocity, 0.f});
+		if (input.isKept(Keyboard::LControl)) 	camera->move({0.f, -velocity, 0.f});
 			
 			// Rotating
 			if (_cameraRotating) {
@@ -279,7 +315,7 @@ namespace rat {
 					-(mouse.x - _cameraPreviousMouseOffset.x) / 10.f, // @todo , should be const in class
 					0.f
 				});
-				_cameraPreviousMouseOffset = mouse;
+			_cameraPreviousMouseOffset = sf::Vector2i(mouse.x, mouse.y);
 			}
 			if (!ax::NodeEditor::IsActive()) {
 				if (input.isPressed(Mouse::Right)) {
@@ -300,14 +336,20 @@ namespace rat {
 			}
 		}
 
-		// Keys
-		if (input.isReleased(Keyboard::F1)) {
-			if (_scenes.isGameRunning()) {
-				printMenuBarInfo("Cannot save while game is running");
+	void LevelEditor::changeCameraLock()
+	{
+		auto* scene = _scenes.getCurrentScene();
+		for (auto& entity : scene->getEntities("single")) { 
+			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
+				comp->setLock(!comp->getLock()); 
+				comp->setNoMove(comp->getLock()); 
+				if(comp->getLock()) {
+					printMenuBarInfo("[x] Camera locked!");
 			}
 			else {
-				_scenes.menuSave();
-				printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
+					printMenuBarInfo("[ ] Camera unlocked!");
+				}
+				break;
 			}
 		}
 	}
