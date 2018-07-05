@@ -117,7 +117,9 @@ namespace rat {
 		// Render origins for single group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
 			if (_objectsList.isEntitySelected(entity.get())) {
-				_renderOriginRectangle(entity->getPosition(), true, target);
+				if(auto* camera = entity->getComponentAs<CameraComponent>(); camera == nullptr) {
+					_renderOriginRectangle(entity->getPosition(), true, target);
+				}
 			}
 			else {
 				_renderOriginRectangle(entity->getPosition(), false, target);
