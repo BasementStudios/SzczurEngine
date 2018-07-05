@@ -106,7 +106,7 @@ void PointLightComponent::renderHeader(ScenesManager& scenes, Entity* object) {
 		// Attenuation
 		ImGui::DragFloat("Attenuation constant##lightpoint_component",	&this->attenuation.constant,	0.005f,		-1.0f,	1.0f, "%.7f");
 		ImGui::DragFloat("Attenuation linear##lightpoint_component", 	&this->attenuation.linear,		0.00005f,	-1.0f,	1.0f, "%.7f");
-		ImGui::DragFloat("Attenuation quadratic##lightpoint_component", &this->attenuation.quadratic,	0.0000005f, -1.0f,	1.0f, "%.7f");
+		ImGui::DragFloat("Attenuation quadratic##lightpoint_component", &this->attenuation.quadratic,	0.000005f,  -1.0f,	1.0f, "%.7f");
 
 		// Light factors
 		ImGui::ColorEdit3("Ambient factor##base_component",	glm::value_ptr(this->ambientFactor));
@@ -128,7 +128,13 @@ void PointLightComponent::initScript(ScriptClass<Entity>& entity, Script& script
 
 		// Attenuation
 		object.set("getAttenuation", &PointLightComponent::getAttenuation);
-		object.set("setAttenuation", [](PointLightComponent& component, float c, float l, float q) {component.setAttenuation(LightPoint::Attenuation{c, l, q});});
+		object.set("getAttenuationConstant", [](PointLightComponent& component){return component.getAttenuation().constant;});
+		object.set("getAttenuationLinear", [](PointLightComponent& component){return component.getAttenuation().linear;});
+		object.set("getAttenuationQuadratic", [](PointLightComponent& component){return component.getAttenuation().quadratic;});
+		object.setOverload("setAttenuation", 
+			[](PointLightComponent& component, const LightPoint::Attenuation& att) {component.setAttenuation(att);},
+			[](PointLightComponent& component, float c, float l, float q) {component.setAttenuation(LightPoint::Attenuation{c, l, q});}
+		);
 		
 		// Light factors
 		object.set("getAmbientFactor", &PointLightComponent::getAmbientFactor);
