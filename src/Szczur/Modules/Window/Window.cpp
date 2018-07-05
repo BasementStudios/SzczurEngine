@@ -20,6 +20,7 @@
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/SFML3D/Vertex.hpp"
 #include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/SimpleSprite.hpp"
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
@@ -35,6 +36,16 @@ Window::Window_t& Window::getWindow()
 const Window::Window_t& Window::getWindow() const
 {
 	return this->window;
+}
+
+// Layer
+Window::Layer_t& Window::getLayer()
+{
+	return this->layer;
+}
+const Window::Layer_t& Window::getLayer() const
+{
+	return this->layer;
 }
 
 // VideoMode
@@ -122,35 +133,58 @@ void Window::init()
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 
-	// Default shaders
-	sf3d::FShader frag;
-	frag.loadFromFile("Assets/Shaders/default.frag");
+	// Basic shader (at layer)
+	sf3d::FShader basicFShader;
+	basicFShader.loadFromFile("Assets/Shaders/default.frag");
 
-	sf3d::VShader vert;
-	vert.loadFromFile("Assets/Shaders/default.vert");
+	sf3d::VShader basicVShader;
+	basicVShader.loadFromFile("Assets/Shaders/default.vert");
 
-	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
-	this->shaderProgram->linkShaders(frag, vert);
-	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
+	this->basicShaderProgram = std::make_unique<sf3d::ShaderProgram>();
+	this->basicShaderProgram->linkShaders(basicFShader, basicVShader);
+	
+	this->getLayer().setDefaultShaderProgram(this->basicShaderProgram.get());
+	
+	// Post processing shader (at window)
+	sf3d::FShader postProcFShader;
+	postProcFShader.loadFromFile("Assets/Shaders/post_processing.frag");
+
+	sf3d::VShader postProcVShader;
+	postProcVShader.loadFromFile("Assets/Shaders/post_processing.vert");
+
+	this->postProcessingProgram = std::make_unique<sf3d::ShaderProgram>();
+	this->postProcessingProgram->linkShaders(postProcFShader, postProcVShader);
+	
+	this->getWindow().setDefaultShaderProgram(this->postProcessingProgram.get());
+
+	// Initialize layer sprite as helper to render layer over window
+	this->layerSprite = std::make_unique<sf3d::SimpleSprite>();
+	this->layerSprite->setTexture(layer.getTexture());
 }
 
 // render
 void Window::render()
 {
+	glDisable(GL_DEPTH_TEST);
+	this->getWindow().draw(*this->layerSprite);
+	glEnable(GL_DEPTH_TEST);
 	this->getWindow().display();
 }
 
 // Window recreate
 void Window::recreateWindow()
 {
-	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	this->getWindow().create(this->videoMode, this->title, this->postProcessingProgram.get(), this->windowStyle);
 	this->setFramerateLimit(this->framerateLimit);
+
+	this->getLayer().create({this->videoMode.width, this->videoMode.height}, this->basicShaderProgram.get());
 }
 
 // clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->layer.clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	window.clear(color, GL_COLOR_BUFFER_BIT);
 }
 
 // GL states
@@ -176,19 +210,19 @@ void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::Primi
 // 3D
 void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(drawable, states);
+	this->getLayer().draw(drawable, states);
 }
 void Window::draw(const sf3d::Drawable& drawable)
 {
-	this->getWindow().draw(drawable);
+	this->getLayer().draw(drawable);
 }
 void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(vertices, states);
+	this->getLayer().draw(vertices, states);
 }
 void Window::draw(const sf3d::VertexArray& vertices)
 {
-	this->getWindow().draw(vertices);
+	this->getLayer().draw(vertices);
 }
 
 }

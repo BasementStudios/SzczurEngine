@@ -1,3 +1,19 @@
+#version 330 core
+
+out vec4 FragColor;
+
+in vec2 texCoord;
+
+uniform sampler2D ourTexture;
+
+
+void main() {
+
+	FragColor = texture(ourTexture, texCoord);
+}
+
+
+
 /*
     - Gaussian blur
     - Bloom
@@ -8,7 +24,7 @@
     - LuminositySaturation
     - Fog with PerlinNoise
     - Vignetting
-*/
+
 
 #version 330 core
 
@@ -86,7 +102,7 @@ void main()
         vec4 pixel = texture(boundTexture, texCoord);
         vec2 sampleSize = vec2(1.0) / resolution;
 
-        /*if (pixel.a == 0.0) discard;*/
+        //if (pixel.a == 0.0) discard;
 
         // Gaussian blur
         int blurSteps = int(min(blur * 0.7, sqrt(blur) * pi4));
@@ -243,3 +259,4 @@ float PerlinNoise(vec2 p, float turbulence, vec3 seed, bool reverted)
 
     return t;
 }
+*/

@@ -12,7 +12,7 @@ namespace sf3d {
 #include "RenderTarget.hpp"
 #include "Texture.hpp"
 
-namespace sf3d
+namespace sf3d 
 {
 
 class RenderTexture : public RenderTarget
@@ -34,6 +34,7 @@ public:
 
 	/* Operators */
 public:
+	RenderTexture();
 	RenderTexture(glm::uvec2 size, ShaderProgram* program);
 	~RenderTexture();
 
@@ -41,6 +42,8 @@ public:
 
 	/* Methods */
 public:
+	void create(glm::uvec2 size, ShaderProgram* program);
+	
 	virtual bool _setActive(bool states = true) override;
 };
 

@@ -13,7 +13,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-#include <glad.h>
+#include <glad/glad.h>
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -217,25 +217,32 @@ void RenderTarget::draw(const VertexArray& vertices)
 }
 
 // "Simple draw" 
-void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states) { 
+void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
+{ 
     if (vertices.getSize() > 0 && this->_setActive()) { 
-        ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader); 
+		vertices.update();
+        
+		// Shader selection
+		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader); 
         if (!(shaderProgram && shaderProgram->isVaild())) { 
             std::cout << "Error: No shader available!\n"; 
             return; 
         } 
         shaderProgram->use(); 
  
-        if (states.texture) { 
+        // Shader configuration
+		if (states.texture) { 
             glActiveTexture(GL_TEXTURE0); 
             states.texture->bind(); 
         } 
  
-        vertices.bind(); 
+        // Pass the vertices
+		vertices.bind(); 
         glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize()); 
         glBindVertexArray(0); 
         glBindFramebuffer(GL_FRAMEBUFFER, 0); 
  
+		// Unbind testures if any
         if (states.texture) {
 			states.texture->unbind(); 
 		}

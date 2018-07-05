@@ -23,7 +23,9 @@ namespace sf3d {
 	class Vertex;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderTexture.hpp"
+#include "Szczur/Utility/SFML3D/SimpleSprite.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -33,13 +35,16 @@ class Window : public Module<>
 {
 	/* Types */
 	using Window_t = sf3d::RenderWindow;
+	using Layer_t = sf3d::RenderTexture;
 
 
 
 	/* Variables */
 private:
-	Window_t        window;
-
+	Window_t	window;
+	Layer_t		layer;
+	
+	// Window informations
 	sf::VideoMode   videoMode		{1280, 720};
 
 	unsigned int	framerateLimit	{60};
@@ -48,7 +53,12 @@ private:
 
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
-	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
+	// Shader programs
+	std::unique_ptr<sf3d::ShaderProgram> basicShaderProgram;
+	std::unique_ptr<sf3d::ShaderProgram> postProcessingProgram;
+
+	/// Used for rendering the layer texture on window.
+	std::unique_ptr<sf3d::SimpleSprite> layerSprite;
 
 
 
@@ -57,6 +67,10 @@ public:
 	/// Provides access to application window.
 	Window_t& getWindow();
 	const Window_t& getWindow() const;
+
+	/// Provides access to render layer 
+	Layer_t& getLayer();
+	const Layer_t& getLayer() const;
 
 	/// Defines a video mode. Aslo recreates the window.
 	sf::VideoMode getVideoMode() const;
@@ -114,7 +128,7 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 	// 	3D
-	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
+	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states/* = sf3d::RenderStates::Default*/);
 	void draw(const sf3d::Drawable& drawable);
 	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
 	void draw(const sf3d::VertexArray& vertices);
