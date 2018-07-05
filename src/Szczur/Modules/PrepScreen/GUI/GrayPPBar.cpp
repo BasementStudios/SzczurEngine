@@ -2,49 +2,57 @@
 
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
 
 namespace rat
 {
     GrayPPBar::GrayPPBar()
     {
-        _container = new ImageWidget;
-        _addWidget(_container);
-        _container->setPropSize(0.06f, 0.06f);
-
-        _pp = new ImageWidget;
-        _container->add(_pp);
-        _pp->setPropSize(0.05f, 0.05f);
-        _pp->setPropPosition(0.5f, 0.5f);
+        _slot = new ImageWidget;
+        _addWidget(_slot);
+        _slot->setPropSize(0.042f, 0.042f);
     }
 
     bool GrayPPBar::isTaken() const
     {
-        return _pp->isVisible();
+        return _state == State::Empty;
     }
     void GrayPPBar::take()
     {
-        _pp->invisible();
+        _state = State::Empty;
+        _updateTextRect();
     }
     void GrayPPBar::returnTo()
     {
-        _pp->visible();
+        _state = State::Full;
+        _updateTextRect();
     }
 
-    void GrayPPBar::setContainerTexture(sf::Texture* tex)
+    void GrayPPBar::setSlotTextures(sf::Texture* tex)
     {
-        _container->setTexture(tex);
-    }
-    void GrayPPBar::setPPTexture(sf::Texture* tex)
-    {
-        _pp->setTexture(tex);
+        _slot->setTexture(tex);
+        _state = State::Empty;
+        _updateTextRect();
     }
 
     void GrayPPBar::dim()
     {
-        _getBase()->setColorInTime({150, 150, 150}, 0.3f);
+        _state = State::Dimmed;
+        _updateTextRect();
     }
     void GrayPPBar::undim()
     {
-        _getBase()->setColorInTime({255, 255, 255}, 0.3f);
+        _state = State::Full;
+        _updateTextRect();
+    }
+
+    void GrayPPBar::_updateTextRect()
+    {
+        switch(_state)
+        {
+            case State::Empty: _slot->setTextureRect({{0, 0}, {ppDim, ppDim}}); break;
+            case State::Full: _slot->setTextureRect({{ppDim, 0}, {ppDim, ppDim}}); break;
+            case State::Dimmed: _slot->setTextureRect({{2 * ppDim, 0}, {ppDim, ppDim}}); break;
+        }
     }
 }

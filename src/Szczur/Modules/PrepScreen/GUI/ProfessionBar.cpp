@@ -22,7 +22,7 @@ namespace rat
         _window->makeChildrenPenetrable();
         _window->setPadding(0.f, 0.f);
         _window->setMainPatchPropSize({0.1625f, 0.1625f});
-        _window->setPropSize({0.1625f, 0.1625f});
+        _window->setPropSize({0.1342592592592593f, 0.1342592592592593f});
         _window->makeChildrenUnresizable();
 
         _icon = new ImageWidget;
@@ -30,7 +30,7 @@ namespace rat
         auto click = [this](Widget* owner){
             _onClick();
         };
-        _icon->setPropSize(0.15f, 0.15f);
+        _icon->setPropSize(0.11f, 0.11f);
         _icon->setPropPosition(0.5f, 0.5f);
 
         _window->add(_icon);

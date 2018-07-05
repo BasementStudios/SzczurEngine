@@ -55,6 +55,8 @@ namespace rat
         WindowWidget* _titleWindow{nullptr};
         TextWidget* _title{nullptr};
 
+        WindowWidget* _filter;
+
         static sf::Vector2u _size; 
     };
 }

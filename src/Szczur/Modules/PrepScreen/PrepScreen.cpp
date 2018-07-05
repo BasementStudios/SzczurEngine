@@ -66,7 +66,7 @@ namespace rat
         }
         else _source.ppContainer.takeFrom(size_t(amount));
 
-        _calcPPsGUI();
+        _grayPPArea.setPPs(_source.ppContainer.getAmount());
         _calcSkillsGUI();
     }
     bool PrepScreen::hasPPAmount(int amount) const
@@ -219,7 +219,8 @@ namespace rat
         size_t active = _source.ppContainer.getAmount();
         size_t total = _source.ppContainer.getTotalAmount();
 
-        _grayPPArea.setPPs(active, total);
+        _grayPPArea.setMaxPPs(total);
+        _grayPPArea.setPPs(active);
     }
     
     void PrepScreen::_calcSkillsGUI()
@@ -239,7 +240,7 @@ namespace rat
         _base->setPadding(20.f, 20.f);
         _base->setSizingWidthToHeightProportion(1.f);
 
-        auto* list = new ListWidget;
+        /*auto* list = new ListWidget;
         _base->add(list);
         list->setPropPosition(0.5f, 0.f);
         //list->setPosition(100.f, 100.f);
@@ -264,16 +265,41 @@ namespace rat
         skillList->makeHorizontal();
         skillList->setPropBetweenPad(0.0288387f);
         mainList->add(skillList);
+        */
+
+       auto* mainList = new ListWidget;
+       mainList->makeHorizontal();
+       mainList->setAutoBetweenPadding();
+       _base->add(mainList);
+       mainList->setPropPosition(0.5f, 0.5f);
+
+       auto* skillList = new ListWidget;
+       //skillList->setPropSize(0.416f, 0.f);///0,463  0,85177777777777777777777777777778
+       skillList->setPropSize(0.463f, 1.f);
+       skillList->setAutoBetweenPadding();
+       mainList->add(skillList);
 
         _profArea.setParent(skillList);
-        //_profArea.setPropPosition(0.f, 0.5f);
-
         _skillArea.setParent(skillList);
-       // _skillArea.setPropPosition(0.f, 0.5f);
 
-        _chosenSkillArea.setParent(mainList);
+        auto* infoList = new ListWidget;
+        infoList->setPropSize(0.8517777777777777f, 1.f);
+        mainList->add(infoList);
+
+        _glyphArea.setParent(infoList);
+        _grayPPArea.setParent(infoList);
+
+        auto* monsterList = new ListWidget;
+        monsterList->setPropSize(0.463f, 1.f);
+        mainList->add(monsterList);
+
+        _enemyArea.setParent(monsterList);
+
+
+
+        //_chosenSkillArea.setParent(mainList);
         
-        _enemyArea.setParent(mainList);
+        //_enemyArea.setParent(mainList);
         //_enemyArea.setPropPosition(0.f, 0.5f);
         test();
     }
@@ -283,7 +309,11 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-        addPP(14);
+        addPP(4);
+        addPP(-1);
+        addPP(3);
+
+        takePP(-4);
 
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
@@ -315,6 +345,8 @@ namespace rat
         gui.addAsset<sf::Texture>(path + "GrayPPWindow.png");
         gui.addAsset<sf::Texture>("Assets/Test/ChosenSkill.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
+        gui.addAsset<sf::Texture>("Assets/PrepScreen/PPSlots.png");
+        gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBarFilter.png");
                 
 
         GlyphTypes glyphTypes;

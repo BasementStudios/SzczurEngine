@@ -20,6 +20,6 @@ namespace rat
             return _professionTypes.end();
         }
     private:
-        const std::array<std::string, 4u> _professionTypes;
+        const std::array<std::string, 3u> _professionTypes;
     };
 }

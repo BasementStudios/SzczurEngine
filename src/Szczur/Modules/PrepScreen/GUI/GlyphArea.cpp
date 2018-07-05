@@ -9,8 +9,9 @@ namespace rat
     :
     BaseBar([]{ auto* base = new ListWidget; base->makeHorizontal(); base->setAutoBetweenPadding(); return base;}())
     {
-        setPropOrigin(0.5f, 0.f);
-        setPropSize(0.6f, 0.f);
+        //setPropOrigin(0.5f, 0.f);
+        setPropSize(0.768f, 0.f);
+        _getBase()->setPropPosition(0.5f , 0.f);
 
         GlyphTypes types;
         GlyphesConverter converter;

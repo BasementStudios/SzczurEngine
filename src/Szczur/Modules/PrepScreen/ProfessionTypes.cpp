@@ -4,7 +4,7 @@ namespace rat
 {
         ProfessionTypes::ProfessionTypes()
         :
-        _professionTypes( {"Mele", "Range", "Aura", "InerFire"} )
+        _professionTypes( {"Mele", "Range", "Aura"} )
         {
         }   
 }

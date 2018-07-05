@@ -1,5 +1,7 @@
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
+namespace sf { class Texture; }
+
 namespace rat
 {
     class GrayPPBar : public BaseBar
@@ -10,17 +12,18 @@ namespace rat
         void take();
         void returnTo();
 
-        void setContainerTexture(sf::Texture* tex);
-        void setPPTexture(sf::Texture* tex);
+        void setSlotTextures(sf::Texture* tex);
 
         void dim();
         void undim();
 
     private:
-        ImageWidget* _container{nullptr};
-        ImageWidget* _pp{nullptr};
+        enum class State { Empty, Full, Dimmed } _state = State::Full;
+        ImageWidget* _slot{nullptr};
 
-        constexpr static float _border = 67.f;
+        void _updateTextRect();
+
+        static constexpr int ppDim = 288;
 
     };
 }

@@ -44,6 +44,7 @@ namespace rat
 
         SkillCodex& getSkillCodex();
 
+        void setSlotsPP(size_t amount);
         void addPP(int amount = 1);
         void takePP(int amount = 1);
         bool hasPPAmount(int amount) const;

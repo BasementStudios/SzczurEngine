@@ -37,7 +37,7 @@ public:
 	/* Variables */
 private:
 	Window_t        window;
-	sf::VideoMode   videoMode		{1280, 800};
+	sf::VideoMode   videoMode		{1920, 1080};
 	std::string     title 			{"SzczurEngine"};
 	unsigned int	framerateLimit	{60};
 

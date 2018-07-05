@@ -1,5 +1,5 @@
 #include "Widget.hpp"
-//#include "ImageWidget.hpp"
+#include "ImageWidget.hpp"
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "Test.hpp"

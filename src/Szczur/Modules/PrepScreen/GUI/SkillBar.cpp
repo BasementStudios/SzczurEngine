@@ -46,30 +46,47 @@ namespace rat
         _infoBar = new WindowWidget;
         _name = new TextWidget;
 
+
+        const sf::Vector2f prSize(0.312037037037037f, 0.1148148148148f);
+
+        _infoBar->setPropSize(prSize);
+        _infoBar->setMainPatchPropSize({prSize.y, prSize.y});
+        //_infoBar->setPadding(5, 5);
+        _infoBar->makeChildrenPenetrable();
+        _infoBar->makeChildrenUnresizable();
+        _addWidget(_infoBar);
+
+        _filter = new WindowWidget;
+        _filter->setPropSize(prSize);
+        _filter->setMainPatchPropSize(prSize);
+        _filter->invisible();
+        //_iconWindow->add(_filter);
+        _infoBar->add(_filter);
+
         auto* list = new ListWidget;
         list->makeHorizontal();
-        _addWidget(list);
+        _infoBar->add(list);
 
-        _iconWindow->setPropSize(0.09f, 0.09f);
-        _iconWindow->setScale(0.3f, 0.3f);
+
+        _iconWindow->setPropSize(prSize.y, prSize.y);
+        _iconWindow->setMainPatchPropSize({prSize.y, prSize.y});
         list->add(_iconWindow);       
         
-        _icon->setPropSize(0.08f, 0.08f);
+        _icon->setPropSize({prSize.y - 0.01f, prSize.y - 0.01f}); //0888979591836735f
         _icon->setPropPosition(0.5f, 0.5f);
         _iconWindow->add(_icon);
 
-        _infoBar->setPropSize(0.21f, 0.09f);
-        _infoBar->setScale(0.3f, 0.3f);
-        _infoBar->setPadding(5, 5);
-        _infoBar->makeChildrenPenetrable();
-        _infoBar->makeChildrenUnresizable();
-        list->add(_infoBar);
+        auto* infos = new Widget;
+        infos->setPropSize(prSize.x - prSize.y, prSize.y);
+        infos->setPropPadding(0.0011020408163265f, 0.0011020408163265f);
+
+        list->add(infos);
 
         _name->setCharacterSize(12);
         _name->setPropPosition(0.f, 0.f);
-        _infoBar->add(_name);
+        infos->add(_name);
 
-        _costBar.setParent(_infoBar);
+        _costBar.setParent(infos);
         _costBar.setPropPosition(0.f, 1.f);
 
         _titleWindow = new WindowWidget;
@@ -139,11 +156,13 @@ namespace rat
         _canBeBought = _prepScreen.canSkillBeBought(_skill);
         if(_canBeBought)
         {
-            _getBase()->setColorInTime({255, 255, 255}, 0.1f);
+            //_getBase()->setColorInTime({255, 255, 255}, 0.1f);
+            _filter->invisible();
         }
         else
         {
-            _getBase()->setColorInTime({125, 125, 125}, 0.1f);
+            //_getBase()->setColorInTime({125, 125, 125}, 0.1f);
+            _filter->visible();
         }
     }
     
@@ -190,7 +209,8 @@ namespace rat
     {
         if(_canBeBought)
         {
-            _getBase()->setColorInTime({180, 180, 180}, 0.1f);
+            //_getBase()->setColorInTime({180, 180, 180}, 0.1f);
+            _filter->visible();
             _prepScreen.dimPPsNeededToBuySkill(_skill);
         }
     }
@@ -198,7 +218,8 @@ namespace rat
     {
         if(_canBeBought)
         {
-            _getBase()->setColorInTime({255, 255, 255}, 0.1f);
+            //_getBase()->setColorInTime({255, 255, 255}, 0.1f);
+            _filter->invisible();
             _prepScreen.normPPsNeededToBuySkill(_skill);
         }
     }
@@ -213,6 +234,7 @@ namespace rat
         _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _costBar.loadAssetsFromGUI(gui);
+        _filter->setTexture(gui.getTexture("Assets/PrepScreen/SkillBarFilter.png"), 280, 100);
     }
     
 }
