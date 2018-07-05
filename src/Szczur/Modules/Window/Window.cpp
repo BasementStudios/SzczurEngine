@@ -126,35 +126,35 @@ void Window::init()
 
 	// Print OpenGL version
 	LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
-	
+
 	// GL flags
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);  
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 
 	// Basic shader (at layer)
-	sf3d::FShader basicFShader;
-	basicFShader.loadFromFile("Assets/Shaders/default.frag");
+	sf3d::Shader basicFShader;
+	basicFShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/default.frag");
 
-	sf3d::VShader basicVShader;
-	basicVShader.loadFromFile("Assets/Shaders/default.vert");
+	sf3d::Shader basicVShader;
+	basicVShader.loadFromFile(sf3d::Shader::Vertex, "Assets/Shaders/default.vert");
 
 	this->basicShaderProgram = std::make_unique<sf3d::ShaderProgram>();
 	this->basicShaderProgram->linkShaders(basicFShader, basicVShader);
-	
-	this->getLayer().setDefaultShaderProgram(this->basicShaderProgram.get());
-	
-	// Post processing shader (at window)
-	sf3d::FShader postProcFShader;
-	postProcFShader.loadFromFile("Assets/Shaders/post_processing.frag");
 
-	sf3d::VShader postProcVShader;
-	postProcVShader.loadFromFile("Assets/Shaders/post_processing.vert");
+	this->getLayer().setDefaultShaderProgram(this->basicShaderProgram.get());
+
+	// Post processing shader (at window)
+	sf3d::Shader postProcFShader;
+	postProcFShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/post_processing.frag");
+
+	sf3d::Shader postProcVShader;
+	postProcVShader.loadFromFile(sf3d::Shader::Vertex, "Assets/Shaders/post_processing.vert");
 
 	this->postProcessingProgram = std::make_unique<sf3d::ShaderProgram>();
 	this->postProcessingProgram->linkShaders(postProcFShader, postProcVShader);
-	
+
 	this->getWindow().setDefaultShaderProgram(this->postProcessingProgram.get());
 
 	// Initialize layer sprite as helper to render layer over window
