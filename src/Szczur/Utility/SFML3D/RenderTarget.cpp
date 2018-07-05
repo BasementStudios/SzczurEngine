@@ -269,8 +269,8 @@ Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
 			float cosx = glm::cos(x);
 
 			rotation = {cosy * sinx, siny * cosx, -cosy * cosx};
-			rotation = glm::rotateX(rotation, glm::radians(-this->camera->getRotation().x));
-			rotation = glm::rotateY(rotation, glm::radians(-this->camera->getRotation().y));
+			rotation = glm::rotateX(rotation, glm::radians(this->camera->getRotation().x));
+			rotation = glm::rotateY(rotation, glm::radians(this->camera->getRotation().y));
 		}
 		break;
 
