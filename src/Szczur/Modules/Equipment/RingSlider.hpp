@@ -24,6 +24,7 @@ namespace rat {
 
 		Equipment* _equipment;
 
+		void setSelectedRingsLimit(int newSize);
 		std::vector<EquipmentObject*> getSelectedRings();
 		std::vector<EquipmentObject*> getRingsList();
 

@@ -91,6 +91,10 @@ namespace rat {
 		}
 	}
 
+	void RingSlider::setSelectedRingsLimit(int newSize) {
+		_maxSelectedRings = newSize;
+	}
+
 	std::vector<EquipmentObject*> RingSlider::getSelectedRings() {
 		std::vector<EquipmentObject*> temp;
 		for (auto& i : _selectedSlots)

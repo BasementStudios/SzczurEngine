@@ -287,6 +287,7 @@ namespace rat
 				}
 			}
 		}
+		_slotAmount = newSize;
 	}
 
 	int NormalSlots::getSlotsAmount() {

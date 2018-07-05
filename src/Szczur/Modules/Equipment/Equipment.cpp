@@ -52,6 +52,7 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set_function("getFreeSlotsAmount", &Equipment::getFreeSlotsAmount, this);
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
+		module.set_function("setSelectedRingsLimit", &Equipment::setSelectedRingsLimit, this);
 
 		script.initClasses<WearableItem, UsableItem>();
 	}
@@ -134,27 +135,6 @@ namespace rat {		//beware spagetti monster down there :/
 		_isPreviewOn = false;
 	}
 
-	//void Equipment::createItem(std::string nameId, std::string name, std::string description, std::string iconPath, equipmentObjectType type, bool isUseble) {
-	//	auto& gui = getModule<GUI>();
-	//	gui.addAsset<sf::Texture>(iconPath);		
-	//	EquipmentObject* newObject = new EquipmentObject(nameId, name, description, gui.getAsset<sf::Texture>(iconPath), type, isUseble);
-	//	_listOfObjects[nameId] = newObject;	//cos z tymi jsonami
-	//}
-
-	/*UsableItem* Equipment::createUsableItem(std::string nameId) {
-		UsableItem* temp = new UsableItem(nameId);
-		_listOfObjects[nameId] = temp;
-		temp->initScript(getModule<Script>());
-		return temp;
-	}
-
-	WearableItem* Equipment::createWearableItem(std::string nameId) {
-		WearableItem* temp = new WearableItem(nameId);
-		_listOfObjects[nameId] = temp;
-		temp->initScript(getModule<Script>());
-		return temp;
-	}*/
-
 	UsableItem* Equipment::getUsableItem(std::string nameId) {
 		UsableItem* temp = dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
 		if (temp) {
@@ -228,7 +208,7 @@ namespace rat {		//beware spagetti monster down there :/
 		if (_armorSlots->getWeaponSlot()->getItem()) {
 			_table.add(_armorSlots->getWeaponSlot()->getItem()->getNameId());
 		}
-		for (auto& it : _ringSlider->getSelectedRings())
+		for (auto& it : _ringSlider->getRingsList())
 		{
 			_table.add(it->getNameId());
 		}
@@ -252,5 +232,9 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	void Equipment::reloadItemList() {
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
+	}
+
+	void Equipment::setSelectedRingsLimit(int newSize) {
+		_ringSlider->setSelectedRingsLimit(newSize);
 	}
 }

@@ -77,20 +77,26 @@ namespace rat {
 	bool AmuletSlot::removeAmulet(std::string nameId) {
 		for (size_t i = 0; i < _amulets.size(); i++)
 		{
-			if (_amulets[i]->getName() == nameId) {
+			if (_amulets[i] && _amulets[i]->getName() == nameId) {
 				if (_chosenAmulet->getName() == nameId) {
-					if (_amulets[i - 1])		//there is some other amulet to display
+					if (_amulets.size() > 2)		//there is some other amulet to display
 					{
 						_chosenAmulet->deactivate();
-						_amuletImage->setTexture(_amulets[i - 1]->getTexture());
-						_chosenAmulet = _amulets[i - 1];
+						if (_amulets[i - 1]) {
+							_amuletImage->setTexture(_amulets[i - 1]->getTexture());
+							_chosenAmulet = _amulets[i - 1];
+						}
+						else {
+							_amuletImage->setTexture(_amulets[i + 1]->getTexture());
+							_chosenAmulet = _amulets[i + 1];
+						}
 						_chosenAmulet->activate();
 						_amulets.erase(_amulets.begin() + i);
 						return true;
 					}
 					else {
 						_chosenAmulet->deactivate();
-						_amuletImage->setColor(sf::Color::Color(0, 0, 0, 0));
+						_amuletImage->removeTexture();
 						_amulets.erase(_amulets.begin() + 1);
 						_chosenAmulet = _amulets[0];
 						return true;

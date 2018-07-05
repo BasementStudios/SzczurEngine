@@ -42,6 +42,7 @@ namespace rat
 		bool removeWearableItem(WearableItem* item);
 		sol::table getItemsList();
 		int getFreeSlotsAmount();
+		void setSelectedRingsLimit(int newSize);
 		void resizeSlots(int newCapacity);
 		int getSlotsAmount();
 	private:
