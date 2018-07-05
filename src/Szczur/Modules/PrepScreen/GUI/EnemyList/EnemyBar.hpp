@@ -23,6 +23,11 @@ namespace rat
         TextWidget* _name{nullptr};
         TextWidget* _hp{nullptr};
 
+        WindowWidget* _filter{nullptr};
+
+        Widget* _descParent{nullptr};
+        TextWidget* _description{nullptr};
+
         void _onHoverIn();
         void _onHoverOut();
 

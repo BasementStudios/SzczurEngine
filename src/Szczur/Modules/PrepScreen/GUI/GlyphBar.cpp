@@ -4,6 +4,7 @@
 
 #include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
 
+#include "Szczur/Modules/GUI/Animation/AnimData.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
@@ -82,7 +83,7 @@ namespace rat
 
         float prop = total == 0 ? 0.f : float(activated) / float(total);
 
-        _glyph->setPropTextureRect({ sf::Vector2f{0.f, 1.f - prop}, sf::Vector2f{1.f, prop} });
+        _glyph->setPropTextureRectInTime({ sf::Vector2f{0.f, 1.f - prop}, sf::Vector2f{1.f, prop} , {0.5f, gui::Easing::EaseInOutQuad}});
     }
 
 }
