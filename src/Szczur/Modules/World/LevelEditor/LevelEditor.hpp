@@ -48,6 +48,9 @@ public:
 	void update(InputManager& input, Window& camera);
 
 	///
+	void updateDisabledEditor(InputManager& input);
+
+	///
 	void printMenuBarInfo(const std::string& text);
 
 	///

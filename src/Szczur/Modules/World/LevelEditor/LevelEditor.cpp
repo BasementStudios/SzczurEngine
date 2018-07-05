@@ -43,7 +43,7 @@ namespace rat {
 		_dialogEditor = detail::globalPtr<DialogEditor>;
 		_audioEditor = detail::globalPtr<AudioEditor>;
 
-        _prepareOrigins();
+		_prepareOrigins();
 
 		const auto& videoMode = detail::globalPtr<Window>->getVideoMode();
 
@@ -73,7 +73,7 @@ namespace rat {
 	void LevelEditor::render(sf3d::RenderTarget& target) {
 
 		// Show ImGui demo window
-    	if(_ifShowImGuiDemoWindow) ImGui::ShowDemoWindow();
+		if(_ifShowImGuiDemoWindow) ImGui::ShowDemoWindow();
 
 		auto* scene = _scenes.getCurrentScene();
 		if(scene) {
@@ -98,6 +98,24 @@ namespace rat {
 		}
 	}
 
+	void LevelEditor::updateDisabledEditor(InputManager& input)
+	{		
+		auto* scene = _scenes.getCurrentScene();
+
+		// Find selected camera
+		Entity* cameraEntity = nullptr;
+		for (auto& entity : scene->getEntities("single")) { 
+			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
+				if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
+					cameraEntity = entity.get(); 
+				} 
+			} 
+		}
+
+		// Update movement
+		updateCameraMovement(cameraEntity, input);
+	}
+
 	void LevelEditor::update(InputManager& input, Window& windowModule) {
 		auto* scene = _scenes.getCurrentScene();
 		auto& window = windowModule.getWindow();
@@ -107,11 +125,11 @@ namespace rat {
 		// Find selected camera
 		for (auto& entity : scene->getEntities("single")) { 
 			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
-                if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
-                    cameraEntity = entity.get(); 
-                } 
-            } 
-        } 
+				if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
+					cameraEntity = entity.get(); 
+				} 
+			} 
+		} 
 
 		// Use camera for rendering
 		//	@todo , This should be done when changing camera only...
@@ -273,24 +291,24 @@ namespace rat {
 		auto mouse = _getFixedMousePos(input.getMousePosition());
 
 		// Camera movement
-			sf3d::Camera* camera;
-			
-			// Choose the camera to move
-			if (cameraEntity) {
+		sf3d::Camera* camera;
+		
+		// Choose the camera to move
+		if (cameraEntity) {
 			auto* comp = cameraEntity->getComponentAs<CameraComponent>();
 			if(comp->isNoMove()) {
 				return;
 			}
 			camera = static_cast<sf3d::Camera*>(comp);
-			}
-			else {
-				camera = &_freeCamera;
-			}
-			
-			// Velocity
+		}
+		else {
+			camera = &_freeCamera;
+		}
+		
+		// Velocity
 		float velocity = 30.f; // @todo , should be const in class
 		/**/ if (input.isKept(Keyboard::LShift)) velocity = 150.f;
-			else if (input.isKept(Keyboard::LAlt)) velocity = 10.f;
+		else if (input.isKept(Keyboard::LAlt)) velocity = 10.f;
 
 		// Natural movement
 		// if (input.isKept(Keyboard::W)) 			camera->bartek({0.f, 0.f,  velocity});
@@ -307,34 +325,34 @@ namespace rat {
 		if (input.isKept(Keyboard::A)) 			camera->move({-velocity, 0.f, 0.f});
 		if (input.isKept(Keyboard::Space)) 		camera->move({0.f,  velocity, 0.f});
 		if (input.isKept(Keyboard::LControl)) 	camera->move({0.f, -velocity, 0.f});
-			
-			// Rotating
-			if (_cameraRotating) {
-				camera->rotate({
-					-(mouse.y - _cameraPreviousMouseOffset.y) / 10.f, 
-					-(mouse.x - _cameraPreviousMouseOffset.x) / 10.f, // @todo , should be const in class
-					0.f
-				});
+		
+		// Rotating
+		if (_cameraRotating) {
+			camera->rotate({
+				-(mouse.y - _cameraPreviousMouseOffset.y) / 10.f, 
+				-(mouse.x - _cameraPreviousMouseOffset.x) / 10.f, // @todo , should be const in class
+				0.f
+			});
 			_cameraPreviousMouseOffset = sf::Vector2i(mouse.x, mouse.y);
-			}
-			if (!ax::NodeEditor::IsActive()) {
-				if (input.isPressed(Mouse::Right)) {
-					_cameraRotating = true;
-					_cameraPreviousMouseOffset = input.getMousePosition();
-				}
-			}
-			if (input.isReleased(Mouse::Right)) {
-				_cameraRotating = false;
-			}
-			
-			if (cameraEntity) {
-				// Update entity position to position updated by camera
-				//	@warn There shouldn't be even any reason to do that, but this needed because of how World works.
-				Entity* entity = cameraEntity->getComponentAs<CameraComponent>()->getEntity();
-				entity->setPosition(camera->getPosition());
-				entity->setRotation(camera->getRotation());
+		}
+		if (!ax::NodeEditor::IsActive()) {
+			if (input.isPressed(Mouse::Right)) {
+				_cameraRotating = true;
+				_cameraPreviousMouseOffset = input.getMousePosition();
 			}
 		}
+		if (input.isReleased(Mouse::Right)) {
+			_cameraRotating = false;
+		}
+		
+		if (cameraEntity) {
+			// Update entity position to position updated by camera
+			//	@warn There shouldn't be even any reason to do that, but this needed because of how World works.
+			Entity* entity = cameraEntity->getComponentAs<CameraComponent>()->getEntity();
+			entity->setPosition(camera->getPosition());
+			entity->setRotation(camera->getRotation());
+		}
+	}
 
 	void LevelEditor::changeCameraLock()
 	{
@@ -345,13 +363,13 @@ namespace rat {
 				comp->setNoMove(comp->getLock()); 
 				if(comp->getLock()) {
 					printMenuBarInfo("[x] Camera locked!");
-			}
-			else {
+				}
+				else {
 					printMenuBarInfo("[ ] Camera unlocked!");
 				}
 				break;
-			}
-		}
+			} 
+		} 
 	}
 
 	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {

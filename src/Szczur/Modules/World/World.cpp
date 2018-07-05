@@ -58,6 +58,8 @@ void World::update(float deltaTime)
 	#ifdef EDITOR
 		if(_doEditor)
 			_levelEditor.update(getModule<Input>().getManager(), getModule<Window>());
+		else
+			_levelEditor.updateDisabledEditor(getModule<Input>().getManager());
 	#endif
 
 	if (_isChangingScene)
