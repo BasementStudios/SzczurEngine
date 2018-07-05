@@ -95,7 +95,11 @@ namespace rat {
 		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
 			auto& entries = scene->getEntities("entries");
 
-			auto entry = std::find_if(entries.begin(), entries.end(), [&] (Entity* entity) { return name == entity->getName(); });
+			auto entry = std::find_if(entries.begin(), entries.end(), 
+				[&] (std::unique_ptr<Entity>& entity) { 
+					return name == entity->getName(); 
+				}
+			);
 
 			if (entry != entries.end()) {
 				entranceId = entry->get()->getID();
@@ -193,6 +197,9 @@ namespace rat {
 	}
 
     void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
+    	
+    	if(!scenes.isGameRunning()) return; 
+
         auto* player = getEntity()->getScene()->getPlayer();
         if(player == nullptr) 
 			return;
