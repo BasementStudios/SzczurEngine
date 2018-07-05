@@ -183,9 +183,17 @@ namespace rat {
 				{
 					_scenes.addCamera();
 				}
+				if (ImGui::MenuItem("Add Sun", nullptr))
+				{
+					_scenes.addSun();
+				}
 				if (ImGui::MenuItem("Enable editor", "F10", world->isEditor()))
 				{
 					world->setEditor(!world->isEditor());
+				}
+				if (ImGui::MenuItem("Lock/Unlock camera", "F4"))
+				{
+					world->getLevelEditor().changeCameraLock();
 				}
 				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) 
 				{
