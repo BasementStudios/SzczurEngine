@@ -51,6 +51,12 @@ public:
     bool getLock() const;
 
     ///
+    bool isNoMove() const;
+
+    ///
+    void setNoMove(bool flag);
+
+    ///
     virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
     
     void stickToPlayer();

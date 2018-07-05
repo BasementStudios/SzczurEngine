@@ -40,6 +40,14 @@ namespace rat {
 		return _locked;
 	}
 
+    bool CameraComponent::isNoMove() const {
+    	return _noMove;
+    }
+
+    void CameraComponent::setNoMove(bool flag) {
+    	_noMove = flag;
+    }
+
 	void CameraComponent::stickTo(Entity* entity) {
 		_stickTo = entity;
 		_stickedToX = false;
