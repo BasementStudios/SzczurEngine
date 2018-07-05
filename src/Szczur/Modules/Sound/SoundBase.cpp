@@ -20,7 +20,7 @@ namespace rat
     void SoundBase::setVolume(float volume)
     {
         _volume = volume;
-        _sound.setVolume(volume);
+        _sound.setVolume(volume * (SoundVolume / 100));
     }
 
     float SoundBase::getVolume() const
