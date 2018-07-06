@@ -39,7 +39,7 @@ namespace rat
         void init();
         void load();
         
-        void setBuffer(sf::SoundBuffer* _buffer);
+        void setBuffer(sf::SoundBuffer* buffer);
 
         static void initScript(Script& script);
 
