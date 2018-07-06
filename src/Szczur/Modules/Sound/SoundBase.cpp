@@ -167,6 +167,11 @@ namespace rat
         _sound.stop();
     }
 
+    void SoundBase::setName(const std::string& name)
+    {
+        _name = name;
+    }
+
     const std::string SoundBase::getName() const
     {
         return _name;
