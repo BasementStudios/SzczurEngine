@@ -91,5 +91,21 @@ namespace journal
     {
         _questID = ID;
     }
+
+    void Quest::setFollowing(bool n)
+    {
+        _isFollowing = n;
+    }
+
+    bool Quest::isFollowing()
+    {
+        return _isFollowing;
+    }
+
+    std::string Quest::getLastStep()
+    {
+        std::vector<std::string>::iterator it = _steps.end()-1;
+        return *it;
+    }
 }
 }

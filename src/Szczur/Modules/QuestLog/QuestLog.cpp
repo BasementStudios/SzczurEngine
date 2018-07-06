@@ -197,7 +197,7 @@ namespace rat
         auto j = getSaveJson();
         
         script.scriptFile("Assets/Quest/q2.lua");
-        loadFromSaveJson(j);
+        //loadFromSaveJson(j);
     }
 
     void QuestLog::activateQuest(const std::string& name)

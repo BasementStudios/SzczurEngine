@@ -19,8 +19,8 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         gui.addAsset<sf::Texture>("Assets/Test/ButtonTest.png");
-        gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
-        gui.addAsset<sf::Font>("Assets/GUITest/testfont.otf");
+        gui.addTexture("Assets/Test/NinePatchTest.png");
+        gui.addFont("Assets/GUITest/testfont.otf");
 
         _font = gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf");
         _ButtonWidget = new ImageWidget;
@@ -212,6 +212,12 @@ namespace rat
         widget->setCharacterSize(30);
         widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+
+                if(lastPressedTime+300>_journalClock.getElapsedTime().asMilliseconds())
+                {
+                    setFollowing(widget->getString());
+                }
+                lastPressedTime = _journalClock.getElapsedTime().asMilliseconds();
                 refresh(widget->getString());
         }
         );
@@ -266,21 +272,38 @@ namespace rat
     void QuestJournal::refresh(const std::string& questName)
     {
 
-        for(auto i :_normalTextWidgets)
-            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
 
         std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
+        for(auto i :_normalTextWidgets)
+        {
+            if((*k)->isFollowing())
+            { 
+                i->setColor(sf::Color(sf::Color(0, 153, 0 ,255)));
+            }
+            else    
+                i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+            k++;
+        } 
+        for(auto i :_doneTextWidgets)
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
+        k = _quests.begin();
         for(auto i : _normalTextWidgets)
         {
             if(i->getString() == questName)
             {
-                i->setColor(sf::Color::White);
+                if((*k)->isFollowing())
+                     i->setColor(sf::Color(0, 255, 0,255));
+                else
+                    i->setColor(sf::Color::White);
 
                 _stepManager->setQuest(*k);
                 _descriptionManager->setQuest(*k);
                 _questName->setQuest(*k);
+
+       
                 return;          
             }
             k++;
@@ -314,13 +337,19 @@ namespace rat
         {
             questName.erase(0,1);
         }  
+        std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
+        for(auto i :_normalTextWidgets)
+        {
+            if((*k)->isFollowing())
+                i->setColor(sf::Color(sf::Color(0, 153, 0 ,255)));
 
-         for(auto i :_normalTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+            k++;
+        } 
         for(auto i :_doneTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
 
-        std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
+        k = _quests.begin();
         for(auto i : _normalTextWidgets)
         {
             if(i->getString() == questName)
@@ -399,6 +428,11 @@ namespace rat
                     widget->setCharacterSize(25);
                     widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
                     widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                        if(lastPressedTime+300>_journalClock.getElapsedTime().asMilliseconds())
+                        {
+                            setFollowing(widget->getString());
+                        }
+                        lastPressedTime = _journalClock.getElapsedTime().asMilliseconds();
                         refresh(widget->getString());
                     });
                     _list->add(widget);
@@ -453,6 +487,11 @@ namespace rat
                     widget->setCharacterSize(25);
                     widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
                     widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                        if(lastPressedTime+300>_journalClock.getElapsedTime().asMilliseconds())
+                        {
+                            setFollowing(widget->getString());
+                        }
+                        lastPressedTime = _journalClock.getElapsedTime().asMilliseconds();
                         refresh(widget->getString());
                     });
                     _list->add(widget);
@@ -481,6 +520,17 @@ namespace rat
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
 
         _actual->setColor(sf::Color::White);
+        std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
+        for(auto i :_normalTextWidgets)
+        {
+            if((*k)->isFollowing())
+                i->setColor(sf::Color(sf::Color(0, 153, 0 ,255)));
+
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+            k++;
+        } 
+
+        
         _done->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
     }
 
@@ -571,6 +621,11 @@ namespace rat
             widget->setCharacterSize(30);
             widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
             widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                if(lastPressedTime+300>_journalClock.getElapsedTime().asMilliseconds())
+                {
+                    setFollowing(widget->getString());
+                }
+                lastPressedTime = _journalClock.getElapsedTime().asMilliseconds();
                     refresh(widget->getString());
             }
             );
@@ -610,5 +665,32 @@ namespace rat
             _doneTextWidgets.push_back(widget);
             k++;
         }
+    }
+    void QuestJournal::setFollowing(std::string name)
+    {
+        std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
+        for(auto i = _normalTextWidgets.begin(); i!= _normalTextWidgets.end() ; i++)
+        {
+            if((*i)->getString() == name)
+            {
+                (*i)->setColor(sf::Color(0, 153, 0,255));
+                for(auto b = _quests.begin(); b != _quests.end() ; b++)
+                {
+                    (*b)->setFollowing(false);
+                }
+                (*k)->setFollowing(true);
+            }
+            k++;
+        }
+    }
+
+    std::string QuestJournal::getFollowStep()
+    {
+        for(auto i : _quests)
+        {
+            if(i->isFollowing())
+                return i->getLastStep();
+        }
+        return "";
     }
 }

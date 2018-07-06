@@ -31,9 +31,13 @@ namespace journal
 
             std::vector<std::string> & getSteps();
 
-            void formatName();
+            std::string getLastStep();
 
+            void formatName();
+            void setFollowing(bool n);
+            bool isFollowing();
         private:
+            bool _isFollowing = false;
 
             std::string _questName;
             std::vector<std::string> _steps;
