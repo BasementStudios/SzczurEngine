@@ -759,6 +759,8 @@ private:
 
 void ShaderProgram::_showEditor(bool* open)
 {
+	if (!isValid()) return;
+
 	static ImGuiID imID;
 
 	if (ImGui::Begin(("ShaderProgram editor " + std::to_string(_program)).data(), open))
