@@ -20,10 +20,10 @@ namespace rat
         std::string filePath;
         
         if (path.find(currentPath) != std::string::npos) {
-            filePath = path.substr(currentPath.length() + 24, path.length() - 5 - currentPath.length() - 24);
+            filePath = path.substr(currentPath.length() + 1, path.length());
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
-            std::ifstream file("Assets/Music/Playlists/" + filePath + ".json");
+            std::ifstream file(filePath);
             if (file.is_open()) {
                 file >> j;
             }
