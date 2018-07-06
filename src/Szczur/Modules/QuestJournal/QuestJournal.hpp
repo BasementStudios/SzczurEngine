@@ -1,4 +1,6 @@
 #pragma once
+#include <json.hpp>
+#include <cstdlib>
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
@@ -42,7 +44,13 @@ namespace rat
             void turnON();
             void turnOFF();
 
+            nlohmann::json& getSaveJson();
+            void loadFromJson(nlohmann::json& json);
+
         private:
+
+
+            nlohmann::json _save;
 
             bool _isRunning = false;
 

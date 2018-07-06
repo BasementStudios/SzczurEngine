@@ -77,5 +77,19 @@ namespace journal
             _questName.erase(0,1);
         }   
     }
+
+    void Quest::addQuestSaveDescription(std::vector<std::string> ref)
+    {
+        _descriptions = ref;
+    }
+
+    void Quest::addSaveSteps(std::vector<std::string> ref)
+    {
+        _steps = ref;
+    }
+    void Quest::setID(unsigned int ID)
+    {
+        _questID = ID;
+    }
 }
 }

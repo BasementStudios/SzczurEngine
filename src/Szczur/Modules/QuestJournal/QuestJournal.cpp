@@ -177,6 +177,8 @@ namespace rat
     
         finishQuest(2);
 
+
+        loadFromJson(getSaveJson());
         //moveIterator(1);
       //  addStep(0);
         
@@ -507,6 +509,102 @@ namespace rat
             {
                 turnON();
             }
+        }
+    }
+
+    nlohmann::json& QuestJournal::getSaveJson()
+    {
+        int k=0;
+        for(auto i = _quests.begin();i!=_quests.end();i++)
+        {
+            _save["in_progress"]["Q"+std::to_string(k)]["ID"] = std::to_string((*i)->getID());
+            _save["in_progress"]["Q"+std::to_string(k)]["name"] = (*i)->getQuestName();
+            _save["in_progress"]["Q"+std::to_string(k)]["steps"] = (*i)->getSteps();
+            _save["in_progress"]["Q"+std::to_string(k)]["descriptions"] = (*i)->getDescription();
+            k++;
+        }
+        k=0;
+        for(auto i = _doneQuests.begin();i!=_doneQuests.end();i++)
+        {
+            _save["done"]["Q"+std::to_string(k)]["ID"] = std::to_string((*i)->getID());
+            _save["done"]["Q"+std::to_string(k)]["name"] = (*i)->getQuestName();
+            _save["done"]["Q"+std::to_string(k)]["steps"] = (*i)->getSteps();
+            _save["done"]["Q"+std::to_string(k)]["descriptions"] = (*i)->getDescription();
+            k++;
+        }
+        return _save;
+    }
+    
+    void QuestJournal::loadFromJson(nlohmann::json& json)
+    {
+        std::shared_ptr<journal::Quest> quest;
+        int k=0;
+
+        _quests.clear();
+        _list->clear();
+        _normalTextWidgets.clear();
+
+        _doneQuests.clear();
+        _doneList->clear();
+        _doneTextWidgets.clear();
+        
+        while(json["in_progress"]["Q"+std::to_string(k)].empty() == false)
+        {
+            std::string n = json["in_progress"]["Q"+std::to_string(k)]["ID"];
+            quest = std::make_shared<journal::Quest>(_fileLoader,atoi(n.c_str()) );
+            n = json["in_progress"]["Q"+std::to_string(k)]["name"];
+            quest->setQuestName(n);
+            quest->addQuestSaveDescription(json["in_progress"]["Q"+std::to_string(k)]["descriptions"]);
+            quest->addSaveSteps(json["in_progress"]["Q"+std::to_string(k)]["steps"]);
+
+            _quests.push_back(quest);
+
+            it = _quests.end()-1;
+        
+            TextWidget* widget;
+            widget = new TextWidget;
+            widget->setString(quest->getQuestName());
+            widget->setCharacterSize(30);
+            widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+            widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                    refresh(widget->getString());
+            }
+            );
+            widget->setFont(getModule<GUI>().getAsset<sf::Font>("Assets/GUITest/testfont.otf"));
+            _list->add(widget);
+            _normalTextWidgets.push_back(widget);
+            k++;
+        }
+        k=0;
+        while(json["done"]["Q"+std::to_string(k)].empty() == false)
+        {
+            std::string n = json["done"]["Q"+std::to_string(k)]["ID"];
+            quest = std::make_shared<journal::Quest>(_fileLoader,atoi(n.c_str()) );
+            n = json["done"]["Q"+std::to_string(k)]["name"];
+            quest->setQuestName(n);
+            quest->addQuestSaveDescription(json["done"]["Q"+std::to_string(k)]["descriptions"]);
+            quest->addSaveSteps(json["done"]["Q"+std::to_string(k)]["steps"]);
+
+            _quests.push_back(quest);
+
+            it = _quests.end()-1;
+        
+            TextWidget* widget;
+
+            _doneQuests.push_back(quest);
+                
+            widget = new TextWidget;
+            widget->setString(quest->getQuestName());
+            widget->setFont(_font);
+
+            widget->setCharacterSize(25);
+            widget->setColor(sf::Color(135, 89, 247 ,255));
+            widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                refresh(widget->getString());
+            });
+            _doneList->add(widget);
+            _doneTextWidgets.push_back(widget);
+            k++;
         }
     }
 }

@@ -18,11 +18,13 @@ namespace journal
             void setQuestName(const std::string& name);
 
             void addQuestDescription(unsigned int descriptionID);
+            void addQuestSaveDescription(std::vector<std::string> vec);
 
             void nextStep(unsigned int stepID);
+            void addSaveSteps(std::vector<std::string> vec);
 
             unsigned int getID();
-
+            void setID(unsigned int ID);
             std::string& getQuestName();
 
             std::vector<std::string> & getDescription();
