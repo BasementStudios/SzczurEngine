@@ -7,6 +7,7 @@
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "WearableItem.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 namespace rat {
 	RingSlider::RingSlider(sf::Vector2f frameSize, Equipment* equipment)
@@ -25,8 +26,9 @@ namespace rat {
 		_scroll->setPropPosition(0.5f, 0.5f);
 		_base->add(_scroll);	
 		
-		_baseForItems = new Widget;
-		_baseForItems->setPropSize({ 0.09f, 0.09f });
+		_baseForItems = new ListWidget;
+		_baseForItems->setPropBetweenPad(0.005f);
+		//_baseForItems->setPropSize({ 0.09f, 0.09f });
 		_scroll->add(_baseForItems);
 
 	}
@@ -59,11 +61,11 @@ namespace rat {
 		EquipmentSlot* temp = new EquipmentSlot;
 		_ringSlots.push_back(temp);
 		_scroll->resetScrollerPosition();
-		_baseForItems->setPropSize(0.09f, (_ringSlots.size() - 1) * (.09f + .01f));
+		//_baseForItems->setPropSize(0.09f, (_ringSlots.size() - 1) * (.09f + .01f));		
 		temp->setParent(_baseForItems);
 		temp->setPropSize({ 0.09f, 0.09f });//_slotSize);
 		temp->setTexture(_slotTexture);
-		temp->setPropPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (.15f + .01f)));
+		//temp->setPropPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (.15f + .01f)));
 		temp->setItem(item);
 		temp->setHighlightTexture(_highlightTexture);
 		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {

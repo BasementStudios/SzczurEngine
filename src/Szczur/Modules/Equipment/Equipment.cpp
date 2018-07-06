@@ -77,17 +77,17 @@ namespace rat {		//beware spagetti monster down there :/
 	
 		_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
-		_armorSlots->setPropPosition({0.0f, 0.0f});
+		_armorSlots->setPropPosition({ 0.15f, 0.08f });
 		_armorSlots->initAssetsViaGUI(gui);
 
 		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"), { 62, 62 }, this);
 		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->setPropPosition(sf::Vector2f(0.f, 1.f));
+		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .9f));
 
 		_ringSlider = new RingSlider({ 70u, 70u }, this);
 		_ringSlider->setParent(_equipmentFrame);
 		_ringSlider->initAssetsViaGUI(gui);
-		_ringSlider->setPropPosition({ 1.f, 0.0f });
+		_ringSlider->setPropPosition({ 0.9f, 0.4f });
 
 		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
 		_itemPreview->setParent(_base);

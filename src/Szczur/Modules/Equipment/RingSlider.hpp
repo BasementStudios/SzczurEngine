@@ -3,7 +3,7 @@
 #include "SFML/Graphics.hpp"
 
 namespace rat {
-	class EquipmentSlot; class Equipment; class Widget; class ScrollAreaWidget; class WearableItem; class WindowWidget; class GUI; class EquipmentObject;
+	class EquipmentSlot; class Equipment; class Widget; class ScrollAreaWidget; class WearableItem; class WindowWidget; class GUI; class EquipmentObject; class ListWidget;
 	class RingSlider
 	{
 	public:
@@ -41,7 +41,7 @@ namespace rat {
 
 		ScrollAreaWidget* _scroll;
 		Widget* _base;
-		Widget* _baseForItems;
+		ListWidget* _baseForItems;
 		WindowWidget* _border;
 
 		float _length;
