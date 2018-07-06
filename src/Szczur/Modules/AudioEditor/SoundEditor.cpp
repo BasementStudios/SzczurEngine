@@ -277,10 +277,10 @@ namespace rat
         std::string filePath;
         
         if (path.find(currentPath) != std::string::npos && !path.empty()) {
-            filePath = path.substr(currentPath.length() + 20, path.length() - 5 - currentPath.length() - 20);
+            filePath = path.substr(currentPath.length() + 1, path.length());
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
-            _soundHolder.push_back(SoundBase(""));
+            _soundHolder.push_back(SoundBase("Unnnamed"));
             _assets.load(filePath);
             _soundHolder.back().setBuffer(_assets.get(filePath));
             _soundHolder.back().init();
