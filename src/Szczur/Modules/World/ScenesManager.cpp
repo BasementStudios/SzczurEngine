@@ -15,7 +15,7 @@
 #include <Szczur/Modules/World/World.hpp>
 #include <Szczur/Modules/Cinematics/Cinematics.hpp> 
 #include <Szczur/Modules/Music/Music.hpp> 
-#include <Szczur/Modules/Sound/SoundManager.hpp> 
+#include <Szczur/Modules/Sound/Sound.hpp> 
 
 #include <Szczur/Utility/SFML3D/LightPoint.hpp>
 
@@ -348,7 +348,7 @@ void ScenesManager::stopGame() {
  
 	    detail::globalPtr<Cinematics>->stop(); 
 	    detail::globalPtr<Music>->stop(); 
-	    detail::globalPtr<SoundManager>->stop(); 
+	    detail::globalPtr<Sound>->stop(); 
 	
 		#ifdef EDITOR
 		detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
