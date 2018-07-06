@@ -45,13 +45,16 @@ namespace rat
     }
     QuestNode* Quest::getRoot()
     {
+        if(!_rootNode) LOG_ERROR("Root is nullptr...");
         return _rootNode;
     }
     void Quest::start()
     {
         std::cout << "Quest Started\n";
         _state = State::Active;
+        std::cout << "Quest Kek Started\n";
         _rootNode->activate();
+        std::cout << "Quest Kek Started\n";
         _rootNode->nextStep();
     }
     void Quest::finish()
@@ -71,11 +74,11 @@ namespace rat
 
     void Quest::addTitle(int index)
     {
-        _owner.addQuestTitle(getName(), index);
+        _owner.addQuestTitle(getNameIndex(), index);
     }
     void Quest::addDescription(int index)
     {
-        _owner.addQuestDescription(getName(), index);
+        _owner.addQuestDescription(getNameIndex(), index);
     }
 
     json Quest::getSaveJson() const

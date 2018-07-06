@@ -10,6 +10,7 @@ namespace journal
 
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
+        _list->makeReversed();
         interface->add(_scroller);
         _scroller->setPropSize(0.4f, 0.3f);
         _scroller->setPropPosition(0.28f, 0.1f);

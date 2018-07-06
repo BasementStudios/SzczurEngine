@@ -60,7 +60,7 @@ namespace rat
 
     private:
         std::unordered_map<std::string, Node_t> _nodes;
-        QuestNode* _rootNode;
+        QuestNode* _rootNode{nullptr};
 
         enum class State { NotStarted, Active, Inactive, Finished};
         State _state{State::NotStarted};

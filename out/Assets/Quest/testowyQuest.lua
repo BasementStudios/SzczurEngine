@@ -1,33 +1,34 @@
 
-local nemo = QuestLog.addQuest("Nemo")
-nemo:setNameIndex(13)
+local inosEye = QuestLog.addQuest("InosEye")
+inosEye:setNameIndex(0)
 
-local root = nemo:getRoot()
-root:addDescription(23)
+local root = inosEye:getRoot()
+root:addDescription(0)
+root:addTitle(0)
 
-local sharkChoice = root:addStep("SharkChoice")
-sharkChoice:addTitle(76)
+local hagen = root:addStep("Hagen")
+hagen:addTitle(1)
 
-local kill = sharkChoice:addStep("Kill")
-kill:addTitle(34)
-kill:addDescription(11)
-local req = kill:getReqs()
-req:addCounter("kek", 1);
-req:advanceCounter("kek", 1)
-kill.onActivate = function () print("Juhu dziala atakujemy", req:getFromCounter("kek")) end
+local mine = hagen:addStep("Mine")
+mine.onActivate = print("Testowy Kek")
+mine:addTitle(2)
+mine:addDescription(1)
 
---addSubnode
+local note = mine:addStep("Note")
+note:addTitle(3)
 
-local findSth = kill:addStep("FindSth")
-findSth:addTitle(26)
-findSth:addDescription(90)
-findSth.onBlock = function () print("Nie atakujemy, po co") end
+local getEye = note:addStep("GetEye")
+getEye:addDescription(3)
+getEye:addTitle(4)
+
+local repair = getEye:addStep("Repair")
+repair:addTitle(5)
 
 
-local goAround = sharkChoice:addStep("GoAround")
-goAround:addTitle(31)
-goAround:addDescription(69)
 
-QuestLog.startQuest("Nemo")
-sharkChoice:nextStep("Kill")
-kill:nextStep()
+QuestLog.startQuest("InosEye")
+hagen:nextStep()
+mine:nextStep()
+note:nextStep()
+getEye:nextStep()
+repair:nextStep()

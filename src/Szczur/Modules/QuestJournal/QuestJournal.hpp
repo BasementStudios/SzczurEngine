@@ -1,5 +1,5 @@
 #pragma once
-#include <json.hpp>
+#include <Json/json.hpp>
 #include <cstdlib>
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"

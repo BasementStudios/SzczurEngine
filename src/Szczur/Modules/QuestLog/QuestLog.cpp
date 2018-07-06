@@ -191,11 +191,10 @@ namespace rat
         {
             auto& quest = found->second;
             auto& journal = getModule<QuestJournal>();
-            std::cout << "Quest with name index: " << quest->getNameIndex() << " activated\n\n";
-
+            //std::cout << "Quest with name index: " <<  << " activated\n\n";
+            journal.addQuest(quest->getNameIndex());
             quest->start();
 
-            //journal.addQuest(1);
         }
     }
 
@@ -210,30 +209,29 @@ namespace rat
         {
             auto& quest = found->second;
             auto& journal = getModule<QuestJournal>();
-            std::cout << "Quest with name index: " << quest->getNameIndex() << " finished\n\n";
+            //std::cout << "Quest with name index: " << quest->getNameIndex() << " finished\n\n";
 
             //quest->start();
 
-            //journal.addQuest(1);
+            journal.finishQuest(quest->getNameIndex());
         }
     }
 
-    void QuestLog::addQuestTitle(const std::string& questName, int index)
+    void QuestLog::addQuestTitle(int questIndex, int index)
     {
         auto& journal = getModule<QuestJournal>();
-        //journal.moveIterator(questName);
-
-        //journal.addStep((unsigned int)(index));
-        std::cout << "Step: " << index << " from quest " << questName << " added\n\n";
+        journal.moveIterator(questIndex);
+        journal.addStep((unsigned int)(index));
+        //std::cout << "Step: " << index << " from quest " << questName << " added\n\n";
     }
-    void QuestLog::addQuestDescription(const std::string& questName, int index)
+    void QuestLog::addQuestDescription(int questIndex, int index)
     {
         auto& journal = getModule<QuestJournal>();
-        //journal.moveIterator(questName);
+        journal.moveIterator(questIndex);
 
-        //journal.addDescription((unsigned int)(index));
+        journal.addDescription((unsigned int)(index));
 
-        std::cout << "Desc: " << index << " from quest " << questName << " added\n\n";
+        //std::cout << "Desc: " << index << " from quest " << questName << " added\n\n";
     }
 
     void QuestLog::testQuest()

@@ -46,8 +46,8 @@ namespace rat
         void initScript();
 
         void activateQuest(const std::string& name);
-        void addQuestTitle(const std::string& questName, int index);
-        void addQuestDescription(const std::string& questName, int index);
+        void addQuestTitle(int questIndex, int index);
+        void addQuestDescription(int questIndex, int index);
         void finishQuest(const std::string& name);
 
     private:

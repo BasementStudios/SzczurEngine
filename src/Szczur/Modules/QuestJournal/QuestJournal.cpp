@@ -146,6 +146,7 @@ namespace rat
         
         _switch->add(_actual);
 
+        /*
         addQuest(0);
         addStep(0);
         addStep(1);
@@ -176,9 +177,10 @@ namespace rat
         addDescription(0);
     
         finishQuest(2);
+        */
 
 
-        loadFromJson(getSaveJson());
+        //loadFromJson(getSaveJson());
         //moveIterator(1);
       //  addStep(0);
         
@@ -515,7 +517,7 @@ namespace rat
     nlohmann::json& QuestJournal::getSaveJson()
     {
         int k=0;
-        for(auto i = _quests.begin();i!=_quests.end();i++)
+        for(auto i = _quests.begin(); i != _quests.end(); i++)
         {
             _save["in_progress"]["Q"+std::to_string(k)]["ID"] = std::to_string((*i)->getID());
             _save["in_progress"]["Q"+std::to_string(k)]["name"] = (*i)->getQuestName();
