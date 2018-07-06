@@ -1,16 +1,17 @@
-#include <iostream> 
-#include "Script.hpp" 
- 
-#include <sol2/sol.hpp> 
-#include <SFML/Graphics.hpp> 
-#include <glm/vec2.hpp> 
-#include <glm/vec3.hpp> 
-#include <SFML/Graphics/Color.hpp> 
-#include <SFML/System/Vector2.hpp> 
-#include <SFML/System/Clock.hpp> 
- 
-#include "Szczur/Utility/Modules/Module.hpp" 
-#include "Szczur/Modules/Script/ScriptClass.hpp" 
+#include "Script.hpp"
+
+#include <iostream>
+
+#include <sol2/sol.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/System/Clock.hpp>
+
+#include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Modules/Script/ScriptClass.hpp"
+
 
 namespace rat {
 	
