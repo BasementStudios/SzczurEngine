@@ -61,7 +61,5 @@ namespace rat
 		void loadMusic();
 		void getJsonData();
 
-		const std::string& getPath() const;
-
 	};
 }

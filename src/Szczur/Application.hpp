@@ -6,9 +6,9 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Music/Music.hpp"
+#include "Szczur/Modules/Sound/Sound.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/Sound/SoundManager.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
 
 namespace rat

@@ -1,0 +1,8 @@
+{
+    "Button": {
+        "Path":"Assets/Sounds/button.flac", "BeginTime":0.10, "EndTime":0.42, "Pitch":1.0, "Volume":42.00, "Attenuation":1.0, "MinDistance":1.0, "Relative": true
+    },
+    "Button 1": {
+        "Path":"Assets/Sounds/button.flac", "BeginTime":0.10, "EndTime":0.42, "Pitch":1.0, "Volume":100.00, "Attenuation":1.0, "MinDistance":1.0, "Relative": true
+    }
+}

@@ -20,9 +20,9 @@ void Application::init()
 	initModule<Script>();
 	initModule<Music>();
 	initModule<AudioEffects>();
-	initModule<SoundManager>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
+	initModule<Sound>();
 
 
 	LOG_INFO("Modules initialized");

@@ -6,12 +6,12 @@ namespace rat
     Listener::Listener()
     {
         initScript();
-		LOG_INFO(this, " : Module Music constructed");
+		LOG_INFO(this, " : Module Listener constructed");
     }
 
     Listener::~Listener()
     {
-        LOG_INFO(this, " : Module Music destructed");
+        LOG_INFO(this, " : Module Listener destructed");
     }
 
     void Listener::initScript()
@@ -21,7 +21,6 @@ namespace rat
 
 		module.set_function("setGlobalVolume", &Listener::setGlobalVolume, this);
 		module.set_function("getGlobalVolume", &Listener::getGlobalVolume, this);
-		module.set_function("setPosition", &Listener::setPosition, this);
 		module.set_function("getPosition", &Listener::getPosition, this);
         module.set_function("setDirection", &Listener::setDirection, this);
 		module.set_function("getDirection", &Listener::getDirection, this);
