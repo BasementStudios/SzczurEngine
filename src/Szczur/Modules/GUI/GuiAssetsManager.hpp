@@ -34,19 +34,19 @@ namespace rat {
         }
         
         template<typename T>
-        T* loadFromFile(const std::string& path)
+        void loadFromFile(const std::string& path)
         {
+            if(_get<T>(fnv1a_32(path.begin(), path.end())) != nullptr) return;
+
             T* obj = new T;
             if(obj->loadFromFile(path))
             {
                 _add( fnv1a_32(path.begin(), path.end()), obj);
-                return obj;
             }
             else 
             {
                 LOG_ERROR("Cannot load file: \"", path, "\"");
                 delete obj;
-                return nullptr;
             }
         }
 
@@ -56,8 +56,8 @@ namespace rat {
             auto* result = _get<T>(fnv1a_32(path.begin(), path.end()));
             if(!result) 
             {
-                return loadFromFile<T>(path);
-                //LOG_ERROR("Cannot get file: \"", path, "\"");
+                LOG_ERROR("Cannot get file: \"", path, "\"");
+                return nullptr;
             }
             return result;
         }

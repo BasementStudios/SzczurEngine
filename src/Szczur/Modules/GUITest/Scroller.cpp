@@ -7,12 +7,30 @@
 
 namespace rat
 {
+    void Scroller::invisible()
+    {
+        _isVisible = false;
+        _isClicked = false;
+        _isHovered = false;
+        _hasBeenClicked = false;
+    }
+    void Scroller::visible()
+    {
+        _isVisible = true;
+    }
+    bool Scroller::isVisible() const
+    {
+        return _isVisible;
+    }
     void Scroller::draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
-        target.draw(_path, states);
-        target.draw(_scroller, states);
-        target.draw(_upperBound, states);
-        target.draw(_bottomBound, states);
+        if(_isVisible)
+        {
+            target.draw(_path, states);
+            target.draw(_scroller, states);
+            target.draw(_upperBound, states);
+            target.draw(_bottomBound, states);
+        }
     }
 
     void Scroller::setPosition(float x, float y)
@@ -149,6 +167,7 @@ namespace rat
 
     void Scroller::input(const sf::Event& event)
     {
+        if(!_isVisible) return;
         
         switch (event.type)
         {
