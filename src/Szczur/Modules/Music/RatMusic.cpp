@@ -121,7 +121,7 @@ namespace rat
 			j[_name]["Volume"]   = getVolume();
 			j[_name]["Effects"]  = effects;
 
-			ofile << setw(4) << j << std::endl;
+			ofile << std::setw(4) << j << std::endl;
         	ofile.close();
         }
 	}
