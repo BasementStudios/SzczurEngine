@@ -20,6 +20,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         gui.addAsset<sf::Texture>("Assets/Test/ButtonTest.png");
         gui.addTexture("Assets/Test/NinePatchTest.png");
+        gui.addFont("Assets/GUITest/testfont.otf");
 
         _font = gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf");
         _ButtonWidget = new ImageWidget;
