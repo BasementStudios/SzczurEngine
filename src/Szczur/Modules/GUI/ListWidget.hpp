@@ -10,6 +10,7 @@ namespace rat
     {
     public:
         void setBetweenPadding(float padding);
+        void setPropBetweenPad(float propPad);
         void setAutoBetweenPadding();
 
         void makeVertical();
@@ -25,11 +26,16 @@ namespace rat
         virtual sf::Vector2f _getChildrenSize() override;
         virtual void _clear() override;
         virtual sf::Vector2f _getInnerSize() const override;
-
+        virtual void _recalcElementsPropSize() override;
         virtual void _recalcChildrenPos() override;
     private:
         float _betweenWidgetsPadding{0};
+        float _propBetweenPad{1.f};
+
+        bool _hasPropBetweenPad{false};
         bool _hasAutoBetweenPad{false};
+
+        void _calcPropBetweenPad();
 
         void _updateChildrenSize();
         sf::Vector2f _childrenSize;

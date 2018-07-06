@@ -45,7 +45,7 @@ namespace rat
         _widget->setSizingWidthToHeightProportion(1.f);
         //_widget->setWidthToHeightProp(16.f/9.f);
 
-        auto* scroll = new ScrollAreaWidget;
+        scroll = new ScrollAreaWidget;
         _widget->add(scroll);
 
         scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
@@ -53,6 +53,8 @@ namespace rat
         scroll->setBoundsTexture(gui.getTexture("Assets/Test/ScrollerBound.png"));
 
         scroll->setPropSize(0.5f, 0.5f);
+        scroll->setScrollPropWidth(0.02f);
+        scroll->makeScrollAutoHiding();
         scroll->setPropPosition(1.0f, 1.0f);
 
         //auto gui::AnimData{4.f, gui::Easing::EaseInQuad, [](){}};
@@ -83,13 +85,13 @@ namespace rat
         //list->setBetweenPadding(20.f);
         scroll->add(list);
         //list->setPropPosition(0.f, 1.f);
-        list->setPropSize(0.3f, 1.f);
-        list->setAutoBetweenPadding();
+        //list->setPropSize(0.3f, 1.f);
+        //list->setAutoBetweenPadding();
 
         
 
         float size = 0.1f;
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 2; i++)
         {
             auto* w = new ImageWidget;
             list->add(w);
@@ -113,9 +115,9 @@ namespace rat
         fps->setString("ABCDEFG");
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             if(randomBool)
-                image->setPropTextureRectInTime({{0.5f, 0.5f},{0.f, 0.f}}, {3.f, gui::Easing::EaseInOutBounce});
-            else
-                image->setPropTextureRectInTime({{0.f, 0.f},{1.f, 1.f}}, {3.f, gui::Easing::EaseInOutElastic});
+                fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
+            //else
+                //image->setPropTextureRectInTime({{0.f, 0.f},{1.f, 1.f}}, {3.f, gui::Easing::EaseInOutElastic});
             randomBool = !randomBool;
         });
     }
@@ -179,6 +181,10 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
+        list->setBetweenPadding(400.f * _prop);
+
+        //scroll->setScrollPropWidth(_prop);
+        //std::cout << _prop << '\n';
         //fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
 
         //image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});

@@ -75,6 +75,11 @@ namespace rat
     {
         setTexture(texture, padding, padding);
     }
+
+    const sf::Texture* NinePatch::getTexture() const
+    {
+        return _texture;
+    }
     
     
     void NinePatch::setInnerSize(const sf::IntRect& rect)
