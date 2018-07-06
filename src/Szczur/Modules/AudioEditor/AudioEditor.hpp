@@ -10,7 +10,7 @@
 
 namespace rat
 {
-    class AudioEditor : public Module <Window, Input, Music, SoundManager, Listener>
+    class AudioEditor : public Module <Window, Input, Music, Sound, Listener>
     {
 
     private:

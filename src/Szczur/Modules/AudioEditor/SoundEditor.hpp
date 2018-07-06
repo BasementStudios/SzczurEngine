@@ -1,33 +1,36 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <list>
 
-#include "Szczur/Modules/Sound/SoundManager.hpp"
+#include "Szczur/Modules/Sound/Sound.hpp"
 
 namespace rat
 {
     class SoundEditor
     {
+
+        using Container_t = std::list<SoundBase>;
     
     private:
 
-        SoundManager& _soundManager;
+        Sound& _sound;
+        SoundAssets _assets;
         
-        bool _editor      {false};
-        bool _addingSound {false};
+        bool _editor       {false};
+        bool _loadingSound {false};
 
-        std::string _currentEditing {""};
+        Container_t _soundHolder;
 
-        std::vector<std::string> _soundNames;
+        Container_t::iterator _currentEditing;
  
     public:
 
-        SoundEditor(SoundManager& soundManager);
+        SoundEditor(Sound& sound);
 
         void render();
 
-        void save(const std::string& fileName);
+        void save(Container_t::iterator it);
 
         void load();
         void add();
