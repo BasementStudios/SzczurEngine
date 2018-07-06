@@ -1,10 +1,13 @@
 #include "ScrollAreaWidget.hpp"
 #include <iostream>
+#include <cassert>
 
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
+
+#include "InterfaceWidget.hpp"
 
 #include "Animation/Anim.hpp"
 
@@ -67,6 +70,40 @@ namespace rat {
         _scrollerProp = prop;
         if(_aboutToRecalculate) return;
         _recalcScroller();
+    }
+
+    void ScrollAreaWidget::setScrollWidth(float width)
+    {
+        if(_isMinSizeSet) width = std::min(width, _minSize.x);
+        _minScrollSize.x = width;
+        _aboutToRecalculate = true;
+        _isPosChanged = true;
+    }
+    void ScrollAreaWidget::setScrollPropWidth(float propWidth)
+    {
+        _hasScrollerPropWidth = true;
+        _scrollerPropWidth = propWidth;
+        if(_interface) _recalcScrollerPropWidth();
+        else _elementsPropSizeMustBeenCalculated = true;
+    }
+
+    void ScrollAreaWidget::_recalcScrollerPropWidth()
+    {
+        assert(_hasScrollerPropWidth);
+        assert(_interface);
+
+        float width = _interface->getSizeByPropSize({_scrollerPropWidth, 0.f}).x;
+        setScrollWidth(width);
+    }
+
+    void ScrollAreaWidget::_recalcElementsPropSize()
+    {
+        if(_hasScrollerPropWidth) _recalcScrollerPropWidth();
+    }
+    void ScrollAreaWidget::makeScrollAutoHiding()
+    {
+        _isAutoHiding = true;
+        _aboutToRecalculate = true;
     }
 
     void ScrollAreaWidget::_recalcScroller()
@@ -176,8 +213,27 @@ namespace rat {
         float barWidth = float(_minScrollSize.x);
         _scroller.setSize(_minScrollSize.x, size.y);
 
-        sf::Vector2u rTexSize = { (unsigned int)(size.x - _minScrollSize.x - (getPadding().x * 2.f)), (unsigned int)(size.y - (getPadding().y * 2.f)) };
-        std::cout << "New size: " << rTexSize.x << " " << rTexSize.y << '\n';
+
+        auto rTexHeight = (unsigned int)(size.y - (getPadding().y * 2.f));
+        float rTexWidth = size.x - (getPadding().x * 2.f);
+
+        _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
+        _childrenHeightProp = _childrenHeight/float(size.y);
+        _scroller.setScrollerHeightProp(_childrenHeightProp);
+
+        if(_childrenHeightProp <= 1.f && _isAutoHiding)
+        {
+            _scroller.invisible();
+        }
+        else
+        {
+            _scroller.visible();
+            rTexWidth -= _minScrollSize.x;
+            if(rTexWidth < 1.f) rTexWidth = 1.f;
+        }
+
+
+        sf::Vector2u rTexSize = {(unsigned int)(rTexWidth) , rTexHeight};
         if(rTexSize != _renderTexture.getSize())
         {
             auto* window = detail::globalPtr<Window>; 
@@ -185,12 +241,6 @@ namespace rat {
             _renderTexture.create(rTexSize.x, rTexSize.y); 
             window->popGLStates();
         }
-
-
-        _childrenHeight = float(std::max(Widget::_getChildrenSize().y, size.y));
-        _childrenHeightProp = _childrenHeight/float(size.y);
-        _scroller.setScrollerHeightProp(_childrenHeightProp);
-
         _recalcScroller();
     }
 

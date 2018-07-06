@@ -33,6 +33,7 @@ namespace rat
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};
         TextWidget* fps{nullptr};
+        ScrollAreaWidget* scroll{nullptr};
     };
 
 }
