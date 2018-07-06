@@ -15,7 +15,7 @@ namespace rat
     :
     BaseBar()
     {
-        setPropSize(0.18f, 0.04f);
+        setPropSize(0.165f, 0.04f);
 
         _costPP = new ImageWidget;
         _costPP->setPropPosition(1.f, 0.f);
@@ -25,7 +25,8 @@ namespace rat
 
         _costAmount = new TextWidget;
         _costAmount->setPropPosition(0.5f, 0.5f);
-        _costAmount->setCharacterSize(10);
+        _costAmount->setCharacterSize(25);
+        _costAmount->setColor({50, 0, 100});
         _costPP->add(_costAmount);
 
         GlyphTypes glyphs;
@@ -80,7 +81,7 @@ namespace rat
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
         }        
-        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
+        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
         _costPP->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png"));
     }
    

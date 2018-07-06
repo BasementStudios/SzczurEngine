@@ -53,7 +53,7 @@ namespace rat
         _infoBar->setMainPatchPropSize({prSize.y, prSize.y});
         //_infoBar->setPadding(5, 5);
         _infoBar->makeChildrenPenetrable();
-        _infoBar->makeChildrenUnresizable();
+        //_infoBar->makeChildrenUnresizable();
         _addWidget(_infoBar);
 
         _filter = new WindowWidget;
@@ -63,37 +63,47 @@ namespace rat
         //_iconWindow->add(_filter);
         _infoBar->add(_filter);
 
+        auto* mainList = new ListWidget;
+        _infoBar->add(mainList);
+
         auto* list = new ListWidget;
         list->makeHorizontal();
-        _infoBar->add(list);
+        mainList->add(list);
 
 
         _iconWindow->setPropSize(prSize.y, prSize.y);
         _iconWindow->setMainPatchPropSize({prSize.y, prSize.y});
         list->add(_iconWindow);       
         
-        _icon->setPropSize({prSize.y - 0.01f, prSize.y - 0.01f}); //0888979591836735f
+        _icon->setPropSize({prSize.y - 0.005f, prSize.y - 0.005f}); //0888979591836735f
         _icon->setPropPosition(0.5f, 0.5f);
         _iconWindow->add(_icon);
 
         auto* infos = new Widget;
         infos->setPropSize(prSize.x - prSize.y, prSize.y);
         infos->setPropPadding(0.011020408163265f, 0.011020408163265f);
+        infos->makeChildrenUnresizable();
 
         list->add(infos);
 
-        _name->setCharacterSize(12);
+        _name->setCharacterSize(14);
         _name->setPropPosition(0.f, 0.f);
         infos->add(_name);
 
         _costBar.setParent(infos);
         _costBar.setPropPosition(0.f, 1.f);
 
-        _titleWindow = new WindowWidget;
-        _titleWindow->setPropSize(0.3f, 0.f);
-        _titleWindow->setPadding(0.f, 5.f);
-        _titleWindow->setScale(0.3f, 0.3f);
-        _addWidget(_titleWindow);
+        //_titleWindow = new WindowWidget;
+        //_titleWindow->setPropSize(0.3f, 0.f);
+        //_titleWindow->setPadding(0.f, 5.f);
+        //_titleWindow->setScale(0.3f, 0.3f);
+        // _addWidget(_titleWindow);
+
+
+        _titlePar = new Widget;
+        mainList->add(_titlePar);
+        _titlePar->setPropSize(prSize.x, 0.f);
+        _titlePar->setPropPadding(0.f, 0.01f);
 
 
         _title = new TextWidget;
@@ -102,9 +112,9 @@ namespace rat
         _title->setPropPosition(0.5f, 0.5f);
         _title->setString("Hejjjj");
 
-        _titleWindow->add(_title);
+        _titlePar->add(_title);
 
-        _titleWindow->fullyDeactivate();
+        _titlePar->fullyDeactivate();
         
         _getBase()->fullyDeactivate();
     }
@@ -127,7 +137,7 @@ namespace rat
             _getBase()->fullyActivate();
         }  
 
-        _titleWindow->fullyDeactivate();
+        _titlePar->fullyDeactivate();
     }
     void SkillBar::removeSkill()
     {
@@ -144,7 +154,7 @@ namespace rat
             if(isBought)
             {
                 _getBase()->fullyDeactivate();
-                _titleWindow->fullyDeactivate();
+                _titlePar->fullyDeactivate();
             }
             else
             {
@@ -186,13 +196,15 @@ namespace rat
         }
         else
         {
-            if(_titleWindow->isFullyDeactivated())
+            if(_titlePar->isFullyDeactivated())
             {
-                _titleWindow->fullyActivate();
+                _titlePar->fullyActivate();
+                std::cout << "Mech" << std::endl;
             }
             else
             {
-                _titleWindow->fullyDeactivate();
+                _titlePar->fullyDeactivate();
+                std::cout << "Kech" << std::endl;
             }
         }
     }
@@ -229,7 +241,6 @@ namespace rat
         auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
         _iconWindow->setTexture(barTex, 6);
         _infoBar->setTexture(barTex, 6);
-        _titleWindow->setTexture(barTex, 6);
         _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _costBar.loadAssetsFromGUI(gui);

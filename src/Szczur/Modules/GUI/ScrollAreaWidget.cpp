@@ -15,6 +15,7 @@ namespace rat {
     _offset(0) 
     {
         _scroller.setWidthProportion(2.1f);
+        _minScrollSize = {24, 50};
         setSize(10 + _minScrollSize.x, _minScrollSize.y);
         _aboutToRecalculate = true;
         resetScrollerPosition();

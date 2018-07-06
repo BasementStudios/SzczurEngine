@@ -52,7 +52,7 @@ namespace rat
         WindowWidget* _infoBar{nullptr};
         TextWidget* _name{nullptr};
 
-        WindowWidget* _titleWindow{nullptr};
+        Widget* _titlePar{nullptr};
         TextWidget* _title{nullptr};
 
         WindowWidget* _filter;

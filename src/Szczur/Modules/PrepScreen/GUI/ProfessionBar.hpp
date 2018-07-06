@@ -32,6 +32,9 @@ namespace rat
         bool _isChosen{false};
         bool _isHovered{false};
 
+        sf::Texture* _chosen{nullptr};
+        sf::Texture* _unchosen{nullptr};
+
         void _onClick();
     };
 }

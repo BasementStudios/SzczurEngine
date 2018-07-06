@@ -284,10 +284,12 @@ namespace rat
 
         auto* infoList = new ListWidget;
         infoList->setPropSize(0.8517777777777777f, 1.f);
+        infoList->setPropBetweenPad(0.03f);
         mainList->add(infoList);
 
         _glyphArea.setParent(infoList);
         _grayPPArea.setParent(infoList);
+        _chosenSkillArea.setParent(infoList);
 
         auto* monsterList = new ListWidget;
         monsterList->setPropSize(0.463f, 1.f);
@@ -297,7 +299,6 @@ namespace rat
 
 
 
-        //_chosenSkillArea.setParent(mainList);
         
         //_enemyArea.setParent(mainList);
         //_enemyArea.setPropPosition(0.f, 0.5f);
@@ -311,9 +312,9 @@ namespace rat
 
         addPP(4);
         addPP(-1);
-        addPP(3);
+        addPP(8);
 
-        takePP(-4);
+        takePP(-9); //ładniejszy syntax by się przydał xd
 
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
@@ -347,6 +348,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/PPSlots.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBarFilter.png");
+        gui.addTexture("Assets/PrepScreen/ChosenSkillArea.png");
                 
 
         GlyphTypes glyphTypes;

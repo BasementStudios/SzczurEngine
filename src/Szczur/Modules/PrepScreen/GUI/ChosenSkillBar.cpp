@@ -16,12 +16,13 @@ namespace rat
         _icon = new ImageWidget;
         _addWidget(_icon);
         _icon->setPropSize(0.07f, 0.07f);
+         // zabawa z rectami nowa funkcja ;V
 
-        _border = new ImageWidget;
-        _addWidget(_border);
-        _border->setPropSize(0.07f, 0.07f);
+        //_border = new ImageWidget;
+        //_addWidget(_border);
+        //_border->setPropSize(0.07f, 0.07f);
 
-        _border->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
+        _icon->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
             if(hasSkill())
             {
                 _icon->setColorInTime({125, 125, 125}, 0.5f);
@@ -29,21 +30,21 @@ namespace rat
 
         });
 
-        _border->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
+        _icon->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
             if(hasSkill())
             {
                 _icon->setColorInTime({255, 255, 255}, 0.5f);
             }
         });
 
-        _border->setCallback(Widget::CallbackType::onRelease, [this](auto){
+        _icon->setCallback(Widget::CallbackType::onRelease, [this](auto){
             _onClick();
         });
     }
 
     void ChosenSkillBar::initAssetsViaGUI(GUI& gui)
     {
-        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkill.png"));
+        //_border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkill.png"));
     }
 
     void ChosenSkillBar::setSkill(const Skill* skill)
@@ -51,13 +52,14 @@ namespace rat
         if(skill == nullptr)
         {
             _hasSkill = false;
-            _icon->setTexture(nullptr);
+            _icon->removeTexture();
         }
         else
         {
             _hasSkill = true;
             auto* texture = skill->getTexture();
             _icon->setTexture(texture);
+            _icon->setPropTextureRect({{0.25f, 0.f}, {0.5f, 1.f}});
         }
         _skill = skill;
     }

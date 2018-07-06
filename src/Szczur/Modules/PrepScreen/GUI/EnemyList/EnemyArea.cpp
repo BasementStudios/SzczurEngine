@@ -19,13 +19,13 @@ namespace rat
         _border->setPropSize(0.463f, 0.85f);
 
         _scroller = new ScrollAreaWidget;
-        _scroller->setPropSize(0.42f, 0.8f); //0.65f
+        _scroller->setPropSize(0.37f, 0.8f); //0.65f
         _scroller->setPropPosition(0.5f, 0.5f);
         _border->add(_scroller);
 
         _list = new ListWidget;
         _scroller->add(_list);
-        _list->setPropPosition(0.5f, 0.f);
+        _list->setPropPosition(0.2f, 0.f);
         _list->setPropBetweenPad(0.01f);
 
         _addBar(_infoBar);

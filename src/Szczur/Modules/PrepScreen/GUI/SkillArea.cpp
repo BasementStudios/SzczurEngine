@@ -29,7 +29,7 @@ namespace rat
         _border->setPropSize(0.463f, 0.85f);
 
         _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setPropSize(0.35f, 0.8f); //0.65f
+        _skillsScroller->setPropSize(0.37f, 0.8f); //0.65f
         _skillsScroller->setPropPosition(0.5f, 0.5f);
         _border->add(_skillsScroller);
 

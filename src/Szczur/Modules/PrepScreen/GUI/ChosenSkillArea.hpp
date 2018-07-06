@@ -25,6 +25,7 @@ namespace rat
 
         sf::Vector2f _iconSize;
         ListWidget* _skillsList{nullptr};
+        ImageWidget* _border{nullptr};
 
         std::vector<std::unique_ptr<ChosenSkillBar>> _skillBars;
     };

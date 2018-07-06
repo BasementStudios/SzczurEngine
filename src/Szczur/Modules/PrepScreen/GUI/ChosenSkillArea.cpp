@@ -5,6 +5,7 @@
 
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
@@ -15,9 +16,25 @@ namespace rat
     :
     _size(size)
     {
+        //_getBase()->setPropPadding(, 0.f);
+
+        auto* padList = new ListWidget;
+        auto* pad = new Widget;
+        pad->setPropSize(0.0648148148148148f, 0.f);
+        padList->add(pad);
+        _addWidget(padList);
+
         _skillsList = new ListWidget;
-        _addWidget(_skillsList);
+        padList->add(_skillsList);
+        //_addWidget(_skillsList);
         _skillsList->makeHorizontal();
+
+        _border = new ImageWidget;
+        _border->setPropSize(0.4761421319797f, 0.07f); //szerokosć i długość w procentach
+        _border->madePenetrable();
+        _addWidget(_border);
+
+
 
         for(size_t i = 0; i < size; i++)
         {
@@ -25,10 +42,13 @@ namespace rat
             chSkillBar->setParent(_skillsList);
             _skillBars.emplace_back(std::move(chSkillBar));
         }
+
+        _getBase()->setPropPosition(0.5f, 0.f);
     }
 
     void ChosenSkillArea::initAssetsViaGUI(GUI& gui)
     {
+        _border->setTexture(gui.getTexture("Assets/PrepScreen/ChosenSkillArea.png"));
         for(auto& chSkillBar : _skillBars)
         {
             chSkillBar->initAssetsViaGUI(gui);

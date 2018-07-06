@@ -49,7 +49,7 @@ namespace rat
         float _scrollSpeed{7.f};
 
         Scroller _scroller;
-        sf::Vector2f _minScrollSize{30, 50};
+        sf::Vector2f _minScrollSize{20, 50};
 
         void _recalcScroller();
         float _scrollerProp{0.f};

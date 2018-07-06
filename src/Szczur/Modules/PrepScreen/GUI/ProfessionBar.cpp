@@ -53,12 +53,17 @@ namespace rat
 
     void ProfessionBar::initAssetsViaGUI(GUI& gui)
     {
-        std::string path = "Assets/PrepScreen/" + _profession + "Icon.png";
-        gui.addAsset<sf::Texture>(path);
-        _icon->setTexture(gui.getAsset<sf::Texture>(path));
+        std::string path = "Assets/PrepScreen/" + _profession + "Icon";
+        gui.addAsset<sf::Texture>(path + "0.png");
+        gui.addAsset<sf::Texture>(path + "1.png");
+
+        _unchosen = gui.getTexture(path + "0.png");
+        _chosen = gui.getTexture(path + "1.png");
+
+        _icon->setTexture(_unchosen);
         _window->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
-        _window->setScale(0.2f, 0.2f);
-        _window->setPadding(5.f, 5.f);
+        //_window->setScale(0.2f, 0.2f);
+        //_window->setPadding(5.f, 5.f);
     }
 
     void ProfessionBar::setProfession(const std::string& profession)
@@ -74,13 +79,18 @@ namespace rat
     {
         _prepScreen.setProfession(_profession);
         _isChosen = true;
-        _window->setColorInTime({180, 180, 180}, 0.2f);
+        _icon->setTexture(_chosen);
+        //_icon->setPropSize(0.11f, 0.11f);
     }
 
     void ProfessionBar::unchoose()
     {
         _isChosen = false;
-        if(!_isHovered)  _icon->setColorInTime({255, 255, 255}, 0.2f);
+        if(!_isHovered)
+        {
+            _icon->setTexture(_unchosen);
+            //_icon->setPropSize(0.11f, 0.11f);
+        }
         _window->setColorInTime({255, 255, 255}, 0.2f);
 
     }
