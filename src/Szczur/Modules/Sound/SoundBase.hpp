@@ -34,8 +34,10 @@ namespace rat
 
     public:
 
+        SoundBase(const std::string& name);
+
         void init();
-        void load(const std::string& name);
+        void load();
         
         void setBuffer(sf::SoundBuffer* _buffer);
 

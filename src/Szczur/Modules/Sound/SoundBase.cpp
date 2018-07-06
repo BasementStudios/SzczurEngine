@@ -4,6 +4,12 @@
 
 namespace rat
 {
+    SoundBase::SoundBase(const std::string& name)
+        : _name(name)
+    {
+
+    }
+
     void SoundBase::init()
     {
         _length = _buffer->getDuration().asSeconds();
@@ -209,24 +215,26 @@ namespace rat
         return offset.endTime;
     }
 
-    void SoundBase::load(const std::string& fileName) 
+    void SoundBase::load() 
     {
         nlohmann::json j;
-        std::ifstream file(fileName);    
+        std::ifstream file(SOUND_DATA_FILE_PATH);    
 
         if (file.is_open()) {
             file >> j;
             file.close();
 
-            _fileName = static_cast<std::string>(j["FileName"]);
-            _name = static_cast<std::string>(j["Name"]);
+            if(j[_name]["FileName"] == nullptr)
+                return;
 
-            setVolume(j["Volume"]);
-            setPitch(j["Pitch"]);
-            setOffset(j["BeginTime"], j["EndTime"]);
-            setAttenuation(j["Attenuation"]);
-            setMinDistance(j["MinDistance"]);
-            setRelativeToListener(j["Relative"]);
+            _fileName = static_cast<std::string>(j[_name]["FileName"]);
+
+            setVolume(j[_name]["Volume"]);
+            setPitch(j[_name]["Pitch"]);
+            setOffset(j[_name]["BeginTime"], j["EndTime"]);
+            setAttenuation(j[_name]["Attenuation"]);
+            setMinDistance(j[_name]["MinDistance"]);
+            setRelativeToListener(j[_name]["Relative"]);
         }
     }
 }
