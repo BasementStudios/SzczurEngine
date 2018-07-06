@@ -12,8 +12,11 @@
 #include "UsableItem.hpp"
 namespace rat
 {
-	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; class RingSlider; class ItemManager; class InterfaceWidget;
+	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; 
+	class RingSlider; class ItemManager; class InterfaceWidget; class ReplaceItem;
 	class Equipment : public Module<Window, Input, GUI, Script> {
+		friend class NormalSlots;
+		friend class ReplaceItem;
 	public:
 
 		void init();
@@ -49,6 +52,7 @@ namespace rat
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
 		ItemPreview* _itemPreview;
+		ReplaceItem* _replaceItem;
 		RingSlider* _ringSlider;
 		ItemManager* _itemManager;
 
@@ -66,5 +70,8 @@ namespace rat
 		sf::Vector2f _equipmentPosition;
 
 		std::map<std::string, EquipmentObject*> _listOfObjects;
+
+		void _replaceNewItem(EquipmentObject* item);
+		void _stopReplacingitem();
 	};
 }

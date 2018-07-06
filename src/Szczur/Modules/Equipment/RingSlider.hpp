@@ -41,6 +41,7 @@ namespace rat {
 
 		ScrollAreaWidget* _scroll;
 		Widget* _base;
+		Widget* _baseForItems;
 		WindowWidget* _border;
 
 		float _length;

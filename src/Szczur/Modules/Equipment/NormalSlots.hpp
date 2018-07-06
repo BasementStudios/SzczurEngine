@@ -5,11 +5,12 @@
 #include "UsableItem.hpp"
 
 namespace rat {	
-	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment;
+	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment; class ReplaceItem;
 	typedef std::multimap<std::string, EquipmentSlot*> itemMap_t;
 
 	class NormalSlots			//part of equipment for normal items looking like a grid
 	{
+		friend class ReplaceItem;
 	public:
 		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment);
 
@@ -47,17 +48,20 @@ namespace rat {
 		EquipmentObject* _itemHeld;
 		ImageWidget* _itemHeldWidget;
 
-		bool _isMouseButtonHeld;
+		EquipmentObject* _itemForReplacing;
+
 		sf::Vector2i _originalMousePosition;
 
-		void onMouseButtonPressed(std::shared_ptr<EquipmentSlot> clickedObj);
-		void onMouseButtonReleased();
+		void _onMouseButtonPressed(std::shared_ptr<EquipmentSlot> clickedObj);
+		void _onMouseButtonReleased();
 
 		Equipment* _equipment;
 
-		void checkForDoubleClick(float deltaTime);
+		void _checkForDoubleClick(float deltaTime);
 		bool _isLeftMouseButtonPressed;
 		bool _isCountingToDoubleClickEnabled;	//used in detection of doubleclick
 		float _timeFromLastClick;
+
+		void _stopReplacing();
 	};
 }

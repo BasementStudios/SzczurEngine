@@ -21,9 +21,13 @@ namespace rat {
 		_scroll = new ScrollAreaWidget();
 		//_scroll->setPropOrigin(.0f, .0f);
 		//_scroll->setPropSize(0.09f, 0.65f);
-		_scroll->setPropSize(0.14f, 0.58f);//(40.f + frameSize.x, 460.f);
-		_scroll->setPropPosition(0.5f, 0.5f);//({5.f, 10.f});
+		_scroll->setPropSize(0.14f, 0.58f);
+		_scroll->setPropPosition(0.5f, 0.5f);
 		_base->add(_scroll);	
+		
+		_baseForItems = new Widget;
+		_baseForItems->setPropSize({ 0.09f, 0.09f });
+		_scroll->add(_baseForItems);
 
 	}
 
@@ -55,10 +59,11 @@ namespace rat {
 		EquipmentSlot* temp = new EquipmentSlot;
 		_ringSlots.push_back(temp);
 		_scroll->resetScrollerPosition();
-		temp->setParent(_scroll);
-		temp->setSize(_slotSize);
+		_baseForItems->setPropSize(0.09f, (_ringSlots.size() - 1) * (.09f + .01f));
+		temp->setParent(_baseForItems);
+		temp->setPropSize({ 0.09f, 0.09f });//_slotSize);
 		temp->setTexture(_slotTexture);
-		temp->setPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (_slotSize.y + 10.f)));
+		temp->setPropPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (.15f + .01f)));
 		temp->setItem(item);
 		temp->setHighlightTexture(_highlightTexture);
 		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {

@@ -8,6 +8,7 @@
 #include "ItemPreview.hpp"
 #include "EquipmentObject.hpp"
 #include "RingSlider.hpp"
+#include "ReplaceItem.hpp"
 
 #include "ItemManager.hpp"
 #include "Szczur/Modules/GUI/InterfaceWidget.hpp"
@@ -71,7 +72,8 @@ namespace rat {		//beware spagetti monster down there :/
 		//_equipmentFrame->setPosition(384.f, 220.f); //{384.f ,220.f }
 		_equipmentFrame->setPropPosition(0.5f, 1.f);		
 		_equipmentFrame->setPropSize(.63f, .7f);
-		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
+		//_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
+		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 180);
 	
 		_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
@@ -87,9 +89,13 @@ namespace rat {		//beware spagetti monster down there :/
 		_ringSlider->initAssetsViaGUI(gui);
 		_ringSlider->setPropPosition({ 1.f, 0.0f });
 
-		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), {270, 90}, gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
+		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
 		_itemPreview->setParent(_base);
 		_itemPreview->minimalize();
+
+		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"), _normalSlots);
+		_replaceItem->setParent(_base);
+		_replaceItem->minimalize();
 
 		_itemManager = new ItemManager;
 		_itemManager->setNewPath("Assets/Equipment/items.json");
@@ -100,8 +106,6 @@ namespace rat {		//beware spagetti monster down there :/
 
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
-		if (_isPreviewOn)
-			_itemPreview->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(_window)));
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && _isEquipmentHidden) {
 			_equipmentFrame->setPropPosition({0.5f, 1.f}, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = false; } });
@@ -236,5 +240,13 @@ namespace rat {		//beware spagetti monster down there :/
 
 	void Equipment::setSelectedRingsLimit(int newSize) {
 		_ringSlider->setSelectedRingsLimit(newSize);
+	}
+
+	void Equipment::_replaceNewItem(EquipmentObject* item) {
+		_replaceItem->setItem(item);
+	}
+
+	void Equipment::_stopReplacingitem() {
+		_replaceItem->minimalize();
 	}
 }

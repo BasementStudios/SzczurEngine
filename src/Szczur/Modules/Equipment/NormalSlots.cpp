@@ -36,20 +36,22 @@ namespace rat
 			newSlot->setHighlightTexture(highlightText);
 			newSlot->getWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
-					this->onMouseButtonPressed(newSlot);
+					this->_onMouseButtonPressed(newSlot);
 			});
 			newSlot->getWidget()->setCallback(Widget::CallbackType::onRelease, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())
-					this->onMouseButtonReleased();
+					this->_onMouseButtonReleased();
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, newSlot, equipment](Widget* owner) {
-				_slotDropped = newSlot;
+				if(newSlot->getStatus())
+					_slotDropped = newSlot;
 				if (newSlot->getItem())
 					equipment->enableItemPreview(newSlot->getItem());
 				newSlot->setHighlight(true);
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
-				_removeSlotDropped(newSlot);
+				if (newSlot->getStatus())
+					_removeSlotDropped(newSlot);
 				if (newSlot->getItem())
 					equipment->disableItemPreview();
 				newSlot->setHighlight(false);
@@ -70,6 +72,10 @@ namespace rat
 			_occupiedSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
 			_freeSlots.erase(_freeSlots.begin());
 			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
+		}
+		else {
+			_equipment->_replaceNewItem(item);
+			_itemForReplacing = item;
 		}
 	}
 	bool NormalSlots::removeItem(sf::String itemNameId) {
@@ -106,35 +112,43 @@ namespace rat
 		return _base->getPosition();
 	}
 
-	void NormalSlots::onMouseButtonPressed(std::shared_ptr<EquipmentSlot> clickedObj) {
+	void NormalSlots::_onMouseButtonPressed(std::shared_ptr<EquipmentSlot> clickedObj) {
 		if (clickedObj->getItem()) {
-			LOG_INFO("onMousePressed");
-			//setting clicked slot and item
-			_slotHeld = clickedObj;
-			_itemHeld = clickedObj->getItem();
+			//if we are replacing item
+			if (_itemForReplacing) {
+				removeItem(clickedObj->index);
+				clickedObj->setItem(_itemForReplacing);
+				_occupiedSlots.insert(std::make_pair(_itemForReplacing->getNameId(), clickedObj.get()));
+				_itemForReplacing = nullptr;
+				_equipment->_stopReplacingitem();
+			}
+			else {
+				//setting clicked slot and item
+				_slotHeld = clickedObj;
+				_itemHeld = clickedObj->getItem();
 
-			//setting current mouse position which will be used for positioning picked item widget
-			_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getPosition());
+				//setting current mouse position which will be used for positioning picked item widget
+				_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getPosition());
 
-			//activating and setting picked item widget
-			_itemHeldWidget->fullyActivate();
-			_itemHeldWidget->setPosition(_slotHeld->getPosition());
-			_itemHeldWidget->setTexture(_itemHeld->getTexture());
+				//activating and setting picked item widget
+				_itemHeldWidget->fullyActivate();
+				_itemHeldWidget->setPosition(_slotHeld->getPosition());
+				_itemHeldWidget->setTexture(_itemHeld->getTexture());
 
-			clickedObj->setItemColor(sf::Color::Color(255, 255, 255, 100));
-			
-			//turning off item preview
-			_equipment->disableItemPreview();
-			_equipment->canPreviewBeInstantiated = false;
+				clickedObj->setItemColor(sf::Color::Color(255, 255, 255, 100));
+
+				//turning off item preview
+				_equipment->disableItemPreview();
+				_equipment->canPreviewBeInstantiated = false;
+			}
 		}
 	}
-	void NormalSlots::onMouseButtonReleased() {
+	void NormalSlots::_onMouseButtonReleased() {
 		if(_slotHeld){
 			if (_slotDropped) {
 				
 				//dropping item into the same slot
 				if (_slotDropped == _slotHeld) {
-					LOG_INFO("onMouseReleased");
 					//resetting slot colour
 					_slotHeld->resetItemColor();
 
@@ -209,10 +223,10 @@ namespace rat
 		if (_slotHeld) {
 			_itemHeldWidget->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition() - _originalMousePosition));
 		}
-		checkForDoubleClick(deltaTime);
+		_checkForDoubleClick(deltaTime);
 	}
 
-	void NormalSlots::checkForDoubleClick(float deltaTime) {
+	void NormalSlots::_checkForDoubleClick(float deltaTime) {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !_isCountingToDoubleClickEnabled && !_isLeftMouseButtonPressed) {
 			_isLeftMouseButtonPressed = true;
 		}
@@ -229,6 +243,11 @@ namespace rat
 					if (dynamic_cast<UsableItem*>(_slotDropped->getItem())->useItem()) {
 						removeItem(_slotDropped->index);
 						_equipment->disableItemPreview();
+						if (_itemForReplacing) {
+							addItem(_itemForReplacing);
+							_itemForReplacing = nullptr;
+							_equipment->_stopReplacingitem();
+						}
 					}
 				}
 			}
@@ -292,5 +311,9 @@ namespace rat
 
 	int NormalSlots::getSlotsAmount() {
 		return _slotAmount;
+	}
+
+	void NormalSlots::_stopReplacing() {
+		_itemForReplacing = nullptr;
 	}
 }
