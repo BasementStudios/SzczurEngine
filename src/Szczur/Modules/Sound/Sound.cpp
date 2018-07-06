@@ -1,6 +1,5 @@
 #include "Sound.hpp"
 
-
 namespace rat
 {
 

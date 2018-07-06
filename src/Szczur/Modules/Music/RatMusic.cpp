@@ -1,8 +1,13 @@
 #include "RatMusic.hpp"
-
-#include "Szczur/Utility/Logger.hpp"
-
+ 
+#include <string>
+#include <array>
+#include <vector>
+#include <fstream>
+ 
 #include <nlohmann/json.hpp>
+ 
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {

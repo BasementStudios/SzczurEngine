@@ -1,7 +1,9 @@
 #pragma once
-
+ 
+#include <string>
+ 
 #include <SFML/Audio/Music.hpp>
-
+ 
 #include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
 
 #define MUSIC_DATA_FILE_PATH "Assets/Music/music.json"
