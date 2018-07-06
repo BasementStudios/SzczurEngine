@@ -1,12 +1,12 @@
 #include "RatMusic.hpp"
- 
+
 #include <string>
 #include <array>
 #include <vector>
 #include <fstream>
- 
+
 #include <nlohmann/json.hpp>
- 
+
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -105,10 +105,15 @@ namespace rat
 		}
 
 		nlohmann::json j;
-		std::fstream file(MUSIC_DATA_FILE_PATH, std::ios::in | std::ios::out);
 
-        if (file.is_open()) {
-            file >> j;
+		std::ifstream ifile(MUSIC_DATA_FILE_PATH);
+        if (ifile.is_open()) {
+            ifile >> j;
+            ifile.close();
+        }
+
+		std::ofstream ofile(MUSIC_DATA_FILE_PATH, std::ios::trunc);
+        if (ofile.is_open()) {
 
 			j[_name]["Path"] 	 = _filePath;
 			j[_name]["BPM"] 	 = _bpm;
@@ -116,9 +121,9 @@ namespace rat
 			j[_name]["Volume"]   = getVolume();
 			j[_name]["Effects"]  = effects;
 
-			file << j;
+			ofile << setw(4) << j << std::endl;
+        	ofile.close();
         }
-        file.close();
 	}
 	
 	void RatMusic::getJsonData()
