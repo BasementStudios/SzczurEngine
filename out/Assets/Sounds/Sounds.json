@@ -1,8 +1,22 @@
 {
     "Button": {
-        "Path":"Assets/Sounds/button.flac", "BeginTime":0.10, "EndTime":0.42, "Pitch":1.0, "Volume":42.00, "Attenuation":1.0, "MinDistance":1.0, "Relative": true
+        "Attenuation": 1.0,
+        "BeginTime": 0.0,
+        "EndTime": 0.429024010896683,
+        "MinDistance": 1.0,
+        "Path": "Assets/Sounds/button.flac",
+        "Pitch": 2.0,
+        "Relative": true,
+        "Volume": 50.4130020141602
     },
     "Button 1": {
-        "Path":"Assets/Sounds/button.flac", "BeginTime":0.10, "EndTime":0.42, "Pitch":1.0, "Volume":100.00, "Attenuation":1.0, "MinDistance":1.0, "Relative": true
+        "Attenuation": 1.0,
+        "BeginTime": 0.1,
+        "EndTime": 0.42,
+        "MinDistance": 1.0,
+        "Path": "Assets/Sounds/button.flac",
+        "Pitch": 1.0,
+        "Relative": true,
+        "Volume": 100.0
     }
 }
