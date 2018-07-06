@@ -18,6 +18,7 @@ void Application::init()
 	initModule<Script>();
 	initModule<Input>();
 	initModule<Music>();
+	initModule<Sound>();
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
 	initModule<World>();
@@ -25,7 +26,6 @@ void Application::init()
 	initModule<Dialog>();
 	initModule<DialogEditor>();
 	initModule<Cinematics>();
-	initModule<SoundManager>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
 

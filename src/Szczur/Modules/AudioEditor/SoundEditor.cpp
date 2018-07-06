@@ -13,21 +13,21 @@
 
 namespace rat
 {
-    SoundEditor::SoundEditor(SoundManager& soundManager)
-        : _soundManager(soundManager)
+    SoundEditor::SoundEditor(Sound& sound)
+        : _sound(sound), _assets(sound.getAssetsManager())
     {
-        
+        _currentEditing = _soundHolder.end();
     }
 
     void SoundEditor::render()
     { 
-        if (_addingSound)
-            add();
+        if(_loadingSound)
+            load();
 
         ImGui::Begin("Sounds List", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
             if (ImGui::Button("Save##SoundLists")) {
-                for(auto& it : _soundNames) {
+               for(auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
                     save(it);
                 }
             }
@@ -35,34 +35,34 @@ namespace rat
             ImGui::Separator();
 
             if (ImGui::Button("Load##SoundLists")) {
-                load();
+                _loadingSound = true;
             }
 
             ImGui::SameLine();
 
             if (ImGui::Button("Add##SoundLists")) {
-                _addingSound = true;
+                add();
             }
 
             ImGui::Separator();
 
             if (ImGui::TreeNode("Sounds List")) { 
-                for(auto it = _soundNames.begin(); it != _soundNames.end(); ++it) {
-                    if (ImGui::Button((*it).c_str())) {
-                        if (_currentEditing != *it)
-                            _soundManager.stop();
-                        _currentEditing = *it;
+                for(auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
+                    auto name = it->getName();
+                    if (ImGui::Button((name).c_str())) {
+                        if (_currentEditing != _soundHolder.end() && _currentEditing->getName() != name)
+                            _sound.stop();
+                        _currentEditing = it;
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("Save")) {
-                        save(*it);
+                        save(it);
                     }
                     ImGui::SameLine();
                     if (ImGui::Button("-")) {
-                        _soundManager.eraseSingleSound(*it);
-                        _soundNames.erase(it);
-                        if (_currentEditing == *it)
-                            _currentEditing = "";
+                        _soundHolder.erase(it);
+                        if (_currentEditing->getName() == name)
+                            _currentEditing = _soundHolder.end();
                         break;
                     }
                 }
@@ -72,50 +72,50 @@ namespace rat
 
         ImGui::End();
 
-        if (!_currentEditing.empty()) {
+        if (_currentEditing != _soundHolder.end()) {
             ImGui::Begin("Sound Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-                ImGui::Text(("Name: " + _currentEditing).c_str());
-
-                if (_soundManager.getSoundID(_currentEditing) == -1) {
-                    
-                    if (ImGui::Button("Load")) {
-                        auto currentPath = std::experimental::filesystem::current_path().string();
-                        auto path = FileDialog::getOpenFileName("", currentPath, "Sound (*.flac)|*.flac");
-                        std::string filePath;
-
-                        if (path.find(currentPath) != std::string::npos && !path.empty()) { 
-                            filePath = path.substr(currentPath.length() + 15, path.length() - 5 - currentPath.length() - 15);
-                            std::replace(filePath.begin(), filePath.end(), '\\', '/');
-                            _soundManager.newSound(filePath, _currentEditing);
-                        } 
-                    }
-
-                    ImGui::End();
-                    return;
-                }
-
-                ImGui::Text(("Path: " + _soundManager.getFileName(_currentEditing)).c_str());
+                ImGui::Text(("Path: " + _currentEditing->getFileName()).c_str());
 
                 ImGui::Separator();
 
-                bool relative = _soundManager.isRelativeToListener(_currentEditing);
+                auto currName = _currentEditing->getName();
+
+                ImGui::Text("Name: "); 
+                ImGui::SameLine();
+
+                size_t size = currName.length() + 100;
+                char *newText = new char[size] {};
+                strncpy(newText, currName.c_str(), size);
+
+                ImGui::PushItemWidth(300);
+                    if (ImGui::InputText("##SoundNameInput", newText, size)) {
+                        currName = newText;
+                        _currentEditing->setName(currName);
+                    }
+                ImGui::PopItemWidth();
+
+                delete[] newText;
+
+                ImGui::Separator();
+
+                bool relative = _currentEditing->isRelativeToListener();
                 ImGui::Checkbox("Relative To Listener", &relative);
-                _soundManager.setRelativeToListener(relative, _currentEditing);
+                _currentEditing->setRelativeToListener(relative);
 
                 ImGui::Separator();
 
                 if (ImGui::Button("PLAY##SoundEditor")) {
-                    _soundManager.play(_currentEditing);
+                    _currentEditing->play();
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("PAUSE##SoundEditor")) {
-                    _soundManager.pause();
+                    _sound.pause();
                 }
                 
                 ImGui::SameLine();
                 if (ImGui::Button("STOP##SoundEditor")) {
-                    _soundManager.stop();
+                    _sound.stop();
                 }   
 
                 ImGui::Separator();
@@ -123,14 +123,14 @@ namespace rat
                 char beginTime[6] = "00:00"; 
                 char endTime[6] = "00:00";
 
-                strncpy(beginTime, toTime(_soundManager.getBeginTime(_currentEditing)).c_str(), 6);
-                strncpy(endTime, toTime(_soundManager.getEndTime(_currentEditing)).c_str(), 6);
+                strncpy(beginTime, toTime(_currentEditing->getBeginTime()).c_str(), 6);
+                strncpy(endTime, toTime(_currentEditing->getEndTime()).c_str(), 6);
 
                 ImGui::PushItemWidth(50); 
-                if (ImGui::InputText("##SongBegineTimeSelector", beginTime, 6, 1)) {
+                if (ImGui::InputText("##SongBeginTimeSelector", beginTime, 6, 1)) {
                     std::string timeString = beginTime;
                     checkTimeString(timeString);
-                    _soundManager.setOffset(_currentEditing, toFloatSeconds(timeString), _soundManager.getEndTime(_currentEditing));
+                    _currentEditing->setOffset(toFloatSeconds(timeString), _currentEditing->getEndTime());
                 }
                 ImGui::PopItemWidth();
                 ImGui::SameLine();
@@ -140,7 +140,7 @@ namespace rat
                 if (ImGui::InputText("##SongEndTimeSelector", endTime, 6, 1)) {
                     std::string timeString = endTime;
                     checkTimeString(timeString);
-                    _soundManager.setOffset(_currentEditing, _soundManager.getBeginTime(_currentEditing), toFloatSeconds(timeString));
+                    _currentEditing->setOffset(_currentEditing->getBeginTime(), toFloatSeconds(timeString));
                 }
                 ImGui::PopItemWidth();
                 
@@ -149,31 +149,31 @@ namespace rat
 
                 ImGui::Separator();
 
-                float volume = _soundManager.getVolume(_currentEditing);
+                float volume = _currentEditing->getVolume();
                 if (ImGui::SliderFloat("Volume##SoundEditor", &volume, 0, 100)) {
-                    _soundManager.setVolume(volume, _currentEditing);
+                    _currentEditing->setVolume(volume);
                 }
 
                 ImGui::Separator();
 
-                float pitch = _soundManager.getPitch(_currentEditing);
+                float pitch = _currentEditing->getPitch();
                 if (ImGui::InputFloat("Pitch##SoundEditor", &pitch, 0.0f, 0.0f, 2)) {
-                    _soundManager.setPitch(pitch, _currentEditing);
+                    _currentEditing->setPitch(pitch);
                 }
 
                 ImGui::Separator();
 
-                float attenuation = _soundManager.getAttenuation(_currentEditing);
+                float attenuation = _currentEditing->getAttenuation();
                 if (ImGui::SliderFloat("Attenuation##SoundEditor", &attenuation, 0, 100)) {
-                    _soundManager.setAttenuation(attenuation, _currentEditing);
+                    _currentEditing->setAttenuation(attenuation);
                 }
 
                 ImGui::Separator();
 
-                float minDistance = _soundManager.getMinDistance(_currentEditing);
+                float minDistance = _currentEditing->getMinDistance();
                 if (ImGui::InputFloat("Minimum Distance##SoundEditor", &minDistance, 0.0f, 0.0f, 2)) {
                     if(minDistance > 0) {
-                        _soundManager.setMinDistance(minDistance, _currentEditing);
+                        _currentEditing->setMinDistance(minDistance);
                     }
                 }
 
@@ -184,72 +184,50 @@ namespace rat
         }
     }
 
-    void SoundEditor::save(const std::string& name)
+    void SoundEditor::save(Container_t::iterator it)
     {
+        auto name = it->getName();
+
         nlohmann::json j;
-        std::ofstream file("Assets/Sounds/Data/" + name + ".json", std::ios::trunc);
 
-        j["Name"] = name;
-        j["Path"] = _soundManager.getFileName(name);
-        j["BeginTime"] = _soundManager.getBeginTime(name);
-        j["EndTime"] = _soundManager.getEndTime(name);
-        j["Volume"] = _soundManager.getVolume(name);
-        j["Pitch"] = _soundManager.getPitch(name);
-        j["Attenuation"] = _soundManager.getAttenuation(name);
-        j["MinDistance"] = _soundManager.getMinDistance(name);
-        j["Relative"] = _soundManager.isRelativeToListener(name);
+        std::ifstream ifile(SOUND_DATA_FILE_PATH);
+        if (ifile.is_open()) {
+            ifile >> j;
+            ifile.close();
+        }
 
-        if (file.is_open()) {
-            file << j;
-            file.close();
+        std::ofstream ofile(SOUND_DATA_FILE_PATH, std::ios::trunc);
+        if (ofile.is_open()) {
+            j[name]["Path"] = it->getFileName();
+            j[name]["BeginTime"] = it->getBeginTime();
+            j[name]["EndTime"] = it->getEndTime();
+            j[name]["Volume"] = it->getVolume();
+            j[name]["Pitch"] = it->getPitch();
+            j[name]["Attenuation"] = it->getAttenuation();
+            j[name]["MinDistance"] = it->getMinDistance();
+            j[name]["Relative"] = it->isRelativeToListener();
+
+            ofile << std::setw(4) << j << std::endl;
+            ofile.close();
         }
     }
 
     void SoundEditor::load()
     {
-        auto currentPath = std::experimental::filesystem::current_path().string();
-        auto path = FileDialog::getOpenFileName("", currentPath, "JSON files (*.json)|*.json");
-        std::string filePath;
-        
-        if (path.find(currentPath) != std::string::npos && !path.empty()) {
-            filePath = path.substr(currentPath.length() + 20, path.length() - 5 - currentPath.length() - 20);
+        static std::string loadingSoundName = "";
 
-            std::replace(filePath.begin(), filePath.end(), '\\', '/');
-        
-            for (auto& it : _soundNames) {
-                if (it == filePath)
-                    return;
-            }
-
-            nlohmann::json j;
-            std::ifstream file("Assets/Sounds/Data/" + filePath + ".json");
-            if (file.is_open()) {
-                file >> j;
-                file.close();
-            }
-
-            _soundManager.load(filePath);
-            _soundNames.push_back(j["Name"]);
-        }
-    
-    }
-
-    void SoundEditor::add()
-    {
-        static std::string newSoundName = "";
-
-        ImGui::Begin("Add Sound", NULL);
+        ImGui::Begin("Load Sound", NULL);
 
             ImGui::Text("Name: "); 
             ImGui::SameLine();
 
-            size_t size = newSoundName.length() + 100;
+            size_t size = loadingSoundName.length() + 100;
             char *newText = new char[size] {};
-            strncpy(newText, newSoundName.c_str(), size);
+            strncpy(newText, loadingSoundName.c_str(), size);
 
             ImGui::PushItemWidth(300);
-                if (ImGui::InputText("##NewNameInput", newText, size)) {
-                    newSoundName = newText;
+                if (ImGui::InputText("##LoadingSoundNameInput", newText, size)) {
+                    loadingSoundName = newText;
                 }
                 if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
                     ImGui::SetKeyboardFocusHere(0);
@@ -260,20 +238,53 @@ namespace rat
             
             ImGui::SetCursorPosX(260);
 
-            if (ImGui::Button("CANCEL##AddPlaylist")) {
-                newSoundName = "";
-                _addingSound = false;
+            if (ImGui::Button("CANCEL##LoadSound")) {
+                loadingSoundName = "";
+                _loadingSound = false;
             }
 
             ImGui::SameLine(); 
 
-            if (ImGui::Button(" OK ##AddPlaylist")) {
-                _soundNames.push_back(newSoundName);
-                newSoundName = "";
-                _addingSound = false;
+            if (ImGui::Button(" OK ##LoadSound")) {
+
+                _soundHolder.push_back(SoundBase(loadingSoundName));
+                _soundHolder.back().load();
+
+                auto fileName = _soundHolder.back().getFileName();
+
+                if(fileName.empty()) {
+                    _soundHolder.pop_back();
+                } 
+                else {
+                    _assets.load(fileName);
+                    _soundHolder.back().setBuffer(_assets.get(fileName));
+                    _soundHolder.back().init();
+                }
+
+                
+                loadingSoundName = "";
+                _loadingSound = false;
             }
 
         ImGui::End();
+    
+    }
+
+    void SoundEditor::add()
+    {
+        auto currentPath = std::experimental::filesystem::current_path().string();
+        auto path = FileDialog::getOpenFileName("", currentPath, "Sound files (*.flac)|*.flac");
+        std::string filePath;
+        
+        if (path.find(currentPath) != std::string::npos && !path.empty()) {
+            filePath = path.substr(currentPath.length() + 20, path.length() - 5 - currentPath.length() - 20);
+            std::replace(filePath.begin(), filePath.end(), '\\', '/');
+
+            _soundHolder.push_back(SoundBase(""));
+            _assets.load(filePath);
+            _soundHolder.back().setBuffer(_assets.get(filePath));
+            _soundHolder.back().init();
+        }
     }
 
     std::string SoundEditor::toTime(float secF)

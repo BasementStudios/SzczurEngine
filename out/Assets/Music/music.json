@@ -1,0 +1,24 @@
+{
+    "Rozpierdalacz": {
+        "BPM": 115.0,
+        "Effects": [
+            [],
+            [],
+            []
+        ],
+        "FadeTime": 4.0,
+        "Path": "Assets/Music/Szczur Rozpierdalacz.flac",
+        "Volume": 100.0
+    },
+    "Slowianski": {
+        "BPM": 125.0,
+        "Effects": [
+            [],
+            [],
+            []
+        ],
+        "FadeTime": 2.0,
+        "Path": "Assets/Music/Szczur Slowianski.flac",
+        "Volume": 100.0
+    }
+}

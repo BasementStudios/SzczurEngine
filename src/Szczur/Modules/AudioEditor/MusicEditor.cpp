@@ -21,7 +21,6 @@ namespace rat
         
         if (path.find(currentPath) != std::string::npos) {
             filePath = path.substr(currentPath.length() + 24, path.length() - 5 - currentPath.length() - 24);
-
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
             std::ifstream file("Assets/Music/Playlists/" + filePath + ".json");
@@ -54,7 +53,7 @@ namespace rat
             j[playlist] = songs;
             std::ofstream file(path + playlist + ".json", std::ios::trunc);
             if (file.is_open()) {
-                file << j;
+                file << std::setw(4) << j << std::endl;
             }
             file.close();
         }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SFML/Audio/SoundBuffer.hpp"
+#include <SFML/Audio/SoundBuffer.hpp>
 
 #include "RatSound.hpp"
 
@@ -11,30 +11,37 @@ namespace rat
         using Second_t = float;
     
     private:
+
+        inline static float SoundVolume {100};
             
         struct
         {
             Second_t beginTime {0};
-            Second_t endTime {0};
+            Second_t endTime   {0};
         } offset;
 
-        Second_t _length {0};
+        Second_t _length      {0};
+        Second_t _playingTime {0};
 
-        std::string _name {""};
-
-        float _volume {100};
-        float _pitch {1};
-
+        std::string _name     {""};
         std::string _fileName {""};
 
-        Second_t playingTime {0};
+        float _volume {100};
+        float _pitch  {1};
             
-        sf::SoundBuffer buffer;
-        RatSound sound;
+        sf::SoundBuffer* _buffer {nullptr};
+        RatSound _sound;
 
     public:
 
-        bool init(const std::string& fileName, const std::string& name);
+        SoundBase(const std::string& name);
+
+        void init();
+        void load();
+        
+        void setBuffer(sf::SoundBuffer* buffer);
+
+        static void initScript(Script& script);
 
         void play();
         void stop();
@@ -42,6 +49,9 @@ namespace rat
 
         float getVolume() const;
         void setVolume(float volume);
+
+        static float GetSoundVolume();
+        static void SetSoundVolume(float volume);
 
         float getPitch() const;
         void setPitch(float pitch);
@@ -67,17 +77,18 @@ namespace rat
         Second_t getBeginTime() const;
         Second_t getEndTime() const;  
 
+        void setName(const std::string& name);
         const std::string getName() const;
         std::string getFileName() const;
 
         template <typename T>
 		T& getEffect() {
-            return sound.getEffect<T>();
+            return _sound.getEffect<T>();
         }
 
         template <typename T>
     	void cleanEffect() {
-            sound.cleanEffect<T>();
+            _sound.cleanEffect<T>();
         }
 
     private:

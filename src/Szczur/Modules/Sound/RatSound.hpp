@@ -1,8 +1,10 @@
 #pragma once
 
-#include "SFML/Audio/Sound.hpp"
+#include <SFML/Audio/Sound.hpp>
 
 #include "Szczur/Modules/AudioEffects/AudioEffect.hpp"
+
+#define SOUND_DATA_FILE_PATH "Assets/Sounds/sounds.json"
 
 namespace rat
 {
@@ -14,8 +16,7 @@ namespace rat
         RatSound()
             : AudioEffect(m_source) 
         {
-            setRelativeToListener(true);
-            setAttenuation(0);
+            
         }
 
     };

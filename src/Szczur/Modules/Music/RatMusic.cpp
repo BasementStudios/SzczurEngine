@@ -1,8 +1,13 @@
 #include "RatMusic.hpp"
 
-#include "Szczur/Utility/Logger.hpp"
+#include <string>
+#include <array>
+#include <vector>
+#include <fstream>
 
 #include <nlohmann/json.hpp>
+
+#include "Szczur/Utility/Logger.hpp"
 
 namespace rat
 {
@@ -13,10 +18,11 @@ namespace rat
 		LOG_INFO("RatMusic created");	
 	}
 
-	void RatMusic::init(const std::string& name)
+	bool RatMusic::load(const std::string& name)
 	{
 		_name = name;
 		getJsonData();
+		return openFromFile(_filePath);
 	}
 
 	void RatMusic::incrementCounter()
@@ -32,6 +38,11 @@ namespace rat
 	unsigned int RatMusic::getCounterValue() const
 	{
 		return _counter;
+	}
+
+	const std::string& RatMusic::getFilePath() const
+	{
+		return _filePath;
 	}
 
 	const std::string& RatMusic::getName() const
@@ -95,30 +106,36 @@ namespace rat
 
 		nlohmann::json j;
 
-		j[_name]["BPM"] = _bpm;
-		j[_name]["FadeTime"] = _fadeTime;
-		j[_name]["Volume"] = getVolume();
-		j[_name]["Effects"] = effects;
-
-		std::string path = MUSIC_DEFAULT_PATH;
-		std::ofstream file(path + "Data/" + _name + ".json", std::ios::trunc);
-        if (file.is_open()) {
-            file << j;
+		std::ifstream ifile(MUSIC_DATA_FILE_PATH);
+        if (ifile.is_open()) {
+            ifile >> j;
+            ifile.close();
         }
-        file.close();
+
+		std::ofstream ofile(MUSIC_DATA_FILE_PATH, std::ios::trunc);
+        if (ofile.is_open()) {
+
+			j[_name]["Path"] 	 = _filePath;
+			j[_name]["BPM"] 	 = _bpm;
+			j[_name]["FadeTime"] = _fadeTime;
+			j[_name]["Volume"]   = getVolume();
+			j[_name]["Effects"]  = effects;
+
+			ofile << std::setw(4) << j << std::endl;
+        	ofile.close();
+        }
 	}
 	
 	void RatMusic::getJsonData()
 	{
 		nlohmann::json j;
-		std::string path = MUSIC_DEFAULT_PATH;
-		std::ifstream file(path + "Data/" + _name + ".json");
+		std::ifstream file(MUSIC_DATA_FILE_PATH);
 
 		float numberOfBars;
-		
 		if (file.is_open()) {
 			file >> j;
 			file.close();
+			_filePath = static_cast<std::string>(j[_name]["Path"]);
 			_bpm = j[_name]["BPM"];
 			numberOfBars = j[_name]["FadeTime"];
 			setVolume(j[_name]["Volume"]);
@@ -190,11 +207,6 @@ namespace rat
 				getEffect<Equalizer>().highGain(eqData.highGain);
 				getEffect<Equalizer>().highCutoff(eqData.highCutoff);
 			}
-		}
-		else {
-			_bpm = 60;
-			numberOfBars = 0;
-			setVolume(100);
 		}
 
 		if(numberOfBars > 0) {
