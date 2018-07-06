@@ -147,37 +147,42 @@ namespace rat
         _switch->add(_actual);
 
         addQuest(0);
+        addStep(0);
+        addStep(1);
         addStep(2);
         addStep(3);
         addStep(4);
         addStep(5);
-        addStep(6);
-        addStep(7);
+        addDescription(0);
         addDescription(1);
         addDescription(2);
         addDescription(3);
-        addDescription(4);
 
 
-        addQuest(10);
-        addStep(12);
-        addStep(13);
-        addStep(14);
+        addQuest(1);
+        addStep(0);
+        addStep(1);
+        addStep(2);
+        addDescription(0);
+        addDescription(1);
 
-        addDescription(5);
-        addDescription(6);
+        addQuest(2);
+        addStep(0);
+        addDescription(0);
 
-        addQuest(16);
-        addStep(18);
-        addDescription(7);
-
-        addQuest(22);
-        addStep(24);
-        addStep(25);
-        addDescription(8);
+        addQuest(3);
+        addStep(0);
+        addStep(1);
+        addDescription(0);
     
-        finishQuest(10);
+        finishQuest(2);
 
+
+        loadFromJson(getSaveJson());
+        //moveIterator(1);
+      //  addStep(0);
+        
+        
         displayNormalList();
 
         LOG_INFO("QuestJournal module initialized");
@@ -188,10 +193,11 @@ namespace rat
         LOG_INFO("QuestJournal module destructed");
     }
 
-    void QuestJournal::addQuest(unsigned int i)
+    void QuestJournal::addQuest(unsigned int questID)
     {
-        std::shared_ptr<journal::Quest> quest= std::make_shared<journal::Quest>(_fileLoader);
-        quest->setQuestName(i); ///
+        std::shared_ptr<journal::Quest> quest= std::make_shared<journal::Quest>(_fileLoader, questID);
+        quest->setQuestName(questID); ///
+        quest->formatName();
         _quests.push_back(quest);
         
         it = _quests.end()-1;
@@ -214,6 +220,7 @@ namespace rat
         //_questName->setQuest(quest);
 
     }
+    
 
     void QuestJournal::addStep(unsigned int i)
     {
@@ -236,7 +243,15 @@ namespace rat
 
     void QuestJournal::moveIterator(unsigned int id)
     {
-        std::string questName = _fileLoader->getStep(id);
+        std::string questName = _fileLoader->getQuestName(id);
+        while(questName[0]!= ' ')
+        {
+            questName.erase(0,1);
+        }
+        while(questName[0] == ' ')
+        {
+            questName.erase(0,1);
+        }  
 
         for(it = _quests.begin();it!=_quests.end();it++)
         {
@@ -246,6 +261,7 @@ namespace rat
     }
     void QuestJournal::refresh(const std::string& questName)
     {
+
         for(auto i :_normalTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
@@ -285,9 +301,17 @@ namespace rat
 
     void QuestJournal::refresh(unsigned int id)
     {
+        std::string questName = _fileLoader->getQuestName(id);
+        while(questName[0]!= ' ')
+        {
+            questName.erase(0,1);
+        }
+        while(questName[0] == ' ')
+        {
+            questName.erase(0,1);
+        }  
 
-        std::string questName = _fileLoader->getStep(id);
-        for(auto i :_normalTextWidgets)
+         for(auto i :_normalTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
         for(auto i :_doneTextWidgets)
             i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
@@ -383,7 +407,16 @@ namespace rat
 
     void QuestJournal::finishQuest(unsigned int id)
     {
-        std::string name = _fileLoader->getStep(id);
+        std::string name = _fileLoader->getQuestName(id);
+        while(name[0]!= ' ')
+        {
+            name.erase(0,1);
+        }
+        while(name[0] == ' ')
+        {
+            name.erase(0,1);
+        }   
+
         for(auto i = _quests.begin(); i != _quests.end();i++)
         {
             if((*i)->getQuestName()==name)
@@ -476,6 +509,102 @@ namespace rat
             {
                 turnON();
             }
+        }
+    }
+
+    nlohmann::json& QuestJournal::getSaveJson()
+    {
+        int k=0;
+        for(auto i = _quests.begin();i!=_quests.end();i++)
+        {
+            _save["in_progress"]["Q"+std::to_string(k)]["ID"] = std::to_string((*i)->getID());
+            _save["in_progress"]["Q"+std::to_string(k)]["name"] = (*i)->getQuestName();
+            _save["in_progress"]["Q"+std::to_string(k)]["steps"] = (*i)->getSteps();
+            _save["in_progress"]["Q"+std::to_string(k)]["descriptions"] = (*i)->getDescription();
+            k++;
+        }
+        k=0;
+        for(auto i = _doneQuests.begin();i!=_doneQuests.end();i++)
+        {
+            _save["done"]["Q"+std::to_string(k)]["ID"] = std::to_string((*i)->getID());
+            _save["done"]["Q"+std::to_string(k)]["name"] = (*i)->getQuestName();
+            _save["done"]["Q"+std::to_string(k)]["steps"] = (*i)->getSteps();
+            _save["done"]["Q"+std::to_string(k)]["descriptions"] = (*i)->getDescription();
+            k++;
+        }
+        return _save;
+    }
+    
+    void QuestJournal::loadFromJson(nlohmann::json& json)
+    {
+        std::shared_ptr<journal::Quest> quest;
+        int k=0;
+
+        _quests.clear();
+        _list->clear();
+        _normalTextWidgets.clear();
+
+        _doneQuests.clear();
+        _doneList->clear();
+        _doneTextWidgets.clear();
+        
+        while(json["in_progress"]["Q"+std::to_string(k)].empty() == false)
+        {
+            std::string n = json["in_progress"]["Q"+std::to_string(k)]["ID"];
+            quest = std::make_shared<journal::Quest>(_fileLoader,atoi(n.c_str()) );
+            n = json["in_progress"]["Q"+std::to_string(k)]["name"];
+            quest->setQuestName(n);
+            quest->addQuestSaveDescription(json["in_progress"]["Q"+std::to_string(k)]["descriptions"]);
+            quest->addSaveSteps(json["in_progress"]["Q"+std::to_string(k)]["steps"]);
+
+            _quests.push_back(quest);
+
+            it = _quests.end()-1;
+        
+            TextWidget* widget;
+            widget = new TextWidget;
+            widget->setString(quest->getQuestName());
+            widget->setCharacterSize(30);
+            widget->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+            widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                    refresh(widget->getString());
+            }
+            );
+            widget->setFont(getModule<GUI>().getAsset<sf::Font>("Assets/GUITest/testfont.otf"));
+            _list->add(widget);
+            _normalTextWidgets.push_back(widget);
+            k++;
+        }
+        k=0;
+        while(json["done"]["Q"+std::to_string(k)].empty() == false)
+        {
+            std::string n = json["done"]["Q"+std::to_string(k)]["ID"];
+            quest = std::make_shared<journal::Quest>(_fileLoader,atoi(n.c_str()) );
+            n = json["done"]["Q"+std::to_string(k)]["name"];
+            quest->setQuestName(n);
+            quest->addQuestSaveDescription(json["done"]["Q"+std::to_string(k)]["descriptions"]);
+            quest->addSaveSteps(json["done"]["Q"+std::to_string(k)]["steps"]);
+
+            _quests.push_back(quest);
+
+            it = _quests.end()-1;
+        
+            TextWidget* widget;
+
+            _doneQuests.push_back(quest);
+                
+            widget = new TextWidget;
+            widget->setString(quest->getQuestName());
+            widget->setFont(_font);
+
+            widget->setCharacterSize(25);
+            widget->setColor(sf::Color(135, 89, 247 ,255));
+            widget->setCallback(Widget::CallbackType::onPress,[this,widget](auto){
+                refresh(widget->getString());
+            });
+            _doneList->add(widget);
+            _doneTextWidgets.push_back(widget);
+            k++;
         }
     }
 }
