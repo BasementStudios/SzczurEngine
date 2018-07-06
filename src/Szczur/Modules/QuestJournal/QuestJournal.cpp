@@ -19,6 +19,8 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBar.png");
         gui.addAsset<sf::Texture>("Assets/Test/ScrollerBound.png");
         gui.addAsset<sf::Texture>("Assets/Test/ButtonTest.png");
+        gui.addAsset<sf::Texture>("Assets/Test/NinePatchTest.png");
+        gui.addAsset<sf::Font>("Assets/GUITest/testfont.otf");
 
         _font = gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf");
         _ButtonWidget = new ImageWidget;
@@ -514,7 +516,7 @@ namespace rat
         }
     }
 
-    nlohmann::json& QuestJournal::getSaveJson()
+    nlohmann::json QuestJournal::getSaveJson() const
     {
         int k=0;
         for(auto i = _quests.begin(); i != _quests.end(); i++)

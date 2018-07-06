@@ -22,15 +22,29 @@ namespace rat
     QuestNode* Quest::getNode(const std::string& nodeName)
     {
         auto found = _nodes.find(nodeName);
-        if(found == _nodes.end()) return nullptr;
+        if(found == _nodes.end())
+        {
+            LOG_ERROR("Cannot get step/node \"", nodeName, "\"");
+            return nullptr;
+        }
 
         return found->second.get();
+    }
+    void Quest::nextStep(const std::string& nodeName)
+    {
+        auto* node = getNode(nodeName);
+        if(!node)
+        {
+            LOG_ERROR("Cannot next step \"", nodeName, "\"");
+            return;
+        }
+        node->nextStep();
     }
     void Quest::addNode(std::string nodeName, Node_t node)
     {
         bool needDefaultName = false;
         if(nodeName == "") needDefaultName = true;
-        if(getNode(nodeName) != nullptr)
+        if(_hasNode(nodeName))
         {
             needDefaultName = true;
             LOG_INFO("Node with name \"", nodeName, "\" already exist, default name is set.");
@@ -43,6 +57,12 @@ namespace rat
         node->setName(nodeName);
         _nodes.emplace(nodeName, std::move(node));
     }
+
+    bool Quest::_hasNode(const std::string& nodeName) const
+    {
+        return _nodes.find(nodeName) != _nodes.end();
+    }
+    
     QuestNode* Quest::getRoot()
     {
         if(!_rootNode) LOG_ERROR("Root is nullptr...");
@@ -52,9 +72,7 @@ namespace rat
     {
         std::cout << "Quest Started\n";
         _state = State::Active;
-        std::cout << "Quest Kek Started\n";
         _rootNode->activate();
-        std::cout << "Quest Kek Started\n";
         _rootNode->nextStep();
     }
     void Quest::finish()
@@ -159,6 +177,7 @@ namespace rat
         object.set("getRoot", &Quest::getRoot);
         object.set("getReqs", &Quest::getReqs);
         object.set("setNameIndex", &Quest::setNameIndex);
+        object.set("nextStep", &Quest::nextStep);
 
         object.init();
     }

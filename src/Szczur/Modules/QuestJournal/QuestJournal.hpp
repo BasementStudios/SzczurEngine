@@ -44,13 +44,13 @@ namespace rat
             void turnON();
             void turnOFF();
 
-            nlohmann::json& getSaveJson();
+            nlohmann::json getSaveJson() const;
             void loadFromJson(nlohmann::json& json);
 
         private:
 
 
-            nlohmann::json _save;
+            mutable nlohmann::json _save;
 
             bool _isRunning = false;
 

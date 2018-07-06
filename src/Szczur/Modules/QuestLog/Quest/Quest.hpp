@@ -24,6 +24,7 @@ namespace rat
         Quest(QuestLog& owner, const std::string& name = "");
 
         QuestNode* getNode(const std::string& nodeName);
+        void nextStep(const std::string& nodeName);
         QuestNode* getRoot();
         void addNode(std::string nodeName, Node_t node); //specjalnie bez refa ;-;
 
@@ -71,6 +72,8 @@ namespace rat
         void _loadNodesFromJson(nlohmann::json& j);
         void _loadReqsFromJson(nlohmann::json& j);
         void _resetNodesReqs();
+
+        bool _hasNode(const std::string& nodeName) const;
 
         //void _activateRootsGUI();
 

@@ -52,6 +52,8 @@ namespace rat
 
     private:
 
+        nlohmann::json _getQuestsSaveJson() const;
+        void _loadQuestsFromSaveJson(nlohmann::json& j);
         //std::unique_ptr<Quest> _quest;
         //Widget* _widget{nullptr};
         //std::unique_ptr<QuestGUI> _title;
@@ -63,6 +65,8 @@ namespace rat
         std::unordered_map<std::string, Quest_t> _quests;
 
         Requirements _reqs;
+
+
 
         void _debugCounterTest();
 

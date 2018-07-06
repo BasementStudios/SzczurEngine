@@ -10,7 +10,7 @@ local hagen = root:addStep("Hagen")
 hagen:addTitle(1)
 
 local mine = hagen:addStep("Mine")
-mine.onActivate = print("Testowy Kek")
+--mine.onActivate = print("Testowy Kek")
 mine:addTitle(2)
 mine:addDescription(1)
 
@@ -27,8 +27,8 @@ repair:addTitle(5)
 
 
 QuestLog.startQuest("InosEye")
-hagen:nextStep()
-mine:nextStep()
-note:nextStep()
-getEye:nextStep()
-repair:nextStep()
+--hagen:nextStep()
+--mine:nextStep()
+--note:nextStep()
+--getEye:nextStep()
+--repair:nextStep()

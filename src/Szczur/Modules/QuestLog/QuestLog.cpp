@@ -19,11 +19,7 @@ namespace rat
     }
     void QuestLog::init()
     {
-        //_debugCounterTest();
-
         initScript();
-        testQuest();
-
     }
 
 
@@ -127,6 +123,17 @@ namespace rat
     {
         json j;
 
+        j["quests"] = _getQuestsSaveJson();
+        
+        const auto& journal = getModule<QuestJournal>();
+        j["journal"] = journal.getSaveJson();
+
+        return j;
+    }
+    json QuestLog::_getQuestsSaveJson() const
+    {
+        json j;
+
         for(auto& [name, quest] : _quests)
         {
             j[name] = quest->getSaveJson();
@@ -134,9 +141,19 @@ namespace rat
 
         return j;
     }
+
     void QuestLog::loadFromSaveJson(nlohmann::json& j)
     {
         LOG_INFO("Loading QuestLog...");
+        _loadQuestsFromSaveJson(j["quests"]);
+
+        auto& journal = getModule<QuestJournal>();
+        journal.loadFromJson(j["journal"]);
+
+        LOG_INFO("Loaded QuestLog.");
+    }
+    void QuestLog::_loadQuestsFromSaveJson(json& j)
+    {
         for(auto i = j.begin(); i != j.end(); i++)
         {
             const std::string name = i.key();
@@ -148,7 +165,6 @@ namespace rat
             }
             quest->loadFromSaveJson(i.value());
         }
-        LOG_INFO("Loaded QuestLog.");
     }
 
     Requirements& QuestLog::getReqs()
@@ -177,7 +193,11 @@ namespace rat
 
 
         script.scriptFile("Assets/Quest/testowyQuest.lua");
+
+        auto j = getSaveJson();
         
+        script.scriptFile("Assets/Quest/q2.lua");
+        loadFromSaveJson(j);
     }
 
     void QuestLog::activateQuest(const std::string& name)
@@ -194,7 +214,6 @@ namespace rat
             //std::cout << "Quest with name index: " <<  << " activated\n\n";
             journal.addQuest(quest->getNameIndex());
             quest->start();
-
         }
     }
 
@@ -209,10 +228,6 @@ namespace rat
         {
             auto& quest = found->second;
             auto& journal = getModule<QuestJournal>();
-            //std::cout << "Quest with name index: " << quest->getNameIndex() << " finished\n\n";
-
-            //quest->start();
-
             journal.finishQuest(quest->getNameIndex());
         }
     }
@@ -232,35 +247,6 @@ namespace rat
         journal.addDescription((unsigned int)(index));
 
         //std::cout << "Desc: " << index << " from quest " << questName << " added\n\n";
-    }
-
-    void QuestLog::testQuest()
-    {
-        /*
-        auto* nemo = addQuest("Nemo");
-        nemo->setNameIndex(0);
-
-        auto* root = nemo->getRoot();
-        root->addDescription(0);
-
-        auto* sharkChoice = root->addStep("SharkChoice");
-        sharkChoice->addTitle(0);
-
-        auto* kill = sharkChoice->addStep("Kill");
-        kill->addTitle(4);
-        kill->addDescription(1);
-
-        auto* findSth = kill->addStep("FindSth");
-        findSth->addTitle(1);
-        findSth->addDescription(2);
-
-
-        auto* goAround = sharkChoice->addStep("GoAround");
-        goAround->addTitle(31);
-        goAround->addDescription(31);
-
-*/
-
     }
     
 }
