@@ -47,12 +47,19 @@ namespace rat
             nlohmann::json& getSaveJson();
             void loadFromJson(nlohmann::json& json);
 
+            std::string getFollowStep();
+
         private:
+            void setFollowing(std::string name);
+
 
 
             nlohmann::json _save;
 
             bool _isRunning = false;
+
+            sf::Clock _journalClock;
+            int lastPressedTime = 0;
 
             TextWidget *_done;
             TextWidget *_actual;
@@ -87,6 +94,8 @@ namespace rat
             std::vector<std::shared_ptr<journal::Quest> >::iterator it;
             
             sf::Font *_font;
+
+
     };
 }
 
