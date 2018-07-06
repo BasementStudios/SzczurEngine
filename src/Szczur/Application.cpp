@@ -19,10 +19,10 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<Music>();
+	initModule<Sound>();
 	initModule<AudioEffects>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
-	initModule<Sound>();
 
 
 	LOG_INFO("Modules initialized");

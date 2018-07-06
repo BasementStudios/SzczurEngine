@@ -53,7 +53,7 @@ private:
 
 	
 	Clock _mainClock;
-	ModulesHolder<Window, Input, AudioEditor, Music, AudioEffects, Script, SoundManager, Listener> _modules;
+	ModulesHolder<Window, Input, AudioEditor, Music, Sound, AudioEffects, Script, Listener> _modules;
 
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
