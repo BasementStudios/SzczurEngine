@@ -74,7 +74,7 @@ namespace rat
 
     SoundAssets& Sound::getAssetsManager()
     {
-        return _soundAssets; 
+        return _soundAssets;
     }
 
 }

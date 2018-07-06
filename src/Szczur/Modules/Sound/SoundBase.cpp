@@ -167,6 +167,11 @@ namespace rat
         _sound.stop();
     }
 
+    void SoundBase::setName(const std::string& name)
+    {
+        _name = name;
+    }
+
     const std::string SoundBase::getName() const
     {
         return _name;
@@ -224,14 +229,16 @@ namespace rat
             file >> j;
             file.close();
 
-            if(j[_name]["FileName"] == nullptr)
+            if(j[_name]["Path"] == nullptr) {
+                LOG_INFO("Missing data of sound: ", _name);
                 return;
+            }
 
-            _fileName = static_cast<std::string>(j[_name]["FileName"]);
+            _fileName = static_cast<std::string>(j[_name]["Path"]);
 
             setVolume(j[_name]["Volume"]);
             setPitch(j[_name]["Pitch"]);
-            setOffset(j[_name]["BeginTime"], j["EndTime"]);
+            setOffset(j[_name]["BeginTime"], j[_name]["EndTime"]);
             setAttenuation(j[_name]["Attenuation"]);
             setMinDistance(j[_name]["MinDistance"]);
             setRelativeToListener(j[_name]["Relative"]);

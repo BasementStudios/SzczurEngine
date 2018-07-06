@@ -77,6 +77,7 @@ namespace rat
         Second_t getBeginTime() const;
         Second_t getEndTime() const;  
 
+        void setName(const std::string& name);
         const std::string getName() const;
         std::string getFileName() const;
 
