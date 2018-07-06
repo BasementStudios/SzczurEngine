@@ -2,12 +2,12 @@
     "Button": {
         "Attenuation": 1.0,
         "BeginTime": 0.0,
-        "EndTime": 0.429024010896683,
+        "EndTime": 0.42,
         "MinDistance": 1.0,
         "Path": "Assets/Sounds/button.flac",
         "Pitch": 2.0,
         "Relative": true,
-        "Volume": 50.4130020141602
+        "Volume": 50.41
     },
     "Button 1": {
         "Attenuation": 1.0,
