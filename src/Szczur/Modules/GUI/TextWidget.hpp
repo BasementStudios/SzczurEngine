@@ -8,6 +8,8 @@
 namespace rat {
     class Script;
 
+    namespace gui { class AnimData; }
+
     class TextWidget : public Widget {
     public:
         TextWidget();
@@ -22,6 +24,8 @@ namespace rat {
 
         std::string getString() const;
         void setString(const std::string& str);
+        void setStringInTime(const std::string& str, float time);
+        void setStringInTime(const std::string& str, const gui::AnimData& data);
 
         void setFont(sf::Font* font);
 

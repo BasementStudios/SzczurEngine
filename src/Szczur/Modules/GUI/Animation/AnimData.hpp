@@ -46,7 +46,11 @@ namespace gui
 
         EaseInSine,
         EaseOutSine,
-        EaseInOutSine
+        EaseInOutSine,
+
+        EaseInBack,
+        EaseOutBack,
+        EaseInOutBack
     };
     struct EasingFuncs
     {
@@ -136,24 +140,19 @@ namespace gui
                 case Easing::EaseInOutSine: return [](float t){ return 0.5f * (1.f + sin( 3.1415926f * (t - 0.5f) ) ); };
                     break;
 
+                case Easing::EaseInBack: return [](float t){ return t * t * (2.70158f * t - 1.70158f); };
+                break;
+                case Easing::EaseOutBack: return [](float t){ return 1.f + (--t) * t * (2.70158f * t + 1.70158f); };
+                    break;
+                case Easing::EaseInOutBack: return [](float t){ return t < 0.5f ? (t * t * (7.f * t - 2.5f) * 2.f) : (1.f + (--t) * t * 2.f * (7.f * t + 2.5f)); };
+                    break;
+
                 default:
                 return [](float){return 1.f; };
                     break;
             }
         }
     };
-
-// double easeInSine( double t ) {
-// 	return sin( 1.5707963 * t );
-// }
-
-// double easeOutSine( double t ) {
-// 	return 1 + sin( 1.5707963 * (--t) );
-// }
-
-// double easeInOutSine( double t ) {
-// 	return 0.5 * (1 + sin( 3.1415926 * (t - 0.5) ) );
-// }
 
     struct AnimData
     {

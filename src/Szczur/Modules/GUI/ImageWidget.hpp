@@ -14,7 +14,9 @@ namespace rat {
 
 #include "Widget.hpp"
 
-namespace rat {
+namespace rat 
+{
+    namespace gui { class AnimData; }
     class ImageWidget : public Widget
     {
     public:
@@ -33,6 +35,11 @@ namespace rat {
 
         void setTextureRect(const sf::IntRect& rect);
         void setPropTextureRect(const sf::FloatRect& propRect);
+        void setPropTextureRectInTime(const sf::FloatRect& propRect, float time);
+        void setPropTextureRectInTime(const sf::FloatRect& propRect, const gui::AnimData& data);
+
+        void setFullyTexSizing();
+        void setStaticTexPositing();
     
     protected:
         virtual sf::Vector2f _getSize() const override;
@@ -44,10 +51,13 @@ namespace rat {
     private:
         sf::Sprite _sprite;
 
-        sf::FloatRect _propTexRect;
+        sf::FloatRect _propTexRect{0.f, 0.f, 1.f, 1.f};
         bool _hasPropTexRect{false};
+        bool _isFullyTexSizing{false};
+        bool _isStaticTexPositing{false};
 
         void _calcPropTexRect();
+        void _calcStaticSizing();
 
         bool _hasTexture{false};
     };

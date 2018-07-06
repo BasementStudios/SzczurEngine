@@ -88,6 +88,9 @@ namespace rat
 		virtual void setPadding(float width, float height);
 		sf::Vector2f getPadding() const;
 
+		void setPropPadding(const sf::Vector2f& propPad);
+		void setPropPadding(float propWidth, float propHeight);
+
 		sf::Vector2f getInnerSize() const;
 
 		void setColor(const sf::Color& color);
@@ -150,6 +153,7 @@ namespace rat
 
 		virtual void _recalcChildrenPos();
 		virtual void _recalcPos() {}
+		virtual void _recalcElementsPropSize() {}
 
 		virtual sf::Vector2f _getInnerSize() const;
 
@@ -160,12 +164,14 @@ namespace rat
 		void _abortAnimation(gui::AnimType type);
 
 		Widget* _parent{nullptr};
+		const InterfaceWidget* _interface{nullptr};
 
 		bool _onPressed();
 		void _onRealesed();
 		void _onMoved(const sf::Vector2f& mousePos);
-		bool _aboutToRecalculate;
+		bool _aboutToRecalculate{false};
 		bool _isPosChanged{false};
+		bool _elementsPropSizeMustBeenCalculated{false};
 
 		bool _isHovered;
 		bool _isPressed;
@@ -182,6 +188,7 @@ namespace rat
 		ProportionalDimes _props;
 
 		sf::Vector2f _padding;
+
 
 		CallbacksContainer_t _callbacks;
 		CallbacksLuaContainer_t _luaCallbacks;
@@ -215,13 +222,13 @@ namespace rat
 
 		void _updatePropPosition();
 
-
-		const InterfaceWidget* _interface{nullptr};
-
 		bool _childrenPropSizesMustBeenRecalculated{false};
 		bool _propSizeMustBeenRecalculated{false};
 		bool _propPosMustBeenRecalculated{false};
 
+		bool _hasPropPadding{false};
+		sf::Vector2f _propPadding;
+		void _calcPropPadding();
 
 	protected:
 		static sf::Vector2f _winProp;

@@ -28,10 +28,12 @@ namespace rat
 
         bool randomBool{false};
 
+        ImageWidget* image{nullptr};
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};
         TextWidget* fps{nullptr};
+        ScrollAreaWidget* scroll{nullptr};
     };
 
 }
