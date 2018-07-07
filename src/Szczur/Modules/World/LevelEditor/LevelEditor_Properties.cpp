@@ -20,6 +20,7 @@
 #include "../Components/TriggerComponent.hpp"
 #include "../Components/TraceComponent.hpp"
 #include "../Components/PointLightComponent.hpp"
+#include "../Components/AudioComponent.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
@@ -71,6 +72,7 @@ namespace rat {
 				choosed[6] = entity->hasComponent<TriggerComponent>();
 				choosed[7] = entity->hasComponent<TraceComponent>();
 				choosed[8] = entity->hasComponent<PointLightComponent>();
+				choosed[9] = entity->hasComponent<AudioComponent>();
 			}
 
 #define UPDATE_COMPONENT(NAME, ID) if(entity->hasComponent< NAME >() != choosed[ ID ]) { \
@@ -89,6 +91,7 @@ namespace rat {
 				UPDATE_COMPONENT(TriggerComponent, 			6);
 				UPDATE_COMPONENT(TraceComponent, 			7);
 				UPDATE_COMPONENT(PointLightComponent, 		8);
+				UPDATE_COMPONENT(AudioComponent, 			9);
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -109,6 +112,7 @@ namespace rat {
 			ImGui::Checkbox("Trigger", 			&choosed[6]);
 			ImGui::Checkbox("Trace", 			&choosed[7]);
 			ImGui::Checkbox("Point light", 		&choosed[8]);
+			ImGui::Checkbox("Audio", 			&choosed[9]);
 
 			ImGui::EndPopup();
 		}
@@ -147,6 +151,7 @@ namespace rat {
 			if (auto* object = focusedObject->getComponentAs<TriggerComponent>()) object->renderHeader(_scenes, focusedObject);
 			if (auto* object = focusedObject->getComponentAs<TraceComponent>()) object->renderHeader(_scenes, focusedObject);
 			if (auto* object = focusedObject->getComponentAs<PointLightComponent>()) object->renderHeader(_scenes, focusedObject);
+			if (auto* object = focusedObject->getComponentAs<AudioComponent>()) object->renderHeader(_scenes, focusedObject);
 
 		}
 	}

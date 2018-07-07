@@ -32,9 +32,19 @@ namespace rat
     {
         _sounds.emplace_back(sound);
     }
+    
     void Sound::removeSound(SoundBase* sound)
     {
+        auto fileName = sound->getFileName();
+
        _sounds.remove_if([=](auto it){ return it == sound; });
+
+       for (auto& it : _sounds) {
+           if(fileName == it->getFileName())
+                return;
+       }
+
+       _soundAssets.unload(fileName);
     }
 
     void Sound::play()

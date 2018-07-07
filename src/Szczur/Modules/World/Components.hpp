@@ -13,6 +13,7 @@
 #include "Components/ColliderComponent.hpp"
 #include "Components/PointLightComponent.hpp"
 #include "Components/AnimatedSpriteComponent.hpp"
+#include "Components/AudioComponent.hpp"
 
 #include <memory>
 
@@ -39,6 +40,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("TriggerComponent")) return std::make_unique<TriggerComponent>(parent);
 		if (id == fnv1a_64("TraceComponent")) return std::make_unique<TraceComponent>(parent);
 		if (id == fnv1a_64("PointLightComponent")) return std::make_unique<PointLightComponent>(parent);
+		if (id == fnv1a_64("AudioComponent")) return std::make_unique<AudioComponent>(parent);
 
 		return nullptr;
 	}
@@ -57,6 +59,7 @@ struct ComponentTraits
 		if (name == "TriggerComponent") return std::make_unique<TriggerComponent>(parent);
 		if (name == "TraceComponent") return std::make_unique<TraceComponent>(parent);
 		if (name == "PointLightComponent") return std::make_unique<PointLightComponent>(parent);
+		if (name == "AudioComponent") return std::make_unique<AudioComponent>(parent);
 
 		return nullptr;
 	}
@@ -82,6 +85,7 @@ struct ComponentTraits
 		if (name == "TriggerComponent") return fnv1a_64("TriggerComponent");
 		if (name == "TraceComponent") return fnv1a_64("TraceComponent");
 		if (name == "PointLightComponent") return fnv1a_64("PointLightComponent");
+		if (name == "AudioComponent") return fnv1a_64("AudioComponent");
 
 		return 0;
 	}
@@ -100,6 +104,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("TriggerComponent")) return "TriggerComponent";
 		if (id == fnv1a_64("TraceComponent")) return "TraceComponent";
 		if (id == fnv1a_64("PointLightComponent")) return "PointLightComponent";
+		if (id == fnv1a_64("AudioComponent")) return "AudioComponent";
 
 		return "";
 	}
@@ -119,6 +124,7 @@ struct ComponentTraits
 		if (std::is_same_v<T, TriggerComponent>) return fnv1a_64("TriggerComponent");
 		if (std::is_same_v<T, TraceComponent>) return fnv1a_64("TraceComponent");
 		if (std::is_same_v<T, PointLightComponent>) return fnv1a_64("PointLightComponent");
+		if (std::is_same_v<T, AudioComponent>) return fnv1a_64("AudioComponent");
 
 		return 0;
 	}
@@ -144,6 +150,7 @@ struct ComponentTraits
 		TriggerComponent::initScript(entity, script);
 		TraceComponent::initScript(entity, script);
 		PointLightComponent::initScript(entity, script);
+		AudioComponent::initScript(entity, script);
 	}
 };
 

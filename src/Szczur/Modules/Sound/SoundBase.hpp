@@ -34,6 +34,7 @@ namespace rat
 
     public:
 
+        SoundBase();
         SoundBase(const std::string& name);
 
         void init();
