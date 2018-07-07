@@ -156,6 +156,8 @@ private:
 	bool _cameraRotating {false};
 	sf::Vector2i _cameraPreviousMouseOffset {0, 0};
 
+	bool _isMCCameraMovement = false;
+
 // Menu info
 
 	std::string _menuInfo;

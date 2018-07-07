@@ -400,40 +400,48 @@ namespace rat {
 		// "Minecraft" movement
 		auto rotation = camera->getRotation();
 
-		if (input.isKept(Keyboard::W))
-		{
-			camera->move({
-				-velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::cos(glm::radians(rotation.y))
-			});
-		}
+		if (_isMCCameraMovement) {
+			if (input.isKept(Keyboard::W))
+			{
+				camera->move({
+					-velocity * glm::sin(glm::radians(rotation.y)),
+					0.f,
+					-velocity * glm::cos(glm::radians(rotation.y))
+				});
+			}
 
-		if (input.isKept(Keyboard::S))
-		{
-			camera->move({
-				velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::cos(glm::radians(rotation.y))
-			});
-		}
+			if (input.isKept(Keyboard::S))
+			{
+				camera->move({
+					velocity * glm::sin(glm::radians(rotation.y)),
+					0.f,
+					velocity * glm::cos(glm::radians(rotation.y))
+				});
+			}
 
-		if (input.isKept(Keyboard::D))
-		{
-			camera->move(glm::vec3{
-				velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::sin(glm::radians(rotation.y))
-			});
-		}
+			if (input.isKept(Keyboard::D))
+			{
+				camera->move(glm::vec3{
+					velocity * glm::cos(glm::radians(rotation.y)),
+					0.f,
+					-velocity * glm::sin(glm::radians(rotation.y))
+				});
+			}
 
-		if (input.isKept(Keyboard::A))
-		{
-			camera->move(glm::vec3{
-				-velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::sin(glm::radians(rotation.y))
-			});
+			if (input.isKept(Keyboard::A))
+			{
+				camera->move(glm::vec3{
+					-velocity * glm::cos(glm::radians(rotation.y)),
+					0.f,
+					velocity * glm::sin(glm::radians(rotation.y))
+				});
+			}
+		}
+		else {
+			if (input.isKept(Keyboard::W)) camera->move({ 0.f, 0.f, -velocity });
+			if (input.isKept(Keyboard::S)) camera->move({ 0.f, 0.f,  velocity });
+			if (input.isKept(Keyboard::D)) camera->move({ velocity, 0.f, 0.f });
+			if (input.isKept(Keyboard::A)) camera->move({ -velocity, 0.f, 0.f });
 		}
 
 		if (input.isKept(Keyboard::Space)) 		camera->move({0.f,  velocity, 0.f});
