@@ -110,22 +110,26 @@ namespace rat
             ImGui::Separator();
 
             if (ImGui::TreeNode("Playlists")) {
-                for(auto playlist : _playlistHolder.playlistsNames) {
-                    if (ImGui::SmallButton((" - ##RemovePlaylist" + playlist).c_str())) {
-                        //TODO
+                for (auto playlist = _playlistHolder.playlistsNames.begin(); playlist != _playlistHolder.playlistsNames.end(); ++playlist) {
+                    if (ImGui::SmallButton((" - ##RemovePlaylist" + *playlist).c_str())) {
+                        _music.removeFromPlaylist(*playlist);
+                        _playlistHolder.playlistsNames.erase(playlist);
+                        ImGui::TreePop();
+                        ImGui::End();
+                        return;
                     }
                     ImGui::SameLine();
-                    if (ImGui::TreeNode(playlist.c_str())) {
-                        for(auto it : _playlistHolder.music->getPlaylist(playlist)) {
+                    if (ImGui::TreeNode((*playlist).c_str())) {
+                        for(auto it : _playlistHolder.music->getPlaylist(*playlist)) {
                             if (ImGui::Button(it->getName().c_str())){
                                 currentEditingMusicFile = it->getName();
-                                currentPlaylist = playlist;
+                                currentPlaylist = *playlist;
                             }
                             ImGui::SameLine();
-                            auto name = "PLAY##" + playlist + it->getName();
+                            auto name = "PLAY##" + *playlist + it->getName();
                             if (ImGui::Button(name.c_str())){
                                 currentEditingMusicFile = it->getName();
-                                currentPlaylist = playlist;
+                                currentPlaylist = *playlist;
                                 _music.setPlayingMode(currentPlaylist, Music::PlayingMode::Random);
                                 _music.play(0, currentPlaylist, currentEditingMusicFile);
                                 auto& song = _musicAssets->get(currentEditingMusicFile);
@@ -173,11 +177,11 @@ namespace rat
                                 }
                             }
                             ImGui::SameLine();
-                            name = " - ##" + playlist + it->getName();
+                            name = " - ##" + *playlist + it->getName();
                             if (ImGui::Button(name.c_str())) {
                                 if (it->getName() == currentEditingMusicFile)
                                     currentEditingMusicFile = "";
-                                _playlistHolder.music->removeFromPlaylist(playlist, it->getName());
+                                _playlistHolder.music->removeFromPlaylist(*playlist, it->getName());
                                 ImGui::TreePop();
                                 ImGui::TreePop();
                                 ImGui::End();
@@ -185,7 +189,7 @@ namespace rat
                             }
                         }
                         if (ImGui::Button(" + ")) {
-                            _playlistHolder.addMusic(playlist);
+                            _playlistHolder.addMusic(*playlist);
                         }
                         ImGui::TreePop();
                     }
