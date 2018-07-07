@@ -354,7 +354,7 @@ namespace rat
         GlyphTypes glyphTypes;
         for(auto& type : glyphTypes)
         {
-            const std::string typePath = "Assets/PrepScreen/" + type + "Glyph.png";
+            const std::string typePath = "Assets/PrepScreen/Glyphes/" + type + ".png";
             gui.addAsset<sf::Texture>(typePath);
         }
 

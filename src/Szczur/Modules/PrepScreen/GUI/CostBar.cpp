@@ -77,7 +77,7 @@ namespace rat
         GlyphesConverter converter;
         for(auto& [glyph, widget] : _glyphs)
         {
-            const std::string path = "Assets/PrepScreen/" + converter.toString(glyph) + "Glyph.png";
+            const std::string path = "Assets/PrepScreen/Glyphes/" + converter.toString(glyph) + ".png";
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
         }        

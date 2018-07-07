@@ -3,6 +3,8 @@
 #include <initializer_list>
 #include <set>
 
+#include <Json/json.hpp>
+
 #include <SFML/Graphics/Texture.hpp>
 
 #include "SkillCost.hpp"
@@ -17,7 +19,9 @@ namespace rat
 
         public:
         Skill(const std::string& name);
+        Skill(nlohmann::json& j);
 
+        const std::string& getStringID() const;
         const std::string& getName() const;
         const SkillCost& getCostInfo() const;
         void unlock();
@@ -33,6 +37,8 @@ namespace rat
         void addRequirement(GlyphID glyph, power_t power = 1);
         void setRequirements(std::initializer_list<std::pair<GlyphID, power_t>> requirements);
         void setProfession(const std::string& profession);
+        void setName(const std::string& name);
+        void setStringID(const std::string& nameID);
 
         const std::string getProfession() const;
 
@@ -48,8 +54,11 @@ namespace rat
 
     private:
         std::string _name;
+        std::string _id;
         std::string _profession{"Mele"};
         SkillCost _cost;
+
+        void _loadGlyphsFromJson(nlohmann::json& j);
         
         bool _unlocked{true};
         mutable bool _isBought{false};

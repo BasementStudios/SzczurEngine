@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 
+#include <Json/json.hpp>
+
 #include "Skill.hpp"
 
 
@@ -30,9 +32,13 @@ namespace rat
             return _skills.end();
         }
 
-    private:
-        std::unordered_map<std::string, std::unique_ptr<Skill>> _skills;
+        void loadFromJson(nlohmann::json& j);
 
+    private:
+        void _loadSkills(nlohmann::json& j);
+
+        std::unordered_map<std::string, std::unique_ptr<Skill>> _skills;
+        std::string _mainPath = "Assets/PrepScreen/Icons/";
         void _initSkills();
     };
 }

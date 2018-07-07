@@ -53,7 +53,7 @@ namespace rat
 
     void ProfessionBar::initAssetsViaGUI(GUI& gui)
     {
-        std::string path = "Assets/PrepScreen/" + _profession + "Icon";
+        std::string path = "Assets/PrepScreen/Professions/" + _profession + "Icon";
         gui.addAsset<sf::Texture>(path + "0.png");
         gui.addAsset<sf::Texture>(path + "1.png");
 

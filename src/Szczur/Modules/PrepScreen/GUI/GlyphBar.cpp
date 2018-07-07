@@ -47,15 +47,15 @@ namespace rat
     }
     void GlyphBar::initAssetsViaGUI(GUI& gui)
     {
-        const std::string path = "Assets/PrepScreen/";
+        const std::string path = "Assets/PrepScreen/Glyphes/";
 
-        for(size_t i = 0; i < _glyphTextures.size(); i++)
-        {
-            _glyphTextures[i] = gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) /*+ to_string(i) + */+ "Glyph.png");
-        }
+        // for(size_t i = 0; i < _glyphTextures.size(); i++)
+        // {
+        //     _glyphTextures[i] = gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) /*+ to_string(i) + */+ "Glyph.png");
+        // }
 
         _container->setTexture(gui.getAsset<sf::Texture>("Assets/Test/GlyphCircle.png"));
-        _glyph->setTexture(gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) + "Glyph.png"));
+        _glyph->setTexture(gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) + ".png"));
         _amountState->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
     }
 
