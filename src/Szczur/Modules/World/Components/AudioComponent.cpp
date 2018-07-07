@@ -81,6 +81,8 @@ namespace rat {
         object.set("add", &AudioComponent::add);
         object.set("remove", &AudioComponent::remove);
 
+        object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
+
         // Entity
 		entity.set("addAudioComponent", [&](Entity& e){return (AudioComponent*)e.addComponent<AudioComponent>();});
 		entity.set("audio", &Entity::getComponentAs<AudioComponent>);
