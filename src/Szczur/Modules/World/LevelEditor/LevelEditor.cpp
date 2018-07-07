@@ -250,7 +250,7 @@ namespace rat {
 						auto size = linearEnd.getProjectionZ(entity.getPosition()) - linearStart.getProjectionZ(entity.getPosition());
 
 						// check if object is in rect
-						if (linearEnd.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { std::abs(size.x), std::abs(size.y), 0.f }) {
+						if (linearEnd.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { std::abs(size.x), std::abs(size.y), 0.f })) {
 							// add to list
 							_objectsList.addSelected(&entity);
 							_draggingEntity = &entity;
