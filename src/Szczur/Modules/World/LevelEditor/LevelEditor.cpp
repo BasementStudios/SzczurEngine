@@ -288,7 +288,7 @@ namespace rat {
 
 	void LevelEditor::updateCameraMovement(Entity* cameraEntity, InputManager& input)
 	{
-		auto mouse = _getFixedMousePos(input.getMousePosition());
+		auto mouse = input.getMousePosition();
 
 		// Camera movement
 		sf3d::Camera* camera;
