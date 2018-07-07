@@ -66,16 +66,18 @@ namespace rat
 	void NormalSlots::setParent(Widget* newBase) {
 		newBase->add(_base);
 	}
-	void NormalSlots::addItem(EquipmentObject* item) {
+	bool NormalSlots::addItem(EquipmentObject* item) {
 		if (_freeSlots.size() > 0) {
 			_freeSlots[0]->setItem(item);
 			_occupiedSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
 			_freeSlots.erase(_freeSlots.begin());
 			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
+			return true;
 		}
 		else {
 			_equipment->_replaceNewItem(item);
 			_itemForReplacing = item;
+			return false;
 		}
 	}
 	bool NormalSlots::removeItem(sf::String itemNameId) {
@@ -119,8 +121,7 @@ namespace rat
 				removeItem(clickedObj->index);
 				clickedObj->setItem(_itemForReplacing);
 				_occupiedSlots.insert(std::make_pair(_itemForReplacing->getNameId(), clickedObj.get()));
-				_itemForReplacing = nullptr;
-				_equipment->_stopReplacingitem();
+				_equipment->_stopReplacingItem(true);
 			}
 			else {
 				//setting clicked slot and item
@@ -245,8 +246,7 @@ namespace rat
 						_equipment->disableItemPreview();
 						if (_itemForReplacing) {
 							addItem(_itemForReplacing);
-							_itemForReplacing = nullptr;
-							_equipment->_stopReplacingitem();
+							_equipment->_stopReplacingItem(true);
 						}
 					}
 				}

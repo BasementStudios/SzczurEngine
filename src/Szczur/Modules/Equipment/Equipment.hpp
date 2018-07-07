@@ -12,6 +12,10 @@
 #include "UsableItem.hpp"
 namespace rat
 {
+	enum statusOfEq {
+		replaced, notReplaced, waiting
+	};
+
 	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; 
 	class RingSlider; class ItemManager; class InterfaceWidget; class ReplaceItem;
 	class Equipment : public Module<Window, Input, GUI, Script> {
@@ -39,7 +43,7 @@ namespace rat
 		//WearableItem* createWearableItem(std::string nameId);
 		UsableItem* getUsableItem(std::string nameId);
 		WearableItem* getWearableItem(std::string nameId);
-		void addUsableItem(UsableItem* item);
+		bool addUsableItem(UsableItem* item);
 		void addWearableItem(WearableItem* item);
 		bool removeUsableItem(UsableItem* item);
 		bool removeWearableItem(WearableItem* item);
@@ -72,6 +76,13 @@ namespace rat
 		std::map<std::string, EquipmentObject*> _listOfObjects;
 
 		void _replaceNewItem(EquipmentObject* item);
-		void _stopReplacingitem();
+		void _stopReplacingItem(bool hasBeenSuccesfull);
+		statusOfEq _replacingStatus;
+
+		statusOfEq lastChangeStatus();
+
+		void _openEquipment();
+		void _closeEquipment();
+		bool _isEquipmentOpen();
 	};
 }

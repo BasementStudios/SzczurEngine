@@ -2,11 +2,11 @@
 #include "SFML/Graphics.hpp"
 
 namespace rat {
-	class WindowWidget; class EquipmentObject; class Widget; class TextAreaWidget; class ImageWidget; class TextWidget; class NormalSlots;
+	class WindowWidget; class EquipmentObject; class Widget; class TextAreaWidget; class ImageWidget; class TextWidget; class Equipment;
 	class ReplaceItem 
 	{
 	public:
-		ReplaceItem(sf::Texture* backgroundText, sf::Texture* backgroundDescriptionText, sf::Texture* cancelText, sf::Font* font, NormalSlots* slots);
+		ReplaceItem(sf::Texture* backgroundText, sf::Texture* backgroundDescriptionText, sf::Texture* cancelText, sf::Font* font, Equipment* eq);
 
 		void minimalize();
 		void setItem(EquipmentObject*);
@@ -18,9 +18,9 @@ namespace rat {
 
 		TextAreaWidget* _itemName{ nullptr };
 		TextAreaWidget* _itemDescription{ nullptr };
-		TextWidget* _cancelText{ nullptr };
+		TextAreaWidget* _cancelText{ nullptr };
 
 		Widget* _base{ nullptr };
-		NormalSlots* _slots{nullptr};
+		Equipment* _equipment{nullptr};
 	};
 }

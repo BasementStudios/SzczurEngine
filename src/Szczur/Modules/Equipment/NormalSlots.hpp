@@ -10,11 +10,11 @@ namespace rat {
 
 	class NormalSlots			//part of equipment for normal items looking like a grid
 	{
-		friend class ReplaceItem;
+		friend class Equipment;
 	public:
 		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment);
 
-		void addItem(EquipmentObject* item);
+		bool addItem(EquipmentObject* item);
 		bool removeItem(sf::String itemName);
 		bool removeItem(int index);
 		void resizeSlots(size_t newSize);

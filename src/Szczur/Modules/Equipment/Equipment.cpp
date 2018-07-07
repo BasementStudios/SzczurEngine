@@ -43,6 +43,10 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set("ITEM_TYPE_AMULET", equipmentObjectType::amulet);
 		module.set("ITEM_TYPE_RING", equipmentObjectType::ring);
 
+		module.set("NOT_REPLACED", statusOfEq::notReplaced);
+		module.set("REPLACED", statusOfEq::replaced);
+		module.set("WAITING", statusOfEq::waiting);
+
 		module.set_function("addUsableItem", &Equipment::addUsableItem, this);
 		module.set_function("addWearableItem", &Equipment::addWearableItem, this);
 		module.set_function("removeUsableItem", &Equipment::removeUsableItem, this);
@@ -54,6 +58,10 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
 		module.set_function("setSelectedRingsLimit", &Equipment::setSelectedRingsLimit, this);
+		module.set_function("getLastChangeStatus", &Equipment::lastChangeStatus, this);
+		module.set_function("closeEquipment", &Equipment::_closeEquipment, this);
+		module.set_function("openEquipment", &Equipment::_openEquipment, this);
+		module.set_function("isEquipmentOpen", &Equipment::_isEquipmentOpen, this);
 
 		script.initClasses<WearableItem, UsableItem>();
 	}
@@ -93,7 +101,7 @@ namespace rat {		//beware spagetti monster down there :/
 		_itemPreview->setParent(_base);
 		_itemPreview->minimalize();
 
-		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"), _normalSlots);
+		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"), this);
 		_replaceItem->setParent(_base);
 		_replaceItem->minimalize();
 
@@ -155,8 +163,13 @@ namespace rat {		//beware spagetti monster down there :/
 		return nullptr;
 	}
 
-	void Equipment::addUsableItem(UsableItem* item) {
-		_normalSlots->addItem(item);
+	bool Equipment::addUsableItem(UsableItem* item) {
+		if (_normalSlots->addItem(item))
+			return true;
+		else {
+			_replacingStatus = statusOfEq::waiting;
+			return false;
+		}
 	}
 
 	void Equipment::addWearableItem(WearableItem* item) {
@@ -246,7 +259,30 @@ namespace rat {		//beware spagetti monster down there :/
 		_replaceItem->setItem(item);
 	}
 
-	void Equipment::_stopReplacingitem() {
+	void Equipment::_stopReplacingItem(bool hasBeenSuccesfull) {
+		_normalSlots->_stopReplacing();
 		_replaceItem->minimalize();
+		if (hasBeenSuccesfull)
+			_replacingStatus = statusOfEq::replaced;
+		else
+			_replacingStatus = statusOfEq::notReplaced;
+	}
+
+	statusOfEq Equipment::lastChangeStatus() {
+		return _replacingStatus;
+	}
+
+	void Equipment::_openEquipment() {
+		_equipmentFrame->setPropPosition({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = false; } });
+		_equipmentFrame->fullyActivate();
+	}
+	void Equipment::_closeEquipment() {
+		_equipmentFrame->setPropPosition({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+			_equipmentFrame->fullyDeactivate();
+			_isEquipmentHidden = true;
+		} });
+	}
+	bool Equipment::_isEquipmentOpen() {
+		return !_isEquipmentHidden;
 	}
 }
