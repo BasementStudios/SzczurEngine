@@ -82,28 +82,32 @@ void Application::render()
 int Application::run()
 {
 	try {
+		// Starting
 		init();
 
 		LOG_INFO("Starting main loop of application");
 
+		// Main loop
 		while (getModule<Window>().getWindow().isOpen()) {
 			input();
 			update();
 			render();
 		}
+		
+		// Exiting
+		#ifdef EDITOR
+		{
+			ImGui::SFML::Shutdown();
+		}
+		#endif
+		
+		LOG_INFO("Shutdowning application in normal way");
 	}
 	catch (const std::exception& exception) {
 		LOG_EXCEPTION(exception);
+		return 1;
 	}
-
-	#ifdef EDITOR
-	{
-		ImGui::SFML::Shutdown();
-	}
-	#endif
-
-	LOG_INFO("Shutdowning application");
-
+	
 	return 0;
 }
 

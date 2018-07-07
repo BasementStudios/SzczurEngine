@@ -2,8 +2,8 @@
 
 #include <fstream>
 #include <memory>
-
-#include "Szczur/Utility/Logger.hpp"
+#include <iostream>
+#include <stdexcept>
 
 std::unique_ptr<const char[]> getFileContents(const char* filePath)
 {
@@ -72,6 +72,10 @@ bool Shader::loadFromFile(ShaderType type, const char* filePath)
 	#endif // EDITOR
 
 	auto ptr = getFileContents(filePath);
+	if (!ptr) {
+		throw std::runtime_error(std::string("Cannot load shader from ") + filePath);
+		return false;
+	}
 
 	return ptr && _compile(type, ptr.get(), -1);
 }
@@ -146,9 +150,14 @@ bool Shader::_compile(ShaderType type, const char* data, GLint size)
 		GLchar infoLog[512];
 		glGetShaderInfoLog(_shader, sizeof(infoLog), nullptr, infoLog);
 
-		LOG_ERROR("Unable to compile shader:\n", infoLog);
-
 		_destroy();
+		
+		throw std::runtime_error(
+			std::string(infoLog)
+			#ifdef EDITOR
+			+ "Cannot compile shader from " + _filePath + "\n"
+			#endif
+		);
 
 		return false;
 	}

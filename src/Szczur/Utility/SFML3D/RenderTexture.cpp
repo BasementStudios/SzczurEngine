@@ -4,7 +4,7 @@
  ** @author Tomasz (Knayder) Jatkowski 
  **/
 
-#include <iostream> // cout
+#include <stdexcept>
 
 #include <glm/vec2.hpp>
 
@@ -82,8 +82,17 @@ void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->RBO);
 
+		// Setup RAII guard for FBO
+		[[maybe_unused]] 
+		struct FBORAIIGuard {
+			~FBORAIIGuard() {
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			}
+		} guard;
+
+		// Checks
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-			std::cout << "FRAMEBUFFER CREATION ERROR\n";
+			throw std::runtime_error("Framebuffer creation error.");
 		}
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

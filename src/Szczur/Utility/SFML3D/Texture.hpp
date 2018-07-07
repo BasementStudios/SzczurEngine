@@ -20,10 +20,10 @@ protected:
 	/* Properties */
 public:
 	/// ID that identify texture by graphic card
-	GLuint getID() const;
+	GLuint getID() const noexcept;
 
 	/// Size of the texture
-	glm::uvec2 getSize() const;
+	glm::uvec2 getSize() const noexcept;
 
 	
 
@@ -49,8 +49,8 @@ public:
 	bool loadFromFile(const char* path);
 	bool loadFromFile(const std::string& path);
 
-	void bind() const;
-	void unbind() const;
+	void bind() const noexcept;
+	void unbind() const noexcept;
 };
 
 }

@@ -10,12 +10,12 @@ namespace sf3d
 {
 
 /* Properties */
-GLuint Texture::getID() const
+GLuint Texture::getID() const noexcept
 {
 	return this->textureID;
 }
 
-glm::uvec2 Texture::getSize() const
+glm::uvec2 Texture::getSize() const noexcept
 {
 	return this->size;
 }
@@ -112,13 +112,13 @@ bool Texture::loadFromFile(const std::string& path)
 	return this->loadFromFile(path.c_str());
 }
 
-void Texture::bind() const
+void Texture::bind() const noexcept
 {
 	if (this->textureID) {
 		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
 }
-void Texture::unbind() const
+void Texture::unbind() const noexcept
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

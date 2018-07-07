@@ -1,6 +1,7 @@
 #include "ShaderProgram.hpp"
 
 #include <fstream>
+#include <stdexcept>
 
 #include <nlohmann/json.hpp>
 
@@ -11,7 +12,6 @@
 #	include <imgui-SFML.h>
 #endif // EDITOR
 
-#include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 
 namespace nlohmann
@@ -998,7 +998,7 @@ bool ShaderProgram::_finishLinking()
 		GLchar infoLog[512];
 		glGetProgramInfoLog(_program, sizeof(infoLog), nullptr, infoLog);
 
-		LOG_ERROR("Unable to link shader program:\n", infoLog);
+		throw std::runtime_error(std::string("Unable to link shader program:\n") + infoLog);
 
 		_destroy();
 

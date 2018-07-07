@@ -6,7 +6,7 @@
  **/
 
 #include <cstdio> // snprintf
-#include <iostream> // cout
+#include <stdexcept>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/vec3.hpp>
@@ -160,8 +160,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		// Shader selection
 		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
 		if (!(shaderProgram && shaderProgram->isValid())) {
-			std::cout << "Error: No shader available!\n";
-			return;
+			throw std::runtime_error("No shader available for rendering!");
 		}
 
 		// Shader configuration
@@ -222,7 +221,7 @@ void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
 		// Shader selection
 		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
         if (!(shaderProgram && shaderProgram->isValid())) {
-            std::cout << "Error: No shader available!\n";
+            throw std::runtime_error("No shader available for rendering!");
             return;
         }
 
@@ -281,7 +280,7 @@ Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
 
 		case ProjectionType::Orthographic:
 		{
-			std::cout << "getLinearByScreenPosition: Orhographics projection type not implemented yet.\n";
+			throw std::logic_error("getLinearByScreenPosition: Orhographics projection type not implemented yet.");
 			// @todo .
 		}
 		break;
