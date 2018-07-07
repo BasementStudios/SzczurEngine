@@ -25,7 +25,6 @@ namespace sf3d {
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderTexture.hpp"
-#include "Szczur/Utility/SFML3D/SimpleSprite.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -34,16 +33,13 @@ namespace rat {
 class Window : public Module<>
 {
 	/* Types */
+public:
 	using Window_t = sf3d::RenderWindow;
-	using Layer_t = sf3d::RenderTexture;
 
 
 
 	/* Variables */
 private:
-	Window_t	window;
-	Layer_t		layer;
-	
 	// Window informations
 	sf::VideoMode   videoMode		{1280, 720};
 
@@ -53,39 +49,34 @@ private:
 
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
+	// Elmenents for render
+	Window_t	window;
+	
 	// Shader programs
-	std::unique_ptr<sf3d::ShaderProgram> basicShaderProgram;
-	std::unique_ptr<sf3d::ShaderProgram> postProcessingProgram;
-
-	/// Used for rendering the layer texture on window.
-	std::unique_ptr<sf3d::SimpleSprite> layerSprite;
+	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
 
 
 
 	/* Properties */
 public:
 	/// Provides access to application window.
-	Window_t& getWindow();
-	const Window_t& getWindow() const;
-
-	/// Provides access to render layer 
-	Layer_t& getLayer();
-	const Layer_t& getLayer() const;
-
+	Window_t& getWindow() noexcept;
+	const Window_t& getWindow() const noexcept;
+	
 	/// Defines a video mode. Aslo recreates the window.
-	sf::VideoMode getVideoMode() const;
+	sf::VideoMode getVideoMode() const noexcept;
 	void setVideoMode(const sf::VideoMode& mode);
 
 	/// Limit of updated and rendered frames per second.
-	unsigned int getFramerateLimit() const;
+	unsigned int getFramerateLimit() const noexcept;
 	void setFramerateLimit(const unsigned int limit);
 
 	/// Title of application window.
-	const std::string& getTitle() const;
+	const std::string& getTitle() const noexcept;
 	void setTitle(const std::string& title);
 
 	/// Full screen mode
-	bool getFullscreen() const;
+	bool getFullscreen() const noexcept;
 	void setFullscreen(bool state);
 
 

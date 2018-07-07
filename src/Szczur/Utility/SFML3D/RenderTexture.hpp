@@ -18,10 +18,10 @@ namespace sf3d
 class RenderTexture : public RenderTarget
 {
 	/* Variables */
-private:
-	GLuint _FBO{0u};
-	Texture _texture;
-	GLuint _RBO{0u};
+protected:
+	GLuint FBO {0u};
+	GLuint RBO {0u};
+	Texture texture;
 
 
 	

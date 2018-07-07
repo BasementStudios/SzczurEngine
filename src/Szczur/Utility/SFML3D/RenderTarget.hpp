@@ -32,7 +32,7 @@ namespace sf3d
 class RenderTarget
 {
 	/* Variables */
-private:
+protected:
 	glm::uvec2 size;
 
 	RenderStates defaultStates;
@@ -44,6 +44,7 @@ private:
 
 	std::vector<LightPoint*> lightPoints;
 
+private:
 	char uniformNameBuffer[64];
 
 
@@ -64,19 +65,20 @@ public:
 
 
 	/* Operators */
-public:
+	// Protected to avoid construction (it is only base type).
+protected:
 	RenderTarget();
+	~RenderTarget();
 
 	RenderTarget(glm::uvec2 size, ShaderProgram* program = nullptr);
-
-	~RenderTarget();
 
 
 
 	/* Methods */
-public:
+protected:
 	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
-	
+
+public:
 	virtual bool _setActive(bool state = true);
 
 	/// Helper function to scale matrix coords propertly

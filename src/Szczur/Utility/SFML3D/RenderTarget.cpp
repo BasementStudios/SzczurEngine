@@ -190,12 +190,9 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 				}
 
 				// Lighting
-				shaderProgram->setUniform("viewPosition", camera->getPosition());
+				shaderProgram->setUniform("cameraPosition", camera->getPosition());
 				shaderProgram->setUniform("basicAmbient", glm::vec3{0.1f, 0.1f, 0.1f});
 				applyLightPoints(shaderProgram);
-			}
-			else {
-				shaderProgram->setUniform("isObject", false);
 			}
 		}
 

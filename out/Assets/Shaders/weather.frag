@@ -1,17 +1,3 @@
-#version 330 core
-
-out vec4 FragColor;
-
-in vec2 texCoord;
-
-uniform sampler2D ourTexture;
-
-
-void main() {
-
-	FragColor = texture(ourTexture, texCoord);
-}
-
 
 
 /*
@@ -24,7 +10,7 @@ void main() {
     - LuminositySaturation
     - Fog with PerlinNoise
     - Vignetting
-
+*/
 
 #version 330 core
 
@@ -259,4 +245,3 @@ float PerlinNoise(vec2 p, float turbulence, vec3 seed, bool reverted)
 
     return t;
 }
-*/
