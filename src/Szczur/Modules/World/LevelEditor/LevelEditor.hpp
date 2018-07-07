@@ -2,16 +2,16 @@
 #pragma once
 //#ifdef EDITOR
 
+#include <tuple>
+
 #include <boost/container/flat_map.hpp>
+
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/SFML3D/CircleShape.hpp"
 #include "Szczur/Utility/SFML3D/Camera.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
-
-#include <tuple>
-
-#include <tuple>
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
@@ -194,6 +194,12 @@ private:
 
 	Entity* _entityToUnselect = nullptr;
 	glm::vec3 _entityToUnselectPos;
+
+
+	// group selection
+	bool _isGroupSelecting = false;
+	glm::vec2 _selectionStartPos;
+	sf::RectangleShape _selectionRect;
 };
 
 	

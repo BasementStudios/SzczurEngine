@@ -48,6 +48,9 @@ namespace rat {
 		const auto& videoMode = detail::globalPtr<Window>->getVideoMode();
 
 		_defaultWindowSize = sf::Vector2i(videoMode.width, videoMode.height);
+
+		_selectionRect.setFillColor(sf::Color(30, 136, 229, 100));
+		_selectionRect.setOutlineColor(sf::Color::Black);
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -95,6 +98,14 @@ namespace rat {
 			scene = _scenes.getCurrentScene();
 			
 			_renderOrigins(target);
+		}
+
+		if (_isGroupSelecting) {
+			auto& window = detail::globalPtr<Window>->getWindow();
+				
+			window.pushGLStates();
+			window.draw(_selectionRect);
+			window.popGLStates();
 		}
 	}
 
@@ -147,7 +158,10 @@ namespace rat {
 				
 				auto linear = window.getLinearByScreenPosition({ mouse.x, mouse.y });
 
+				bool selected = false;
+
 				scene->forEach([&] (const std::string&, Entity& entity) {
+
 					if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f })) {
 						if (cameraEntity && entity.getID() == cameraEntity->getID())
 							return;
@@ -185,12 +199,70 @@ namespace rat {
 						}
 
 						_draggingEntity = &entity;
+
+						selected = true;
 					}
 				});
+
+				// if none object was selected
+				if (!selected) {
+					// enable group seleciton
+					_isGroupSelecting = true;
+
+					// set start pos of selection
+					_selectionStartPos = mouse;
+
+					// set pos for rect
+					_selectionRect.setPosition({ mouse.x, mouse.y });
+					_selectionRect.setSize({ 0.f, 0.f });
+				}
 			}
 
 			if (input.isReleased(Mouse::Left)) {
 				_isDragging = false;
+
+				// if is group selection
+				if (_isGroupSelecting) {
+					auto mouse = _getFixedMousePos(input.getMousePosition());
+
+					// calc offset
+					auto offset = mouse - _selectionStartPos;
+
+					glm::vec2 start = _selectionStartPos;
+					glm::vec2 end = mouse;
+
+					if (offset.x < 0.f)
+						std::swap(start.x, end.x);
+					
+					if (offset.y < 0.f)
+						std::swap(start.y, end.y);
+
+					// calc linears
+					auto linearStart = window.getLinearByScreenPosition({ start.x, start.y });
+					auto linearEnd = window.getLinearByScreenPosition({ end.x, end.y });
+
+					// disable dragging and clear selected list
+					_isDragging = false;
+					_objectsList.clearSelected();
+
+					scene->forEach([&] (const std::string&, Entity& entity) {
+						// get size of rect in 3d
+						auto size = linearEnd.getProjectionZ(entity.getPosition()) - linearStart.getProjectionZ(entity.getPosition());
+
+						// check if object is in rect
+						if (linearEnd.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { std::abs(size.x), std::abs(size.y), 0.f }) {
+							// add to list
+							_objectsList.addSelected(&entity);
+							_draggingEntity = &entity;
+						}
+					});
+
+					// setup group
+					_setupGroup();
+
+					// disable group selection
+					_isGroupSelecting = false;
+				}
 
 				//_draggingEntity = nullptr;
 
@@ -241,6 +313,13 @@ namespace rat {
 
 						_groupOrigin /= group.size();
 					}
+				}
+
+				// update group selection's size
+				if (_isGroupSelecting) {
+					auto size = _getFixedMousePos(input.getMousePosition()) - _selectionStartPos;
+
+					_selectionRect.setSize({ size.x, size.y });
 				}
 			}
 		}
