@@ -121,6 +121,8 @@ namespace rat {
 		}
 	}
 
+#define COPY_COMPONENT(COMP, NAME) if(focusedObject->hasComponent< COMP >()) { if (ImGui::Button(NAME)) { _componentToCopy = focusedObject->getComponent<COMP>(); ImGui::CloseCurrentPopup(); } }
+
 	void LevelEditor::_renderSingleProperty() {
 		// Selected object
 		Entity* focusedObject = _objectsList.getSelectedEntity();
@@ -132,6 +134,63 @@ namespace rat {
 				ImGui::SetNextWindowSize(ImVec2(300, 300));
 			}
 		}
+
+		ImGui::SameLine();
+
+		// copy component
+		ImGui::Button("Copy");
+		if (ImGui::BeginPopupContextItem("Copy##context", 0)) {
+			COPY_COMPONENT(SpriteComponent,			"SpriteComponent");
+			COPY_COMPONENT(AnimatedSpriteComponent,	"AnimatedSpriteComponent");
+			COPY_COMPONENT(ArmatureComponent,		"ArmatureComponent");
+			COPY_COMPONENT(ColliderComponent,		"ColliderComponent");
+			COPY_COMPONENT(ScriptableComponent,		"ScriptableComponent");
+			COPY_COMPONENT(InteractableComponent,	"InteractableComponent");
+			COPY_COMPONENT(TriggerComponent,		"TriggerComponent");
+			COPY_COMPONENT(TraceComponent,			"TraceComponent");
+			COPY_COMPONENT(PointLightComponent,		"PointLightComponent");
+			COPY_COMPONENT(AudioComponent,			"AudioComponent");
+			ImGui::EndPopup();
+		}
+		ImGui::SameLine();
+
+		// paste component
+		ImGui::Button("Paste");
+		if (ImGui::BeginPopupContextItem("Paste##context", 0)) {
+			if (_componentToCopy) {
+				ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200);
+				ImGui::Text("Are you sure you want to paste");
+
+				ImGui::TextColored(ImVec4(1.f, 0.3f, 0.3f, 1.f), _componentToCopy->getName().c_str());
+				ImGui::SameLine();
+				ImGui::Text("from");
+				ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), _componentToCopy->getEntity()->getName().c_str());
+				ImGui::SameLine();
+				ImGui::Text("?");
+
+				if (ImGui::Button("Yes##paste")) {
+					if (focusedObject->hasComponent(_componentToCopy->getComponentID())) {
+						focusedObject->removeComponent(_componentToCopy->getComponentID());
+					}
+
+					focusedObject->addComponent(_componentToCopy->copy(focusedObject));
+
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("No##paste")) {
+					ImGui::CloseCurrentPopup();
+				}
+			}
+			else {
+				ImGui::Text("Nothing to paste");
+			}
+
+			ImGui::EndPopup();
+		}
+
 		if (_scenes.isGameRunning()) {
 			ImGui::SameLine();
 			if (ImGui::Button("Update status##properties")) {

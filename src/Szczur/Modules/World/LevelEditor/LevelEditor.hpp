@@ -177,6 +177,7 @@ private:
 
 	glm::vec3 _vec3Clipboard{0.f,0.f,0.f};
 	glm::vec2 _vec2Clipboard{0.f,0.f};
+	Component* _componentToCopy = nullptr;
 
 // Dragging
 
