@@ -107,12 +107,22 @@ namespace rat {
 		config["parallaxValue"] = _parallaxValue;
 	}
 
+	void SpriteComponent::update(ScenesManager& scenes, float deltaTime)
+	{
+		if (_parallax) {
+			auto camera = getEntity()->getScene()->getCamera();
+
+			_parallexedPos = _parallaxValue * camera->getPosition().x;
+		}
+	}
+
 	///
 	void SpriteComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	{
 		// return;
 		if(_spriteDisplayData) {
 			states.transform *= getEntity()->getTransform();
+			states.transform.translate(_parallexedPos, 0.f, 0.f);
 
 			// @todo parallaxa, ale ustawiana przy `draw` przez `states` z X kamery.
 

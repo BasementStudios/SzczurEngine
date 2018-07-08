@@ -60,6 +60,9 @@ public:
 	virtual void saveToConfig(Json& config) const override;
 
 	///
+	void update(ScenesManager& scenes, float deltaTime);
+
+	///
 	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
 	///
@@ -79,6 +82,8 @@ private:
 
 	bool _parallax = false;
 	float _parallaxValue = 0.f;
+
+	float _parallexedPos = 0.f;
 
 };
 
