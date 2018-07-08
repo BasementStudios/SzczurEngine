@@ -39,9 +39,7 @@ void Application::input()
 		}
 		#endif
 
-		if (event.type == sf::Event::Closed) {
-			getModule<Window>().getWindow().close();
-		}
+		getModule<Window>().processEvent(event);
 	}
 }
 
@@ -89,9 +87,9 @@ int Application::run()
 
 		// Main loop
 		while (getModule<Window>().getWindow().isOpen()) {
-			input();
 			update();
 			render();
+			input();
 		}
 		
 		// Exiting
