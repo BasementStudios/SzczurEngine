@@ -7,6 +7,8 @@
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
 
+#include "ImGuiStyler.hpp"
+
 namespace rat
 {
 
@@ -61,6 +63,7 @@ public:
 
 private:
 
+	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
 	ModulesHolder<Window, Input, DragonBones> _modules;
 

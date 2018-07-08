@@ -1,0 +1,77 @@
+{
+	"Font": {
+		"Path": "Editor/Gui/NotoSans-Regular.ttf",
+		"Size": 17
+	},
+	"Shape": {
+		"WindowPadding": [8,8],
+		"WindowRounding": 8,
+		"FramePadding": [4, 3],
+		"FrameRounding": 0,
+		"FrameBorderSize": 1,
+		"ItemSpacing": [9, 6],
+		"ItemInnerSpacing": [6, 6],
+		"IndentSpacing": 25,
+		"ScrollbarSize": 20,
+		"ScrollbarRounding": 4,
+		"GrabMinSize": null,
+		"GrabRounding": null,
+		"WindowBorderSize": 2,
+		"AntiAliasedLines": false
+	},
+	"Color": {
+		"Text": [0.90, 0.80, 1.00, 1.00],
+		"TextDisabled": [0.24, 0.23, 0.29, 1.00],
+		"WindowBg": [0.04, 0.02, 0.05, 0.95],
+		"ChildWindowBg": [0.07, 0.07, 0.09, 0.00],
+		"PopupBg": [0.07, 0.06, 0.09, 1.00],
+		"Border": [0.20, 0.10, 0.25, 0.90],
+		"BorderShadow": [0.20, 0.10, 0.25, 0.10],
+
+		"FrameBg": [0.20, 0.08, 0.17, 0.50],
+		"FrameBgHovered": [0.35, 0.10, 0.25, 1.00],
+		"FrameBgActive": [0.14, 0.05, 0.08, 1.00],
+
+		"TitleBg": [0.10, 0.07, 0.15, 0.90],
+		"TitleBgCollapsed": [0.12, 0.09, 0.14, 0.60],
+		"TitleBgActive": [0.18, 0.11, 0.24, 0.90],
+
+		"MenuBarBg": [0.10, 0.07, 0.15, 0.90],
+
+		"Separator": [0.13, 0.08, 0.19, 0.90],
+
+		"ScrollbarBg": [0.10, 0.07, 0.15, 0.90],
+		"ScrollbarGrab": [0.16, 0.11, 0.20, 0.90],
+		"ScrollbarGrabHovered": [0.22, 0.17, 0.28, 0.90],
+		"ScrollbarGrabActive": [0.06, 0.04, 0.09, 0.90],
+
+		"CheckMark": [0.61, 0.45, 0.84, 1.00],
+
+		"SliderGrab": [0.25, 0.10, 0.21, 1.00],
+		"SliderGrabActive": [0.10, 0.05, 0.10, 1.00],
+
+		"Button": [0.20, 0.08, 0.17, 0.50],
+		"ButtonHovered": [0.35, 0.10, 0.25, 1.00],
+		"ButtonActive": [0.14, 0.05, 0.08, 1.00],
+
+		"Header": [0.16, 0.12, 0.22, 0.90],
+		"HeaderHovered": [0.20, 0.12, 0.32, 0.90],
+		"HeaderActive": [0.10, 0.06, 0.13, 0.90],
+
+		"Column": [0.17, 0.08, 0.13, 1.00],
+		"ColumnHovered": [0.23, 0.12, 0.28, 1.00],
+		"ColumnActive": [0.10, 0.05, 0.10, 1.00],
+
+		"ResizeGrip": [0.17, 0.08, 0.13, 1.00],
+		"ResizeGripHovered": [0.25, 0.10, 0.21, 1.00],
+		"ResizeGripActive": [0.10, 0.05, 0.10, 1.00],
+
+		"PlotLines": [0.40, 0.39, 0.38, 0.63],
+		"PlotLinesHovered": [0.25, 1.00, 0.00, 1.00],
+		"PlotHistogram": [0.40, 0.39, 0.38, 0.63],
+		"PlotHistogramHovered": [0.25, 1.00, 0.00, 1.00],
+
+		"TextSelectedBg": [0.25, 0.80, 0.00, 0.43],
+		"ModalWindowDarkening": [0.08, 0.07, 0.10, 0.73]
+	}
+}
