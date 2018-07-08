@@ -155,7 +155,9 @@ void Window::init()
 // render
 void Window::render()
 {
+	glDisable(GL_DEPTH_TEST);
 	this->getWindow().display();
+	glEnable(GL_DEPTH_TEST);
 }
 
 // Window recreate
@@ -169,7 +171,6 @@ void Window::recreateWindow()
 void Window::clear(const sf::Color& color)
 {
 	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
-	//this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL states
