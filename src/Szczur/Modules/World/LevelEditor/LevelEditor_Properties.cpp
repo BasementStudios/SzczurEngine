@@ -106,7 +106,10 @@ namespace rat {
 			ImGui::Checkbox("Sprite", 			&choosed[0]);
 			ImGui::Checkbox("Animated Sprite", 	&choosed[1]);
 			ImGui::Checkbox("Armature", 		&choosed[2]);
-			ImGui::Checkbox("Collider", 		&choosed[3]);
+
+			if (entity->getGroup() == "path" || entity->getName() == "Player")
+				ImGui::Checkbox("Collider", 	&choosed[3]);
+
 			ImGui::Checkbox("Scriptable", 		&choosed[4]);
 			ImGui::Checkbox("Interactable", 	&choosed[5]);
 			ImGui::Checkbox("Trigger", 			&choosed[6]);
@@ -170,7 +173,7 @@ namespace rat {
 		_groupOrigin /= _selectedEntitesBackup.size();
 	}
 
-	void LevelEditor::_updateGroupProperites(const glm::vec3 & pos, const glm::vec3 & rot)
+	void LevelEditor::_updateGroupProperites(const glm::vec3& pos, const glm::vec3& rot)
 	{
 		_groupOrigin = glm::vec3();
 
