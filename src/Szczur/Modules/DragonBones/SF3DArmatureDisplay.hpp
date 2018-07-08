@@ -22,7 +22,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 class SF3DArmatureDisplay : public IArmatureProxy, public sf3d::Drawable
 {
 protected:
-	Armature*									_armature;
+	Armature*									_armature = nullptr;
 	SFMLEventDispatcher							_dispatcher;
 
 public:
@@ -44,6 +44,8 @@ public:
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
+
+	sf::FloatRect getBoundingBox();
 };
 
 DRAGONBONES_NAMESPACE_END

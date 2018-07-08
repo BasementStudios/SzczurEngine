@@ -177,8 +177,6 @@ Slot* SF3DFactory::_buildSlot(const BuildArmaturePackage& dataPackage, const Slo
 	auto slot = BaseObject::borrowObject<SF3DSlot>();
 	auto wrapperDisplay = new SF3DDisplay();
 
-	_wrapperSlots.push_back(std::unique_ptr<SF3DSlot>(slot));
-
 	slot->init(slotData, armature, wrapperDisplay, wrapperDisplay);
 
 	return slot;

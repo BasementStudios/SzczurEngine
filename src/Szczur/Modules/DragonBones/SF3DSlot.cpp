@@ -165,7 +165,7 @@ void SF3DSlot::_updateFrame()
 				for (unsigned int i = 0; i < vertexIndices.size(); i++)
 				{
 					verticesInTriagles[vertexIndices[i]].push_back(i);
-					_renderDisplay->verticesDisplay.set(i, vertices[vertexIndices[i]]);
+					_renderDisplay->verticesDisplay[i] = vertices[vertexIndices[i]];
 				}
 
 				_textureScale = 1.f;
@@ -207,27 +207,27 @@ void SF3DSlot::_updateFrame()
 					float texHeight = region.height / sizeY + texY;
 
 
-					verts.set(0u, sf3d::Vertex {
+					verts[0] = sf3d::Vertex {
 						{ 0.f, 0.f, 0.f },
 						{ 1.f, 1.f, 1.f, 1.f },
 						{ texX, texY }
-					});
-					verts.set(1u, sf3d::Vertex{
+					};
+					verts[1] = sf3d::Vertex{
 						{ region.width, 0.f, 0.f },
 						{ 1.f, 1.f, 1.f, 1.f },
 						{ texWidth, texY }
-					});
-					verts.set(2u, sf3d::Vertex{
+					};
+					verts[2] = sf3d::Vertex{
 						{ region.width, region.height, 0.f },
 						{ 1.f, 1.f, 1.f, 1.f },
 						{ texWidth, texHeight }
-					 });
+					 };
 
-					verts.set(3u, sf3d::Vertex{
+					verts[3] = sf3d::Vertex{
 						{ 0.f, region.height, 0.f },
 						{ 1.f, 1.f, 1.f, 1.f },
 						{ texX, texHeight }
-					});
+					};
 				}
 			}
 
@@ -305,7 +305,7 @@ void SF3DSlot::_updateMesh()
 
 				for (const auto& vert : verticesInTriagles[i])
 				{
-					verticesDisplay.setPosition(vert, { xG, yG, (float)_zOrder });
+					verticesDisplay[vert].position = { xG, yG,  static_cast<float>(_zOrder) };
 				}
 			}
 		}
@@ -338,7 +338,7 @@ void SF3DSlot::_updateMesh()
 
 				for (const auto& vert : verticesInTriagles[traingleIndex])
 				{
-					verticesDisplay.setPosition(vert, { xG, yG, (float)_zOrder });
+					verticesDisplay[vert].position = { xG, yG, 0.f };
 				}
 			}
 		}

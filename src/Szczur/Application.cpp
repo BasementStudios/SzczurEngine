@@ -16,7 +16,6 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<DragonBones>();
-	initModule<World>();
 
 	LOG_INFO("Modules initialized");
 
@@ -135,8 +134,6 @@ void Application::update()
 void Application::render()
 {
 	getModule<Window>().clear();
-
-	getModule<World>().render();
 
 	#ifdef EDITOR
 	{

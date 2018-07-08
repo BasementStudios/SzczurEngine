@@ -9,8 +9,11 @@
 #include <vector>
 
 #include <dragonBones/DragonBonesHeaders.h>
-#include <glad/glad.h> // vec3
+
+#include <glad.h>
+
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
@@ -57,7 +60,7 @@ public:
 			matrix.a, matrix.b, 0.f, 0.f,
 			matrix.c, matrix.d, 0.f, 0.f,
 			0.f, 0.f, 1.f, 0.f,
-			offset.x, offset.y, 0.f, 1.f
+			offset.x, offset.y, offset.z, 1.f
 		);
 
 		this->transform.scale(scale, scale, 1.f);
@@ -67,7 +70,7 @@ public:
 	{
 		for (std::size_t i = 0; i < this->verticesDisplay.getSize(); ++i)
 		{
-			this->verticesDisplay.setColor(i, { color.redMultiplier, color.greenMultiplier, color.blueMultiplier, color.alphaMultiplier });
+			this->verticesDisplay[i].color = { color.redMultiplier, color.greenMultiplier, color.blueMultiplier, color.alphaMultiplier };
 		}
 	}
 
@@ -80,6 +83,41 @@ public:
 			states.transform *= this->transform;
 			target.draw(this->verticesDisplay, states);
 		}
+	}
+
+	sf::FloatRect getBoundingBox()
+	{
+		if (texture == nullptr)
+			return sf::FloatRect();
+
+		if (verticesDisplay.getSize() == 0)
+			return sf::FloatRect();
+
+		glm::vec3 min = verticesDisplay[0].position;
+		glm::vec3 max = min;
+
+		for (int i = 0; i < verticesDisplay.getSize(); i++)
+		{
+			auto& vert = verticesDisplay[i];
+
+			min.x = std::min(min.x, vert.position.x);
+			min.y = std::min(min.y, vert.position.y);
+			max.x = std::max(max.x, vert.position.x);
+			max.y = std::max(max.y, vert.position.y);
+		}
+
+		sf::FloatRect rect(min.x, min.y, (max - min).x, (max - min).y);
+
+		sf::Transform bbMatrix;
+
+		auto mat = this->transform.getMatrix();
+
+		bbMatrix.combine(sf::Transform(mat[0][0], mat[0][1], mat[0][3],
+														   mat[1][0], mat[1][1], mat[1][3],
+														   0.f, 0.f, 1.f));
+		rect = bbMatrix.transformRect(rect);
+
+		return rect;
 	}
 };
 
