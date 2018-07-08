@@ -110,10 +110,7 @@ bool Application::input()
 		}
 		#endif
 
-		if (event.type == sf::Event::Closed) {
-			getModule<Window>().getWindow().close();
-			return false;
-		}
+		getModule<Window>().processEvent(event);
 	}
 
 	return true;
@@ -156,32 +153,32 @@ void Application::render()
 int Application::run()
 {
 	try {
+		// Starting
 		init();
 
 		LOG_INFO("Starting main loop of application");
 
+		// Main loop
 		while (getModule<Window>().getWindow().isOpen()) {
-			if (input()) {
-				update();
-				render();
-			}
+			update();
+			render();
+			input();
 		}
-	}
-	catch (const std::exception& exception) {
-		LOG_EXCEPTION(exception);
-	}
-
-	#ifdef EDITOR
-	{
-		if (_isImGuiInitialized)
+		
+		// Exiting
+		#ifdef EDITOR
 		{
 			ImGui::SFML::Shutdown();
 		}
+		#endif
+		
+		LOG_INFO("Shutdowning application in normal way");
 	}
-	#endif
-
-	LOG_INFO("Shutdowning application");
-
+	catch (const std::exception& exception) {
+		LOG_EXCEPTION(exception);
+		return 1;
+	}
+	
 	return 0;
 }
 

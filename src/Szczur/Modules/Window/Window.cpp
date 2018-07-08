@@ -8,9 +8,11 @@
 
 #include <string>
 #include <memory> // unique_ptr
+#include <stdexcept>
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -29,17 +31,17 @@ namespace rat
 
 /* Properties */
 // Window
-Window::Window_t& Window::getWindow()
+Window::Window_t& Window::getWindow() noexcept
 {
 	return this->window;
 }
-const Window::Window_t& Window::getWindow() const
+const Window::Window_t& Window::getWindow() const noexcept
 {
 	return this->window;
 }
 
 // VideoMode
-sf::VideoMode Window::getVideoMode() const
+sf::VideoMode Window::getVideoMode() const noexcept
 {
 	return this->videoMode;
 }
@@ -51,12 +53,23 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 	this->recreateWindow();
 }
 
+sf::Vector2u Window::getSize() const noexcept
+{
+	return {this->videoMode.width, this->videoMode.height};
+}
+void Window::setSize(sf::Vector2u size)
+{
+	this->videoMode.width = size.x;
+	this->videoMode.height = size.y;
+	this->setVideoMode(this->videoMode);
+}
+
 // FrameRate
-unsigned int Window::getFramerateLimit() const
+unsigned int Window::getFramerateLimit() const noexcept
 {
 	return this->framerateLimit;
 }
-void Window::setFramerateLimit(const unsigned int limit)
+void Window::setFramerateLimit(unsigned int limit)
 {
 	this->framerateLimit = limit;
 	LOG_INFO("framerateLimit: ", this->framerateLimit);
@@ -65,7 +78,7 @@ void Window::setFramerateLimit(const unsigned int limit)
 }
 
 // Title
-const std::string& Window::getTitle() const
+const std::string& Window::getTitle() const noexcept
 {
 	return this->title;
 }
@@ -78,7 +91,7 @@ void Window::setTitle(const std::string& title)
 }
 
 // Fullscreen
-bool Window::getFullscreen() const
+bool Window::getFullscreen() const noexcept
 {
 	return this->windowStyle & sf::Style::Fullscreen;
 }
@@ -94,10 +107,11 @@ void Window::setFullscreen(bool state)
 }
 
 
+
 /* Operators */
 // Constructors
 Window::Window()
-: 	window({1280, 800}, "SzczurEngine")
+:	window(this->videoMode, this->title)
 {
 	LOG_INFO("Initializing Window module");
 	this->init();
@@ -115,35 +129,63 @@ Window::~Window()
 // init
 void Window::init()
 {
-	// Create
-	// @todo ? load videomode from settings
-	this->setVideoMode(this->videoMode);
+	try {
+		// Create
+		// @todo ? load videomode from settings
+		this->setVideoMode(sf::VideoMode::getDesktopMode());
 
-	// Print OpenGL version
-	LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
-	
-	// GL flags
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);  
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CCW);
+		// Print OpenGL version
+		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
 
-	// Default shaders
-	sf3d::FShader frag;
-	frag.loadFromFile("Assets/Shaders/default.frag");
+		// GL flags
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glFrontFace(GL_CCW);
 
-	sf3d::VShader vert;
-	vert.loadFromFile("Assets/Shaders/default.vert");
+		// Shader
+		try {
+			sf3d::Shader VShader;
+			VShader.loadFromFile(sf3d::Shader::Vertex, "Assets/Shaders/assemble.vert");
+			sf3d::Shader FShader;
+			FShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
 
-	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
-	this->shaderProgram->linkShaders(frag, vert);
-	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
+			this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
+			this->shaderProgram->linkShaders(VShader, FShader);
+			LOG_INFO("Shader loaded, compiled and linked.");
+		}
+		catch (...) {
+			std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
+		}
+
+		this->getWindow().setDefaultShaderProgram(this->shaderProgram.get());
+	}
+	catch (...) {
+		std::throw_with_nested(std::runtime_error("Cannot initialized Window module."));
+	}
 }
 
 // render
 void Window::render()
 {
 	this->getWindow().display();
+}
+
+// processEvent
+void Window::processEvent(sf::Event event)
+{
+	switch (event.type) {
+		case sf::Event::Resized:
+		{
+			this->setSize({event.size.width, event.size.height});
+		}
+		break;
+		case sf::Event::Closed:
+		{
+			getModule<Window>().getWindow().close();
+		}
+		break;
+	}
 }
 
 // Window recreate
@@ -156,7 +198,8 @@ void Window::recreateWindow()
 // clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
+	//this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL states

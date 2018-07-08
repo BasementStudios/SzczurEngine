@@ -1,19 +1,19 @@
 #include "RenderTarget.hpp"
 
 /** @file RenderTarget.cpp
- ** @author Tomasz (Knayder) Jatkowski 
+ ** @author Tomasz (Knayder) Jatkowski
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
 #include <cstdio> // snprintf
-#include <iostream> // cout
+#include <stdexcept>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-#include <glad.h>
+#include <glad/glad.h>
 
 #include <SFML/Graphics/Color.hpp>
 
@@ -31,7 +31,7 @@ namespace sf3d
 
 /* Properties */
 // DefaultRenderStates
-RenderStates RenderTarget::getDefaultRenderStates() const 
+RenderStates RenderTarget::getDefaultRenderStates() const
 {
 	return this->defaultStates;
 }
@@ -104,15 +104,15 @@ void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
 			(static_cast<float>(this->size.x) / static_cast<float>(this->size.y))
 		);
 	}
-	
+
 	this->positionFactor = 2.f / static_cast<float>(this->size.y);
 }
 
 bool RenderTarget::_setActive([[maybe_unused]] bool state)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
-	return true; 
-} 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return true;
+}
 
 /// Helper function to scale matrix coords propertly
 glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
@@ -156,18 +156,17 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 {
 	if (vertices.getSize() > 0 && this->_setActive()) {
 		vertices.update();
-		
+
 		// Shader selection
 		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
-		if (!(shaderProgram && shaderProgram->isVaild())) {
-			std::cout << "Error: No shader available!\n";
-			return;
+		if (!(shaderProgram && shaderProgram->isValid())) {
+			throw std::runtime_error("No shader available for rendering!");
 		}
 
 		// Shader configuration
 		{
-			shaderProgram->use(); 
-			
+			glUseProgram(shaderProgram->getNativeHandle());
+
 			// Model, view. projection matrixes
 			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
 			shaderProgram->setUniform("view",			scaleMatrixCoords(camera->getViewMatrix()));
@@ -176,7 +175,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 
 			if (states.texture) { // @todo ? Może dodać `Lightable`, a nie oświetlać tylko oteksturowane...
 				shaderProgram->setUniform("isObject", true);
-				
+
 				// Material
 				{
 					// Diffuse
@@ -186,16 +185,13 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 
 					// Specular // @todo . specular
 					//aderProgram->setUniform("material.specularTexture", ???.texture->getID());
-					//aderProgram->setUniform("material.shininess", ???.shininess);				
+					//aderProgram->setUniform("material.shininess", ???.shininess);
 				}
-				
+
 				// Lighting
-				shaderProgram->setUniform("viewPosition", camera->getPosition());
+				shaderProgram->setUniform("cameraPosition", camera->getPosition());
 				shaderProgram->setUniform("basicAmbient", glm::vec3{0.1f, 0.1f, 0.1f});
 				applyLightPoints(shaderProgram);
-			}
-			else {
-				shaderProgram->setUniform("isObject", false);
 			}
 		}
 
@@ -204,7 +200,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 		glBindVertexArray(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		
+
 		// Unbind testures if any
 		if (states.texture) {
 			states.texture->unbind();
@@ -216,34 +212,42 @@ void RenderTarget::draw(const VertexArray& vertices)
 	this->draw(vertices, this->defaultStates);
 }
 
-// "Simple draw" 
-void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states) { 
-    if (vertices.getSize() > 0 && this->_setActive()) { 
-        ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader); 
-        if (!(shaderProgram && shaderProgram->isVaild())) { 
-            std::cout << "Error: No shader available!\n"; 
-            return; 
-        } 
-        shaderProgram->use(); 
- 
-        if (states.texture) { 
-            glActiveTexture(GL_TEXTURE0); 
-            states.texture->bind(); 
-        } 
- 
-        vertices.bind(); 
-        glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize()); 
-        glBindVertexArray(0); 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0); 
- 
+// "Simple draw"
+void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
+{
+    if (vertices.getSize() > 0 && this->_setActive()) {
+		vertices.update();
+
+		// Shader selection
+		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
+        if (!(shaderProgram && shaderProgram->isValid())) {
+            throw std::runtime_error("No shader available for rendering!");
+            return;
+        }
+
+        glUseProgram(shaderProgram->getNativeHandle());
+
+        // Shader configuration
+		if (states.texture) {
+            glActiveTexture(GL_TEXTURE0);
+            states.texture->bind();
+        }
+
+        // Pass the vertices
+		vertices.bind();
+        glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+        glBindVertexArray(0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// Unbind testures if any
         if (states.texture) {
-			states.texture->unbind(); 
+			states.texture->unbind();
 		}
-    } 
-} 
-void RenderTarget::simpleDraw(const VertexArray& vertices) { 
-    this->simpleDraw(vertices, this->defaultStates); 
-} 
+    }
+}
+void RenderTarget::simpleDraw(const VertexArray& vertices) {
+    this->simpleDraw(vertices, this->defaultStates);
+}
 
 // Interaction
 Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
@@ -252,7 +256,7 @@ Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
 	glm::vec3 rotation;
 
 	switch (this->getCamera()->getProjectionType()) {
-		case ProjectionType::Perspective: 
+		case ProjectionType::Perspective:
 		{
 			const PerspectiveData& perspectiveData = projectionData.perspective;
 
@@ -262,7 +266,7 @@ Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
 			float y = glm::atan(
 				(-2.f * (screenPosition.y / static_cast<float>(this->size.y)) + 1.f) * perspectiveData.halfFOVyTan
 			);
-			
+
 			float siny = glm::sin(y);
 			float cosy = glm::cos(y);
 			float sinx = glm::sin(x);
@@ -276,12 +280,12 @@ Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
 
 		case ProjectionType::Orthographic:
 		{
-			std::cout << "getLinearByScreenPosition: Orhographics projection type not implemented yet.\n"; 
+			throw std::logic_error("getLinearByScreenPosition: Orhographics projection type not implemented yet.");
 			// @todo .
 		}
 		break;
 	}
-	
+
 	return Linear(this->camera->getPosition(), rotation);
 }
 
@@ -298,21 +302,21 @@ void RenderTarget::applyLightPoints(ShaderProgram* shaderProgram)
 {
 	unsigned int i = 0;
 	for (const LightPoint* lightPoint : this->lightPoints) {
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].position", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].position", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getPosition() * this->positionFactor);
 		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].color", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getColor());
 		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.constant", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.constant);
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.linear", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.linear", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.linear);
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.quadratic", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.quadratic", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.quadratic);
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].ambientFactor", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].ambientFactor", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getAmbientFactor());
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].diffuseFactor", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].diffuseFactor", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getDiffuseFactor());
-		//d::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].specularFactor", i); // @todo . specular 
+		//d::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].specularFactor", i); // @todo . specular
 		//aderProgram->setUniform(this->uniformNameBuffer, lightPoint->getSpecularFactor());
 		i++;
 	}

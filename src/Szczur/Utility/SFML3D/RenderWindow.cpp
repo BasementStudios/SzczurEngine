@@ -1,9 +1,9 @@
 #include "RenderWindow.hpp"
 
-#include <iostream> // cout
+#include <stdexcept>
 #include <string>
 
-#include <glad.h>
+#include <glad/glad.h>
 #include <glm/vec2.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
@@ -30,8 +30,7 @@ RenderWindow::RenderWindow(
 	sf3d::RenderTarget(glm::vec2{mode.width, mode.height}, program)
 {
 	if (!gladLoadGL()) {
-		std::cout << "Failed to initialize GLAD!\n";
-		return;
+		throw std::runtime_error("Failed to initialize GLAD!");
 	}
 	glViewport(0, 0, mode.width, mode.height);
 }
@@ -48,8 +47,7 @@ void RenderWindow::create(
 	sf3d::RenderTarget::create(glm::vec2{mode.width, mode.height}, program);
 	
 	if (!gladLoadGL()) {
-		std::cout << "Failed to initialize GLAD!\n";
-		return;
+		throw std::runtime_error("Failed to initialize GLAD!");
 	}
 	glViewport(0, 0, mode.width, mode.height);
 }

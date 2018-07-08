@@ -22,9 +22,11 @@ namespace sf {
 namespace sf3d {
 	class Drawable;
 	class Vertex;
+	class Event;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderTexture.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -40,8 +42,7 @@ public:
 
 	/* Variables */
 private:
-	Window_t        window;
-
+	// Window informations
 	sf::VideoMode   videoMode		{1280, 720};
 
 	unsigned int	framerateLimit	{60};
@@ -51,6 +52,10 @@ private:
 
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
+	// Elmenents for render
+	Window_t	window;
+	
+	// Shader programs
 	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
 
 
@@ -58,23 +63,27 @@ private:
 	/* Properties */
 public:
 	/// Provides access to application window.
-	Window_t& getWindow();
-	const Window_t& getWindow() const;
-
+	Window_t& getWindow() noexcept;
+	const Window_t& getWindow() const noexcept;
+	
 	/// Defines a video mode. Aslo recreates the window.
-	sf::VideoMode getVideoMode() const;
+	sf::VideoMode getVideoMode() const noexcept;
 	void setVideoMode(const sf::VideoMode& mode);
 
+	/// Size of window. Related to video mode.
+	sf::Vector2u getSize() const noexcept;
+	void setSize(sf::Vector2u size);
+
 	/// Limit of updated and rendered frames per second.
-	unsigned int getFramerateLimit() const;
-	void setFramerateLimit(const unsigned int limit);
+	unsigned int getFramerateLimit() const noexcept;
+	void setFramerateLimit(unsigned int limit);
 
 	/// Title of application window.
-	const std::string& getTitle() const;
+	const std::string& getTitle() const noexcept;
 	void setTitle(const std::string& title);
 
 	/// Full screen mode
-	bool getFullscreen() const;
+	bool getFullscreen() const noexcept;
 	void setFullscreen(bool state);
 
 
@@ -99,6 +108,7 @@ public:
 	// Module system
 	void init();
 	void render();
+	void processEvent(sf::Event event);
 
 protected:
 	/// Recreates window to apply settings
@@ -117,7 +127,7 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 	// 	3D
-	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
+	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states/* = sf3d::RenderStates::Default*/);
 	void draw(const sf3d::Drawable& drawable);
 	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
 	void draw(const sf3d::VertexArray& vertices);
