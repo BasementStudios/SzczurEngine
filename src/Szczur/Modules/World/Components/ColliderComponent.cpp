@@ -202,7 +202,7 @@ void ColliderComponent::move(float x, float y, float z)
 
 sf::FloatRect ColliderComponent::_getRect(const glm::vec3& pos, const glm::vec2& size)
 {
-	return sf::FloatRect(pos.x - size.x, pos.z - size.y, size.x, size.y);
+	return sf::FloatRect(pos.x - size.x / 2.f, pos.z - size.y / 2.f, size.x, size.y);
 }
 
 }
