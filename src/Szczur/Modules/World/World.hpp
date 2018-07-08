@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
+
 #include "SceneManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
@@ -45,6 +47,11 @@ private:
 
 	SceneManager _scenes;
 
+	/// Layer used to render objects before postprocess shader
+	sf3d::RenderLayer _layer;
+
+	/// Shader program used to render object to the layer
+	std::unique_ptr<sf3d::ShaderProgram> _shader;
 };
 
 }
