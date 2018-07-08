@@ -5,6 +5,8 @@
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 
+#include "ImGuiStyler.hpp"
+
 namespace rat
 {
 
@@ -59,6 +61,7 @@ public:
 
 private:
 
+	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
 	ModulesHolder<Window, Input> _modules;
 
