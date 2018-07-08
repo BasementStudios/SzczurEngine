@@ -322,25 +322,25 @@ namespace rat {
 					_selectionRect.setSize({ size.x, size.y });
 				}
 			}
-		}
 
-		if (input.isPressed(Keyboard::Z)) {
-			_isDepthDragging = !_isDepthDragging;
+			if (input.isPressed(Keyboard::Z)) {
+				_isDepthDragging = !_isDepthDragging;
 
-			if (_draggingEntity != nullptr) {
-				auto mouse = _getFixedMousePos(input.getMousePosition());
+				if (_draggingEntity != nullptr) {
+					auto mouse = _getFixedMousePos(input.getMousePosition());
 
-				auto linear = window.getLinearByScreenPosition(mouse);
+					auto linear = window.getLinearByScreenPosition(mouse);
 
-				glm::vec3 projection;
+					glm::vec3 projection;
 
-				if (_isDepthDragging)
-					projection = linear.getProjectionY(_draggingEntity->getPosition());
-				else
-					projection = linear.getProjectionZ(_draggingEntity->getPosition());
+					if (_isDepthDragging)
+						projection = linear.getProjectionY(_draggingEntity->getPosition());
+					else
+						projection = linear.getProjectionZ(_draggingEntity->getPosition());
 
-				_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+					_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
 
+				}
 			}
 		}
 		
