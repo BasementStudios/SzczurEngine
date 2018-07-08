@@ -195,7 +195,7 @@ namespace rat {
 				{
 					world->getLevelEditor().changeCameraLock();
 				}
-				if (ImGui::MenuItem("Minecraft camera movement"))
+				if (ImGui::MenuItem("Minecraft camera movement", nullptr, _isMCCameraMovement))
 				{
 					_isMCCameraMovement = !_isMCCameraMovement;
 				}
