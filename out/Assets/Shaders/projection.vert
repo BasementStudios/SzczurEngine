@@ -15,7 +15,7 @@ out vec2 fragmentTexCoord;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform float positionFactor;
+uniform float positionFactor = 1.0;
 
 
 

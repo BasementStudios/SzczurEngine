@@ -1,20 +1,18 @@
 #include "RenderTarget.hpp"
 
 /** @file RenderTarget.cpp
- ** @author Tomasz (Knayder) Jatkowski 
+ ** @author Tomasz (Knayder) Jatkowski
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
 #include <cstdio> // snprintf
-#include <iostream> // cout
+#include <stdexcept>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <glad/glad.h>
 
 #include <SFML/Graphics/Color.hpp>
@@ -33,7 +31,7 @@ namespace sf3d
 
 /* Properties */
 // DefaultRenderStates
-RenderStates RenderTarget::getDefaultRenderStates() const 
+RenderStates RenderTarget::getDefaultRenderStates() const
 {
 	return this->defaultStates;
 }
@@ -70,46 +68,15 @@ void RenderTarget::setCamera(Camera& camera)
 	this->setCamera(&camera);
 }
 
-// FOV // @todo ? move to Camera?
-float RenderTarget::getFOV() const
-{
-	return this->FOVy;
-}
-void RenderTarget::setFOV(float fov)
-{
-	this->FOVy = fov;
-	this->FOVx = glm::degrees(
-		2 * glm::atan(
-			glm::tan(glm::radians(this->FOVy / 2.f)) * 
-			(static_cast<float>(this->size.x) / static_cast<float>(this->size.y))
-		)
-	);
-	this->halfFOVxTan = glm::tan(glm::radians(this->FOVx / 2.f));
-	this->halfFOVyTan = glm::tan(glm::radians(this->FOVy / 2.f));
-	this->updatePerspective();
-}
-
-// RenderDistance
-void RenderTarget::setRenderDistance(float maxRenderDistance, float minRenderDistance)
-{
-	this->renderDistance = maxRenderDistance;
-	// @todo , minRenderDistance
-	this->updatePerspective();
-}
-float RenderTarget::getRenderDistance() const
-{
-	return this->renderDistance;
-}
-
 
 
 /* Operators */
 RenderTarget::RenderTarget()
 {}
 
-RenderTarget::RenderTarget(const glm::uvec2& size, float FOV, ShaderProgram* program)
+RenderTarget::RenderTarget(glm::uvec2 size, ShaderProgram* program)
 {
-	this->create(size, FOV, program);
+	this->create(size, program);
 }
 
 RenderTarget::~RenderTarget()
@@ -122,7 +89,7 @@ RenderTarget::~RenderTarget()
 
 
 /* Methods */
-void RenderTarget::create(const glm::uvec2& size, float fov, ShaderProgram* program)
+void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
 {
 	this->size = size;
 
@@ -131,27 +98,29 @@ void RenderTarget::create(const glm::uvec2& size, float fov, ShaderProgram* prog
 	}
 
 	if (!this->defaultCamera) {
-		this->camera = this->defaultCamera = new Camera();
+		this->camera = this->defaultCamera = new Camera(
+			glm::vec3(0.f, 0.f, 0.f),
+			glm::vec3(0.f, 0.f, 0.f),
+			(static_cast<float>(this->size.x) / static_cast<float>(this->size.y))
+		);
 	}
 
-	this->setFOV(fov); // It will also update perspective
-	
 	this->positionFactor = 2.f / static_cast<float>(this->size.y);
 }
 
 bool RenderTarget::_setActive([[maybe_unused]] bool state)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
-	return true; 
-} 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return true;
+}
 
-void RenderTarget::updatePerspective()
+/// Helper function to scale matrix coords propertly
+glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
 {
-	this->projectionMatrix = glm::perspective(
-		glm::radians(this->FOVy), 
-		(static_cast<float>(this->size.x) / static_cast<float>(this->size.y)), 
-		0.1f, this->renderDistance
-	);
+	matrix[3][0] *= this->positionFactor;
+	matrix[3][1] *= this->positionFactor;
+	matrix[3][2] *= this->positionFactor;
+	return matrix;
 }
 
 // Clearing
@@ -172,7 +141,7 @@ void RenderTarget::clear(const sf::Color& color, GLbitfield flags)
 	}
 }
 
-// Drawing drawables
+// Drawing drawables in perspective projection
 void RenderTarget::draw(const Drawable& drawable, const RenderStates& states)
 {
 	drawable.draw(*this, states);
@@ -182,59 +151,47 @@ void RenderTarget::draw(const Drawable& drawable)
 	this->draw(drawable, this->defaultStates);
 }
 
-glm::mat4 ps(glm::mat4 m, float f) // @todo ! move it in vaild place... xd
-{
-	m[3][0] *= f;
-	m[3][1] *= f;
-	m[3][2] *= f;
-	return m;
-}
-
-// Drawing vertices
+// Drawing vertices in perspective projection
 void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 {
-	if (vertices.getSize() > 0 && _setActive()) {
+	if (vertices.getSize() > 0 && this->_setActive()) {
 		vertices.update();
-		
+
 		// Shader selection
 		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
-		if (!(shaderProgram && shaderProgram->isVaild())) {
-			std::cout << "Error: No shader available!\n";
-			return;
+		if (!(shaderProgram && shaderProgram->isValid())) {
+			throw std::runtime_error("No shader available for rendering!");
 		}
 
 		// Shader configuration
 		{
-			shaderProgram->use(); 
-			
+			glUseProgram(shaderProgram->getNativeHandle());
+
 			// Model, view. projection matrixes
-			shaderProgram->setUniform("model",			ps(states.transform.getMatrix(), this->positionFactor));
-			shaderProgram->setUniform("view",			ps(camera->getViewMatrix(), this->positionFactor));
-			shaderProgram->setUniform("projection", 	this->projectionMatrix);
+			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
+			shaderProgram->setUniform("view",			scaleMatrixCoords(camera->getViewMatrix()));
+			shaderProgram->setUniform("projection", 	camera->getProjectionMatrix());
 			shaderProgram->setUniform("positionFactor", this->positionFactor);
 
 			if (states.texture) { // @todo ? Może dodać `Lightable`, a nie oświetlać tylko oteksturowane...
 				shaderProgram->setUniform("isObject", true);
-				
+
 				// Material
 				{
 					// Diffuse
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, states.texture->getID());
-					shaderProgram->setUniform("material.diffuseTexture", states.texture->getID());
+					states.texture->bind();
+					shaderProgram->setUniform("material.diffuseTexture", 0);
 
 					// Specular // @todo . specular
 					//aderProgram->setUniform("material.specularTexture", ???.texture->getID());
-					//aderProgram->setUniform("material.shininess", ???.shininess);				
+					//aderProgram->setUniform("material.shininess", ???.shininess);
 				}
-				
+
 				// Lighting
-				shaderProgram->setUniform("viewPosition", camera->getPosition());
+				shaderProgram->setUniform("cameraPosition", camera->getPosition());
 				shaderProgram->setUniform("basicAmbient", glm::vec3{0.1f, 0.1f, 0.1f});
 				applyLightPoints(shaderProgram);
-			}
-			else {
-				shaderProgram->setUniform("isObject", false);
 			}
 		}
 
@@ -243,6 +200,11 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
 		glBindVertexArray(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// Unbind testures if any
+		if (states.texture) {
+			states.texture->unbind();
+		}
 	}
 }
 void RenderTarget::draw(const VertexArray& vertices)
@@ -250,34 +212,81 @@ void RenderTarget::draw(const VertexArray& vertices)
 	this->draw(vertices, this->defaultStates);
 }
 
-// Interaction
-Linear RenderTarget::getLinerByScreenPos(const glm::vec2& pos) const
+// "Simple draw"
+void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
 {
-	float x = glm::atan(
-		( 2.f * (pos.x / static_cast<float>(this->size.x)) - 1.f) * this->halfFOVxTan
-	);
+    if (vertices.getSize() > 0 && this->_setActive()) {
+		vertices.update();
 
-	float y = glm::atan(
-		(-2.f * (pos.y / static_cast<float>(this->size.y)) + 1.f) * this->halfFOVyTan
-	);
+		// Shader selection
+		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
+        if (!(shaderProgram && shaderProgram->isValid())) {
+            throw std::runtime_error("No shader available for rendering!");
+            return;
+        }
 
-	float siny = glm::sin(y);
-	float cosy = glm::cos(y);
-	float sinx = glm::sin(x);
-	float cosx = glm::cos(x);
+        glUseProgram(shaderProgram->getNativeHandle());
 
-	glm::vec3 rotation{
-		cosy * sinx,
-		siny * cosx,
-		-cosy * cosx
-	};
-	rotation = glm::rotateX(rotation, glm::radians(-this->camera->getRotation().x));
-	rotation = glm::rotateY(rotation, glm::radians(-this->camera->getRotation().y));
-	return Linear(this->camera->getPosition(), {
-		rotation.x,
-		rotation.y,
-		rotation.z
-	});
+        // Shader configuration
+		if (states.texture) {
+            glActiveTexture(GL_TEXTURE0);
+            states.texture->bind();
+        }
+
+        // Pass the vertices
+		vertices.bind();
+        glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+        glBindVertexArray(0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// Unbind testures if any
+        if (states.texture) {
+			states.texture->unbind();
+		}
+    }
+}
+void RenderTarget::simpleDraw(const VertexArray& vertices) {
+    this->simpleDraw(vertices, this->defaultStates);
+}
+
+// Interaction
+Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
+{
+	const ProjectionData& projectionData = this->getCamera()->getProjectionData();
+	glm::vec3 rotation;
+
+	switch (this->getCamera()->getProjectionType()) {
+		case ProjectionType::Perspective:
+		{
+			const PerspectiveData& perspectiveData = projectionData.perspective;
+
+			float x = glm::atan(
+				( 2.f * (screenPosition.x / static_cast<float>(this->size.x)) - 1.f) * perspectiveData.halfFOVxTan
+			);
+			float y = glm::atan(
+				(-2.f * (screenPosition.y / static_cast<float>(this->size.y)) + 1.f) * perspectiveData.halfFOVyTan
+			);
+
+			float siny = glm::sin(y);
+			float cosy = glm::cos(y);
+			float sinx = glm::sin(x);
+			float cosx = glm::cos(x);
+
+			rotation = {cosy * sinx, siny * cosx, -cosy * cosx};
+			rotation = glm::rotateX(rotation, glm::radians(-this->camera->getRotation().x));
+			rotation = glm::rotateY(rotation, glm::radians(-this->camera->getRotation().y));
+		}
+		break;
+
+		case ProjectionType::Orthographic:
+		{
+			throw std::logic_error("getLinearByScreenPosition: Orhographics projection type not implemented yet.");
+			// @todo .
+		}
+		break;
+	}
+
+	return Linear(this->camera->getPosition(), rotation);
 }
 
 // Light points
@@ -293,21 +302,21 @@ void RenderTarget::applyLightPoints(ShaderProgram* shaderProgram)
 {
 	unsigned int i = 0;
 	for (const LightPoint* lightPoint : this->lightPoints) {
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].position", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].position", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getPosition() * this->positionFactor);
 		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].color", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getColor());
 		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.constant", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.constant);
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.linear", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.linear", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.linear);
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.quadratic", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.quadratic", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.quadratic);
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].ambientFactor", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].ambientFactor", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getAmbientFactor());
-		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].diffuseFactor", i); 
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].diffuseFactor", i);
 		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getDiffuseFactor());
-		//d::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].specularFactor", i); // @todo . specular 
+		//d::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].specularFactor", i); // @todo . specular
 		//aderProgram->setUniform(this->uniformNameBuffer, lightPoint->getSpecularFactor());
 		i++;
 	}

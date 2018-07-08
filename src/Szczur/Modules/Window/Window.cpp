@@ -8,6 +8,7 @@
 
 #include <string>
 #include <memory> // unique_ptr
+#include <stdexcept>
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
@@ -29,17 +30,17 @@ namespace rat
 
 /* Properties */
 // Window
-Window::Window_t& Window::getWindow()
+Window::Window_t& Window::getWindow() noexcept
 {
 	return this->window;
 }
-const Window::Window_t& Window::getWindow() const
+const Window::Window_t& Window::getWindow() const noexcept
 {
 	return this->window;
 }
 
 // VideoMode
-sf::VideoMode Window::getVideoMode() const
+sf::VideoMode Window::getVideoMode() const noexcept
 {
 	return this->videoMode;
 }
@@ -52,7 +53,7 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 }
 
 // FrameRate
-unsigned int Window::getFramerateLimit() const
+unsigned int Window::getFramerateLimit() const noexcept
 {
 	return this->framerateLimit;
 }
@@ -65,7 +66,7 @@ void Window::setFramerateLimit(const unsigned int limit)
 }
 
 // Title
-const std::string& Window::getTitle() const
+const std::string& Window::getTitle() const noexcept
 {
 	return this->title;
 }
@@ -78,7 +79,7 @@ void Window::setTitle(const std::string& title)
 }
 
 // Fullscreen
-bool Window::getFullscreen() const
+bool Window::getFullscreen() const noexcept
 {
 	return this->windowStyle & sf::Style::Fullscreen;
 }
@@ -97,6 +98,7 @@ void Window::setFullscreen(bool state)
 /* Operators */
 // Constructors
 Window::Window()
+:	window(this->videoMode, this->title)
 {
 	LOG_INFO("Initializing Window module");
 	this->init();
@@ -114,29 +116,40 @@ Window::~Window()
 // init
 void Window::init()
 {
-	// Create
-	// @todo ? load videomode from settings
-	this->setVideoMode(this->videoMode);
+	try {
+		// Create
+		// @todo ? load videomode from settings
+		this->setVideoMode(this->videoMode);
 
-	// Print OpenGL version
-	LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
-	
-	// GL flags
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);  
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CCW);
+		// Print OpenGL version
+		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
 
-	// Default shaders
-	sf3d::FShader frag;
-	frag.loadFromFile("Assets/Shaders/default.frag");
+		// GL flags
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glFrontFace(GL_CCW);
 
-	sf3d::VShader vert;
-	vert.loadFromFile("Assets/Shaders/default.vert");
+		// Shader
+		try {
+			sf3d::Shader VShader;
+			VShader.loadFromFile(sf3d::Shader::Vertex, "Assets/Shaders/assemble.vert");
+			sf3d::Shader FShader;
+			FShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
 
-	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
-	this->shaderProgram->linkShaders(frag, vert);
-	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
+			this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
+			this->shaderProgram->linkShaders(VShader, FShader);
+			LOG_INFO("Shader loaded, compiled and linked.");
+		}
+		catch (...) {
+			std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
+		}
+
+		this->getWindow().setDefaultShaderProgram(this->shaderProgram.get());
+	}
+	catch (...) {
+		std::throw_with_nested(std::runtime_error("Cannot initialized Window module."));
+	}
 }
 
 // render
@@ -149,12 +162,14 @@ void Window::render()
 void Window::recreateWindow()
 {
 	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	this->setFramerateLimit(this->framerateLimit);
 }
 
 // clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
+	//this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL states

@@ -8,7 +8,6 @@
 #include <vector>
 
 #include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
 #include <glad/glad.h> // GLbitfield
@@ -33,27 +32,19 @@ namespace sf3d
 class RenderTarget
 {
 	/* Variables */
-private:
+protected:
 	glm::uvec2 size;
 
 	RenderStates defaultStates;
 	
 	Camera* camera {nullptr};
 	Camera* defaultCamera;
-	
-	glm::mat4 projectionMatrix;
-
-	float renderDistance {100.f};
 
 	float positionFactor;
 
-	float FOVy;
-	float FOVx;
-	float halfFOVxTan;
-	float halfFOVyTan;
-
 	std::vector<LightPoint*> lightPoints;
 
+private:
 	char uniformNameBuffer[64];
 
 
@@ -70,34 +61,28 @@ public:
 	const Camera* getCamera() const;
 	void setCamera(Camera* camera);
 	void setCamera(Camera& camera);
-
-	/// Field of view
-	float getFOV() const;
-	void setFOV(float fov);
-
-	/// Render distance
-	void setRenderDistance(float maxRenderDistance, float minRenderDistance = 0.1f);
-	float getRenderDistance() const; // @todo ? co z `minRenderDistance`?
 	
 
 
 	/* Operators */
-public:
+	// Protected to avoid construction (it is only base type).
+protected:
 	RenderTarget();
-
-	RenderTarget(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
-
 	~RenderTarget();
+
+	RenderTarget(glm::uvec2 size, ShaderProgram* program = nullptr);
 
 
 
 	/* Methods */
+protected:
+	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
+
 public:
-	void create(const glm::uvec2& size, float FOV = 45.f, ShaderProgram* program = nullptr);
-	
 	virtual bool _setActive(bool state = true);
 
-	void updatePerspective();
+	/// Helper function to scale matrix coords propertly
+	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 
 	// Clearing
 	void clear(float r, float g, float b, float a, GLbitfield flags);
@@ -110,9 +95,13 @@ public:
 	// Drawing vertices
 	void draw(const VertexArray& vertices, const RenderStates& states);
 	void draw(const VertexArray& vertices);
+
+    // "Simple draw" 
+    void simpleDraw(const VertexArray& vertices, RenderStates states); 
+    void simpleDraw(const VertexArray& vertices); 
 	
 	// Interaction
-	Linear getLinerByScreenPos(const glm::vec2& pos) const;
+	Linear getLinearByScreenPosition(glm::vec2 pos) const;
 	
 	// Light points
 	void resetLightPoints();

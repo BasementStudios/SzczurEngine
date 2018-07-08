@@ -5,34 +5,52 @@
 #include <glad.h>
 #include <glm/vec2.hpp>
 
-namespace sf3d {
-	class Texture {
-	public:
-		Texture();
+namespace sf3d
+{
 
-		~Texture();
+class Texture
+{
+	/* Variables */
+protected:
+	GLuint textureID {0u};
+	glm::uvec2 size {0.f, 0.f};
 
-		Texture(Texture&& other);
-		Texture& operator = (Texture&& other);
+	
 
-		Texture(const Texture&) = delete;
-		Texture& operator = (const Texture&) = delete;
+	/* Properties */
+public:
+	/// ID that identify texture by graphic card
+	GLuint getID() const noexcept;
 
-		bool loadFromFile(const char* path);
-		bool loadFromFile(const std::string& path);
+	/// Size of the texture
+	glm::uvec2 getSize() const noexcept;
 
-		void bind() const;
-		void unbind() const;
+	
 
-		void create(const glm::vec2& size);
+	/* Operators */
+public:
+	Texture();
+	~Texture();
 
-		GLuint getID() const;
+	Texture(Texture&& other);
+	Texture& operator = (Texture&& other);
 
-		const glm::uvec2& getSize() const;
+	Texture(const Texture&) = delete;
+	Texture& operator = (const Texture&) = delete;
 
-	private:
-		GLuint _texture{0u};
-		glm::uvec2 _size{0.f, 0.f};
+	Texture(glm::uvec2 size);
 
-	};
+
+
+	/* Methods */
+public:
+	void create(glm::vec2 size);
+
+	bool loadFromFile(const char* path);
+	bool loadFromFile(const std::string& path);
+
+	void bind() const noexcept;
+	void unbind() const noexcept;
+};
+
 }

@@ -46,6 +46,8 @@
 // Editor specification
 #if defined(DEBUG) && defined(OS_WINDOWS)
 #	define EDITOR
+#	include <imgui.h>
+#	include <imgui-SFML.h>
 #endif
 
 // Global helper ptr

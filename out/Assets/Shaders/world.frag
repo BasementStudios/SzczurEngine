@@ -52,23 +52,20 @@ in vec2 fragmentTexCoord;
 out vec4 finalColor;
 
 // Texture data
-uniform bool isObject;
+uniform bool isObject = false;
 uniform Material material;
 
 // Lighting
-uniform vec3 viewPosition;
-uniform vec3 basicAmbient;
+uniform vec3 cameraPosition;
+uniform vec3 basicAmbient = vec3(1.0, 1.0, 1.0);
 
-uniform uint pointLightsLength;
+uniform uint pointLightsLength = 0u;
 uniform PointLight pointLights[MAX_LIGHTS];
-
-// Testing
-uniform vec3 baseNormal; // @todo ;F
 
 
 
 // Declare functions 
-vec3 calucaltePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection);
+vec3 calucaltePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 cameraDirection);
 
 // Main shader function
 void main()
@@ -76,7 +73,7 @@ void main()
     if (isObject) {
         // Objects of the world are affected by lighting
         vec3 normal = normalize(vec3(0, 0, 0));
-        vec3 viewDirection = normalize(viewPosition - fragmentPosition);
+        vec3 cameraDirection = normalize(cameraPosition - fragmentPosition);
 
         vec4 pixel = texture(material.diffuseTexture, fragmentTexCoord);
         
@@ -89,9 +86,10 @@ void main()
 
             // Point lights
             for (uint i = 0u; i < pointLightsLength; ++i) {
-                color += calucaltePointLight(pointLights[i], normal, fragmentPosition, viewDirection);
+                color += calucaltePointLight(pointLights[i], normal, fragmentPosition, cameraDirection);
             }
 
+            // Apply transparency
             finalColor = vec4(color, pixel.a);
         }
     } else {
@@ -103,7 +101,7 @@ void main()
 
 
 // Lighting functions
-vec3 calucaltePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 viewDirection)
+vec3 calucaltePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, vec3 cameraDirection)
 {
     // Distance
 #ifdef ENABLE_ATTENUATION
@@ -127,8 +125,10 @@ vec3 calucaltePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, v
     float diffusePositionFactor = max(dot(normal, lightDirection), 0.0);
     
 #ifdef ENABLE_SPECULAR
-    vec3 reflectDirection = reflect(-lightDirection, normal);
-    float specularPositionFactor = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
+    if (material.shininess != 0.0) {
+        vec3 reflectDirection = reflect(-lightDirection, normal);
+        float specularPositionFactor = pow(max(dot(cameraDirection, reflectDirection), 0.0), material.shininess);
+    }
 #endif
 
     // Combined factors

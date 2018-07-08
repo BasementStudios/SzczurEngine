@@ -1,46 +1,110 @@
 #include "RenderTexture.hpp"
 
-#include <iostream>
+/** @file RenderTexture.cpp
+ ** @author Tomasz (Knayder) Jatkowski 
+ **/
+
+#include <stdexcept>
+
+#include <glm/vec2.hpp>
 
 namespace sf3d {
-	RenderTexture::RenderTexture(ShaderProgram* program, const glm::uvec2 & size, float FOV) :
-	RenderTarget(size, FOV, program) {
-		glGenFramebuffers(1, &_FBO);
-		glGenRenderbuffers(1, &_RBO);
+	class ShaderProgram;
+}
+#include "RenderTarget.hpp"
 
-		//Framebuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
-		//Texture
-			_texture.create(size);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture.getID(), 0);
+namespace sf3d
+{
 
-			//RenderBuffer
-			glBindRenderbuffer(GL_RENDERBUFFER, _RBO);
-				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
-			glBindRenderbuffer(GL_RENDERBUFFER, 0);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _RBO);
+/* Properties */
+Texture* RenderTexture::getTexture()
+{
+	return &(this->texture);
+}
 
-			if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				std::cout << "FRAMEBUFFER CREATION ERROR\n";
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//Framebuffer
+
+/* Operators */
+RenderTexture::RenderTexture() 
+{
+	;
+}
+RenderTexture::RenderTexture(glm::uvec2 size, ShaderProgram* program)
+{
+	this->create(size, program);
+}
+RenderTexture::~RenderTexture()
+{
+	if (this->FBO) {
+		glDeleteFramebuffers(1, &(this->FBO));
 	}
-	RenderTexture::~RenderTexture() {
-		if(_FBO)
-			glDeleteFramebuffers(1, &_FBO);
-		if(_RBO)
-			glDeleteRenderbuffers(1, &_RBO);
+	if (this->RBO) {
+		glDeleteRenderbuffers(1, &(this->RBO));
+	}
+}
+
+
+
+/* Methods */
+void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
+{
+	RenderTarget::create(size, program);
+
+	// If same size, do nothing
+	if (this->texture.getSize() == size) {
+		return;
 	}
 
-	Texture* RenderTexture::getTexture() {
-		return &_texture;
+	// Delete first, if it is recreation
+	if (this->FBO) {
+		glDeleteFramebuffers(1, &(this->FBO));
 	}
-	bool RenderTexture::_setActive(bool /*states*/) {
-		if(_FBO) {
-			glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
-			return true;
+	if (this->RBO) {
+		glDeleteRenderbuffers(1, &(this->RBO));
+	}
+
+	// Generate buffers
+	glGenFramebuffers(1, &(this->FBO));
+	glGenRenderbuffers(1, &(this->RBO));
+
+	// FrameBuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, (this->FBO));
+	{
+		// Texture
+		this->texture.create(size);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texture.getID(), 0);
+
+		// RenderBuffer
+		glBindRenderbuffer(GL_RENDERBUFFER, this->RBO);
+		{
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
 		}
-		return false;
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->RBO);
+
+		// Setup RAII guard for FBO
+		[[maybe_unused]] 
+		struct FBORAIIGuard {
+			~FBORAIIGuard() {
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			}
+		} guard;
+
+		// Checks
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			throw std::runtime_error("Framebuffer creation error.");
+		}
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+bool RenderTexture::_setActive(bool /*states*/)
+{
+	if (this->FBO) {
+		glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
+		return true;
+	}
+	return false;
+}
+
 }

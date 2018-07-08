@@ -1,3 +1,5 @@
+
+
 /*
     - Gaussian blur
     - Bloom
@@ -86,7 +88,7 @@ void main()
         vec4 pixel = texture(boundTexture, texCoord);
         vec2 sampleSize = vec2(1.0) / resolution;
 
-        /*if (pixel.a == 0.0) discard;*/
+        //if (pixel.a == 0.0) discard;
 
         // Gaussian blur
         int blurSteps = int(min(blur * 0.7, sqrt(blur) * pi4));
