@@ -12,6 +12,7 @@
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -52,12 +53,23 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 	this->recreateWindow();
 }
 
+sf::Vector2u Window::getSize() const noexcept
+{
+	return {this->videoMode.width, this->videoMode.height};
+}
+void Window::setSize(sf::Vector2u size)
+{
+	this->videoMode.width = size.x;
+	this->videoMode.height = size.y;
+	this->setVideoMode(this->videoMode);
+}
+
 // FrameRate
 unsigned int Window::getFramerateLimit() const noexcept
 {
 	return this->framerateLimit;
 }
-void Window::setFramerateLimit(const unsigned int limit)
+void Window::setFramerateLimit(unsigned int limit)
 {
 	this->framerateLimit = limit;
 	LOG_INFO("framerateLimit: ", this->framerateLimit);
@@ -95,6 +107,7 @@ void Window::setFullscreen(bool state)
 }
 
 
+
 /* Operators */
 // Constructors
 Window::Window()
@@ -119,7 +132,7 @@ void Window::init()
 	try {
 		// Create
 		// @todo ? load videomode from settings
-		this->setVideoMode(this->videoMode);
+		this->setVideoMode(sf::VideoMode::getDesktopMode());
 
 		// Print OpenGL version
 		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
@@ -158,6 +171,23 @@ void Window::render()
 	glDisable(GL_DEPTH_TEST);
 	this->getWindow().display();
 	glEnable(GL_DEPTH_TEST);
+}
+
+// processEvent
+void Window::processEvent(sf::Event event)
+{
+	switch (event.type) {
+		case sf::Event::Resized:
+		{
+			this->setSize({event.size.width, event.size.height});
+		}
+		break;
+		case sf::Event::Closed:
+		{
+			getModule<Window>().getWindow().close();
+		}
+		break;
+	}
 }
 
 // Window recreate

@@ -22,6 +22,7 @@ namespace sf {
 namespace sf3d {
 	class Drawable;
 	class Vertex;
+	class Event;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
@@ -69,9 +70,13 @@ public:
 	sf::VideoMode getVideoMode() const noexcept;
 	void setVideoMode(const sf::VideoMode& mode);
 
+	/// Size of window. Related to video mode.
+	sf::Vector2u getSize() const noexcept;
+	void setSize(sf::Vector2u size);
+
 	/// Limit of updated and rendered frames per second.
 	unsigned int getFramerateLimit() const noexcept;
-	void setFramerateLimit(const unsigned int limit);
+	void setFramerateLimit(unsigned int limit);
 
 	/// Title of application window.
 	const std::string& getTitle() const noexcept;
@@ -103,6 +108,7 @@ public:
 	// Module system
 	void init();
 	void render();
+	void processEvent(sf::Event event);
 
 protected:
 	/// Recreates window to apply settings
