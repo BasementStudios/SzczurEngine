@@ -180,6 +180,8 @@ private:
 
 // Dragging
 
+	bool _dragAndDropObjects = true;
+
 	bool _isDragging = false;
 	glm::vec2 _dragLastPos;
 	Entity* _draggingEntity = nullptr;

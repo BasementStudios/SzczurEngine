@@ -199,6 +199,10 @@ namespace rat {
 				{
 					_isMCCameraMovement = !_isMCCameraMovement;
 				}
+				if (ImGui::MenuItem("Drag and Drop objects", nullptr, _dragAndDropObjects))
+				{
+					_dragAndDropObjects = !_dragAndDropObjects;
+				}
 				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) 
 				{
 					_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;

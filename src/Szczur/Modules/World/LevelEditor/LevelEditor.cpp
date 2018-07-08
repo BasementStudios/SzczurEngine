@@ -278,7 +278,7 @@ namespace rat {
 			}
 
 			if (input.isKept(Mouse::Left)) {
-				if (_isDragging) {
+				if (_isDragging && _dragAndDropObjects) {
 					auto mouse = _getFixedMousePos(input.getMousePosition());
 					auto linear = window.getLinearByScreenPosition(mouse);
 
