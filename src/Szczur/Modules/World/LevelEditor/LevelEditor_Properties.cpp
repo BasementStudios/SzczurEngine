@@ -135,6 +135,8 @@ namespace rat {
 			}
 		}
 
+		_renderComponentsManager();
+
 		ImGui::SameLine();
 
 		// copy component
@@ -198,7 +200,6 @@ namespace rat {
 				printMenuBarInfo(std::string("Updated status for: ") + focusedObject->getName());
 			}
 		}
-		_renderComponentsManager();
 
 		// Render headers for components
 		if (focusedObject) {
