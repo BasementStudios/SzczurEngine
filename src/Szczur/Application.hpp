@@ -36,7 +36,7 @@ public:
 	void init();
 
 	///
-	bool input();
+	void input();
 
 	///
 	void update();

@@ -99,7 +99,7 @@ void Application::init()
 	#endif
 }
 
-bool Application::input()
+void Application::input()
 {
 	sf::Event event;
 
@@ -114,8 +114,6 @@ bool Application::input()
 
 		getModule<Window>().processEvent(event);
 	}
-
-	return true;
 }
 
 void Application::update()
