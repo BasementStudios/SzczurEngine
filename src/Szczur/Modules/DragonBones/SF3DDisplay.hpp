@@ -10,7 +10,7 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include <glad.h>
+#include <glad/glad.h>
 
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Transform.hpp>
