@@ -35,6 +35,18 @@ namespace rat {
 			"b", &sf::Color::b,
 			"a", &sf::Color::a
 			);
+		sfml.new_simple_usertype<sf::FloatRect>("FloatRect",
+			"left", &sf::FloatRect::left,
+			"top", &sf::FloatRect::top,
+			"width", &sf::FloatRect::width,
+			"height", &sf::FloatRect::height
+			);
+		sfml.new_simple_usertype<sf::FloatRect>("IntRect",
+			"left", &sf::IntRect::left,
+			"top", &sf::IntRect::top,
+			"width", &sf::IntRect::width,
+			"height", &sf::IntRect::height
+			);
 	}
 	void Script::scriptFile(const std::string& filePath) {
 		_lua.script_file(filePath);
