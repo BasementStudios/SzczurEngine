@@ -85,6 +85,9 @@ public:
 	Entity* duplicateEntity(size_t id);
 
 	///
+	void changeEntityGroup(Entity* entity, const std::string& group);
+
+	///
 	bool removeEntity(size_t id);
 
 	///

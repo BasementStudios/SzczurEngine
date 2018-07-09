@@ -136,6 +136,27 @@ Entity* Scene::duplicateEntity(size_t id)
 	return nullptr;
 }
 
+void Scene::changeEntityGroup(Entity* entity, const std::string& group)
+{
+	auto& currentGroup = getEntities(entity->getGroup());
+	auto& newGroup = getEntities(group);
+
+	auto it = std::find_if(currentGroup.begin(), currentGroup.end(), [&] (const std::unique_ptr<Entity>& it) { return it->getID() == entity->getID(); });
+
+	if (it != currentGroup.end()) {
+		entity->setGroup(group);
+
+		std::unique_ptr<Entity> ptr;
+
+		// nie wiem jak wyjąć czysty unique_ptr z iteratora ;/
+		(*it).swap(ptr);
+
+		newGroup.push_back(std::move(ptr));
+
+		currentGroup.erase(it);
+	}
+}
+
 bool Scene::removeEntity(const std::string& group, size_t id)
 {
 	if (auto it = _find(group, id); it != getEntities(group).end())

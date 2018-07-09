@@ -122,7 +122,7 @@ namespace rat {
 				}
 
 				// Open context menu for object
-				if(_renderObjectPopup(object->getID())) {
+				if(_renderObjectPopup(object.get())) {
 					ImGui::PopID();
 					break;
 				}
@@ -135,16 +135,41 @@ namespace rat {
 		ImGui::End();
 	}
 
-	bool ObjectsList::_renderObjectPopup(int id) {
+	bool ObjectsList::_renderObjectPopup(Entity* entity) {
 		if(ImGui::BeginPopupContextItem("##object_popup")) {
 			if(ImGui::Selectable("Clone##object_popup")) {
-				duplicateObject(id);
+				duplicateObject(entity->getID());
 			}
 			if(ImGui::Selectable("Remove##object_popup")) {
-				removeObject(id);
+				removeObject(entity->getID());
 				ImGui::EndPopup();
 				return true;
 			}
+
+			if (entity->getGroup() == "path" || entity->getGroup() == "background" || entity->getGroup() == "foreground")
+			{
+				if (ImGui::BeginMenu("Move to##object_popup"))
+				{
+					if (entity->getGroup() != "path" && ImGui::Selectable("Path"))
+					{
+						auto scene = _scenes.getCurrentScene();
+						scene->changeEntityGroup(entity, "path");
+					}
+					if (entity->getGroup() != "background" && ImGui::Selectable("Background"))
+					{
+						auto scene = _scenes.getCurrentScene();
+						scene->changeEntityGroup(entity, "background");
+					}
+					if (entity->getGroup() != "foreground" && ImGui::Selectable("Foreground"))
+					{
+						auto scene = _scenes.getCurrentScene();
+						scene->changeEntityGroup(entity, "foreground");
+					}
+
+					ImGui::EndMenu();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 		return false;

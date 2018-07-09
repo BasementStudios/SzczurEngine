@@ -67,7 +67,7 @@ public:
 private:
 
     /// Show context menu for object | Return true when number of objects changes
-    bool _renderObjectPopup(int id);
+    bool _renderObjectPopup(Entity* entity);
 
 private:
     ScenesManager& _scenes;
