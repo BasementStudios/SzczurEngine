@@ -1,14 +1,19 @@
 #pragma once
 
-#include "Szczur/Utility/SFML3D/Transformable.hpp"
+#include <nlohmann/json_fwd.hpp>
+#include <string>
+#include <memory> // unique_ptr
+#include <vector>
 
+namespace rat 
+{
+	class Scene;
+}
+#include "Szczur/Utility/SFML3D/Transformable.hpp"
 #include "Components.hpp"
 
 namespace rat
 {
-
-// FWD
-class Scene;
 
 class Entity : public sf3d::Transformable
 {
@@ -149,10 +154,10 @@ public:
 	const ComponentsHolder_t& getComponents() const;
 
 	///
-	virtual void loadFromConfig(const Json& config, bool withNewID = false);
+	virtual void loadFromConfig(nlohmann::json& config, bool withNewID = false);
 
 	///
-	virtual void saveToConfig(Json& config) const;
+	virtual void saveToConfig(nlohmann::json& config) const;
 
 private:
 

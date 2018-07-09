@@ -3,7 +3,10 @@
 #include <fstream>
 
 #include <boost/container/flat_map.hpp>
+#include <nlohmann/json.hpp> 
 
+#include "Szczur/Modules/World/Data/SpriteDisplayData.hpp"
+#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
 #include "Entity.hpp"
 
 namespace rat
@@ -112,10 +115,10 @@ public:
 	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
 
 	///
-	void loadFromConfig(const Json& config, bool withNewID = false);
+	void loadFromConfig(nlohmann::json& config, bool withNewID = false);
 
 	///
-	void saveToConfig(Json& config) const;
+	void saveToConfig(nlohmann::json& config) const;
 
 	///
 	template <typename F>

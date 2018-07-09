@@ -65,7 +65,7 @@ private:
 
 	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, DragonBones> _modules;
+	ModulesHolder<Window, Input, DragonBones, World> _modules;
 
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;

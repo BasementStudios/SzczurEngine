@@ -1,6 +1,9 @@
 #include "Scene.hpp"
 
-#include <functional>
+#include <string>
+#include <functional> // find_if
+
+#include <nlohmann/json.hpp>
 
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
@@ -275,16 +278,16 @@ const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() 
 	return _armatureDisplayDataHolder;
 }
 
-void Scene::loadFromConfig(const Json& config, bool withNewID)
+void Scene::loadFromConfig(nlohmann::json& config, bool withNewID)
 {
 	_id = withNewID ? getUniqueID<Scene>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
-	const Json& groups = config["groups"];
+	nlohmann::json& groups = config["groups"];
 
 	for (auto it = groups.begin(); it != groups.end(); ++it)
 	{
-		for (const Json& current : it.value())
+		for (nlohmann::json& current : it.value())
 		{
 			addEntity(it.key())->loadFromConfig(current, true);
 		}
@@ -293,21 +296,21 @@ void Scene::loadFromConfig(const Json& config, bool withNewID)
 	trySettingInitialUniqueID<Scene>(_id);
 }
 
-void Scene::saveToConfig(Json& config) const
+void Scene::saveToConfig(nlohmann::json& config) const
 {
 	config["id"] = getID();
 	config["name"] = getName();
 
-	Json& groups = config["groups"] = Json::object();
+	nlohmann::json& groups = config["groups"] = nlohmann::json::object();
 
 	for (auto& holder : getAllEntities())
 	{
-		Json& group = groups[holder.first] = Json::array();
+		nlohmann::json& group = groups[holder.first] = nlohmann::json::array();
 
 		for (auto& entity : holder.second)
 		{
-			group.push_back(Json::object());
-			Json& current = group.back();
+			group.push_back(nlohmann::json::object());
+			nlohmann::json& current = group.back();
 
 			entity.saveToConfig(current);
 		}

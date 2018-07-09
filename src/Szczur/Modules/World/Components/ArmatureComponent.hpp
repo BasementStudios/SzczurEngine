@@ -1,48 +1,54 @@
 #pragma once
 
-#include <memory>
+#include <memory> // unique_ptr
 
+namespace dragonBones {
+    class SF3DArmatureDisplay;
+}
+
+namespace rat
+{
+    class Entity;
+    class ArmatureDisplayData;
+}
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Modules/DragonBones/SF3DArmatureDisplay.hpp"
-
 #include "Szczur/Modules/World/Component.hpp"
-#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
 
 namespace rat
 {
 
-    class ArmatureComponent : public Component, public sf3d::Drawable
-    {
-    private:
+class ArmatureComponent : public Component, public sf3d::Drawable
+{
+private:
 
-        dragonBones::SF3DArmatureDisplay* _armature = nullptr;
-        ArmatureDisplayData* _armatureDisplayData = nullptr;
+    dragonBones::SF3DArmatureDisplay* _armature = nullptr;
+    ArmatureDisplayData* _armatureDisplayData = nullptr;
 
-    public:
+public:
 
-        ArmatureComponent(Entity* parent);
+    ArmatureComponent(Entity* parent);
 
-        ~ArmatureComponent();
+    ~ArmatureComponent();
 
-        void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData);
+    void setArmatureDisplayData(ArmatureDisplayData* armatureDisplayData);
 
-        ArmatureDisplayData* getArmatureDisplayData();
+    ArmatureDisplayData* getArmatureDisplayData();
 
-        const ArmatureDisplayData* getArmatureDisplayData() const;
+    const ArmatureDisplayData* getArmatureDisplayData() const;
 
-        dragonBones::SF3DArmatureDisplay* getArmature();
+    dragonBones::SF3DArmatureDisplay* getArmature();
 
-        virtual std::unique_ptr<Component> copy(Entity* newParent) const;
+    virtual std::unique_ptr<Component> copy(Entity* newParent) const;
 
-        virtual void* getFeature(Component::Feature_e feature) override;
+    virtual void* getFeature(Component::Feature_e feature) override;
 
-        virtual const void* getFeature(Component::Feature_e feature) const override;
+    virtual const void* getFeature(Component::Feature_e feature) const override;
 
-        virtual void loadFromConfig(const Json& config) {}
+    virtual void loadFromConfig(nlohmann::json& config) {}
 
-        virtual void saveToConfig(Json& config) const {}
+    virtual void saveToConfig(nlohmann::json& config) const {}
 
-        void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
-    };
+    void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+};
 
 }

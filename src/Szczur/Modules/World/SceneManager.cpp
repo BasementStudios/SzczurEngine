@@ -1,6 +1,13 @@
 #include "SceneManager.hpp"
 
-#include <algorithm>
+#include <nlohmann/json.hpp>
+
+#include <fstream> // ofstream, ifstream
+#include <memory> // make_unique
+#include <algorithm> // find_if
+
+#include "Szczur/Utility/Logger.hpp"
+#include "Scene.hpp"
 
 namespace rat
 {
@@ -91,13 +98,13 @@ void SceneManager::loadFromFile(const std::string& filepath)
     removeAllScenes();
 
     std::ifstream file{ filepath };
-    Json config;
+    nlohmann::json config;
 
     file >> config;
-
+    
     _currentSceneID = config["currentSceneID"];
 
-    const Json& scenes = config["scenes"];
+    nlohmann::json& scenes = config["scenes"];
 
     for (auto& current : scenes)
     {
@@ -108,11 +115,11 @@ void SceneManager::loadFromFile(const std::string& filepath)
 void SceneManager::appendScenesFromFile(const std::string &filepath)
 {
     std::ifstream file{ filepath };
-    Json config;
+    nlohmann::json config;
 
     file >> config;
 
-    const Json& scenes = config["scenes"];
+    nlohmann::json& scenes = config["scenes"];
 
     for (auto& current : scenes)
     {
@@ -123,15 +130,15 @@ void SceneManager::appendScenesFromFile(const std::string &filepath)
 void SceneManager::saveToFile(const std::string& filepath) const
 {
     std::ofstream file{ filepath };
-    Json config;
+    nlohmann::json config;
 
     config["currentSceneID"] = getCurrentSceneID();
-    Json& scenes = config["scenes"] = Json::array();
+    nlohmann::json& scenes = config["scenes"] = nlohmann::json::array();
 
     for (auto& scene : _holder)
     {
-        scenes.push_back(Json::object());
-        Json& current = scenes.back();
+        scenes.push_back(nlohmann::json::object());
+        nlohmann::json& current = scenes.back();
 
         scene->saveToConfig(current);
     }

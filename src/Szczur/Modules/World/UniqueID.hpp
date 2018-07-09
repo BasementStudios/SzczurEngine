@@ -14,7 +14,7 @@ inline static size_t globalID = 0u;
 }
 
 template <typename T>
-size_t setInitialUniqueID(size_t id)
+void setInitialUniqueID(size_t id)
 {
     detail::globalID<T> = id;
 }

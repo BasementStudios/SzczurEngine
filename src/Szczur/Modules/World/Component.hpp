@@ -3,8 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include <Json/json.hpp>
-using Json = nlohmann::json;
+#include <nlohmann/json_fwd.hpp>
 
 #include "UniqueID.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
@@ -70,10 +69,10 @@ public:
 	const Entity* getEntity() const;
 
 	///
-	virtual void loadFromConfig(const Json& config);
+	virtual void loadFromConfig(nlohmann::json& config);
 
 	///
-	virtual void saveToConfig(Json& config) const;
+	virtual void saveToConfig(nlohmann::json& config) const;
 
 private:
 

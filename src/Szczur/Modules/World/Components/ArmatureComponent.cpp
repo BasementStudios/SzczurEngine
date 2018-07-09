@@ -1,8 +1,9 @@
 #include "ArmatureComponent.hpp"
 
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"
-
-#include "../Entity.hpp"
+#include "Szczur/Modules/DragonBones/SF3DArmatureDisplay.hpp"
+#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
+#include "Szczur/Modules/World/Entity.hpp"
 
 namespace rat
 {

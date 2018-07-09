@@ -1,9 +1,14 @@
 #pragma once
 
-#include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include <memory> // unique_ptr
 
+#include <nlohmann/json_fwd.hpp>
+
+namespace sf3d {
+	class RenderStates;
+}
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/World/Data/SpriteDisplayData.hpp"
 
@@ -48,13 +53,13 @@ public:
 	virtual const void* getFeature(Component::Feature_e feature) const override;
 
 	///
-	virtual void loadFromConfig(const Json& config) override;
+	virtual void loadFromConfig(nlohmann::json& config) override;
 
 	///
-	virtual void saveToConfig(Json& config) const override;
+	virtual void saveToConfig(nlohmann::json& config) const override;
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 
 private:
 

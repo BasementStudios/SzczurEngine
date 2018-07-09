@@ -1,9 +1,12 @@
 #pragma once
 
-#include <memory>
+#include <string>
+#include <memory> // unique_ptr
 #include <vector>
 
-#include "Scene.hpp"
+namespace rat {
+    class Scene;
+}
 
 namespace rat
 {
@@ -80,7 +83,7 @@ private:
     typename ScenesHolder_t::const_iterator _find(size_t id) const;
 
     ScenesHolder_t _holder;
-    size_t _currentSceneID = 0u;
+    size_t _currentSceneID {0u};
 
 };
 

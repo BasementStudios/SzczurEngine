@@ -2,9 +2,9 @@
 
 #include "Szczur/Utility/SFML3D/RenderLayer.hpp"
 
-#include "SceneManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
+#include "SceneManager.hpp"
 
 namespace rat
 {

@@ -1,6 +1,15 @@
-#include <algorithm>
+#include "Entity.hpp"
 
+#include <nlohmann/json_fwd.hpp>
+#include <string>
+#include <memory> // unique_ptr
+#include <vector>
+#include <algorithm> // find_if
+
+#include "Szczur/Utility/Logger.hpp"
+#include "Szczur/Utility/SFML3D/Transformable.hpp"
 #include "Scene.hpp"
+#include "Components.hpp"
 
 namespace rat
 {
@@ -152,14 +161,14 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 	return _holder;
 }
 
-void Entity::loadFromConfig(const Json& config, bool withNewID)
+void Entity::loadFromConfig(nlohmann::json& config, bool withNewID)
 {
 	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
-	const Json& components = config["components"];
+	nlohmann::json& components = config["components"];
 
-	for (const Json& component : components)
+	for (nlohmann::json& component : components)
 	{
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
 	}
@@ -167,16 +176,16 @@ void Entity::loadFromConfig(const Json& config, bool withNewID)
 	trySettingInitialUniqueID<Entity>(_id);
 }
 
-void Entity::saveToConfig(Json& config) const
+void Entity::saveToConfig(nlohmann::json& config) const
 {
 	config["id"] = getID();
 	config["name"] = getName();
-	config["components"] = Json::array();
+	config["components"] = nlohmann::json::array();
 
 	for (const auto& component : _holder)
 	{
-		config["components"].push_back(Json::object());
-		Json& comp = config["components"].back();
+		config["components"].push_back(nlohmann::json::object());
+		nlohmann::json& comp = config["components"].back();
 
 		component->saveToConfig(comp);
 	}

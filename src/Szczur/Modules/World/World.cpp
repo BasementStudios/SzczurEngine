@@ -1,14 +1,17 @@
 #include "World.hpp"
 
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
+#include "SceneManager.hpp"
+#include "Scene.hpp"
+
 namespace rat
 {
 
 World::World()
 {
-	LOG_INFO("Initializing World module");
-
-	// Initialize layer
-	_layer.create(); // @todo . register window resize hook
+	LOG_INFO("World module initializing");
 	
 	// Load shader
 	try {
@@ -25,9 +28,9 @@ World::World()
 		std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
 	}
 
-	_shader.setDefaultShaderProgram(_shader.get());
+	_layer.setDefaultShaderProgram(_shader.get());
 
-	LOG_INFO("Module World initialized");
+	LOG_INFO("World module initialized");
 
 	// test1.world
 	// _scenes.addScene()->addEntity("single")->setName("Karion");
@@ -50,13 +53,12 @@ World::World()
 
 World::~World()
 {
-	LOG_INFO("Module World destructed");
+	LOG_INFO("World module destructed");
 }
 
 void World::update(float deltaTime)
 {
-	if (_getScenes().isCurrentSceneValid())
-	{
+	if (_getScenes().isCurrentSceneValid()) {
 		_getScenes().getCurrentScene()->update(deltaTime);
 	}
 }
@@ -71,9 +73,9 @@ void World::render()
 		// Render background entities
 		_layer.clear(0, 0, 0, 0, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		{
-			for (const auto& entity : scene.getEntities("background")) {
+			for (const auto& entity : scene->getEntities("background")) {
 				if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr) {
-					layer.draw(*ptr);
+					_layer.RenderTarget::draw(*ptr);
 				}
 			}
 		}
@@ -82,14 +84,14 @@ void World::render()
 		// Render path and single entities
 		_layer.clear(0, 0, 0, 0, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		{
-			for (const auto& entity : scene.getEntities("path")) {
+			for (const auto& entity : scene->getEntities("path")) {
 				if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr) {
-					layer.draw(*ptr);
+					_layer.RenderTarget::draw(*ptr);
 				}
 			}
-			for (const auto& entity : scene.getEntities("single")) {
+			for (const auto& entity : scene->getEntities("single")) {
 				if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr) {
-					layer.draw(*ptr);
+					_layer.RenderTarget::draw(*ptr);
 				}
 			}
 		}
@@ -98,9 +100,9 @@ void World::render()
 		// Render foreground entities
 		_layer.clear(0, 0, 0, 0, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		{
-			for (const auto& entity : scene.getEntities("foreground")) {
+			for (const auto& entity : scene->getEntities("foreground")) {
 				if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr) {
-					layer.draw(*ptr);
+					_layer.RenderTarget::draw(*ptr);
 				}
 			}
 		}
