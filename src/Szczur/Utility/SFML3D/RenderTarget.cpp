@@ -127,7 +127,7 @@ glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
 void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags)
 {
 	if (this->_setActive()) {
-		glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
+		glClearColor(r, g, b, a);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
