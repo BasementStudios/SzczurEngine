@@ -1,54 +1,142 @@
 #pragma once
 
-#include "Vertex.hpp"
+#include <vector>
+
 #include "Drawable.hpp"
-namespace sf3d {
+#include "PrimitiveType.hpp"
+#include "Vertex.hpp"
 
-	class VertexArray : public Drawable {
-	public:
-		VertexArray() = delete;
-		VertexArray(size_t size, unsigned int storageUsage = GL_STREAM_DRAW);
-		VertexArray(VertexArray&& other);
-		~VertexArray();
+namespace sf3d
+{
 
+class VertexArray
+{
+public:
 
+    using Vertices_t = std::vector<Vertex>;
 
-		unsigned int getPrimitiveType() const;
-		unsigned int getStorageUsage() const;
+    ///
+    VertexArray() = delete;
 
-		void setPrimitveType(unsigned int type);
+    ///
+    VertexArray(PrimitiveType type = TriangleFan);
 
-		size_t getSize() const;
+    ///
+    VertexArray(PrimitiveType type, size_t size);
 
-		Vertex& add();
-		Vertex& add(const Vertex& vertex);
+    ///
+    VertexArray(PrimitiveType type, size_t size, const Vertex& value);
 
-		void resize(size_t newSize);
+    ///
+    VertexArray(PrimitiveType type, const Vertex* vertices, size_t size);
 
-		void bind() const;
+    ///
+    VertexArray(PrimitiveType type, const Vertex* begin, const Vertex* end);
 
-		virtual void draw(RenderTarget& target, RenderStates states) const override;
+    ///
+    VertexArray(const VertexArray& rhs);
 
-		void update() const;
+    ///
+    VertexArray& operator = (const VertexArray& rhs);
 
-		Vertex& operator[](size_t index);
+    ///
+    VertexArray(VertexArray&& rhs) noexcept;
 
-	private:
-		void _update() const;
+    ///
+    VertexArray& operator = (VertexArray&& rhs) noexcept;
 
-		unsigned int _VAO;
-		unsigned int _VBO;
+    ///
+    ~VertexArray();
 
-		mutable bool _toUpdate{false};
-		mutable bool _toResize{false};
+    ///
+    void clear();
 
-		mutable size_t _min{static_cast<size_t>(-1)};
-		mutable size_t _max{0u};
+    ///
+    VertexArray& assign(PrimitiveType type, size_t size);
 
-		unsigned int _primitveType{GL_TRIANGLE_FAN};
+    ///
+    VertexArray& assign(PrimitiveType type, size_t size, const Vertex& value);
 
-		const unsigned int _storageUsage;
-		std::vector<Vertex> _vertices;
+    ///
+    VertexArray& assign(PrimitiveType type, const Vertex* vertices, size_t size);
 
-	};
+    ///
+    VertexArray& assign(PrimitiveType type, const Vertex* begin, const Vertex* end);
+
+    ///
+    void resize(size_t size);
+
+    ///
+    void resize(size_t size, const Vertex& value);
+
+    ///
+    void setVertex(size_t index, const Vertex& vertex);
+
+    ///
+    Vertex& getVertex(size_t index);
+
+    ///
+    const Vertex& getVertex(size_t index) const;
+
+    ///
+    Vertex& operator [] (size_t index);
+
+    ///
+    const Vertex& operator [] (size_t index) const;
+
+    ///
+    void setPrimitiveType(PrimitiveType type);
+
+    ///
+    PrimitiveType getPrimitiveType() const;
+
+    ///
+    Vertex* getData();
+
+    ///
+    const Vertex* getData() const;
+
+    ///
+    size_t getSize() const;
+
+    ///
+    size_t getBytesCount() const;
+
+    ///
+    bool isEmpty() const;
+
+    ///
+    bool isValid() const;
+
+    /// Returns { left, top, width, height } 2D bounds of vertices
+    glm::vec4 getBounds() const;
+
+    ///
+    void bind() const;
+
+    ///
+    void unbind() const;
+
+	///
+	void update() const;
+
+private:
+
+    ///
+    void _init();
+
+    ///
+    void _destroy();
+
+    Vertices_t _vertices;
+    PrimitiveType _type;
+    GLuint _vao;
+    GLuint _vbo;
+    mutable size_t _lowerIndex;
+    mutable size_t _upperIndex;
+    mutable bool _needsUpdate;
+    mutable bool _needsReallocate;
+
+};
+
 }

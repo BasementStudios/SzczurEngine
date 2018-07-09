@@ -18,6 +18,6 @@ namespace sf3d {
 		virtual void draw(RenderTarget& target, RenderStates states) const override;
 	private:
 		Texture* _texture{nullptr};
-		VertexArray _vertices{4u};
+		VertexArray _vertices{TriangleFan, 4u};
 	};
 }
