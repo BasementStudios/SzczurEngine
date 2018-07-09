@@ -126,10 +126,10 @@ public:
 	UniformBinder& operator = (const UniformBinder&) = delete;
 
 	///
-	UniformBinder(UniformBinder&& rhs)  = delete;
+	UniformBinder(UniformBinder&& rhs) = delete;
 
 	///
-	UniformBinder& operator = (UniformBinder&& rhs)  = delete;
+	UniformBinder& operator = (UniformBinder&& rhs) = delete;
 
 	///
 	~UniformBinder()
@@ -718,10 +718,10 @@ public:
 	ImGuiID& operator = (const ImGuiID&) = delete;
 
 	///
-	ImGuiID(ImGuiID&& rhs)  = delete;
+	ImGuiID(ImGuiID&& rhs) = delete;
 
 	///
-	ImGuiID& operator = (ImGuiID&& rhs)  = delete;
+	ImGuiID& operator = (ImGuiID&& rhs) = delete;
 
 	///
 	~ImGuiID() = default;
