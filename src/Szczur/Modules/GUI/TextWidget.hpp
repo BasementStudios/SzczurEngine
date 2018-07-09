@@ -32,6 +32,8 @@ namespace rat {
         const sf::Font* getFont() const;
 
         void setCharacterSize(unsigned int size);
+        void setCharacterPropSize(float prop);
+        float getCharacterPropSize() const;
 
         unsigned int getCharacterSize() const;
 
@@ -41,8 +43,13 @@ namespace rat {
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _recalcPos() override;
         virtual void _setColor(const sf::Color& color) override;
+        virtual void _recalcElementsPropSize() override;
     private:
         virtual void _callback(CallbackType type) override;
+
+        float _chPropSize;
+        bool _hasChPropSize = false;
+        void _calcChPropSize();
 
         sf::Text _text;
     };
