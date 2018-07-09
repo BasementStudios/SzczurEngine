@@ -55,6 +55,7 @@ public:
 	RenderStates getDefaultRenderStates() const;
 	void setDefaultRenderStates(const RenderStates& states);
 	void setDefaultShaderProgram(ShaderProgram* program);
+	void setDefaultShaderProgram(ShaderProgram& program);
 
 	/// Current camera object which define what to render
 	Camera* getCamera();

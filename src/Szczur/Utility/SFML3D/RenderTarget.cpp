@@ -44,6 +44,10 @@ void RenderTarget::setDefaultShaderProgram(ShaderProgram* program)
 {
 	this->defaultStates.shader = program;
 }
+void RenderTarget::setDefaultShaderProgram(ShaderProgram& program)
+{
+	this->defaultStates.shader = &program;
+}
 
 // Camera
 Camera* RenderTarget::getCamera()
