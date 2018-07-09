@@ -45,12 +45,9 @@ void Application::input()
 
 void Application::update()
 {
-	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+	auto deltaTime = _mainClock.restart().asFSeconds();
 
-	/*
-		Put other updates here
-	*/
-
+	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -67,6 +64,8 @@ void Application::update()
 void Application::render()
 {
 	getModule<Window>().clear();
+
+	getModule<World>().render();
 
 	#ifdef EDITOR
 	{
