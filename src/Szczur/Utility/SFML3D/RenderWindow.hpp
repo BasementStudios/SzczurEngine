@@ -36,6 +36,9 @@ public:
 		sf::Uint32 style = sf::Style::Default,
 		const sf::ContextSettings& settings = sf::ContextSettings{24u, 0u, 0u, 3u, 3u}
 	);
+
+	/// Updates RenderWindow (glViewport) after resizing
+	void onResize() override;
 	
 	using sf3d::RenderTarget::clear;
 	using sf3d::RenderTarget::draw;
