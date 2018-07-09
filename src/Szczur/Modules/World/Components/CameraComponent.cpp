@@ -73,11 +73,13 @@ namespace rat {
 		if(auto& var = config["limit"]["left"]; !var.is_null()) _limit.left = var;
 		if(auto& var = config["limit"]["right"]; !var.is_null()) _limit.right = var;
 		if(auto& var = config["limitedRange"]; !var.is_null()) _limitedRange = var;
-		if(auto& var = config["type"]; !var.is_null()) _type = size_tToEnumType(var);
+		if(auto& var = config["type"]; !var.is_null()) _moveType = static_cast<MoveType>(var);
 		if(auto& var = config["sticked_id"]; !var.is_null()) _stickedID = var;
         if(auto& var = config["no_move"]; !var.is_null()) _noMove = var;
-		if(auto& var = config["smoothness"]; !var.is_null() && _type == Smooth) _smoothness = var;
-		if(auto& var = config["linear"]; !var.is_null() && _type == Linear) _linear = var;
+		if(auto& var = config["smoothness"]; !var.is_null() && _moveType == Smooth) _smoothness = var;
+		if(auto& var = config["linear"]; !var.is_null() && _moveType == Linear) _linear = var;
+
+		if(auto& var = config["targetingType"]; !var.is_null() && _moveType == Linear) _targetingType = static_cast<TargetingType>(var);
 
 
 	}
@@ -86,16 +88,18 @@ namespace rat {
 		Component::saveToConfig(config);
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
-		if(_type == Smooth)
+		if(_moveType == Smooth)
 			config["smoothness"] = _smoothness;
-		else if(_type == Linear)
+		else if(_moveType == Linear)
 			config["linear"] = _linear;
-		config["type"] = enumTypeToSize_t();
+		config["type"] = static_cast<size_t>(_moveType);
 		config["limit"]["left"] = _limit.left;
 		config["limit"]["right"] = _limit.right;
 		config["limitedRange"] = _limitedRange;
 		config["sticked_id"] = (_stickTo==nullptr ? 0 : _stickTo->getID());
         config["no_move"] = _noMove;
+
+		config["targetingType"] = static_cast<size_t>(_targetingType);
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
@@ -106,21 +110,38 @@ namespace rat {
 			ImGui::DragFloat("Velocity##camera_component", &velocity);
 			setVelocity(velocity);
 
-			if(ImGui::BeginCombo("Type", enumTypeToString().c_str())) {
-				if(ImGui::Selectable("None", _type == None))
-					_type = None;
-				if(ImGui::Selectable("Smooth", _type == Smooth))
-					_type = Smooth;
-				if(ImGui::Selectable("Linear", _type == Linear))
-					_type = Linear;
+			ImGui::Spacing();
+
+			if(ImGui::BeginCombo("MoveType", enumToString(_moveType).c_str())) {
+				if(ImGui::Selectable("None", _moveType == None))
+					_moveType = None;
+				if(ImGui::Selectable("Smooth", _moveType == Smooth))
+					_moveType = Smooth;
+				if(ImGui::Selectable("Linear", _moveType == Linear))
+					_moveType = Linear;
 				ImGui::EndCombo();
 			}
 
-			if(_type == Smooth)
+			if(_moveType == Smooth)
 				ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 0.05f, 1.f, 50.f);
-			else if(_type == Linear)
+			else if(_moveType == Linear)
 				ImGui::DragFloat("Linear##camera_component", &_linear, 0.05f, 1.f, 50.f);
 
+			ImGui::Spacing();
+
+			if(ImGui::BeginCombo("Targeting Type", enumToString(_targetingType).c_str())) {
+				if(ImGui::Selectable("Precise", _targetingType == Precise))
+					_targetingType = Precise;
+				if(ImGui::Selectable("Forwarded", _targetingType == Forwarded))
+					_targetingType = Forwarded;
+				ImGui::EndCombo();
+			}
+
+			if(_targetingType == Forwarded) {
+				ImGui::DragFloat("Forwarded##camera_component", &_forwarded);
+			}
+
+			ImGui::Spacing();
 
 			// Set lock
 			bool locked = getLock();
@@ -198,28 +219,37 @@ namespace rat {
 
 	void CameraComponent::updateCamera() {
 		auto* entity = getEntity();
-		if (_type == None) {
-			this->setPosition(entity->getPosition());
+		if (_moveType == None) {
+			_virtualPosition = entity->getPosition();
 			this->setRotation(entity->getRotation());
 		}
-		else if (_type == Smooth) {
+		else if (_moveType == Smooth) {
 			if(_smoothness >= 1.f) {
-				auto delta = entity->getPosition() - this->getPosition();
+				auto delta = entity->getPosition() - _virtualPosition;
 				auto deltaRotation = entity->getRotation() - this->getRotation();
-				this->move(delta / _smoothness);
+
+				_virtualPosition += delta / _smoothness;
 				this->rotate(deltaRotation / _smoothness);
 			}
 		}
-		else if (_type == Linear) {
+		else if (_moveType == Linear) {
 			auto position = entity->getPosition();
-			auto direction = position - this->getPosition();
+			auto direction = position - _virtualPosition;
 			float length = glm::sqrt(direction.x * direction.x + direction.y * direction.y);
 			direction /= length;
 			if(length <= _linear)
-				this->setPosition(position);
+				_virtualPosition = position;
 			else
-				this->move(direction * _linear);
+				_virtualPosition += direction * _linear;
 			this->setRotation(entity->getRotation());
+		}
+
+		if(_targetingType == Precise) {
+			this->setPosition(_virtualPosition);
+		}
+		if(_targetingType == Forwarded) {
+			auto delta = entity->getPosition() - _virtualPosition;
+			this->setPosition(entity->getPosition() + delta*_forwarded);
 		}
 	}
 
@@ -250,23 +280,18 @@ namespace rat {
 		object.init();
 
 	}
-	std::string CameraComponent::enumTypeToString() const {
-		switch(_type) {
-			case None: return "None";
+	std::string CameraComponent::enumToString(MoveType type) {
+		switch(type) {
 			case Smooth: return "Smooth";
 			case Linear: return "Linear";
 		}
 		return "None";
 	}
-	size_t CameraComponent::enumTypeToSize_t() const {
-		return static_cast<size_t>(_type);
-	}
 
-	CameraComponent::Type CameraComponent::size_tToEnumType(size_t type) const {
+	std::string CameraComponent::enumToString(TargetingType type) {
 		switch(type) {
-			case static_cast<size_t>(Smooth) : return Smooth;
-				case static_cast<size_t>(Linear) : return Linear;
+			case Forwarded: return "Forwarded";
 		}
-		return None;
+		return "Precise";
 	}
 }

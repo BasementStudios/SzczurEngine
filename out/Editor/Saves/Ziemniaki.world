@@ -1,0 +1,1526 @@
+{
+    "currentSceneID": 1,
+    "scenes": [
+        {
+            "entrances": [],
+            "groups": {
+                "background": [
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\NIEBO 2 MNIEJSZE.png"
+                            }
+                        ],
+                        "id": 11,
+                        "name": "NIEBO 2 MNIEJSZE",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 20000.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\2 CHMURY ROZMYTE.png"
+                            }
+                        ],
+                        "id": 14,
+                        "name": "2 CHMURY ROZMYTE",
+                        "origin": {
+                            "x": 6080.0,
+                            "y": -0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 16503.0,
+                            "y": 0.0,
+                            "z": 0.0400000028312206
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\3 CHMURY W TLE.png"
+                            }
+                        ],
+                        "id": 15,
+                        "name": "3 CHMURY W TLE",
+                        "origin": {
+                            "x": 6140.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 15317.0,
+                            "y": 44.0,
+                            "z": 0.230000004172325
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\4 CHMURA EPICKA.png"
+                            }
+                        ],
+                        "id": 16,
+                        "name": "4 CHMURA EPICKA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 6916.0,
+                            "y": 3.0,
+                            "z": 0.280000001192093
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.06000006198883,
+                            "y": 1.06000006198883,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\5 CHMURY BLIZEJ LEWO.png"
+                            }
+                        ],
+                        "id": 17,
+                        "name": "5 CHMURY BLIZEJ LEWO",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 3057.0,
+                            "y": 16.0,
+                            "z": 0.550000011920929
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.1599999666214,
+                            "y": 1.1599999666214,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\6 CHMURY PRAWO.png"
+                            }
+                        ],
+                        "id": 18,
+                        "name": "6 CHMURY PRAWO",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 11962.0,
+                            "y": 10.0,
+                            "z": 0.390000015497208
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\8 GORY JESZCZE DALEJ.png"
+                            }
+                        ],
+                        "id": 20,
+                        "name": "8 GORY JESZCZE DALEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 10510.0,
+                            "y": -642.0,
+                            "z": 0.550000011920929
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.23000001907349,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\7 CHMURY PRAWO KOPIA.png"
+                            }
+                        ],
+                        "id": 19,
+                        "name": "7 CHMURY PRAWO KOPIA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 16580.0,
+                            "y": 0.0,
+                            "z": 0.580000042915344
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": -1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\9 GORY W TLE.png"
+                            }
+                        ],
+                        "id": 21,
+                        "name": "9 GORY W TLE",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 8721.0,
+                            "y": -530.0,
+                            "z": 0.730000019073486
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.1599999666214,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\10 PAGORKI DALEJ.png"
+                            }
+                        ],
+                        "id": 22,
+                        "name": "10 PAGORKI DALEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 8919.0,
+                            "y": -614.0,
+                            "z": 1.54000008106232
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.23000001907349,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\11 ATMO ZA PAGORKI BLIZEJ.png"
+                            }
+                        ],
+                        "id": 23,
+                        "name": "11 ATMO ZA PAGORKI BLIZEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 7305.0,
+                            "y": -568.0,
+                            "z": 2.39000010490417
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\12 PAGORKI BLIZEJ.png"
+                            }
+                        ],
+                        "id": 24,
+                        "name": "12 PAGORKI BLIZEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 8847.0,
+                            "y": -720.0,
+                            "z": 2.64000010490417
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.11000001430511,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\13 ATMO ZA PAGORKI BLIZEJ BLIZEJ.png"
+                            }
+                        ],
+                        "id": 25,
+                        "name": "13 ATMO ZA PAGORKI BLIZEJ BLIZEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": -137.0,
+                            "z": 4.35000038146973
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\14 PAGORKI BLIZEJ BLIZEJ.png"
+                            }
+                        ],
+                        "id": 26,
+                        "name": "14 PAGORKI BLIZEJ BLIZEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 10066.0,
+                            "y": -724.0,
+                            "z": 7.37000036239624
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\15 POLA DALEJ.png"
+                            }
+                        ],
+                        "id": 28,
+                        "name": "15 POLA DALEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 11853.0,
+                            "y": -550.0,
+                            "z": 5.27000045776367
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.03999996185303,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\16 MGLA ZA POLA.png"
+                            }
+                        ],
+                        "id": 29,
+                        "name": "16 MGLA ZA POLA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 12860.0,
+                            "y": -559.0,
+                            "z": 9.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\17 POLA.png"
+                            }
+                        ],
+                        "id": 30,
+                        "name": "17 POLA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 9941.0,
+                            "y": -604.0,
+                            "z": 109.550003051758
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.04999995231628,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\18 TLO LASU.png"
+                            }
+                        ],
+                        "id": 31,
+                        "name": "18 TLO LASU",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": -2.0,
+                            "y": 0.0,
+                            "z": 23.0000019073486
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.12000000476837,
+                            "y": 1.317999958992,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\19 SWIERKI NAJDALEJ.png"
+                            }
+                        ],
+                        "id": 32,
+                        "name": "19 SWIERKI NAJDALEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 8724.0,
+                            "y": -377.0,
+                            "z": 29.0000019073486
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\20 SWIERKI DALEJ.png"
+                            }
+                        ],
+                        "id": 33,
+                        "name": "20 SWIERKI DALEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 6746.0,
+                            "y": -213.0,
+                            "z": 114.000007629395
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\22 SWIERKI TE BLIZJE.png"
+                            }
+                        ],
+                        "id": 35,
+                        "name": "22 SWIERKI TE BLIZJE",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 6802.0,
+                            "y": -154.0,
+                            "z": 129.730010986328
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\23 DRZEWA NA 2.png"
+                            }
+                        ],
+                        "id": 36,
+                        "name": "23 DRZEWA NA 2",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 24.0,
+                            "y": 77.0,
+                            "z": 146.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.36000001430511,
+                            "y": 1.36000001430511,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\21 MGLA SWIERKI.png"
+                            }
+                        ],
+                        "id": 34,
+                        "name": "21 MGLA SWIERKI",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 6387.0,
+                            "y": -467.0,
+                            "z": 121.770004272461
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\25 MGLA ZA SCIEZKA.png"
+                            }
+                        ],
+                        "id": 38,
+                        "name": "25 MGLA ZA SCIEZKA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 5765.0,
+                            "y": -652.0,
+                            "z": 154.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\24 MGLA PRZED DRZEWAMI 2.png"
+                            }
+                        ],
+                        "id": 37,
+                        "name": "24 MGLA PRZED DRZEWAMI 2",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": -240.0,
+                            "y": -374.0,
+                            "z": 164.050003051758
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\26 MGLA 2.png"
+                            }
+                        ],
+                        "id": 39,
+                        "name": "26 MGLA 2",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 163.0,
+                            "y": -195.0,
+                            "z": 258.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\29 DRZEWA LEWO 2.png"
+                            }
+                        ],
+                        "id": 42,
+                        "name": "29 DRZEWA LEWO 2",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 27.0,
+                            "y": 34.0,
+                            "z": 277.670013427734
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.17999994754791,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\28 MGLA DALEJ.png"
+                            }
+                        ],
+                        "id": 41,
+                        "name": "28 MGLA DALEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 178.0,
+                            "y": -183.0,
+                            "z": 260.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\30 MGLA BLIZEJ.png"
+                            }
+                        ],
+                        "id": 43,
+                        "name": "30 MGLA BLIZEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 150.0,
+                            "y": -522.0,
+                            "z": 296.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\SCIEZKA LAS.png"
+                            }
+                        ],
+                        "id": 57,
+                        "name": "SCIEZKA LAS",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 537.0,
+                            "y": -931.189025878906,
+                            "z": 214.0
+                        },
+                        "rotation": {
+                            "x": -90.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 0.480000019073486,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\32 DRZEWA PIERWSZY.png"
+                            }
+                        ],
+                        "id": 45,
+                        "name": "32 DRZEWA PIERWSZY",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 8.0,
+                            "y": -12.0,
+                            "z": 434.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.11000001430511,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\27 SCIEZKA LASU WODA.png"
+                            }
+                        ],
+                        "id": 40,
+                        "name": "27 SCIEZKA LASU WODA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 15.0,
+                            "y": -921.0,
+                            "z": 194.0
+                        },
+                        "rotation": {
+                            "x": -90.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.42999994754791,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\35 KAMIENIE ZNOWU.png"
+                            }
+                        ],
+                        "id": 48,
+                        "name": "35 KAMIENIE ZNOWU",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 5462.0,
+                            "y": -111.0,
+                            "z": 342.000030517578
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\31 PROMIENIE SWIATLA.png"
+                            }
+                        ],
+                        "id": 44,
+                        "name": "31 PROMIENIE SWIATLA",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 65.0,
+                            "y": -29.5799999237061,
+                            "z": 316.260009765625
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\33 KOMPLEKS DRZEWEK kopia.png"
+                            }
+                        ],
+                        "id": 46,
+                        "name": "33 KOMPLEKS DRZEWEK kopia",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 6227.0,
+                            "y": -55.0,
+                            "z": 261.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0900000333786,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\34 SWIERK NAJBLIZEJ.png"
+                            }
+                        ],
+                        "id": 47,
+                        "name": "34 SWIERK NAJBLIZEJ",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 7170.0,
+                            "y": -59.0,
+                            "z": 259.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.00999999046326,
+                            "y": 1.06000006198883,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\37 KAMIENIE 2.png"
+                            }
+                        ],
+                        "id": 50,
+                        "name": "37 KAMIENIE 2",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 9124.0,
+                            "y": -625.0,
+                            "z": 278.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\41 KAMIENIE.png"
+                            }
+                        ],
+                        "id": 54,
+                        "name": "41 KAMIENIE",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 5327.0,
+                            "y": -735.0,
+                            "z": 638.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\36 KAMIENIE.png"
+                            }
+                        ],
+                        "id": 49,
+                        "name": "36 KAMIENIE",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 7405.0,
+                            "y": -713.0,
+                            "z": 266.0
+                        },
+                        "rotation": {
+                            "x": -17.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\39 KEPKA TRAWKI.png"
+                            }
+                        ],
+                        "id": 52,
+                        "name": "39 KEPKA TRAWKI",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 10086.0,
+                            "y": -823.0,
+                            "z": 316.399993896484
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\40 DAB DAB DAB.png"
+                            }
+                        ],
+                        "id": 53,
+                        "name": "40 DAB DAB DAB",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 4407.0,
+                            "y": 28.0,
+                            "z": 436.000030517578
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 0.999999821186066,
+                            "y": 1.12999999523163,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\42 ZNAK.png"
+                            }
+                        ],
+                        "id": 55,
+                        "name": "42 ZNAK",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 15509.0,
+                            "y": -442.0,
+                            "z": 282.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\44 PLAN PRZED.png"
+                            }
+                        ],
+                        "id": 56,
+                        "name": "44 PLAN PRZED",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": -1.0,
+                            "y": -463.779998779297,
+                            "z": 773.56005859375
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\43 MGLA PRZED.png"
+                            }
+                        ],
+                        "id": 51,
+                        "name": "43 MGLA PRZED",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 30.0,
+                            "y": -1301.0,
+                            "z": 412.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 0.0
+                        }
+                    }
+                ],
+                "foreground": [
+                    {
+                        "components": [
+                            {
+                                "features": 1,
+                                "id": 13050946774019011867,
+                                "name": "SpriteComponent",
+                                "spriteDisplayData": "Assets\\Worlds\\Ziemniaki\\43 MGLA PRZED.png"
+                            }
+                        ],
+                        "id": 78,
+                        "name": "mgła",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": -456.0,
+                            "z": 674.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ],
+                "path": [],
+                "single": [
+                    {
+                        "components": [
+                            {
+                                "armatureDisplayData": "Cedmin",
+                                "features": 1,
+                                "id": 917815813872066653,
+                                "name": "ArmatureComponent"
+                            },
+                            {}
+                        ],
+                        "id": 1,
+                        "name": "Player",
+                        "origin": {
+                            "x": 0.0,
+                            "y": -833.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 2150.0,
+                            "y": -931.189025878906,
+                            "z": 621.167175292969
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 0.219999998807907,
+                            "y": 0.219999998807907,
+                            "z": 1.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 13209209574413295037,
+                                "locked": false,
+                                "name": "CameraComponent",
+                                "velocity": 50.0
+                            }
+                        ],
+                        "id": 2,
+                        "name": "Camera",
+                        "origin": {
+                            "x": 0.0,
+                            "y": -0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 950.0,
+                            "y": 183.0,
+                            "z": 2551.83471679688
+                        },
+                        "rotation": {
+                            "x": 15.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                ]
+            },
+            "id": 1,
+            "name": "Ziemniaki",
+            "player": 1
+        }
+    ]
+}

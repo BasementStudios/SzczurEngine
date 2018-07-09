@@ -75,28 +75,38 @@ private:
     bool _noMove = false;
 	float _velocity{50.f};
 
+	glm::vec3 _virtualPosition{0.f};
+
     bool _limitedRange{false};
     struct {
         float left{0.f};
         float right{0.f};
     } _limit;
 
+
 	union {
 		float _smoothness{1.f};
 		float _linear;
 	};
 
-	enum Type : size_t {
+	enum MoveType : size_t {
 		None,
 		Smooth,
 		Linear
-	} _type{None};
+	} _moveType{None};
 
-	std::string enumTypeToString() const;
 
-	size_t enumTypeToSize_t() const;
+	union {
+		float _forwarded{1.f};
+	};
 
-	Type size_tToEnumType(size_t type) const;
+	enum TargetingType : size_t {
+		Precise,
+		Forwarded
+	} _targetingType{Precise};
+
+	static std::string enumToString(MoveType type);
+	static std::string enumToString(TargetingType type);
 
     Entity* _stickTo{nullptr};
     int _stickedID = 0;

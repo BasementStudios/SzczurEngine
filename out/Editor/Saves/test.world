@@ -2,78 +2,22 @@
     "currentSceneID": 1,
     "scenes": [
         {
-            "entrances": [
-                {
-                    "id": 1,
-                    "name": "1",
-                    "position": {
-                        "x": 64.0,
-                        "y": 52.0000038146973,
-                        "z": 0.0
-                    }
-                },
-                {
-                    "id": 2,
-                    "name": "2",
-                    "position": {
-                        "x": -29.0000019073486,
-                        "y": -15.0000009536743,
-                        "z": 18.0
-                    }
-                },
-                {
-                    "id": 3,
-                    "name": "3",
-                    "position": {
-                        "x": 45.0000038146973,
-                        "y": 11.0000009536743,
-                        "z": 11.0000009536743
-                    }
-                }
-            ],
             "groups": {
-                "background": [
-                    {
-                        "components": [
-                            {
-                                "enranceId": 2,
-                                "features": 0,
-                                "id": 4016926418570948222,
-                                "name": "TriggerComponent",
-                                "radius": 94.0000076293945,
-                                "sceneId": 1,
-                                "type": 1
-                            }
-                        ],
-                        "id": 3,
-                        "name": "unnamed_3",
-                        "origin": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        }
-                    }
-                ],
+                "background": [],
+                "battles": [],
+                "entries": [],
                 "foreground": [],
                 "path": [],
                 "single": [
                     {
-                        "components": [],
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 14813898306492399175,
+                                "name": "BaseComponent",
+                                "position_only": false
+                            }
+                        ],
                         "id": 1,
                         "name": "Player",
                         "origin": {
@@ -101,9 +45,24 @@
                         "components": [
                             {
                                 "features": 0,
+                                "id": 14813898306492399175,
+                                "name": "BaseComponent",
+                                "position_only": false
+                            },
+                            {
+                                "features": 0,
                                 "id": 13209209574413295037,
+                                "limit": {
+                                    "left": 0.0,
+                                    "right": 0.0
+                                },
+                                "limitedRange": false,
                                 "locked": false,
                                 "name": "CameraComponent",
+                                "no_move": false,
+                                "smoothness": 1.0,
+                                "sticked_id": 0,
+                                "type": 1,
                                 "velocity": 50.0
                             }
                         ],
@@ -120,7 +79,69 @@
                             "z": 3085.0
                         },
                         "rotation": {
-                            "x": 15.0,
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    },
+                    {
+                        "components": [
+                            {
+                                "features": 0,
+                                "id": 14813898306492399175,
+                                "name": "BaseComponent",
+                                "position_only": false
+                            },
+                            {
+                                "ambientFactor": {
+                                    "b": 1.0,
+                                    "g": 1.0,
+                                    "r": 1.0
+                                },
+                                "attenuation": {
+                                    "constant": 1.0,
+                                    "linear": 0.0,
+                                    "quadratic": 0.0
+                                },
+                                "color": {
+                                    "b": 1.0,
+                                    "g": 1.0,
+                                    "r": 1.0
+                                },
+                                "diffuseFactor": {
+                                    "b": 1.0,
+                                    "g": 1.0,
+                                    "r": 1.0
+                                },
+                                "features": 0,
+                                "id": 835784486493059382,
+                                "name": "PointLightComponent",
+                                "specularFactor": {
+                                    "b": 1.0,
+                                    "g": 1.0,
+                                    "r": 1.0
+                                }
+                            }
+                        ],
+                        "id": 3,
+                        "name": "Sun",
+                        "origin": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
                             "y": 0.0,
                             "z": 0.0
                         },
@@ -136,5 +157,6 @@
             "name": "unnamed_1",
             "player": 1
         }
-    ]
+    ],
+    "version": "1.6.7"
 }
