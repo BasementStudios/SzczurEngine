@@ -312,6 +312,7 @@ namespace rat
                 //_parent->_isPosChanged = true;
             }
             _childrenPropSizesMustBeenRecalculated = true;
+            if(_props.hasPosition) _propPosMustBeenRecalculated = true;
         }
 
         gui::FamilyTransform::setSize(_size);
