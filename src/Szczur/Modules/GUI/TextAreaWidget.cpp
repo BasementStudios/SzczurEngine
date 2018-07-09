@@ -214,7 +214,6 @@ namespace rat {
 
             if(isTooThick) break;
 
-            std::cout << begin << ' ' << end << '\n';
             auto lineStr = str.substring(begin, end - begin);
 
             if(lineIndex < _texts.size())
