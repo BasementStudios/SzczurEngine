@@ -47,7 +47,7 @@ namespace sf3d {
 
 		unsigned int _primitveType{GL_TRIANGLE_FAN};
 
-		const unsigned int _storageUsage;
+		unsigned int _storageUsage;
 		std::vector<Vertex> _vertices;
 
 	};

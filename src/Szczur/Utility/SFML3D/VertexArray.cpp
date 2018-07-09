@@ -8,8 +8,8 @@
 
 namespace sf3d {
 	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
-	_vertices(size),
-	_storageUsage(storageUsage) {
+	_storageUsage(storageUsage),
+	_vertices(size) {
 		glGenBuffers(1, &_VBO);
 		glGenVertexArrays(1, &_VAO);
 
