@@ -28,8 +28,8 @@ Scene::Scene(ScenesManager* parent)
 	, _parent { parent }
 {
 	_collectingHolder.emplace_back("background", EntitiesHolder_t{}); 
-	_collectingHolder.emplace_back("path", EntitiesHolder_t{}); 
-	_collectingHolder.emplace_back("single", EntitiesHolder_t{}); 
+	_collectingHolder.emplace_back("single", EntitiesHolder_t{});
+	_collectingHolder.emplace_back("path", EntitiesHolder_t{});
 	_collectingHolder.emplace_back("entries", EntitiesHolder_t{}); 
 	_collectingHolder.emplace_back("battles", EntitiesHolder_t{}); 
 	_collectingHolder.emplace_back("foreground", EntitiesHolder_t{}); 
