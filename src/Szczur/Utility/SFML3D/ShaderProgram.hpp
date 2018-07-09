@@ -132,9 +132,9 @@ public:
 	///
 	void _saveConfig(const char* path) const;
 
-	UniMap_t uniforms;
-	UniMap_t::iterator currentElem = uniforms.end();
-	const char* const uniTypeNames[std::variant_size_v<UniVariant_t>] = { "bool", "bvec2", "bvec3", "bvec4", "int", "ivec2", "ivec3", "ivec4", "uint", "uvec2", "uvec3", "uvec4", "float", "vec2", "vec3", "vec4", "mat2x2", "mat3x3", "mat4x4" };
+	UniMap_t _uniforms;
+	UniMap_t::iterator _currentElem = _uniforms.end();
+	const char* const _uniTypeNames[std::variant_size_v<UniVariant_t>] = { "bool", "bvec2", "bvec3", "bvec4", "int", "ivec2", "ivec3", "ivec4", "uint", "uvec2", "uvec3", "uvec4", "float", "vec2", "vec3", "vec4", "mat2x2", "mat3x3", "mat4x4" };
 
 	#endif // EDITOR
 
