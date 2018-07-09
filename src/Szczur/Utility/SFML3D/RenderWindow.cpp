@@ -5,6 +5,7 @@
 
 #include <glad/glad.h>
 #include <glm/vec2.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <SFML/Window/ContextSettings.hpp>
@@ -52,6 +53,12 @@ void RenderWindow::create(
 		return;
 	}
 	glViewport(0, 0, mode.width, mode.height);
+}
+
+void RenderWindow::onResize()
+{
+	sf::Vector2u size = this->getSize();
+	glViewport(0, 0, size.x, size.y);
 }
 
 }
