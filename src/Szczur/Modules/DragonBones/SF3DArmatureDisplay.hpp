@@ -1,21 +1,18 @@
-/** @file SF3DArmatureDisplay.hpp
-** @author Piotr Krupa (piotrkrupa06@gmail.com)
-**/
-
 #pragma once
 
+/** @file SF3DArmatureDisplay.hpp
+ ** @author Piotr Krupa (piotrkrupa06@gmail.com)
+ **/
+
 #include <dragonBones/DragonBonesHeaders.h>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-
 #include "SF3DEventDispatcher.hpp"
-
-#include <glm/glm.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 
