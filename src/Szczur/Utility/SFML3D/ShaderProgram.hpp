@@ -46,7 +46,7 @@ public:
 
 	///
 	template <typename... Ts>
-	bool linkShaders(Ts&&... shaders);
+	void linkShaders(Ts&&... shaders);
 
 	///
 	bool setUniform(const char* name, bool value);
@@ -131,7 +131,7 @@ public:
 
 	///
 	void _saveConfig(const char* path) const;
-	
+
 	UniMap_t uniforms;
 	UniMap_t::iterator currentElem = uniforms.end();
 	const char* const uniTypeNames[std::variant_size_v<UniVariant_t>] = { "bool", "bvec2", "bvec3", "bvec4", "int", "ivec2", "ivec3", "ivec4", "uint", "uvec2", "uvec3", "uvec4", "float", "vec2", "vec3", "vec4", "mat2x2", "mat3x3", "mat4x4" };
@@ -144,14 +144,14 @@ private:
 	void _destroy();
 
 	///
-	bool _finishLinking();
+	void _finishLinking();
 
 	GLuint _program = 0;
 
 };
 
 template <typename... Ts>
-bool ShaderProgram::linkShaders(Ts&&... shaders)
+void ShaderProgram::linkShaders(Ts&&... shaders)
 {
 	static_assert((std::is_same_v<Shader, std::decay_t<Ts>> && ...), "All Ts must be exactly sf3d::Shader");
 
@@ -163,7 +163,7 @@ bool ShaderProgram::linkShaders(Ts&&... shaders)
 
 	(glDetachShader(_program, shaders.getNativeHandle()), ...);
 
-	return _finishLinking();
+	_finishLinking();
 }
 
 }

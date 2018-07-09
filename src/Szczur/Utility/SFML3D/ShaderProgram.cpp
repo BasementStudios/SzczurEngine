@@ -954,7 +954,7 @@ void ShaderProgram::_destroy()
 	}
 }
 
-bool ShaderProgram::_finishLinking()
+void ShaderProgram::_finishLinking()
 {
 	GLint success;
 	glGetProgramiv(_program, GL_LINK_STATUS, &success);
@@ -964,11 +964,9 @@ bool ShaderProgram::_finishLinking()
 		GLchar infoLog[512];
 		glGetProgramInfoLog(_program, sizeof(infoLog), nullptr, infoLog);
 
-		throw std::runtime_error(std::string("Unable to link shader program:\n") + infoLog);
-
 		_destroy();
 
-		return false;
+		throw std::runtime_error(std::string("Unable to link shader program:\n") + infoLog);
 	}
 
 	#ifdef EDITOR
@@ -1123,8 +1121,6 @@ bool ShaderProgram::_finishLinking()
 		}
 	}
 	#endif // EDITOR
-
-	return true;
 }
 
 }

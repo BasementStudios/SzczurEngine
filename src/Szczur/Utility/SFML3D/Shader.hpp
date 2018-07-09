@@ -44,10 +44,10 @@ public:
 	~Shader();
 
 	///
-	bool loadFromFile(ShaderType type, const char* filePath);
+	void loadFromFile(ShaderType type, const char* filePath);
 
 	///
-	bool loadFromMemory(ShaderType type, const void* data, GLint size = -1);
+	void loadFromMemory(ShaderType type, const void* data, GLint size = -1);
 
 	///
 	bool isValid() const;
@@ -63,7 +63,7 @@ public:
 	GLint _dataSize = 0;
 
 	///
-	bool _reload();
+	void _reload();
 
 	#endif // EDITOR
 
@@ -73,7 +73,7 @@ private:
 	void _destroy();
 
 	///
-	bool _compile(ShaderType type, const char* data, GLint size);
+	void _compile(ShaderType type, const char* data, GLint size);
 
 	GLuint _shader = 0;
 
