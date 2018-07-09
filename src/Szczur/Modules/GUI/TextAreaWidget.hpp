@@ -29,6 +29,9 @@ namespace rat {
         void setCharacterSize(size_t size);
         size_t getCharacterSize() const;
 
+        void setCharacterPropSize(float prop);
+        float getCharacterPropSize() const;
+
         void setAlign(Align align);
         Align getAlign() const;
 
@@ -38,6 +41,7 @@ namespace rat {
         virtual void _calculateSize() override;
         virtual void _recalcPos() override;
         virtual void _setColor(const sf::Color& color) override;
+        virtual void _recalcElementsPropSize() override;
     private:
         sf::Vector2u _size;
 
@@ -51,6 +55,11 @@ namespace rat {
         unsigned int _chSize{0};
         sf::Color _color;
         Align _align = Align::Left;
+
+        float _chPropSize;
+        bool _hasChPropSize = false;
+
+        void _calcChPropSize();
 
         void _wrap();
         void _calcTextPos();

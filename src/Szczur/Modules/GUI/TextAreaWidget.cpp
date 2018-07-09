@@ -1,11 +1,14 @@
 #include "TextAreaWidget.hpp"
 
 #include <iostream>
+#include <cassert>
 #include <algorithm>
 
 #include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
+
+#include "InterfaceWidget.hpp"
 
 namespace rat {
     TextAreaWidget::TextAreaWidget() 
@@ -93,6 +96,33 @@ namespace rat {
         return _chSize;
     }
 
+    void TextAreaWidget::setCharacterPropSize(float prop)
+    {
+        _hasChPropSize = true;
+        _chPropSize = prop;
+
+        if(_interface) _calcChPropSize();
+        else _elementsPropSizeMustBeenCalculated = true;
+
+    }
+    void TextAreaWidget::_calcChPropSize()
+    {
+        assert(_hasChPropSize);
+        assert(_interface);
+
+        auto size = _interface->getSizeByPropSize({_chPropSize, _chPropSize});
+        setCharacterSize(size_t(std::min(size.x, size.y)));
+    }
+    float TextAreaWidget::getCharacterPropSize() const
+    {
+        return _chPropSize;
+    }
+
+    void TextAreaWidget::_recalcElementsPropSize()
+    {
+        if(_hasChPropSize) _calcChPropSize();
+    }
+
     void TextAreaWidget::_setColor(const sf::Color& color) 
     {
         _color = color;
@@ -168,6 +198,7 @@ namespace rat {
                 if(key == '\n')
                 {
                     ++i;
+                    wasSpace = false;
                     break;
                 }
                 else if(key == endingKey)
@@ -211,15 +242,16 @@ namespace rat {
                 isFirstKeyInLine = false;
                 isFirstKey = false;
             }
-
-            if(isTooThick) break;
+            if(end == begin) break;
 
             auto lineStr = str.substring(begin, end - begin);
-
+        
             if(lineIndex < _texts.size())
             {
                 auto& t = _texts[lineIndex];
                 t.setString(lineStr);
+                t.setFont(*_font);
+                t.setCharacterSize(_chSize);
             }
             else
             {
@@ -294,6 +326,7 @@ namespace rat {
 
             if(_font) for(auto& t : _texts) t.setFont(*_font);
         }
+        _isPosChanged = true;
     }
 
     sf::Vector2f TextAreaWidget::_getSize() const 

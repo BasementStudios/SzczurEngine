@@ -111,9 +111,11 @@ namespace rat
         fps = new TextAreaWidget;
         _widget->add(fps);
         fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
-        fps->setCharacterSize(40u);
+        fps->setCharacterPropSize(0.06f);
+        //fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
         fps->setString("54321 54321 321 654321\n987654321 4321 21 321");
+        fps->setPropPosition(0.5f, 0.5f);
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             //if(randomBool)
                 //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
@@ -188,7 +190,7 @@ namespace rat
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) fps->setAlign(TextAreaWidget::Align::Left);
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
-            fps->setSize(mousePos);
+            fps->setSize(mousePos.x, 0.f);
         }
 
         //scroll->setScrollPropWidth(_prop);
