@@ -47,7 +47,7 @@ void Application::update()
 {
 	auto deltaTime = _mainClock.restart().asFSeconds();
 
-	
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -65,7 +65,7 @@ void Application::render()
 {
 	getModule<Window>().clear();
 
-	getModule<World>().render();
+	// getModule<World>().render();
 
 	#ifdef EDITOR
 	{
@@ -90,21 +90,21 @@ int Application::run()
 			render();
 			input();
 		}
-		
+
 		// Exiting
 		#ifdef EDITOR
 		{
 			ImGui::SFML::Shutdown();
 		}
 		#endif
-		
+
 		LOG_INFO("Shutdowning application in normal way");
 	}
 	catch (const std::exception& exception) {
 		LOG_EXCEPTION(exception);
 		return 1;
 	}
-	
+
 	return 0;
 }
 
