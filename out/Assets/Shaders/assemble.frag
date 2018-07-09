@@ -9,7 +9,14 @@ out vec4 finalColor;
 
 // Main shader function
 void main() {
-    finalColor = texture(texture, texCoord);
+    vec4 pixel = texture2D(texture, texCoord);
+    
+    if (pixel.x == 0.0) {
+        discard;
+    }
+    else {
+        finalColor = pixel;
+    }
 }
 
 
