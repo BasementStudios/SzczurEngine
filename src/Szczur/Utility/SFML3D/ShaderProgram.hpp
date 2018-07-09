@@ -26,6 +26,8 @@ class ShaderProgram
 {
 public:
 
+	using NativeHandle_t = GLuint;
+
 	///
 	ShaderProgram() = default;
 
@@ -115,7 +117,7 @@ public:
 	bool isValid() const;
 
 	///
-	GLuint getNativeHandle() const;
+	NativeHandle_t getNativeHandle() const;
 
 	#ifdef EDITOR
 
@@ -146,14 +148,16 @@ private:
 	///
 	void _finishLinking();
 
-	GLuint _program = 0;
+	NativeHandle_t _program = 0;
 
 };
 
 template <typename... Ts>
 void ShaderProgram::linkShaders(Ts&&... shaders)
 {
-	static_assert((std::is_same_v<Shader, std::decay_t<Ts>> && ...), "All Ts must be exactly sf3d::Shader");
+	static_assert((std::is_same_v<Shader, std::remove_cv_t<std::remove_reference_t<Ts>>> && ...), "All Ts must be exactly sf3d::Shader");
+
+	_destroy();
 
 	_program = glCreateProgram();
 

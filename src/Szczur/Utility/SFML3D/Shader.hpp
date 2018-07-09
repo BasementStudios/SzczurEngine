@@ -15,6 +15,8 @@ class Shader
 {
 public:
 
+	using NativeHandle_t = GLuint;
+
 	enum ShaderType
 	{
 		Vertex = GL_VERTEX_SHADER,
@@ -53,7 +55,7 @@ public:
 	bool isValid() const;
 
 	///
-	GLuint getNativeHandle() const;
+	NativeHandle_t getNativeHandle() const;
 
 	#ifdef EDITOR
 
@@ -75,7 +77,7 @@ private:
 	///
 	void _compile(ShaderType type, const char* data, GLint size);
 
-	GLuint _shader = 0;
+	NativeHandle_t _shader = 0;
 
 };
 

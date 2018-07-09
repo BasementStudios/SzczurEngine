@@ -688,10 +688,10 @@ void ShaderProgram::loadConfig(const char* path)
 
 bool ShaderProgram::isValid() const
 {
-	return _program != 0;
+	return _program;
 }
 
-GLuint ShaderProgram::getNativeHandle() const
+ShaderProgram::NativeHandle_t ShaderProgram::getNativeHandle() const
 {
 	return _program;
 }
@@ -946,11 +946,9 @@ void ShaderProgram::_saveConfig(const char* path) const
 
 void ShaderProgram::_destroy()
 {
-	if (isValid())
+	if (_program)
 	{
 		glDeleteProgram(_program);
-
-		_program = 0;
 
 		#ifdef EDITOR
         {
@@ -972,6 +970,8 @@ void ShaderProgram::_finishLinking()
 		glGetProgramInfoLog(_program, sizeof(infoLog), nullptr, infoLog);
 
 		_destroy();
+
+		_program = 0;
 
 		throw std::runtime_error(std::string("Unable to link shader program:\n") + infoLog);
 	}

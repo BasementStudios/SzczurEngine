@@ -96,10 +96,10 @@ void Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
 
 bool Shader::isValid() const
 {
-	return _shader != 0;
+	return _shader;
 }
 
-GLuint Shader::getNativeHandle() const
+Shader::NativeHandle_t Shader::getNativeHandle() const
 {
 	return _shader;
 }
@@ -129,11 +129,9 @@ void Shader::_reload()
 
 void Shader::_destroy()
 {
-	if (isValid())
+	if (_shader)
 	{
 		glDeleteShader(_shader);
-
-		_shader = 0;
 	}
 }
 
@@ -150,10 +148,12 @@ void Shader::_compile(ShaderType type, const char* data, GLint size)
 
 	if (success != GL_TRUE)
 	{
-		_destroy();
-
 		GLchar infoLog[512];
 		glGetShaderInfoLog(_shader, sizeof(infoLog), nullptr, infoLog);
+
+		_destroy();
+
+		_shader = 0;
 
 		throw std::runtime_error(
 			std::string(infoLog)
