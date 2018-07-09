@@ -156,7 +156,7 @@ void Scene::changeEntityGroup(Entity* entity, const std::string& group)
 		std::unique_ptr<Entity> ptr;
 
 		// nie wiem jak wyjąć czysty unique_ptr z iteratora ;/
-		(*it).swap(ptr);
+		it->swap(ptr);
 
 		newGroup.push_back(std::move(ptr));
 
