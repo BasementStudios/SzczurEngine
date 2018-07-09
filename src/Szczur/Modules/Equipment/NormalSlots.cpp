@@ -6,8 +6,8 @@
 
 namespace rat
 {
-	bool sortByIndex(const EquipmentSlot* lhs, const EquipmentSlot* rhs) {
-		return lhs->index < rhs->index;
+	bool sortByIndex::operator() (const EquipmentSlot* lhs, const EquipmentSlot* rhs) const {
+		return lhs->index > rhs->index;
 	}
 
 	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment)
@@ -25,8 +25,8 @@ namespace rat
 				y++;
 				x = 0;
 			}
-			_freeSlots.push_back(new EquipmentSlot());
-			std::shared_ptr<EquipmentSlot> newSlot(_freeSlots[i]);
+			std::shared_ptr<EquipmentSlot> newSlot(new EquipmentSlot());
+			_freeSlots.push(newSlot.get());
 			_allSlots.push_back(newSlot.get());
 			newSlot->index = i;
 			newSlot->setParent(_base);
@@ -68,10 +68,10 @@ namespace rat
 	}
 	bool NormalSlots::addItem(EquipmentObject* item) {
 		if (_freeSlots.size() > 0) {
-			_freeSlots[0]->setItem(item);
-			_occupiedSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots[0]));
-			_freeSlots.erase(_freeSlots.begin());
-			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
+			_freeSlots.top()->setItem(item);
+			_occupiedSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots.top()));
+			_freeSlots.pop();
+			//std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 			return true;
 		}
 		else {
@@ -80,14 +80,14 @@ namespace rat
 			return false;
 		}
 	}
-	bool NormalSlots::removeItem(sf::String itemNameId) {
+	bool NormalSlots::removeItem(const std::string& itemNameId) {
 		auto it = _occupiedSlots.find(itemNameId);
 		if (it != _occupiedSlots.end())
 		{
 			it->second->removeItem();
-			_freeSlots.push_back(it->second);
+			_freeSlots.push(it->second);
 			_occupiedSlots.erase(it);
-			std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
+			
 			return true;
 		}
 		else
@@ -97,17 +97,68 @@ namespace rat
 		for (auto it = _occupiedSlots.begin(); it != _occupiedSlots.end(); ++it) {
 			if (it->second->index == _index && it->second->getItem()) {
 				it->second->removeItem();
-				_freeSlots.push_back(it->second);
+				_freeSlots.push(it->second);
 				_occupiedSlots.erase(it);
-				std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
+				
 				return true;
 			}
 		}
 		return false;
 	}
 
+	bool NormalSlots::removeItem(const std::string& itemNameId, int quantity) {
+		if (quantity == 0 || hasItem(itemNameId, quantity)) {
+			size_t index = 0;
+			for (auto it = _occupiedSlots.begin(); it != _occupiedSlots.end();) {
+				if (it->first == itemNameId) {
+					++index;
+					it->second->removeItem();
+					_freeSlots.push(it->second);
+					it = _occupiedSlots.erase(it);
+					
+					if (index == quantity) {
+						return true;
+					}
+				}
+				else {
+					++it;
+				}				
+			}	
+			return index > 0;
+		}
+		return false;
+	}
+
+	bool NormalSlots::hasItem(const std::string& nameId, int quantity) {
+		int currentQuantity = 0;
+		if (quantity <= 0)
+			return false;
+		for (auto& i : _occupiedSlots) {
+			if (i.first == nameId)
+				currentQuantity++;
+			if (currentQuantity == quantity)
+				return true;
+		}
+		return false;
+	}
+
+	bool NormalSlots::hasItem(const std::string& nameId) {
+		return _occupiedSlots.find(nameId) != _occupiedSlots.end();
+	}
+
 	void NormalSlots::setPropPosition(sf::Vector2f pos) {
 		_base->setPropPosition(pos);
+	}
+
+	bool NormalSlots::useItem(const std::string& nameId) {
+		if (auto it = _occupiedSlots.find(nameId);it  != _occupiedSlots.end()) {
+			if (static_cast<UsableItem*>(it->second->getItem())->useItem())
+			{
+				removeItem(it->second->index);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	sf::Vector2f NormalSlots::getPosition() {
@@ -164,16 +215,12 @@ namespace rat
 				else if (!_slotDropped->getItem() && _slotDropped->getStatus()) {
 					//removing item from first slot
 					removeItem(_slotHeld->index);
+					//std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 
 					//putting item into new slot
 					_slotDropped->setItem(_itemHeld);
-					for (auto it = _freeSlots.begin(); it < _freeSlots.end(); ++it)
-					{
-						if (*it == _slotDropped.get()) {
-							_freeSlots.erase(it);
-							break;
-						}
-					}
+					//_freeSlots.erase(_freeSlots.begin());
+					_freeSlots.remove(_slotDropped.get());
 					_occupiedSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
 
 					_slotHeld = nullptr;
@@ -227,7 +274,7 @@ namespace rat
 		_checkForDoubleClick(deltaTime);
 	}
 
-	void NormalSlots::_checkForDoubleClick(float deltaTime) {
+	void NormalSlots::_checkForDoubleClick(float& deltaTime) {
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !_isCountingToDoubleClickEnabled && !_isLeftMouseButtonPressed) {
 			_isLeftMouseButtonPressed = true;
 		}
@@ -240,7 +287,6 @@ namespace rat
 			_timeFromLastClick = 0.f;
 			if (_slotDropped) {
 				if (_slotDropped->getItem()) {
-					LOG_INFO(_slotDropped->getItem()->getNameId(), _slotDropped->index);
 					if (dynamic_cast<UsableItem*>(_slotDropped->getItem())->useItem()) {
 						removeItem(_slotDropped->index);
 						_equipment->disableItemPreview();
@@ -280,7 +326,7 @@ namespace rat
 				for (size_t i = _slotAmount; i < newSize; i++)
 				{
 					_allSlots[i]->setStatus(true);
-					_freeSlots.push_back(_allSlots[i]);
+					_freeSlots.push(_allSlots[i]);
 				}
 			}
 			else {
@@ -291,12 +337,7 @@ namespace rat
 							_occupiedSlots.erase(_allSlots[i - 1]->getItem()->getNameId());
 						}
 						else {
-							for (auto it = _freeSlots.begin(); it != _freeSlots.end(); ++it) {
-								if (*it == _allSlots[i - 1]) {
-									_freeSlots.erase(it);
-									break;
-								}
-							}
+							_freeSlots.remove(_allSlots[i - 1]);
 						}
 						_allSlots[i - 1]->setStatus(false);
 					}

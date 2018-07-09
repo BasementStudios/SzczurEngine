@@ -41,17 +41,6 @@ namespace rat
 
 		//UsableItem* createUsableItem(std::string nameId);	//creating new item and adding it to list
 		//WearableItem* createWearableItem(std::string nameId);
-		UsableItem* getUsableItem(std::string nameId);
-		WearableItem* getWearableItem(std::string nameId);
-		bool addUsableItem(UsableItem* item);
-		void addWearableItem(WearableItem* item);
-		bool removeUsableItem(UsableItem* item);
-		bool removeWearableItem(WearableItem* item);
-		sol::table getItemsList();
-		int getFreeSlotsAmount();
-		void setSelectedRingsLimit(int newSize);
-		void resizeSlots(int newCapacity);
-		int getSlotsAmount();
 	private:
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
@@ -84,5 +73,28 @@ namespace rat
 		void _openEquipment();
 		void _closeEquipment();
 		bool _isEquipmentOpen();
+
+		//lua
+		bool _hasItem(const std::string&);
+		bool _hasItem(const std::string&, int);
+		UsableItem* getUsableItem(const std::string& nameId);
+		WearableItem* getWearableItem(const std::string& nameId);
+		bool addUsableItem(UsableItem* item);
+		void addWearableItem(WearableItem* item);
+		bool removeUsableItem(UsableItem* item);
+		bool removeUsableItem(const std::string&);
+		bool removeUsableItem(const std::string&, int);
+		bool removeAllItems(const std::string&);
+		bool removeWearableItem(WearableItem* item);
+		sol::table getItemsList();
+		int getFreeSlotsAmount();
+		void setSelectedRingsLimit(int newSize);
+		void resizeSlots(int newCapacity);
+		int getSlotsAmount();
+		bool hasChosenAmulet(const std::string&);
+		bool hasArmor(const std::string&);
+		bool hasWeapon(const std::string&);
+		bool useItem(const std::string&);
+
 	};
 }

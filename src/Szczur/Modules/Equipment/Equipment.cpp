@@ -49,8 +49,7 @@ namespace rat {		//beware spagetti monster down there :/
 
 		module.set_function("addUsableItem", &Equipment::addUsableItem, this);
 		module.set_function("addWearableItem", &Equipment::addWearableItem, this);
-		module.set_function("removeUsableItem", &Equipment::removeUsableItem, this);
-		module.set_function("removeWearableItem", &Equipment::removeWearableItem, this);
+		//module.set_function("removeWearableItem", &Equipment::removeWearableItem, this);
 		module.set_function("getUsableItem", &Equipment::getUsableItem, this);
 		module.set_function("getWearableItem", &Equipment::getWearableItem, this);
 		module.set_function("getItemTable", &Equipment::getItemsList, this);
@@ -62,6 +61,23 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set_function("closeEquipment", &Equipment::_closeEquipment, this);
 		module.set_function("openEquipment", &Equipment::_openEquipment, this);
 		module.set_function("isEquipmentOpen", &Equipment::_isEquipmentOpen, this);
+		module.set_function("lastChangeStatus", &Equipment::lastChangeStatus, this);
+
+		module.set_function("removeItem", sol::overload(
+			[&](const std::string& a) {return removeUsableItem(a); },
+			[&](const std::string& a, int b) {return removeUsableItem(a, b); },
+			[&](UsableItem* a) {return removeUsableItem(a); }
+		));
+		module.set_function("removeAllItems", [&](const std::string& a) {return removeUsableItem(a, 0); });
+
+		module.set_function("hasItem", sol::overload(
+			[&](const std::string& a) {return _hasItem(a); },
+			[&](const std::string& a, int b) {return _hasItem(a, b); }
+		));
+		module.set_function("hasChosenAmulet", &Equipment::hasChosenAmulet, this);
+		module.set_function("hasArmor", &Equipment::hasArmor, this);
+		module.set_function("hasWeapon", &Equipment::hasWeapon, this);
+		module.set_function("useItem", &Equipment::useItem, this);
 
 		script.initClasses<WearableItem, UsableItem>();
 	}
@@ -115,11 +131,11 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && _isEquipmentHidden) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && _isEquipmentHidden) {
 			_equipmentFrame->setPropPosition({0.5f, 1.f}, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = false; } });
 			_equipmentFrame->fullyActivate();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && !_isEquipmentHidden) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !_isEquipmentHidden) {
 			_equipmentFrame->setPropPosition({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_equipmentFrame->fullyDeactivate(); _isEquipmentHidden = true; } });				
 		}
 	}
@@ -147,7 +163,7 @@ namespace rat {		//beware spagetti monster down there :/
 		_isPreviewOn = false;
 	}
 
-	UsableItem* Equipment::getUsableItem(std::string nameId) {
+	UsableItem* Equipment::getUsableItem(const std::string& nameId) {
 		UsableItem* temp = dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
 		if (temp) {
 			return temp;
@@ -155,7 +171,7 @@ namespace rat {		//beware spagetti monster down there :/
 		return nullptr;
 	}
 
-	WearableItem* Equipment::getWearableItem(std::string nameId) {
+	WearableItem* Equipment::getWearableItem(const std::string& nameId) {
 		WearableItem* temp = dynamic_cast<WearableItem*>(_listOfObjects.find(nameId)->second);
 		if (temp) {
 			return temp;
@@ -254,7 +270,7 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::setSelectedRingsLimit(int newSize) {
 		_ringSlider->setSelectedRingsLimit(newSize);
 	}
-
+	//odtad
 	void Equipment::_replaceNewItem(EquipmentObject* item) {
 		_replaceItem->setItem(item);
 	}
@@ -282,7 +298,37 @@ namespace rat {		//beware spagetti monster down there :/
 			_isEquipmentHidden = true;
 		} });
 	}
+	//dotad
 	bool Equipment::_isEquipmentOpen() {
 		return !_isEquipmentHidden;
+	}
+	bool Equipment::hasChosenAmulet(const std::string& nameId) {
+		return _armorSlots->getChosenAmulet()->getNameId() == nameId;
+	}
+	bool Equipment::hasArmor(const std::string& nameId) {
+		return _armorSlots->getArmorSlot()->getItem()->getNameId() == nameId;
+	}
+	bool Equipment::hasWeapon(const std::string& nameId) {
+		return _armorSlots->getWeaponSlot()->getItem()->getNameId() == nameId;
+	}
+	bool Equipment::useItem(const std::string& nameId) {
+		if (_normalSlots->hasItem(nameId)) {
+			return _normalSlots->useItem(nameId);
+		}
+	}
+	bool Equipment::removeUsableItem(const std::string& nameId) {
+		return _normalSlots->removeItem(nameId);
+	}
+	bool Equipment::removeUsableItem(const std::string& nameId, int quantity) {
+		return _normalSlots->removeItem(nameId, quantity);
+	}
+	bool Equipment::removeAllItems(const std::string& nameId) {
+		return _normalSlots->removeItem(nameId, 0);
+	}
+	bool Equipment::_hasItem(const std::string& nameId) {
+		return _normalSlots->hasItem(nameId);
+	}
+	bool Equipment::_hasItem(const std::string& nameId, int quantity) {
+		return _normalSlots->hasItem(nameId, quantity);
 	}
 }

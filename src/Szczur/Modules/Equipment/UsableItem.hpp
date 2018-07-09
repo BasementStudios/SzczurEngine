@@ -18,5 +18,8 @@ namespace rat {
 		sol::function _callback;
 
 		sol::function _isUsable;
+
+		bool _destroyed;
+		void _destroy();
 	};
 }

@@ -28,15 +28,15 @@ namespace rat {
 		return _objectIcon.get();
 	}
 
-	std::string EquipmentObject::getName() {
+	std::string& EquipmentObject::getName() {
 		return _objectName;
 	}
 
-	std::string EquipmentObject::getDescription() {
+	std::string& EquipmentObject::getDescription() {
 		return _objectDescription;
 	}
 
-	std::string EquipmentObject::getNameId() {
+	std::string& EquipmentObject::getNameId() {
 		return _objectNameId;
 	}
 

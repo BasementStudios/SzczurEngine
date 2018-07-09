@@ -16,9 +16,9 @@ namespace rat {
 	public:
 		EquipmentObject(std::string nameId);
 		sf::Texture* getTexture();
-		std::string getName();
-		std::string getDescription();
-		std::string getNameId();
+		std::string& getName();
+		std::string& getDescription();
+		std::string& getNameId();
 		
 		//cos z tekstura
 		void setName(std::string name);
