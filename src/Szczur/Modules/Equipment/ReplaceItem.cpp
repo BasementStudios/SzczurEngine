@@ -27,14 +27,14 @@ namespace rat {
 		_itemName->setColor(sf::Color::White);
 		_itemName->setCharacterSize(20);
 		_itemName->setPropPosition(sf::Vector2f(0.7f, 0.1f));
-		_itemName->setTextSize(sf::Vector2u(50u, 1u));
+		_itemName->setPropSize(sf::Vector2f(.625f, 0.1f));
 
 		_itemDescription = new TextAreaWidget;
 		_descriptionWidget->add(_itemDescription);
 		_itemDescription->setFont(font);
 		_itemDescription->setColor(sf::Color::White);
 		_itemDescription->setCharacterSize(15);
-		_itemDescription->setTextSize(sf::Vector2u(50u, 2u));
+		_itemDescription->setPropSize(sf::Vector2f(.625f, 0.1f));
 		_itemDescription->setPropPosition(sf::Vector2f(0.7f, 0.4f));
 
 		_itemImage = new ImageWidget;
@@ -48,7 +48,7 @@ namespace rat {
 		_cancelText->setColor(sf::Color::White);
 		_cancelText->setCharacterSize(15);
 		_cancelText->setPropPosition(0.05f, 0.1f);
-		_cancelText->setTextSize(sf::Vector2u(20u, 2u));
+		_cancelText->setPropSize(sf::Vector2f(.625f, 0.1f));
 		_cancelText->setString("Wybierz przedmiot do wymiany");
 
 		_cancelButton = new ImageWidget;

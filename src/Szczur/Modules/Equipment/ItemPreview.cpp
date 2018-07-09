@@ -31,9 +31,9 @@ namespace rat {
 		_itemDescription->setCharacterSize(15);
 
 		_itemName->setPosition(sf::Vector2f(10.f, 10.f));
-		_itemName->setTextSize(sf::Vector2u(50u, 1u));
+		_itemName->setPropSize(sf::Vector2f(.625f, 0.1f));
 
-		_itemDescription->setTextSize(sf::Vector2u(50u, 2u));
+		_itemDescription->setPropSize(sf::Vector2f(.625f, 0.1f));
 		_itemDescription->setPosition(sf::Vector2f(10.f, 20.f + 15.f));
 	}
 
