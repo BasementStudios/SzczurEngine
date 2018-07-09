@@ -3,8 +3,9 @@
 #include <algorithm>
 #include <fstream>
 
-#include <NodeEditor/NodeEditor.h>
+#include <NodeEditor.h>
 #include <nlohmann/json.hpp>
+using Json = nlohmann::json;
 
 #include "Szczur/Utility/Logger.hpp"
 

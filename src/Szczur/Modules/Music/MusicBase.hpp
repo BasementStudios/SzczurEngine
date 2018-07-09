@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <memory>
 
 #include "RatMusic.hpp"
 
@@ -61,8 +60,6 @@ namespace rat
 
 		void loadMusic();
 		void getJsonData();
-
-		const std::string& getPath() const;
 
 	};
 }

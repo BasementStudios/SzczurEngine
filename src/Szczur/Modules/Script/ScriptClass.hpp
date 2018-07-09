@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream>
+#include <memory> // unique_ptr
+#include <string>
 
-#include <sol2/sol.hpp>
+#include <sol.hpp>
 
 namespace rat
 {

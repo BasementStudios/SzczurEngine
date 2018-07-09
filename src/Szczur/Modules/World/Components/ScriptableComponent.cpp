@@ -8,6 +8,10 @@
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
+#ifdef OS_WINDOWS
+#include <shellapi.h>
+#endif
+
 namespace rat {
 
 // ========== Constructors ==========
@@ -37,6 +41,11 @@ namespace rat {
 		if(_sceneChangeCallback.valid()) {
 			_sceneChangeCallback(getEntity());
 		}
+	}
+
+	void ScriptableComponent::callInit()
+	{
+		_inited = false;
 	}
 
 	std::unique_ptr<Component> ScriptableComponent::copy(Entity* newParent) const
@@ -162,7 +171,33 @@ namespace rat {
 			// Show path to current script
 			ImGui::Text("Path:");
 			ImGui::SameLine();
-			ImGui::Text(getFilePath()!="" ? mapWindows1250ToUtf8(getFilePath()).c_str() : "None");
+			
+			if (getFilePath().empty())
+			{
+				ImGui::Text("None");
+			}
+			else
+			{
+				ImGui::Text(mapWindows1250ToUtf8(getFilePath()).c_str());
+
+				if (ImGui::Button("Open file in editor"))
+				{
+#ifdef OS_WINDOWS
+					ShellExecuteA(NULL, "open", getFilePath().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+#endif
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Open cotaining folder"))
+				{
+					std::experimental::filesystem::path path = mapWindows1250ToUtf8(getFilePath());
+
+#ifdef OS_WINDOWS
+					ShellExecuteA(NULL, "open", path.parent_path().string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+#endif
+				}
+			}
 		}
 	}
 

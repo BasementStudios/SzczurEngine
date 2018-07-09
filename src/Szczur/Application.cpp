@@ -1,6 +1,11 @@
 #include "Application.hpp"
 
 #include "Utility/MsgBox.hpp"
+#ifdef EDITOR
+#	include <imgui.h>
+#	include <imgui-SFML.h>
+#   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
+#endif
 
 namespace rat
 {
@@ -13,15 +18,14 @@ void Application::init()
 	initModule<Script>();
 	initModule<Input>();
 	initModule<Music>();
+	initModule<Sound>();
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
-	initModule<Camera>();
 	initModule<World>();
 	initModule<GUI>();
 	initModule<Dialog>();
 	initModule<DialogEditor>();
 	initModule<Cinematics>();
-	initModule<SoundManager>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
 
@@ -63,8 +67,19 @@ bool Application::input()
 		getModule<BattleScene>().input(event);
 
 		if (event.type == sf::Event::Closed) {
-			getModule<Window>().getWindow().close();
-			return false;
+			auto result = MsgBox::show(getModule<Window>().getWindow().getSystemHandle(), "Do you want to save the world?", "SzczurEngine", MsgBox::Icon::Question, MsgBox::Button::YesNoCancel);
+
+			switch (result)
+			{
+				case MsgBox::Result::Yes:
+					getModule<World>().getScenes().menuSave();
+				case MsgBox::Result::No:
+					getModule<Window>().getWindow().close();
+					return false;
+					break;
+				case MsgBox::Result::Cancel:
+					break;
+			}
 		}
 	}
 	return true;
@@ -91,7 +106,6 @@ void Application::update()
 	#endif
 
 	getModule<World>().update(deltaTime);
-	getModule<Camera>().update();
 	getModule<Input>().getManager().finishLogic();
 	getModule<Cinematics>().update();
 }
@@ -102,7 +116,7 @@ void Application::render()
 	getModule<Window>().getWindow().clear(22.f, 20.f, 28.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	getModule<World>().render();
-
+	
 	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
 	getModule<Window>().popGLStates();

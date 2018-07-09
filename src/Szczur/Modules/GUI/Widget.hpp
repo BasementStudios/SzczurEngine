@@ -74,24 +74,24 @@ namespace rat {
 		static void setWinProp(sf::Vector2f prop);
 
 	protected:
-		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
-		virtual void _update(float deltaTime) {}
-		virtual void _input(const sf::Event& event) {}
+		virtual void _draw([[maybe_unused]] sf::RenderTarget& target, [[maybe_unused]] sf::RenderStates states) const {}
+		virtual void _update([[maybe_unused]] float deltaTime) {}
+		virtual void _input([[maybe_unused]] const sf::Event& event) {}
 		virtual sf::Vector2u _getSize() const;
 		virtual void _calculateSize() {}
 
-		bool _aboutToRecalculate;
+		Widget* _parent;
 
 		bool _isHovered;
 		bool _isPressed;
 		bool _isActivated;
 		bool _isVisible;
 
+		bool _aboutToRecalculate;
+
 		sf::Vector2u _size;
-
-		Widget* _parent;
-
 		sf::Vector2u _minSize;
+
 		bool _isMinSizeSet{false};
 
 		sf::Vector2f _origin{0.f, 0.f};

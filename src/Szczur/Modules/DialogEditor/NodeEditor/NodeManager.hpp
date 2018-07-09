@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include <NodeEditor/NodeEditor.h>
+#include <NodeEditor.h>
 #include <nlohmann/json.hpp>
 
 #include "../DLGEditor/DialogData.hpp"

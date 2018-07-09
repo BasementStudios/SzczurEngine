@@ -2,8 +2,8 @@
 
 namespace sf3d {
     CircleShape::CircleShape(float radius, size_t vertices) :
-    _radius{radius},
-    Shape{vertices} {
+    Shape{vertices},
+    _radius{radius} {
         _update();
     }
 

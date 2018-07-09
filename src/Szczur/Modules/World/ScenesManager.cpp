@@ -10,11 +10,14 @@
 #include "Components/CameraComponent.hpp"
 #include "Components/BaseComponent.hpp"
 #include "Components/ScriptableComponent.hpp"
+#include "Components/PointLightComponent.hpp"
 
 #include <Szczur/Modules/World/World.hpp>
 #include <Szczur/Modules/Cinematics/Cinematics.hpp> 
 #include <Szczur/Modules/Music/Music.hpp> 
-#include <Szczur/Modules/Sound/SoundManager.hpp> 
+#include <Szczur/Modules/Sound/Sound.hpp> 
+
+#include <Szczur/Utility/SFML3D/LightPoint.hpp>
 
 namespace rat
 {
@@ -30,7 +33,7 @@ Scene* ScenesManager::addScene()
 	// Add default player
 	Entity* player = scene->addEntity("single");
 	player->setName("Player");
-	scene->setPlayerID(player->getID());
+	scene->setPlayer(player);
 	
 	// Add default camera
 	Entity* camera = scene->addEntity("single");
@@ -38,6 +41,17 @@ Scene* ScenesManager::addScene()
 	camera->setName("Camera");
 	camera->setPosition({ 0.f, 1160.f, 3085.f });
 	camera->setRotation({ 0.f, 0.f, 0.f });
+
+	// Add default lighta
+	Entity* sun = scene->addEntity("single");
+	sun->setName("Sun");
+	auto* comp = static_cast<PointLightComponent*>(sun->addComponent<PointLightComponent>());
+	comp->setPosition({ 0.f, 0.f, 0.f });
+	comp->setColor({1.f, 1.f, 1.f});
+	comp->setAttenuation(sf3d::LightPoint::Attenuation{1.f, 0.f, 0.f});
+	comp->setAmbientFactor({1.f, 1.f, 1.f});
+	comp->setDiffuseFactor({1.f, 1.f, 1.f});
+	comp->setSpecularFactor({1.f, 1.f, 1.f});
 
 	return scene;
 }
@@ -127,7 +141,8 @@ bool ScenesManager::setCurrentScene(size_t id)
 			);
 		}
 
-		detail::globalPtr<World>->getLevelEditor().updateCurrentCamera();
+		Window* window = detail::globalPtr<Window>;
+		window->getWindow().setCamera(getCurrentScene()->getCamera()->getComponentAs<CameraComponent>());
 
 		return true;
 	}
@@ -157,41 +172,42 @@ void ScenesManager::loadFromConfig(Json& config) {
 
 	Json& scenes = config["scenes"];
 
-	for (auto& current : scenes)
-	{
+	for (auto& current : scenes) {
 		auto* scene = addScene();
 		scene->removeAllEntities();
 		scene->loadFromConfig(current);
 
 		bool foundPlayer = false;
 		bool foundCamera = false;
-		for(auto& ent : scene->getEntities("single")) {
-			if(ent->getName() == "Player") {
+		
+		for (auto& entity : scene->getEntities("single")) {
+			if (entity->getName() == "Player") {
 				foundPlayer = true;
-				scene->setPlayerID(ent->getID());
+				scene->setPlayer(entity.get());
 			}
-			else if(ent->getName() == "Camera") {
+			else if (entity->getName() == "Camera") {
 				foundCamera = true;
 			}
 		}
-		if(!foundPlayer) {
+
+		if (!foundPlayer) {
 			Entity* player = scene->addEntity("single");
 			player->setName("Player");
-			scene->setPlayerID(player->getID());
+			scene->setPlayer(player);
 		}
-		if(!foundCamera) {			
+		if (!foundCamera) {			
 			Entity* camera = scene->addEntity("single");
 			camera->addComponent<CameraComponent>();
 			camera->setName("Camera");
 			camera->setPosition({ 0.f, 1160.f, 3085.f });
 			camera->setRotation({ 15.f, 0.f, 0.f });
 		}
-
 	}
 }
 
 void ScenesManager::saveToConfig(Json& config) {
 
+	config["version"] = std::string("1.6.7");
 	config["currentSceneID"] = getCurrentSceneID();
 	Json& scenes = config["scenes"] = Json::array();
 
@@ -281,7 +297,7 @@ void ScenesManager::addPlayer()
 
 	Entity* player = scene->addEntity("single");
 	player->setName("Player");
-	scene->setPlayerID(player->getID());
+	scene->setPlayer(player);
 }
 
 void ScenesManager::addCamera()
@@ -291,6 +307,23 @@ void ScenesManager::addCamera()
 	Entity* camera = scene->addEntity("single");
 	camera->addComponent<CameraComponent>();
 	camera->setName("Camera");
+	camera->setPosition({ 0.f, 1160.f, 3085.f });
+	camera->setRotation({ 0.f, 0.f, 0.f });
+}
+
+void ScenesManager::addSun()
+{
+	auto scene = getCurrentScene();
+
+	Entity* sun = scene->addEntity("single");
+	sun->setName("Sun");
+	auto* comp = static_cast<PointLightComponent*>(sun->addComponent<PointLightComponent>());
+	comp->setPosition({ 0.f, 0.f, 0.f });
+	comp->setColor({1.f, 1.f, 1.f});
+	comp->setAttenuation(sf3d::LightPoint::Attenuation{1.f, 0.f, 0.f});
+	comp->setAmbientFactor({1.f, 1.f, 1.f});
+	comp->setDiffuseFactor({1.f, 1.f, 1.f});
+	comp->setSpecularFactor({1.f, 1.f, 1.f});
 }
 
 bool ScenesManager::isGameRunning() {
@@ -305,8 +338,14 @@ void ScenesManager::runGame() {
 		for(auto& scene : _holder) {
 			scene->forEach([](const std::string& group, Entity& entity) {
 				if(auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->runScript();
+				if(auto* comp = entity.getComponentAs<AudioComponent>()) comp->play();
 			});
 		}
+
+		getCurrentScene()->forEach([] (const std::string& group, Entity& entity) {
+			if (auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
+		}
+		);
 	}
 }
 
@@ -315,7 +354,7 @@ void ScenesManager::stopGame() {
  
 	    detail::globalPtr<Cinematics>->stop(); 
 	    detail::globalPtr<Music>->stop(); 
-	    detail::globalPtr<SoundManager>->stop(); 
+	    detail::globalPtr<Sound>->stop(); 
 	
 		#ifdef EDITOR
 		detail::globalPtr<World>->getLevelEditor().getObjectsList().unselect();
@@ -349,7 +388,7 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 }
 
 #ifdef EDITOR
-	void ScenesManager::menuSave() {
+	bool ScenesManager::menuSave() {
 		if(currentFilePath == "") {
 			std::string relative = getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
 			// std::cout<<"--s-"<<relative<<std::endl;
@@ -357,6 +396,7 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 				try {
 					saveToFile(relative);
 					currentFilePath = relative;
+					return true;
 				}
 				catch (const std::exception& exc)
 				{
@@ -367,12 +407,15 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 		else {
 			try {
 				saveToFile(currentFilePath);
+				return true;
 			}
 			catch (const std::exception& exc)
 			{
 				LOG_EXCEPTION(exc);
 			}
 		}
+
+		return false;
 	}
 
 	std::string ScenesManager::getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <NodeEditor/NodeEditor.h>
+#include <NodeEditor.h>
 
 #include "NodeManager.hpp"
 #include "../DLGEditor/DLGEditor.hpp"

@@ -1,13 +1,15 @@
 #include "DialogManager.hpp"
-#include "TextStruct.hpp"
+
 #include <iostream>
-#include <sol2/sol.hpp>
+
+#include <sol.hpp>
+
+#include "TextStruct.hpp"
 
 namespace rat {
-    DialogManager::DialogManager(const std::string& path, DialogGUI& dialogGUI) :
-    _paused(true),
-    _clearButtons(false),
-    _dialogGUI(dialogGUI) {
+    DialogManager::DialogManager(const std::string& path, DialogGUI& dialogGUI)
+        : _dialogGUI(dialogGUI), _paused(true), _clearButtons(false)
+    {
         load(path);
     }
 

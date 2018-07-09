@@ -4,15 +4,19 @@
 #include <experimental/filesystem>
 
 #ifdef OS_WINDOWS
-#include <Shellapi.h>
+#include <shellapi.h>
 #endif
 
 #include <imgui.h>
 // #include <NodeEditor/NodeEditor.h>
 
+#include "Szczur/Utility/Convert/GLMStreams.hpp"
+
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
 #include "Szczur/Utility/SFML3D/CircleShape.hpp"
+#include "Szczur/Utility/SFML3D/Linear.hpp"
+#include "Szczur/Utility/SFML3D/Camera.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 
@@ -34,12 +38,19 @@ namespace rat {
 	_objectsList{scenes},
 	_spriteDisplayDataManager{scenes},
 	_armatureDisplayDataManager{scenes} {
-		_freeCamera.move({1000.f,500.f,2000.f});
-		detail::globalPtr<Window>->getWindow().setRenderDistance(300.f);
+		_freeCamera.move({1000.f,500.f,2000.f}); // @todo . On ratio change there should be update to the camera
+		_freeCamera.setRenderDistance(300.f);
 		_dialogEditor = detail::globalPtr<DialogEditor>;
 		_audioEditor = detail::globalPtr<AudioEditor>;
 
-        _prepareOrigins();
+		_prepareOrigins();
+
+		const auto& videoMode = detail::globalPtr<Window>->getVideoMode();
+
+		_defaultWindowSize = sf::Vector2i(videoMode.width, videoMode.height);
+
+		_selectionRect.setFillColor(sf::Color(30, 136, 229, 100));
+		_selectionRect.setOutlineColor(sf::Color::Black);
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -62,39 +73,10 @@ namespace rat {
 		return _objectsList;
 	}
 
-	void LevelEditor::updateCurrentCamera()
-	{
-		_currentCamera = nullptr;
-
-		for (auto& ent : _scenes.getCurrentScene()->getEntities("single"))
-		{
-			if (auto* comp = ent->getComponentAs<CameraComponent>())
-			{
-				if (_objectsList.getSelectedID() == ent->getID() || comp->getLock())
-				{
-					_currentCamera = ent.get();
-				}
-			}
-		}
-	}
-
-	void LevelEditor::updateCamera(Camera& camera)
-	{
-		sf3d::View view{ camera.getView() };
-		if (_currentCamera)
-			camera.setView(_currentCamera->getComponentAs<CameraComponent>()->getRecalculatedView(view));
-		else
-		{
-			view.setRotation(_freeCamera.rotation);
-			view.setCenter(_freeCamera.position);
-			camera.setView(view);
-		}
-	}
-
 	void LevelEditor::render(sf3d::RenderTarget& target) {
 
 		// Show ImGui demo window
-    	if(_ifShowImGuiDemoWindow) ImGui::ShowDemoWindow();
+		if(_ifShowImGuiDemoWindow) ImGui::ShowDemoWindow();
 
 		auto* scene = _scenes.getCurrentScene();
 		if(scene) {
@@ -111,121 +93,437 @@ namespace rat {
 			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
 			if(_ifRenderDialogEditor) _dialogEditor->update();
 			if(_ifRenderAudioEditor) _audioEditor->render();
-		
+			
 
 			scene = _scenes.getCurrentScene();
 			
 			_renderOrigins(target);
 		}
+
+		if (_isGroupSelecting) {
+			auto& window = detail::globalPtr<Window>->getWindow();
+				
+			window.pushGLStates();
+			window.draw(_selectionRect);
+			window.popGLStates();
+		}
 	}
 
-	void LevelEditor::update(InputManager& input, Camera& camera) {
+	void LevelEditor::updateDisabledEditor(InputManager& input)
+	{		
 		auto* scene = _scenes.getCurrentScene();
-		auto& window = detail::globalPtr<Window>->getWindow();
+
+		// Find selected camera
+		Entity* cameraEntity = nullptr;
+		for (auto& entity : scene->getEntities("single")) { 
+			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
+				if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
+					cameraEntity = entity.get(); 
+				} 
+			} 
+		}
+
+		// Update movement
+		updateCameraMovement(cameraEntity, input);
+	}
+
+	void LevelEditor::update(InputManager& input, Window& windowModule) {
+		auto* scene = _scenes.getCurrentScene();
+		auto& window = windowModule.getWindow();
+		auto mouse = _getFixedMousePos(input.getMousePosition());
+		Entity* cameraEntity = nullptr;
 		
-		auto mouse = input.getMousePosition();
+		// Find selected camera
+		for (auto& entity : scene->getEntities("single")) { 
+			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
+				if (_objectsList.getSelectedID() == entity->getID() || comp->getLock()) { 
+					cameraEntity = entity.get(); 
+				} 
+			} 
+		} 
 
-		updateCurrentCamera();
+		// Use camera for rendering
+		//	@todo , This should be done when changing camera only...
+		if (cameraEntity) {
+			window.setCamera(cameraEntity->getComponentAs<CameraComponent>());
+		}
+		else {
+			window.setCamera(_freeCamera);
+		}
 
-		if(!ImGui::IsAnyWindowHovered()) {
-			auto linear = window.getLinerByScreenPos({(float)mouse.x, (float)mouse.y});
-			if(input.isPressed(Mouse::Left)) {
-				_scenes.getCurrentScene()->forEach([&](const std::string&, Entity& entity){
-					if(linear.contains(entity.getPosition()-glm::vec3{50.f, -50.f, 0.f}, {100.f, 100.f, 0.f})) {
-						if(_currentCamera && entity.getID() == _currentCamera->getID()) return;
-						_objectsList.select(entity.getID());
+		// Object selection
+		if (!ImGui::IsAnyWindowHovered()) {
+			if (input.isPressed(Mouse::Left)) {
+				auto mouse = _getFixedMousePos(input.getMousePosition());
+				
+				auto linear = window.getLinearByScreenPosition({ mouse.x, mouse.y });
+
+				bool selected = false;
+
+				scene->forEach([&] (const std::string&, Entity& entity) {
+
+					if (linear.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { 100.f, 100.f, 0.f })) {
+						if (cameraEntity && entity.getID() == cameraEntity->getID())
+							return;
+
+						if (input.isKept(rat::Keyboard::LShift)) {
+							if (_objectsList.isEntitySelected(&entity)) {
+								_entityToUnselect = &entity;
+								_entityToUnselectPos = entity.getPosition();
+							}
+							else {
+								_objectsList.addSelected(&entity);
+
+								_setupGroup();
+							}
+						}
+						else {
+							_objectsList.select(entity.getID());
+						}
+
+						if (_objectsList.isGroupSelected()) {
+							_draggingEntity = &entity;
+						}
+
+						if (&entity == _draggingEntity) {
+							_isDragging = true;
+
+							glm::vec3 projection;
+
+							if (_isDepthDragging)
+								projection = linear.getProjectionY(_draggingEntity->getPosition());
+							else
+								projection = linear.getProjectionZ(_draggingEntity->getPosition());
+
+							_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+						}
+
+						_draggingEntity = &entity;
+
+						selected = true;
 					}
 				});
+
+				// if none object was selected
+				if (!selected) {
+					// enable group seleciton
+					_isGroupSelecting = true;
+
+					// set start pos of selection
+					_selectionStartPos = mouse;
+
+					// set pos for rect
+					_selectionRect.setPosition({ mouse.x, mouse.y });
+					_selectionRect.setSize({ 0.f, 0.f });
+				}
+			}
+
+			if (input.isReleased(Mouse::Left)) {
+				_isDragging = false;
+
+				// if is group selection
+				if (_isGroupSelecting) {
+					auto mouse = _getFixedMousePos(input.getMousePosition());
+
+					// calc offset
+					auto offset = mouse - _selectionStartPos;
+
+					glm::vec2 start = _selectionStartPos;
+					glm::vec2 end = mouse;
+
+					if (offset.x < 0.f)
+						std::swap(start.x, end.x);
+					
+					if (offset.y < 0.f)
+						std::swap(start.y, end.y);
+
+					// calc linears
+					auto linearStart = window.getLinearByScreenPosition({ start.x, start.y });
+					auto linearEnd = window.getLinearByScreenPosition({ end.x, end.y });
+
+					// disable dragging and clear selected list
+					_isDragging = false;
+					_objectsList.clearSelected();
+
+					scene->forEach([&] (const std::string&, Entity& entity) {
+						// get size of rect in 3d
+						auto size = linearEnd.getProjectionZ(entity.getPosition()) - linearStart.getProjectionZ(entity.getPosition());
+
+						// check if object is in rect
+						if (linearEnd.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { std::abs(size.x), std::abs(size.y), 0.f })) {
+							// add to list
+							_objectsList.addSelected(&entity);
+							_draggingEntity = &entity;
+						}
+					});
+
+					// setup group
+					_setupGroup();
+
+					// disable group selection
+					_isGroupSelecting = false;
+				}
+
+				//_draggingEntity = nullptr;
+
+				if (_entityToUnselect != nullptr && input.isKept(rat::Keyboard::LShift)) {
+					if (_entityToUnselectPos == _entityToUnselect->getPosition()) {
+						_objectsList.removedSelected(_entityToUnselect);
+
+						_setupGroup();
+
+						_entityToUnselect = nullptr;
+					}
+				}
+			}
+
+			if (input.isKept(Mouse::Left)) {
+				if (_isDragging && _dragAndDropObjects) {
+					auto mouse = _getFixedMousePos(input.getMousePosition());
+					auto linear = window.getLinearByScreenPosition(mouse);
+
+					glm::vec3 projection;
+					glm::vec3 offset;
+
+					if (_isDepthDragging) {
+						projection = linear.getProjectionY(_draggingEntity->getPosition());
+						offset = glm::vec3(projection.x - _dragLastPos.x, 0.f, projection.z - _dragLastPos.y);
+						_dragLastPos = glm::vec2(projection.x, projection.z);
+
+					}
+					else {
+						projection = linear.getProjectionZ(_draggingEntity->getPosition());
+						offset = glm::vec3(projection.x - _dragLastPos.x, projection.y - _dragLastPos.y, 0.f);
+						_dragLastPos = glm::vec2(projection.x, projection.y);
+					}
+
+					if (_objectsList.isAnySingleEntitySelected()) {
+						auto entity = _objectsList.getSelectedEntity();
+						entity->move(offset);
+					}
+					else if (_objectsList.isGroupSelected()) {
+						_groupOrigin = glm::vec3();
+
+						auto& group = _objectsList.getSelectedEntities();
+
+						for (auto& entity : group) {
+							entity->move(offset);
+							_groupOrigin += entity->getPosition();
+						}
+
+						_groupOrigin /= group.size();
+					}
+				}
+
+				// update group selection's size
+				if (_isGroupSelecting) {
+					auto size = _getFixedMousePos(input.getMousePosition()) - _selectionStartPos;
+
+					_selectionRect.setSize({ size.x, size.y });
+				}
+			}
+
+			if (input.isPressed(Keyboard::Z)) {
+				_isDepthDragging = !_isDepthDragging;
+
+				if (_draggingEntity != nullptr) {
+					auto mouse = _getFixedMousePos(input.getMousePosition());
+
+					auto linear = window.getLinearByScreenPosition(mouse);
+
+					glm::vec3 projection;
+
+					if (_isDepthDragging)
+						projection = linear.getProjectionY(_draggingEntity->getPosition());
+					else
+						projection = linear.getProjectionZ(_draggingEntity->getPosition());
+
+					_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
+
+				}
 			}
 		}
-
-		// _scenes.getCurrentScene()->forEach([this, scene, &_currentCamera](const std::string&, Entity& entity){
-		// 	if(auto* component = entity.getComponentAs<CameraComponent>(); component != nullptr) {
-		// 		if(_objectsList.getSelectedID() == entity.getID() || component->getLock())
-		// 			_currentCamera = &entity;
-		// 	}
-		// });
 		
-		if(ImGui::IsAnyItemActive() == false) {
-			if(_currentCamera)
-				_currentCamera->getComponentAs<CameraComponent>()->processEvents(input);
-			else
-				_freeCamera.processEvents(input);
+		// Camera movement
+		if (ImGui::IsAnyItemActive() == false) {
+			updateCameraMovement(cameraEntity, input);
 		}
 
-		if(input.isReleased(Keyboard::F1)) {
-			if(_scenes.isGameRunning()) {
+		// Keys
+		if (input.isReleased(Keyboard::F1)) {
+			if (_scenes.isGameRunning()) {
 				printMenuBarInfo("Cannot save while game is running");
 			}
 			else {
 				_scenes.menuSave();
-				printMenuBarInfo(std::string("World saved in file: ")+_scenes.currentFilePath);
+				printMenuBarInfo(std::string("World saved in file: ") + _scenes.currentFilePath);
 			}
+		}
+
+		if (input.isPressed(Keyboard::F4)) {
+			changeCameraLock();
 		}
 	}
 
-	void FreeCamera::processEvents(InputManager& input) {
+	void LevelEditor::updateCameraMovement(Entity* cameraEntity, InputManager& input)
+	{
+		auto mouse = input.getMousePosition();
 
-		if (detail::globalPtr<Dialog>->isDialogPlaying())
-		 	return;
+		// Camera movement
+		sf3d::Camera* camera;
+		
+		// Choose the camera to move
+		if (cameraEntity) {
+			auto* comp = cameraEntity->getComponentAs<CameraComponent>();
+			if(comp->isNoMove()) {
+				return;
+			}
+			camera = static_cast<sf3d::Camera*>(comp);
+		}
+		else {
+			camera = &_freeCamera;
+		}
+		
+		// Velocity
+		float velocity = 30.f; // @todo , should be const in class
+		/**/ if (input.isKept(Keyboard::LShift)) velocity = 150.f;
+		else if (input.isKept(Keyboard::LAlt)) velocity = 10.f;
 
-		velocity = 50.f;
-		if(input.isKept(Keyboard::LShift)) {
-			velocity = 200.f;
+		// Natural movement
+		// if (input.isKept(Keyboard::W)) 			camera->bartek({0.f, 0.f,  velocity});
+		// if (input.isKept(Keyboard::S)) 			camera->bartek({0.f, 0.f, -velocity});
+		// if (input.isKept(Keyboard::D)) 			camera->bartek({ velocity, 0.f, 0.f});
+		// if (input.isKept(Keyboard::A)) 			camera->bartek({-velocity, 0.f, 0.f});
+		// if (input.isKept(Keyboard::Space)) 		camera->bartek({0.f,  velocity, 0.f});
+		// if (input.isKept(Keyboard::LControl)) 	camera->bartek({0.f, -velocity, 0.f});
+
+		// "Minecraft" movement
+		auto rotation = camera->getRotation();
+
+		if (_isMCCameraMovement) {
+			if (input.isKept(Keyboard::W))
+			{
+				camera->move({
+					-velocity * glm::sin(glm::radians(rotation.y)),
+					0.f,
+					-velocity * glm::cos(glm::radians(rotation.y))
+				});
+			}
+
+			if (input.isKept(Keyboard::S))
+			{
+				camera->move({
+					velocity * glm::sin(glm::radians(rotation.y)),
+					0.f,
+					velocity * glm::cos(glm::radians(rotation.y))
+				});
+			}
+
+			if (input.isKept(Keyboard::D))
+			{
+				camera->move(glm::vec3{
+					velocity * glm::cos(glm::radians(rotation.y)),
+					0.f,
+					-velocity * glm::sin(glm::radians(rotation.y))
+				});
+			}
+
+			if (input.isKept(Keyboard::A))
+			{
+				camera->move(glm::vec3{
+					-velocity * glm::cos(glm::radians(rotation.y)),
+					0.f,
+					velocity * glm::sin(glm::radians(rotation.y))
+				});
+			}
+		}
+		else {
+			if (input.isKept(Keyboard::W)) camera->move({ 0.f, 0.f, -velocity });
+			if (input.isKept(Keyboard::S)) camera->move({ 0.f, 0.f,  velocity });
+			if (input.isKept(Keyboard::D)) camera->move({ velocity, 0.f, 0.f });
+			if (input.isKept(Keyboard::A)) camera->move({ -velocity, 0.f, 0.f });
 		}
 
-		if(input.isKept(Keyboard::W)) {
-			move({
-				velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::cos(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::S))
-			move({
-				-velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::cos(glm::radians(rotation.y))
-			});
-		if(input.isKept(Keyboard::D)) {
-			move(glm::vec3{
-				velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::sin(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::A)) {
-			move(glm::vec3{
-				-velocity * glm::cos(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::sin(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::Space))
-			move({0.f, velocity, 0.f});
-		if(input.isKept(Keyboard::LControl))
-			move({0.f, -velocity, 0.f});
-		if(rotating) {
-			auto mouse = input.getMousePosition();
-			rotate({
-				(mouse.y - previousMouse.y)/10.f,
-				(mouse.x - previousMouse.x)/10.f,
+		if (input.isKept(Keyboard::Space)) 		camera->move({0.f,  velocity, 0.f});
+		if (input.isKept(Keyboard::LControl)) 	camera->move({0.f, -velocity, 0.f});
+		
+		// Rotating
+		if (_cameraRotating) {
+			camera->rotate({
+				-(mouse.y - _cameraPreviousMouseOffset.y) / 10.f, 
+				-(mouse.x - _cameraPreviousMouseOffset.x) / 10.f, // @todo , should be const in class
 				0.f
 			});
-			previousMouse = mouse;
+			_cameraPreviousMouseOffset = sf::Vector2i(mouse.x, mouse.y);
+		}
+		if (!ax::NodeEditor::IsActive()) {
+			if (input.isPressed(Mouse::Right)) {
+				_cameraRotating = true;
+				_cameraPreviousMouseOffset = input.getMousePosition();
+			}
+		}
+		if (input.isReleased(Mouse::Right)) {
+			_cameraRotating = false;
+		}
+		
+		if (cameraEntity) {
+			// Update entity position to position updated by camera
+			//	@warn There shouldn't be even any reason to do that, but this needed because of how World works.
+			Entity* entity = cameraEntity->getComponentAs<CameraComponent>()->getEntity();
+			entity->setPosition(camera->getPosition());
+			entity->setRotation(camera->getRotation());
+		}
+	}
+
+	void LevelEditor::changeCameraLock()
+	{
+		auto* scene = _scenes.getCurrentScene();
+		for (auto& entity : scene->getEntities("single")) { 
+			if (auto* comp = entity->getComponentAs<CameraComponent>()) { 
+				comp->setLock(!comp->getLock()); 
+				comp->setNoMove(comp->getLock()); 
+				if(comp->getLock()) {
+					printMenuBarInfo("[x] Camera locked!");
+				}
+				else {
+					printMenuBarInfo("[ ] Camera unlocked!");
+				}
+				break;
+			} 
+		} 
+	}
+
+	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {
+		glm::vec2 result;
+		
+		const auto& size = detail::globalPtr<Window>->getWindow().getSize();
+
+		result.x = (pos.x * _defaultWindowSize.x) / size.x;
+		result.y = (pos.y * _defaultWindowSize.y) / size.y;
+
+		return result;
+	}
+
+	void LevelEditor::_setupGroup() {
+		_currentGroupPosition = glm::vec3();
+		_currentGroupRotation = glm::vec3();
+
+		_updateGroup();
+	}
+
+	void LevelEditor::_updateGroup()
+	{
+		_groupOrigin = glm::vec3();
+		_selectedEntitesBackup.clear();
+
+		auto group = _objectsList.getSelectedEntities();
+
+		for (auto entity : group)
+		{
+			_groupOrigin += entity->getPosition();
+			_selectedEntitesBackup.emplace_back(entity, entity->getPosition(), entity->getRotation());
 		}
 
-		if(!ax::NodeEditor::IsActive())
-		{
-			if (input.isPressed(Mouse::Right))
-			{
-				rotating = true;
-				previousMouse = input.getMousePosition();
-			}
-			if (input.isReleased(Mouse::Right))
-			{
-				rotating = false;
-			}
-		}
+		_groupOrigin /= group.size();
 	}
 }

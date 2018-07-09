@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Szczur/Utility/SFML3D/View.hpp"
+#include "Szczur/Utility/SFML3D/Camera.hpp"
 
 #include "../Component.hpp"
 
@@ -15,14 +15,11 @@ class Script;
 class Listener;
 template<class T> class ScriptClass;
 
-class CameraComponent : public Component {
+class CameraComponent : public Component, public sf3d::Camera {
 public:
 
     ///
     CameraComponent(Entity* parent);
-
-    ///
-    void processEvents(InputManager& input);
 
     ///
     virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
@@ -54,6 +51,12 @@ public:
     bool getLock() const;
 
     ///
+    bool isNoMove() const;
+
+    ///
+    void setNoMove(bool flag);
+
+    ///
     virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
     
     void stickToPlayer();
@@ -61,16 +64,18 @@ public:
     ///
     void update(ScenesManager& scenes, float deltaTime);
 
-    sf3d::View getRecalculatedView(sf3d::View baseView);;
+    /// 
+    void updateCamera();
 
     ///
     static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
-    bool _rotating{false};
     bool _locked{false};
     bool _noMove = false;
 	float _velocity{50.f};
+
+	glm::vec3 _virtualPosition{0.f};
 
     bool _limitedRange{false};
     struct {
@@ -78,24 +83,30 @@ private:
         float right{0.f};
     } _limit;
 
+
 	union {
 		float _smoothness{1.f};
 		float _linear;
 	};
 
-	enum Type : size_t {
+	enum MoveType : size_t {
 		None,
 		Smooth,
 		Linear
-	} _type{None};
+	} _moveType{None};
 
-	std::string enumTypeToString() const;
 
-	size_t enumTypeToSize_t() const;
+	union {
+		float _forwarded{1.f};
+	};
 
-	Type size_tToEnumType(size_t type) const;
+	enum TargetingType : size_t {
+		Precise,
+		Forwarded
+	} _targetingType{Precise};
 
-    sf::Vector2i _previousMouse;
+	static std::string enumToString(MoveType type);
+	static std::string enumToString(TargetingType type);
 
     Entity* _stickTo{nullptr};
     int _stickedID = 0;

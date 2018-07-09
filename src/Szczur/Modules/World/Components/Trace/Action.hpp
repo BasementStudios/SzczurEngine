@@ -1,12 +1,16 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <imgui.h>
+
+#include <glm/vec3.hpp>
+
+namespace rat {
+	class Entity;
+	class Timeline;
+}
 
 namespace rat
 {
-
-class Entity;
-class Timeline;
 
 class Action
 {
@@ -25,8 +29,8 @@ public:
 	ImVec4 ButtonColor = { 1.f, 1.f, 1.f, 1.f };
 
 protected:
-	Type _type;
 	Entity* _entity = nullptr;
+	Type _type;
 
 	bool _finished = false;
 

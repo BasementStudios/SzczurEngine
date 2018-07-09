@@ -5,7 +5,6 @@
 #include "ScenesManager.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
-#include "Szczur/Modules/Camera/Camera.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Battle/Battle.hpp"
 
@@ -16,7 +15,7 @@
 namespace rat
 {
 
-class World : public Module<Window, Input, Camera, Script, Battle>
+class World : public Module<Window, Input, Script>
 {
 public:
 

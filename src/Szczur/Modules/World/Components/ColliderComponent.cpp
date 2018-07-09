@@ -28,7 +28,7 @@ void ColliderComponent::loadFromConfig(Json& config)
 
 	if (config.find("circleRadius") != config.end())
 	{
-		_cicleCollider = true;
+		_circleCollider = true;
 		_circleRadius = config["circleRadius"];
 	}
 
@@ -46,7 +46,7 @@ void ColliderComponent::saveToConfig(Json& config) const
 
 	config["dynamic"] = _isDynamic;
 
-	if (_cicleCollider)
+	if (_circleCollider)
 	{
 		config["circleRadius"] = _circleRadius;
 	}
@@ -75,9 +75,9 @@ void ColliderComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 		ImGui::Separator();
 
-		ImGui::Checkbox("Circle collider", &_cicleCollider);
+		ImGui::Checkbox("Circle collider", &_circleCollider);
 
-		if (_cicleCollider)
+		if (_circleCollider)
 		{
 			ImGui::DragFloat("Radius", &_circleRadius);
 		}
@@ -88,7 +88,23 @@ void ColliderComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 {
 	auto object = script.newClass<ColliderComponent>("ColliderComponent", "World");
 
+	// Main
 	object.set("move", &ColliderComponent::move);
+
+	object.set("setCircleCollider", &ColliderComponent::setCircleCollider);
+	object.set("isCircleCollider", &ColliderComponent::isCircleCollider);
+	object.set("setCircleRadius", &ColliderComponent::setCircleRadius);
+	object.set("getCircleRadius", &ColliderComponent::getCircleRadius);
+
+	object.set("setBoxCollider", &ColliderComponent::setBoxCollider);
+	object.set("isBoxCollider", &ColliderComponent::isBoxCollider);
+	object.set("setBoxSize", &ColliderComponent::setBoxSize);
+	object.set("getBoxSize", &ColliderComponent::getBoxSize);
+
+	object.set("isDynamic", &ColliderComponent::isDynamic);
+	object.set("setDynamic", &ColliderComponent::setDynamic);
+
+	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
 	entity.set("addColidderComponent", [&] (Entity& e) {return (ColliderComponent*)e.addComponent<ColliderComponent>(); });
@@ -102,8 +118,8 @@ void ColliderComponent::move(float x, float y, float z)
 	glm::vec3 velocity = { x, y, z };
 
 	auto thisPos = getEntity()->getPosition() + glm::vec3(x, 0, z);
-	auto thisRectX = getRect(getEntity()->getPosition() + glm::vec3(x, 0, 0), _boxSize);
-	auto thisRectZ = getRect(getEntity()->getPosition() + glm::vec3(0, 0, z), _boxSize);
+	auto thisRectX = _getRect(getEntity()->getPosition() + glm::vec3(x, 0, 0), _boxSize);
+	auto thisRectZ = _getRect(getEntity()->getPosition() + glm::vec3(0, 0, z), _boxSize);
 
 	auto collisionCheck = [&] (Entity* entity) {
 
@@ -119,7 +135,7 @@ void ColliderComponent::move(float x, float y, float z)
 
 			if (this->_boxCollider && comp->isBoxCollider())// if both have box collider
 			{
-				auto entityRect = getRect(entity->getPosition(), comp->getBoxSize());
+				auto entityRect = _getRect(entity->getPosition(), comp->getBoxSize());
 
 				// if move to left/right will be collsion
 				if (thisRectX.intersects(entityRect))
@@ -139,7 +155,7 @@ void ColliderComponent::move(float x, float y, float z)
 						velocity.z = 0.f; // stop
 				}
 			}
-			else if (this->_cicleCollider && comp->isCircleCollider()) // if both have circle collider
+			else if (this->_circleCollider && comp->isCircleCollider()) // if both have circle collider
 			{
 				// calc delta between objects
 				auto delta = thisPos - entity->getPosition();
@@ -184,9 +200,9 @@ void ColliderComponent::move(float x, float y, float z)
 	getEntity()->move(velocity);
 }
 
-sf::FloatRect ColliderComponent::getRect(const glm::vec3& pos, const glm::vec2& size)
+sf::FloatRect ColliderComponent::_getRect(const glm::vec3& pos, const glm::vec2& size)
 {
-	return sf::FloatRect(pos.x - size.x, pos.z - size.y, size.x, size.y);
+	return sf::FloatRect(pos.x - size.x / 2.f, pos.z - size.y / 2.f, size.x, size.y);
 }
 
 }

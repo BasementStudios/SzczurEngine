@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #include "Szczur/Modules/Music/Music.hpp"
 
 namespace rat
@@ -15,6 +18,10 @@ namespace rat
         void addMusic(const std::string& playlistName);
 
         void addPlaylist(const std::string& name);
+        
+        std::string newMusicPath {""};
+        std::string newMusicPlaylist {""};
+        bool addingMusic {false};
     };
 
     class MusicEditor
@@ -32,6 +39,9 @@ namespace rat
 
         std::string currentEditingMusicFile {""};
         std::string currentPlaylist         {""};
+
+        bool loadingMusic {false};
+        std::string loadingMusicPlaylist {""};
 
     public:
 

@@ -16,8 +16,7 @@ namespace rat {
         _input(detail::globalPtr<Input>->getManager()) {
 	}
 
-	std::unique_ptr<Component> TriggerComponent::copy(Entity* newParent) const
-	{
+	std::unique_ptr<Component> TriggerComponent::copy(Entity* newParent) const {
 		auto ptr = std::make_unique<TriggerComponent>(*this);
 
 		ptr->setEntity(newParent);
@@ -43,6 +42,8 @@ namespace rat {
 
 			return false;
 		}
+
+		return false;
 	}
 
 	void TriggerComponent::setRadius(float radius) {
@@ -53,18 +54,75 @@ namespace rat {
 		return _radius;
 	}
 
-	void TriggerComponent::setRectSize(const glm::vec2& size)
+	void TriggerComponent::setRectSize(float x, float y)
 	{
-		_rectSize = size;
+		_rectSize = { x, y };
 	}
 
-	const glm::vec2& TriggerComponent::getRectSize() const
-	{
+	const glm::vec2& TriggerComponent::getRectSize() const {
 		return _rectSize;
 	}
 
-	std::string TriggerComponent::enumToString(size_t en) {
-		static std::string names[] {"None", "Change scene", "Overlaping"};
+	void TriggerComponent::setType(Type type) {
+		if (type < 0 || type >= Type::TypesCount)
+			type = Type::None;
+		else
+			this->type = type;
+	}
+
+	TriggerComponent::Type TriggerComponent::getType() {
+		return type;
+	}
+
+	void TriggerComponent::setScene(const std::string& name)
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(name); scene != nullptr) {
+			sceneId = scene->getID();
+		}
+	}
+
+	std::string TriggerComponent::getScene()
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
+			return scene->getName();
+		}
+
+		return std::string();
+	}
+
+	void TriggerComponent::setEntrance(const std::string& name)
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
+			auto& entries = scene->getEntities("entries");
+
+			auto entry = std::find_if(entries.begin(), entries.end(), 
+				[&] (std::unique_ptr<Entity>& entity) { 
+					return name == entity->getName(); 
+				}
+			);
+
+			if (entry != entries.end()) {
+				entranceId = entry->get()->getID();
+			}
+		}
+	}
+
+	std::string TriggerComponent::getEntrance()
+	{
+		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
+			auto entry = scene->getEntity(entranceId);
+
+			if (entry) {
+				return entry->getName();
+			}
+		}
+
+		return std::string();
+	}
+
+	std::string TriggerComponent::enumToString(size_t en)
+	{
+		static std::string names[]{ "None", "Change scene", "Overlaping" };
 		return names[en];
 	}
 
@@ -74,6 +132,7 @@ namespace rat {
 			case 1: return ChangeScene;
 			case 2: return Overlaping;
 		}
+		return None;
 	}
 
 	void TriggerComponent::loadFromConfig(Json& config) {
@@ -129,17 +188,18 @@ namespace rat {
 		}
 	}
 
-	void TriggerComponent::setShapeType(Shape shape)
-	{
+	void TriggerComponent::setShapeType(Shape shape) {
 		_triggerShape = shape;
 	}
 
-	const TriggerComponent::Shape& TriggerComponent::getShapeType()
-	{
+	const TriggerComponent::Shape& TriggerComponent::getShapeType() {
 		return _triggerShape;
 	}
 
     void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
+    	
+    	if(!scenes.isGameRunning()) return; 
+
         auto* player = getEntity()->getScene()->getPlayer();
         if(player == nullptr) 
 			return;
@@ -188,13 +248,39 @@ namespace rat {
         }
     }
 
-    void TriggerComponent::initScript(ScriptClass<Entity>& entity, Script& script)
-    {
+    void TriggerComponent::initScript(ScriptClass<Entity>& entity, Script& script) {
         auto object = script.newClass<TriggerComponent>("TriggerComponent", "World");
+
+		// Main
+		object.set("setType", &TriggerComponent::setType);
+		object.set("getType", &TriggerComponent::getType);
+
+
+		// change scene
+		object.set("setScene", &TriggerComponent::setScene);
+		object.set("getScene", &TriggerComponent::getScene);
+
+		object.set("setEntrance", &TriggerComponent::setEntrance);
+		object.set("getEntrance", &TriggerComponent::getEntrance);
+
+
+		// shape
+		object.set("setShapeType", &TriggerComponent::setShapeType);
+		object.set("getShapeType", &TriggerComponent::getShapeType);
+		
+		object.set("setRadius", &TriggerComponent::setRadius);
+		object.set("getRadius", &TriggerComponent::getRadius);
+
+		object.set("setRectSize", &TriggerComponent::setRectSize);
+		object.set("setRectSize", &TriggerComponent::getRectSize);
+
+		object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 		// Entity
 		entity.set("trigger", &Entity::getComponentAs<TriggerComponent>);
 		entity.set("addTriggerComponent", [&] (Entity& e) {return (TriggerComponent*)e.addComponent<TriggerComponent>(); });
+
+		// overlapping
 
 		// enter callback
 		entity.setProperty("onEnter", [](){}, [] (Entity &obj, sol::function func) {
@@ -234,13 +320,10 @@ namespace rat {
 				// Set radius
 				ImGui::DragFloat("Radius", &_radius);
 			}
-			else
+			else if (_triggerShape == Shape::Rectangle)
 			{
-				if (_triggerShape == Shape::Rectangle)
-				{
-					// set rect size
-					ImGui::DragFloat2("Size", &_rectSize[0]);
-				}
+				// set rect size
+				ImGui::DragFloat2("Size", &_rectSize[0]);
 			}
 
 			ImGui::Separator();

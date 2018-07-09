@@ -20,12 +20,30 @@ namespace rat {
     	return _scenes.getCurrentScene()->getEntity(_selectedEntityID);
     }
 
-	bool ObjectsList::isEntitySelected() {
+	bool ObjectsList::isAnySingleEntitySelected() {
 		return _selectedEntityID != -1;
+	}
+
+	bool ObjectsList::isAnyEntitySelected()
+	{
+		return isAnySingleEntitySelected() || isGroupSelected();
+	}
+
+	bool ObjectsList::isEntitySelected(Entity* entity)
+	{
+		if (_selectedEntityID == entity->getID())
+			return true;
+
+		if (std::find(_selectedEntities.begin(), _selectedEntities.end(), entity) != _selectedEntities.end())
+			return true;
+
+		return false;
 	}
 
 	void ObjectsList::unselect() {
 		_selectedEntityID = -1;
+
+		_selectedEntities.clear();
 	}
 
 	void ObjectsList::render(bool& ifRender) {
@@ -60,24 +78,22 @@ namespace rat {
 			ImGui::Separator();
 
 			// Operations buttons
-			if(_tab != "single") {
-				availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
+			availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
 
-				if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
-					addObjectToCurrentGroup();
-				}
-				if(isEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
-					ImGui::SameLine();
-					if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
-						duplicateObject(_selectedEntityID);
-					}
-					ImGui::SameLine();
-					if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
-						removeObject(_selectedEntityID);
-					}
-				}
-				ImGui::Separator();
+			if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
+				addObjectToCurrentGroup();
 			}
+			if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
+				ImGui::SameLine();
+				if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
+					duplicateObject(_selectedEntityID);
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
+					removeObject(_selectedEntityID);
+				}
+			}
+			ImGui::Separator();
 
 			// Child for scroll and separate top part
 			ImGui::BeginChild("Objects##list", ImVec2(ImGui::GetContentRegionAvailWidth(), 0), false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -89,6 +105,7 @@ namespace rat {
 				if(ImGui::Selectable(object->getName().c_str(), _selectedEntityID == object->getID())) {
 					if(_selectedEntityID != object->getID()) {
 						_selectedEntityID = object->getID();
+						clearSelected();
 					}
 					else {
 						_selectedEntityID = -1;
@@ -105,7 +122,7 @@ namespace rat {
 				}
 
 				// Open context menu for object
-				if(_renderObjectPopup(object->getID())) {
+				if(_renderObjectPopup(object.get())) {
 					ImGui::PopID();
 					break;
 				}
@@ -118,17 +135,41 @@ namespace rat {
 		ImGui::End();
 	}
 
-	bool ObjectsList::_renderObjectPopup(int id) {
-		if(_tab == "single") return false;
+	bool ObjectsList::_renderObjectPopup(Entity* entity) {
 		if(ImGui::BeginPopupContextItem("##object_popup")) {
 			if(ImGui::Selectable("Clone##object_popup")) {
-				duplicateObject(id);
+				duplicateObject(entity->getID());
 			}
 			if(ImGui::Selectable("Remove##object_popup")) {
-				removeObject(id);
+				removeObject(entity->getID());
 				ImGui::EndPopup();
 				return true;
 			}
+
+			if (entity->getGroup() == "path" || entity->getGroup() == "background" || entity->getGroup() == "foreground")
+			{
+				if (ImGui::BeginMenu("Move to##object_popup"))
+				{
+					if (entity->getGroup() != "path" && ImGui::Selectable("Path"))
+					{
+						auto scene = _scenes.getCurrentScene();
+						scene->changeEntityGroup(entity, "path");
+					}
+					if (entity->getGroup() != "background" && ImGui::Selectable("Background"))
+					{
+						auto scene = _scenes.getCurrentScene();
+						scene->changeEntityGroup(entity, "background");
+					}
+					if (entity->getGroup() != "foreground" && ImGui::Selectable("Foreground"))
+					{
+						auto scene = _scenes.getCurrentScene();
+						scene->changeEntityGroup(entity, "foreground");
+					}
+
+					ImGui::EndMenu();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 		return false;
@@ -139,11 +180,54 @@ namespace rat {
 	}
 
 	void ObjectsList::select(Entity* object) {
+		clearSelected();
+
 		_selectedEntityID = object->getID();
+
+
 	}
 
 	void ObjectsList::select(int id) {
+		clearSelected();
 		_selectedEntityID = id;
+	}
+
+	void ObjectsList::addSelected(Entity* entity) {
+		if (isAnySingleEntitySelected()) {
+			_selectedEntities.push_back(getSelectedEntity());
+			_selectedEntityID = -1;
+		}
+
+		if (auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity); it == _selectedEntities.end()) {
+			_selectedEntities.push_back(entity);
+		}
+	}
+
+	void ObjectsList::removedSelected(Entity* entity)
+	{
+		auto it = std::find(_selectedEntities.begin(), _selectedEntities.end(), entity);
+
+		if (it != _selectedEntities.end())
+		{
+			_selectedEntities.erase(it);
+		}
+
+		//std::remove(_selectedEntities.begin(), _selectedEntities.end(), entity);
+	}
+
+	void ObjectsList::clearSelected()
+	{
+		_selectedEntities.clear();
+	}
+
+	const std::vector<Entity*>& ObjectsList::getSelectedEntities()
+	{
+		return _selectedEntities;
+	}
+
+	bool ObjectsList::isGroupSelected()
+	{
+		return !_selectedEntities.empty();
 	}
 
 	void ObjectsList::addObject(const std::string& groupName) {

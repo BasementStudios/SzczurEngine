@@ -4,7 +4,6 @@ namespace rat {
     Dialog::Dialog() :
     _dialogGUI(getModule<GUI>()) {
         LOG_INFO(this, "Module Dialog constructed")
-        auto& gui = getModule<GUI>();
         _initScript();
     }
 

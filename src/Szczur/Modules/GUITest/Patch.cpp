@@ -143,7 +143,7 @@ namespace rat
 
                 float realElementDim = float(_sprite.getTextureRect().width) * _scale.x;
                 
-                float widthTimes = std::max(round(totalWidth/realElementDim), 1.f);
+                float widthTimes = std::max(std::round(totalWidth/realElementDim), 1.f);
                 _elementAmount = int(widthTimes);
                 _elementDim.x = totalWidth/widthTimes;
 
@@ -157,7 +157,7 @@ namespace rat
 
                 float realElementDim = float(_sprite.getTextureRect().height) * _scale.y;
                 
-                float heightTimes = std::max(round(totalHeigt/realElementDim), 1.f);
+                float heightTimes = std::max(std::round(totalHeigt/realElementDim), 1.f);
                 _elementAmount = int(heightTimes);
                 _elementDim.y = totalHeigt/heightTimes;
 

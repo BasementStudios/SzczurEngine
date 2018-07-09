@@ -1,9 +1,14 @@
 #include "MusicEditor.hpp"
 
-#include <nlohmann/json.hpp>
-
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>
+
+#include <array>
+#include <string>
+#include <fstream> // ifstream, ofstream
+#include <algorithm> // find, replace
+
+#include <nlohmann/json.hpp>
 
 namespace rat
 {
@@ -14,14 +19,12 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "JSON files (*.json)|*.json");
         std::string filePath;
-        size_t start = path.find(currentPath);
-
-        if (start != -1 && !path.empty()) {
-            filePath = path.substr(currentPath.length() + 24, path.length() - 5 - currentPath.length() - 24);
-
+        
+        if (path.find(currentPath) != std::string::npos) {
+            filePath = path.substr(currentPath.length() + 1, path.length());
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
-            std::ifstream file("Assets/Music/Playlists/" + filePath + ".json");
+            std::ifstream file(filePath);
             if (file.is_open()) {
                 file >> j;
             }
@@ -51,7 +54,7 @@ namespace rat
             j[playlist] = songs;
             std::ofstream file(path + playlist + ".json", std::ios::trunc);
             if (file.is_open()) {
-                file << j;
+                file << std::setw(4) << j << std::endl;
             }
             file.close();
         }
@@ -62,12 +65,13 @@ namespace rat
         auto currentPath = std::experimental::filesystem::current_path().string();
         auto path = FileDialog::getOpenFileName("", currentPath, "Music (*.flac)|*.flac");
         std::string filePath;
-        size_t start = path.find(currentPath);
 
-        if (start != -1 && !path.empty()) {
-            filePath = path.substr(currentPath.length() + 14, path.length() - 5 - currentPath.length() - 14);
+        if (path.find(currentPath) != std::string::npos) {
+            filePath = path.substr(currentPath.length() + 1, path.length());
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
-            music->addToPlaylist(playlistName, filePath);
+            newMusicPath = filePath;
+            newMusicPlaylist = playlistName;
+            addingMusic = true;
         } 
 	}
 
@@ -87,6 +91,116 @@ namespace rat
 	void MusicEditor::render()
 	{ 
 		static std::string newPlaylistName;
+        static std::string newMusicName;
+        static std::string loadingMusicName = "";
+
+        if(loadingMusic) {
+
+            ImGui::Begin("Load Music", NULL);
+
+                ImGui::Text("Name: "); 
+                ImGui::SameLine();
+
+                size_t size = loadingMusicName.length() + 100;
+                char *newText = new char[size] {};
+                strncpy(newText, loadingMusicName.c_str(), size);
+
+                ImGui::PushItemWidth(300);
+                    if (ImGui::InputText("##LoadingMusicNameInput", newText, size)) {
+                        loadingMusicName = newText;
+                    }
+                    if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+                        ImGui::SetKeyboardFocusHere(0);
+                    }
+                ImGui::PopItemWidth();
+
+                delete[] newText;
+                
+                ImGui::SetCursorPosX(260);
+
+                if (ImGui::Button("CANCEL##LoadMusic")) {
+                    loadingMusicName = "";
+                    loadingMusic = false;
+                }
+
+                ImGui::SameLine(); 
+
+                if (ImGui::Button(" OK ##LoadMusic")) {
+                    nlohmann::json j;
+                    std::ifstream ifile(MUSIC_DATA_FILE_PATH);
+                    if (ifile.is_open()) {
+                        ifile >> j;
+                        ifile.close();
+                    }
+                    if(j[loadingMusicName]["Path"] != nullptr) {
+                        _music.addToPlaylist(loadingMusicPlaylist, loadingMusicName);
+                    }
+                    loadingMusicName = "";
+                    loadingMusic = false;
+                }
+
+            ImGui::End();
+        }
+
+        if (_playlistHolder.addingMusic) {
+            ImGui::Begin("Add New Music", NULL);
+            ImGui::Text("Name: "); 
+            ImGui::SameLine();
+
+            size_t size = newMusicName.length() + 100;
+            char *newText = new char[size] {};
+            strncpy(newText, newMusicName.c_str(), size);
+
+            ImGui::PushItemWidth(300);
+                if (ImGui::InputText("##NewNameMusicInput", newText, size)) {
+                    newMusicName = newText;
+                }
+                if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+                    ImGui::SetKeyboardFocusHere(0);
+                }
+            ImGui::PopItemWidth();
+
+            delete[] newText;
+            
+            ImGui::SetCursorPosX(260);
+
+            if (ImGui::Button("CANCEL##AddNewMusicName")) {
+                newMusicName = "";
+                _playlistHolder.addingMusic = false;
+            }
+
+            ImGui::SameLine(); 
+
+            if (ImGui::Button(" OK ##AddNewMusicName")) {
+                nlohmann::json j;
+
+                std::ifstream ifile(MUSIC_DATA_FILE_PATH);
+                if (ifile.is_open()) {
+                    ifile >> j;
+                    ifile.close();
+                }
+
+                if(j[newMusicName]["Path"] == nullptr) {
+                    std::ofstream ofile(MUSIC_DATA_FILE_PATH, std::ios::trunc);
+                    if (ofile.is_open()) {
+                        j[newMusicName]["Path"] 	= _playlistHolder.newMusicPath;
+                        j[newMusicName]["BPM"] 	    = 60;
+                        j[newMusicName]["FadeTime"] = 0;
+                        j[newMusicName]["Volume"]   = 100;
+                        j[newMusicName]["Effects"]  = std::array<std::vector<float>, 3>{};
+                        ofile << std::setw(4) << j << std::endl;
+                        ofile.close();
+                    }
+                }
+
+                _music.addToPlaylist(_playlistHolder.newMusicPlaylist, newMusicName);
+                
+                newMusicName = "";
+                _playlistHolder.addingMusic = false;
+            }
+
+           ImGui::End();
+        }
 		
         ImGui::Begin("Music Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -109,22 +223,26 @@ namespace rat
             ImGui::Separator();
 
             if (ImGui::TreeNode("Playlists")) {
-                for(auto playlist : _playlistHolder.playlistsNames) {
-                    if (ImGui::SmallButton((" - ##RemovePlaylist" + playlist).c_str())) {
-                        //TODO
+                for (auto playlist = _playlistHolder.playlistsNames.begin(); playlist != _playlistHolder.playlistsNames.end(); ++playlist) {
+                    if (ImGui::SmallButton((" - ##RemovePlaylist" + *playlist).c_str())) {
+                        _music.removeFromPlaylist(*playlist);
+                        _playlistHolder.playlistsNames.erase(playlist);
+                        ImGui::TreePop();
+                        ImGui::End();
+                        return;
                     }
                     ImGui::SameLine();
-                    if (ImGui::TreeNode(playlist.c_str())) {
-                        for(auto it : _playlistHolder.music->getPlaylist(playlist)) {
+                    if (ImGui::TreeNode((*playlist).c_str())) {
+                        for(auto it : _playlistHolder.music->getPlaylist(*playlist)) {
                             if (ImGui::Button(it->getName().c_str())){
                                 currentEditingMusicFile = it->getName();
-                                currentPlaylist = playlist;
+                                currentPlaylist = *playlist;
                             }
                             ImGui::SameLine();
-                            auto name = "PLAY##" + playlist + it->getName();
+                            auto name = "PLAY##" + *playlist + it->getName();
                             if (ImGui::Button(name.c_str())){
                                 currentEditingMusicFile = it->getName();
-                                currentPlaylist = playlist;
+                                currentPlaylist = *playlist;
                                 _music.setPlayingMode(currentPlaylist, Music::PlayingMode::Random);
                                 _music.play(0, currentPlaylist, currentEditingMusicFile);
                                 auto& song = _musicAssets->get(currentEditingMusicFile);
@@ -172,11 +290,11 @@ namespace rat
                                 }
                             }
                             ImGui::SameLine();
-                            name = " - ##" + playlist + it->getName();
+                            name = " - ##" + *playlist + it->getName();
                             if (ImGui::Button(name.c_str())) {
                                 if (it->getName() == currentEditingMusicFile)
                                     currentEditingMusicFile = "";
-                                _playlistHolder.music->removeFromPlaylist(playlist, it->getName());
+                                _playlistHolder.music->removeFromPlaylist(*playlist, it->getName());
                                 ImGui::TreePop();
                                 ImGui::TreePop();
                                 ImGui::End();
@@ -184,7 +302,12 @@ namespace rat
                             }
                         }
                         if (ImGui::Button(" + ")) {
-                            _playlistHolder.addMusic(playlist);
+                            _playlistHolder.addMusic(*playlist);
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button("Load Music")) {
+                            loadingMusic = true;
+                            loadingMusicPlaylist = *playlist;
                         }
                         ImGui::TreePop();
                     }
@@ -203,8 +326,8 @@ namespace rat
 
                 auto& song = _musicAssets->get(currentEditingMusicFile);
 
-                int bpm = static_cast<int>(song._bpm);
-                int fadeTime = static_cast<int>(song._fadeTime);
+                int bpm = static_cast<int>(song.getBPM());
+                int fadeTime = static_cast<int>(song.getFadeTime());
                 float volume = song.getVolume();
 
                 auto nameText = "Name: " + currentEditingMusicFile;
@@ -235,10 +358,10 @@ namespace rat
                 ImGui::Separator();
 
                 if (ImGui::InputInt("BPM", &bpm)) {
-                    song._bpm = bpm;
+                    song.setBPM(bpm);
                 }
                 if (ImGui::InputInt("Fade Time", &fadeTime)) {
-                    song._fadeTime = fadeTime;
+                    song.setFadeTime(fadeTime);
                 }
                 if (ImGui::SliderFloat("Volume", &volume, 0, 100)) {
                     _music.setVolume(volume, currentPlaylist, currentEditingMusicFile);

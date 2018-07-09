@@ -2,11 +2,13 @@
 
 #include <string>
 
+namespace sf3d {
+	class RenderTarget;
+}
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/SFML3D/Sprite.hpp"
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
 namespace rat
 {
@@ -34,7 +36,7 @@ public:
 	const std::string& getName() const;
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates()) const override;
 
 protected:
 	

@@ -1,11 +1,11 @@
 #pragma once
-
+ 
 #include <vector>
 #include <string>
-#include <memory>
+#include <memory> // shared_ptr
 
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
-
+ 
 #include "MusicBase.hpp"
 #include "MusicAssets.hpp"
 
@@ -40,10 +40,10 @@ namespace rat
 		BasePointer_t _endingFile = nullptr;
 		bool _isFileEnding = false;
 
-		bool hasBeenEverPlayed = false;
+		bool _hasBeenEverPlayed = false;
 
 		PlayingMode _playingMode = PlayingMode::Random;
-		Status _status = Status::Stopped;
+		Status      _status      = Status::Stopped;
 
 		AudioEffects& _effects;
 
@@ -56,16 +56,16 @@ namespace rat
 		void update(float deltaTime);
 		void stopUpdates();
 
-		bool includes(const std::string& fileName) const;		
+		bool includes(const std::string& name) const;		
 
 		void add(MusicBase&& base);
-		void remove(const std::string& fileName);
+		void remove(const std::string& name);
 
 		BasePointer_t getCurrentPlaying() const;
 
 		void play(unsigned int id, float timeLeft);
-		void play(const std::string& fileName = "");
-		void play(BasePointer_t prevMusicFile, const std::string& fileName = "");
+		void play(const std::string& name = "");
+		void play(BasePointer_t prevMusicFile, const std::string& name = "");
 
 		void pause();
 		void stop();
@@ -74,10 +74,10 @@ namespace rat
 
 		Status getStatus() const;
 
-		void setVolume(float volume, const std::string& fileName = "");
-		float getVolume(const std::string& fileName) const;
+		void setVolume(float volume, const std::string& name = "");
+		float getVolume(const std::string& name) const;
 
-		unsigned int getID(const std::string& fileName) const;
+		unsigned int getID(const std::string& name) const;
 
 		const Container_t& getContainerRef() const;
 

@@ -40,6 +40,10 @@ namespace rat {
 		_originCirInSel.setRadius(40.f);
 		_originCirInSel.setOrigin({40.f, 40.f, -10.f});
 		_originCirInSel.setColor({0.1f, 1.f, 0.4f, 0.6f});
+		// group
+		_groupOriginCir.setRadius(20.f);
+		_groupOriginCir.setOrigin({ 20.f, 20.f, 0.f });
+		_groupOriginCir.setColor({ 1.f, 0.3f, 1.f, 0.4f });
 	}
 
 	void LevelEditor::_renderOriginRectangle(const glm::vec3& position, bool selected, sf3d::RenderTarget& target) {
@@ -74,10 +78,15 @@ namespace rat {
 
 	void LevelEditor::_renderOrigins(sf3d::RenderTarget& target) {
 
+		if (_objectsList.isGroupSelected())
+		{
+			_groupOriginCir.setPosition(_groupOrigin);
+			target.draw(_groupOriginCir);
+		}
 
 		// Render origins for background group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("background")) {
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if(_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
 			else {
@@ -87,7 +96,17 @@ namespace rat {
 
 		// Render origins for path group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("path")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if (_objectsList.isEntitySelected(entity.get())) {
+				_renderOriginRectangle(entity->getPosition(), true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), false, target);
+			}
+		}
+
+		// Render origins for foreground group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
+			if (_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginRectangle(entity->getPosition(), true, target);
 			}
 			else {
@@ -97,18 +116,10 @@ namespace rat {
 
 		// Render origins for single group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("single")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginRectangle(entity->getPosition(), true, target);
-			}
-			else {
-				_renderOriginRectangle(entity->getPosition(), false, target);
-			}
-		}
-
-		// Render origins for battles group
-		for(auto& entity : _scenes.getCurrentScene()->getEntities("battles")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
-				_renderOriginRectangle(entity->getPosition(), true, target);
+			if (_objectsList.isEntitySelected(entity.get())) {
+				if(auto* camera = entity->getComponentAs<CameraComponent>(); camera == nullptr) {
+					_renderOriginRectangle(entity->getPosition(), true, target);
+				}
 			}
 			else {
 				_renderOriginRectangle(entity->getPosition(), false, target);
@@ -117,7 +128,7 @@ namespace rat {
 
 		// Render origins for entries group
 		for(auto& entity : _scenes.getCurrentScene()->getEntities("entries")) {			
-			if(_objectsList.getSelectedID() == entity->getID()) {
+			if (_objectsList.isEntitySelected(entity.get())) {
 				_renderOriginCircle(entity->getPosition(), true, target);
 			}
 			else {

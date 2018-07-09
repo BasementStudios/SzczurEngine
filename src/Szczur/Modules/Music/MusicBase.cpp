@@ -1,6 +1,6 @@
 #include "MusicBase.hpp"
 
-#include <fstream>
+#include <string>
 
 #include <SFML/System.hpp>
 
@@ -18,7 +18,7 @@ namespace rat
 	{
 		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
 			_timeLeft -= deltaTime;
-			if (_timeLeft <= _base._fadeTime)
+			if (_timeLeft <= _base.getFadeTime())
 				_isEnding = true;
 		}
 	}
@@ -33,7 +33,7 @@ namespace rat
 
 		if (_finishInit) { 	
 			_finishInit = false;
-			_timeLeft = _base._fadeTime;
+			_timeLeft = _base.getFadeTime();
 			_finishing = true;
 			_isEnding = false;
 		}
@@ -41,7 +41,7 @@ namespace rat
 		_timeLeft -= deltaTime;
 
 		if (_timeLeft >= 0) {
-			_base.setVolume((_timeLeft / _base._fadeTime) * _baseVolume);
+			_base.setVolume((_timeLeft / _base.getFadeTime()) * _baseVolume);
 			return false;
 		}
 		
@@ -57,7 +57,9 @@ namespace rat
 			_base.setVolume(0);
 			_startInit = false;
 		}
+		
 		update(deltaTime);
+
 		auto vol = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
 		if (vol > 100) vol = 100;
 		_base.setVolume(vol);
@@ -95,7 +97,7 @@ namespace rat
 
 	float MusicBase::getFadeTime() const 
 	{
-		return _base._fadeTime;
+		return _base.getFadeTime();
 	}
 
 	float MusicBase::getDuration() const 
@@ -137,7 +139,7 @@ namespace rat
 
 	const std::string& MusicBase::getName() const
 	{
-		return _base._name;
+		return _base.getName();
 	}
 
 	RatMusic& MusicBase::getSource() const

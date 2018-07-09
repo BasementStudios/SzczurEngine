@@ -1,5 +1,14 @@
 #include "SpriteDisplayData.hpp"
 
+#include <string>
+#include <stdexcept>
+
+#include "Szczur/Utility/SFML3D/Texture.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+
+#include "Szczur/Utility/Logger.hpp"
+
 namespace rat {
     SpriteDisplayData::SpriteDisplayData(const std::string& name) 
         : _name(name) { 
@@ -11,7 +20,7 @@ namespace rat {
                 _sprite.setTexture(&_texture);
             }
         }
-        catch(std::exception e) {
+        catch (const std::exception& e) {
             LOG_INFO(e.what());
         }
     }
@@ -20,7 +29,7 @@ namespace rat {
         try {
             _texture.loadFromFile(_name);
         }
-        catch(std::exception e) {
+        catch(const std::exception& e) {
             LOG_INFO(e.what());
         }
     }

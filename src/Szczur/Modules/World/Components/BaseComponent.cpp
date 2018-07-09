@@ -52,6 +52,7 @@ namespace rat {
 			if(ImGui::BeginPopupContextItem("Position##context")) {
 				if(ImGui::Selectable("Copy##clipboard")) detail::globalPtr<World>->getLevelEditor().setClipboard(position);
 				if(ImGui::Selectable("Paste##clipboard")) position = detail::globalPtr<World>->getLevelEditor().getClipboardVec3();
+				if(ImGui::Selectable("Reset##reset")) position = glm::vec3();
 				ImGui::EndPopup();
 			}
 			object->setPosition(position);
@@ -76,6 +77,7 @@ namespace rat {
 			if(ImGui::BeginPopupContextItem("Rotation##context")) {
 				if(ImGui::Selectable("Copy##clipboard")) detail::globalPtr<World>->getLevelEditor().setClipboard(rotation);
 				if(ImGui::Selectable("Paste##clipboard")) rotation = detail::globalPtr<World>->getLevelEditor().getClipboardVec3();
+				if(ImGui::Selectable("Reset##reset")) rotation = glm::vec3();
 				ImGui::EndPopup();
 			}
 			object->setRotation(rotation);
@@ -83,7 +85,21 @@ namespace rat {
 			// Set scale
 			glm::vec3 scale = object->getScale();
 			static bool lockRatio = false;
-			ImGui::DragFloat2("##Scale|base_component", reinterpret_cast<float*>(&scale), 0.01f);
+			if (ImGui::DragFloat2("##Scale|base_component", reinterpret_cast<float*>(&scale), 0.01f))
+			{
+				if (lockRatio == false) {
+					object->setScale(scale);
+				}
+				else {
+					float offset = (scale.x - object->getScale().x) + (scale.y - object->getScale().y);
+
+					auto scale = object->getScale();
+					scale.x += offset;
+					scale.y += offset;
+
+					object->setScale(scale);
+				}
+			}
 			if(ImGui::BeginPopupContextItem("Scale##context")) {
 				if(ImGui::Selectable("Copy##clipboard")) detail::globalPtr<World>->getLevelEditor().setClipboard(scale);
 				if(ImGui::Selectable("Paste##clipboard")) scale = detail::globalPtr<World>->getLevelEditor().getClipboardVec3();
@@ -91,13 +107,6 @@ namespace rat {
 			}
 			ImGui::SameLine(0.f, 0.f);
 			ImGui::Checkbox("Scale##base_component", &lockRatio);
-			if(lockRatio == false) {
-				object->setScale(scale);
-			}
-			else {
-				float offset = (scale.x / object->getScale().x) + (scale.y / object->getScale().y) - 1;
-				object->scale( {offset, offset, 1.f} );
-			}
 		}
 	}
 

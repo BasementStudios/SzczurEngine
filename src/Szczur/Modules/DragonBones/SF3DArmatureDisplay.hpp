@@ -6,16 +6,15 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include <SFML/Graphics/Rect.hpp>
 
+#include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 
 #include "SF3DEventDispatcher.hpp"
-
-#include <glm/glm.hpp>
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -44,6 +43,8 @@ public:
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
+
+	sf::FloatRect getBoundingBox();
 };
 
 DRAGONBONES_NAMESPACE_END

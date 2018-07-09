@@ -1,16 +1,17 @@
 #pragma once
 
-#include "../Component.hpp"
-
-#include <Szczur/Modules/Script/Script.hpp>
-
-#include <sol2/sol.hpp>
+#include <sol.hpp>
 
 namespace rat {
+	class Entity;
+	class Script;
+	template<class T> class ScriptClass;
+}
+#include "Szczur/Modules/Script/Script.hpp"
+#include "../Component.hpp"
 
-class Entity;
-class Script;
-template<class T> class ScriptClass;
+namespace rat
+{
 
 class ScriptableComponent : public Component {
 public:
@@ -42,6 +43,9 @@ public:
 
 	///
 	void sceneChanged();
+
+	///
+	void callInit();
 
 	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;

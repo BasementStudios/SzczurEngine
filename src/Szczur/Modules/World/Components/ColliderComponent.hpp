@@ -3,7 +3,7 @@
 #include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
-#include "szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 
 #include <glm/glm.hpp>
 
@@ -50,7 +50,10 @@ public:
 	void move(float x, float y, float z);
 
 	///
-	bool isCircleCollider() const { return _cicleCollider; }
+	bool isCircleCollider() const { return _circleCollider; }
+
+	///
+	void setCircleCollider(bool circleCollider) { _circleCollider = circleCollider; }
 
 	///
 	void setCircleRadius(float radius) { _circleRadius = radius; }
@@ -59,10 +62,13 @@ public:
 	float getCircleRadius() const { return _circleRadius; }
 
 	///
+	void setBoxCollider(bool boxCollider) { _boxCollider = boxCollider; }
+
+	///
 	bool isBoxCollider() const { return _boxCollider; }
 
 	///
-	void setBoxSize(const glm::vec2& size) { _boxSize = size; }
+	void setBoxSize(float x, float y) { _boxSize = { x, y }; }
 
 	///
 	const auto& getBoxSize() const { return _boxSize; }
@@ -71,12 +77,16 @@ public:
 	bool isDynamic() { return _isDynamic; }
 
 	///
-	static sf::FloatRect getRect(const glm::vec3& pos, const glm::vec2& size);
+	void setDynamic(bool dynamic) { _isDynamic = dynamic; }
+
+private:
+	///
+	static sf::FloatRect _getRect(const glm::vec3& pos, const glm::vec2& size);
 
 private:
 	bool _isDynamic = false;
 
-	bool _cicleCollider = false;
+	bool _circleCollider = false;
 	float _circleRadius = 100.f;
 
 	bool _boxCollider = false;

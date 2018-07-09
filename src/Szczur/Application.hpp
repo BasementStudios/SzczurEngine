@@ -6,16 +6,15 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/AudioEditor/AudioEditor.hpp"
 #include "Szczur/Modules/Music/Music.hpp"
+#include "Szczur/Modules/Sound/Sound.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
-#include "Szczur/Modules/Camera/Camera.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Dialog/Dialog.hpp"
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
-#include "Szczur/Modules/Sound/SoundManager.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
 
 #include "ImGuiStyler.hpp"
@@ -53,6 +52,7 @@ public:
 	template <typename U>
 	U& getModule();
 
+	///
 	template <typename U>
 	const U& getModule() const;
 
@@ -60,7 +60,7 @@ private:
 
 	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, Camera, DialogEditor, Music, AudioEditor, AudioEffects, Cinematics, SoundManager, Listener>_modules;
+	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, DialogEditor, Music, Sound, AudioEditor, AudioEffects, Cinematics, Listener>_modules;
 
 };
 

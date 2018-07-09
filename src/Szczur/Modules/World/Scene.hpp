@@ -7,7 +7,9 @@
 
 #include <boost/container/flat_map.hpp>
 
+#include <Szczur/Utility/SFML3D/Drawable.hpp>
 #include <Szczur/Utility/SFML3D/RenderTarget.hpp>
+#include <Szczur/Utility/SFML3D/RenderStates.hpp>
 
 #include "Entity.hpp"
 
@@ -18,7 +20,7 @@ namespace rat
 class ScenesManager;
 class Script;
 
-class Scene
+class Scene : public sf3d::Drawable
 {
 public:
 
@@ -56,7 +58,7 @@ public:
 	void update(float deltaTime);
 
 	///
-	void render(sf3d::RenderTarget& canvas);
+	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 
 	///
 	size_t getID() const;
@@ -81,6 +83,9 @@ public:
 
 	///
 	Entity* duplicateEntity(size_t id);
+
+	///
+	void changeEntityGroup(Entity* entity, const std::string& group);
 
 	///
 	bool removeEntity(size_t id);
@@ -133,17 +138,21 @@ public:
 	///
 	const SpriteDisplayDataHolder_t& getSpriteDisplayDataHolder() const;
 
-	///
-	void setPlayerID(size_t id);
-
-	///
-	size_t getPlayerID() const;
-
-	///
+	/// Provides access to player object
 	Entity* getPlayer();
+	const Entity* getPlayer() const;
+	void setPlayer(Entity* player);
 
+	/// Provides access to current camera
+	Entity* getCurrentCamera();
+	const Entity* getCurrentCamera() const;
+	void setCurrentCamera(Entity* camera);
+
+	/// Get any camera if no current present
+	Entity* getCamera();
+	
 	///
-	void loadFromConfig(Json& config);
+	void loadFromConfig(Json& config, bool withNewID = false);
 
 	///
 	void saveToConfig(Json& config) const;
@@ -181,8 +190,11 @@ private:
 	ScenesManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
-	size_t _playerID{ 0u };
-	Entity* _player = nullptr;
+	
+	size_t _playerID {0u};
+	Entity* _player {nullptr};
+
+	Entity* _currentCamera {nullptr};
 };
 
 }

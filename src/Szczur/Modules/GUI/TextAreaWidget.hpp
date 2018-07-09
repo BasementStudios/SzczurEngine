@@ -28,10 +28,10 @@ namespace rat {
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual sf::Vector2u _getSize() const override;
     private:
-        bool _toWrap;
-
         sf::Text _text;
         sf::Vector2u _size;
+
+        bool _toWrap;
 
         sf::String& _wrapText(sf::String& temp);
         virtual void _callback(CallbackType type) override;

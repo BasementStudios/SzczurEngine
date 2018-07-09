@@ -1,17 +1,16 @@
 #include "AudioEditor.hpp"
 
-#include <nlohmann/json.hpp>
-
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include <experimental/filesystem>
 
+#include <nlohmann/json.hpp>
 #include <imgui.h>
 
 namespace rat
 {
 
 	AudioEditor::AudioEditor()
-        : _musicEditor(getModule<Music>()), _soundEditor(getModule<SoundManager>())
+        : _musicEditor(getModule<Music>()), _soundEditor(getModule<Sound>())
     {
 		
 	}

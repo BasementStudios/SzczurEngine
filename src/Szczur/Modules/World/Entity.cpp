@@ -58,6 +58,8 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<AnimatedSpriteComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<SpriteComponent>()) comp->update(scenes, deltaTime);
 	if(auto* comp = getComponentAs<BattleComponent>()) comp->update(scenes, deltaTime);
 
 	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
@@ -67,14 +69,16 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 	} 
 }
 
-void Entity::render(sf3d::RenderTarget& canvas)
+void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	if(auto* ptr = getFeature<sf3d::Drawable>()) {
-		canvas.draw(*ptr);
+	if (auto* ptr = getFeature<sf3d::Drawable>()) {
+		target.draw(*ptr, states);
 	}
-
+	
+	if (auto* comp = getComponentAs<TraceComponent>()) {
+		comp->render(target);
+	}
 	if (auto* comp = getComponentAs<BattleComponent>()) comp->render(canvas);
-	if (auto* comp = getComponentAs<TraceComponent>()) comp->render(canvas);
 }
 
 size_t Entity::getID() const
@@ -171,9 +175,9 @@ const Entity::ComponentsHolder_t& Entity::getComponents() const
 	return _holder;
 }
 
-void Entity::loadFromConfig(Json& config)
+void Entity::loadFromConfig(Json& config, bool withNewID)
 {
-	_id = config["id"];
+	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
 	setPosition({
@@ -202,13 +206,13 @@ void Entity::loadFromConfig(Json& config)
 	bool base = false;
 	for (Json& component : components)
 	{
-		if(component["name"] == "BaseComponent") base = true;
+		if (component["name"] == "BaseComponent") base = true;
 		addComponent(static_cast<Hash64_t>(component["id"]))->loadFromConfig(component);
 	}
 
-	if(base == false) {		
-		addComponent<BaseComponent>();
-	}
+	if (base == false) {         
+        addComponent<BaseComponent>(); 
+    } 
 
 	trySettingInitialUniqueID<Entity>(_id);
 }

@@ -14,68 +14,8 @@ namespace rat {
 	CameraComponent::CameraComponent(Entity* parent) :
 	Component { parent, fnv1a_64("CameraComponent"), "CameraComponent"}, 
 	_listener(detail::globalPtr<Listener>) {
-		
-	}
-
-	void CameraComponent::processEvents(InputManager& input) {
-        if(_noMove) return;
-
-		float velocity = _velocity;
-		auto* object = getEntity();
-		if(input.isKept(Keyboard::LShift)) {
-			velocity = 200.f;
-		}
-		auto rotation = object->getRotation();
-
-		if(input.isKept(Keyboard::W)) {
-			object->move({
-				velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				-velocity * glm::cos(glm::radians(rotation.y))
-			});
-		}
-		if(input.isKept(Keyboard::S))
-			object->move({
-				-velocity * glm::sin(glm::radians(rotation.y)),
-				0.f,
-				velocity * glm::cos(glm::radians(rotation.y))
-			});
-		if(!_stickTo || _stickToX) {
-			if(input.isKept(Keyboard::D)) {
-				object->move(glm::vec3{
-					velocity * glm::cos(glm::radians(rotation.y)),
-					0.f,
-					velocity * glm::sin(glm::radians(rotation.y))
-				});
-			}
-			if(input.isKept(Keyboard::A)) {
-				object->move(glm::vec3{
-					-velocity * glm::cos(glm::radians(rotation.y)),
-					0.f,
-					-velocity * glm::sin(glm::radians(rotation.y))
-				});
-			}
-		}
-		if(input.isKept(Keyboard::Space))
-			object->move({0.f, velocity, 0.f});
-		if(input.isKept(Keyboard::LControl))
-			object->move({0.f, -velocity, 0.f});
-		if(_rotating) {
-			auto mouse = input.getMousePosition();
-			object->rotate({
-				(mouse.y - _previousMouse.y)/10.f,
-				(mouse.x - _previousMouse.x)/10.f,
-				0.f
-			});
-			_previousMouse = mouse;
-		}
-		if(input.isPressed(Mouse::Right)) {
-			_rotating = true;
-			_previousMouse = input.getMousePosition();
-		}
-		if(input.isReleased(Mouse::Right)) {
-			_rotating = false;
-		}
+		sf3d::Camera::move({1000.f,500.f,2000.f}); // @todo . On ratio change there should be update to the camera
+		sf3d::Camera::setRenderDistance(300.f);
 	}
 
 	std::unique_ptr<Component> CameraComponent::copy(Entity* newParent) const {
@@ -99,6 +39,14 @@ namespace rat {
 	bool CameraComponent::getLock() const {
 		return _locked;
 	}
+
+    bool CameraComponent::isNoMove() const {
+    	return _noMove;
+    }
+
+    void CameraComponent::setNoMove(bool flag) {
+    	_noMove = flag;
+    }
 
 	void CameraComponent::stickTo(Entity* entity) {
 		_stickTo = entity;
@@ -125,11 +73,13 @@ namespace rat {
 		if(auto& var = config["limit"]["left"]; !var.is_null()) _limit.left = var;
 		if(auto& var = config["limit"]["right"]; !var.is_null()) _limit.right = var;
 		if(auto& var = config["limitedRange"]; !var.is_null()) _limitedRange = var;
-		if(auto& var = config["type"]; !var.is_null()) _type = size_tToEnumType(var);
+		if(auto& var = config["type"]; !var.is_null()) _moveType = static_cast<MoveType>(var);
 		if(auto& var = config["sticked_id"]; !var.is_null()) _stickedID = var;
         if(auto& var = config["no_move"]; !var.is_null()) _noMove = var;
-		if(auto& var = config["smoothness"]; !var.is_null() && _type == Smooth) _smoothness = var;
-		if(auto& var = config["linear"]; !var.is_null() && _type == Linear) _linear = var;
+		if(auto& var = config["smoothness"]; !var.is_null() && _moveType == Smooth) _smoothness = var;
+		if(auto& var = config["linear"]; !var.is_null() && _moveType == Linear) _linear = var;
+
+		if(auto& var = config["targetingType"]; !var.is_null() && _moveType == Linear) _targetingType = static_cast<TargetingType>(var);
 
 
 	}
@@ -138,16 +88,18 @@ namespace rat {
 		Component::saveToConfig(config);
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;
-		if(_type == Smooth)
+		if(_moveType == Smooth)
 			config["smoothness"] = _smoothness;
-		else if(_type == Linear)
+		else if(_moveType == Linear)
 			config["linear"] = _linear;
-		config["type"] = enumTypeToSize_t();
+		config["type"] = static_cast<size_t>(_moveType);
 		config["limit"]["left"] = _limit.left;
 		config["limit"]["right"] = _limit.right;
 		config["limitedRange"] = _limitedRange;
 		config["sticked_id"] = (_stickTo==nullptr ? 0 : _stickTo->getID());
         config["no_move"] = _noMove;
+
+		config["targetingType"] = static_cast<size_t>(_targetingType);
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
@@ -158,21 +110,38 @@ namespace rat {
 			ImGui::DragFloat("Velocity##camera_component", &velocity);
 			setVelocity(velocity);
 
-			if(ImGui::BeginCombo("Type", enumTypeToString().c_str())) {
-				if(ImGui::Selectable("None", _type == None))
-					_type = None;
-				if(ImGui::Selectable("Smooth", _type == Smooth))
-					_type = Smooth;
-				if(ImGui::Selectable("Linear", _type == Linear))
-					_type = Linear;
+			ImGui::Spacing();
+
+			if(ImGui::BeginCombo("MoveType", enumToString(_moveType).c_str())) {
+				if(ImGui::Selectable("None", _moveType == None))
+					_moveType = None;
+				if(ImGui::Selectable("Smooth", _moveType == Smooth))
+					_moveType = Smooth;
+				if(ImGui::Selectable("Linear", _moveType == Linear))
+					_moveType = Linear;
 				ImGui::EndCombo();
 			}
 
-			if(_type == Smooth)
+			if(_moveType == Smooth)
 				ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 0.05f, 1.f, 50.f);
-			else if(_type == Linear)
+			else if(_moveType == Linear)
 				ImGui::DragFloat("Linear##camera_component", &_linear, 0.05f, 1.f, 50.f);
 
+			ImGui::Spacing();
+
+			if(ImGui::BeginCombo("Targeting Type", enumToString(_targetingType).c_str())) {
+				if(ImGui::Selectable("Precise", _targetingType == Precise))
+					_targetingType = Precise;
+				if(ImGui::Selectable("Forwarded", _targetingType == Forwarded))
+					_targetingType = Forwarded;
+				ImGui::EndCombo();
+			}
+
+			if(_targetingType == Forwarded) {
+				ImGui::DragFloat("Forwarded##camera_component", &_forwarded);
+			}
+
+			ImGui::Spacing();
 
 			// Set lock
 			bool locked = getLock();
@@ -248,33 +217,40 @@ namespace rat {
 		return _smoothness;
 	}
 
-	sf3d::View CameraComponent::getRecalculatedView(sf3d::View baseView) {
+	void CameraComponent::updateCamera() {
 		auto* entity = getEntity();
-		if(_type == None) {
-			baseView.setCenter(entity->getPosition());
-			baseView.setRotation(entity->getRotation());
+		if (_moveType == None) {
+			_virtualPosition = entity->getPosition();
+			this->setRotation(entity->getRotation());
 		}
-		else if(_type == Smooth) {
+		else if (_moveType == Smooth) {
 			if(_smoothness >= 1.f) {
-				auto delta = entity->getPosition() - baseView.getCenter();
-				auto deltaRotation = entity->getRotation() - baseView.getRotation();
-				baseView.move(delta / _smoothness);
-				baseView.rotate(deltaRotation / _smoothness);
+				auto delta = entity->getPosition() - _virtualPosition;
+				auto deltaRotation = entity->getRotation() - this->getRotation();
 
+				_virtualPosition += delta / _smoothness;
+				this->rotate(deltaRotation / _smoothness);
 			}
 		}
-		else if(_type == Linear) {
+		else if (_moveType == Linear) {
 			auto position = entity->getPosition();
-			auto direction = position - baseView.getCenter();
-			float length = glm::sqrt(direction.x*direction.x + direction.y*direction.y);
+			auto direction = position - _virtualPosition;
+			float length = glm::sqrt(direction.x * direction.x + direction.y * direction.y);
 			direction /= length;
 			if(length <= _linear)
-				baseView.setCenter(position);
+				_virtualPosition = position;
 			else
-				baseView.move(direction*_linear);
-			baseView.setRotation(entity->getRotation());
+				_virtualPosition += direction * _linear;
+			this->setRotation(entity->getRotation());
 		}
-		return baseView;
+
+		if(_targetingType == Precise) {
+			this->setPosition(_virtualPosition);
+		}
+		if(_targetingType == Forwarded) {
+			auto delta = entity->getPosition() - _virtualPosition;
+			this->setPosition(entity->getPosition() + delta*_forwarded);
+		}
 	}
 
 	void CameraComponent::initScript(ScriptClass<Entity>& entity, Script& script)
@@ -304,22 +280,18 @@ namespace rat {
 		object.init();
 
 	}
-	std::string CameraComponent::enumTypeToString() const {
-		switch(_type) {
-			case None: return "None";
+	std::string CameraComponent::enumToString(MoveType type) {
+		switch(type) {
 			case Smooth: return "Smooth";
 			case Linear: return "Linear";
 		}
-	}
-	size_t CameraComponent::enumTypeToSize_t() const {
-		return static_cast<size_t>(_type);
+		return "None";
 	}
 
-	CameraComponent::Type CameraComponent::size_tToEnumType(size_t type) const {
+	std::string CameraComponent::enumToString(TargetingType type) {
 		switch(type) {
-			case static_cast<size_t>(Smooth) : return Smooth;
-				case static_cast<size_t>(Linear) : return Linear;
+			case Forwarded: return "Forwarded";
 		}
-		return None;
+		return "Precise";
 	}
 }

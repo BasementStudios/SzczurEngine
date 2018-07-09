@@ -1,7 +1,7 @@
 #include "MsgBox.hpp"
 
 #if defined(EDITOR) && defined(OS_WINDOWS)
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 namespace rat::MsgBox

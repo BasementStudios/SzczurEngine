@@ -21,6 +21,24 @@ World::World()
 	#endif
 
 	LOG_INFO("Module World initialized");
+
+	// test1.world
+	// _scenes.addScene()->addEntity("single")->setName("Karion");
+	// _scenes.saveToFile("test1.world");
+
+	// test2.world
+	// _scenes.addScene()->addEntity("path")->setName("Droga");
+	// _scenes.saveToFile("test2.world");
+
+	// test3.world
+	// _scenes.addScene()->addEntity("background")->setName("Domek");
+	// _scenes.saveToFile("test3.world");
+
+	// _scenes.loadFromFile("test1.world");
+	// _scenes.appendScenesFromFile("test2.world");
+	// _scenes.appendScenesFromFile("test3.world");
+
+	// _scenes.saveToFile("out.world");
 }
 
 World::~World()
@@ -38,13 +56,11 @@ void World::update(float deltaTime)
 		getScenes().getCurrentScene()->update(deltaTime);
 	}
 	#ifdef EDITOR
-		if(_doEditor) {
-			_levelEditor.update(getModule<Input>().getManager(), getModule<Camera>());
-			getModule<Battle>().updateEditor();
-		}
+		if(_doEditor)
+			_levelEditor.update(getModule<Input>().getManager(), getModule<Window>());
+		else
+			_levelEditor.updateDisabledEditor(getModule<Input>().getManager());
 	#endif
-
-	_levelEditor.updateCamera(getModule<Camera>());
 
 	if (_isChangingScene)
 	{
@@ -80,11 +96,11 @@ void World::update(float deltaTime)
 
 void World::render()
 {
-	auto& window = getModule<Window>().getWindow();
+	auto& target = getModule<Window>().getWindow();
 
 	if (getScenes().isCurrentSceneValid())
 	{
-		getScenes().getCurrentScene()->render(window);
+		getScenes().getCurrentScene()->draw(target);
 		// getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
 		// 	if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
 		// 	{
@@ -95,14 +111,14 @@ void World::render()
 
 	if (_isChangingScene)
 	{
-		window.pushGLStates();
-		window.draw(_blackScreen);
-		window.popGLStates();
+		target.pushGLStates();
+		target.draw(_blackScreen);
+		target.popGLStates();
 	}
 
 	#ifdef EDITOR
 		if(_doEditor)
-			_levelEditor.render(window);
+			_levelEditor.render(target);
 	#endif
 }
 

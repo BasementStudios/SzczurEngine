@@ -110,8 +110,7 @@ namespace rat
 
         int topCornerH = _topLeftCorner.getSize().y;
         int bottomCornerH = _bottomLeftCorner.getSize().y;
-
-        auto texSize = static_cast<sf::Vector2i>(_texture->getSize());
+        
         int innerWidth = _size.x - (leftCornerW + rightCornerW);
         int innerHeight = _size.y - (topCornerH + bottomCornerH);
 
@@ -135,7 +134,6 @@ namespace rat
         int topCornerH = _topLeftCorner.getSize().y;
         int bottomCornerH = _bottomLeftCorner.getSize().y;
 
-        auto texSize = static_cast<sf::Vector2i>(_texture->getSize());
         int innerWidth = _size.x - (leftCornerW + rightCornerW);
         int innerHeight = _size.y - (topCornerH + bottomCornerH);
 

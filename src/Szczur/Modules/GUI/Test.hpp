@@ -147,7 +147,7 @@ namespace rat {
 
         object.set(
             "addTextArea",
-            [basicValues](Widget& owner, sol::table tab){
+            [basicValues](Widget& owner, sol::table tab) -> TextAreaWidget* {
                 if(tab["font"].valid()) {
                     TextAreaWidget* widget = new TextAreaWidget;
                     widget->setFont(tab["font"]);
@@ -170,12 +170,13 @@ namespace rat {
                     owner.add(widget);
                     return widget;
                 }
+                return nullptr;
             }
         );
 
         object.set(
             "addText",
-            [basicValues](Widget& owner, sol::table tab){
+            [basicValues](Widget& owner, sol::table tab) -> TextWidget* {
                 if(tab["font"].valid()) {
                     TextWidget* widget = new TextWidget;
                     widget->setFont(tab["font"]);
@@ -194,13 +195,14 @@ namespace rat {
                     owner.add(widget);
                     return widget;
                 }
+                return nullptr;
             }
         );
 
 
         object.set(
             "addImage",
-            [basicValues](Widget& owner, sol::table tab){
+            [basicValues](Widget& owner, sol::table tab) -> ImageWidget* {
                 if(tab["texture"].valid()) {
                     ImageWidget* widget = new ImageWidget;
                     widget->setTexture(tab["texture"]);
@@ -209,6 +211,7 @@ namespace rat {
                     owner.add(widget);
                     return widget;
                 }
+                return nullptr;
             }
         );
     }

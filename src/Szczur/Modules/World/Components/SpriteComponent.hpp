@@ -60,6 +60,9 @@ public:
 	virtual void saveToConfig(Json& config) const override;
 
 	///
+	void update(ScenesManager& scenes, float deltaTime);
+
+	///
 	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
 	///
@@ -69,11 +72,18 @@ public:
 	static void initScript(ScriptClass<Entity>& entity, Script& script);
 
 private:
+	// @vertical: -1 left, 0 center, 1 right
+	// @horizontal: -1 top, 0 center, 1 bottom
+	void setOrigin(int vertical = 0, int horizontal = 0);
+
+private:
 
 	SpriteDisplayData* _spriteDisplayData = nullptr;
 
 	bool _parallax = false;
 	float _parallaxValue = 0.f;
+
+	float _parallexedPos = 0.f;
 
 };
 
