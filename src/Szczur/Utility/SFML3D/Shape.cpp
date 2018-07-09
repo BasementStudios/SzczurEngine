@@ -2,7 +2,7 @@
 
 namespace sf3d {
 	Shape::Shape(size_t vertexSize) :
-		_vertices(vertexSize) {
+		_vertices(TriangleFan, vertexSize) {
 		_update();
 	}
 
@@ -12,7 +12,7 @@ namespace sf3d {
 			_vertices[i].color = getPointColor(i);
 			_vertices[i].texCoord = getPointCoord(i);
 		}
-		_vertices.setPrimitveType(GL_TRIANGLE_FAN);
+		_vertices.setPrimitiveType(TriangleFan);
 	}
 
 	size_t Shape::getVerticesCount() const {

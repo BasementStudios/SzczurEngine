@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <memory>
-#include <iostream>
 #include <stdexcept>
 
 std::unique_ptr<const char[]> getFileContents(const char* filePath)
@@ -60,7 +59,7 @@ Shader::~Shader()
 	_destroy();
 }
 
-bool Shader::loadFromFile(ShaderType type, const char* filePath)
+void Shader::loadFromFile(ShaderType type, const char* filePath)
 {
 	#ifdef EDITOR
 	{
@@ -72,15 +71,16 @@ bool Shader::loadFromFile(ShaderType type, const char* filePath)
 	#endif // EDITOR
 
 	auto ptr = getFileContents(filePath);
-	if (!ptr) {
+
+	if (!ptr)
+	{
 		throw std::runtime_error(std::string("Cannot load shader from ") + filePath);
-		return false;
 	}
 
-	return ptr && _compile(type, ptr.get(), -1);
+	return _compile(type, ptr.get(), -1);
 }
 
-bool Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
+void Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
 {
 	#ifdef EDITOR
 	{
@@ -96,45 +96,46 @@ bool Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
 
 bool Shader::isValid() const
 {
-	return _shader != 0;
+	return _shader;
 }
 
-GLuint Shader::getNativeHandle() const
+Shader::NativeHandle_t Shader::getNativeHandle() const
 {
 	return _shader;
 }
 
 #ifdef EDITOR
 
-bool Shader::_reload()
+void Shader::_reload()
 {
 	if (!_filePath.empty())
 	{
 		auto ptr = getFileContents(_filePath.data());
 
-		return ptr && _compile(_type, ptr.get(), -1);
+		if (!ptr)
+		{
+			throw std::runtime_error(std::string("Cannot reload shader from ") + _filePath);
+		}
+
+		_compile(_type, ptr.get(), -1);
 	}
 	else if (_dataPtr != nullptr)
 	{
-		return _compile(_type, reinterpret_cast<const char*>(_dataPtr), _dataSize);
+		_compile(_type, reinterpret_cast<const char*>(_dataPtr), _dataSize);
 	}
-
-	return false;
 }
 
 #endif // EDITOR
 
 void Shader::_destroy()
 {
-	if (isValid())
+	if (_shader)
 	{
 		glDeleteShader(_shader);
-
-		_shader = 0;
 	}
 }
 
-bool Shader::_compile(ShaderType type, const char* data, GLint size)
+void Shader::_compile(ShaderType type, const char* data, GLint size)
 {
 	_destroy();
 
@@ -151,18 +152,16 @@ bool Shader::_compile(ShaderType type, const char* data, GLint size)
 		glGetShaderInfoLog(_shader, sizeof(infoLog), nullptr, infoLog);
 
 		_destroy();
-		
+
+		_shader = 0;
+
 		throw std::runtime_error(
 			std::string(infoLog)
 			#ifdef EDITOR
 			+ "Cannot compile shader from " + _filePath + "\n"
 			#endif
 		);
-
-		return false;
 	}
-
-	return true;
 }
 
 }

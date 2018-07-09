@@ -26,6 +26,8 @@ class ShaderProgram
 {
 public:
 
+	using NativeHandle_t = GLuint;
+
 	///
 	ShaderProgram() = default;
 
@@ -46,7 +48,7 @@ public:
 
 	///
 	template <typename... Ts>
-	bool linkShaders(Ts&&... shaders);
+	void linkShaders(Ts&&... shaders);
 
 	///
 	bool setUniform(const char* name, bool value);
@@ -115,16 +117,13 @@ public:
 	bool isValid() const;
 
 	///
-	GLuint getNativeHandle() const;
+	NativeHandle_t getNativeHandle() const;
 
 	#ifdef EDITOR
 
 	using UniKey_t     = std::string;
 	using UniVariant_t = std::variant<bool, glm::bvec2, glm::bvec3, glm::bvec4, int, glm::ivec2, glm::ivec3, glm::ivec4, unsigned, glm::uvec2, glm::uvec3, glm::uvec4, float, glm::vec2, glm::vec3, glm::vec4, glm::mat2x2, glm::mat3x3, glm::mat4x4>;
 	using UniMap_t     = std::map<UniKey_t, UniVariant_t>;
-
-	///
-	void _setAllUniforms();
 
 	///
 	void _showEditor(bool* open);
@@ -135,15 +134,9 @@ public:
 	///
 	void _saveConfig(const char* path) const;
 
-	///
-	void _loadConfig(const nlohmann::json& config);
-
-	///
-	void _loadConfig(const char* path);
-
-	UniMap_t uniforms;
-	UniMap_t::iterator currentElem = uniforms.end();
-	const char* const uniTypeNames[std::variant_size_v<UniVariant_t>] = { "bool", "bvec2", "bvec3", "bvec4", "int", "ivec2", "ivec3", "ivec4", "uint", "uvec2", "uvec3", "uvec4", "float", "vec2", "vec3", "vec4", "mat2x2", "mat3x3", "mat4x4" };
+	UniMap_t _uniforms;
+	UniMap_t::iterator _currentElem = _uniforms.end();
+	const char* const _uniTypeNames[std::variant_size_v<UniVariant_t>] = { "bool", "bvec2", "bvec3", "bvec4", "int", "ivec2", "ivec3", "ivec4", "uint", "uvec2", "uvec3", "uvec4", "float", "vec2", "vec3", "vec4", "mat2x2", "mat3x3", "mat4x4" };
 
 	#endif // EDITOR
 
@@ -153,16 +146,18 @@ private:
 	void _destroy();
 
 	///
-	bool _finishLinking();
+	void _finishLinking();
 
-	GLuint _program = 0;
+	NativeHandle_t _program = 0;
 
 };
 
 template <typename... Ts>
-bool ShaderProgram::linkShaders(Ts&&... shaders)
+void ShaderProgram::linkShaders(Ts&&... shaders)
 {
-	static_assert((std::is_same_v<Shader, std::decay_t<Ts>> && ...), "All Ts must be exactly sf3d::Shader");
+	static_assert((std::is_same_v<Shader, std::remove_cv_t<std::remove_reference_t<Ts>>> && ...), "All Ts must be exactly sf3d::Shader");
+
+	_destroy();
 
 	_program = glCreateProgram();
 
@@ -172,7 +167,7 @@ bool ShaderProgram::linkShaders(Ts&&... shaders)
 
 	(glDetachShader(_program, shaders.getNativeHandle()), ...);
 
-	return _finishLinking();
+	_finishLinking();
 }
 
 }
