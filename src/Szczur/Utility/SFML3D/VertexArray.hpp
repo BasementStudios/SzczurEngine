@@ -22,16 +22,16 @@ public:
     VertexArray(PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray(PrimitiveType type, size_t size);
+    VertexArray(size_t size, PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray(PrimitiveType type, size_t size, const Vertex& value);
+    VertexArray(size_t size, const Vertex& value, PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray(PrimitiveType type, const Vertex* vertices, size_t size);
+    VertexArray(const Vertex* vertices, size_t size, PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray(PrimitiveType type, const Vertex* begin, const Vertex* end);
+    VertexArray(const Vertex* begin, const Vertex* end, PrimitiveType type = TriangleFan);
 
     ///
     VertexArray(const VertexArray& rhs);
@@ -52,16 +52,16 @@ public:
     void clear();
 
     ///
-    VertexArray& assign(PrimitiveType type, size_t size);
+    VertexArray& assign(size_t size, PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray& assign(PrimitiveType type, size_t size, const Vertex& value);
+    VertexArray& assign(size_t size, const Vertex& value, PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray& assign(PrimitiveType type, const Vertex* vertices, size_t size);
+    VertexArray& assign(const Vertex* vertices, size_t size, PrimitiveType type = TriangleFan);
 
     ///
-    VertexArray& assign(PrimitiveType type, const Vertex* begin, const Vertex* end);
+    VertexArray& assign(const Vertex* begin, const Vertex* end, PrimitiveType type = TriangleFan);
 
     ///
     void resize(size_t size);

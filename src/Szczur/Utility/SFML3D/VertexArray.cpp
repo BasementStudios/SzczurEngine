@@ -25,7 +25,7 @@ VertexArray::VertexArray(PrimitiveType type)
     _init();
 }
 
-VertexArray::VertexArray(PrimitiveType type, size_t size)
+VertexArray::VertexArray(size_t size, PrimitiveType type)
     : _vertices { size, Vertex{} }
     , _type { type }
     , _vao { 0 }
@@ -38,7 +38,7 @@ VertexArray::VertexArray(PrimitiveType type, size_t size)
     _init();
 }
 
-VertexArray::VertexArray(PrimitiveType type, size_t size, const Vertex& value)
+VertexArray::VertexArray(size_t size, const Vertex& value, PrimitiveType type)
     : _vertices { size, value }
     , _type { type }
     , _vao { 0 }
@@ -51,7 +51,7 @@ VertexArray::VertexArray(PrimitiveType type, size_t size, const Vertex& value)
     _init();
 }
 
-VertexArray::VertexArray(PrimitiveType type, const Vertex* vertices, size_t size)
+VertexArray::VertexArray(const Vertex* vertices, size_t size, PrimitiveType type)
     : _vertices { vertices, vertices + size }
     , _type { type }
     , _vao { 0 }
@@ -64,7 +64,7 @@ VertexArray::VertexArray(PrimitiveType type, const Vertex* vertices, size_t size
     _init();
 }
 
-VertexArray::VertexArray(PrimitiveType type, const Vertex* begin, const Vertex* end)
+VertexArray::VertexArray(const Vertex* begin, const Vertex* end, PrimitiveType type)
     : _vertices { begin, end }
     , _type { type }
     , _vao { 0 }
@@ -78,7 +78,7 @@ VertexArray::VertexArray(PrimitiveType type, const Vertex* begin, const Vertex* 
 }
 
 VertexArray::VertexArray(const VertexArray& rhs)
-    : VertexArray { rhs._type, rhs._vertices.data(), rhs._vertices.size() }
+    : VertexArray { rhs._vertices.data(), rhs._vertices.size(), rhs._type }
 {
 
 }
@@ -152,7 +152,7 @@ void VertexArray::clear()
     _vertices.clear();
 }
 
-VertexArray& VertexArray::assign(PrimitiveType type, size_t size)
+VertexArray& VertexArray::assign(size_t size, PrimitiveType type)
 {
     if (size != 0)
     {
@@ -169,7 +169,7 @@ VertexArray& VertexArray::assign(PrimitiveType type, size_t size)
     return *this;
 }
 
-VertexArray& VertexArray::assign(PrimitiveType type, size_t size, const Vertex& value)
+VertexArray& VertexArray::assign(size_t size, const Vertex& value, PrimitiveType type)
 {
     if (size != 0)
     {
@@ -186,7 +186,7 @@ VertexArray& VertexArray::assign(PrimitiveType type, size_t size, const Vertex& 
     return *this;
 }
 
-VertexArray& VertexArray::assign(PrimitiveType type, const Vertex* vertices, size_t size)
+VertexArray& VertexArray::assign(const Vertex* vertices, size_t size, PrimitiveType type)
 {
     if (size != 0)
     {
@@ -203,7 +203,7 @@ VertexArray& VertexArray::assign(PrimitiveType type, const Vertex* vertices, siz
     return *this;
 }
 
-VertexArray& VertexArray::assign(PrimitiveType type, const Vertex* begin, const Vertex* end)
+VertexArray& VertexArray::assign(const Vertex* begin, const Vertex* end, PrimitiveType type)
 {
     const ptrdiff_t distance = end - begin;
 
