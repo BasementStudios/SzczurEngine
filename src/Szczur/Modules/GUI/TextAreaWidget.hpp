@@ -6,30 +6,55 @@
 
 namespace rat {
     class Script;
-    class TextAreaWidget : public Widget {
+    class TextAreaWidget : public Widget 
+    {
     public:
+        enum class Align
+        {
+            Left,
+            Center,
+            Right
+        };
         TextAreaWidget();
         TextAreaWidget(sf::Vector2u size, sf::Font* font);
 
         static void initScript(Script& script);
 
         void setString(const std::string& text);
-
-        void setTextSize(sf::Vector2u size);
+        const std::string& getString() const;
 
         void setFont(sf::Font* font);
+        const sf::Font* getFont() const;
 
         void setCharacterSize(size_t size);
+        size_t getCharacterSize() const;
+
+        void setAlign(Align align);
+        Align getAlign() const;
 
     protected:
-        virtual void _update(float deltaTime) override;
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual sf::Vector2f _getSize() const override;
+        virtual void _calculateSize() override;
         virtual void _recalcPos() override;
         virtual void _setColor(const sf::Color& color) override;
     private:
-        sf::Text _text;
         sf::Vector2u _size;
+
+        //sf::Text _text;
+
+        std::vector<sf::Text> _texts;
+
+        std::string _str;
+
+        const sf::Font* _font{nullptr};
+        unsigned int _chSize{0};
+        sf::Color _color;
+        Align _align = Align::Left;
+
+        void _wrap();
+        void _calcTextPos();
+        float _getAlignFactor() const;
 
         bool _toWrap;
 

@@ -8,16 +8,17 @@
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
 namespace rat {
-    TextAreaWidget::TextAreaWidget() :
-    _size(0u, 0u),
-    _toWrap(false) {
-
+    TextAreaWidget::TextAreaWidget() 
+    {
+        _texts.emplace_back(sf::Text{});
+        _texts.resize(1);
     }
 
-    TextAreaWidget::TextAreaWidget(sf::Vector2u size, sf::Font* font) :
-    _size(size),
-    _toWrap(false) {
-        _text.setFont(*font);
+    TextAreaWidget::TextAreaWidget(sf::Vector2u size, sf::Font* font) 
+    :
+    TextAreaWidget()
+    {
+        setFont(font);
     }
 
     void TextAreaWidget::initScript(Script& script) {
@@ -26,68 +27,81 @@ namespace rat {
 
         object.setProperty(
             "font",
-            [](TextAreaWidget& owner){owner._text.getFont();},
+            [](TextAreaWidget& owner){owner._font;},
             [](TextAreaWidget& owner, sf::Font* font){owner.setFont(font);}
         );
 
         object.setProperty(
             "text",
-            [](TextAreaWidget& owner){return owner._text.getString();},
+            [](TextAreaWidget& owner){return owner.getString();},
             [](TextAreaWidget& owner, const std::string& text){owner.setString(text);}
         );
 
         object.setProperty(
             "fontSize",
-            [](TextAreaWidget& owner){return owner._text.getCharacterSize();},
+            [](TextAreaWidget& owner){return owner.getCharacterSize();},
             [](TextAreaWidget& owner, size_t size){owner.setCharacterSize(size);}
         );
 
         object.setProperty(
             "color",
-            [](TextAreaWidget& owner){return owner._text.getFillColor();},
+            [](TextAreaWidget& owner){return owner._color;},
             [](TextAreaWidget& owner, sol::table tab){ owner.setColor( sf::Color(tab[1], tab[2], tab[3]) ); }
         );
 
+        /*
         object.setProperty(
             "size",
             [](TextAreaWidget& owner){return owner._size;},
             [](TextAreaWidget& owner, sol::table tab){ owner.setTextSize(sf::Vector2u{tab[1], tab[2]}); }
-        );
+        );*/
         
         object.init();
     }
 
-    void TextAreaWidget::setString(const std::string& text) {
-        sf::String sfstr = getUnicodeString(text);
-        _text.setString(_wrapText(sfstr));
+    void TextAreaWidget::setString(const std::string& text)
+    {
+        _str = text;
+        if(!_isMinSizeSet) _texts[0].setString(text);
         _aboutToRecalculate = true;
-        calculateSize();
     }
-
-    void TextAreaWidget::setTextSize(sf::Vector2u size) {
-        _size = size;
-        _toWrap = true;
-        _aboutToRecalculate = true;
+    const std::string& TextAreaWidget::getString() const
+    {
+        return _str;
     }
 
     void TextAreaWidget::setFont(sf::Font* font) {
-        _text.setFont(*font);
+        _font = font;
+        if(!_isMinSizeSet)
         _aboutToRecalculate = true;
     }
+    const sf::Font* TextAreaWidget::getFont() const
+    {
+        return _font;
+    }
 
-    void TextAreaWidget::setCharacterSize(size_t size) {
-        _text.setCharacterSize(size);
-        _toWrap = true;
+    void TextAreaWidget::setCharacterSize(size_t size)
+    {
+        _chSize = size;
+
+        if(!_isMinSizeSet) _texts[0].setCharacterSize(size);
+
         _aboutToRecalculate = true;
+    }
+    size_t TextAreaWidget::getCharacterSize() const
+    {
+        return _chSize;
     }
 
     void TextAreaWidget::_setColor(const sf::Color& color) 
     {
-        _text.setFillColor(color);
+        _color = color;
+        for(auto& t : _texts) t.setFillColor(color);
     }
 
-    void TextAreaWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        target.draw(_text, states);
+    void TextAreaWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const 
+    {
+        for(auto& t : _texts) target.draw(t, states);
     }
 
     sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
@@ -112,26 +126,198 @@ namespace rat {
         return temp;
     }
 
-    void TextAreaWidget::_update(float deltaTime) {
-        if(_toWrap) {
-            sf::String sfstr = _text.getString();
-            _text.setString(_wrapText(sfstr));
+    void TextAreaWidget::_wrap()
+    {
+        const float width = _minSize.x;
+        size_t i = 0;
+
+        sf::String str = getUnicodeString(_str);
+        const char endingKey = 4;
+        str += endingKey;
+
+        sf::Text text;
+        text.setString(str);
+        text.setFont(*_font);
+        text.setCharacterSize(_chSize);
+
+        size_t begin = 0;
+        size_t end;
+
+        float lineWidth = 0.f;
+        size_t lineIndex = 0u;
+
+        bool isReadyToBreak = false;
+
+        bool isTooThick = false;
+        bool isFirstKey = true;
+
+        while(true)
+        {
+            bool mustIncrNewBegin = true;
+            size_t spaceIndex;
+            bool wasSpace = false;
+            float fromSpace = 0.f;
+            bool isFirstKeyInLine = true;
+            
+            for( ; ; ++i)
+            {
+                end = i;
+
+                const char key = str[i];
+
+                if(key == '\n')
+                {
+                    break;
+                }
+                else if(key == endingKey)
+                {
+                    isReadyToBreak = true;
+                    break;
+                }
+                else if(key == ' ')
+                {
+                    if(isFirstKeyInLine) continue;
+
+                    wasSpace = true;
+                    spaceIndex = i;
+                    fromSpace = 0.f;
+                }
+
+                const float keyWidth = text.findCharacterPos(i + 1).x - text.findCharacterPos(i).x;
+                lineWidth += keyWidth;
+                fromSpace += keyWidth;
+
+                if(lineWidth > width)
+                {
+                    if(isFirstKey)
+                    {
+                        isTooThick = true;
+                        break;
+                    }
+
+                    if(wasSpace)
+                    {
+                        end = spaceIndex;
+                        if(key == ' ') fromSpace = 0.f;
+                    }
+                    else 
+                    {
+                        mustIncrNewBegin = false;
+                    }
+                    break;
+                }
+
+                isFirstKeyInLine = false;
+                isFirstKey = false;
+            }
+
+            if(isTooThick) break;
+
+            auto lineStr = str.substring(begin, end - begin);
+
+            if(lineIndex < _texts.size())
+            {
+                auto& t = _texts[lineIndex];
+                t.setString(lineStr);
+            }
+            else
+            {
+                sf::Text t;
+                t.setFont(*_font);
+                t.setCharacterSize(_chSize);
+                t.setString(lineStr);
+                _texts.emplace_back(t);
+            }
+            lineIndex++;
+
+
+            if(isReadyToBreak) break;
+
+            if(wasSpace) lineWidth = fromSpace;
+            else lineWidth = 0.f;
+
+            begin = end;
+            if(mustIncrNewBegin) begin++;
         }
-        
+
+        _texts.resize(std::max(size_t(1), lineIndex));
+        _calcTextPos();
+    }
+
+    void TextAreaWidget::setAlign(Align align)
+    {
+        _align = align;
+        _isPosChanged = true;
+    }
+    TextAreaWidget::Align TextAreaWidget::getAlign() const
+    {
+        return _align;
+    }   
+
+    float TextAreaWidget::_getAlignFactor() const
+    {
+        switch(_align)
+        {
+            case Align::Left: return 0.f; break;
+            case Align::Center: return 0.5f; break;
+            case Align::Right: return 1.f; break;
+            default: return 0.f; break;
+        }
+    }
+    void TextAreaWidget::_calcTextPos()
+    {
+        const float width = _minSize.x;
+        float totalHeight = 0.f;
+        const auto& drawPos = gui::FamilyTransform::getDrawPosition();
+
+        const float alignFactor = _getAlignFactor();
+        for(auto& t : _texts)
+        {
+            const auto rect = t.getGlobalBounds();
+            float lineX = alignFactor * (width -rect.width);
+            sf::Vector2f pos(lineX, totalHeight);
+            t.setPosition(drawPos + pos);
+            totalHeight += rect.height;
+        }
+    }
+
+    void TextAreaWidget::_calculateSize()
+    {
+        if(_isMinSizeSet)
+        {
+            if(_chSize && _font) _wrap();
+        }
+        else
+        {
+            if(_chSize) for(auto& t : _texts) t.setCharacterSize(_chSize);
+
+            if(_font) for(auto& t : _texts) t.setFont(*_font);
+        }
     }
 
     sf::Vector2f TextAreaWidget::_getSize() const 
     {
-        auto rect = _text.getGlobalBounds();
-        return {
-            static_cast<float>(rect.width),
-            static_cast<float>(rect.height)
-        };
+        if(_isMinSizeSet)
+        {
+            const float width = _minSize.x;
+
+            const auto& drawPos = gui::FamilyTransform::getDrawPosition();
+            const auto& lastText = _texts.back();
+            const auto rect = lastText.getGlobalBounds();
+            const float height = rect.height + rect.top - drawPos.y;
+
+            return {width, height};
+        }
+        else
+        {
+            const auto rect = _texts[0].getGlobalBounds();
+            return {rect.width, rect.height};
+        }     
     }
 
     void TextAreaWidget::_recalcPos()
     {
-        _text.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
+        _calcTextPos();
     }
 
     void TextAreaWidget::_callback(CallbackType type) {

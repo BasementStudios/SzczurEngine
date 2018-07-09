@@ -8,6 +8,7 @@
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
+#include "Szczur/Modules/GUI/TextAreaWidget.hpp"
 
 #include "Szczur/Modules/GUI/Animation/Anim.hpp"
 
@@ -107,18 +108,18 @@ namespace rat
             });
         }
 
-        fps = new TextWidget;
+        fps = new TextAreaWidget;
         _widget->add(fps);
         fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
         fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
-        fps->setString("ABCDEFG");
+        fps->setString("54321 54321 321 654321 987654321 4321 21 321");
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            if(randomBool)
-                fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
+            //if(randomBool)
+                //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
             //else
                 //image->setPropTextureRectInTime({{0.f, 0.f},{1.f, 1.f}}, {3.f, gui::Easing::EaseInOutElastic});
-            randomBool = !randomBool;
+            //randomBool = !randomBool;
         });
     }
     
@@ -127,7 +128,7 @@ namespace rat
     {
         const auto& window = getModule<Window>().getWindow();
 
-        [[maybe_unused]] auto mousePos = sf::Mouse::getPosition(window);
+        [[maybe_unused]] auto mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
         {
             _scale-= deltaTime * 0.4f;
@@ -182,6 +183,13 @@ namespace rat
         }
 
         list->setBetweenPadding(400.f * _prop);
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) fps->setAlign(TextAreaWidget::Align::Left);
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
+            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
+            fps->setSize(mousePos);
+        }
 
         //scroll->setScrollPropWidth(_prop);
         //std::cout << _prop << '\n';

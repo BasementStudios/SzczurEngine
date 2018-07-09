@@ -9,7 +9,7 @@
 
 namespace rat
 {
-    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget;
+    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget; class TextAreaWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
     public:
@@ -32,7 +32,7 @@ namespace rat
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};
-        TextWidget* fps{nullptr};
+        TextAreaWidget* fps{nullptr};
         ScrollAreaWidget* scroll{nullptr};
     };
 
