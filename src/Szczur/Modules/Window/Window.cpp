@@ -10,6 +10,8 @@
 #include <memory> // unique_ptr
 #include <stdexcept>
 
+#include <glad/glad.h>
+
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <SFML/Window/Event.hpp>
@@ -72,6 +74,8 @@ unsigned int Window::getFramerateLimit() const noexcept
 void Window::setFramerateLimit(unsigned int limit)
 {
 	this->framerateLimit = limit;
+	LOG_INFO("framerateLimit: ", this->framerateLimit);
+
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
@@ -82,7 +86,10 @@ const std::string& Window::getTitle() const noexcept
 }
 void Window::setTitle(const std::string& title)
 {
-	this->getWindow().setTitle(title);
+	this->title = title;
+	LOG_INFO("Window title: ", this->title);
+
+	this->getWindow().setTitle(this->title);
 }
 
 // Fullscreen
@@ -146,15 +153,14 @@ void Window::init()
 			sf3d::Shader FShader;
 			FShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
 
-			this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
-			this->shaderProgram->linkShaders(VShader, FShader);
+			this->shaderProgram.linkShaders(VShader, FShader);
 			LOG_INFO("Shader loaded, compiled and linked.");
 		}
 		catch (...) {
 			std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
 		}
 
-		this->getWindow().setDefaultShaderProgram(this->shaderProgram.get());
+		this->getWindow().setDefaultShaderProgram(this->shaderProgram);
 	}
 	catch (...) {
 		std::throw_with_nested(std::runtime_error("Cannot initialized Window module."));
@@ -164,7 +170,9 @@ void Window::init()
 // render
 void Window::render()
 {
+	//glDisable(GL_DEPTH_TEST);
 	this->getWindow().display();
+	//glEnable(GL_DEPTH_TEST);
 }
 
 // processEvent
@@ -173,7 +181,9 @@ void Window::processEvent(sf::Event event)
 	switch (event.type) {
 		case sf::Event::Resized:
 		{
-			this->setSize({event.size.width, event.size.height});
+			// Update video mode
+			this->videoMode.width = event.size.width;
+			this->videoMode.height = event.size.height;
 		}
 		break;
 		
@@ -194,7 +204,7 @@ void Window::processEvent(sf::Event event)
 // Window recreate
 void Window::recreateWindow()
 {
-	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	this->getWindow().create(this->videoMode, this->title, &(this->shaderProgram), this->windowStyle);
 	this->setFramerateLimit(this->framerateLimit);
 }
 

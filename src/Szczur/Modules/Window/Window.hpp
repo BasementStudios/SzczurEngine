@@ -26,6 +26,7 @@ namespace sf3d {
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderTexture.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -51,10 +52,10 @@ private:
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
 	// Elmenents for render
-	Window_t	window;
+	Window_t window;
 	
 	// Shader programs
-	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
+	sf3d::ShaderProgram shaderProgram;
 
 
 
