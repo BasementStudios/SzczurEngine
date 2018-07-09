@@ -341,6 +341,11 @@ void ScenesManager::runGame() {
 				if(auto* comp = entity.getComponentAs<AudioComponent>()) comp->play();
 			});
 		}
+
+		getCurrentScene()->forEach([] (const std::string& group, Entity& entity) {
+			if (auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
+		}
+		);
 	}
 }
 

@@ -130,7 +130,14 @@ Entity* Scene::duplicateEntity(size_t id)
 {
 	if (auto ptr = getEntity(id); ptr != nullptr)
 	{
-		return getEntities(ptr->getGroup()).emplace_back(std::make_unique<Entity>(*ptr)).get();
+		auto entity = getEntities(ptr->getGroup()).emplace_back(std::make_unique<Entity>(*ptr)).get();
+
+		if (auto comp = entity->getComponentAs<ScriptableComponent>(); comp != nullptr)
+		{
+			comp->callInit();
+		}
+
+		return entity;
 	}
 
 	return nullptr;

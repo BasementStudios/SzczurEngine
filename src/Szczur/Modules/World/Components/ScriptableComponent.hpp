@@ -45,6 +45,9 @@ public:
 	void sceneChanged();
 
 	///
+	void callInit();
+
+	///
 	virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
 // Modifications

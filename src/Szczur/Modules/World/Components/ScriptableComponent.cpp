@@ -43,6 +43,11 @@ namespace rat {
 		}
 	}
 
+	void ScriptableComponent::callInit()
+	{
+		_inited = false;
+	}
+
 	std::unique_ptr<Component> ScriptableComponent::copy(Entity* newParent) const
 	{
 		auto ptr = std::make_unique<ScriptableComponent>(*this);
