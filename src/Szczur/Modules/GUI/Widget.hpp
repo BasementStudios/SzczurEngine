@@ -128,6 +128,9 @@ namespace rat
 		void makeChildrenPenetrable();
 		void makeChildrenUnresizable();
 
+		void makeUnresizable();
+		void makePenetrable();
+
         void invokeToCalcPropPosition();
 		void forceToUpdatePropSize();
 		void invokeToCalcPosition();
@@ -212,7 +215,10 @@ namespace rat
 		sf::Color _color;
 
 		bool _areChildrenPenetrable{false}; //lenny
-		bool _areChildrenResizing{true};
+		bool _areChildrenResizable{true};
+
+		bool _isPenetrable{false};
+		bool _isResizable{true};
 
 		sf::Vector2f _getBound() const;
 

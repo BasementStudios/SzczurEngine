@@ -122,6 +122,11 @@ namespace rat
         return object;
     }
 
+    void Widget::makePenetrable()
+    {
+        _isPenetrable = true;
+    }
+
     void Widget::invokeInput(const sf::Event& event)
     {
         switch(event.type)
@@ -135,7 +140,6 @@ namespace rat
     bool Widget::_onPressed()
     {
         if(!_isActivated || _isFullyDeactivated) return false;
-        if(!_isHovered) return false;
         
         bool isAnyPressed = false;
         for(auto i = _children.rbegin(); i < _children.rend(); ++i)
@@ -145,8 +149,12 @@ namespace rat
             if(isAnyPressed) break;
         }
         if(isAnyPressed && !_areChildrenPenetrable) return true;
+
+        if(!_isHovered) return isAnyPressed;
+
         _isPressed = true;
         _callback(CallbackType::onPress);
+        if(_isPenetrable) return isAnyPressed;
         return true;
     }
     void Widget::_onRealesed()
@@ -265,7 +273,7 @@ namespace rat
 
     void Widget::makeChildrenUnresizable()
     {
-        _areChildrenResizing = false;
+        _areChildrenResizable = false;
         _aboutToRecalculate = true;
     }
 
@@ -289,7 +297,7 @@ namespace rat
         }
 
         auto chSize = static_cast<sf::Vector2f>(_padding * 2.f);
-        if(_areChildrenResizing)
+        if(_areChildrenResizable)
         {
             chSize += _getChildrenSize();
         }
@@ -343,14 +351,24 @@ namespace rat
 
         if(_props.hasPosition)
         {
-            position = {0, 0};
-            origin = {0, 0};
+            position = {};
+            origin = {};
+        }
+        if(!_isResizable)
+        {
+            size = {};
         }
 
         auto width = (position.x + size.x - origin.x);
         auto height = (position.y + size.y - origin.y);
 
         return {width, height};
+    }
+
+    void Widget::makeUnresizable()
+    {
+        _isResizable = false;
+        if(_parent) _parent->_aboutToRecalculate = true;
     }
     
 
