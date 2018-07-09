@@ -113,7 +113,7 @@ namespace rat
         fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
         fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
-        fps->setString("54321 54321 321 654321 987654321 4321 21 321");
+        fps->setString("54321 54321 321 654321\n987654321 4321 21 321");
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             //if(randomBool)
                 //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
