@@ -113,14 +113,14 @@ void Window::setFullscreen(bool state)
 Window::Window()
 :	window(this->videoMode, this->title)
 {
-	LOG_INFO("Initializing Window module");
+	LOG_INFO("Window module initializing");
 	this->init();
-	LOG_INFO("Module Window initialized");
+	LOG_INFO("Window module initialized");
 }
 // Destructor
 Window::~Window()
 {
-	LOG_INFO("Module Window destructed");
+	LOG_INFO("Window module destructed");
 }
 
 
@@ -130,9 +130,10 @@ Window::~Window()
 void Window::init()
 {
 	try {
-		// Create
-		// @todo ? load videomode from settings
-		this->setVideoMode(sf::VideoMode::getDesktopMode());
+		// Set video mode, also creates window
+		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,
+		//  which require some rendering context which is created in SFML `sf::RenderWindow::create`.
+		this->setVideoMode(this->videoMode); // @todo ? load videomode from settings
 
 		// Print OpenGL version
 		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
@@ -182,9 +183,16 @@ void Window::processEvent(sf::Event event)
 			this->setSize({event.size.width, event.size.height});
 		}
 		break;
+		
 		case sf::Event::Closed:
 		{
-			getModule<Window>().getWindow().close();
+			this->getWindow().close();
+		}
+		break;
+		
+		default:
+		{
+			// Do nothing.
 		}
 		break;
 	}

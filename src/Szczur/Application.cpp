@@ -48,7 +48,7 @@ void Application::update()
 {
 	_imGuiStyler.update();
 
-	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+	auto deltaTime = _mainClock.restart().asFSeconds();
 
 	getModule<DragonBones>().update(deltaTime);
 	getModule<World>().update(deltaTime);
@@ -65,6 +65,8 @@ void Application::update()
 void Application::render()
 {
 	getModule<Window>().clear();
+
+	getModule<World>().render();
 
 	#ifdef EDITOR
 	{
