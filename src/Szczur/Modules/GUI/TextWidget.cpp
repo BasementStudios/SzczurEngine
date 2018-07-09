@@ -6,6 +6,7 @@
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
 #include "Animation/Anim.hpp"
+#include "InterfaceWidget.hpp"
 
 namespace rat {
     TextWidget::TextWidget() :
@@ -132,6 +133,33 @@ namespace rat {
 
     unsigned int TextWidget::getCharacterSize() const {
         return _text.getCharacterSize();
+    }
+
+    void TextWidget::setCharacterPropSize(float prop)
+    {
+        _hasChPropSize = true;
+        _chPropSize = prop;
+
+        if(_interface) _calcChPropSize();
+        else _elementsPropSizeMustBeenCalculated = true;
+    }
+    float TextWidget::getCharacterPropSize() const
+    {
+        return _chPropSize;
+    }
+
+    void TextWidget::_calcChPropSize()
+    {
+        assert(_hasChPropSize);
+        assert(_interface);
+
+        auto size = _interface->getSizeByPropSize({_chPropSize, _chPropSize});
+        setCharacterSize(size_t(std::min(size.x, size.y)));
+    }
+
+    void TextWidget::_recalcElementsPropSize()
+    {
+        if(_hasChPropSize) _calcChPropSize();
     }
 
     void TextWidget::_callback(CallbackType type) {

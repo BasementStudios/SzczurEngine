@@ -59,13 +59,19 @@ namespace rat {
         float _chPropSize;
         bool _hasChPropSize = false;
 
+        float _width = 0.f;
+
         void _calcChPropSize();
 
         void _wrap();
+        void _convertToMultiLines();
         void _calcTextPos();
         float _getAlignFactor() const;
 
-        bool _toWrap;
+        void _updateFont();
+        bool _isFontChanged = false;
+        void _updateChSize();
+        bool _isChChanged = false;
 
         sf::String& _wrapText(sf::String& temp);
         virtual void _callback(CallbackType type) override;

@@ -111,11 +111,12 @@ namespace rat
         fps = new TextAreaWidget;
         _widget->add(fps);
         fps->setFont(gui.getAsset<sf::Font>("Assets/GUITest/lumos.ttf"));
-        fps->setCharacterPropSize(0.06f);
-        //fps->setCharacterSize(40u);
+        //fps->setCharacterPropSize(0.06f);
+        fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
-        fps->setString("54321 54321 321 654321\n987654321 4321 21 321");
-        fps->setPropPosition(0.5f, 0.5f);
+        fps->setString("54321 54321 321 654321\n987 4321 21 321");
+        fps->setAlign(TextAreaWidget::Align::Center);
+        fps->setPropPosition(0.f, 0.f);
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             //if(randomBool)
                 //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
@@ -196,6 +197,8 @@ namespace rat
         //scroll->setScrollPropWidth(_prop);
         //std::cout << _prop << '\n';
         //fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
+
+        fps->setPropPosition(_prop, _prop);
 
         //image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
     }

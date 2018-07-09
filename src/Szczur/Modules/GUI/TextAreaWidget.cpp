@@ -65,7 +65,6 @@ namespace rat {
     void TextAreaWidget::setString(const std::string& text)
     {
         _str = text;
-        if(!_isMinSizeSet) _texts[0].setString(text);
         _aboutToRecalculate = true;
     }
     const std::string& TextAreaWidget::getString() const
@@ -75,7 +74,7 @@ namespace rat {
 
     void TextAreaWidget::setFont(sf::Font* font) {
         _font = font;
-        if(!_isMinSizeSet)
+        _isFontChanged = true;
         _aboutToRecalculate = true;
     }
     const sf::Font* TextAreaWidget::getFont() const
@@ -86,9 +85,7 @@ namespace rat {
     void TextAreaWidget::setCharacterSize(size_t size)
     {
         _chSize = size;
-
-        if(!_isMinSizeSet) _texts[0].setCharacterSize(size);
-
+        _isChChanged = true;
         _aboutToRecalculate = true;
     }
     size_t TextAreaWidget::getCharacterSize() const
@@ -135,7 +132,6 @@ namespace rat {
     }
 
     sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
-        _toWrap = false;
         for(size_t i = 0; i < temp.getSize(); ++i)
             if(temp[i] == '\n')
                 temp[i] = ' ';
@@ -158,6 +154,8 @@ namespace rat {
 
     void TextAreaWidget::_wrap()
     {
+        if(!_font && !_chSize) return;
+
         const float width = _minSize.x;
         size_t i = 0;
 
@@ -250,15 +248,14 @@ namespace rat {
             {
                 auto& t = _texts[lineIndex];
                 t.setString(lineStr);
-                t.setFont(*_font);
-                t.setCharacterSize(_chSize);
             }
             else
             {
                 sf::Text t;
+                t.setString(lineStr);
+                t.setFillColor(_color);
                 t.setFont(*_font);
                 t.setCharacterSize(_chSize);
-                t.setString(lineStr);
                 _texts.emplace_back(t);
             }
             lineIndex++;
@@ -274,6 +271,51 @@ namespace rat {
         }
 
         _texts.resize(std::max(size_t(1), lineIndex));
+
+        //_isChChanged = true;
+        //_isFontChanged = true;
+    }
+
+    void TextAreaWidget::_convertToMultiLines()
+    {
+        size_t lineIndex = 0;
+        const size_t oldSize = _texts.size();
+        size_t begin = 0;
+        size_t end;
+        size_t i = 0;
+        auto str = getUnicodeString(_str);
+        const char endingKey = 5;
+        str += endingKey;
+        for(const char& key : str)
+        {
+            if(key == '\n'|| key == endingKey)
+            {
+                auto lineStr = str.substring(begin, i - begin);
+
+                if(lineIndex < _texts.size())
+                {
+                    auto& t = _texts[lineIndex];
+                    t.setString(lineStr);
+                }
+                else
+                {
+                    sf::Text t;
+                    t.setFillColor(_color);
+                    t.setFont(*_font);
+                    t.setCharacterSize(_chSize);
+                    t.setString(lineStr);
+                    _texts.emplace_back(t);
+                }
+                lineIndex++;
+                begin = i + 1;
+            }
+            ++i;
+        }
+        _texts.resize(lineIndex);
+
+        _updateFont();
+        _updateChSize();
+        
         _calcTextPos();
     }
 
@@ -299,7 +341,20 @@ namespace rat {
     }
     void TextAreaWidget::_calcTextPos()
     {
-        const float width = _minSize.x;
+        float width = 0.f;
+        if(_isMinSizeSet)
+        {
+            width = _minSize.x;
+        }
+        else
+        {
+            for(auto& t : _texts)
+            {
+                const auto& rect = t.getGlobalBounds();
+                if(rect.width > width) width = rect.width;
+            }
+        }
+
         float totalHeight = 0.f;
         const auto& drawPos = gui::FamilyTransform::getDrawPosition();
 
@@ -307,7 +362,7 @@ namespace rat {
         for(auto& t : _texts)
         {
             const auto rect = t.getGlobalBounds();
-            float lineX = alignFactor * (width -rect.width);
+            float lineX = alignFactor * (width - rect.width);
             sf::Vector2f pos(lineX, totalHeight);
             t.setPosition(drawPos + pos);
             totalHeight += rect.height;
@@ -315,38 +370,63 @@ namespace rat {
     }
 
     void TextAreaWidget::_calculateSize()
-    {
-        if(_isMinSizeSet)
+    {   
+        if(_font)
         {
-            if(_chSize && _font) _wrap();
+            if(_isMinSizeSet)
+            {
+                _wrap();
+            }
+            else
+            {
+                _convertToMultiLines();
+            }
         }
-        else
-        {
-            if(_chSize) for(auto& t : _texts) t.setCharacterSize(_chSize);
 
-            if(_font) for(auto& t : _texts) t.setFont(*_font);
-        }
+        if(_isFontChanged && _font) _updateFont();
+        if(_isChChanged) _updateChSize();
+
         _isPosChanged = true;
+    }
+
+    void TextAreaWidget::_updateFont()
+    {
+        assert(_font);
+        for(auto& t : _texts) t.setFont(*_font);
+        _isFontChanged = false;
+    }
+    void TextAreaWidget::_updateChSize()
+    {
+        for(auto& t : _texts) t.setCharacterSize(_chSize);
+        _isChChanged = false;
     }
 
     sf::Vector2f TextAreaWidget::_getSize() const 
     {
-        if(_isMinSizeSet)
-        {
-            const float width = _minSize.x;
+        const auto& drawPos = gui::FamilyTransform::getDrawPosition();
+        float height = 0.f;
+        float width = 0.f;
 
-            const auto& drawPos = gui::FamilyTransform::getDrawPosition();
+        {
             const auto& lastText = _texts.back();
             const auto rect = lastText.getGlobalBounds();
-            const float height = rect.height + rect.top - drawPos.y;
+            height = rect.height + rect.top - drawPos.y;
+        }
 
-            return {width, height};
+        if(_isMinSizeSet)
+        {
+            width = _minSize.x;
         }
         else
         {
-            const auto rect = _texts[0].getGlobalBounds();
-            return {rect.width, rect.height};
+            for(const auto& t : _texts)
+            {
+                const auto rect = t.getGlobalBounds();
+                if(rect.width > width) width = rect.width;
+            }
         }     
+
+        return {width, height};
     }
 
     void TextAreaWidget::_recalcPos()
