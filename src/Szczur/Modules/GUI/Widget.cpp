@@ -34,7 +34,8 @@ namespace rat
 
     void Widget::initScript(Script& script) {
         auto object = script.newClass<Widget>("Widget", "GUI");
-        basicScript(object);
+        //basicScript(object);
+        _initScript(object);
         object.init();
     }
 
@@ -581,7 +582,7 @@ namespace rat
         setPropPosition({propX, propY});
     }
 
-	void Widget::setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data)
+	void Widget::setPropPositionInTime(const sf::Vector2f& propPos, const gui::AnimData& data)
     {
         using PosAnim_t = gui::Anim<Widget, gui::AnimType::Pos, sf::Vector2f>;
         
@@ -592,9 +593,9 @@ namespace rat
         _addAnimation(std::move(posAnim));
     }
     
-	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+	void Widget::setPropPositionInTime(const sf::Vector2f& propPos, float inTime)
     {
-        setPropPosition(propPos, gui::AnimData(inTime));
+        setPropPositionInTime(propPos, gui::AnimData(inTime));
     }
     
 
@@ -659,7 +660,7 @@ namespace rat
     }
         
 
-    void Widget::setSize(sf::Vector2f size)
+    void Widget::setSize(const sf::Vector2f& size)
     {
         _isMinSizeSet = true;
         _minSize = size;

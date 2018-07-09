@@ -23,7 +23,7 @@ namespace rat {
         resetScrollerPosition();
     }
 
-    void ScrollAreaWidget::initScript(Script& script) {
+    void ScrollAreaWidget::initScript(Script& script) {/*
         auto object = script.newClass<ScrollAreaWidget>("ScrollAreaWidget", "GUI");
 
         basicScript(object);
@@ -37,7 +37,7 @@ namespace rat {
             [](ScrollAreaWidget& owner){owner.getScrollSpeed();},
             [](ScrollAreaWidget& owner, float speed){owner.setScrollSpeed(speed);}
         );
-        object.init();
+        object.init();*/
     }
     void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture, float boundsHeight)
     {

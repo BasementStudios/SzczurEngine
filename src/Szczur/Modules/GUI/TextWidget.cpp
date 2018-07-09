@@ -20,8 +20,8 @@ namespace rat {
     _text(text) {
         _text.setFont(*font);
     }
-
     void TextWidget::initScript(Script& script) {
+/*
         auto object = script.newClass<TextWidget>("TextWidget", "GUI");
         //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
         //Widget::basicScript<ImageWidget>(object);
@@ -52,6 +52,7 @@ namespace rat {
         );
         
         object.init();
+    */
     }
 
     sf::Vector2f TextWidget::_getSize() const 

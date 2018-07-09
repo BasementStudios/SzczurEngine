@@ -24,7 +24,7 @@ namespace rat {
         setFont(font);
     }
 
-    void TextAreaWidget::initScript(Script& script) {
+    void TextAreaWidget::initScript(Script& script) {/*
         auto object = script.newClass<TextAreaWidget>("TextAreaWidget", "GUI");
         basicScript(object);
 
@@ -57,9 +57,9 @@ namespace rat {
             "size",
             [](TextAreaWidget& owner){return owner._size;},
             [](TextAreaWidget& owner, sol::table tab){ owner.setTextSize(sf::Vector2u{tab[1], tab[2]}); }
-        );*/
+        );
         
-        object.init();
+        object.init();*/
     }
 
     void TextAreaWidget::setString(const std::string& text)
