@@ -698,16 +698,6 @@ GLuint ShaderProgram::getNativeHandle() const
 
 #ifdef EDITOR
 
-void ShaderProgram::_setAllUniforms()
-{
-	for (const auto& [ k, v ] : uniforms)
-	{
-		std::visit([this, &k](const auto& value) {
-			setUniform(k.data(), value);
-		}, v);
-	}
-}
-
 ///
 class ImGuiID
 {
@@ -777,7 +767,7 @@ void ShaderProgram::_showEditor(bool* open)
 		ImGui::SameLine();
 		if (ImGui::Button("Load"))
 		{
-			_loadConfig(path);
+			loadConfig(path);
 		}
 
 		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
@@ -950,30 +940,6 @@ void ShaderProgram::_saveConfig(const char* path) const
 	_saveConfig(config);
 
 	std::ofstream{ path } << std::setw(4) << config;
-}
-
-void ShaderProgram::_loadConfig(const nlohmann::json& config)
-{
-	for (auto& [ k, v ] : uniforms)
-	{
-		if (auto it = config.find(k); it != config.end())
-		{
-			std::visit([it](auto& value) {
-				value = it.value()["value"];
-			}, v);
-		}
-	}
-
-	_setAllUniforms();
-}
-
-void ShaderProgram::_loadConfig(const char* path)
-{
-	nlohmann::json config;
-
-	std::ifstream{ path } >> config;
-
-	_loadConfig(config);
 }
 
 #endif // EDITOR

@@ -72,12 +72,13 @@ bool Shader::loadFromFile(ShaderType type, const char* filePath)
 	#endif // EDITOR
 
 	auto ptr = getFileContents(filePath);
-	if (!ptr) {
+
+	if (!ptr)
+	{
 		throw std::runtime_error(std::string("Cannot load shader from ") + filePath);
-		return false;
 	}
 
-	return ptr && _compile(type, ptr.get(), -1);
+	return _compile(type, ptr.get(), -1);
 }
 
 bool Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
@@ -151,7 +152,7 @@ bool Shader::_compile(ShaderType type, const char* data, GLint size)
 		glGetShaderInfoLog(_shader, sizeof(infoLog), nullptr, infoLog);
 
 		_destroy();
-		
+
 		throw std::runtime_error(
 			std::string(infoLog)
 			#ifdef EDITOR

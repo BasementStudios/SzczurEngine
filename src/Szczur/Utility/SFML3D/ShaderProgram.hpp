@@ -124,9 +124,6 @@ public:
 	using UniMap_t     = std::map<UniKey_t, UniVariant_t>;
 
 	///
-	void _setAllUniforms();
-
-	///
 	void _showEditor(bool* open);
 
 	///
@@ -134,13 +131,7 @@ public:
 
 	///
 	void _saveConfig(const char* path) const;
-
-	///
-	void _loadConfig(const nlohmann::json& config);
-
-	///
-	void _loadConfig(const char* path);
-
+	
 	UniMap_t uniforms;
 	UniMap_t::iterator currentElem = uniforms.end();
 	const char* const uniTypeNames[std::variant_size_v<UniVariant_t>] = { "bool", "bvec2", "bvec3", "bvec4", "int", "ivec2", "ivec3", "ivec4", "uint", "uvec2", "uvec3", "uvec4", "float", "vec2", "vec3", "vec4", "mat2x2", "mat3x3", "mat4x4" };
