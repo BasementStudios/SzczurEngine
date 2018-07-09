@@ -52,6 +52,7 @@ namespace rat {
 			if(ImGui::BeginPopupContextItem("Position##context")) {
 				if(ImGui::Selectable("Copy##clipboard")) detail::globalPtr<World>->getLevelEditor().setClipboard(position);
 				if(ImGui::Selectable("Paste##clipboard")) position = detail::globalPtr<World>->getLevelEditor().getClipboardVec3();
+				if(ImGui::Selectable("Reset##reset")) position = glm::vec3();
 				ImGui::EndPopup();
 			}
 			object->setPosition(position);
@@ -76,6 +77,7 @@ namespace rat {
 			if(ImGui::BeginPopupContextItem("Rotation##context")) {
 				if(ImGui::Selectable("Copy##clipboard")) detail::globalPtr<World>->getLevelEditor().setClipboard(rotation);
 				if(ImGui::Selectable("Paste##clipboard")) rotation = detail::globalPtr<World>->getLevelEditor().getClipboardVec3();
+				if(ImGui::Selectable("Reset##reset")) rotation = glm::vec3();
 				ImGui::EndPopup();
 			}
 			object->setRotation(rotation);
