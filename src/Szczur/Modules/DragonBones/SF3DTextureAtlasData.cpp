@@ -47,15 +47,14 @@ void SF3DTextureAtlasData::setRenderTexture(sf3d::Texture* value)
 			}
 		}
 	}
-	else
-	{
-		for (const auto& pair : textures)
-		{
-			const auto textureData = static_cast<SF3DTextureData*>(pair.second);
-
-			// nothing to release
-		}
-	}
+	// else // @todo ?
+	// {
+	// 	for (const auto& pair : textures)
+	// 	{
+	// 		const auto textureData = static_cast<SF3DTextureData*>(pair.second);
+	// 		// nothing to release
+	// 	}
+	// }
 }
 
 TextureData* SF3DTextureAtlasData::createTexture() const

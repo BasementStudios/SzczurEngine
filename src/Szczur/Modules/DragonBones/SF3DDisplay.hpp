@@ -96,7 +96,7 @@ public:
 		glm::vec3 min = verticesDisplay[0].position;
 		glm::vec3 max = min;
 
-		for (int i = 0; i < verticesDisplay.getSize(); i++)
+		for (std::size_t i = 0; i < verticesDisplay.getSize(); i++)
 		{
 			auto& vert = verticesDisplay[i];
 
