@@ -80,15 +80,24 @@ namespace rat {
 			// Operations buttons
 			availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
 
-			if(ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
+
+			bool isSingleTab = _tab == "single";
+
+			if(!isSingleTab && ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
 				addObjectToCurrentGroup();
 			}
 			if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
-				ImGui::SameLine();
-				if(ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
+				
+				if (!isSingleTab)
+					ImGui::SameLine();
+
+				if(!isSingleTab && ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
 					duplicateObject(_selectedEntityID);
 				}
-				ImGui::SameLine();
+
+				if (!isSingleTab)
+					ImGui::SameLine();
+
 				if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
 					removeObject(_selectedEntityID);
 				}
