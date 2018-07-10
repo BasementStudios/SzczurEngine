@@ -56,7 +56,10 @@ namespace gui
                 sol::resolve<void(float, float)>(&Widget::setPropPadding)
             );
 
-            object.set("setColor", &Widget::setColor);
+            object.setOverload("setColor",
+                sol::resolve<void(const sf::Color&)>(&Widget::setColor),
+                sol::resolve<void(unsigned char, unsigned char, unsigned char)>(&Widget::setColor)
+            );
             object.setOverload("setOrigin",
                 sol::resolve<void(const sf::Vector2f&)>(&Widget::setOrigin),
                 sol::resolve<void(float, float)>(&Widget::setOrigin)

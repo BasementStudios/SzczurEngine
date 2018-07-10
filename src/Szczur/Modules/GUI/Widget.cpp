@@ -439,10 +439,16 @@ namespace rat
             child->setColor(color);
         }
     }
+    void Widget::setColor(unsigned char r, unsigned char g, unsigned char b)
+    {
+        setColor({r, g, b});
+    }
     void Widget::setColorInTime(const sf::Color& color, const gui::AnimData& data)
     {
-		using ColorAnim_t = gui::Anim<Widget, gui::AnimType::Color, sf::Color>;        
-        auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
+		using ColorAnim_t = gui::Anim<Widget, gui::AnimType::Color, sf::Color>;  
+        auto setter = static_cast<void (Widget::*)(const sf::Color&)>(&Widget::setColor);
+
+        auto animCol = std::make_unique<ColorAnim_t>(this, setter);
         animCol->setAnim(getColor(), color, data);
         _addAnimation(std::move(animCol));
     }

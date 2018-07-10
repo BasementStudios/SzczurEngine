@@ -74,6 +74,7 @@ namespace rat
 		void setPropPadding(float propWidth, float propHeight);
 
 		void setColor(const sf::Color& color);
+		void setColor(unsigned char r, unsigned char g, unsigned char b);
 		void setColorInTime(const sf::Color& color, float inTime);
 		void setColorInTime(const sf::Color& color, const gui::AnimData& data);
 		void resetColor();
