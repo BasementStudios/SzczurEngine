@@ -8,9 +8,9 @@
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
 
-#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Utility/ImGuiTweaks.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
@@ -347,33 +347,33 @@ void ArmatureComponent::setOrigin(int vertical, int horizontal)
 	if (!_armature || !_armature->getArmature())
 		return;
 
-	auto size = _armature->getBoundingBox();
+	auto bb = _armature->getBoundingBox();
 
 	glm::vec2 pos;
 
 	switch (vertical)
 	{
 		case -1:
-			pos.x = -size.width / 2.f;
+			pos.x = bb.left;
 			break;
 		case 0:
 			pos.x = 0;
 			break;
 		case 1:
-			pos.x = size.width / 2.f;
+			pos.x = bb.left + bb.width;
 			break;
 	}
 
 	switch (horizontal)
 	{
 		case -1:
-			pos.y = -size.height / 2.f;
+			pos.y = -(bb.top + bb.height);
 			break;
 		case 0:
 			pos.y = 0;
 			break;
 		case 1:
-			pos.y = size.height / 2.f;
+			pos.y = bb.height - (bb.top + bb.height);
 			break;
 	}
 

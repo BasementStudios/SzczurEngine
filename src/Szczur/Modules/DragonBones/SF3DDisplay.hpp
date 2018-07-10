@@ -42,8 +42,6 @@ public:
 protected:
 	sf3d::Transform transform;
 
-
-
 	/* Operators */
 public:
 	SF3DDisplay() = default;
@@ -111,9 +109,12 @@ public:
 
 		auto mat = this->transform.getMatrix();
 
-		bbMatrix.combine(sf::Transform(mat[0][0], mat[0][1], mat[0][3],
-														   mat[1][0], mat[1][1], mat[1][3],
-														   0.f, 0.f, 1.f));
+		bbMatrix.combine(sf::Transform(
+			mat[0][0], mat[1][0], mat[3][0],
+			mat[0][1], mat[1][1], mat[3][1],
+			0.f, 0.f, 1.f
+		));
+
 		rect = bbMatrix.transformRect(rect);
 
 		return rect;
