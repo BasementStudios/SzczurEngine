@@ -1,10 +1,11 @@
 #pragma once
-
+ 
 #include "Szczur/Utility/Time/Clock.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/BattleField/BattleField.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
-
 namespace rat
 {
 
@@ -60,7 +61,7 @@ public:
 private:
 
 	Clock _mainClock;
-	ModulesHolder<Window, Input> _modules;
+	ModulesHolder<Window, Input, Script, BattleField> _modules;
 
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
