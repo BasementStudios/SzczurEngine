@@ -97,6 +97,7 @@ namespace rat {		//beware spagetti monster down there :/
 		gui.addFont("Assets/Equipment/NotoMono.ttf");
 		gui.addTexture("Assets/Equipment/szczegoly.png");
 		gui.addTexture("Assets/Equipment/cancel.png");
+		gui.addTexture("Assets/Equipment/rozwijanie.png");
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
@@ -104,14 +105,22 @@ namespace rat {		//beware spagetti monster down there :/
 		_equipmentFrame = new WindowWidget();
 		_base->add(_equipmentFrame);
 		_equipmentFrame->makeChildrenUnresizable();
-
-		//_equipmentFrame->setPosition(sf::Vector2f(_window.getSize().x / 10 * 3, _window.getSize().y / 10 * 3.5f)); //base equipment widget
-		//_equipmentFrame->setPosition(384.f, 220.f); //{384.f ,220.f }
 		_equipmentFrame->setPropPosition(0.5f, 1.f);		
 		_equipmentFrame->setPropSize(.63f, .7f);
-		//_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Test/NinePatchTest.png"), 200);
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 180);
 	
+		_hideButton = new ImageWidget;
+		_equipmentFrame->add(_hideButton);
+		_hideButton->setPropPosition(0.5f, -0.06f);
+		_hideButton->setPropSize(0.25f, 0.042f);
+		_hideButton->setTexture(gui.getTexture("Assets/Equipment/rozwijanie.png"));
+		_hideButton->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
+			if (_isEquipmentHidden)
+				_openEquipment();
+			else
+				_closeEquipment();
+		});
+
 		_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPropPosition({ 0.15f, 0.08f });
@@ -149,13 +158,7 @@ namespace rat {		//beware spagetti monster down there :/
 			_equipmentFrame->fullyActivate();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !_isEquipmentHidden) {
-			_equipmentFrame->setPropPosition({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_equipmentFrame->fullyDeactivate(); _isEquipmentHidden = true; } });				
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
-			addUsableItem(getUsableItem("potion2"));
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
-			removeUsableItem("potion2");
+			_equipmentFrame->setPropPosition({ 0.5f, 3.35f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = true; } });				
 		}
 	}
 
@@ -312,8 +315,7 @@ namespace rat {		//beware spagetti monster down there :/
 		_equipmentFrame->fullyActivate();
 	}
 	void Equipment::_closeEquipment() {
-		_equipmentFrame->setPropPosition({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
-			_equipmentFrame->fullyDeactivate();
+		_equipmentFrame->setPropPosition({ 0.5f, 3.35f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = true;
 		} });
 	}

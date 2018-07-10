@@ -7,7 +7,7 @@
 
 namespace rat {	
 	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment; class ReplaceItem;
-	typedef std::multimap<std::string, EquipmentSlot*> itemMap_t;
+	typedef std::multimap<std::string, std::shared_ptr<EquipmentSlot>> itemMap_t;
 
 	template<class T, class U>
 	class slots_priority_queue : public std::priority_queue<T, std::vector<T>, U>
@@ -28,7 +28,7 @@ namespace rat {
 	};
 
 	struct sortByIndex {
-		bool operator () (const EquipmentSlot* lhs, const EquipmentSlot* rhs) const;
+		bool operator () (const std::shared_ptr<EquipmentSlot> lhs, const std::shared_ptr<EquipmentSlot> rhs) const;
 	};
 
 	class NormalSlots			//part of equipment for normal items looking like a grid
@@ -40,7 +40,7 @@ namespace rat {
 		bool addItem(EquipmentObject* item);
 		bool removeItem(const std::string& itemNameId);
 		bool removeItem(const std::string& itemNameId, int quantity);
-		bool removeItem(int index);
+		bool removeItem(size_t index);
 
 		bool hasItem(const std::string& itemNameId);
 		bool hasItem(const std::string& itemNameId, int quantity);
@@ -69,9 +69,9 @@ namespace rat {
 		sf::Texture* _frameText;
 
 		itemMap_t _occupiedSlots;		//slots with items
-		slots_priority_queue<EquipmentSlot*, sortByIndex> _freeSlots;
+		slots_priority_queue<std::shared_ptr<EquipmentSlot>, sortByIndex> _freeSlots;
 		//std::vector<EquipmentSlot*> _freeSlots;
-		std::vector<EquipmentSlot*> _allSlots;
+		std::vector<std::shared_ptr<EquipmentSlot>> _allSlots;
 
 		std::shared_ptr<EquipmentSlot> _slotHeld;
 		std::shared_ptr<EquipmentSlot> _slotDropped;

@@ -54,6 +54,7 @@ namespace rat
 
 		InterfaceWidget* _base{ nullptr };
 		WindowWidget* _equipmentFrame{ nullptr };
+		ImageWidget* _hideButton{ nullptr };
 
 		sf::RenderTexture _canvas;
 

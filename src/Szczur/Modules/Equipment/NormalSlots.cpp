@@ -6,7 +6,7 @@
 
 namespace rat
 {
-	bool sortByIndex::operator() (const EquipmentSlot* lhs, const EquipmentSlot* rhs) const {
+	bool sortByIndex::operator() (const std::shared_ptr<EquipmentSlot> lhs, const std::shared_ptr<EquipmentSlot> rhs) const {
 		return lhs->index > rhs->index;
 	}
 
@@ -25,10 +25,10 @@ namespace rat
 				y++;
 				x = 0;
 			}
-			std::shared_ptr<EquipmentSlot> newSlot(new EquipmentSlot());
-			_allSlots.push_back(newSlot.get());
+			std::shared_ptr<EquipmentSlot> newSlot = std::make_shared<EquipmentSlot>();
+			_allSlots.push_back(newSlot);
 			newSlot->index = i;
-			_freeSlots.push(newSlot.get());
+			_freeSlots.push(newSlot);
 			newSlot->setParent(_base);
 			newSlot->setTexture(_frameText);
 			newSlot->setPropPosition({x * .33f, y * .25f});
@@ -92,7 +92,7 @@ namespace rat
 		else
 			return false;
 	}
-	bool NormalSlots::removeItem(int _index) {
+	bool NormalSlots::removeItem(size_t _index) {
 		for (auto it = _occupiedSlots.begin(); it != _occupiedSlots.end(); ++it) {
 			if (it->second->index == _index && it->second->getItem()) {
 				it->second->removeItem();
@@ -170,7 +170,7 @@ namespace rat
 			if (_itemForReplacing) {
 				removeItem(clickedObj->index);
 				clickedObj->setItem(_itemForReplacing);
-				_occupiedSlots.insert(std::make_pair(_itemForReplacing->getNameId(), clickedObj.get()));
+				_occupiedSlots.insert(std::make_pair(_itemForReplacing->getNameId(), clickedObj));
 				_equipment->_stopReplacingItem(true);
 			}
 			else {
@@ -214,13 +214,12 @@ namespace rat
 				else if (!_slotDropped->getItem() && _slotDropped->getStatus()) {
 					//removing item from first slot
 					removeItem(_slotHeld->index);
-					//std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 
 					//putting item into new slot
 					_slotDropped->setItem(_itemHeld);
 					//_freeSlots.erase(_freeSlots.begin());
-					_freeSlots.remove(_slotDropped.get());
-					_occupiedSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped.get()));
+					_freeSlots.remove(_slotDropped);
+					_occupiedSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotDropped));
 
 					_slotHeld = nullptr;
 					_itemHeld = nullptr;
@@ -233,17 +232,19 @@ namespace rat
 				else if (_slotDropped->getItem()) {
 					//removing item from first slot
 					removeItem(_slotHeld->index);
+					_freeSlots.remove(_slotHeld);
 
 					//putting second item into first slot
 					_slotHeld->setItem(_slotDropped->getItem());
-					_occupiedSlots.insert(std::make_pair(_slotDropped->getItem()->getNameId(), _slotHeld.get()));
+					_occupiedSlots.insert(std::make_pair(_slotHeld->getItem()->getNameId(), _slotHeld));
 
 					//removing item from second slot
 					removeItem(_slotDropped->index);
+					_freeSlots.remove(_slotDropped);
 
 					//putting first item into second slot
 					_slotDropped->setItem(_itemHeld);
-					_occupiedSlots.insert(std::make_pair(_itemHeld->getNameId(), _slotDropped.get()));
+					_occupiedSlots.insert(std::make_pair(_itemHeld->getNameId(), _slotDropped));
 
 					_slotHeld = nullptr;
 					_itemHeld = nullptr;
