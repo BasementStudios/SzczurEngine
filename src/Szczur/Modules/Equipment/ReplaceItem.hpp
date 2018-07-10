@@ -14,6 +14,9 @@ namespace rat {
 
 		void minimalize();
 		void maximize();
+
+		void lowerPosition();
+		void higherPosition();
 	private:
 		WindowWidget * _descriptionWidget{ nullptr };
 		ImageWidget* _cancelButton{ nullptr };

@@ -82,6 +82,14 @@ namespace rat {
 			_base->fullyDeactivate();
 	}
 
+	void ReplaceItem::lowerPosition() {
+		_base->setPropPosition({ .5f, .15f });
+	}
+
+	void ReplaceItem::higherPosition() {
+		_base->setPropPosition({ .5f, .03f });
+	}
+
 	void ReplaceItem::setItem(EquipmentObject* item) {
 		_base->fullyActivate();
 		_isClosed = false;

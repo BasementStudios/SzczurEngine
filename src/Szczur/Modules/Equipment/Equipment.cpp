@@ -176,12 +176,18 @@ namespace rat {		//beware spagetti monster down there :/
 		if (canPreviewBeInstantiated) {
 			_itemPreview->setItem(item);
 			_isPreviewOn = true;
+			if (_isReplacing) {
+				_replaceItem->higherPosition();
+			}
 		}
 	}
 
 	void Equipment::disableItemPreview() {
 		_itemPreview->minimalize();
 		_isPreviewOn = false;
+		if (_isReplacing) {
+			_replaceItem->lowerPosition();
+		}
 	}
 
 	UsableItem* Equipment::getUsableItem(const std::string& nameId) {
@@ -296,10 +302,15 @@ namespace rat {		//beware spagetti monster down there :/
 	//odtad
 	void Equipment::_replaceNewItem(EquipmentObject* item) {
 		_replaceItem->setItem(item);
+		_isReplacing = true;
+		if (!_isPreviewOn) {
+			_replaceItem->lowerPosition();
+		}
 	}
 
 	void Equipment::_stopReplacingItem(bool hasBeenSuccesfull) {
 		_normalSlots->_stopReplacing();
+		_isReplacing = false;
 		_replaceItem->close();
 		if (hasBeenSuccesfull)
 			_replacingStatus = statusOfEq::replaced;

@@ -68,6 +68,7 @@ namespace rat
 		void _replaceNewItem(EquipmentObject* item);
 		void _stopReplacingItem(bool hasBeenSuccesfull);
 		statusOfEq _replacingStatus;
+		bool _isReplacing;
 
 		statusOfEq lastChangeStatus();
 
