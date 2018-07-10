@@ -1,10 +1,23 @@
 #include "InterfaceWidget.hpp"
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 namespace rat
 {
     InterfaceWidget::InterfaceWidget()
     {
         makeChildrenUnresizable();
+    }
+    void InterfaceWidget::initScript(Script& script) 
+    {
+        auto object = script.newClass<InterfaceWidget>("InterfaceWidget", "GUI");
+
+        Widget::_initScript(object);
+
+        object.set("setWidthToHeightProp", &InterfaceWidget::setWidthToHeightProp);
+        object.set("setSizingWidthToHeightProportion", &InterfaceWidget::setSizingWidthToHeightProportion);
+
+        object.init();
     }
     void InterfaceWidget::setWidthToHeightProp(float prop)
     {

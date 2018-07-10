@@ -23,9 +23,6 @@ void Application::init()
 	}
 	#endif
 
-	// For testing `Script`
-	initModule<BattleField>();
-
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR
@@ -143,8 +140,6 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-	_modules.getModule<BattleField>().update();
-	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));

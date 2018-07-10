@@ -4,10 +4,15 @@
 
 namespace rat
 {
+    class Script;
     class InterfaceWidget : public Widget
     {
+
     public:
         InterfaceWidget();
+        static void initScript(Script& script);
+
+    public:
         void updateSizeByWindowSize(const sf::Vector2u& winSize);
         sf::Vector2f getSizeByPropSize(const sf::Vector2f& propSize) const;
 
