@@ -1,10 +1,9 @@
 #include "TextWidget.hpp"
-#include "Test.hpp"
 
 #include <string>
-#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
+#include "Widget-Scripts.hpp"
 #include "Animation/Anim.hpp"
 #include "InterfaceWidget.hpp"
 
@@ -21,38 +20,22 @@ namespace rat {
         _text.setFont(*font);
     }
     void TextWidget::initScript(Script& script) {
-/*
+
         auto object = script.newClass<TextWidget>("TextWidget", "GUI");
-        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //Widget::basicScript<ImageWidget>(object);
-        basicScript(object);
+        gui::WidgetScripts::set(object);
 
-        object.setProperty(
-            "font",
-            [](TextWidget& owner){owner.getFont();},
-            [](TextWidget& owner, sf::Font* font){owner.setFont(font);}
-        );
+        object.set("getLength", &TextWidget::getLength);
+        object.set("addLetter", &TextWidget::addLetter);
+        object.set("getString", &TextWidget::getString);
+        object.set("setString", &TextWidget::setString);
+        object.set("setFont", &TextWidget::setFont);
+        object.set("setCharacterSize", &TextWidget::setCharacterSize);
+        object.set("setCharacterPropSize", &TextWidget::setCharacterPropSize);
+        object.set("getCharacterPropSize", &TextWidget::getCharacterPropSize);
+        object.set("getCharacterSize", &TextWidget::getCharacterSize);
+        object.set("removeLast", &TextWidget::removeLast);
 
-        object.setProperty(
-            "text",
-            [](TextWidget& owner){return owner._text.getString();},
-            [](TextWidget& owner, const std::string& text){owner.setString(text);}
-        );
-
-        object.setProperty(
-            "fontSize",
-            [](TextWidget& owner){return owner._text.getCharacterSize();},
-            [](TextWidget& owner, size_t size){owner.setCharacterSize(size);}
-        );
-
-        object.setProperty(
-            "color",
-            [](TextWidget& owner){return owner._text.getFillColor();},
-            [](TextWidget& owner, sol::table tab){ owner.setColor( sf::Color(tab[1], tab[2], tab[3]) ); }
-        );
-        
         object.init();
-    */
     }
 
     sf::Vector2f TextWidget::_getSize() const 

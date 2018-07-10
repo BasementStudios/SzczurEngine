@@ -4,7 +4,7 @@
 #include <cassert>
 #include <algorithm>
 
-#include "Test.hpp"
+#include "Widget-Scripts.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
@@ -24,42 +24,30 @@ namespace rat {
         setFont(font);
     }
 
-    void TextAreaWidget::initScript(Script& script) {/*
+    void TextAreaWidget::initScript(Script& script) {
         auto object = script.newClass<TextAreaWidget>("TextAreaWidget", "GUI");
-        basicScript(object);
+        gui::WidgetScripts::set(object);
 
-        object.setProperty(
-            "font",
-            [](TextAreaWidget& owner){owner._font;},
-            [](TextAreaWidget& owner, sf::Font* font){owner.setFont(font);}
-        );
+        object.set("setString", &TextAreaWidget::setString);
+        object.set("getString", &TextAreaWidget::getString);
+        object.set("setFont", &TextAreaWidget::setFont);
+        object.set("getFont", &TextAreaWidget::getFont);
+        object.set("setCharacterSize", &TextAreaWidget::setCharacterSize);
+        object.set("getCharacterSize", &TextAreaWidget::getCharacterSize);
+        object.set("setCharacterPropSize", &TextAreaWidget::setCharacterPropSize);
+        object.set("getCharacterPropSize", &TextAreaWidget::getCharacterPropSize);
 
-        object.setProperty(
-            "text",
-            [](TextAreaWidget& owner){return owner.getString();},
-            [](TextAreaWidget& owner, const std::string& text){owner.setString(text);}
-        );
-
-        object.setProperty(
-            "fontSize",
-            [](TextAreaWidget& owner){return owner.getCharacterSize();},
-            [](TextAreaWidget& owner, size_t size){owner.setCharacterSize(size);}
-        );
-
-        object.setProperty(
-            "color",
-            [](TextAreaWidget& owner){return owner._color;},
-            [](TextAreaWidget& owner, sol::table tab){ owner.setColor( sf::Color(tab[1], tab[2], tab[3]) ); }
-        );
-
-        /*
-        object.setProperty(
-            "size",
-            [](TextAreaWidget& owner){return owner._size;},
-            [](TextAreaWidget& owner, sol::table tab){ owner.setTextSize(sf::Vector2u{tab[1], tab[2]}); }
-        );
+        object.set("setToLeftAlign", [](TextAreaWidget& owner){
+            owner.setAlign(Align::Left);
+        });
+        object.set("setToRightAlign", [](TextAreaWidget& owner){
+            owner.setAlign(Align::Right);
+        });
+        object.set("setToCenterAlign", [](TextAreaWidget& owner){
+            owner.setAlign(Align::Center);
+        });
         
-        object.init();*/
+        object.init();
     }
 
     void TextAreaWidget::setString(const std::string& text)

@@ -12,8 +12,7 @@
 
 #include "Animation/Anim.hpp"
 
-#include "Test.hpp"
-#include "Szczur/Modules/Script/Script.hpp"
+#include "Widget-Scripts.hpp"
 
 namespace rat {
     ImageWidget::ImageWidget() :
@@ -29,7 +28,7 @@ namespace rat {
     void ImageWidget::initScript(Script& script) {
         auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
 
-        Widget::_initScript(object);
+        gui::WidgetScripts::set(object);
 
         object.set("setTexture", &ImageWidget::setTexture);
         object.set("getTexture", &ImageWidget::getTexture);

@@ -6,6 +6,7 @@
 
 namespace rat
 {
+    class Script;
     class WindowWidget : public Widget
     {
     public:
@@ -20,8 +21,6 @@ namespace rat
 
         void setMainPatchPropSize(const sf::Vector2f& propSize);
 
-        virtual void setPadding(const sf::Vector2f& padding) override;
-        virtual void setPadding(float x, float y) override;
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		virtual sf::Vector2f _getSize() const override;
@@ -31,7 +30,6 @@ namespace rat
         virtual void _recalcElementsPropSize() override;
     private:
         NinePatch _ninePatch;
-        bool _isPaddingSet{false};
         sf::Vector2f _scale{1.f, 1.f};
 
         sf::Vector2f _minWinSize;
@@ -42,7 +40,9 @@ namespace rat
         sf::Vector2f _mainPathPropSize;
         void _calcMainPatchSize();
 
-        void _calcPadding();
         void _calcPatchesAmount();
+
+    public:
+        static void initScript(Script& script);
     };
 }

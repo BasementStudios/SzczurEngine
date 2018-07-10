@@ -1,17 +1,16 @@
 #include "Widget.hpp"
-//#include "ImageWidget.hpp"
-#include "TextWidget.hpp"
-#include "TextAreaWidget.hpp"
-#include "Test.hpp"
 
 #include <iostream>
 #include <algorithm>
 
-#include "Animation/Anim.hpp"
-
 #include "InterfaceWidget.hpp"
 
+
+#include "Animation/Anim.hpp"
+
+
 #include "Szczur/Utility/Logger.hpp"
+#include "Widget-Scripts.hpp"
 
 //#undef GUI_DEBUG
 
@@ -34,8 +33,7 @@ namespace rat
 
     void Widget::initScript(Script& script) {
         auto object = script.newClass<Widget>("Widget", "GUI");
-        //basicScript(object);
-        _initScript(object);
+        gui::WidgetScripts::set(object);
         object.init();
     }
 

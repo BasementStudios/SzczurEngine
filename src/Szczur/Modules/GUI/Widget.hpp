@@ -23,19 +23,12 @@ namespace rat
 
 	class Widget : public sf::Drawable, protected gui::FamilyTransform
 	{
-	public:
-		Widget();
-		Widget(const Widget&) = default;
-		~Widget();
 
-		static void initScript(Script& script);
-
-		
 	public:
 		enum class CallbackType {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
 		};
-
+	public:
 		using SolFunction_t = sol::function;
 		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
@@ -45,8 +38,6 @@ namespace rat
 		using Animation_t = std::unique_ptr<gui::AnimBase>;
 		using AnimationsContainer_t = std::vector<Animation_t>;
 
-		void setParent(Widget* parent);
-		void setInterface(const InterfaceWidget* interface);
 
 		Widget* add(Widget* object);
 
@@ -55,15 +46,6 @@ namespace rat
 
 		void clear();
 
-		void update(float deltaTime);
-
-		virtual void calculateSize();
-		void invokeToCalculate();
-
-		void input(const sf::Event& event);
-		void invokeInput(const sf::Event& event);
-
-		sf::Vector2f getSize() const;
 		sf::Vector2f getMinimalSize() const;
 
 		void move(const sf::Vector2f& offset);
@@ -90,8 +72,6 @@ namespace rat
 
 		void setPropPadding(const sf::Vector2f& propPad);
 		void setPropPadding(float propWidth, float propHeight);
-
-		sf::Vector2f getInnerSize() const;
 
 		void setColor(const sf::Color& color);
 		void setColorInTime(const sf::Color& color, float inTime);
@@ -131,22 +111,20 @@ namespace rat
 		void makeUnresizable();
 		void makePenetrable();
 
-        void invokeToCalcPropPosition();
-		void forceToUpdatePropSize();
-		void invokeToCalcPosition();
-
-		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
-
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
-
 		size_t getChildrenAmount() const;
+
+
+
+
+
 
 		static void setWinProp(sf::Vector2f prop);
 
+		//		Polimorphism
+
 	protected:
-		template<typename T>
-		static void _initScript(ScriptClass<T>& object);
 
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
@@ -156,19 +134,23 @@ namespace rat
 		virtual void _setColor(const sf::Color& color) {}
 		virtual void _addWidget(Widget* widget) {}
 		virtual void _clear() {}
-
 		virtual void _recalcChildrenPos();
 		virtual void _recalcPos() {}
 		virtual void _recalcElementsPropSize() {}
-
 		virtual sf::Vector2f _getInnerSize() const;
-
 		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
-
 		void _addAnimation(Animation_t animation);
 		void _abortAnimation(gui::AnimType type);
 
+	public:
+		void setParent(Widget* parent);
+		void setInterface(const InterfaceWidget* interface);
+		sf::Vector2f getSize() const;
+		sf::Vector2f getInnerSize() const;
+		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
+
+	protected:
 		Widget* _parent{nullptr};
 		const InterfaceWidget* _interface{nullptr};
 
@@ -200,6 +182,9 @@ namespace rat
 		CallbacksLuaContainer_t _luaCallbacks;
 		
 		Children_t _children;
+
+		//		Utility		
+
 	private:
 		virtual void _callback(CallbackType type);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -207,10 +192,25 @@ namespace rat
 		#ifdef GUI_DEBUG
 		void _drawDebug(sf::RenderTarget& target, sf::RenderStates states) const;
 		#endif
-
-
 		void _recalcOrigin();
 
+	public:
+	public:
+		Widget();
+		Widget(const Widget&) = default;
+		~Widget();
+
+		virtual void calculateSize();
+		void invokeToCalculate();
+		void update(float deltaTime);
+
+		void input(const sf::Event& event);
+		void invokeInput(const sf::Event& event);
+        void invokeToCalcPropPosition();
+		void forceToUpdatePropSize();
+		void invokeToCalcPosition();
+
+	private:
 		AnimationsContainer_t _animations;
 		size_t _currentAnimations{0};
 		void _updateAnimations(float dt);
@@ -241,121 +241,11 @@ namespace rat
 
 	protected:
 		static sf::Vector2f _winProp;
+
+	//		Scripts
+	public:
+		static void initScript(Script& script);		
 	};
-
-	template<typename T>
-	void Widget::_initScript(ScriptClass<T>& object)
-	{
-		object.setOverload("setPropSize",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropSize),
-			sol::resolve<void(float, float)>(&Widget::setPropSize)
-		);
-		object.set("add", &Widget::add);
-		object.set("clear", &Widget::clear);
-		object.setOverload("move",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::move),
-			sol::resolve<void(float, float)>(&Widget::move)
-		);
-		object.setOverload("setPosition",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPosition),
-			sol::resolve<void(float, float)>(&Widget::setPosition)
-		);
-
-		object.set("getPosition", &Widget::getPosition);
-		object.set("getGlobalPosition", &Widget::getGlobalPosition);
-
-		object.setOverload("setPropPosition",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropPosition),
-			sol::resolve<void(float, float)>(&Widget::setPropPosition)
-		);
-		object.set("getPosByGlobalPos", &Widget::getPosByGlobalPos);
-		object.setOverload("setGlobalPosition",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setGlobalPosition),
-			sol::resolve<void(float, float)>(&Widget::setGlobalPosition)
-		);
-		object.setOverload("setPadding",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPadding),
-			sol::resolve<void(float, float)>(&Widget::setPadding)
-		);
-		object.set("getPadding", &Widget::getPadding);
-		object.setOverload("setPropPadding",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropPadding),
-			sol::resolve<void(float, float)>(&Widget::setPropPadding)
-		);
-
-		object.set("setColor", &Widget::setColor);
-		object.setOverload("setOrigin",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setOrigin),
-			sol::resolve<void(float, float)>(&Widget::setOrigin)
-		);
-		object.set("getOrigin", &Widget::getOrigin);
-
-		object.setOverload("setPropOrigin",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropOrigin),
-			sol::resolve<void(float, float)>(&Widget::setPropOrigin)
-		);
-		object.setOverload("setSize",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setSize),
-			sol::resolve<void(float, float)>(&Widget::setSize)
-		);
-		object.setOverload("setPropSize",
-			sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropSize),
-			sol::resolve<void(float, float)>(&Widget::setPropSize)
-		);
-
-		object.set("activate", &Widget::activate);
-		object.set("deactivate", &Widget::deactivate);
-		object.set("isActivated", &Widget::isActivated);
-
-		object.set("visible", &Widget::visible);
-		object.set("invisible", &Widget::invisible);
-		object.set("isVisible", &Widget::isVisible);
-
-		object.set("fullyDeactivate", &Widget::fullyDeactivate);
-		object.set("fullyActivate", &Widget::fullyActivate);
-		object.set("isFullyDeactivated", &Widget::isFullyDeactivated);
-
-		object.set("makeChildrenPenetrable", &Widget::makeChildrenPenetrable);
-		object.set("makeChildrenUnresizable", &Widget::makeChildrenUnresizable);
-
-		object.set("makeUnresizable", &Widget::makeUnresizable);
-		object.set("makePenetrable", &Widget::makePenetrable);
-
-		object.set("getChildrenAmount", &Widget::getChildrenAmount);
-
-		object.set(sol::meta_function::index, [&](Widget& obj, int index){ return obj[index]; });
-		object.setProperty("onPress", 
-			[](Widget& obj)->Widget&{ return obj; }, 
-			[](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onPress, callback); }
-		);
-		object.setProperty("onRelease", 
-			[](Widget& obj)->Widget&{ return obj; }, 
-			[](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onRelease, callback); }
-		);
-		object.setProperty("onHover", 
-			[](Widget& obj)->Widget&{ return obj; }, 
-			[](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHover, callback); }
-		);
-		object.setProperty("onHoverIn", 
-			[](Widget& obj)->Widget&{ return obj; }, 
-			[](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHoverIn, callback); }
-		);
-		object.setProperty("onHoverOut", 
-			[](Widget& obj)->Widget&{ return obj; }, 
-			[](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHoverOut, callback); }
-		);
-		object.setProperty("onHold", 
-			[](Widget& obj)->Widget&{ return obj; }, 
-			[](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHold, callback); }
-		);
-		
-		// object.setOverload(
-		// 	sol::resolve<void(const sf::Vector2f&)>(&Widget::setPosition),
-		// 	sol::resolve<void(float, float)>(&Widget::setPosition),
-		// 	sol::resolve<void(const sf::Vector2f&, float)>(&Widget::setPosition),
-		// 	sol::resolve<void(const sf::Vector2f&, const gui::AnimData&)>(&Widget::setPosition)
-		// );
-	}
 }
 
 

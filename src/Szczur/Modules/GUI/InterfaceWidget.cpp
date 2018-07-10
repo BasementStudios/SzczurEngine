@@ -1,6 +1,6 @@
 #include "InterfaceWidget.hpp"
 
-#include "Szczur/Modules/Script/Script.hpp"
+#include "Widget-Scripts.hpp"
 
 namespace rat
 {
@@ -11,8 +11,6 @@ namespace rat
     void InterfaceWidget::initScript(Script& script) 
     {
         auto object = script.newClass<InterfaceWidget>("InterfaceWidget", "GUI");
-
-        Widget::_initScript(object);
 
         object.set("setWidthToHeightProp", &InterfaceWidget::setWidthToHeightProp);
         object.set("setSizingWidthToHeightProportion", &InterfaceWidget::setSizingWidthToHeightProportion);
