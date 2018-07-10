@@ -1,5 +1,6 @@
 #include "TraceComponent.hpp"
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "Trace/Trace.hpp"
@@ -239,7 +240,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			ImGui::Checkbox("Show lines in editor", &_currentTimeline->ShowLines);
 
 			ImGui::PushItemWidth(100.f);
-			ImGui::DragFloat("Speed multiplier", &_currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
+			ImGui::DragFloat<ImGui::CopyPaste>("Speed multiplier", _currentTimeline->SpeedMultiplier, 0.01f, 0.f, 100.f);
 			ImGui::PopItemWidth();
 			ImGui::Spacing();
 
@@ -437,7 +438,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 							ImGui::SameLine();
 
-							ImGui::DragFloat3("Start##", reinterpret_cast<float*>(&moveAction->Start));
+							ImGui::DragVec3<ImGui::CopyPaste>("Start##", moveAction->Start);
 						}
 
 						ImGui::Spacing();
@@ -460,10 +461,10 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 						ImGui::SameLine();
 
-						ImGui::DragFloat3("End", reinterpret_cast<float*>(&moveAction->End));
+						ImGui::DragVec3<ImGui::CopyPaste>("End", moveAction->End);
 						ImGui::Spacing();
 
-						ImGui::DragFloat("Speed", &moveAction->Speed, 0.01f, 0.f, 50.f);
+						ImGui::DragFloat<ImGui::CopyPaste>("Speed", moveAction->Speed, 0.01f, 0.f, 50.f);
 
 						ImGui::Checkbox("Teleport", &moveAction->Teleport);
 
@@ -494,7 +495,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 							ImGui::EndCombo();
 						}
 
-						ImGui::DragFloat("Fade in time", &animAction->FadeInTime, 0.01f, 0.01f, 1.f);
+						ImGui::DragFloat<ImGui::CopyPaste>("Fade in time", animAction->FadeInTime, 0.01f, 0.01f, 1.f);
 
 						ImGui::Checkbox("Play once", &animAction->PlayOnce);
 
@@ -510,7 +511,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						ImGui::Text("Action: Wait");
 						ImGui::Separator();
 
-						ImGui::DragFloat("Time to wait", &waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
+						ImGui::DragFloat<ImGui::CopyPaste>("Time to wait", waitAction->TimeToWait, 0.1f, 0.1f, 60.f);
 					} break;
 					case Action::Script:
 					{

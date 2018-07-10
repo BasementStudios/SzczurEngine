@@ -3,8 +3,9 @@
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
-#include <Szczur/Modules/Script/Script.hpp>
-#include <Szczur/Modules/Input/Input.hpp>
+#include "Szczur/Utility/ImGuiTweaks.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/Input/Input.hpp"
 
 namespace rat {
 	InteractableComponent::InteractableComponent(Entity* parent) :
@@ -83,14 +84,10 @@ namespace rat {
 		if(ImGui::CollapsingHeader("Interactable")) {
 
 			// Set radius for circle interaction
-			float distance = getDistance();
-			ImGui::DragFloat("Radius", &distance);
-			setDistance(distance);
+			ImGui::DragFloat<ImGui::CopyPaste>("Radius", _distance);
 
 			// Set height of circle interaction 
-			float height = getHeight();
-			ImGui::DragFloat("Height", &height);
-			setHeight(height);
+			ImGui::DragFloat<ImGui::CopyPaste>("Height", _height);
 		}
 	}
 

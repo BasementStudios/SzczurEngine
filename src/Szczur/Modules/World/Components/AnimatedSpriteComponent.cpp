@@ -6,9 +6,10 @@
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include <Szczur/Modules/World/World.hpp>
+#include "Szczur/Modules/World/World.hpp"
 
 
 namespace rat {
@@ -225,9 +226,9 @@ namespace rat {
 			}
 
 			ImGui::Checkbox("Auto update frames", &_autoUpdateFrames);
-			ImGui::InputInt("Frames", &_frames);
+			ImGui::InputInt<ImGui::CopyPaste>("Frames", _frames);
 
-			if (ImGui::InputInt("Columns", &_columns))
+			if (ImGui::InputInt<ImGui::CopyPaste>("Columns", _columns))
 			{
 				if (_spriteDisplayData && _columns != 0 && _rows != 0)
 				{
@@ -244,7 +245,7 @@ namespace rat {
 				}
 			}
 
-			if (ImGui::InputInt("Rows", &_rows))
+			if (ImGui::InputInt<ImGui::CopyPaste>("Rows", _rows))
 			{
 				if (_spriteDisplayData && _columns != 0 && _rows != 0)
 				{
@@ -262,7 +263,7 @@ namespace rat {
 			}
 
 			ImGui::Checkbox("Auto update size", &_autoUpdateFrameSize);
-			ImGui::InputFloat2("Frame size", &_frameSize[0], 1);
+			ImGui::InputVec2<ImGui::CopyPaste>("Frame size", _frameSize, 1);
 
 			ImGui::DragFloat("Speed", &_speed, 0.05f, 0.1f, 9999999.f);
 		}

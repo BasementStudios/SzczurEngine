@@ -5,6 +5,7 @@
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -318,12 +319,12 @@ namespace rat {
 			if (_triggerShape == Shape::Circle)
 			{
 				// Set radius
-				ImGui::DragFloat("Radius", &_radius);
+				ImGui::DragFloat<ImGui::CopyPaste>("Radius", _radius);
 			}
 			else if (_triggerShape == Shape::Rectangle)
 			{
 				// set rect size
-				ImGui::DragFloat2("Size", &_rectSize[0]);
+				ImGui::DragVec2<ImGui::CopyPaste>("Size", _rectSize);
 			}
 
 			ImGui::Separator();

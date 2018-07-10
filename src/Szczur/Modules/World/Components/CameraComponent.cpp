@@ -6,6 +6,7 @@
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
@@ -106,9 +107,7 @@ namespace rat {
 		if(ImGui::CollapsingHeader("Camera##camera_component")) {
 
 			// Set velocity
-			float velocity = getVelocity();
-			ImGui::DragFloat("Velocity##camera_component", &velocity);
-			setVelocity(velocity);
+			ImGui::DragFloat<ImGui::CopyPaste>("Velocity##camera_component", _velocity);
 
 			ImGui::Spacing();
 
@@ -123,9 +122,9 @@ namespace rat {
 			}
 
 			if(_moveType == Smooth)
-				ImGui::DragFloat("Smoothness##camera_component", &_smoothness, 0.05f, 1.f, 50.f);
+				ImGui::DragFloat<ImGui::CopyPaste>("Smoothness##camera_component", _smoothness, 0.05f, 1.f, 50.f);
 			else if(_moveType == Linear)
-				ImGui::DragFloat("Linear##camera_component", &_linear, 0.05f, 1.f, 50.f);
+				ImGui::DragFloat<ImGui::CopyPaste>("Linear##camera_component", _linear, 0.05f, 1.f, 50.f);
 
 			ImGui::Spacing();
 
@@ -138,7 +137,7 @@ namespace rat {
 			}
 
 			if(_targetingType == Forwarded) {
-				ImGui::DragFloat("Forwarded##camera_component", &_forwarded);
+				ImGui::DragFloat<ImGui::CopyPaste>("Forwarded##camera_component", _forwarded);
 			}
 
 			ImGui::Spacing();

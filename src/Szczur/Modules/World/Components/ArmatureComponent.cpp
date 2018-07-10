@@ -10,6 +10,7 @@
 
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 
 namespace rat
 {
@@ -336,7 +337,7 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 				}
 			}
 
-			ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
+			ImGui::DragFloat<ImGui::CopyPaste>("Animation speed##armature_component", arm->getAnimation()->timeScale, 0.01f);
 		}
 	}
 }

@@ -10,6 +10,7 @@ using Json = nlohmann::json;
 #include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp" // fnv1a_64
 #include "Szczur/Modules/World/Entity.hpp"
@@ -104,9 +105,9 @@ void PointLightComponent::renderHeader(ScenesManager& scenes, Entity* object) {
 		ImGui::ColorEdit3("Light color##lightpoint_component", glm::value_ptr(this->color));
 
 		// Attenuation
-		ImGui::DragFloat("Attenuation constant##lightpoint_component",	&this->attenuation.constant,	0.005f,		-1.0f,	1.0f, "%.7f");
-		ImGui::DragFloat("Attenuation linear##lightpoint_component", 	&this->attenuation.linear,		0.00005f,	-1.0f,	1.0f, "%.7f");
-		ImGui::DragFloat("Attenuation quadratic##lightpoint_component", &this->attenuation.quadratic,	0.000005f,  -1.0f,	1.0f, "%.7f");
+		ImGui::DragFloat<ImGui::CopyPaste>("Attenuation constant##lightpoint_component",	this->attenuation.constant,		0.005f,		-1.0f,	1.0f, "%.7f");
+		ImGui::DragFloat<ImGui::CopyPaste>("Attenuation linear##lightpoint_component",		this->attenuation.linear,		0.00005f,	-1.0f,	1.0f, "%.7f");
+		ImGui::DragFloat<ImGui::CopyPaste>("Attenuation quadratic##lightpoint_component",	this->attenuation.quadratic,	0.000005f,  -1.0f,	1.0f, "%.7f");
 
 		// Light factors
 		ImGui::ColorEdit3("Ambient factor##base_component",	glm::value_ptr(this->ambientFactor));

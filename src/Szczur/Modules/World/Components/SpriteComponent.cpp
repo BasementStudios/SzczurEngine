@@ -6,9 +6,10 @@
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include <Szczur/Modules/World/World.hpp>
+#include "Szczur/Modules/World/World.hpp"
 
 
 namespace rat {
@@ -176,7 +177,7 @@ namespace rat {
 
 			ImGui::Checkbox("Parallax", &_parallax);
 			if (_parallax) {
-				ImGui::DragFloat("Value##parallax", &_parallaxValue);
+				ImGui::DragFloat<ImGui::CopyPaste>("Value##parallax", _parallaxValue);
 			}
 		}
 	}

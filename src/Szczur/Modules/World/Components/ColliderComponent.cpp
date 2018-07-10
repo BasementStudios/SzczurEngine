@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/World/Entity.hpp"
 #include "Szczur/Modules/World/Scene.hpp"
 
@@ -70,7 +71,7 @@ void ColliderComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		
 		if (_boxCollider)
 		{
-			ImGui::DragFloat2("Size", &_boxSize[0]);
+			ImGui::DragVec2<ImGui::CopyPaste>("Size", _boxSize);
 		}
 
 		ImGui::Separator();
@@ -79,7 +80,7 @@ void ColliderComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 		if (_circleCollider)
 		{
-			ImGui::DragFloat("Radius", &_circleRadius);
+			ImGui::DragFloat<ImGui::CopyPaste>("Radius", _circleRadius);
 		}
 	}
 }
