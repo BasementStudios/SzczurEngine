@@ -13,6 +13,7 @@ namespace rat
     void InterfaceWidget::initScript(Script& script) 
     {
         auto object = script.newClass<InterfaceWidget>("InterfaceWidget", "GUI");
+        gui::WidgetScripts::set(object);
 
         object.set("setWidthToHeightProp", &InterfaceWidget::setWidthToHeightProp);
         object.set("setSizingWidthToHeightProportion", &InterfaceWidget::setSizingWidthToHeightProportion);

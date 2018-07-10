@@ -21,142 +21,142 @@ namespace gui
         static void set(ScriptClass<T>& object)
         {
             object.setOverload("setPropSize",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropSize),
-                sol::resolve<void(float, float)>(&Widget::setPropSize)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPropSize),
+                sol::resolve<void(float, float)>(&T::setPropSize)
             );
-            object.set("clear", &Widget::clear);
+            object.set("clear", &T::clear);
             object.setOverload("move",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::move),
-                sol::resolve<void(float, float)>(&Widget::move)
+                sol::resolve<void(const sf::Vector2f&)>(&T::move),
+                sol::resolve<void(float, float)>(&T::move)
             );
             object.setOverload("setPosition",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPosition),
-                sol::resolve<void(float, float)>(&Widget::setPosition)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPosition),
+                sol::resolve<void(float, float)>(&T::setPosition)
             );
 
-            object.set("getPosition", &Widget::getPosition);
-            object.set("getGlobalPosition", &Widget::getGlobalPosition);
+            object.set("getPosition", &T::getPosition);
+            object.set("getGlobalPosition", &T::getGlobalPosition);
 
             object.setOverload("setPropPosition",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropPosition),
-                sol::resolve<void(float, float)>(&Widget::setPropPosition)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPropPosition),
+                sol::resolve<void(float, float)>(&T::setPropPosition)
             );
-            object.set("getPosByGlobalPos", &Widget::getPosByGlobalPos);
+            object.set("getPosByGlobalPos", &T::getPosByGlobalPos);
             object.setOverload("setGlobalPosition",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setGlobalPosition),
-                sol::resolve<void(float, float)>(&Widget::setGlobalPosition)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setGlobalPosition),
+                sol::resolve<void(float, float)>(&T::setGlobalPosition)
             );
             object.setOverload("setPadding",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPadding),
-                sol::resolve<void(float, float)>(&Widget::setPadding)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPadding),
+                sol::resolve<void(float, float)>(&T::setPadding)
             );
-            object.set("getPadding", &Widget::getPadding);
+            object.set("getPadding", &T::getPadding);
             object.setOverload("setPropPadding",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropPadding),
-                sol::resolve<void(float, float)>(&Widget::setPropPadding)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPropPadding),
+                sol::resolve<void(float, float)>(&T::setPropPadding)
             );
 
             object.setOverload("setColor",
-                sol::resolve<void(const sf::Color&)>(&Widget::setColor),
-                sol::resolve<void(unsigned char, unsigned char, unsigned char, unsigned char)>(&Widget::setColor)
+                sol::resolve<void(const sf::Color&)>(&T::setColor),
+                sol::resolve<void(unsigned char, unsigned char, unsigned char, unsigned char)>(&T::setColor)
             );
-            object.set("makeChildrenUncolorable", &Widget::makeChildrenUncolorable);
+            object.set("makeChildrenUncolorable", &T::makeChildrenUncolorable);
             object.setOverload("setOrigin",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setOrigin),
-                sol::resolve<void(float, float)>(&Widget::setOrigin)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setOrigin),
+                sol::resolve<void(float, float)>(&T::setOrigin)
             );
-            object.set("getOrigin", &Widget::getOrigin);
+            object.set("getOrigin", &T::getOrigin);
 
             object.setOverload("setPropOrigin",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropOrigin),
-                sol::resolve<void(float, float)>(&Widget::setPropOrigin)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPropOrigin),
+                sol::resolve<void(float, float)>(&T::setPropOrigin)
             );
             object.setOverload("setSize",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setSize),
-                sol::resolve<void(float, float)>(&Widget::setSize)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setSize),
+                sol::resolve<void(float, float)>(&T::setSize)
             );
             object.setOverload("setPropSize",
-                sol::resolve<void(const sf::Vector2f&)>(&Widget::setPropSize),
-                sol::resolve<void(float, float)>(&Widget::setPropSize)
+                sol::resolve<void(const sf::Vector2f&)>(&T::setPropSize),
+                sol::resolve<void(float, float)>(&T::setPropSize)
             );
 
-            object.set("activate", &Widget::activate);
-            object.set("deactivate", &Widget::deactivate);
-            object.set("isActivated", &Widget::isActivated);
+            object.set("activate", &T::activate);
+            object.set("deactivate", &T::deactivate);
+            object.set("isActivated", &T::isActivated);
 
-            object.set("visible", &Widget::visible);
-            object.set("invisible", &Widget::invisible);
-            object.set("isVisible", &Widget::isVisible);
+            object.set("visible", &T::visible);
+            object.set("invisible", &T::invisible);
+            object.set("isVisible", &T::isVisible);
 
-            object.set("fullyDeactivate", &Widget::fullyDeactivate);
-            object.set("fullyActivate", &Widget::fullyActivate);
-            object.set("isFullyDeactivated", &Widget::isFullyDeactivated);
+            object.set("fullyDeactivate", &T::fullyDeactivate);
+            object.set("fullyActivate", &T::fullyActivate);
+            object.set("isFullyDeactivated", &T::isFullyDeactivated);
 
-            object.set("makeChildrenPenetrable", &Widget::makeChildrenPenetrable);
-            object.set("makeChildrenUnresizable", &Widget::makeChildrenUnresizable);
+            object.set("makeChildrenPenetrable", &T::makeChildrenPenetrable);
+            object.set("makeChildrenUnresizable", &T::makeChildrenUnresizable);
 
-            object.set("makeUnresizable", &Widget::makeUnresizable);
-            object.set("makePenetrable", &Widget::makePenetrable);
+            object.set("makeUnresizable", &T::makeUnresizable);
+            object.set("makePenetrable", &T::makePenetrable);
 
-            object.set("getChildrenAmount", &Widget::getChildrenAmount);
+            object.set("getChildrenAmount", &T::getChildrenAmount);
 
-            object.set(sol::meta_function::index, [&](Widget& obj, int index){ return obj[index]; });
+            object.set(sol::meta_function::index, [&](T& obj, int index){ return obj[index]; });
             object.setProperty("onPress", 
-                [](Widget& obj)->Widget&{ return obj; }, 
-                [](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onPress, callback); }
+                [](T& obj)->T&{ return obj; }, 
+                [](T& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onPress, callback); }
             );
             object.setProperty("onRelease", 
-                [](Widget& obj)->Widget&{ return obj; }, 
-                [](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onRelease, callback); }
+                [](T& obj)->T&{ return obj; }, 
+                [](T& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onRelease, callback); }
             );
             object.setProperty("onHover", 
-                [](Widget& obj)->Widget&{ return obj; }, 
-                [](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHover, callback); }
+                [](T& obj)->T&{ return obj; }, 
+                [](T& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHover, callback); }
             );
             object.setProperty("onHoverIn", 
-                [](Widget& obj)->Widget&{ return obj; }, 
-                [](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHoverIn, callback); }
+                [](T& obj)->T&{ return obj; }, 
+                [](T& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHoverIn, callback); }
             );
             object.setProperty("onHoverOut", 
-                [](Widget& obj)->Widget&{ return obj; }, 
-                [](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHoverOut, callback); }
+                [](T& obj)->T&{ return obj; }, 
+                [](T& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHoverOut, callback); }
             );
             object.setProperty("onHold", 
-                [](Widget& obj)->Widget&{ return obj; }, 
-                [](Widget& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHold, callback); }
+                [](T& obj)->T&{ return obj; }, 
+                [](T& obj, sol::function callback){ obj.setLuaCallback(Widget::CallbackType::onHold, callback); }
             );
 
-            object.set("addWidget", [](Widget& owner)->Widget&{
+            object.set("addWidget", [](T& owner)->Widget&{
             	auto w = new Widget;
             	owner.add(w);
             	return *w;
             });
-            object.set("addImage", [](Widget& owner)->ImageWidget&{
+            object.set("addImage", [](T& owner)->ImageWidget&{
             	auto image = new ImageWidget;
             	owner.add(image);
             	return *image;
             });
-            object.set("addList", [](Widget& owner)->ListWidget&{
+            object.set("addList", [](T& owner)->ListWidget&{
             	auto list = new ListWidget;
             	owner.add(list);
             	return *list;
             });
-            object.set("addText", [](Widget& owner)->TextWidget&{
+            object.set("addText", [](T& owner)->TextWidget&{
             	auto text = new TextWidget;
             	owner.add(text);
             	return *text;
             });
-            object.set("addTextArea", [](Widget& owner)->TextAreaWidget&{
+            object.set("addTextArea", [](T& owner)->TextAreaWidget&{
             	auto ta = new TextAreaWidget;
             	owner.add(ta);
             	return *ta;
             });
-            object.set("addWindow", [](Widget& owner)->WindowWidget&{
+            object.set("addWindow", [](T& owner)->WindowWidget&{
             	auto w = new WindowWidget;
             	owner.add(w);
             	return *w;
             });
-            object.set("addScrollArea", [](Widget& owner)->ScrollAreaWidget&{
+            object.set("addScrollArea", [](T& owner)->ScrollAreaWidget&{
             	auto sa = new ScrollAreaWidget;
             	owner.add(sa);
             	return *sa;
