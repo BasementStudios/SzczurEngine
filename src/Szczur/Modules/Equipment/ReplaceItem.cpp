@@ -26,16 +26,18 @@ namespace rat {
 		_itemName->setFont(font);
 		_itemName->setColor(sf::Color::White);
 		_itemName->setCharacterSize(20);
-		_itemName->setPropPosition(sf::Vector2f(0.7f, 0.1f));
-		_itemName->setPropSize(sf::Vector2f(.625f, 0.1f));
+		_itemName->setPropPosition(sf::Vector2f(.7f, 0.1f));
+		_itemName->setPropSize(sf::Vector2f(.3f, 0.1f));
+		_itemName->setAlign(TextAreaWidget::Align::Right);
 
 		_itemDescription = new TextAreaWidget;
 		_descriptionWidget->add(_itemDescription);
 		_itemDescription->setFont(font);
 		_itemDescription->setColor(sf::Color::White);
 		_itemDescription->setCharacterSize(15);
-		_itemDescription->setPropSize(sf::Vector2f(.625f, 0.1f));
-		_itemDescription->setPropPosition(sf::Vector2f(0.7f, 0.4f));
+		_itemDescription->setPropSize(sf::Vector2f(.3f, 0.f));
+		_itemDescription->setPropPosition(sf::Vector2f(.7f, 0.4f));
+		_itemDescription->setAlign(TextAreaWidget::Align::Right);
 
 		_itemImage = new ImageWidget;
 		_descriptionWidget->add(_itemImage);
@@ -48,13 +50,13 @@ namespace rat {
 		_cancelText->setColor(sf::Color::White);
 		_cancelText->setCharacterSize(15);
 		_cancelText->setPropPosition(0.05f, 0.1f);
-		_cancelText->setPropSize(sf::Vector2f(.625f, 0.1f));
+		_cancelText->setPropSize(sf::Vector2f(.2f, 0.0f));
 		_cancelText->setString("Wybierz przedmiot do wymiany");
 
 		_cancelButton = new ImageWidget;
 		_cancelButton->setTexture(cancelText);
 		_descriptionWidget->add(_cancelButton);
-		_cancelButton->setPropPosition(0.05f, 0.9f);
+		_cancelButton->setPropPosition(0.5f, 1.5f);
 		_cancelButton->setCallback(Widget::CallbackType::onPress, [this](Widget* owner) {
 			_equipment->_stopReplacingItem(false);
 		});

@@ -85,6 +85,19 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::init() {
 		auto& gui = getModule<GUI>(); 
 
+		gui.addTexture("Assets/Equipment/ringsSlider.png");
+		gui.addTexture("Assets/Test/ScrollerBound.png");
+		gui.addTexture("Assets/Test/ScrollerBar.png");
+		gui.addTexture("Assets/Test/Scroller.png");
+		gui.addTexture("Assets/Equipment/slot.png");
+		gui.addTexture("Assets/Equipment/chosenSlot.png");
+		gui.addTexture("Assets/Equipment/highlight.png");
+		gui.addTexture("Assets/Equipment/leftArrow.png");
+		gui.addTexture("Assets/Equipment/rightArrow.png");
+		gui.addFont("Assets/Equipment/NotoMono.ttf");
+		gui.addTexture("Assets/Equipment/szczegoly.png");
+		gui.addTexture("Assets/Equipment/cancel.png");
+
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
 
@@ -137,6 +150,12 @@ namespace rat {		//beware spagetti monster down there :/
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !_isEquipmentHidden) {
 			_equipmentFrame->setPropPosition({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_equipmentFrame->fullyDeactivate(); _isEquipmentHidden = true; } });				
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
+			addUsableItem(getUsableItem("potion2"));
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
+			removeUsableItem("potion2");
 		}
 	}
 

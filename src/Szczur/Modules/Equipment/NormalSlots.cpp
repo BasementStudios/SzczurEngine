@@ -26,9 +26,9 @@ namespace rat
 				x = 0;
 			}
 			std::shared_ptr<EquipmentSlot> newSlot(new EquipmentSlot());
-			_freeSlots.push(newSlot.get());
 			_allSlots.push_back(newSlot.get());
 			newSlot->index = i;
+			_freeSlots.push(newSlot.get());
 			newSlot->setParent(_base);
 			newSlot->setTexture(_frameText);
 			newSlot->setPropPosition({x * .33f, y * .25f});
@@ -71,7 +71,6 @@ namespace rat
 			_freeSlots.top()->setItem(item);
 			_occupiedSlots.insert(itemMap_t::value_type(item->getNameId(), _freeSlots.top()));
 			_freeSlots.pop();
-			//std::sort(_freeSlots.begin(), _freeSlots.end(), sortByIndex);
 			return true;
 		}
 		else {
