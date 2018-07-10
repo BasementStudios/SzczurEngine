@@ -2,7 +2,6 @@
 #include <iostream>
 #include <cassert>
 
-#include "Test.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
