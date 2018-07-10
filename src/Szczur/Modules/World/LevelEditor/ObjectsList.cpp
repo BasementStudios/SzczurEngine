@@ -150,23 +150,34 @@ namespace rat {
 			{
 				if (ImGui::BeginMenu("Move to##object_popup"))
 				{
+					bool breakIt = false;
+
 					if (entity->getGroup() != "path" && ImGui::Selectable("Path"))
 					{
 						auto scene = _scenes.getCurrentScene();
 						scene->changeEntityGroup(entity, "path");
+						breakIt = true;
 					}
 					if (entity->getGroup() != "background" && ImGui::Selectable("Background"))
 					{
 						auto scene = _scenes.getCurrentScene();
 						scene->changeEntityGroup(entity, "background");
+						breakIt = true;
 					}
 					if (entity->getGroup() != "foreground" && ImGui::Selectable("Foreground"))
 					{
 						auto scene = _scenes.getCurrentScene();
 						scene->changeEntityGroup(entity, "foreground");
+						breakIt = true;
 					}
 
 					ImGui::EndMenu();
+
+					if (breakIt)
+					{
+						ImGui::EndPopup();
+						return true;
+					}
 				}
 			}
 
