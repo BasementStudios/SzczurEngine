@@ -74,11 +74,13 @@ namespace rat
 		void setPropPadding(float propWidth, float propHeight);
 
 		void setColor(const sf::Color& color);
-		void setColor(unsigned char r, unsigned char g, unsigned char b);
+		void setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
 		void setColorInTime(const sf::Color& color, float inTime);
 		void setColorInTime(const sf::Color& color, const gui::AnimData& data);
 		void resetColor();
-		sf::Color getColor() const; 
+		sf::Color getColor() const;
+
+		void makeChildrenUncolorable();
 		
 		void setOrigin(const sf::Vector2f& origin);
 		void setOrigin(float x, float y);
@@ -115,10 +117,6 @@ namespace rat
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
 		size_t getChildrenAmount() const;
-
-
-
-
 
 
 		static void setWinProp(sf::Vector2f prop);
@@ -216,10 +214,12 @@ namespace rat
 		size_t _currentAnimations{0};
 		void _updateAnimations(float dt);
 
-		sf::Color _color;
+		sf::Color _color{255, 255, 255, 255};
+		void _applyColor(const sf::Color& color);
 
 		bool _areChildrenPenetrable{false}; //lenny
 		bool _areChildrenResizable{true};
+		bool _areChildrenUncolorable{true};
 
 		bool _isPenetrable{false};
 		bool _isResizable{true};

@@ -58,8 +58,9 @@ namespace gui
 
             object.setOverload("setColor",
                 sol::resolve<void(const sf::Color&)>(&Widget::setColor),
-                sol::resolve<void(unsigned char, unsigned char, unsigned char)>(&Widget::setColor)
+                sol::resolve<void(unsigned char, unsigned char, unsigned char, unsigned char)>(&Widget::setColor)
             );
+            object.set("makeChildrenUncolorable", &Widget::makeChildrenUncolorable);
             object.setOverload("setOrigin",
                 sol::resolve<void(const sf::Vector2f&)>(&Widget::setOrigin),
                 sol::resolve<void(float, float)>(&Widget::setOrigin)

@@ -433,15 +433,19 @@ namespace rat
 	void Widget::setColor(const sf::Color& color)
     {
         _color = color;
-        _setColor(color);
-        for(auto* child : _children)
-        {
-            child->setColor(color);
-        }
+        sf::Color baseColor(255, 255, 255);
+        if(_parent && !_parent->_areChildrenUncolorable) baseColor = _parent->_color;
+        _applyColor(baseColor);
     }
-    void Widget::setColor(unsigned char r, unsigned char g, unsigned char b)
+    void Widget::setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
     {
-        setColor({r, g, b});
+        setColor({r, g, b, a});
+    }
+    void Widget::_applyColor(const sf::Color& color)
+    {
+        auto mixedColor = color * _color;
+        _setColor(mixedColor);
+        if(_areChildrenUncolorable) for(auto* child : _children) child->_applyColor(mixedColor);
     }
     void Widget::setColorInTime(const sf::Color& color, const gui::AnimData& data)
     {
@@ -466,6 +470,12 @@ namespace rat
     sf::Color Widget::getColor() const
     {
         return _color;
+    }
+
+    void Widget::makeChildrenUncolorable()
+    {
+        _areChildrenUncolorable = true;
+        for(auto* child : _children) child->_applyColor({255, 255, 255});
     }
 
 
