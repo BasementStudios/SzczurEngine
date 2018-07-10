@@ -79,6 +79,11 @@ void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	}
 }
 
+void Entity::destroy()
+{
+	_exists = false;
+}
+
 size_t Entity::getID() const
 {
 	return _id;
@@ -255,6 +260,7 @@ void Entity::initScript(Script& script)
 	object.set(sol::meta_function::index, &Entity::_getScriptDataObject);
 	object.set(sol::meta_function::new_index, &Entity::_setScriptDataObject);
 	object.set("getScene", sol::resolve<Scene*()>(&Entity::getScene)); 
+	object.set("destroy", &Entity::destroy);
 
 	object.init();
 

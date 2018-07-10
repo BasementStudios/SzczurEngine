@@ -49,7 +49,14 @@ void Scene::update(float deltaTime)
 	{
 		for (auto& entity : holder.second)
 		{
-			entity->update(*getScenes(), deltaTime);
+			if (entity->exists())
+			{
+				entity->update(*getScenes(), deltaTime);
+			}
+			else
+			{
+				removeEntity(holder.first, entity->getID());
+			}
 		}
 	}
 
@@ -150,7 +157,8 @@ void Scene::changeEntityGroup(Entity* entity, const std::string& group)
 
 	auto it = std::find_if(currentGroup.begin(), currentGroup.end(), [&] (const std::unique_ptr<Entity>& it) { return it->getID() == entity->getID(); });
 
-	if (it != currentGroup.end()) {
+	if (it != currentGroup.end())
+	{
 		entity->setGroup(group);
 
 		std::unique_ptr<Entity> ptr;
@@ -168,6 +176,14 @@ bool Scene::removeEntity(const std::string& group, size_t id)
 {
 	if (auto it = _find(group, id); it != getEntities(group).end())
 	{
+		#ifdef EDITOR
+		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
+		if (it->get()->getID() == objects.getSelectedID())
+		{
+			objects.unselect();
+		}
+		#endif //EDITOR
+
 		getEntities(group).erase(it);
 
 		return true;
@@ -178,91 +194,16 @@ bool Scene::removeEntity(const std::string& group, size_t id)
 
 bool Scene::removeEntity(size_t id)
 {
-	if (auto it = _find("single", id); it != getEntities("single").end())
-	{
-		#ifdef EDITOR
-		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
-		if(it->get()->getID() == objects.getSelectedID()) {
-			objects.unselect();			
-		}
-		#endif //EDITOR
+	bool deleted = false;
 
-		getEntities("single").erase(it);
+	deleted += removeEntity("single", id);
+	deleted += removeEntity("path", id);
+	deleted += removeEntity("foreground", id);
+	deleted += removeEntity("background", id);
+	deleted += removeEntity("entries", id);
+	deleted += removeEntity("battles", id);
 
-		return true;
-	}
-
-	if (auto it = _find("path", id); it != getEntities("path").end())
-	{
-		#ifdef EDITOR
-		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
-		if(it->get()->getID() == objects.getSelectedID()) {
-			objects.unselect();			
-		}
-		#endif //EDITOR
-
-		getEntities("path").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
-	{
-		#ifdef EDITOR
-		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
-		if(it->get()->getID() == objects.getSelectedID()) {
-			objects.unselect();			
-		}
-		#endif //EDITOR
-
-		getEntities("foreground").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("background", id); it != getEntities("background").end())
-	{
-		#ifdef EDITOR
-		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
-		if(it->get()->getID() == objects.getSelectedID()) {
-			objects.unselect();			
-		}
-		#endif //EDITOR
-
-		getEntities("background").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("entries", id); it != getEntities("entries").end())
-	{
-		#ifdef EDITOR
-		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
-		if(it->get()->getID() == objects.getSelectedID()) {
-			objects.unselect();			
-		}
-		#endif //EDITOR
-
-		getEntities("entries").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("battles", id); it != getEntities("battles").end())
-	{
-		#ifdef EDITOR
-		auto& objects = detail::globalPtr<World>->getLevelEditor().getObjectsList();
-		if(it->get()->getID() == objects.getSelectedID()) {
-			objects.unselect();			
-		}
-		#endif //EDITOR
-
-		getEntities("battles").erase(it);
-
-		return true;
-	}
-
-	return false;
+	return deleted;
 }
 
 void Scene::removeAllEntities(const std::string& group)

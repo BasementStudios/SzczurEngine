@@ -47,6 +47,12 @@ public:
 	///
 	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 
+	/// removes object
+	void destroy();
+
+	/// check if object is still exist
+	bool exists() const { return _exists; }
+
 	///
 	size_t getID() const;
 
@@ -193,6 +199,7 @@ private:
 
 // Main
 
+	bool _exists = true;
 	size_t _id;
 	std::string _group;
 	std::string _name;

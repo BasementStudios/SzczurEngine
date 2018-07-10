@@ -86,17 +86,21 @@ namespace rat {
 			if(!isSingleTab && ImGui::Button("+##operation", ImVec2(availWidth, 0))) {
 				addObjectToCurrentGroup();
 			}
+
+			if (isSingleTab)
+			{
+				ImGui::Dummy(ImVec2(0, 24));
+			}
+
 			if(isAnySingleEntitySelected() && getSelectedEntity()->getGroup() == _tab) {
 				
-				if (!isSingleTab)
-					ImGui::SameLine();
+				ImGui::SameLine();
 
 				if(!isSingleTab && ImGui::Button("Clone##operation", ImVec2(availWidth, 0))) {
 					duplicateObject(_selectedEntityID);
 				}
 
-				if (!isSingleTab)
-					ImGui::SameLine();
+				ImGui::SameLine();
 
 				if(ImGui::Button("-##operation", ImVec2(availWidth, 0))) {
 					removeObject(_selectedEntityID);
