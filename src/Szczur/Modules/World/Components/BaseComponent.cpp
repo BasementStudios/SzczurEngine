@@ -67,23 +67,19 @@ namespace rat {
 			object->setRotation(rotation);
 
 			// Set scale
-			glm::vec3 scale = object->getScale();
+			glm::vec2 scale = object->getScale();
 			static bool lockRatio = false;
-			if (ImGui::DragVec3<ImGui::CopyPaste>("##Scale|base_component", scale, 0.01f))
-			{
-				if (lockRatio == false) {
-					object->setScale(scale);
-				}
-				else {
+			if (ImGui::DragVec2<ImGui::CopyPaste>("##Scale|base_component", scale, 0.01f)) {
+				if (lockRatio == true) {
+
 					float offset = (scale.x - object->getScale().x) + (scale.y - object->getScale().y);
 
-					auto scale = object->getScale();
+					scale = object->getScale();
 					scale.x += offset;
 					scale.y += offset;
-
 				}
 			}
-			object->setScale(scale);
+			object->setScale(glm::vec3(scale, 1.f));
 
 			ImGui::SameLine(0.f, 0.f);
 			ImGui::Checkbox("Scale##base_component", &lockRatio);
