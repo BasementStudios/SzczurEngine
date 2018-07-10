@@ -13,7 +13,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-#include <glad.h>
+#include <glad/glad.h>
 
 #include <SFML/Graphics/Color.hpp>
 

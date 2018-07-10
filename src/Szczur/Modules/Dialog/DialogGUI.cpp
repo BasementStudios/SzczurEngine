@@ -8,8 +8,7 @@
 
 namespace rat {
 
-    DialogGUI::DialogGUI(GUI& gui) :
-    _character(nullptr) {
+    DialogGUI::DialogGUI(GUI& gui) {
         
         
     }
@@ -35,12 +34,9 @@ namespace rat {
             [](){},
             [](DialogGUI& owner, sol::table tab){
                 if(tab["area"].valid() && tab["container"].valid() && 
-                tab["character"].valid() && tab["name"].valid() &&
                 tab["creator"].valid() && tab["interface"].valid()) {
 					owner.setArea(tab["area"]);
                     owner.setButtonsContainer(tab["container"]);
-                    owner.setCharacterHolder(tab["character"]);
-                    owner.setName(tab["name"]);
                     owner.setButtonsCreator(tab["creator"]);
                     owner.setInterface(tab["interface"]);
                     owner.hide();
@@ -59,27 +55,7 @@ namespace rat {
         _area->visible();
     }
 
-    void DialogGUI::setCharacterTexture(sf::Texture* texture) {
-        if(_character == nullptr) {
-            _character = new ImageWidget;
-            
-            _characterHolder->add(_character);
-        }
-        _character->setTexture(texture);
-    }
 
-    void DialogGUI::setCharacterName(const std::string& name) {
-        _name->setString(name);
-    }
-
-
-    void DialogGUI::setName(TextWidget* name) {
-        _name = name;
-    }
-
-    TextWidget* DialogGUI::getName() const {
-        return _name;
-    }
 
     void DialogGUI::setInterface(Widget* _interface) {
         this->_interface = _interface;
@@ -87,14 +63,6 @@ namespace rat {
 
     Widget* DialogGUI::getInterface() const {
         return _interface;
-    }
-    
-    void DialogGUI::setCharacterHolder(Widget* holder) {
-        _characterHolder = holder;
-    }
-
-    Widget* DialogGUI::getCharacterHolder() const {
-        return _characterHolder;
     }
 
     void DialogGUI::setArea(TextAreaWidget* area) {

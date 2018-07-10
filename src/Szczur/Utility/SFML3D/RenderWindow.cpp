@@ -3,7 +3,7 @@
 #include <iostream> // cout
 #include <string>
 
-#include <glad.h>
+#include <glad/glad.h>
 #include <glm/vec2.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>

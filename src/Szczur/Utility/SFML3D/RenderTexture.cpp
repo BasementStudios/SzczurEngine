@@ -5,7 +5,7 @@
  **/
 
 #include <glm/vec2.hpp>
-#include <glad.h>
+#include <glad/glad.h>
 
 #include <iostream> // cout 
 

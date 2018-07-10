@@ -5,11 +5,11 @@
 #include <iomanip>
 #include <vector>
 
-#include <glad.h>
+#include <glad/glad.h>
 
 #include "Szczur/Utility/Logger.hpp"
 
-#include <glad.h>
+#include <glad/glad.h>
 
 namespace sf3d
 {

@@ -49,7 +49,7 @@
 #	include <boost/lexical_cast.hpp>
 #	include <imgui.h>
 #	include <imgui-SFML.h>
-#	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
+//#	include "Szczur/Utility/Debug/GlobalVarsHolder.hpp"
 #endif
 
 // Global helper ptr

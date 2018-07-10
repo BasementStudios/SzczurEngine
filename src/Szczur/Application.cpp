@@ -16,9 +16,13 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
-
-	// For testing `Script`
-	initModule<BattleField>();
+	initModule<GUI>();
+	initModule<Dialog>();
+	#ifdef GUI_TEST
+	{
+		initModule<GUITest>();
+	}
+	#endif
 
 	LOG_INFO("Modules initialized");
 
@@ -99,6 +103,7 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
+	
 }
 
 bool Application::input()
@@ -107,6 +112,7 @@ bool Application::input()
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
 		getModule<Input>().getManager().processEvent(event);
+		getModule<GUI>().input(event);
 
 		#ifdef EDITOR
 		{
@@ -126,12 +132,16 @@ bool Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-
+	getModule<GUI>().update(deltaTime);
+	getModule<Dialog>().update(deltaTime);
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().update(deltaTime);
+	}
+	#endif
 	/*
 		Put other updates here
 	*/
-	_modules.getModule<BattleField>().update();
-	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -143,21 +153,25 @@ void Application::update()
 	#endif
 
 	getModule<Input>().getManager().finishLogic();
+	
 }
 
 void Application::render()
 {
 	getModule<Window>().clear();
-
-	// For testing `Script`
-	_modules.getModule<BattleField>().render();
-
+	getModule<GUI>().render();
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().render();
+	}
+	#endif
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
 	}
 	#endif
 
+	
 	getModule<Window>().render();
 }
 int Application::run()
@@ -191,6 +205,5 @@ int Application::run()
 
 	return 0;
 }
- 
 
 }

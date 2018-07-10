@@ -10,7 +10,7 @@
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <glad.h> // GLbitfield
+#include <glad/glad.h> // GLbitfield
 
 namespace sf {
 	class Color;
@@ -38,7 +38,7 @@ private:
 	RenderStates defaultStates;
 	
 	Camera* camera {nullptr};
-	Camera* defaultCamera;
+	Camera* defaultCamera{nullptr};
 
 	float positionFactor;
 

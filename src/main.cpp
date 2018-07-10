@@ -1,6 +1,4 @@
 #include "Szczur/Application.hpp"
-
-
 int main()
 {
 	// Logger instance on the bottom of the stack to ensure that it will be destructed after all other objects

@@ -23,6 +23,7 @@ namespace rat {
 
 
         script.initClasses<DialogManager, Options, DialogGUI>();
+		script.scriptFile("Assets/Dialog/Config/_dialog.lua");
     }
 
 

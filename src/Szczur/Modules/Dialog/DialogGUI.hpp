@@ -30,10 +30,6 @@ namespace rat {
 
         void setText(const std::string& text);
 
-        void setCharacterName(const std::string& name);
-
-        void setCharacterTexture(sf::Texture* texture);
-
         void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback);
 
         void setInterface(Widget* _interface);
@@ -48,18 +44,10 @@ namespace rat {
         void setArea(TextAreaWidget* area);
         TextAreaWidget* getArea() const;
 
-        void setCharacterHolder(Widget* holder);
-        Widget* getCharacterHolder() const;
-
-        void setName(TextWidget* name);
-        TextWidget* getName() const;
     private:
         Widget* _interface;
         sol::function _buttonsCreator;
         Widget* _buttonsContainer;
         TextAreaWidget* _area;
-        Widget* _characterHolder;
-        ImageWidget* _character;
-        TextWidget* _name;
     };
 }

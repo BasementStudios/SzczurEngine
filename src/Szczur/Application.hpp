@@ -3,9 +3,13 @@
 #include "Szczur/Utility/Time/Clock.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/BattleField/BattleField.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
+#ifdef GUI_TEST
+#include "Szczur/Modules/GUITest/GUITest.hpp"
+#endif
+#include "Szczur/Modules/Script/Script.hpp"
 namespace rat
 {
 
@@ -49,7 +53,7 @@ public:
 	///
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
-
+	
 	///
 	template <typename U>
 	U& getModule();
@@ -60,9 +64,12 @@ public:
 
 private:
 
+	ModulesHolder<Window, Input, Script, GUI, Dialog
+	#ifdef GUI_TEST
+	,GUITest 
+	#endif
+	> _modules;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, BattleField> _modules;
-
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
 	#endif
@@ -70,5 +77,4 @@ private:
 };
 
 }
-
 #include "Application.tpp"
