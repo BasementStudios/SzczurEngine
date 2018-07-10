@@ -41,7 +41,7 @@ namespace rat {
 			"width", &sf::FloatRect::width,
 			"height", &sf::FloatRect::height
 			);
-		sfml.new_simple_usertype<sf::FloatRect>("IntRect",
+		sfml.new_simple_usertype<sf::IntRect>("IntRect",
 			"left", &sf::IntRect::left,
 			"top", &sf::IntRect::top,
 			"width", &sf::IntRect::width,
