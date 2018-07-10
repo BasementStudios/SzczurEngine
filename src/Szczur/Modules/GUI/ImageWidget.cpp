@@ -26,19 +26,22 @@ namespace rat {
         _sprite.setTexture(*texture);
     }
 
-    void ImageWidget::initScript(Script& script) {/*
+    void ImageWidget::initScript(Script& script) {
         auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //Widget::basicScript<ImageWidget>(object);
-        basicScript(object);
 
-        object.setProperty(
-            "texture",
-            [](ImageWidget& owner){owner.getTexture();},
-            [](ImageWidget& owner, sf::Texture* texture){owner.setTexture(texture);}
-        );
+        Widget::_initScript(object);
+
+        object.set("setTexture", &ImageWidget::setTexture);
+        object.set("getTexture", &ImageWidget::getTexture);
+        object.set("removeTexture", &ImageWidget::removeTexture);
+        object.set("setScale", &ImageWidget::setScale);
+        object.set("setTextureRect", &ImageWidget::setTextureRect);
+        object.set("setPropTextureRect", &ImageWidget::setPropTextureRect);
         
-        object.init();*/
+        object.set("setFullyTexSizing", &ImageWidget::setFullyTexSizing);
+        object.set("setStaticTexPositing", &ImageWidget::setStaticTexPositing);
+
+        object.init();
     }
 
     void ImageWidget::setScale(const sf::Vector2f& scale) {
