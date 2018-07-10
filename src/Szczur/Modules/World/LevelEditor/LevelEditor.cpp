@@ -51,6 +51,8 @@ namespace rat {
 
 		_selectionRect.setFillColor(sf::Color(30, 136, 229, 100));
 		_selectionRect.setOutlineColor(sf::Color::Black);
+
+		loadConfig(LevelEdtiorConfigPath);
 	}
 
 	void LevelEditor::setClipboard(const glm::vec3& value) {
@@ -491,6 +493,28 @@ namespace rat {
 				break;
 			} 
 		} 
+	}
+
+	void LevelEditor::saveConfig(const std::string& path) {
+		std::ofstream file{ path };
+		Json config;
+
+		config["mcCameraMovement"] = _isMCCameraMovement;
+		config["dragAndDropObjects"] = _dragAndDropObjects;
+
+		file << std::setw(4) << config << std::endl;
+	}
+
+	void LevelEditor::loadConfig(const std::string& path) {
+		if (std::experimental::filesystem::exists(path)) {
+			std::ifstream file{ path };
+			Json config;
+
+			file >> config;
+
+			_isMCCameraMovement = config["mcCameraMovement"];
+			_dragAndDropObjects = config["dragAndDropObjects"];
+		}
 	}
 
 	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {

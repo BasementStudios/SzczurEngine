@@ -198,10 +198,12 @@ namespace rat {
 				if (ImGui::MenuItem("Minecraft camera movement", nullptr, _isMCCameraMovement))
 				{
 					_isMCCameraMovement = !_isMCCameraMovement;
+					saveConfig(LevelEdtiorConfigPath);
 				}
 				if (ImGui::MenuItem("Drag and Drop objects", nullptr, _dragAndDropObjects))
 				{
 					_dragAndDropObjects = !_dragAndDropObjects;
+					saveConfig(LevelEdtiorConfigPath);
 				}
 				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) 
 				{

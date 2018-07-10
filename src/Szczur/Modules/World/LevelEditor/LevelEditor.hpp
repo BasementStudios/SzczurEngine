@@ -32,6 +32,9 @@ class AudioEditor;
 class InputManager;
 
 class LevelEditor {
+private:
+	static constexpr auto LevelEdtiorConfigPath = "leveleditor.cfg";
+
 public:
 
 // Constructors
@@ -76,6 +79,12 @@ public:
 
 	///
 	void changeCameraLock();
+
+	///
+	void saveConfig(const std::string& path);
+
+	///
+	void loadConfig(const std::string& path);
 
 private:
 	
