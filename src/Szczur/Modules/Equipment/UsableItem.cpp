@@ -31,8 +31,8 @@ namespace rat {
 			if (_callback.valid() && _destroyed) {
 				_callback(this);
 				return true;
-			}
-			return false;
+			}			
 		}
+		return false;
 	}
 }

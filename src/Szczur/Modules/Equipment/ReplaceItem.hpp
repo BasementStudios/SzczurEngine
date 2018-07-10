@@ -8,9 +8,12 @@ namespace rat {
 	public:
 		ReplaceItem(sf::Texture* backgroundText, sf::Texture* backgroundDescriptionText, sf::Texture* cancelText, sf::Font* font, Equipment* eq);
 
-		void minimalize();
+		void close();
 		void setItem(EquipmentObject*);
 		void setParent(Widget* base);
+
+		void minimalize();
+		void maximize();
 	private:
 		WindowWidget * _descriptionWidget{ nullptr };
 		ImageWidget* _cancelButton{ nullptr };
@@ -22,5 +25,6 @@ namespace rat {
 
 		Widget* _base{ nullptr };
 		Equipment* _equipment{nullptr};
+		bool _isClosed = true;
 	};
 }

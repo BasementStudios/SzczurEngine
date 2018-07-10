@@ -6,7 +6,7 @@
 
 namespace rat
 {
-	bool sortByIndex::operator() (const std::shared_ptr<EquipmentSlot> lhs, const std::shared_ptr<EquipmentSlot> rhs) const {
+	bool SortByIndex::operator() (const std::shared_ptr<EquipmentSlot> lhs, const std::shared_ptr<EquipmentSlot> rhs) const {
 		return lhs->index > rhs->index;
 	}
 

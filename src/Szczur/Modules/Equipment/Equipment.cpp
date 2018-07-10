@@ -141,7 +141,7 @@ namespace rat {		//beware spagetti monster down there :/
 
 		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"), this);
 		_replaceItem->setParent(_base);
-		_replaceItem->minimalize();
+		_replaceItem->close();
 
 		_itemManager = new ItemManager;
 		_itemManager->setNewPath("Assets/Equipment/items.json");
@@ -154,11 +154,10 @@ namespace rat {		//beware spagetti monster down there :/
 		_normalSlots->update(deltaTime);
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && _isEquipmentHidden) {
-			_equipmentFrame->setPropPosition({0.5f, 1.f}, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = false; } });
-			_equipmentFrame->fullyActivate();
+			_openEquipment();
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && !_isEquipmentHidden) {
-			_equipmentFrame->setPropPosition({ 0.5f, 3.35f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = true; } });				
+			_closeEquipment();
 		}
 	}
 
@@ -186,16 +185,18 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 
 	UsableItem* Equipment::getUsableItem(const std::string& nameId) {
-		UsableItem* temp = dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
-		if (temp) {
+		UsableItem* temp = new UsableItem(nameId);
+		*temp = *dynamic_cast<UsableItem*>(_listOfObjects.find(nameId)->second);
+		if (_listOfObjects.find(nameId) != _listOfObjects.end()) {
 			return temp;
 		}
 		return nullptr;
 	}
 
 	WearableItem* Equipment::getWearableItem(const std::string& nameId) {
-		WearableItem* temp = dynamic_cast<WearableItem*>(_listOfObjects.find(nameId)->second);
-		if (temp) {
+		WearableItem* temp = new WearableItem(nameId);
+		*temp = *dynamic_cast<WearableItem*>(_listOfObjects.find(nameId)->second);
+		if (_listOfObjects.find(nameId) != _listOfObjects.end()) {
 			return temp;
 		}
 		return nullptr;
@@ -299,7 +300,7 @@ namespace rat {		//beware spagetti monster down there :/
 
 	void Equipment::_stopReplacingItem(bool hasBeenSuccesfull) {
 		_normalSlots->_stopReplacing();
-		_replaceItem->minimalize();
+		_replaceItem->close();
 		if (hasBeenSuccesfull)
 			_replacingStatus = statusOfEq::replaced;
 		else
@@ -311,10 +312,13 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 
 	void Equipment::_openEquipment() {
-		_equipmentFrame->setPropPosition({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {_isEquipmentHidden = false; } });
-		_equipmentFrame->fullyActivate();
+		_equipmentFrame->setPropPosition({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+			_isEquipmentHidden = false; 
+			_replaceItem->maximize();
+		} });
 	}
 	void Equipment::_closeEquipment() {
+		_replaceItem->minimalize();
 		_equipmentFrame->setPropPosition({ 0.5f, 3.35f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = true;
 		} });

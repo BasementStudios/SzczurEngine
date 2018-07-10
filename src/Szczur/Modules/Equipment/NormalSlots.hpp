@@ -10,7 +10,7 @@ namespace rat {
 	typedef std::multimap<std::string, std::shared_ptr<EquipmentSlot>> itemMap_t;
 
 	template<class T, class U>
-	class slots_priority_queue : public std::priority_queue<T, std::vector<T>, U>
+	class SlotsPriorityQueue : public std::priority_queue<T, std::vector<T>, U>
 	{
 	public:
 
@@ -27,7 +27,7 @@ namespace rat {
 		}
 	};
 
-	struct sortByIndex {
+	struct SortByIndex {
 		bool operator () (const std::shared_ptr<EquipmentSlot> lhs, const std::shared_ptr<EquipmentSlot> rhs) const;
 	};
 
@@ -69,7 +69,7 @@ namespace rat {
 		sf::Texture* _frameText;
 
 		itemMap_t _occupiedSlots;		//slots with items
-		slots_priority_queue<std::shared_ptr<EquipmentSlot>, sortByIndex> _freeSlots;
+		SlotsPriorityQueue<std::shared_ptr<EquipmentSlot>, SortByIndex> _freeSlots;
 		//std::vector<EquipmentSlot*> _freeSlots;
 		std::vector<std::shared_ptr<EquipmentSlot>> _allSlots;
 

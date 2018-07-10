@@ -11,7 +11,7 @@ namespace rat {
 		_base = new Widget;
 		_base->makeChildrenUnresizable();
 		_base->setPropSize(.625f, 0.1f);
-		_base->setPropPosition({ .5f, .2f });
+		_base->setPropPosition({ .5f, .17f });
 		
 		_descriptionWidget = new WindowWidget;
 		_descriptionWidget->setPropSize(.625f, 0.1f);
@@ -22,19 +22,19 @@ namespace rat {
 		_descriptionWidget->add(_itemName);
 		_itemName->setFont(font);
 		_itemName->setColor(sf::Color::White);
-		_itemName->setCharacterSize(20);
+		_itemName->setCharacterPropSize(0.025f);
 
 		_itemDescription = new TextAreaWidget;
 		_descriptionWidget->add(_itemDescription);
 		_itemDescription->setFont(font);
 		_itemDescription->setColor(sf::Color::White);
-		_itemDescription->setCharacterSize(15);
+		_itemDescription->setCharacterPropSize(0.019f);
 
-		_itemName->setPosition(sf::Vector2f(10.f, 10.f));
-		_itemName->setPropSize(sf::Vector2f(.625f, 0.f));
+		_itemName->setPropPosition(0.1f, 0.1f);
+		_itemName->setPropSize(sf::Vector2f(.5f, 0.f));
 
-		_itemDescription->setPropSize(sf::Vector2f(.625f, 0.f));
-		_itemDescription->setPosition(sf::Vector2f(10.f, 20.f + 15.f));
+		_itemDescription->setPropSize(sf::Vector2f(.5f, 0.f));
+		_itemDescription->setPropPosition(0.1f, 0.5f);
 	}
 
 	void ItemPreview::setParent(Widget* base) {
