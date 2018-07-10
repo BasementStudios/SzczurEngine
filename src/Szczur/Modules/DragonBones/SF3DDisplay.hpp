@@ -9,9 +9,8 @@
 #include <vector>
 
 #include <dragonBones/DragonBonesHeaders.h>
-
-#include <glad/glad.h>
-
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Transform.hpp>
 
@@ -42,8 +41,6 @@ public:
 
 protected:
 	sf3d::Transform transform;
-
-
 
 	/* Operators */
 public:
@@ -96,7 +93,7 @@ public:
 		glm::vec3 min = verticesDisplay[0].position;
 		glm::vec3 max = min;
 
-		for (std::size_t i = 0; i < verticesDisplay.getSize(); i++)
+		for (int i = 0; i < verticesDisplay.getSize(); i++)
 		{
 			auto& vert = verticesDisplay[i];
 
@@ -112,9 +109,12 @@ public:
 
 		auto mat = this->transform.getMatrix();
 
-		bbMatrix.combine(sf::Transform(mat[0][0], mat[0][1], mat[0][3],
-														   mat[1][0], mat[1][1], mat[1][3],
-														   0.f, 0.f, 1.f));
+		bbMatrix.combine(sf::Transform(
+			mat[0][0], mat[1][0], mat[3][0],
+			mat[0][1], mat[1][1], mat[3][1],
+			0.f, 0.f, 1.f
+		));
+
 		rect = bbMatrix.transformRect(rect);
 
 		return rect;
