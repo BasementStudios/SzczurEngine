@@ -2,13 +2,13 @@
 #include <iostream>
 #include <cassert>
 
-#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
-#include "InterfaceWidget.hpp"
 
 #include "Animation/Anim.hpp"
+#include "InterfaceWidget.hpp"
+#include "Widget-Scripts.hpp"
 
 namespace rat {
     ScrollAreaWidget::ScrollAreaWidget() :
@@ -22,21 +22,23 @@ namespace rat {
         resetScrollerPosition();
     }
 
-    void ScrollAreaWidget::initScript(Script& script) {/*
+    void ScrollAreaWidget::initScript(Script& script) 
+    {
         auto object = script.newClass<ScrollAreaWidget>("ScrollAreaWidget", "GUI");
+        gui::WidgetScripts::set(object);
+        
+        object.set("setScrollerTexture", &ScrollAreaWidget::setScrollerTexture);
+        object.set("setPathTexture", &ScrollAreaWidget::setPathTexture);
+        object.set("setBoundsTexture", &ScrollAreaWidget::setBoundsTexture);
 
-        basicScript(object);
-        object.setProperty(
-            "size",
-            [](ScrollAreaWidget& owner){owner.getSize();},
-            [](ScrollAreaWidget& owner, sol::table tab){owner.setSize(tab[1], tab[2]);}
-        );
-        object.setProperty(
-            "scrollSpeed",
-            [](ScrollAreaWidget& owner){owner.getScrollSpeed();},
-            [](ScrollAreaWidget& owner, float speed){owner.setScrollSpeed(speed);}
-        );
-        object.init();*/
+        object.set("resetScrollerPosition", &ScrollAreaWidget::resetScrollerPosition);
+        object.set("setScrollerProp", &ScrollAreaWidget::setScrollerProp);
+        object.set("setScrollWidth", &ScrollAreaWidget::setScrollWidth);
+        object.set("setScrollPropWidth", &ScrollAreaWidget::setScrollPropWidth);
+        object.set("makeScrollAutoHiding", &ScrollAreaWidget::makeScrollAutoHiding);
+        
+
+        object.init();
     }
     void ScrollAreaWidget::setScrollerTexture(sf::Texture* texture, float boundsHeight)
     {
