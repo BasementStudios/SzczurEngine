@@ -1,6 +1,9 @@
 #include "GUI.hpp"
 #include <iostream>
 #include "ImageWidget.hpp"
+#include "WindowWidget.hpp"
+#include "ListWidget.hpp"
+#include "InterfaceWidget.hpp"
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "ScrollAreaWidget.hpp"
@@ -37,7 +40,7 @@ namespace rat {
 
 
 
-        script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
+        script.initClasses<Widget, InterfaceWidget, WindowWidget, ListWidget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
         //script.scriptFile("data/_GUI.lua");
     }
 
