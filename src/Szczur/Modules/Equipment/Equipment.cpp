@@ -315,14 +315,14 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 
 	void Equipment::_openEquipment() {
-		_equipmentFrame->setPropPosition({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = false; 
 			_replaceItem->maximize();
 		} });
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
-		_equipmentFrame->setPropPosition({ 0.5f, 3.33f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 0.5f, 3.33f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = true;
 		} });
 	}
