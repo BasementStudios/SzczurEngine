@@ -12,7 +12,7 @@
 #include "UsableItem.hpp"
 namespace rat
 {
-	enum statusOfEq {
+	enum StatusOfEq {
 		replaced, notReplaced, waiting
 	};
 
@@ -67,10 +67,10 @@ namespace rat
 
 		void _replaceNewItem(EquipmentObject* item);
 		void _stopReplacingItem(bool hasBeenSuccesfull);
-		statusOfEq _replacingStatus;
+		StatusOfEq _replacingStatus;
 		bool _isReplacing;
 
-		statusOfEq lastChangeStatus();
+		StatusOfEq lastChangeStatus();
 
 		void _openEquipment();
 		void _closeEquipment();

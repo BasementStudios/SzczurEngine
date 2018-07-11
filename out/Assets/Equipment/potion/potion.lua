@@ -1,4 +1,4 @@
-function THIS:callback1()
+function THIS:callback()
     print("item uzyty")
 end
 function THIS:isUsable()

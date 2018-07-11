@@ -16,7 +16,7 @@ namespace rat {
 		object.set("setDescription", &EquipmentObject::setDescription);
 		object.set("setIcon", &EquipmentObject::setIcon);
 		object.set("isUsable", &UsableItem::_isUsable);
-		object.set("callback1", &UsableItem::_callback);
+		object.set("callback", &UsableItem::_callback);
 		object.set("destroy", &UsableItem::_destroy);
 		object.init();
 	}

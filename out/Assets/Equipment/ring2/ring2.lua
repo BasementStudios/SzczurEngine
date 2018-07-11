@@ -1,6 +1,6 @@
-function THIS:callback1()
+function THIS:onActivation()
     print("item zalozony")
 end
-function THIS:callback2()
+function THIS:onDeactivation()
     print("item zdjety")
 end

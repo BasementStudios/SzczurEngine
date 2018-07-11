@@ -16,8 +16,8 @@ namespace rat {
 		object.set("setDescription", &EquipmentObject::setDescription);
 		object.set("setIcon", &EquipmentObject::setIcon);
 		object.set("setIcon", &EquipmentObject::setIcon);
-		object.set("callback1", &WearableItem::_callback1);
-		object.set("callback2", &WearableItem::_callback2);
+		object.set("onActivation", &WearableItem::_callback1);
+		object.set("onDeactivation", &WearableItem::_callback2);
 		object.init();
 	}
 

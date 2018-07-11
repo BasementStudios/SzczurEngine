@@ -326,13 +326,15 @@ namespace rat
 
 	void NormalSlots::resizeSlots(size_t newSize) {
 		if (newSize != _slotAmount && newSize <= _allSlots.size()) {
-			if (newSize > _slotAmount) {
+			//more than we have now
+			if (newSize > _slotAmount && newSize <= 20) {
 				for (size_t i = _slotAmount; i < newSize; i++)
 				{
 					_allSlots[i]->setStatus(true);
 					_freeSlots.push(_allSlots[i]);
 				}
 			}
+			//less than we have now
 			else {
 				for (size_t i = _allSlots.size(); i > 0; i--)
 				{
