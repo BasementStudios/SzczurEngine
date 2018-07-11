@@ -59,6 +59,16 @@ Shader::~Shader()
 	_destroy();
 }
 
+// Constructing by type and path
+Shader::Shader(ShaderType type, const char* filePath)
+{
+	loadFromFile(type, filePath);
+}
+Shader::Shader(ShaderType type, const std::string& filePath)
+{
+	loadFromFile(type, filePath);
+}
+
 // Loading from files
 void Shader::loadFromFile(ShaderType type, const char* filePath)
 {

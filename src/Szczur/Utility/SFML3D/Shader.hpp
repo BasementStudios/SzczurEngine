@@ -41,7 +41,10 @@ public:
 	///
 	~Shader();
 
-	///
+	/// Constructs, loads and compiles from type and path 
+	Shader(ShaderType type, const char* filePath);
+	Shader(ShaderType type, const std::string& filePath);
+
 	/// Loads and compiles from type and path
 	void loadFromFile(ShaderType type, const char* filePath);
 	void loadFromFile(ShaderType type, const std::string& filePath);
