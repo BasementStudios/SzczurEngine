@@ -67,6 +67,13 @@ namespace gui
                 static_cast<void (T::*)(unsigned char, unsigned char, unsigned char, unsigned char)>(&T::setColor)
             );
             object.set("makeChildrenUncolorable", &T::makeChildrenUncolorable);
+
+            object.setOverload("setBackground",
+                static_cast<void (T::*)(const sf::Color&)>(&T::setBackground),
+                static_cast<void (T::*)(unsigned char, unsigned char, unsigned char, unsigned char)>(&T::setBackground)
+            );
+            object.set("removeBackground", &T::removeBackground);
+            
             object.setOverload("setOrigin",
                 static_cast<void (T::*)(const sf::Vector2f&)>(&T::setOrigin),
                 static_cast<void (T::*)(float, float)>(&T::setOrigin)

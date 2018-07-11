@@ -9,6 +9,7 @@ namespace rat
         makeChildrenUnresizable();
         setSizingWidthToHeightProportion(1.f);
         makePenetrable();
+        setInterface(this);
     }
     void InterfaceWidget::initScript(Script& script) 
     {
