@@ -38,7 +38,7 @@ protected:
 	RenderStates defaultStates;
 	
 	Camera* camera {nullptr};
-	Camera* defaultCamera;
+	Camera* defaultCamera {nullptr};
 
 	float positionFactor;
 
