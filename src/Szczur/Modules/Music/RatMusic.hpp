@@ -15,6 +15,8 @@ namespace rat
 
 	private:
 
+		inline static float MusicVolume {100};
+
 		unsigned int _counter {0};
 
 		std::string _filePath {""};
@@ -22,6 +24,7 @@ namespace rat
 
 		float _bpm 		{60};
 		float _fadeTime {0};
+		float _volume   {100};
 
 	public:
 
@@ -44,6 +47,12 @@ namespace rat
 
 		float getFadeTime() const;
 		void setFadeTime(float fadeTime);
+
+		static float GetMusicVolume();
+        static void SetMusicVolume(float volume);
+
+		float getVolume() const;
+		void setVolume(float volume);
 
 	private:
 

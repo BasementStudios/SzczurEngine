@@ -182,6 +182,11 @@ namespace rat
         return _name;
     }
 
+    void SoundBase::setFileName(const std::string& fileName)
+    {
+        _fileName = fileName;
+    }
+
     std::string SoundBase::getFileName() const
     {
         return _fileName;
