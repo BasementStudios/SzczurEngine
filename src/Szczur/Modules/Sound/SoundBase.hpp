@@ -34,6 +34,7 @@ namespace rat
 
     public:
 
+        SoundBase();
         SoundBase(const std::string& name);
 
         void init();
@@ -79,6 +80,7 @@ namespace rat
 
         void setName(const std::string& name);
         const std::string getName() const;
+        void setFileName(const std::string& fileName);
         std::string getFileName() const;
 
         template <typename T>

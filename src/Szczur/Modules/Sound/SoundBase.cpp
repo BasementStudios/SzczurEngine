@@ -4,6 +4,11 @@
 
 namespace rat
 {
+    SoundBase::SoundBase()
+    {
+
+    }
+
     SoundBase::SoundBase(const std::string& name)
         : _name(name)
     {
@@ -177,6 +182,11 @@ namespace rat
         return _name;
     }
 
+    void SoundBase::setFileName(const std::string& fileName)
+    {
+        _fileName = fileName;
+    }
+
     std::string SoundBase::getFileName() const
     {
         return _fileName;
@@ -234,7 +244,7 @@ namespace rat
                 return;
             }
 
-            _fileName = static_cast<std::string>(j[_name]["Path"]);
+            _fileName = j[_name]["Path"].get<std::string>();
 
             setVolume(j[_name]["Volume"]);
             setPitch(j[_name]["Pitch"]);
