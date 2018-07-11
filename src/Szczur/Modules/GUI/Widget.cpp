@@ -615,6 +615,15 @@ namespace rat
     {
         setPropPositionInTime(propPos, gui::AnimData(inTime));
     }
+
+    void Widget::makeStaticPropPositing()
+    {
+        _hasStaticPropPositing = true;
+        if(_props.hasPosition)
+        {
+            _propPosMustBeenRecalculated = true;
+        }
+    }
     
 
     void  Widget::setPropSize(const sf::Vector2f& propSize)
@@ -765,14 +774,20 @@ namespace rat
         if(!_props.hasPosition) return;
         if(!_parent) return;
 
-        auto size = getSize();
         auto origin = getOrigin();
         auto parentSize = _parent ->_getInnerSize();
 
-        auto posRange = parentSize - size;
+        auto posRange = parentSize;
+        if(!_hasStaticPropPositing) posRange -= getSize();;
 
-        const float x = float(float(posRange.x) * _props.position.x) + origin.x;
-        const float y = float(float(posRange.y) * _props.position.y) + origin.y;
+        float x = float(float(posRange.x) * _props.position.x);
+        float y = float(float(posRange.y) * _props.position.y);
+
+        if(!_hasStaticPropPositing)
+        {
+            x += origin.x;
+            y += origin.y;
+        }
 
         gui::FamilyTransform::setPosition(x, y);
 
