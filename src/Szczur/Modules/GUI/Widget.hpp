@@ -52,6 +52,7 @@ namespace rat
 		void move(float offsetX, float offsetY);
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
+		void setPosition2(float x, float y);
 		void setPositionInTime(const sf::Vector2f& offset, float inTime);
 		void setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data);
 		const sf::Vector2f& getPosition() const;

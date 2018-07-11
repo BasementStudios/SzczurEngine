@@ -541,6 +541,10 @@ namespace rat
     {
         setPosition({x, y});
     }
+    void Widget::setPosition2(float x, float y) 
+    {
+        setPosition({x, y});
+    }
 
 
     void Widget::setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data)
