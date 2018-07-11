@@ -103,6 +103,8 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
+
+	getModule<Script>().scriptFile("Assets/Dialogs/Starsi/dialog.lua");
 	
 }
 
