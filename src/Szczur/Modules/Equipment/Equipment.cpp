@@ -61,7 +61,6 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set_function("closeEquipment", &Equipment::_closeEquipment, this);
 		module.set_function("openEquipment", &Equipment::_openEquipment, this);
 		module.set_function("isEquipmentOpen", &Equipment::_isEquipmentOpen, this);
-		module.set_function("lastChangeStatus", &Equipment::lastChangeStatus, this);
 
 		module.set_function("removeItem", sol::overload(
 			[&](const std::string& a) {return removeUsableItem(a); },
@@ -351,6 +350,7 @@ namespace rat {		//beware spagetti monster down there :/
 		if (_normalSlots->hasItem(nameId)) {
 			return _normalSlots->useItem(nameId);
 		}
+		return false;
 	}
 	bool Equipment::removeUsableItem(const std::string& nameId) {
 		return _normalSlots->removeItem(nameId);

@@ -40,7 +40,7 @@ namespace rat {
 		bool addItem(EquipmentObject* item);
 		bool removeItem(const std::string& itemNameId);
 		bool removeItem(const std::string& itemNameId, int quantity);
-		bool removeItem(size_t index);
+		bool removeItem(size_t index, bool deletePermamently);
 
 		bool hasItem(const std::string& itemNameId);
 		bool hasItem(const std::string& itemNameId, int quantity);

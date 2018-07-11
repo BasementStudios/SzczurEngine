@@ -92,19 +92,7 @@ namespace rat
 		else
 			return false;
 	}
-	bool NormalSlots::removeItem(size_t _index) {
-		for (auto it = _occupiedSlots.begin(); it != _occupiedSlots.end(); ++it) {
-			if (it->second->index == _index && it->second->getItem()) {
-				it->second->removeItem();
-				_freeSlots.push(it->second);
-				_occupiedSlots.erase(it);
-				
-				return true;
-			}
-		}
-		return false;
-	}
-
+	
 	bool NormalSlots::removeItem(const std::string& itemNameId, int quantity) {
 		if (quantity == 0 || hasItem(itemNameId, quantity)) {
 			size_t index = 0;
@@ -124,6 +112,22 @@ namespace rat
 				}				
 			}	
 			return index > 0;
+		}
+		return false;
+	}
+
+	bool NormalSlots::removeItem(size_t _index, bool deletePermamently) {
+		for (auto it = _occupiedSlots.begin(); it != _occupiedSlots.end(); ++it) {
+			if (it->second->index == _index && it->second->getItem()) {
+				if(!deletePermamently)
+					it->second->setItem(nullptr);
+				else
+					it->second->removeItem();
+				_freeSlots.push(it->second);
+				_occupiedSlots.erase(it);
+
+				return true;
+			}
 		}
 		return false;
 	}
@@ -153,7 +157,7 @@ namespace rat
 		if (auto it = _occupiedSlots.find(nameId);it  != _occupiedSlots.end()) {
 			if (static_cast<UsableItem*>(it->second->getItem())->useItem())
 			{
-				removeItem(it->second->index);
+				removeItem(it->second->index, true);
 				return true;
 			}
 		}
@@ -168,7 +172,7 @@ namespace rat
 		if (clickedObj->getItem()) {
 			//if we are replacing item
 			if (_itemForReplacing) {
-				removeItem(clickedObj->index);
+				removeItem(clickedObj->index, true);
 				clickedObj->setItem(_itemForReplacing);
 				_occupiedSlots.insert(std::make_pair(_itemForReplacing->getNameId(), clickedObj));
 				_equipment->_stopReplacingItem(true);
@@ -213,7 +217,7 @@ namespace rat
 				//dropping item in free slot
 				else if (!_slotDropped->getItem() && _slotDropped->getStatus()) {
 					//removing item from first slot
-					removeItem(_slotHeld->index);
+					removeItem(_slotHeld->index, false);
 
 					//putting item into new slot
 					_slotDropped->setItem(_itemHeld);
@@ -231,7 +235,7 @@ namespace rat
 				//swaping items between slots
 				else if (_slotDropped->getItem()) {
 					//removing item from first slot
-					removeItem(_slotHeld->index);
+					removeItem(_slotHeld->index, false);
 					_freeSlots.remove(_slotHeld);
 
 					//putting second item into first slot
@@ -239,7 +243,7 @@ namespace rat
 					_occupiedSlots.insert(std::make_pair(_slotHeld->getItem()->getNameId(), _slotHeld));
 
 					//removing item from second slot
-					removeItem(_slotDropped->index);
+					removeItem(_slotDropped->index, false);
 					_freeSlots.remove(_slotDropped);
 
 					//putting first item into second slot
@@ -288,7 +292,7 @@ namespace rat
 			if (_slotDropped) {
 				if (_slotDropped->getItem()) {
 					if (dynamic_cast<UsableItem*>(_slotDropped->getItem())->useItem()) {
-						removeItem(_slotDropped->index);
+						removeItem(_slotDropped->index, true);
 						_equipment->disableItemPreview();
 						if (_itemForReplacing) {
 							addItem(_itemForReplacing);

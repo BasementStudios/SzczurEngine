@@ -56,11 +56,16 @@ namespace rat {
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {
 		_itemPlaced = item;
-		_itemImage->setTexture(item->getTexture());
-		_itemImage->resetColor();
+		if (item) {
+			_itemImage->setTexture(item->getTexture());
+			_itemImage->resetColor();
+		}
+		else
+			_itemImage->removeTexture();
 	}
 
 	void EquipmentSlot::removeItem() {
+		delete _itemPlaced;
 		_itemPlaced = nullptr;
 		_itemImage->removeTexture();
 	}
