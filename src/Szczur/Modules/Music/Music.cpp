@@ -229,8 +229,12 @@ namespace rat
 	void Music::setVolume(float volume, const std::string& key, const std::string& name)
 	{
 		if (key.empty()) {
+			RatMusic::SetMusicVolume(volume);
 			for (auto& it : _playlists) {
-				it.second->setVolume(volume);
+				auto& playlist = it.second->getContainerRef();
+				for (auto& music : playlist) {
+					music->setVolume(music->getVolume());
+				}
 			}
 		}
 		else
@@ -239,6 +243,9 @@ namespace rat
 
 	float Music::getVolume(const std::string& name)
 	{
+		if (name.empty())
+			return RatMusic::GetMusicVolume(); 
+			
 		return _assets.get(name).getVolume();
 	}
 

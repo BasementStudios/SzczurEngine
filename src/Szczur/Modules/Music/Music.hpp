@@ -1,12 +1,12 @@
 #pragma once
- 
+
 #include <memory> // unique_ptr
 #include <array>
 #include <string>
 #include <vector>
- 
+
 #include <boost/container/flat_map.hpp>
- 
+
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Utility/Convert/Hash.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -62,7 +62,7 @@ namespace rat
 		void setPlayingMode(const std::string& key, PlayingMode mode);
 
 		void setVolume(float volume, const std::string& key = "", const std::string& name = "");
-		float getVolume(const std::string& name);
+		float getVolume(const std::string& name = "");
 
 		template <typename T>
 		T& getEffect(const std::string& name);

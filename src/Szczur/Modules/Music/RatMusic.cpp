@@ -70,6 +70,27 @@ namespace rat
 		_fadeTime = fadeTime;
 	}
 
+	float RatMusic::GetMusicVolume()
+	{
+		return MusicVolume;
+	}
+
+    void RatMusic::SetMusicVolume(float volume)
+	{
+		MusicVolume = volume;
+	}
+
+	float RatMusic::getVolume() const
+	{
+		return _volume;
+	}
+
+	void RatMusic::setVolume(float volume)
+	{
+		_volume = volume;
+		sf::Music::setVolume(volume * (MusicVolume * 100));
+	}
+
 	//Only for editor
 	void RatMusic::saveToJson()
 	{

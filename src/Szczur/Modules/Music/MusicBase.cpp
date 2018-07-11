@@ -1,7 +1,7 @@
 #include "MusicBase.hpp"
 
 #include <string>
- 
+
 #include <SFML/System.hpp>
 
 namespace rat
