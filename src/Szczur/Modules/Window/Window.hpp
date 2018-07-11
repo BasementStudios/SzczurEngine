@@ -70,8 +70,8 @@ public:
 	void setVideoMode(const sf::VideoMode& mode);
 
 	/// Size of window. Related to video mode.
-	sf::Vector2u getSize() const noexcept;
-	void setSize(sf::Vector2u size);
+	glm::uvec2 getSize() const noexcept;
+	void setSize(glm::uvec2 size);
 
 	/// Limit of updated and rendered frames per second.
 	unsigned int getFramerateLimit() const noexcept;

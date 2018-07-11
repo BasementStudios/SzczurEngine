@@ -55,11 +55,12 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 	this->recreateWindow();
 }
 
-sf::Vector2u Window::getSize() const noexcept
+// Size
+glm::uvec2 Window::getSize() const noexcept
 {
 	return {this->videoMode.width, this->videoMode.height};
 }
-void Window::setSize(sf::Vector2u size)
+void Window::setSize(glm::uvec2 size)
 {
 	this->videoMode.width = size.x;
 	this->videoMode.height = size.y;
