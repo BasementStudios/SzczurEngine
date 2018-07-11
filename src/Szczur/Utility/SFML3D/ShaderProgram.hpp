@@ -31,20 +31,24 @@ public:
 	///
 	ShaderProgram() = default;
 
-	///
+	// Non-copyable
 	ShaderProgram(const ShaderProgram&) = delete;
-
-	///
 	ShaderProgram& operator = (const ShaderProgram&) = delete;
 
-	///
+	// Movable
 	ShaderProgram(ShaderProgram&& rhs) noexcept;
-
-	///
 	ShaderProgram& operator = (ShaderProgram&& rhs) noexcept;
 
 	///
 	~ShaderProgram();
+
+	///
+	template <typename... Ts>
+	ShaderProgram(Ts&... shaders);
+
+	///
+	template <typename... Ts>
+	ShaderProgram(Ts&&... shaders);
 
 	///
 	template <typename... Ts>
@@ -151,6 +155,20 @@ private:
 	NativeHandle_t _program = 0;
 
 };
+
+
+
+template <typename... Ts>
+ShaderProgram::ShaderProgram(Ts&... shaders)
+{
+	linkShaders(shaders...);
+}
+
+template <typename... Ts>
+ShaderProgram::ShaderProgram(Ts&&... shaders)
+{
+	linkShaders(std::forward<Ts>(shaders)...);
+}
 
 template <typename... Ts>
 void ShaderProgram::linkShaders(Ts&&... shaders)
