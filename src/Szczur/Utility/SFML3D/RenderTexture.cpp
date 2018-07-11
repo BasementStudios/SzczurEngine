@@ -68,7 +68,7 @@ void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
 	glGenRenderbuffers(1, &(this->RBO));
 
 	// FrameBuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, (this->FBO));
+	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
 	{
 		// Texture
 		this->texture.create(size);

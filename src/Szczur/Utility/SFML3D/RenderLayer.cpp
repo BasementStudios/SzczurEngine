@@ -41,7 +41,7 @@ void RenderLayer::create(glm::uvec2 size, ShaderProgram* program)
 
 void RenderLayer::draw(RenderTarget& target, RenderStates states) const
 {
-	target.draw(this->sprite);
+	target.draw(this->sprite, states);
 }
 
 }
