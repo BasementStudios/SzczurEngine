@@ -1,6 +1,6 @@
 #include "EquipmentObject.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
-#include <Sol/sol.hpp>
+#include <sol.hpp>
 
 namespace rat {
 	EquipmentObject::EquipmentObject(std::string nameId)

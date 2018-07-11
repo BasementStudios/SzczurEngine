@@ -27,7 +27,6 @@ namespace rat {		//beware spagetti monster down there :/
 		initScript();
 		init();		
 		LOG_INFO("Module Equipment initialized");
-		getModule<Script>().scriptFile("test.lua");
 	}
 
 	Equipment::~Equipment() {
@@ -98,7 +97,7 @@ namespace rat {		//beware spagetti monster down there :/
 		_equipmentFrame = new WindowWidget();
 		_base->add(_equipmentFrame);
 		_equipmentFrame->makeChildrenUnresizable();
-		_equipmentFrame->setPropPosition(0.5f, 3.35f);
+		_equipmentFrame->setPropPosition(0.5f, 3.33f);
 		_equipmentFrame->setPropSize(.63f, .7f);
 		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 180);
 	
@@ -323,7 +322,7 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
-		_equipmentFrame->setPropPosition({ 0.5f, 3.35f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPosition({ 0.5f, 3.33f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = true;
 		} });
 	}

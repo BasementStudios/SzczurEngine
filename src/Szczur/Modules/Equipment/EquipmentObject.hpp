@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
-#include <Sol/sol.hpp>
+#include <sol.hpp>
 #include <memory>
 /*
 	class for items containing image widget of object, name and description

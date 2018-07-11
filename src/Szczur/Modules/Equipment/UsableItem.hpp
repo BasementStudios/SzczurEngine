@@ -1,6 +1,6 @@
 #pragma once
 #include "EquipmentObject.hpp"
-#include <Sol/sol.hpp>
+#include <sol.hpp>
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
