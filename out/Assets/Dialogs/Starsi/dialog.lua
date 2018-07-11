@@ -11,11 +11,13 @@ options:addRunner(0, 0)
 options.add = {
 	majorTarget = 1;
 	minorTarget = 0;
+	color = {255, 0, 255, 125};
 }
 
 options.add = {
 	majorTarget = 3;
 	minorTarget = 0;
+	color = {255, 255, 0, 255};
 
 	--b:a(304): Karion pozostaje w miejscu.
 	action = function()

@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
+#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/TextAreaWidget.hpp"
+#include "Szczur/Modules/GUI/InterfaceWidget.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 
@@ -20,6 +24,8 @@ namespace rat {
 
         ~DialogGUI();
 
+		void init();
+
         void hide();
 
         void show();
@@ -31,23 +37,14 @@ namespace rat {
         void setText(const std::string& text);
 
         void interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback);
-
-        void setInterface(Widget* _interface);
-        Widget* getInterface() const;
-
-        void setButtonsContainer(Widget* container);
-        const sol::function& getButtonsContainer() const;
-
-        void setButtonsCreator(const sol::function& func);
-        Widget* getButtonsCreator() const;
-
-        void setArea(TextAreaWidget* area);
-        TextAreaWidget* getArea() const;
-
     private:
-        Widget* _interface;
-        sol::function _buttonsCreator;
-        Widget* _buttonsContainer;
-        TextAreaWidget* _area;
+		sol::function _onInit;
+		sol::function _reset;
+		sol::function _clearButtons;
+		sol::function _getButton;
+		InterfaceWidget* _interface{nullptr};
+		TextAreaWidget* _dialogText{nullptr};
+		Widget* _listHolder{nullptr};
+		ListWidget* _list{nullptr};
     };
 }

@@ -5,6 +5,8 @@
 
 #include "Szczur/Modules/Script/Script.hpp"
 
+#include <SFML/Graphics/Color.hpp>
+
 #include <boost/container/flat_set.hpp>
 
 namespace rat {
@@ -29,6 +31,7 @@ namespace rat {
             AfterAction_t afterAction;
             bool finishing;
             bool skip;
+			sf::Color color;
         };
 
         Options();
@@ -44,7 +47,8 @@ namespace rat {
             Key_t minorTarget, 
             AfterAction_t afterAction,
             bool finishing,
-            bool skip
+            bool skip,
+			sf::Color color
         );
 
         void forEach(std::function<void(Option*)> func);
