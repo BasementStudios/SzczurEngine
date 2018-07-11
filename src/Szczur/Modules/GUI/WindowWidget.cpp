@@ -21,15 +21,17 @@ namespace rat
     {
         auto object = script.newClass<WindowWidget>("WindowWidget", "GUI");
 
+        gui::WidgetScripts::set(object);
+
         object.set("setMainPatchPropSize", &WindowWidget::setMainPatchPropSize);
 
         object.setOverload("setTexture",
-            sol::resolve<void(sf::Texture*, int)>(&WindowWidget::setTexture),
-            sol::resolve<void(sf::Texture*, int, int)>(&WindowWidget::setTexture)
+            static_cast<void (WindowWidget::*)(sf::Texture*, int)>(&WindowWidget::setTexture),
+            static_cast<void (WindowWidget::*)(sf::Texture*, int, int)>(&WindowWidget::setTexture)
         );
         object.setOverload("setScale",
-            sol::resolve<void(const sf::Vector2f&)>(&WindowWidget::setScale),
-            sol::resolve<void(float, float)>(&WindowWidget::setScale)
+            static_cast<void (WindowWidget::*)(const sf::Vector2f&)>(&WindowWidget::setScale),
+            static_cast<void (WindowWidget::*)(float, float)>(&WindowWidget::setScale)
         );
 
         object.init();
