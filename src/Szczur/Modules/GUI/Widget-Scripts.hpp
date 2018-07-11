@@ -46,6 +46,7 @@ namespace gui
                 static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPropPosition),
                 static_cast<void (T::*)(float, float)>(&T::setPropPosition)
             );
+            object.set("makeStaticPropPositing", &T::makeStaticPropPositing);
             object.set("getPosByGlobalPos", &T::getPosByGlobalPos);
             object.setOverload("setGlobalPosition",
                 static_cast<void (T::*)(const sf::Vector2f&)>(&T::setGlobalPosition),

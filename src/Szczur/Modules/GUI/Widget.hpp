@@ -63,6 +63,8 @@ namespace rat
 		void setPropPositionInTime(const sf::Vector2f& propPos, float inTime);
 		void setPropPositionInTime(const sf::Vector2f& propPos, const gui::AnimData& data);
 
+		void makeStaticPropPositing();
+
 		sf::Vector2f getPosByGlobalPos(const sf::Vector2f& globalPos) const;
 		void setGlobalPosition(const sf::Vector2f& globalPos);
 		void setGlobalPosition(float globalX, float globalY);
@@ -224,6 +226,8 @@ namespace rat
 
 		bool _isPenetrable{false};
 		bool _isResizable{true};
+
+		bool _hasStaticPropPositing{false};
 
 		sf::Vector2f _getBound() const;
 
