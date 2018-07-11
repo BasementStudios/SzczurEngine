@@ -12,26 +12,26 @@ namespace sf3d {
 		if(texture) {
 			_texture = texture;
 			auto size = texture->getSize();
-			_vertices.set(0u, {
+			_vertices[0] = {
 				{0.f, 0.f, 0.f},
 				{1.f, 1.f, 1.f, 1.f},
 				{0.f, 0.f}
-			});
-			_vertices.set(1u, {
+			};
+			_vertices[1] = {
 				{(float)size.x, 0.f, 0.f},
 				{1.f, 1.f, 1.f, 1.f},
 				{1.f, 0.f}
-			});
-			_vertices.set(2u, {
+			};
+			_vertices[2] = {
 				{(float)size.x, -(float)size.y, 0.f},
 				{1.f, 1.f, 1.f, 1.f},
 				{1.f, 1.f}
-			});
-			_vertices.set(3u, {
+			};
+			_vertices[3] = {
 				{0.f, -(float)size.y, 0.f},
 				{1.f, 1.f, 1.f, 1.f},
 				{0.f, 1.f}
-			});
+			};
 		}
 	}
 

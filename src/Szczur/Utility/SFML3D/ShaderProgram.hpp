@@ -1,8 +1,10 @@
 #pragma once
 
-#include <glad/glad.h>
-
-#include <glm/glm.hpp>
+#include <glad.h>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "Shader.hpp"
 
@@ -75,6 +77,8 @@ public:
 	void setUniform(const char* name, const glm::mat4x4& mat, bool transpose = GL_FALSE);
 
 	operator GLuint () const;
+
+	bool isVaild() const;
 
 private:
 

@@ -6,6 +6,8 @@
 
 namespace rat
 {
+    class Script;
+
     class ListWidget : public Widget
     {
     public:
@@ -20,6 +22,9 @@ namespace rat
         void makeReversed();
 
         void popBack(size_t amount = 1);
+        
+    public:
+        static void initScript(Script& script);
 
     protected:
         virtual void _calculateSize() override;

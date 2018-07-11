@@ -142,7 +142,6 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));

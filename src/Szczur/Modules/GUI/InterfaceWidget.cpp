@@ -1,10 +1,24 @@
 #include "InterfaceWidget.hpp"
 
+#include "Widget-Scripts.hpp"
+
 namespace rat
 {
     InterfaceWidget::InterfaceWidget()
     {
         makeChildrenUnresizable();
+        setSizingWidthToHeightProportion(1.f);
+        makePenetrable();
+    }
+    void InterfaceWidget::initScript(Script& script) 
+    {
+        auto object = script.newClass<InterfaceWidget>("InterfaceWidget", "GUI");
+        gui::WidgetScripts::set(object);
+
+        object.set("setWidthToHeightProp", &InterfaceWidget::setWidthToHeightProp);
+        object.set("setSizingWidthToHeightProportion", &InterfaceWidget::setSizingWidthToHeightProportion);
+
+        object.init();
     }
     void InterfaceWidget::setWidthToHeightProp(float prop)
     {

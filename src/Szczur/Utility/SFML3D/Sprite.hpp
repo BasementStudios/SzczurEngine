@@ -2,12 +2,12 @@
 
 #include "Transformable.hpp"
 #include "Drawable.hpp"
-#include "RenderStates.hpp"
 #include "VertexArray.hpp"
 
 namespace sf3d {
 	class RenderTarget;
 	class Texture;
+	class RenderStates;
 
 	class Sprite : public Transformable, public Drawable {
 	public:
