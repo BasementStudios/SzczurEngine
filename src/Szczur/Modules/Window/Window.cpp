@@ -148,10 +148,8 @@ void Window::init()
 
 		// Shader
 		try {
-			sf3d::Shader VShader;
-			VShader.loadFromFile(sf3d::Shader::Vertex, "Assets/Shaders/assemble.vert");
-			sf3d::Shader FShader;
-			FShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
+			sf3d::Shader VShader(sf3d::Shader::Vertex, "Assets/Shaders/assemble.vert");
+			sf3d::Shader FShader(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
 
 			this->shaderProgram.linkShaders(VShader, FShader);
 			LOG_INFO("Shader loaded, compiled and linked.");
