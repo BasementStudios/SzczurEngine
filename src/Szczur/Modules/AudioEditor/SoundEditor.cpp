@@ -35,7 +35,11 @@ namespace rat
             ImGui::Separator();
 
             if (ImGui::Button("Load##SoundLists")) {
+                for(auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
+                    save(it);
+                }
                 _loadingSound = true;
+                getJsonData();
             }
 
             ImGui::SameLine();
@@ -188,6 +192,9 @@ namespace rat
     {
         auto name = it->getName();
 
+        if(name == "Unnnamed")
+            return;
+
         nlohmann::json j;
 
         std::ifstream ifile(SOUND_DATA_FILE_PATH);
@@ -214,55 +221,24 @@ namespace rat
 
     void SoundEditor::load()
     {
-        static std::string loadingSoundName = "";
+        ImGui::Begin("Load Sound");
 
-        ImGui::Begin("Load Sound", NULL);
-
-            ImGui::Text("Name: "); 
-            ImGui::SameLine();
-
-            size_t size = loadingSoundName.length() + 100;
-            char *newText = new char[size] {};
-            strncpy(newText, loadingSoundName.c_str(), size);
-
-            ImGui::PushItemWidth(300);
-                if (ImGui::InputText("##LoadingSoundNameInput", newText, size)) {
-                    loadingSoundName = newText;
-                }
-                if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
-                    ImGui::SetKeyboardFocusHere(0);
-                }
-            ImGui::PopItemWidth();
-
-            delete[] newText;
-            
-            ImGui::SetCursorPosX(260);
+            for(unsigned int i = 0; i < _loadingNames.size(); ++i) {
+                ImGui::Checkbox(_loadingNames[i].c_str(), &_choosedNames[i]);
+            }
 
             if (ImGui::Button("CANCEL##LoadSound")) {
-                loadingSoundName = "";
+                _loadingNames.clear();
+                delete[] _choosedNames;
                 _loadingSound = false;
             }
 
             ImGui::SameLine(); 
 
             if (ImGui::Button(" OK ##LoadSound")) {
-
-                _soundHolder.push_back(SoundBase(loadingSoundName));
-                _soundHolder.back().load();
-
-                auto fileName = _soundHolder.back().getFileName();
-
-                if(fileName.empty()) {
-                    _soundHolder.pop_back();
-                } 
-                else {
-                    _assets.load(fileName);
-                    _soundHolder.back().setBuffer(_assets.get(fileName));
-                    _soundHolder.back().init();
-                }
-
-                
-                loadingSoundName = "";
+                updateSoundHolder();
+                _loadingNames.clear();
+                delete[] _choosedNames;
                 _loadingSound = false;
             }
 
@@ -284,6 +260,54 @@ namespace rat
             _assets.load(filePath);
             _soundHolder.back().setBuffer(_assets.get(filePath));
             _soundHolder.back().init();
+            _soundHolder.back().setFileName(filePath);
+        }
+    }
+
+    void SoundEditor::updateSoundHolder()
+    {
+        _soundHolder.clear();
+        _currentEditing = _soundHolder.end();
+
+        for (int i = _loadingNames.size() - 1; i >= 0; --i) {   
+            if (_choosedNames[i]) {
+                _soundHolder.push_back(SoundBase(_loadingNames[i]));
+                _soundHolder.back().load();
+
+                auto fileName = _soundHolder.back().getFileName();
+
+                if(fileName.empty()) {
+                    _soundHolder.pop_back();
+                } 
+                else {
+                    _assets.load(fileName);
+                    _soundHolder.back().setBuffer(_assets.get(fileName));
+                    _soundHolder.back().init();
+                }        
+            }   
+        }
+    }
+
+    void SoundEditor::getJsonData()
+    {
+        nlohmann::json j;
+
+        std::ifstream ifile(SOUND_DATA_FILE_PATH);
+        if (ifile.is_open()) {
+            ifile >> j;
+            ifile.close();
+        }
+
+        for (auto it = j.begin(); it != j.end(); ++it)
+            _loadingNames.push_back(it.key());
+
+        _choosedNames = new bool[_loadingNames.size()] {false};
+
+        for (unsigned int i = 0; i < _loadingNames.size(); ++i) {
+            for(auto& it : _soundHolder) {
+                if(_loadingNames[i] == it.getName())
+                    _choosedNames[i] = true;
+            }
         }
     }
 

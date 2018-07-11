@@ -2,6 +2,7 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 #include "Szczur/Modules/Sound/Sound.hpp"
 
@@ -23,6 +24,9 @@ namespace rat
         Container_t _soundHolder;
 
         Container_t::iterator _currentEditing;
+
+        std::vector<std::string> _loadingNames;
+        bool* _choosedNames;
  
     public:
 
@@ -36,6 +40,10 @@ namespace rat
         void add();
 
     private:
+
+        void updateSoundHolder();
+
+        void getJsonData();
 
         std::string toTime(float secF);
         float toFloatSeconds(const std::string& timeString) const;
