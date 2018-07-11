@@ -30,44 +30,41 @@ public:
 	///
 	Shader() = default;
 
-	///
+	// Non-copyable
 	Shader(const Shader&) = delete;
-
-	///
 	Shader& operator = (const Shader&) = delete;
 
-	///
+	// Movable
 	Shader(Shader&& rhs) noexcept;
-
-	///
 	Shader& operator = (Shader&& rhs) noexcept;
 
 	///
 	~Shader();
 
 	///
+	/// Loads and compiles from type and path
 	void loadFromFile(ShaderType type, const char* filePath);
+	void loadFromFile(ShaderType type, const std::string& filePath);
 
-	///
-	void loadFromMemory(ShaderType type, const void* data, GLint size = -1);
+	/// Loads and compiles from memory 
+	void loadFromMemory(ShaderType type, const char* data, GLint size = -1);
+	void loadFromMemory(ShaderType type, const std::string& data);
 
-	///
+	/// Checks is shader vaild
 	bool isValid() const;
 
-	///
+	/// Return native handler of shader
 	NativeHandle_t getNativeHandle() const;
 
-	#ifdef EDITOR
-
+#ifdef EDITOR
 	ShaderType _type;
 	std::string _filePath;
-	const void* _dataPtr = nullptr;
+	const char* _dataPtr = nullptr;
 	GLint _dataSize = 0;
 
 	///
 	void _reload();
-
-	#endif // EDITOR
+#endif // EDITOR
 
 private:
 

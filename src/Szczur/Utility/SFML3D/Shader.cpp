@@ -59,6 +59,7 @@ Shader::~Shader()
 	_destroy();
 }
 
+// Loading from files
 void Shader::loadFromFile(ShaderType type, const char* filePath)
 {
 	#ifdef EDITOR
@@ -77,10 +78,15 @@ void Shader::loadFromFile(ShaderType type, const char* filePath)
 		throw std::runtime_error(std::string("Cannot load shader from ") + filePath);
 	}
 
-	return _compile(type, ptr.get(), -1);
+	_compile(type, ptr.get(), -1);
+}
+void Shader::loadFromFile(ShaderType type, const std::string& filePath)
+{
+	this->loadFromFile(type, filePath.c_str());
 }
 
-void Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
+// Loading from memory
+void Shader::loadFromMemory(ShaderType type, const char* data, GLint size)
 {
 	#ifdef EDITOR
 	{
@@ -91,7 +97,11 @@ void Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
 	}
 	#endif // EDITOR
 
-	return _compile(type, reinterpret_cast<const char*>(data), size);
+	_compile(type, data, size);
+}
+void Shader::loadFromMemory(ShaderType type, const std::string& data)
+{
+	this->loadFromMemory(type, data.c_str(), -1);
 }
 
 bool Shader::isValid() const
@@ -110,18 +120,11 @@ void Shader::_reload()
 {
 	if (!_filePath.empty())
 	{
-		auto ptr = getFileContents(_filePath.data());
-
-		if (!ptr)
-		{
-			throw std::runtime_error(std::string("Cannot reload shader from ") + _filePath);
-		}
-
-		_compile(_type, ptr.get(), -1);
+		loadFromFile(_type, _filePath);
 	}
 	else if (_dataPtr != nullptr)
 	{
-		_compile(_type, reinterpret_cast<const char*>(_dataPtr), _dataSize);
+		loadFromMemory(_type, _dataPtr, _dataSize);
 	}
 }
 
