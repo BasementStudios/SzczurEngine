@@ -40,6 +40,7 @@ public:
 	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
 
 	void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const override;
+	using sf3d::RenderTarget::draw;
 };
 
 }
