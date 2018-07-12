@@ -53,7 +53,7 @@ public:
 	void loadFromMemory(ShaderType type, const char* data, GLint size = -1);
 	void loadFromMemory(ShaderType type, const std::string& data);
 
-	/// Checks is shader vaild
+	/// Checks whether shader is vaild
 	bool isValid() const;
 
 	/// Return native handler of shader

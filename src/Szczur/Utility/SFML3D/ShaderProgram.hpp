@@ -44,10 +44,6 @@ public:
 
 	///
 	template <typename... Ts>
-	ShaderProgram(Ts&... shaders);
-
-	///
-	template <typename... Ts>
 	ShaderProgram(Ts&&... shaders);
 
 	///
@@ -155,14 +151,6 @@ private:
 	NativeHandle_t _program = 0;
 
 };
-
-
-
-template <typename... Ts>
-ShaderProgram::ShaderProgram(Ts&... shaders)
-{
-	linkShaders(shaders...);
-}
 
 template <typename... Ts>
 ShaderProgram::ShaderProgram(Ts&&... shaders)

@@ -13,7 +13,7 @@ class Texture
 	/* Variables */
 protected:
 	GLuint textureID {0u};
-	glm::uvec2 size {0.f, 0.f};
+	glm::uvec2 size {0u, 0u};
 
 	
 
