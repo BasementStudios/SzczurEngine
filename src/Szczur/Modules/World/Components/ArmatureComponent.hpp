@@ -23,6 +23,14 @@ template<class T> class ScriptClass;
 
 class ArmatureComponent : public Component, public sf3d::Drawable
 {
+private:
+	enum OnceAnimStatus
+	{
+		IsAboutToPlay,
+		IsPlaying,
+		None
+	};
+
 public:
 
 // Constructors
@@ -76,7 +84,7 @@ public:
 	void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
 
 	///
-	void playOnce(const std::string& animationName, float fadeInTime = -1.f);
+	void playOnce(const std::string& animationName, float fadeInTime = -1.f, bool waitToEndCurr = false);
 
 	///
 	void setFlipX(bool flipX);
@@ -115,9 +123,13 @@ private:
 	dragonBones::SF3DArmatureDisplay* _armature = nullptr;
 	ArmatureDisplayData* _armatureDisplayData = nullptr;
 
+	OnceAnimStatus _onceAnimStatus;
+
+	std::string _playOnceAnimationName;
+	float _playOnceAnimationFadeInTime = 0.f;
+
 	std::string _lastAnimationName;
 	float _lastAnimationFadeInTime = 0.f;
-	bool _isPlayingOnceAnimation = false;
 };
 
 }

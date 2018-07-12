@@ -166,14 +166,23 @@ void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
 	if (_armature)
 	{
 		_armature->getArmature()->advanceTime(deltaTime);
-	}
 
-	if (_isPlayingOnceAnimation)
-	{
-		if (_armature && _armature->getAnimation()->isCompleted())
+		if (_onceAnimStatus == OnceAnimStatus::IsAboutToPlay)
 		{
-			_isPlayingOnceAnimation = false;
-			fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
+			if (_armature->getAnimation()->isCompleted())
+			{
+				_armature->getAnimation()->fadeIn(_playOnceAnimationName, _playOnceAnimationFadeInTime, 1);
+				_onceAnimStatus = OnceAnimStatus::IsPlaying;
+			}
+		}
+
+		if (_onceAnimStatus == OnceAnimStatus::IsPlaying)
+		{
+			if (_armature->getAnimation()->isCompleted())
+			{
+				fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
+				_onceAnimStatus = OnceAnimStatus::None;
+			}
 		}
 	}
 }
@@ -204,29 +213,41 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 			return;
 		}
 
-		_isPlayingOnceAnimation = false;
+		_onceAnimStatus = OnceAnimStatus::None;
 		_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
 	}
 }
 
-void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime)
+void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, bool waitToEnd)
 {
 	if (_armature)
 	{
-		if (_isPlayingOnceAnimation)
-		{
-			_armature->getAnimation()->fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
-		}
+		if (_onceAnimStatus == OnceAnimStatus::IsPlaying)
+			return;
 
 		if (auto anim = _armature->getAnimation(); anim && anim->isPlaying())
 		{
-			auto lastAnimation = anim->getLastAnimationState();
-			_lastAnimationFadeInTime = lastAnimation->fadeTotalTime;
-			_lastAnimationName = lastAnimation->name;
-			_isPlayingOnceAnimation = true;
-		}
+			if (auto lastAnimation = anim->getLastAnimationState())
+			{
+				_lastAnimationName = lastAnimation->name;
+				_lastAnimationFadeInTime = lastAnimation->fadeTotalTime;
 
-		_armature->getAnimation()->fadeIn(animationName, fadeInTime, 1);
+				if (waitToEnd)
+				{
+					_onceAnimStatus = OnceAnimStatus::IsAboutToPlay;
+					_playOnceAnimationName = animationName;
+					_playOnceAnimationFadeInTime = fadeInTime;
+
+					auto time = lastAnimation->getCurrentTime();
+					anim->gotoAndPlayByTime(lastAnimation->getName(), time, 1);
+				}
+				else
+				{
+					_onceAnimStatus = OnceAnimStatus::IsPlaying;
+					anim->fadeIn(animationName, fadeInTime, 1);
+				}
+			}
+		}
 	}
 }
 
