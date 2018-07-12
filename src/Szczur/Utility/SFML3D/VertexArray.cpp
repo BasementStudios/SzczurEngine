@@ -1,5 +1,12 @@
 #include "VertexArray.hpp"
 
+#include <vector>
+
+#include "RenderTarget.hpp"
+#include "RenderStates.hpp"
+#include "PrimitiveType.hpp"
+#include "Vertex.hpp"
+
 template <typename T, typename Class>
 constexpr const void* offsetPtrOf(T Class::*member)
 {
@@ -407,6 +414,11 @@ void VertexArray::update() const
 
         unbind();
     }
+}
+
+void VertexArray::draw(RenderTarget& target, RenderStates states) const
+{
+    target.draw(*this, states);
 }
 
 void VertexArray::_init()

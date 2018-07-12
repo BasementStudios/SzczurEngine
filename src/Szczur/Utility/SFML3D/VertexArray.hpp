@@ -2,6 +2,10 @@
 
 #include <vector>
 
+namespace sf3d {
+    class RenderTarget;
+}
+#include "RenderStates.hpp"
 #include "Drawable.hpp"
 #include "PrimitiveType.hpp"
 #include "Vertex.hpp"
@@ -9,7 +13,7 @@
 namespace sf3d
 {
 
-class VertexArray
+class VertexArray : public Drawable
 {
 public:
 
@@ -119,6 +123,9 @@ public:
 
 	///
 	void update() const;
+
+    ///
+    virtual void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const override;
 
 private:
 
