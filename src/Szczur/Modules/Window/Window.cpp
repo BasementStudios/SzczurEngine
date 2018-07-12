@@ -22,10 +22,13 @@
 #include <SFML/Graphics/Vertex.hpp>
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderWindow.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "Szczur/Utility/SFML3D/Vertex.hpp"
-#include "Szczur/Utility/SFML3D/Shader.hpp"
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/Vertex.hpp"
+#include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -169,9 +172,7 @@ void Window::init()
 // render
 void Window::render()
 {
-	//glDisable(GL_DEPTH_TEST);
 	this->getWindow().display();
-	//glEnable(GL_DEPTH_TEST);
 }
 
 // processEvent
@@ -211,7 +212,6 @@ void Window::recreateWindow()
 void Window::clear(const sf::Color& color)
 {
 	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
-	//this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL states
@@ -237,19 +237,19 @@ void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::Primi
 // 3D
 void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(drawable, states);
+	drawable.draw(this->getWindow(), states);
 }
 void Window::draw(const sf3d::Drawable& drawable)
 {
-	this->getWindow().draw(drawable);
+	drawable.draw(this->getWindow());
 }
 void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(vertices, states);
+	vertices.draw(this->getWindow(), states);
 }
 void Window::draw(const sf3d::VertexArray& vertices)
 {
-	this->getWindow().draw(vertices);
+	vertices.draw(this->getWindow());
 }
 
 }

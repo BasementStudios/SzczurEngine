@@ -19,13 +19,14 @@ namespace sf {
 #include <SFML/Graphics/PrimitiveType.hpp>
 
 namespace sf3d {
+	class Event;
 	class Drawable;
 	class Vertex;
-	class Event;
+	class VertexArray;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderTexture.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
