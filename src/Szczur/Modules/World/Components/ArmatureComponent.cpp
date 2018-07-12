@@ -256,6 +256,16 @@ bool ArmatureComponent::isPlaying()
 	return false;
 }
 
+std::string ArmatureComponent::getCurrentPlayingAnim()
+{
+	if (_armature && _armature->getAnimation())
+	{
+		return _armature->getAnimation()->getLastAnimationName();
+	}
+
+	return std::string();
+}
+
 void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 {
 	auto object = script.newClass<ArmatureComponent>("ArmatureComponent", "World");
@@ -267,6 +277,7 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
 	object.set("isPlaying", &ArmatureComponent::isPlaying);
+	object.set("getCurrentPlayingAnim", &ArmatureComponent::getCurrentPlayingAnim);
 	object.set("setArmature", &ArmatureComponent::setArmature);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 

@@ -86,6 +86,9 @@ public:
 
 	///
 	bool isPlaying();
+	
+	///
+	std::string getCurrentPlayingAnim();
 
 // Scripts
 
