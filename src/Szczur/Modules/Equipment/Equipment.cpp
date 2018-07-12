@@ -27,6 +27,7 @@ namespace rat {		//beware spagetti monster down there :/
 		initScript();
 		init();		
 		LOG_INFO("Module Equipment initialized");
+		getModule<Script>().scriptFile("Assets/Equipment/test.lua");
 	}
 
 	Equipment::~Equipment() {
