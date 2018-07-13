@@ -123,9 +123,8 @@ namespace rat {		//beware spagetti monster down there :/
 		_normalSlots->setParent(_equipmentFrame);
 		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .9f));
 
-		_ringSlider = new RingSlider({ 70u, 70u }, this);
+		_ringSlider = new RingSlider({ 70u, 70u }, this, gui);
 		_ringSlider->setParent(_equipmentFrame);
-		_ringSlider->initAssetsViaGUI(gui);
 		_ringSlider->setPropPosition({ 0.9f, 0.4f });
 
 		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
@@ -159,14 +158,16 @@ namespace rat {		//beware spagetti monster down there :/
 	//when play button in pressed and we activate equipment
 	void Equipment::startEquipment() {
 		_base->fullyActivate();
-		_closeEquipment();
+		
 	}
 
 	//when stop button is pressed and we deactivate equipment
 	void Equipment::stopEquipment() {
 		_base->fullyDeactivate();
-		//_armorSlots->reset();
-		//_ringSlider->reset();
+		_armorSlots->reset();
+		_ringSlider->reset();
+		_normalSlots->reset();
+		_closeEquipment();
 	}
 
 	void Equipment::enableItemPreview(EquipmentObject* item) {

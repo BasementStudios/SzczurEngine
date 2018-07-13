@@ -10,7 +10,8 @@ namespace rat {
 
 		RingSlider(
 			sf::Vector2f frameSize,
-			Equipment* equipment
+			Equipment* equipment,
+			GUI& gui
 		);
 
 		void initAssetsViaGUI(GUI& gui);

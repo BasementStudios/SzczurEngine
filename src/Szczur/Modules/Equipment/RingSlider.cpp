@@ -10,7 +10,7 @@
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
 namespace rat {
-	RingSlider::RingSlider(sf::Vector2f frameSize, Equipment* equipment)
+	RingSlider::RingSlider(sf::Vector2f frameSize, Equipment* equipment, GUI& gui)
 		:_equipment(equipment), _slotSize(frameSize)
 	{
 		_base = new Widget;
@@ -27,6 +27,33 @@ namespace rat {
 		_baseForItems = new ListWidget;
 		_baseForItems->setPropBetweenPad(0.005f);
 		_scroll->add(_baseForItems);
+
+		initAssetsViaGUI(gui);
+
+		for (size_t i = 0; i < 5; i++)
+		{
+			EquipmentSlot* temp = new EquipmentSlot;
+			_ringSlots.push_back(temp);
+			_scroll->resetScrollerPosition();
+			temp->setParent(_baseForItems);
+			temp->setPropSize({ 0.09f, 0.09f });
+			temp->setTexture(_slotTexture);
+			temp->setHighlightTexture(_highlightTexture);
+			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {
+				if (temp->getItem())
+				_equipment->disableItemPreview();
+				temp->setHighlight(false);
+			});
+			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, temp](Widget* owner) {
+				if(temp->getItem())
+				_equipment->enableItemPreview(temp->getItem());
+				temp->setHighlight(true);
+			});
+			temp->getWidget()->setCallback(Widget::CallbackType::onPress, [temp, this](Widget* owner) {
+				if (temp->getItem())
+				selectRing(temp);
+			});
+		}
 
 	}
 
@@ -55,27 +82,13 @@ namespace rat {
 	}
 
 	void RingSlider::addItem(WearableItem* item) {
-		EquipmentSlot* temp = new EquipmentSlot;
-		_ringSlots.push_back(temp);
-		_scroll->resetScrollerPosition();
-		//_baseForItems->setPropSize(0.09f, (_ringSlots.size() - 1) * (.09f + .01f));		
-		temp->setParent(_baseForItems);
-		temp->setPropSize({ 0.09f, 0.09f });//_slotSize);
-		temp->setTexture(_slotTexture);
-		//temp->setPropPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (.15f + .01f)));
-		temp->setItem(item);
-		temp->setHighlightTexture(_highlightTexture);
-		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {
-			this->_equipment->disableItemPreview();
-			temp->setHighlight(false);
-		});
-		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, item, temp](Widget* owner) {
-			this->_equipment->enableItemPreview(item);		
-			temp->setHighlight(true);
-		});
-		temp->getWidget()->setCallback(Widget::CallbackType::onPress, [temp, this](Widget* owner) {
-			this->selectRing(temp);
-		});
+		for (size_t i = 0; i < _ringSlots.size(); i++)
+		{
+			if (!_ringSlots[i]->getItem()) {
+				_ringSlots[i]->setItem(item);
+				return;
+			}
+		}
 	}
 
 	void RingSlider::selectRing(EquipmentSlot* slot) {
@@ -119,9 +132,8 @@ namespace rat {
 	void RingSlider::reset() {
 		for (int i = _ringSlots.size() - 1; i >= 0; i--)
 		{
+			if(_ringSlots[i]->getItem())
 			_ringSlots[i]->removeItem();
-			delete _ringSlots[i];
-			_ringSlots.erase(_ringSlots.begin() + i);
 		}
 	}
 }

@@ -57,6 +57,7 @@ namespace rat {
 		bool useItem(const std::string& nameId);
 
 		void update(float deltaTime);
+		void reset();
 
 	private:
 		unsigned int _slotAmount;

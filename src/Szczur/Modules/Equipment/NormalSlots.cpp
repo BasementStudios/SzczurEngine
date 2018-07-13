@@ -363,4 +363,13 @@ namespace rat
 	void NormalSlots::_stopReplacing() {
 		_itemForReplacing = nullptr;
 	}
+
+	void NormalSlots::reset() {
+		for (auto i = _occupiedSlots.begin(); i != _occupiedSlots.end();)
+		{
+			i->second->removeItem();
+			_freeSlots.push(i->second);
+			i = _occupiedSlots.erase(i);
+		}
+	}
 }
