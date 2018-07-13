@@ -21,63 +21,76 @@ namespace gui
         static void set(ScriptClass<T>& object)
         {
             object.setOverload("setPropSize",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPropSize),
-                sol::resolve<void(float, float)>(&T::setPropSize)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPropSize),
+                static_cast<void (T::*)(float, float)>(&T::setPropSize)
             );
             object.set("clear", &T::clear);
             object.setOverload("move",
-                sol::resolve<void(const sf::Vector2f&)>(&T::move),
-                sol::resolve<void(float, float)>(&T::move)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::move),
+                static_cast<void (T::*)(float, float)>(&T::move)
             );
-            object.setOverload("setPosition",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPosition),
-                sol::resolve<void(float, float)>(&T::setPosition)
+
+            // object.setOverload("setPosition",
+            //     static_cast<void (T::*)(float, float)>(&T::setPosition),
+            //     static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPosition)
+            // );
+            object.setOverload("setPosition", 
+                static_cast<void (T::*)(float, float)>( &T::setPosition),
+                static_cast<void (T::*)(const sf::Vector2f&)>( &T::setPosition)
             );
 
             object.set("getPosition", &T::getPosition);
             object.set("getGlobalPosition", &T::getGlobalPosition);
 
             object.setOverload("setPropPosition",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPropPosition),
-                sol::resolve<void(float, float)>(&T::setPropPosition)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPropPosition),
+                static_cast<void (T::*)(float, float)>(&T::setPropPosition)
             );
+            object.set("makeStaticPropPositing", &T::makeStaticPropPositing);
             object.set("getPosByGlobalPos", &T::getPosByGlobalPos);
             object.setOverload("setGlobalPosition",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setGlobalPosition),
-                sol::resolve<void(float, float)>(&T::setGlobalPosition)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setGlobalPosition),
+                static_cast<void (T::*)(float, float)>(&T::setGlobalPosition)
             );
             object.setOverload("setPadding",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPadding),
-                sol::resolve<void(float, float)>(&T::setPadding)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPadding),
+                static_cast<void (T::*)(float, float)>(&T::setPadding)
             );
             object.set("getPadding", &T::getPadding);
             object.setOverload("setPropPadding",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPropPadding),
-                sol::resolve<void(float, float)>(&T::setPropPadding)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPropPadding),
+                static_cast<void (T::*)(float, float)>(&T::setPropPadding)
             );
 
             object.setOverload("setColor",
-                sol::resolve<void(const sf::Color&)>(&T::setColor),
-                sol::resolve<void(unsigned char, unsigned char, unsigned char, unsigned char)>(&T::setColor)
+                static_cast<void (T::*)(const sf::Color&)>(&T::setColor),
+                static_cast<void (T::*)(unsigned char, unsigned char, unsigned char, unsigned char)>(&T::setColor)
             );
             object.set("makeChildrenUncolorable", &T::makeChildrenUncolorable);
+
+            object.setOverload("setBackground",
+                static_cast<void (T::*)(const sf::Color&)>(&T::setBackground),
+                static_cast<void (T::*)(unsigned char, unsigned char, unsigned char, unsigned char)>(&T::setBackground)
+            );
+            object.set("removeBackground", &T::removeBackground);
+            
             object.setOverload("setOrigin",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setOrigin),
-                sol::resolve<void(float, float)>(&T::setOrigin)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setOrigin),
+                static_cast<void (T::*)(float, float)>(&T::setOrigin)
             );
             object.set("getOrigin", &T::getOrigin);
 
             object.setOverload("setPropOrigin",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPropOrigin),
-                sol::resolve<void(float, float)>(&T::setPropOrigin)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPropOrigin),
+                static_cast<void (T::*)(float, float)>(&T::setPropOrigin)
             );
             object.setOverload("setSize",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setSize),
-                sol::resolve<void(float, float)>(&T::setSize)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setSize),
+                static_cast<void (T::*)(float, float)>(&T::setSize)
             );
             object.setOverload("setPropSize",
-                sol::resolve<void(const sf::Vector2f&)>(&T::setPropSize),
-                sol::resolve<void(float, float)>(&T::setPropSize)
+                static_cast<void (T::*)(const sf::Vector2f&)>(&T::setPropSize),
+                static_cast<void (T::*)(float, float)>(&T::setPropSize)
             );
 
             object.set("activate", &T::activate);

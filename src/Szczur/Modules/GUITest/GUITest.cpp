@@ -42,6 +42,7 @@ namespace rat
         gui.addTexture("Assets/GUITest/Cubic.png");
 
         _widget = gui.addInterface();
+        _widget->setPadding(10.f, 20.f);
 
         _widget->setSizingWidthToHeightProportion(1.f);
         //_widget->setWidthToHeightProp(16.f/9.f);
@@ -117,6 +118,9 @@ namespace rat
         fps->setString("54321 54321 321 654321\n987 4321 21 321");
         fps->setAlign(TextAreaWidget::Align::Center);
         fps->setPropPosition(0.f, 0.f);
+        fps->makeStaticPropPositing();
+        fps->setPropOrigin(0.5f, 0.5f);
+        fps->setBackground(100, 100, 100, 255);
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             //if(randomBool)
                 //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});

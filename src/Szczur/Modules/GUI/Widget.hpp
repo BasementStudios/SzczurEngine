@@ -52,6 +52,7 @@ namespace rat
 		void move(float offsetX, float offsetY);
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
+		void setPosition2(float x, float y);
 		void setPositionInTime(const sf::Vector2f& offset, float inTime);
 		void setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data);
 		const sf::Vector2f& getPosition() const;
@@ -61,6 +62,8 @@ namespace rat
 		void setPropPosition(float propX, float propY);
 		void setPropPositionInTime(const sf::Vector2f& propPos, float inTime);
 		void setPropPositionInTime(const sf::Vector2f& propPos, const gui::AnimData& data);
+
+		void makeStaticPropPositing();
 
 		sf::Vector2f getPosByGlobalPos(const sf::Vector2f& globalPos) const;
 		void setGlobalPosition(const sf::Vector2f& globalPos);
@@ -79,6 +82,10 @@ namespace rat
 		void setColorInTime(const sf::Color& color, const gui::AnimData& data);
 		void resetColor();
 		sf::Color getColor() const;
+
+		void setBackground(const sf::Color& color);
+		void setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+		void removeBackground();
 
 		void makeChildrenUncolorable();
 		
@@ -124,7 +131,6 @@ namespace rat
 		//		Polimorphism
 
 	protected:
-
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
@@ -223,6 +229,12 @@ namespace rat
 
 		bool _isPenetrable{false};
 		bool _isResizable{true};
+
+		bool _hasStaticPropPositing{false};
+
+		sf::RectangleShape _background;
+		bool _hasBackground{false};
+		void _updateBackgroundPos();
 
 		sf::Vector2f _getBound() const;
 

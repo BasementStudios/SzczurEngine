@@ -9,8 +9,6 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
-#include <glad/glad.h>
-
 namespace sf3d
 {
 	

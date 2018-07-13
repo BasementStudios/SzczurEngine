@@ -21,7 +21,10 @@ namespace rat {
         auto& mainWindow = getModule<Window>();
         auto& window = mainWindow.getWindow();
         auto winSize = window.getSize();
+		mainWindow.pushGLStates();
         _canvas.create(winSize.x, winSize.y); 
+		mainWindow.popGLStates();
+
 
         _root.setSize(static_cast<sf::Vector2f>(winSize));
         _root.makeChildrenUnresizable();
@@ -67,8 +70,9 @@ namespace rat {
 
             auto& mainWindow = getModule<Window>();
             mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
-
+			mainWindow.pushGLStates();
             _canvas.create(winSize.x, winSize.y);
+			mainWindow.popGLStates();
 
             _root.setSize(static_cast<sf::Vector2f>(winSize));
 
