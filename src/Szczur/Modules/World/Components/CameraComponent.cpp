@@ -87,8 +87,8 @@ namespace rat {
 			_stickToX = var;
 			_stickedToX = true;
 		}
-		else {
-			_stickedID = config["stickedToID"];
+		else if(auto& var = config["stickedToID"]; !var.is_null()) {
+			_stickedID = var;
 		}
 
 
