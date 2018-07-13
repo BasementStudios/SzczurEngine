@@ -79,7 +79,7 @@ namespace rat {
 		if(auto& var = config["smoothness"]; !var.is_null() && _moveType == Smooth) _smoothness = var;
 		if(auto& var = config["linear"]; !var.is_null() && _moveType == Linear) _linear = var;
 
-		if(auto& var = config["targetingType"]; !var.is_null() && _moveType == Linear) _targetingType = static_cast<TargetingType>(var);
+		if(auto& var = config["targetingType"]; !var.is_null()) _targetingType = static_cast<TargetingType>(var);
 		if(_targetingType == Forwarded)
 			if(auto& var = config["forwarded"]; !var.is_null()) _forwarded = var;
 
