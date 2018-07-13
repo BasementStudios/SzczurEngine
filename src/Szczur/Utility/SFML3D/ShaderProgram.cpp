@@ -570,105 +570,104 @@ void ShaderProgram::loadConfig(const nlohmann::json& config)
 
 	for (auto it = config.begin(); it != config.end(); ++it)
 	{
-		const char* name = it.key().data();
 		const std::string type = it.value()["type"];
-		const nlohmann::json& value = it.value()["value"];
+		const nlohmann::json value = it.value()["value"];
 
 		switch (rat::fnv1a_32(type.begin(), type.end()))
 		{
 			case_str("bool"):
 			{
-				setUniform(name, value.get<bool>());
+				setUniform(it.key().data(), value.get<bool>());
 			}
 			break;
 			case_str("bvec2"):
 			{
-				setUniform(name, value.get<glm::bvec2>());
+				setUniform(it.key().data(), value.get<glm::bvec2>());
 			}
 			break;
 			case_str("bvec3"):
 			{
-				setUniform(name, value.get<glm::bvec3>());
+				setUniform(it.key().data(), value.get<glm::bvec3>());
 			}
 			break;
 			case_str("bvec4"):
 			{
-				setUniform(name, value.get<glm::bvec4>());
+				setUniform(it.key().data(), value.get<glm::bvec4>());
 			}
 			break;
 			case_str("int"):
 			{
-				setUniform(name, value.get<int>());
+				setUniform(it.key().data(), value.get<int>());
 			}
 			break;
 			case_str("ivec2"):
 			{
-				setUniform(name, value.get<glm::ivec2>());
+				setUniform(it.key().data(), value.get<glm::ivec2>());
 			}
 			break;
 			case_str("ivec3"):
 			{
-				setUniform(name, value.get<glm::ivec3>());
+				setUniform(it.key().data(), value.get<glm::ivec3>());
 			}
 			break;
 			case_str("ivec4"):
 			{
-				setUniform(name, value.get<glm::ivec4>());
+				setUniform(it.key().data(), value.get<glm::ivec4>());
 			}
 			break;
 			case_str("uint"):
 			{
-				setUniform(name, value.get<unsigned int>());
+				setUniform(it.key().data(), value.get<unsigned int>());
 			}
 			break;
 			case_str("uvec2"):
 			{
-				setUniform(name, value.get<glm::uvec2>());
+				setUniform(it.key().data(), value.get<glm::uvec2>());
 			}
 			break;
 			case_str("uvec3"):
 			{
-				setUniform(name, value.get<glm::uvec3>());
+				setUniform(it.key().data(), value.get<glm::uvec3>());
 			}
 			break;
 			case_str("uvec4"):
 			{
-				setUniform(name, value.get<glm::uvec4>());
+				setUniform(it.key().data(), value.get<glm::uvec4>());
 			}
 			break;
 			case_str("float"):
 			{
-				setUniform(name, value.get<float>());
+				setUniform(it.key().data(), value.get<float>());
 			}
 			break;
 			case_str("vec2"):
 			{
-				setUniform(name, value.get<glm::vec2>());
+				setUniform(it.key().data(), value.get<glm::vec2>());
 			}
 			break;
 			case_str("vec3"):
 			{
-				setUniform(name, value.get<glm::vec3>());
+				setUniform(it.key().data(), value.get<glm::vec3>());
 			}
 			break;
 			case_str("vec4"):
 			{
-				setUniform(name, value.get<glm::vec4>());
+				setUniform(it.key().data(), value.get<glm::vec4>());
 			}
 			break;
 			case_str("mat2x2"):
 			{
-				setUniform(name, value.get<glm::mat2x2>());
+				setUniform(it.key().data(), value.get<glm::mat2x2>());
 			}
 			break;
 			case_str("mat3x3"):
 			{
-				setUniform(name, value.get<glm::mat3x3>());
+				setUniform(it.key().data(), value.get<glm::mat3x3>());
 			}
 			break;
 			case_str("mat4x4"):
 			{
-				setUniform(name, value.get<glm::mat4x4>());
+				setUniform(it.key().data(), value.get<glm::mat4x4>());
 			}
 			break;
 		}
