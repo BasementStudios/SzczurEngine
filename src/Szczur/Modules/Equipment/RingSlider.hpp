@@ -29,6 +29,7 @@ namespace rat {
 		std::vector<EquipmentObject*> getRingsList();
 
 		void selectRing(EquipmentSlot* slot);
+		void reset();
 	private:	
 		sf::Vector2f _slotSize;
 		sf::Texture* _slotTexture;

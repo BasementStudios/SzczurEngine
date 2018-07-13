@@ -98,4 +98,17 @@ namespace rat {
 	EquipmentSlot* ArmorSlots::getWeaponSlot() {
 		return _weaponSlot;
 	}
+	void ArmorSlots::reset() {
+		_amuletSlot->reset();
+
+		if (_armorSlot->getItem()) {
+			dynamic_cast<WearableItem*>(_armorSlot->getItem())->deactivate();
+			_armorSlot->removeItem();
+		}
+		
+		if (_weaponSlot->getItem()) {
+			dynamic_cast<WearableItem*>(_weaponSlot->getItem())->deactivate();
+			_weaponSlot->removeItem();
+		}
+	}
 }

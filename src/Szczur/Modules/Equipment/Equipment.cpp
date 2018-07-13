@@ -27,6 +27,7 @@ namespace rat {		//beware spagetti monster down there :/
 		initScript();
 		init();		
 		LOG_INFO("Module Equipment initialized");
+		getModule<Script>().scriptFile("Assets/Equipment/test.lua");
 	}
 
 	Equipment::~Equipment() {
@@ -140,6 +141,7 @@ namespace rat {		//beware spagetti monster down there :/
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
 		_equipmentPosition = _equipmentFrame->getPosition();
+		_base->fullyDeactivate();
 	}
 
 	void Equipment::update(float deltaTime) {
@@ -153,15 +155,17 @@ namespace rat {		//beware spagetti monster down there :/
 		}
 	}
 
-	void Equipment::render() {
-		_mainWindow.pushGLStates();
+	//when play button in pressed and we activate equipment
+	void Equipment::startEquipment() {
+		_base->fullyActivate();
+		_closeEquipment();
+	}
 
-		_canvas.clear(sf::Color::Transparent);
-		_canvas.display();
-
-		_mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
-
-		_mainWindow.popGLStates();
+	//when stop button is pressed and we deactivate equipment
+	void Equipment::stopEquipment() {
+		_base->fullyDeactivate();
+		//_armorSlots->reset();
+		//_ringSlider->reset();
 	}
 
 	void Equipment::enableItemPreview(EquipmentObject* item) {
@@ -227,20 +231,6 @@ namespace rat {		//beware spagetti monster down there :/
 		}
 	}
 
-	bool Equipment::removeWearableItem(WearableItem* item) {
-			switch (item->getType()) {
-			case equipmentObjectType::armor:
-				return false;		//you cannot remove either weapon or armor
-			case equipmentObjectType::weapon:
-				return false;
-			case equipmentObjectType::amulet:
-				return _armorSlots->removeAmulet(item->getNameId());
-			case equipmentObjectType::ring:
-				return false;
-			}
-		return false;
-	}
-
 	bool Equipment::removeUsableItem(UsableItem* item) {
 		return _normalSlots->removeItem(item->getNameId());
 	}
@@ -291,7 +281,7 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::setSelectedRingsLimit(int newSize) {
 		_ringSlider->setSelectedRingsLimit(newSize);
 	}
-	//odtad
+
 	void Equipment::_replaceNewItem(EquipmentObject* item) {
 		_replaceItem->setItem(item);
 		_isReplacing = true;
@@ -322,11 +312,10 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 3.33f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 0.5f, 3.34f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = true;
 		} });
 	}
-	//dotad
 	bool Equipment::_isEquipmentOpen() {
 		return !_isEquipmentHidden;
 	}

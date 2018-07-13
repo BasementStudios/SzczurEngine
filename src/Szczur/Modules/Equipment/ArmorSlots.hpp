@@ -19,6 +19,8 @@ namespace rat {
 
 		void addAmulet(WearableItem* amulet);
 		bool removeAmulet(sf::String name);
+		//removes all items
+		void reset();
 
 		WearableItem* getChosenAmulet();
 

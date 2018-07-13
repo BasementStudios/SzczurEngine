@@ -16,19 +16,16 @@ namespace rat {
 		_base = new Widget;
 
 		_border = new WindowWidget;
-		_border->setPropSize(0.15f, 0.6f);//(50.f + frameSize.x, 480.f);
+		_border->setPropSize(0.15f, 0.6f);
 		_base->add(_border);
 
 		_scroll = new ScrollAreaWidget();
-		//_scroll->setPropOrigin(.0f, .0f);
-		//_scroll->setPropSize(0.09f, 0.65f);
 		_scroll->setPropSize(0.14f, 0.58f);
 		_scroll->setPropPosition(0.5f, 0.5f);
 		_base->add(_scroll);	
 		
 		_baseForItems = new ListWidget;
 		_baseForItems->setPropBetweenPad(0.005f);
-		//_baseForItems->setPropSize({ 0.09f, 0.09f });
 		_scroll->add(_baseForItems);
 
 	}
@@ -117,5 +114,14 @@ namespace rat {
 			temp.push_back(i->getItem());
 		}
 		return temp;
+	}
+	
+	void RingSlider::reset() {
+		for (int i = _ringSlots.size() - 1; i >= 0; i--)
+		{
+			_ringSlots[i]->removeItem();
+			delete _ringSlots[i];
+			_ringSlots.erase(_ringSlots.begin() + i);
+		}
 	}
 }

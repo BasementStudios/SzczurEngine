@@ -17,9 +17,12 @@ namespace rat {
 		WearableItem* getChosenAmulet();
 		std::vector<WearableItem*> getAmuletList();
 
+		//remove all amulets
+		void reset();
+	private:
 		void leftArrowClicked();
 		void rightArrowClicked();
-	private:
+
 		std::vector<WearableItem*> _amulets;
 
 		WearableItem* _chosenAmulet = nullptr;

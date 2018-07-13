@@ -240,7 +240,8 @@ namespace rat {
 						scenes.setCurrentScene(sceneId);
 
                     // Set player position equal entry
-                    auto* scene = scenes.getCurrentScene();
+                    //auto* scene = scenes.getCurrentScene();
+					auto* scene = scenes.getScene(sceneId);
                     if(auto* entry = scene->getEntity("entries", entranceId)) {
                         scene->getPlayer()->setPosition(entry->getPosition());                        
                     }

@@ -65,9 +65,11 @@ namespace rat {
 	}
 
 	void EquipmentSlot::removeItem() {
-		delete _itemPlaced;
-		_itemPlaced = nullptr;
-		_itemImage->removeTexture();
+		if (_itemPlaced) {
+			delete _itemPlaced;
+			_itemPlaced = nullptr;
+			_itemImage->removeTexture();
+		}
 	}
 
 	EquipmentObject* EquipmentSlot::getItem() {

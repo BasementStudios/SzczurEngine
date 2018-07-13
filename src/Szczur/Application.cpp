@@ -114,7 +114,6 @@ void Application::render()
 	getModule<Window>().popGLStates();
 	getModule<Cinematics>().render();
 
-	getModule<Equipment>().render();
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());

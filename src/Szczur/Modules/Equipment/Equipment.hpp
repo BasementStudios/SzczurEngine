@@ -26,7 +26,6 @@ namespace rat
 		void init();
 		void initScript();
 		void update(float deltaTime = (1.f / 60.f));
-		void render();
 
 		Equipment();
 		~Equipment();
@@ -39,8 +38,8 @@ namespace rat
 		void setNewItemPath(std::string);
 		void reloadItemList();
 
-		//UsableItem* createUsableItem(std::string nameId);	//creating new item and adding it to list
-		//WearableItem* createWearableItem(std::string nameId);
+		void startEquipment();
+		void stopEquipment();
 	private:
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
