@@ -14,7 +14,7 @@ namespace sf3d {
         void setColor(const glm::vec4& color);
 
 
-    private:
+    protected:
         virtual glm::vec3 getPointPosition(size_t index) const override;
         virtual glm::vec4 getPointColor(size_t) const override;
         virtual glm::vec2 getPointCoord(size_t) const override;
