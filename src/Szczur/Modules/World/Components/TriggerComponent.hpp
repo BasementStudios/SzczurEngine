@@ -107,7 +107,7 @@ private:
 	float _radius = 100.f;
 	glm::vec2 _rectSize = { 200.f, 200.f };
 
-	bool _changingSceneWithFade = true;
+	bool _changingSceneWithFade = false;
 	float _fadeTime = 1.f;
 
 	bool _isPlayerInside = false;
