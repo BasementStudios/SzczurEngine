@@ -75,12 +75,21 @@ namespace rat {
 		if(auto& var = config["limit"]["right"]; !var.is_null()) _limit.right = var;
 		if(auto& var = config["limitedRange"]; !var.is_null()) _limitedRange = var;
 		if(auto& var = config["type"]; !var.is_null()) _moveType = static_cast<MoveType>(var);
-		if(auto& var = config["sticked_id"]; !var.is_null()) _stickedID = var;
         if(auto& var = config["no_move"]; !var.is_null()) _noMove = var;
 		if(auto& var = config["smoothness"]; !var.is_null() && _moveType == Smooth) _smoothness = var;
 		if(auto& var = config["linear"]; !var.is_null() && _moveType == Linear) _linear = var;
 
 		if(auto& var = config["targetingType"]; !var.is_null() && _moveType == Linear) _targetingType = static_cast<TargetingType>(var);
+		if(_targetingType == Forwarded)
+			if(auto& var = config["forwarded"]; !var.is_null()) _forwarded = var;
+
+		if(auto& var = config["stickedToX"]; !var.is_null()) {
+			_stickToX = var;
+			_stickedToX = true;
+		}
+		else {
+			_stickedID = config["stickedToID"];
+		}
 
 
 	}
@@ -97,10 +106,16 @@ namespace rat {
 		config["limit"]["left"] = _limit.left;
 		config["limit"]["right"] = _limit.right;
 		config["limitedRange"] = _limitedRange;
-		config["sticked_id"] = (_stickTo==nullptr ? 0 : _stickTo->getID());
         config["no_move"] = _noMove;
 
 		config["targetingType"] = static_cast<size_t>(_targetingType);
+		if(_targetingType == Forwarded)
+			config["forwarded"] = _forwarded;
+
+		if(_stickedToX)
+			config["stickedToX"] = _stickToX;
+		else if(_stickTo)
+			config["stickedToID"] = _stickTo->getID();
 	}
 
 	void CameraComponent::renderHeader(ScenesManager& scenes, Entity* object) {
@@ -248,7 +263,16 @@ namespace rat {
 		}
 		if(_targetingType == Forwarded) {
 			auto delta = entity->getPosition() - _virtualPosition;
-			this->setPosition(entity->getPosition() + delta*_forwarded);
+
+			auto position = entity->getPosition() + delta * _forwarded;
+			if(_limitedRange) {
+				if(position.x > _limit.right)
+					position.x = _limit.right;
+				else if(position.x < _limit.left)
+					position.x = _limit.left;
+			}
+
+			this->setPosition(position);
 		}
 	}
 
