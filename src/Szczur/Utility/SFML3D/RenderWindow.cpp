@@ -59,4 +59,10 @@ void RenderWindow::onResize()
 	glViewport(0, 0, size.x, size.y);
 }
 
+bool RenderWindow::_setActive(bool /*states*/)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return true;
+}
+
 }

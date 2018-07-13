@@ -115,7 +115,8 @@ void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
 bool RenderTarget::_setActive([[maybe_unused]] bool state)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return true;
+	throw std::runtime_error("RenderTarget::_setActive not overloaded!"); 
+	return false;
 }
 
 /// Helper function to scale matrix coords propertly

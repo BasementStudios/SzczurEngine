@@ -11,7 +11,7 @@ out vec4 finalColor;
 void main() {
     vec4 pixel = texture2D(texture, texCoord);
     
-    if (pixel.x == 0.0) {
+    if (pixel.a == 0.0) {
         discard;
     }
     else {

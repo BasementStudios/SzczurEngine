@@ -9,10 +9,9 @@ namespace sf3d
 
 struct Vertex
 {
-	glm::vec3 position;
-	glm::vec4 color;
-	glm::vec2 texCoord;
-
+	glm::vec3 position	{0.f, 0.f, 0.f};
+	glm::vec4 color		{1.f, 1.f, 1.f, 1.f};
+	glm::vec2 texCoord	{0.f, 0.f};
 };
 
 }

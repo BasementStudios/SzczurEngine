@@ -79,9 +79,9 @@ protected:
 protected:
 	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
 
-public:
-	virtual bool _setActive(bool state = true);
+	virtual bool _setActive(bool state = true) = 0;
 
+public:
 	/// Helper function to scale matrix coords propertly
 	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 

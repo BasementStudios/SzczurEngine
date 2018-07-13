@@ -19,6 +19,6 @@ namespace sf3d {
         virtual glm::vec4 getPointColor(size_t) const override;
         virtual glm::vec2 getPointCoord(size_t) const override;
         glm::vec2 _size;
-        glm::vec4 _color={255.f, 255.f, 255.f, 255.f};
+        glm::vec4 _color={1.f, 1.f, 1.f, 1.f};
     };
 }
