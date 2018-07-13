@@ -8,6 +8,7 @@
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/Sound/Sound.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
+#include "Szczur/Modules/Equipment/Equipment.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
@@ -60,10 +61,9 @@ private:
 
 	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, DialogEditor, Music, Sound, AudioEditor, AudioEffects, Cinematics, Listener>_modules;
+	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, DialogEditor, Music, Sound, AudioEditor, AudioEffects, Cinematics, Listener, Equipment>_modules;
 
 };
 
 }
-
 #include "Application.tpp"

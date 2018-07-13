@@ -55,6 +55,19 @@ namespace rat {
 			"y", &glm::vec2::y
 		);
 
+		sfml.new_simple_usertype<sf::FloatRect>("FloatRect",
+			"left", &sf::FloatRect::left,
+			"top", &sf::FloatRect::top,
+			"width", &sf::FloatRect::width,
+			"height", &sf::FloatRect::height
+		);
+		sfml.new_simple_usertype<sf::IntRect>("IntRect",
+			"left", &sf::IntRect::left,
+			"top", &sf::IntRect::top,
+			"width", &sf::IntRect::width,
+			"height", &sf::IntRect::height
+		);
+
 		auto mathTab = _lua.get<sol::table>("Math");
 		mathTab.set_function("atan2", sol::resolve<float(float, float)>(std::atan2));
 
@@ -64,6 +77,7 @@ namespace rat {
 		classClock.set("restart", &sf::Clock::restart);
 		classClock.set("elapsed", [](sf::Clock& clock){return clock.getElapsedTime().asSeconds();});
 		classClock.init();
+
 	}
 	void Script::scriptFile(const std::string& filePath) {
 		_lua.script_file(filePath);

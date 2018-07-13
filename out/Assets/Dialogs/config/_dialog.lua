@@ -1,4 +1,4 @@
-GUI.addFont("Assets/Dialogs/config/BKANT.TTF")
+--[[GUI.addFont("Assets/Dialogs/config/BKANT.TTF")
 GUI.addTexture("Assets/Dialogs/config/background.png")
 
 local interface = GUI.addInterface()
@@ -56,3 +56,4 @@ Dialog.GUI.set = {
                 end;
         end;
 }
+]]

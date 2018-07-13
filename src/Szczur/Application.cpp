@@ -28,6 +28,7 @@ void Application::init()
 	initModule<Cinematics>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
+	initModule<Equipment>();
 
 
 	LOG_INFO("Modules initialized");
@@ -85,8 +86,7 @@ void Application::update()
 	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
 	getModule<Music>().update(deltaTime);
-
-
+	getModule<Equipment>().update(deltaTime);
 	/*
 		Put other updates here
 	*/
@@ -114,6 +114,7 @@ void Application::render()
 	getModule<Window>().popGLStates();
 	getModule<Cinematics>().render();
 
+	getModule<Equipment>().render();
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
