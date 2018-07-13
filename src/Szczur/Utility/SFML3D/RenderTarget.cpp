@@ -203,7 +203,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		// Pass the vertices
 		vertices.bind();
 		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
-		glBindVertexArray(0);
+		vertices.unbind();
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// Unbind testures if any
@@ -241,7 +241,7 @@ void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
         // Pass the vertices
 		vertices.bind();
         glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
-        glBindVertexArray(0);
+        vertices.unbind();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		// Unbind testures if any
