@@ -76,7 +76,8 @@ namespace rat {
 											  option->color.r,
 											  option->color.g,
 											  option->color.b,
-											  option->color.a
+											  option->color.a,
+											  option->iconId
 									).get<TextWidget*>();
                     button->setString(textManager.getLabel(option->majorTarget, option->minorTarget));
                     button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){

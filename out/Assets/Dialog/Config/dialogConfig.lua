@@ -4,6 +4,7 @@ function dialogGUI:onInit()
 	GUI.addFont("Assets/Dialog/config/BKANT.TTF")
 	--GUI.addTexture("Assets/Dialogs/config/background.png")
 	GUI.addTexture("Assets/Dialog/config/button.png")
+	GUI.addTexture("Assets/Dialog/config/icons.png")
 
 
     self.interface = GUI.addInterface()
@@ -33,7 +34,7 @@ function dialogGUI:clearButtons()
 	self.list:clear()
 end
 
-function dialogGUI:getButton(r, g, b, a)
+function dialogGUI:getButton(r, g, b, a, iconId)
 	local button = self.list:addImage()
 	button:setTexture(GUI.getTexture("Assets/Dialog/config/button.png"))
 	button:setColor(50, 50, 50, 0)

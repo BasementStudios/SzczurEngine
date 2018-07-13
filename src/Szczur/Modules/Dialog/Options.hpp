@@ -32,6 +32,7 @@ namespace rat {
             bool finishing;
             bool skip;
 			sf::Color color;
+			int iconId;
         };
 
         Options();
@@ -48,7 +49,8 @@ namespace rat {
             AfterAction_t afterAction,
             bool finishing,
             bool skip,
-			sf::Color color
+			sf::Color color,
+			int iconId
         );
 
         void forEach(std::function<void(Option*)> func);

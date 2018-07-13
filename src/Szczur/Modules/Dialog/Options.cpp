@@ -27,8 +27,9 @@ namespace rat {
                         ((tab["action"].valid()) ? (tab["action"].get<sol::function>()) : sol::function{}),
                         (tab["finishing"].valid()) ? tab["finishing"] : false,
                         (tab["skip"].valid()) ? tab["skip"] : false,
-						(tab["color"].valid()) ? sf::Color(tab["color"][1].get<int>(), tab["color"][2].get<int>(), tab["color"][3].get<int>(), tab["color"][4].get<int>()) : sf::Color::White
-                    );
+						(tab["color"].valid()) ? sf::Color(tab["color"][1].get<int>(), tab["color"][2].get<int>(), tab["color"][3].get<int>(), tab["color"][4].get<int>()) : sf::Color::White,
+                        (tab["iconId"].valid()) ? tab["iconId"] : -1
+					);
                 }
             }
         );
@@ -41,8 +42,8 @@ namespace rat {
         _runners.insert({major, minor});
     }
 
-    void Options::addOption(Condition_t condition, Key_t majorTarget, Key_t minorTarget, AfterAction_t afterAction, bool finishing, bool skip, sf::Color color) {
-        _options.push_back(new Option{condition, majorTarget, minorTarget, afterAction, finishing, skip, color});
+    void Options::addOption(Condition_t condition, Key_t majorTarget, Key_t minorTarget, AfterAction_t afterAction, bool finishing, bool skip, sf::Color color, int iconId) {
+        _options.push_back(new Option{condition, majorTarget, minorTarget, afterAction, finishing, skip, color, iconId});
     }
 
     bool Options::checkIfRunsWith(Key_t major, Key_t minor) const {
