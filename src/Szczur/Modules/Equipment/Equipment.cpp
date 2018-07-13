@@ -137,7 +137,8 @@ namespace rat {		//beware spagetti monster down there :/
 		_replaceItem->close();
 
 		_itemManager = new ItemManager;
-		_itemManager->setNewPath("Assets/Equipment/items.json");
+		_pathToJson = "Assets/Equipment/items.json";
+		_itemManager->setNewPath(_pathToJson);
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
 		_equipmentPosition = _equipmentFrame->getPosition();
@@ -271,10 +272,11 @@ namespace rat {		//beware spagetti monster down there :/
 		return _normalSlots->getSlotsAmount();
 	}
 	
-	void Equipment::setNewItemPath(std::string newPath){
+	void Equipment::setNewItemsPath(std::string newPath){
+		_pathToJson = newPath;
 		_itemManager->setNewPath(newPath);
 	}
-	void Equipment::reloadItemList() {
+	void Equipment::reloadItemsList() {
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 	}
 
@@ -348,5 +350,9 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	bool Equipment::_hasItem(const std::string& nameId, int quantity) {
 		return _normalSlots->hasItem(nameId, quantity);
+	}
+
+	std::string& Equipment::getPathToJson() {
+		return _pathToJson;
 	}
 }

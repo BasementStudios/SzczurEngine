@@ -95,6 +95,7 @@ namespace rat {
 			if(_ifRenderArmatureDisplayDataManager) _armatureDisplayDataManager.render(_ifRenderArmatureDisplayDataManager);
 			if(_ifRenderDialogEditor) _dialogEditor->update();
 			if(_ifRenderAudioEditor) _audioEditor->render();
+			if(_ifRenderReloader) _renderReloader();
 			
 
 			scene = _scenes.getCurrentScene();

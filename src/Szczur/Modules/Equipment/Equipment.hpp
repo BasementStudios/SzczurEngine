@@ -35,12 +35,14 @@ namespace rat
 
 		bool canPreviewBeInstantiated;
 
-		void setNewItemPath(std::string);
-		void reloadItemList();
+		void setNewItemsPath(std::string);
+		void reloadItemsList();
+		std::string& getPathToJson();
 
 		void startEquipment();
 		void stopEquipment();
 	private:
+		std::string _pathToJson;
 		NormalSlots* _normalSlots;
 		ArmorSlots* _armorSlots;
 		ItemPreview* _itemPreview;

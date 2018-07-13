@@ -6,6 +6,7 @@
 #include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
 
 #include <Szczur/Modules/World/World.hpp>
+#include <Szczur/Modules/Equipment/Equipment.hpp>
 
 #include <Szczur/ImGuiStyler.hpp>
 
@@ -164,6 +165,7 @@ namespace rat {
 				ImGui::MenuItem("Armature Display Data Manager", nullptr, &_ifRenderArmatureDisplayDataManager);
 				ImGui::MenuItem("Dialog Editor", nullptr, &_ifRenderDialogEditor);
 				ImGui::MenuItem("Audio Editor", nullptr, &_ifRenderAudioEditor);
+				ImGui::MenuItem("Reloader", nullptr, &_ifRenderReloader);
 				ImGui::EndMenu();
 			}
 
@@ -262,5 +264,17 @@ namespace rat {
 				_scenes.runGame();
 			}
 		}
+	}
+
+	void LevelEditor::_renderReloader()
+	{
+		if (ImGui::Begin("Reloader##tool", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+			std::string info = (std::string("Equipment items: ") + detail::globalPtr<Equipment>->getPathToJson());
+			ImGui::Text(info.c_str());
+			if (ImGui::Selectable("Reload##equipment_items")) {
+				detail::globalPtr<Equipment>->reloadItemsList();
+			}
+		}
+		ImGui::End();
 	}
 }

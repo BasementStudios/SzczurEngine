@@ -136,6 +136,9 @@ private:
 	///
 	void _updateGroupProperites(const glm::vec3& pos, const glm::vec3& rot);
 
+	///
+	void _renderReloader();
+
 private:
 
 // Select fix
@@ -181,6 +184,7 @@ private:
 	bool _ifRenderArmatureDisplayDataManager{false};
 	bool _ifRenderProperties{false};
 	bool _ifShowImGuiDemoWindow{false};
+	bool _ifRenderReloader{false};
 
 // Clipboard
 
