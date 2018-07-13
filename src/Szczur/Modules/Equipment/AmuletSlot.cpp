@@ -137,7 +137,7 @@ namespace rat {
 					if(_chosenAmulet)
 					_chosenAmulet->deactivate();
 					_chosenAmulet = _amulets[0];
-					_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
+					_amuletImage->setColor(sf::Color(255u, 255u, 255u, 0u));
 					break;
 
 				}
@@ -161,7 +161,7 @@ namespace rat {
 						if (_chosenAmulet)
 						_chosenAmulet->deactivate();
 						_chosenAmulet = _amulets[i - 1];
-						_amuletImage->setColor(sf::Color::Color(255, 255, 255, 0));
+						_amuletImage->setColor(sf::Color(255u, 255u, 255u, 0u));
 						break;
 					}
 				}

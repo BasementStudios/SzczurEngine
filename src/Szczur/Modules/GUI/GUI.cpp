@@ -69,7 +69,7 @@ namespace rat {
             sf::Vector2u winSize = { (unsigned int)(event.size.width), (unsigned int)(event.size.height) };
 
             auto& mainWindow = getModule<Window>();
-            mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
+            //mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
 			mainWindow.pushGLStates();
             _canvas.create(winSize.x, winSize.y);
 			mainWindow.popGLStates();

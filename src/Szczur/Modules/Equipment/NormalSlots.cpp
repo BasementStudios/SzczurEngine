@@ -190,7 +190,7 @@ namespace rat
 				_itemHeldWidget->setPosition(_slotHeld->getPosition());
 				_itemHeldWidget->setTexture(_itemHeld->getTexture());
 
-				clickedObj->setItemColor(sf::Color::Color(255, 255, 255, 100));
+				clickedObj->setItemColor(sf::Color(255u, 255u, 255u, 100u));
 
 				//turning off item preview
 				_equipment->disableItemPreview();

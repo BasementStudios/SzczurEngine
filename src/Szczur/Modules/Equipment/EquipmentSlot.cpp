@@ -118,7 +118,7 @@ namespace rat {
 		}
 		else {
 			removeItem();
-			_slotImage->setColor(sf::Color::Color(170, 170, 170));
+			_slotImage->setColor(sf::Color(170u, 170u, 170u));
 			isUsable = false;
 		}
 	}
