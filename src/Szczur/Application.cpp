@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include "Szczur/Utility/Tests.hpp"
 
 namespace rat
 {
@@ -24,6 +25,10 @@ void Application::init()
 		ImGui::SFML::Init(getModule<Window>().getWindow());
 	}
 	#endif
+	
+#ifdef TESTING
+	runTests();
+#endif
 }
 
 void Application::input()
