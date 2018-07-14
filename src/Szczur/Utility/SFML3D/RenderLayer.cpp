@@ -36,7 +36,7 @@ void RenderLayer::create(glm::uvec2 size, ShaderProgram* program)
 {
 	RenderTexture::create(size, program);
 	
-	this->sprite.setTexture(&(this->texture));
+	this->sprite.setTexture(&(this->getTexture()));
 }
 
 void RenderLayer::draw(RenderTarget& target, RenderStates states) const

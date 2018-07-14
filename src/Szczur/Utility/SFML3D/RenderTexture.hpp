@@ -28,7 +28,7 @@ protected:
 	/* Properties */
 public:
 	/// 
-	Texture* getTexture();
+	Texture& getTexture();
 
 
 

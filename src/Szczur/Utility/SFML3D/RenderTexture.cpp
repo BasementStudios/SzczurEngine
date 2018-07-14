@@ -17,9 +17,9 @@ namespace sf3d
 {
 
 /* Properties */
-Texture* RenderTexture::getTexture()
+Texture& RenderTexture::getTexture()
 {
-	return &(this->texture);
+	return this->texture;
 }
 
 
