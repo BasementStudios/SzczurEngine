@@ -25,7 +25,7 @@ namespace rat {
 
 	void EquipmentSlot::setHighlight(bool state) {
 		if (state && isUsable)
-			_slotImage->resetColor();
+			_slotImage->setColor(sf::Color::Color(140, 140, 140));
 		else if(isUsable)
 			_slotImage->setColor(sf::Color(255u, 255u, 255u, 150u));
 	}
@@ -121,11 +121,13 @@ namespace rat {
 	void EquipmentSlot::setStatus(bool newState) {
 		if (newState) {
 			_slotImage->resetColor();
+			_base->fullyActivate();
 			isUsable = true;
 		}
 		else {
 			removeItem();
-			_slotImage->setColor(sf::Color::Color(170, 170, 170));
+			_base->fullyDeactivate();
+			//_slotImage->setColor(sf::Color::Color(170, 170, 170));
 			isUsable = false;
 		}
 	}

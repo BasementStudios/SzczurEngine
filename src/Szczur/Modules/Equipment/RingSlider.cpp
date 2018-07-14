@@ -30,17 +30,21 @@ namespace rat {
 		_base->add(_baseForItems);
 
 		initAssetsViaGUI(gui);
+		for (size_t i = 0; i < 2; i++)
+		{
+			_itemsLists.push_back(new ListWidget);
+			_baseForItems->add(_itemsLists[i]);
+			_itemsLists[i]->makeVertical();
+			_itemsLists[i]->setPropBetweenPad(0.005f);
+		}
 
 		size_t row = 0;
 		for (size_t i = 0; i < 10; i++)
 		{
-			if (i % 5 == 0) {
-				i == 0 ? row = 0 : row = 1;
-				_itemsLists.push_back(new ListWidget);
-				_baseForItems->add(_itemsLists[row]);
-				_itemsLists[row]->makeVertical();
-				_itemsLists[row]->setPropBetweenPad(0.005f);
-			}
+			if (i % 2 == 0)
+				row = 0;
+			else
+				row = 1;
 			EquipmentSlot* temp = new EquipmentSlot;
 			_stoneSlots.push_back(temp);
 			temp->setParent(_itemsLists[row]);
@@ -107,7 +111,7 @@ namespace rat {
 		}
 		if (_selectedSlots.size() < 3) {
 			_equipment->_stoneStatusChanged(dynamic_cast<WearableItem*>(slot->getItem()), true);
-			slot->getItemWidget()->setColor(sf::Color(120u, 120u, 120u));
+			slot->getItemWidget()->setColor(sf::Color(90u, 90u, 90u, 150u));
 			dynamic_cast<WearableItem*>(slot->getItem())->activate();
 			_selectedSlots.push_back(slot);
 		}

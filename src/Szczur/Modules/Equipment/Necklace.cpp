@@ -15,7 +15,7 @@ namespace rat {
 		{
 			_stonesImages.push_back({new ImageWidget, nullptr});
 			_necklaceImage->add(_stonesImages[i].image);
-			_stonesImages[i].image->setPropSize({.063f,0.083f});
+			_stonesImages[i].image->setPropSize({.057f,0.075f});
 
 			_stonesImages[i].image->setCallback(Widget::CallbackType::onPress, [this, i](Widget* owner) {
 				if (_stonesImages[i].item)
@@ -74,7 +74,7 @@ namespace rat {
 
 	bool Necklace::hasStone(std::string& nameId) {
 		for (auto& i : _stonesImages) {
-			if (i.item->getNameId() == nameId) {
+			if (i.item && i.item->getNameId() == nameId) {
 				return true;
 			}
 		}

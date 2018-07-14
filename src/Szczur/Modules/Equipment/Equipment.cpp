@@ -64,9 +64,7 @@ namespace rat {		//beware spagetti monster down there :/
 			[&](const std::string& a) {return _hasItem(a); },
 			[&](const std::string& a, int b) {return _hasItem(a, b); }
 		));
-		//module.set_function("hasChosenAmulet", &Equipment::hasChosenAmulet, this);
-		//module.set_function("hasArmor", &Equipment::hasArmor, this);
-		//module.set_function("hasWeapon", &Equipment::hasWeapon, this);
+		
 		module.set_function("useItem", &Equipment::useItem, this);
 		module.set_function("hasChosenStone", &Equipment::hasChosenStone, this);
 
@@ -324,7 +322,7 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 
 	void Equipment::_openEquipment() {
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 0.6f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 0.1f, 0.4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = false; 
 			_replaceItem->maximize();
 		} });
@@ -332,7 +330,7 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ -.7f, .4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = true;
 			_equipmentFrame->fullyDeactivate();
 		} });

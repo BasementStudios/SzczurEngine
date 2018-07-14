@@ -1,4 +1,4 @@
-Equipment.resizeSlots(15);
+Equipment.resizeSlots(8);
 
 --[[local b = Equipment.getWearableItem("sword")
 Equipment.addWearableItem(b)
@@ -36,3 +36,5 @@ Equipment.addWearableItem(h)
 
 local test = Equipment.getUsableItem("potion")
 Equipment.addUsableItem(test)
+
+Equipment.hasChosenStone("stone1")
