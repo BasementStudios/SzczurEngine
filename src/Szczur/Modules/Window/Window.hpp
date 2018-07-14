@@ -62,8 +62,12 @@ public:
 	const Window_t& getWindow() const;
 
 	/// Defines a video mode. Aslo recreates the window.
-	sf::VideoMode getVideoMode() const;
-	void setVideoMode(const sf::VideoMode& mode);
+    sf::VideoMode getVideoMode() const noexcept;
+    void setVideoMode(const sf::VideoMode& mode);
+
+    /// Size of window. Related to video mode.
+    glm::uvec2 getSize() const noexcept;
+    void setSize(glm::uvec2 size);
 
 	/// Limit of updated and rendered frames per second.
 	unsigned int getFramerateLimit() const;
@@ -76,6 +80,8 @@ public:
 	/// Full screen mode
 	bool getFullscreen() const;
 	void setFullscreen(bool state);
+
+	void processEvent(sf::Event event);
 
 
 

@@ -223,7 +223,7 @@ namespace rat
             #ifdef GUI_DEBUG
             _drawDebug(target, states);
 	        #endif
-            if(_hasBackground) target.draw(_background, states);
+            // if(_hasBackground) target.draw(_background, states);
             _draw(target, states);
             _drawChildren(target, states);
         }
@@ -287,6 +287,7 @@ namespace rat
 
     void Widget::calculateSize() 
     {
+        //std::cout << "Calcing size...\n";
         auto oldSize = _size;
         _size = {};
 
@@ -303,6 +304,7 @@ namespace rat
         }
         _size.x = std::max(_size.x, chSize.x + 2 * _padding.x);
         _size.y = std::max(_size.y, chSize.y + 2 * _padding.y);
+        ////
 
         _calculateSize();
         auto ownSize = _getSize();
@@ -324,7 +326,7 @@ namespace rat
         }
 
         gui::FamilyTransform::setSize(_size);
-        _background.setSize(_size);
+        // _background.setSize(_size);
 
         _aboutToRecalculate = false;
     }
@@ -474,19 +476,19 @@ namespace rat
         return _color;
     }
 
-    void Widget::setBackground(const sf::Color& color)
-    {
-        _hasBackground = true;
-        _background.setFillColor(color);
-    }
-    void Widget::setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-    {
-        setBackground({r, g, b, a});
-    }
-    void Widget::removeBackground()
-    {
-        _hasBackground = false;
-    }
+    // void Widget::setBackground(const sf::Color& color)
+    // {
+    //     _hasBackground = true;
+    //     _background.setFillColor(color);
+    // }
+    // void Widget::setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    // {
+    //     setBackground({r, g, b, a});
+    // }
+    // void Widget::removeBackground()
+    // {
+    //     _hasBackground = false;
+    // }
 
     void Widget::makeChildrenUncolorable()
     {
@@ -845,7 +847,7 @@ namespace rat
     {
         if(_isPosChanged)
         {
-            _updateBackgroundPos();
+            // _updateBackgroundPos();
             _recalcPos();
             _recalcChildrenPos();
             _isPosChanged = false;
@@ -864,14 +866,14 @@ namespace rat
     void Widget::applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos)
     {
         gui::FamilyTransform::applyParentPosition(globalPos, drawPos);
-        _updateBackgroundPos();
+        // _updateBackgroundPos();
         _isPosChanged = true;
     }
 
-    void Widget::_updateBackgroundPos()
-    {
-        _background.setPosition(gui::FamilyTransform::getDrawPosition());
-    }
+    // void Widget::_updateBackgroundPos()
+    // {
+    //     _background.setPosition(gui::FamilyTransform::getDrawPosition());
+    // }
     
     
 }

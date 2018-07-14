@@ -120,7 +120,7 @@ namespace rat
         fps->setPropPosition(0.f, 0.f);
         fps->makeStaticPropPositing();
         fps->setPropOrigin(0.5f, 0.5f);
-        fps->setBackground(100, 100, 100, 255);
+        // fps->setBackground(100, 100, 100, 255);
         image->setCallback(Widget::CallbackType::onRelease, [this](auto){
             //if(randomBool)
                 //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
@@ -189,20 +189,20 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
-        list->setBetweenPadding(400.f * _prop);
+        //list->setBetweenPadding(400.f * _prop);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) fps->setAlign(TextAreaWidget::Align::Left);
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
-            fps->setSize(mousePos.x, 0.f);
+            //fps->setSize(mousePos.x, 0.f);
         }
 
         //scroll->setScrollPropWidth(_prop);
         //std::cout << _prop << '\n';
         //fps->setString(std::to_string(int(1.f / deltaTime)) + " fps");
 
-        fps->setPropPosition(_prop, _prop);
+        //fps->setPropPosition(_prop, _prop);
 
         //image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
     }
