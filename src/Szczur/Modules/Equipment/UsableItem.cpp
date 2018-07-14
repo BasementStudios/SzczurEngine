@@ -26,7 +26,7 @@ namespace rat {
 
 	bool UsableItem::useItem() {
 		if (_callback.valid()) {
-			_isUsable(this);
+			_callback(this);
 			if(_destroyed)
 				return true;
 		}
