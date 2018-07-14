@@ -83,6 +83,10 @@ namespace rat
 		void resetColor();
 		sf::Color getColor() const;
 
+		// void setBackground(const sf::Color& color);
+		// void setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+		// void removeBackground();
+
 		void makeChildrenUncolorable();
 		
 		void setOrigin(const sf::Vector2f& origin);
@@ -127,7 +131,6 @@ namespace rat
 		//		Polimorphism
 
 	protected:
-
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
 		virtual void _update(float deltaTime) {}
 		virtual void _input(const sf::Event& event) {}
@@ -228,6 +231,10 @@ namespace rat
 		bool _isResizable{true};
 
 		bool _hasStaticPropPositing{false};
+
+		// sf::RectangleShape _background;
+		// bool _hasBackground{false};
+		// void _updateBackgroundPos();
 
 		sf::Vector2f _getBound() const;
 

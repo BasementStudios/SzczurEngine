@@ -113,6 +113,7 @@ bool Application::input()
 	sf::Event event;
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
+		getModule<Window>().processEvent(event);
 		getModule<Input>().getManager().processEvent(event);
 		getModule<GUI>().input(event);
 
