@@ -64,10 +64,11 @@ namespace rat {		//beware spagetti monster down there :/
 			[&](const std::string& a) {return _hasItem(a); },
 			[&](const std::string& a, int b) {return _hasItem(a, b); }
 		));
-		module.set_function("hasChosenAmulet", &Equipment::hasChosenAmulet, this);
-		module.set_function("hasArmor", &Equipment::hasArmor, this);
-		module.set_function("hasWeapon", &Equipment::hasWeapon, this);
+		//module.set_function("hasChosenAmulet", &Equipment::hasChosenAmulet, this);
+		//module.set_function("hasArmor", &Equipment::hasArmor, this);
+		//module.set_function("hasWeapon", &Equipment::hasWeapon, this);
 		module.set_function("useItem", &Equipment::useItem, this);
+		module.set_function("hasChosenStone", &Equipment::hasChosenStone, this);
 
 		script.initClasses<WearableItem, UsableItem>();
 	}
@@ -339,7 +340,7 @@ namespace rat {		//beware spagetti monster down there :/
 	bool Equipment::_isEquipmentOpen() {
 		return !_isEquipmentHidden;
 	}
-	bool Equipment::hasChosenAmulet(const std::string& nameId) {
+	/*bool Equipment::hasChosenAmulet(const std::string& nameId) {
 		return _armorSlots->getChosenAmulet()->getNameId() == nameId;
 	}
 	bool Equipment::hasArmor(const std::string& nameId) {
@@ -347,7 +348,12 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	bool Equipment::hasWeapon(const std::string& nameId) {
 		return _armorSlots->getWeaponSlot()->getItem()->getNameId() == nameId;
+	}*/
+
+	bool Equipment::hasChosenStone(std::string& nameId) {
+		return _necklace->hasStone(nameId);
 	}
+
 	bool Equipment::useItem(const std::string& nameId) {
 		if (_normalSlots->hasItem(nameId)) {
 			return _normalSlots->useItem(nameId);

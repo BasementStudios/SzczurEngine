@@ -64,6 +64,20 @@ namespace rat {
 	}
 
 	void Necklace::reset() {
+		for (auto& i : _stonesImages) {
+			if (i.item) {
+				i.item = nullptr;
+				i.image->removeTexture();
+			}
+		}
+	}
 
+	bool Necklace::hasStone(std::string& nameId) {
+		for (auto& i : _stonesImages) {
+			if (i.item->getNameId() == nameId) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
