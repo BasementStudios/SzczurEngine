@@ -72,14 +72,14 @@ namespace rat {
                         if(option->afterAction.valid())
                             option->afterAction();
                     }
-					auto* button = _getButton(this, 
+					auto* button = _getButton(this,
+											  textManager.getLabel(option->majorTarget, option->minorTarget),
 											  option->color.r,
 											  option->color.g,
 											  option->color.b,
 											  option->color.a,
 											  option->iconId
 									).get<TextWidget*>();
-                    button->setString(textManager.getLabel(option->majorTarget, option->minorTarget));
                     button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
                             if(option->afterAction.valid())
                                 option->afterAction();
