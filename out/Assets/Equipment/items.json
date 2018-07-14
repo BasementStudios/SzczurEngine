@@ -1,33 +1,5 @@
 {
     "items": {
-        "sword": {
-            "pl": {
-                "name": "Miecz",
-                "description": "To jest tak dobry miecz ze nie miesci sie w jednej linijce"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest super miecz."
-            },
-            "type": "wearable",
-		    "category": "weapon",
-            "icon": "Assets/Equipment/miecz/miecz.png",
-            "script": "Assets/Equipment/miecz/miecz.lua"
-        },
-	    "armor": {
-            "pl": {
-                "name": "zbroja",
-                "description": "zażółć gęślą jaźń ZAŻÓŁĆ GĘŚLĄ JAŹŃ"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-			"category": "armor",
-            "icon": "Assets/Equipment/zbroja/zbroja.png",
-            "script": "Assets/Equipment/zbroja/zbroja.lua"
-        },
 	    "potion": {
             "pl": {
                 "name": "potion",
@@ -54,37 +26,9 @@
             "icon": "Assets/Equipment/potion2/potion2.png",
             "script": "Assets/Equipment/potion2/potion2.lua"
         },
-		"amulet1": {
+		"stone1": {
             "pl": {
-                "name": "amulet1",
-                "description": "To jest super amulet"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-			"category": "amulet",
-            "icon": "Assets/Equipment/amulet1/amulet1.png",
-            "script": "Assets/Equipment/amulet1/amulet1.lua"
-        },
-		"amulet2": {
-            "pl": {
-                "name": "amulet2",
-                "description": "To jest super amulet"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-			"category": "amulet",
-            "icon": "Assets/Equipment/amulet2/amulet2.png",
-            "script": "Assets/Equipment/amulet2/amulet2.lua"
-        },
-		"ring1": {
-            "pl": {
-                "name": "ring1",
+                "name": "stone1",
                 "description": "To jest super pierscien"
             },
             "eng": {                    
@@ -92,23 +36,37 @@
                 "description": "To jest"
             },
             "type": "wearable",
-			"category": "ring",
-            "icon": "Assets/Equipment/ring1/ring1.png",
-            "script": "Assets/Equipment/ring1/ring1.lua"
+			"category": "stone",
+            "icon": "Assets/Equipment/stone1/stone1.png",
+            "script": "Assets/Equipment/stone1/stone1.lua"
         },
-		"ring2": {
+		"stone2": {
             "pl": {
-                "name": "ring2",
-                "description": "To jest super pierscien"
+                "name": "stone2",
+                "description": "To jest super kamyczek"
             },
             "eng": {                    
                 "name": "Miecz",
                 "description": "To jest"
             },
             "type": "wearable",
-			"category": "ring",
-            "icon": "Assets/Equipment/ring2/ring2.png",
-            "script": "Assets/Equipment/ring2/ring2.lua"
+			"category": "stone",
+            "icon": "Assets/Equipment/stone2/stone2.png",
+            "script": "Assets/Equipment/stone2/stone2.lua"
+        },
+        "stone3": {
+            "pl": {
+                "name": "stone3",
+                "description": "To jest super kamyczek"
+            },
+            "eng": {                    
+                "name": "Miecz",
+                "description": "To jest"
+            },
+            "type": "wearable",
+            "category": "stone",
+            "icon": "Assets/Equipment/stone3/stone3.png",
+            "script": "Assets/Equipment/stone3/stone3.lua"
         }
 	}
 }

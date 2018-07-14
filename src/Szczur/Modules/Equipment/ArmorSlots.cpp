@@ -47,11 +47,11 @@ namespace rat {
 	}
 
 	void ArmorSlots::initAssetsViaGUI(GUI& gui) {
-		_weaponSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"));
-		_weaponSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
+		_weaponSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr);
+		//_weaponSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
 
-		_armorSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"));
-		_armorSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
+		_armorSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr);
+		//_armorSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
 
 		_amuletSlot->initAssetsViaGUI(gui);
 	}
@@ -97,5 +97,18 @@ namespace rat {
 	}
 	EquipmentSlot* ArmorSlots::getWeaponSlot() {
 		return _weaponSlot;
+	}
+	void ArmorSlots::reset() {
+		_amuletSlot->reset();
+
+		if (_armorSlot->getItem()) {
+			dynamic_cast<WearableItem*>(_armorSlot->getItem())->deactivate();
+			_armorSlot->removeItem();
+		}
+		
+		if (_weaponSlot->getItem()) {
+			dynamic_cast<WearableItem*>(_weaponSlot->getItem())->deactivate();
+			_weaponSlot->removeItem();
+		}
 	}
 }

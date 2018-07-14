@@ -160,7 +160,6 @@ void Application::render()
 {
 	getModule<Window>().clear();
 	getModule<GUI>().render();
-	getModule<Equipment>().render();
 	#ifdef GUI_TEST
 	{
 		getModule<GUITest>().render();

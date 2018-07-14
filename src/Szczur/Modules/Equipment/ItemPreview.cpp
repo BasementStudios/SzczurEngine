@@ -11,7 +11,7 @@ namespace rat {
 		_base = new Widget;
 		_base->makeChildrenUnresizable();
 		_base->setPropSize(.625f, 0.1f);
-		_base->setPropPosition({ .5f, .17f });
+		_base->setPropPosition({ .5f, .05f });
 		
 		_descriptionWidget = new WindowWidget;
 		_descriptionWidget->setPropSize(.625f, 0.1f);

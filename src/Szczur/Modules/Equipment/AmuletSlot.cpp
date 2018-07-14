@@ -177,5 +177,11 @@ namespace rat {
 			}
 		}
 	}
+
+	void AmuletSlot::reset() {
+		for (size_t i = _amulets.size() - 1; i > 0; i--) {
+			removeAmulet(_amulets[i]->getNameId());
+		}
+	}
 	
 }

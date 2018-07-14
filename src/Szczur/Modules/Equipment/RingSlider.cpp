@@ -10,39 +10,69 @@
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
 namespace rat {
-	RingSlider::RingSlider(sf::Vector2f frameSize, Equipment* equipment)
-		:_equipment(equipment), _slotSize(frameSize)
+	RingSlider::RingSlider(Equipment* equipment, GUI& gui, sf::Vector2f frameSize)
+		:_equipment(equipment)
 	{
 		_base = new Widget;
 
-		_border = new WindowWidget;
-		_border->setPropSize(0.15f, 0.6f);//(50.f + frameSize.x, 480.f);
-		_base->add(_border);
+		/*_border = new WindowWidget;
+		_border->setPropSize(0.15f, 0.6f);
+		_base->add(_border);*/
 
-		_scroll = new ScrollAreaWidget();
-		//_scroll->setPropOrigin(.0f, .0f);
-		//_scroll->setPropSize(0.09f, 0.65f);
+		/*_scroll = new ScrollAreaWidget();
 		_scroll->setPropSize(0.14f, 0.58f);
 		_scroll->setPropPosition(0.5f, 0.5f);
-		_base->add(_scroll);	
+		_base->add(_scroll);*/	
 		
 		_baseForItems = new ListWidget;
 		_baseForItems->setPropBetweenPad(0.005f);
-		//_baseForItems->setPropSize({ 0.09f, 0.09f });
-		_scroll->add(_baseForItems);
+		_baseForItems->makeHorizontal();
+		_base->add(_baseForItems);
+
+		initAssetsViaGUI(gui);
+
+		size_t row = 0;
+		for (size_t i = 0; i < 10; i++)
+		{
+			if (i % 5 == 0) {
+				i == 0 ? row = 0 : row = 1;
+				_itemsLists.push_back(new ListWidget);
+				_baseForItems->add(_itemsLists[row]);
+				_itemsLists[row]->makeVertical();
+				_itemsLists[row]->setPropBetweenPad(0.005f);
+			}
+			EquipmentSlot* temp = new EquipmentSlot;
+			_stoneSlots.push_back(temp);
+			temp->setParent(_itemsLists[row]);
+			temp->setPropSize(frameSize);
+			temp->setTexture(_slotTexture, _shadowTexture);
+			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {
+				if (temp->getItem())
+				_equipment->disableItemPreview();
+				temp->setHighlight(false);
+			});
+			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, temp](Widget* owner) {
+				if(temp->getItem())
+				_equipment->enableItemPreview(temp->getItem());
+				temp->setHighlight(true);
+			});
+			temp->getWidget()->setCallback(Widget::CallbackType::onPress, [temp, this](Widget* owner) {
+				if (temp->getItem())
+				selectRing(temp);
+			});
+		}
 
 	}
 
 	void RingSlider::initAssetsViaGUI(GUI& gui) {
-		_border->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 10);
+		//_border->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 10);
 
-		_scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+		/*_scroll->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 		_scroll->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-		_scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+		_scroll->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));*/
 
 		_slotTexture = gui.getAsset<sf::Texture>("Assets/Equipment/slot.png");
-		_slotChosenTexture = gui.getAsset<sf::Texture>("Assets/Equipment/chosenSlot.png");
-		_highlightTexture = gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png");
+		_shadowTexture = gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png");
 	}
 
 	void RingSlider::setParent(Widget* newBase) {
@@ -58,48 +88,29 @@ namespace rat {
 	}
 
 	void RingSlider::addItem(WearableItem* item) {
-		EquipmentSlot* temp = new EquipmentSlot;
-		_ringSlots.push_back(temp);
-		_scroll->resetScrollerPosition();
-		//_baseForItems->setPropSize(0.09f, (_ringSlots.size() - 1) * (.09f + .01f));		
-		temp->setParent(_baseForItems);
-		temp->setPropSize({ 0.09f, 0.09f });//_slotSize);
-		temp->setTexture(_slotTexture);
-		//temp->setPropPosition(sf::Vector2f(0.f, (_ringSlots.size() - 1) * (.15f + .01f)));
-		temp->setItem(item);
-		temp->setHighlightTexture(_highlightTexture);
-		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {
-			this->_equipment->disableItemPreview();
-			temp->setHighlight(false);
-		});
-		temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, item, temp](Widget* owner) {
-			this->_equipment->enableItemPreview(item);		
-			temp->setHighlight(true);
-		});
-		temp->getWidget()->setCallback(Widget::CallbackType::onPress, [temp, this](Widget* owner) {
-			this->selectRing(temp);
-		});
+		for (size_t i = 0; i < _stoneSlots.size(); i++)
+		{
+			if (!_stoneSlots[i]->getItem()) {
+				_stoneSlots[i]->setItem(item);
+				break;
+			}
+		}
 	}
 
 	void RingSlider::selectRing(EquipmentSlot* slot) {
 		for (size_t i = 0; i < _selectedSlots.size(); i++)
 		{
 			if (_selectedSlots[i] == slot) {
-				slot->setTexture(_slotTexture);
-				dynamic_cast<WearableItem*>(slot->getItem())->deactivate();
-				_selectedSlots.erase(_selectedSlots.begin() + i);
+				_equipment->_stoneStatusChanged(dynamic_cast<WearableItem*>(slot->getItem()), false);
 				return;
 			}
 		}
-		if (_selectedSlots.size() < _maxSelectedRings) {
-			slot->setTexture(_slotChosenTexture);
+		if (_selectedSlots.size() < 3) {
+			_equipment->_stoneStatusChanged(dynamic_cast<WearableItem*>(slot->getItem()), true);
+			slot->getItemWidget()->setColor(sf::Color(120u, 120u, 120u));
 			dynamic_cast<WearableItem*>(slot->getItem())->activate();
 			_selectedSlots.push_back(slot);
 		}
-	}
-
-	void RingSlider::setSelectedRingsLimit(int newSize) {
-		_maxSelectedRings = newSize;
 	}
 
 	std::vector<EquipmentObject*> RingSlider::getSelectedRings() {
@@ -110,12 +121,30 @@ namespace rat {
 		}
 		return temp;
 	}
-	std::vector<EquipmentObject*> RingSlider::getRingsList() {
+	std::vector<EquipmentObject*> RingSlider::getStonesList() {
 		std::vector<EquipmentObject*> temp;
-		for (auto& i : _ringSlots)
+		for (auto& i : _stoneSlots)
 		{
 			temp.push_back(i->getItem());
 		}
 		return temp;
+	}
+	
+	void RingSlider::reset() {
+		for (int i = _stoneSlots.size() - 1; i >= 0; i--)
+		{
+			if(_stoneSlots[i]->getItem())
+			_stoneSlots[i]->removeItem();
+		}
+	}
+	void RingSlider::_takeStoneOf(WearableItem* stone) {
+		for (size_t i = 0; i < _selectedSlots.size(); i++)
+		{
+			if (dynamic_cast<WearableItem*>(_selectedSlots[i]->getItem()) == stone) {
+				_selectedSlots[i]->resetItemColor();
+				dynamic_cast<WearableItem*>(_selectedSlots[i]->getItem())->deactivate();
+				_selectedSlots.erase(_selectedSlots.begin() + i);
+			}
+		}
 	}
 }

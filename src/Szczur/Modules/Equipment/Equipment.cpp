@@ -9,6 +9,7 @@
 #include "EquipmentObject.hpp"
 #include "RingSlider.hpp"
 #include "ReplaceItem.hpp"
+#include "Necklace.hpp"
 
 #include "ItemManager.hpp"
 #include "Szczur/Modules/GUI/InterfaceWidget.hpp"
@@ -20,9 +21,6 @@ namespace rat {		//beware spagetti monster down there :/
 	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow())
 	{
 		LOG_INFO("Initializing Equipment module");
-		_mainWindow.pushGLStates();
-		_canvas.create(_window.getSize().x, _window.getSize().y);
-		_mainWindow.popGLStates();
 	
 		initScript();
 		init();		
@@ -50,7 +48,6 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set_function("getFreeSlotsAmount", &Equipment::getFreeSlotsAmount, this);
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
-		module.set_function("setSelectedRingsLimit", &Equipment::setSelectedRingsLimit, this);
 		module.set_function("getLastChangeStatus", &Equipment::lastChangeStatus, this);
 		module.set_function("closeEquipment", &Equipment::_closeEquipment, this);
 		module.set_function("openEquipment", &Equipment::_openEquipment, this);
@@ -78,35 +75,56 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::init() {
 		auto& gui = getModule<GUI>(); 
 
-		gui.addTexture("Assets/Equipment/ringsSlider.png");
-		gui.addTexture("Assets/Test/ScrollerBound.png");
-		gui.addTexture("Assets/Test/ScrollerBar.png");
-		gui.addTexture("Assets/Test/Scroller.png");
-		gui.addTexture("Assets/Equipment/slot.png");
-		gui.addTexture("Assets/Equipment/chosenSlot.png");
-		gui.addTexture("Assets/Equipment/highlight.png");
-		gui.addTexture("Assets/Equipment/leftArrow.png");
-		gui.addTexture("Assets/Equipment/rightArrow.png");
-		gui.addFont("Assets/Equipment/NotoMono.ttf");
+		gui.addTexture("Assets/Equipment/Okno.png");
+		gui.addTexture("Assets/Equipment/Zbroja.png");
+		gui.addTexture("Assets/Equipment/Miecz.png");
+		gui.addTexture("Assets/Equipment/Naszyjnik.png");
+		gui.addTexture("Assets/Equipment/shadow.png");
 		gui.addTexture("Assets/Equipment/szczegoly.png");
+		gui.addTexture("Assets/Equipment/background.png");
+		gui.addTexture("Assets/Equipment/ringsSlider.png");
+		gui.addTexture("Assets/Equipment/slot.png");
+		gui.addFont("Assets/Equipment/NotoMono.ttf");
 		gui.addTexture("Assets/Equipment/cancel.png");
 		gui.addTexture("Assets/Equipment/rozwijanie.png");
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
 
-		_equipmentFrame = new WindowWidget();
+		_background = new ImageWidget;
+		_base->add(_background);
+		_background->setTexture(gui.getTexture("Assets/Equipment/background.png"));
+		_background->setPropSize(1.78f, 1.f);
+
+		_equipmentFrame = new ImageWidget;
 		_base->add(_equipmentFrame);
 		_equipmentFrame->makeChildrenUnresizable();
 		_equipmentFrame->setPropPosition(0.5f, 3.33f);
-		_equipmentFrame->setPropSize(.63f, .7f);
-		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 180);
+		_equipmentFrame->setPropSize(.564f, .689f);
+		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/Okno.png"));
 	
+		_armorImage = new ImageWidget;
+		_equipmentFrame->add(_armorImage);
+		_armorImage->setPropSize(.262f, .836f);
+		_armorImage->setPropPosition(-0.4f, .31f);
+		_armorImage->setTexture(gui.getTexture("Assets/Equipment/Zbroja.png"));
+
+		_weaponImage = new ImageWidget;
+		_equipmentFrame->add(_weaponImage);
+		_weaponImage->setPropSize(.454f, .99f);
+		_weaponImage->setPropPosition(2.95f, .43f);
+		_weaponImage->setTexture(gui.getTexture("Assets/Equipment/Miecz.png"));
+
+		_necklace = new Necklace(gui.getTexture("Assets/Equipment/Naszyjnik.png"), this);
+		_necklace->setParent(_equipmentFrame);
+		_necklace->setPropPosition(1.f, .0f);
+		_necklace->setPropSize(0.42f, 0.14f);
+
 		_hideButton = new ImageWidget;
-		_equipmentFrame->add(_hideButton);
-		_hideButton->setPropPosition(0.5f, -0.06f);
+		_base->add(_hideButton);
+		_hideButton->setPropPosition(0.5f, 1.f);
 		_hideButton->setPropSize(0.25f, 0.042f);
-		_hideButton->setTexture(gui.getTexture("Assets/Equipment/rozwijanie.png"));
+		_hideButton->setTexture(gui.getTexture("Assets/Equipment/slot.png"));
 		_hideButton->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
 			if (_isEquipmentHidden)
 				_openEquipment();
@@ -114,19 +132,18 @@ namespace rat {		//beware spagetti monster down there :/
 				_closeEquipment();
 		});
 
-		_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
+		/*_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPropPosition({ 0.15f, 0.08f });
-		_armorSlots->initAssetsViaGUI(gui);
+		_armorSlots->initAssetsViaGUI(gui);*/
 
-		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"), { 62, 62 }, this);
+		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png"), this, {.068f, 0.091f});
 		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .9f));
+		_normalSlots->setPropPosition(sf::Vector2f(0.37f, .69f));
 
-		_ringSlider = new RingSlider({ 70u, 70u }, this);
+		_ringSlider = new RingSlider(this, gui, { .068f, 0.091f });
 		_ringSlider->setParent(_equipmentFrame);
-		_ringSlider->initAssetsViaGUI(gui);
-		_ringSlider->setPropPosition({ 0.9f, 0.4f });
+		_ringSlider->setPropPosition({ 0.97f, .9f });
 
 		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
 		_itemPreview->setParent(_base);
@@ -137,10 +154,12 @@ namespace rat {		//beware spagetti monster down there :/
 		_replaceItem->close();
 
 		_itemManager = new ItemManager;
-		_itemManager->setNewPath("Assets/Equipment/items.json");
+		_pathToJson = "Assets/Equipment/items.json";
+		_itemManager->setNewPath(_pathToJson);
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
 		_equipmentPosition = _equipmentFrame->getPosition();
+		_openEquipment();
 	}
 
 	void Equipment::update(float deltaTime) {
@@ -154,15 +173,20 @@ namespace rat {		//beware spagetti monster down there :/
 		}
 	}
 
-	void Equipment::render() {
-		_mainWindow.pushGLStates();
+	//when play button in pressed and we activate equipment
+	void Equipment::startEquipment() {
+		_base->fullyActivate();
+		
+	}
 
-		_canvas.clear(sf::Color::Transparent);
-		_canvas.display();
-
-		_mainWindow.getWindow().draw(sf::Sprite(_canvas.getTexture()));
-
-		_mainWindow.popGLStates();
+	//when stop button is pressed and we deactivate equipment
+	void Equipment::stopEquipment() {
+		_base->fullyDeactivate();
+		_armorSlots->reset();
+		_necklace->reset();
+		_ringSlider->reset();
+		_normalSlots->reset();
+		_closeEquipment();
 	}
 
 	void Equipment::enableItemPreview(EquipmentObject* item) {
@@ -222,24 +246,10 @@ namespace rat {		//beware spagetti monster down there :/
 		case equipmentObjectType::weapon:
 			_armorSlots->setWeapon(item);
 			break;
-		case equipmentObjectType::ring:
+		case equipmentObjectType::stone:
 			_ringSlider->addItem(item);
 			break;
 		}
-	}
-
-	bool Equipment::removeWearableItem(WearableItem* item) {
-			switch (item->getType()) {
-			case equipmentObjectType::armor:
-				return false;		//you cannot remove either weapon or armor
-			case equipmentObjectType::weapon:
-				return false;
-			case equipmentObjectType::amulet:
-				return _armorSlots->removeAmulet(item->getNameId());
-			case equipmentObjectType::ring:
-				return false;
-			}
-		return false;
 	}
 
 	bool Equipment::removeUsableItem(UsableItem* item) {
@@ -263,7 +273,7 @@ namespace rat {		//beware spagetti monster down there :/
 		if (_armorSlots->getWeaponSlot()->getItem()) {
 			_table.add(_armorSlots->getWeaponSlot()->getItem()->getNameId());
 		}
-		for (auto& it : _ringSlider->getRingsList())
+		for (auto& it : _ringSlider->getStonesList())
 		{
 			_table.add(it->getNameId());
 		}
@@ -282,17 +292,14 @@ namespace rat {		//beware spagetti monster down there :/
 		return _normalSlots->getSlotsAmount();
 	}
 	
-	void Equipment::setNewItemPath(std::string newPath){
+	void Equipment::setNewItemsPath(std::string newPath){
+		_pathToJson = newPath;
 		_itemManager->setNewPath(newPath);
 	}
-	void Equipment::reloadItemList() {
+	void Equipment::reloadItemsList() {
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 	}
 
-	void Equipment::setSelectedRingsLimit(int newSize) {
-		_ringSlider->setSelectedRingsLimit(newSize);
-	}
-	//odtad
 	void Equipment::_replaceNewItem(EquipmentObject* item) {
 		_replaceItem->setItem(item);
 		_isReplacing = true;
@@ -316,18 +323,19 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 
 	void Equipment::_openEquipment() {
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 0.5f, 0.6f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = false; 
 			_replaceItem->maximize();
 		} });
+		_equipmentFrame->fullyActivate();
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 3.33f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 0.5f, 4.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
 			_isEquipmentHidden = true;
+			_equipmentFrame->fullyDeactivate();
 		} });
 	}
-	//dotad
 	bool Equipment::_isEquipmentOpen() {
 		return !_isEquipmentHidden;
 	}
@@ -360,5 +368,21 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	bool Equipment::_hasItem(const std::string& nameId, int quantity) {
 		return _normalSlots->hasItem(nameId, quantity);
+	}
+
+	std::string& Equipment::getPathToJson() {
+		return _pathToJson;
+	}
+
+	bool Equipment::_stoneStatusChanged(WearableItem* stone, bool status) {
+		//we're putting stone on
+		if (status) {
+			return _necklace->addStone(stone);
+		}
+		//we're taking stone of
+		else {
+			_ringSlider->_takeStoneOf(stone);
+			return _necklace->removeStone(stone);		
+		}
 	}
 }

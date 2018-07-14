@@ -7,28 +7,27 @@ namespace rat {
 		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
-		_highlightFrameImage = new ImageWidget();
+		_shadowImage = new ImageWidget();
+		_shadowImage->fullyDeactivate();
 		_nullWidget = new Widget;
-		_base->add(_slotImage);
-		_base->add(_itemImage);
-		_base->add(_highlightFrameImage);
-		_base->add(_nullWidget);
 
+		_base->add(_slotImage);
+		_base->add(_shadowImage);
+		_base->add(_itemImage);	
+		_base->add(_nullWidget);
+		
 		setHighlight(false);
 	}
-	void EquipmentSlot::setTexture(sf::Texture* text) {
+	void EquipmentSlot::setTexture(sf::Texture* text, sf::Texture* shadowText) {
 		_slotImage->setTexture(text);
-	}
-
-	void EquipmentSlot::setHighlightTexture(sf::Texture* text) {
-		_highlightFrameImage->setTexture(text);
+		_shadowImage->setTexture(shadowText);
 	}
 
 	void EquipmentSlot::setHighlight(bool state) {
 		if (state && isUsable)
-			_highlightFrameImage->fullyActivate();
-		else
-			_highlightFrameImage->fullyDeactivate();
+			_slotImage->resetColor();
+		else if(isUsable)
+			_slotImage->setColor(sf::Color(255u, 255u, 255u, 150u));
 	}
 
 	void EquipmentSlot::setItemColor(sf::Color color) {
@@ -43,31 +42,37 @@ namespace rat {
 	{
 		_slotImage->setSize(size);
 		_itemImage->setSize(size);
-		_highlightFrameImage->setSize(size);
+		_shadowImage->setSize(size);
 		_nullWidget->setSize(size);
 	}
 	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
 		_slotImage->setPropSize(size);
-		_itemImage->setPropSize(size);
-		_highlightFrameImage->setPropSize(size);
+		_itemImage->setPropSize({size.x + .002f, size.y + .003f});
+		_shadowImage->setPropSize(size);
 		_nullWidget->setPropSize(size);
 	}
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {
 		_itemPlaced = item;
 		if (item) {
+			_shadowImage->fullyActivate();
 			_itemImage->setTexture(item->getTexture());
 			_itemImage->resetColor();
 		}
-		else
+		else {
+			_shadowImage->fullyDeactivate();
 			_itemImage->removeTexture();
+		}
 	}
 
 	void EquipmentSlot::removeItem() {
-		delete _itemPlaced;
-		_itemPlaced = nullptr;
-		_itemImage->removeTexture();
+		if (_itemPlaced) {
+			_shadowImage->fullyDeactivate();
+			delete _itemPlaced;
+			_itemPlaced = nullptr;
+			_itemImage->removeTexture();
+		}
 	}
 
 	EquipmentObject* EquipmentSlot::getItem() {
@@ -107,6 +112,10 @@ namespace rat {
 
 	sf::Vector2f EquipmentSlot::getPosition() {
 		return _base->getPosition();
+	}
+
+	sf::Vector2f EquipmentSlot::getGlobalPosition() {
+		return _base->getGlobalPosition();
 	}
 
 	void EquipmentSlot::setStatus(bool newState) {

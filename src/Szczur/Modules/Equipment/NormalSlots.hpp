@@ -6,7 +6,7 @@
 #include <queue>
 
 namespace rat {	
-	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment; class ReplaceItem;
+	class EquipmentSlot; class UsebleItem; class Widget; class ImageWidget; class Equipment; class ReplaceItem; class ListWidget;
 	typedef std::multimap<std::string, std::shared_ptr<EquipmentSlot>> itemMap_t;
 
 	template<class T, class U>
@@ -35,7 +35,7 @@ namespace rat {
 	{
 		friend class Equipment;
 	public:
-		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment);
+		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* shadowText, Equipment* equipment, sf::Vector2f frameSize);
 
 		bool addItem(EquipmentObject* item);
 		bool removeItem(const std::string& itemNameId);
@@ -57,10 +57,10 @@ namespace rat {
 		bool useItem(const std::string& nameId);
 
 		void update(float deltaTime);
+		void reset();
 
 	private:
 		unsigned int _slotAmount;
-		sf::Vector2i _frameSize;
 
 		Widget* _base;
 
@@ -70,7 +70,8 @@ namespace rat {
 
 		itemMap_t _occupiedSlots;		//slots with items
 		SlotsPriorityQueue<std::shared_ptr<EquipmentSlot>, SortByIndex> _freeSlots;
-		//std::vector<EquipmentSlot*> _freeSlots;
+		ListWidget* _verticalListOfLists;
+		std::vector<ListWidget*> _slotLists;
 		std::vector<std::shared_ptr<EquipmentSlot>> _allSlots;
 
 		std::shared_ptr<EquipmentSlot> _slotHeld;

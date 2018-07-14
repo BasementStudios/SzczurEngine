@@ -5,7 +5,7 @@
 
 namespace rat {
 	enum equipmentObjectType {
-		amulet, armor, weapon, ring
+		amulet, armor, weapon, stone
 	};
 
 	class WearableItem : public EquipmentObject
