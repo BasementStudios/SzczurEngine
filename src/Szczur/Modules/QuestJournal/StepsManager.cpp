@@ -7,14 +7,14 @@ namespace journal
     StepsManager::StepsManager(sf::Font *font,Widget* interface)
     :_font(font)
     {
-
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
         interface->add(_scroller);
         _scroller->setPropSize(0.4f, 0.3f);
         _scroller->setPropPosition(0.3f, 0.3f);
         _list->setBetweenPadding(20.f);
-        _list->setPropSize(0.35f, 0.f);
+        _list->setPropSize(0.1f, 0.f);
+        _list->setPropPosition(0.3f, 0.f);
         _scroller->add(_list);
     }
 
@@ -35,7 +35,6 @@ namespace journal
             widget->setFont(_font);
             widget->setCharacterSize(17);
             widget->setColor(sf::Color(135, 89, 247 ,255));
-            widget->setPropPosition(0.1f,0.1f);
             widget->setPropSize(0.35f, 0.f);
             _list->add(widget);
         }
@@ -65,6 +64,7 @@ namespace journal
             widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
+        _scroller->resetScrollerPosition();
     }
 
     void StepsManager::clear()

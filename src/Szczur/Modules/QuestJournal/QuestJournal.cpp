@@ -132,7 +132,7 @@ namespace rat
         _done->setCallback(Widget::CallbackType::onPress, [this](auto){
                 this->displayDoneList();
         });
-        _done->setPropPosition(0.42f,0.57f);
+        _done->setPropPosition(0.5f,0.5f);
         
         _doneSwitch->add(_done);
 
@@ -144,7 +144,7 @@ namespace rat
         _actual->setCallback(Widget::CallbackType::onPress, [this](auto){
                 this->displayNormalList();   
         });
-        _actual->setPropPosition(0.42f,0.57f);
+        _actual->setPropPosition(0.5f,0.5f);
         
         _switch->add(_actual);
 
@@ -521,10 +521,11 @@ namespace rat
         std::vector<std::shared_ptr<journal::Quest> >::iterator k = _quests.begin();
         for(auto i :_normalTextWidgets)
         {
+            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
+
             if((*k)->isFollowing())
                 i->setColor(sf::Color(sf::Color(0, 153, 0 ,255)));
 
-            i->setColor(sf::Color(sf::Color(135, 89, 247 ,255)));
             k++;
         } 
 
