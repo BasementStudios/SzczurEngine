@@ -244,9 +244,8 @@ namespace rat {
 					auto linearStart = window.getLinearByScreenPosition({ start.x, start.y });
 					auto linearEnd = window.getLinearByScreenPosition({ end.x, end.y });
 
-					// disable dragging and clear selected list
+					// disable dragging
 					_isDragging = false;
-					_objectsList.clearSelected();
 
 					scene->forEach([&] (const std::string&, Entity& entity) {
 						// get size of rect in 3d
