@@ -58,7 +58,7 @@ void ArmatureComponent::setArmature(const std::string& armatureName)
 	auto& armatures = getEntity()->getScene()->getScenes()->getArmatureDisplayDataHolder();
 
 	// find armature
-	auto armature = std::find_if(armatures.begin(), armatures.end(), [&] (auto& armature) { return armature.getFolderPath() == directory; });
+	auto armature = std::find_if(armatures.begin(), armatures.end(), [&] (auto& armature) { return armature->getFolderPath() == directory; });
 
 	ArmatureDisplayData* it = nullptr;
 
@@ -67,7 +67,7 @@ void ArmatureComponent::setArmature(const std::string& armatureName)
 	{
 		try
 		{
-			it = &armatures.emplace_back(directory);
+			it = armatures.emplace_back(std::move(std::make_unique<ArmatureDisplayData>(directory))).get();
 		}
 		catch (std::exception& ex)
 		{
@@ -77,7 +77,7 @@ void ArmatureComponent::setArmature(const std::string& armatureName)
 	}
 	else
 	{
-		it = &(*armature);
+		it = armature->get();
 	}
 
 	// try set armature data
@@ -362,7 +362,6 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 {
 	if (ImGui::CollapsingHeader("Armature##armature_component"))
 	{
-		//Component::drawOriginSetter(&ArmatureComponent::setOrigin);
 		Component::drawOriginSetter<ArmatureComponent>(&ArmatureComponent::setOrigin);
 
 		// Load armature button
@@ -378,9 +377,11 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		}
 
 		// Change entity name
-		if(getArmatureDisplayData()) {
-				ImGui::SameLine();
-			if(ImGui::Button("Change entity name")) {
+		if (getArmatureDisplayData())
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Change entity name"))
+			{
 				getEntity()->setName(std::experimental::filesystem::path(getArmatureDisplayData()->getName()).stem().string());
 			}
 		}

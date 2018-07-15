@@ -20,7 +20,7 @@ public:
 
 	using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
 	
-	using ArmatureDisplayDataHolder_t = std::vector<ArmatureDisplayData>;
+	using ArmatureDisplayDataHolder_t = std::vector<std::unique_ptr<ArmatureDisplayData>>;
 
 	///
 	ScenesManager();
