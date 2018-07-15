@@ -11,7 +11,7 @@ namespace journal
         interface->add(_scroller);
         _scroller->setPropSize(0.7f, 0.6f);
         _scroller->setPropPosition(0.3f, 0.4f);
-        _list->setBetweenPadding(20.f);
+        _list->setPropBetweenPad(0.04f);
         _list->setPropSize(0.6f, 0.f);
         _list->makeReversed();
         _scroller->add(_list);
@@ -30,13 +30,13 @@ namespace journal
         for(auto i = _descriptions->begin();i!=_descriptions->end();i++)
         {
             widget = new TextAreaWidget;
-            widget->setString(*i);
             widget->setFont(_font);
             widget->setCharacterSize(17);
-            widget->setPropSize(1.f,0.0f);
+            widget->setString(*i);
+            widget->setPropSize(0.6f, 0.0f);
             widget->setColor(sf::Color(135, 89, 247 ,255));
             widget->setAlign(TextAreaWidget::Align::Left);
-//widget->makeStaticPropPositing();
+            //widget->makeStaticPropPositing();
             _list->add(widget);
         }
         _scroller->resetScrollerPosition();
@@ -61,7 +61,7 @@ namespace journal
             widget->setCharacterSize(17);
             widget->setColor(sf::Color(135, 89, 247 ,255));
             widget->setAlign(TextAreaWidget::Align::Left);
-            widget->setPropSize(1.f,0.0f);
+            widget->setPropSize(0.6f, 0.0f);
            // widget->makeStaticPropPositing();
             _list->add(widget);
         }
