@@ -93,6 +93,15 @@ public:
 	void setSpeed(float speed);
 
 	///
+	void replaceSkin(const std::string& skinName, sol::variadic_args excludes);
+
+	///
+	void setSlotDisplayIndex(const std::string& slotName, int displayIndex);
+
+	///
+	void setSlotDisplay(const std::string& slotName, const std::string& displayName);
+
+	///
 	bool isPlaying();
 	
 	///

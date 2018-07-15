@@ -267,6 +267,52 @@ void ArmatureComponent::setSpeed(float speed)
 	}
 }
 
+void ArmatureComponent::replaceSkin(const std::string& skinName, sol::variadic_args excludes)
+{
+	auto skinData = dragonBones::SF3DFactory::get()->getArmatureData(skinName)->defaultSkin;
+
+	if (skinData == nullptr)
+		return;
+
+	std::vector<std::string> slotsToExclude;
+
+	for (auto& slot : excludes)
+	{
+		slotsToExclude.push_back(slot.get<std::string>());
+	}
+
+	dragonBones::SF3DFactory::get()->replaceSkin(_armature->getArmature(), skinData, false, &slotsToExclude);
+}
+
+void ArmatureComponent::setSlotDisplayIndex(const std::string& slotName, int displayIndex)
+{
+	auto slot = _armature->getArmature()->getSlot(slotName);
+
+	if (slot == nullptr)
+		return;
+
+	slot->setDisplayIndex(displayIndex);
+}
+
+void ArmatureComponent::setSlotDisplay(const std::string& slotName, const std::string& displayName)
+{
+	auto slot = _armature->getArmature()->getSlot(slotName);
+
+	if (slot == nullptr)
+		return;
+
+	auto& displays = *slot->getRawDisplayDatas();
+
+	auto display = std::find_if(displays.begin(), displays.end(), [&] (dragonBones::DisplayData* displayData) { return displayData->name == displayName; });
+
+	if (display != displays.end())
+	{
+		auto index = std::distance(displays.begin(), display);
+
+		slot->setDisplayIndex(static_cast<int>(index));
+	}
+}
+
 bool ArmatureComponent::isPlaying()
 {
 	if (_armature)
@@ -300,6 +346,9 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("isPlaying", &ArmatureComponent::isPlaying);
 	object.set("getCurrentPlayingAnim", &ArmatureComponent::getCurrentPlayingAnim);
 	object.set("setArmature", &ArmatureComponent::setArmature);
+	object.set("replaceSkin", &ArmatureComponent::replaceSkin);
+	object.set("setSlotDisplayIndex", &ArmatureComponent::setSlotDisplayIndex);
+	object.set("setSlotDisplay", &ArmatureComponent::setSlotDisplay);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
