@@ -85,7 +85,7 @@ namespace rat {
 			ImGui::Checkbox("Scale##base_component", &lockRatio);
 
 			bool isVisible = object->isVisible();
-			ImGui::Checkbox("Is visible##base_component", &isVisible);
+			ImGui::Checkbox("Visible##base_component", &isVisible);
 			object->setVisible(isVisible);
 		}
 	}

@@ -6,8 +6,6 @@
  ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
-#include <memory>
-
 #include "Szczur/Utility/Modules/Module.hpp"
 
 #include "SF3DFactory.hpp"
