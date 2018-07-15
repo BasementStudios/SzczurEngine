@@ -74,13 +74,13 @@ namespace rat
         // }});
 
         
-        image = new ImageWidget;
-        image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Cubic.png"));
-        image->setPropSize(0.3f, 0.3f);
-        image->setFullyTexSizing();
-        image->setStaticTexPositing();
-        image->setPropPosition(0.5f, 0.5f);
-        _widget->add(image);
+        // image = new ImageWidget;
+        // image->setTexture(gui.getAsset<sf::Texture>("Assets/GUITest/Cubic.png"));
+        // image->setPropSize(0.3f, 0.3f);
+        // image->setFullyTexSizing();
+        // image->setStaticTexPositing();
+        // image->setPropPosition(0.5f, 0.5f);
+        // _widget->add(image);
         
         list = new ListWidget;
         list->makeReversed();
@@ -115,19 +115,14 @@ namespace rat
         //fps->setCharacterPropSize(0.06f);
         fps->setCharacterSize(40u);
         fps->setColor({255, 255, 255});
-        fps->setString("54321 54321 321 654321\n987 4321 21 321");
+        fps->setString(".");
         fps->setAlign(TextAreaWidget::Align::Center);
-        fps->setPropPosition(0.f, 0.f);
-        fps->makeStaticPropPositing();
-        fps->setPropOrigin(0.5f, 0.5f);
-        // fps->setBackground(100, 100, 100, 255);
-        image->setCallback(Widget::CallbackType::onRelease, [this](auto){
-            //if(randomBool)
-                //fps->setStringInTime("Randowm Text buya", {3.f, gui::Easing::EaseOutQuad});
-            //else
-                //image->setPropTextureRectInTime({{0.f, 0.f},{1.f, 1.f}}, {3.f, gui::Easing::EaseInOutElastic});
-            //randomBool = !randomBool;
-        });
+        fps->setPropPosition(0.5f, 1.f);
+        fps->setOutlineColor({255, 0, 255});
+        fps->setOutlinePropThickness(0.02f);
+        //fps->makeStaticPropPositing();
+        //fps->setPropOrigin(0.5f, 0.5f);
+ 
     }
     
     
@@ -189,14 +184,17 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
+        //fps->setOutlineThickness(10.f * _prop);
+
         //list->setBetweenPadding(400.f * _prop);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) fps->setAlign(TextAreaWidget::Align::Left);
-            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
-            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
-            //fps->setSize(mousePos.x, 0.f);
+            fps->setSize(mousePos.x, 0.f);
         }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) fps->setAlign(TextAreaWidget::Align::Left);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
 
         //scroll->setScrollPropWidth(_prop);
         //std::cout << _prop << '\n';
@@ -205,6 +203,32 @@ namespace rat
         //fps->setPropPosition(_prop, _prop);
 
         //image->setPropTextureRect({{_prop * 0.5f, _prop * 0.5f}, {1.f - _prop, 1.f - _prop}});
+    }
+    void GUITest::input(const sf::Event& event)
+    {
+        switch(event.type)
+        {
+            case sf::Event::KeyPressed:
+            {
+                switch(event.key.code)
+                {
+                    case sf::Keyboard::Num1:
+                        fps->setString("Lorem ipsum dolor sit amet, consectetur adipisicing elit.");
+                    break;
+                    case sf::Keyboard::Num2:
+                        fps->setString("Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.");
+                    break;
+                    case sf::Keyboard::Num3:
+                        fps->setString("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+                    break;
+
+                    default: break;
+                }
+            } 
+            break;
+
+            default: break;
+        }
     }
     void GUITest::render()
     {
