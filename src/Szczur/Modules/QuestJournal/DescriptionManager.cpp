@@ -13,6 +13,7 @@ namespace journal
         _scroller->setPropPosition(0.3f, 0.4f);
         _list->setPropBetweenPad(0.04f);
         _list->setPropSize(0.6f, 0.f);
+        _list->setPropPosition(0.2f,0.1f);
         _list->makeReversed();
         _scroller->add(_list);
     }
@@ -36,15 +37,11 @@ namespace journal
             widget->setPropSize(0.6f, 0.0f);
             widget->setColor(sf::Color(135, 89, 247 ,255));
             widget->setAlign(TextAreaWidget::Align::Left);
-            //widget->makeStaticPropPositing();
             _list->add(widget);
         }
         _scroller->resetScrollerPosition();
 
     }
-
-   
-        //fps->setCharacterPropSize(0.06f);
 
 
     void DescriptionManager::setQuest(std::shared_ptr<Quest> quest)
@@ -62,9 +59,9 @@ namespace journal
             widget->setColor(sf::Color(135, 89, 247 ,255));
             widget->setAlign(TextAreaWidget::Align::Left);
             widget->setPropSize(0.6f, 0.0f);
-           // widget->makeStaticPropPositing();
             _list->add(widget);
         }
+        _scroller->resetScrollerPosition();
     }
 
     void DescriptionManager::setScrollTextures(sf::Texture* t1,sf::Texture* t2,sf::Texture* t3)

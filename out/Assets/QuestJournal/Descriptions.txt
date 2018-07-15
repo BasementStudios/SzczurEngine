@@ -2,17 +2,37 @@
 _0 Oko Innosa
 ---
 0
-W mieście Khorinis przebywa grupa paladynów. Mają ze sobą potężny artefakt, Oko Innosa, którego moc pomoże pokonać smoki. Trzeba tylko ich przekonać o zagrożeniu...
-Bezimienny za radą nekromanty udaje się do miastaportowego Khorinis by skontaktować się ze stacjonującym tam oddziałem paladynów.[Endo]
+W mieście Khorinis przebywa grupa paladynów. Mają ze sobą 
+potężny artefakt, Oko Innosa, którego moc pomoże pokonać  
+smoki. Trzeba tylko ich przekonać o zagrożeniu... 
+Bezimienny za radą nekromanty udaje się do miasta 
+portowego Khorinis by skontaktować się ze stacjonującym  
+tam oddziałem paladynów.  
 ---
 1
-Po rozmowie z dowódcą paladynów bohater musi wyruszyć do Górniczej Doliny po dowód na istnienie smoków. Jednak kapitan Garond nie chce napisać listu do Hagena od razu. Bohater musi najpierw uzyskać informacje o wydobytej rudzie od grup kopaczy wysłanych przez Garonda.
+Po rozmowie z dowódcą paladynów bohater musi wyruszyć do  
+Górniczej Doliny po dowód na istnienie smoków. Jednak  
+kapitan Garond nie chce napisać listu do Hagena od razu. 
+Bohater musi najpierw uzyskać informacje o wydobytej  
+rudzie od grup kopaczy wysłanych przez  
+Garonda. 
 ---
 2
-Gdy Bezimienny wraca i pokazuje Lordowi Hagenowi list od Garonda. Ten wysyła go do klasztoru po odbiór Oka Innosa. Bohater dociera do klasztoru, gdzie okazuje się, że święty artefakt został skradziony przez opętanego nowicjusza Pedra. Bezimienny rusza w pościg śladem martwych nowicjuszy. Odnajduje uszkodzone Oko, po uprzednim zabiciu grupy poszukiwaczy odprawiających mroczny rytuał przy Słonecznym Kręgu.
+Gdy Bezimienny wraca i pokazuje Lordowi Hagenowi list od 
+Garonda. Ten wysyła go do klasztoru po odbiór Oka Innosa. 
+Bohater dociera do klasztoru, gdzie okazuje się, że święty 
+artefakt został skradziony przez opętanego nowicjusza Pedra. 
+Bezimienny rusza w pościg śladem martwych nowicjuszy. 
+Odnajduje uszkodzone Oko, po uprzednim zabiciu grupy  
+poszukiwaczy odprawiających mroczny rytuał przy Słonecznym 
+Kręgu. 
 ---
 3
-Pyrokar wysyła bohatera do Vatrasa, aby ten znalazł sposób naprawy Oka Innosa. Kapłan Adanosa tłumaczy, że jedyny sposób na przywrócenie Oku jego mocy to połączenie mocy trzech bogów. Reprezentować Innosa będzie Pyrokar, Adanosa Vatras, a reprezentantem Beliara będzie nekromanta Xardas. 
+Pyrokar wysyła bohatera do Vatrasa, aby ten znalazł sposób 
+naprawy Oka Innosa. Kapłan Adanosa tłumaczy, że jedyny  
+sposób na przywrócenie Oku jego mocy to połączenie mocy  
+trzech bogów. Reprezentować Innosa będzie Pyrokar, Adanosa 
+Vatras, a reprezentantem Beliara będzie nekromanta Xardas.  
 ---
 _1 Bezczelny złodziej
 ---

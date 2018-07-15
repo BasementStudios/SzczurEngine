@@ -127,7 +127,7 @@ namespace journal
         while(*k!= "---")
         {
             text+=*k;
-            text += "\n";
+            //text += "\n";
             k++;
         }
         return text;

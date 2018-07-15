@@ -14,7 +14,7 @@ namespace journal
         _scroller->setPropSize(0.4f, 0.3f);
         _scroller->setPropPosition(0.3f, 0.3f);
         _list->setBetweenPadding(20.f);
-        _list->setPropSize(0.3f, 0.f);
+        _list->setPropSize(0.35f, 0.f);
         _scroller->add(_list);
     }
 
@@ -27,15 +27,16 @@ namespace journal
     {
         _list->clear();
         _steps = std::make_shared<std::vector<std::string> >(_quest->getSteps());
-        TextWidget* widget;
+        TextAreaWidget* widget;
         for(auto i = _steps->begin();i!=_steps->end();i++)
         {
-            widget = new TextWidget;
+            widget = new TextAreaWidget;
             widget->setString(*i);
             widget->setFont(_font);
             widget->setCharacterSize(17);
             widget->setColor(sf::Color(135, 89, 247 ,255));
             widget->setPropPosition(0.1f,0.1f);
+            widget->setPropSize(0.35f, 0.f);
             _list->add(widget);
         }
         _scroller->resetScrollerPosition();
@@ -53,13 +54,14 @@ namespace journal
         _list->clear();
         _quest = quest;
         _steps = std::make_shared<std::vector<std::string> >(quest->getSteps());
-        TextWidget* widget;
+        TextAreaWidget* widget;
         for(auto i = _steps->begin();i!=_steps->end();i++)
         {
-            widget = new TextWidget;
+            widget = new TextAreaWidget;
             widget->setString(*i);
             widget->setFont(_font);
             widget->setCharacterSize(17);
+            widget->setPropSize(0.35f, 0.f);
             widget->setColor(sf::Color(135, 89, 247 ,255));
             _list->add(widget);
         }
