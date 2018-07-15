@@ -182,8 +182,7 @@ void Window::processEvent(sf::Event event)
 		case sf::Event::Resized:
 		{
 			// Update video mode
-			this->videoMode.width = event.size.width;
-			this->videoMode.height = event.size.height;
+			this->setSize({event.size.width, event.size.height}); // @todo . sajkowiecozrobic;)COD3IT
 		}
 		break;
 		
