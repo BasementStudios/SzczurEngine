@@ -18,7 +18,7 @@
 
 namespace rat {		//beware spagetti monster down there :/
 	Equipment::Equipment()
-	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow())
+	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow()), _input(getModule<Input>())
 	{
 		LOG_INFO("Initializing Equipment module");
 	
@@ -119,18 +119,6 @@ namespace rat {		//beware spagetti monster down there :/
 		_necklace->setPropPosition(1.f, .0f);
 		_necklace->setPropSize(0.42f, 0.14f);
 
-		_hideButton = new ImageWidget;
-		_base->add(_hideButton);
-		_hideButton->setPropPosition(0.5f, 1.f);
-		_hideButton->setPropSize(0.25f, 0.042f);
-		_hideButton->setTexture(gui.getTexture("Assets/Equipment/slot.png"));
-		_hideButton->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
-			if (_isEquipmentHidden)
-				_openEquipment();
-			else
-				_closeEquipment();
-		});
-
 		/*_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPropPosition({ 0.15f, 0.08f });
@@ -164,10 +152,10 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && _isEquipmentHidden) {
+		if (_input.getManager().isPressed(rat::Keyboard::I) && _isEquipmentHidden) {
 			_openEquipment();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && !_isEquipmentHidden) {
+		if (_input.getManager().isPressed(rat::Keyboard::I) && !_isEquipmentHidden) {
 			_closeEquipment();
 		}
 	}

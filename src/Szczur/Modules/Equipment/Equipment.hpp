@@ -56,13 +56,13 @@ namespace rat
 
 		Window& _mainWindow;
 		sf3d::RenderWindow& _window;
+		Input& _input;
 
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _armorImage = nullptr;
 		ImageWidget* _weaponImage = nullptr;
 		ImageWidget* _background = nullptr;
 		ImageWidget* _equipmentFrame = nullptr;
-		ImageWidget* _hideButton = nullptr;
 
 		bool _isPreviewOn = false;
 		bool _isEquipmentHidden = true;
