@@ -114,6 +114,10 @@ bool Application::input()
 		getModule<Input>().getManager().processEvent(event);
 		getModule<GUI>().input(event);
 
+		#ifdef GUI_TEST
+		getModule<GUITest>().input(event);
+		#endif
+
 		#ifdef EDITOR
 		{
 			ImGui::SFML::ProcessEvent(event);

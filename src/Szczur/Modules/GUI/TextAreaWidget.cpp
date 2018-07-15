@@ -260,6 +260,8 @@ namespace rat {
 
         _texts.resize(std::max(size_t(1), lineIndex));
 
+        _calcTextPos();
+
         //_isChChanged = true;
         //_isFontChanged = true;
     }
@@ -391,6 +393,8 @@ namespace rat {
 
     sf::Vector2f TextAreaWidget::_getSize() const 
     {
+        if(_texts.size() == 0u) return {};
+        
         const auto& drawPos = gui::FamilyTransform::getDrawPosition();
         float height = 0.f;
         float width = 0.f;
