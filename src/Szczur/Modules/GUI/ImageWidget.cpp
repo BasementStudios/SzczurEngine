@@ -40,6 +40,8 @@ namespace rat {
         object.set("setFullyTexSizing", &ImageWidget::setFullyTexSizing);
         object.set("setStaticTexPositing", &ImageWidget::setStaticTexPositing);
 
+        object.set("setFullSizeFilling", &ImageWidget::setFullSizeFilling);
+        
         object.init();
     }
 
@@ -141,13 +143,26 @@ namespace rat {
 
     sf::Vector2f ImageWidget::_getSize() const 
     {
-        if(_hasTexture) return {(float)_sprite.getGlobalBounds().width, (float)_sprite.getGlobalBounds().height};
+        if(_hasTexture) 
+        {
+            if(_hasFullSizeFilling) return {};
+            else
+            {
+                return {(float)_sprite.getGlobalBounds().width, (float)_sprite.getGlobalBounds().height};
+            }
+        }
         return {};
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const 
     {
         if(_hasTexture) target.draw(_sprite, states);
+    }
+
+    void ImageWidget::setFullSizeFilling()
+    {
+        _hasFullSizeFilling = true;
+        if(!_aboutToRecalculate) _calculateSize();
     }
 
     void ImageWidget::_calculateSize()
@@ -164,7 +179,12 @@ namespace rat {
             texSize = sf::Vector2f{float(_sprite.getTextureRect().width), float(_sprite.getTextureRect().height)};
         }
         sf::Vector2f scale = {1.f, 1.f};
-        if(_isMinSizeSet)
+        if(_hasFullSizeFilling)
+        {
+            auto size = static_cast<sf::Vector2f>(getSize());
+            scale = {size.x / texSize.x, size.y / texSize.y};
+        }
+        else if(_isMinSizeSet)
         {
             auto minSize = static_cast<sf::Vector2f>(getMinimalSize());
             scale = {minSize.x / texSize.x, minSize.y / texSize.y};            

@@ -17,6 +17,7 @@ namespace rat
         void init();
         void update(float deltaTime = (1.f/60.f));
         void render();
+        void input(const sf::Event& event);
         ~GUITest() { /*delete widget;*/ }
     private:
         sf::RenderTexture _canvas;   
