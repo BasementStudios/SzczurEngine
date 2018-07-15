@@ -14,7 +14,7 @@ namespace journal
     class QuestName
     {
         public:
-            QuestName(sf::Font *font,InterfaceWidget *interface);
+            QuestName(sf::Font *font,Widget *interface);
             ~QuestName();
 
             void clear();

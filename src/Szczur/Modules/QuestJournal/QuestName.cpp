@@ -4,12 +4,12 @@ namespace rat
 {
 namespace journal
 {
-    QuestName::QuestName(sf::Font *font,InterfaceWidget *interface)
+    QuestName::QuestName(sf::Font *font,Widget *interface)
     :_font(font)
     {
         _widget = new TextWidget;
-       // _widget->setPropPosition(0.60f,0.1);
-       _widget->setPropPosition(0.63f,0.06f);
+        //_widget->setPropPosition(0.60f,0.1);
+        _widget->setPropPosition(0.5f,0.35f);
         _widget->setColor(sf::Color(135, 89, 247 ,255));
         _widget->setFont(_font);
         interface->add(_widget);

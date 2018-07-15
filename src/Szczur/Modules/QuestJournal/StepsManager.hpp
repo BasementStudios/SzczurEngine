@@ -15,7 +15,7 @@ namespace journal
     class StepsManager
     {
         public:
-            StepsManager(sf::Font *font,InterfaceWidget* interface);
+            StepsManager(sf::Font *font,Widget* interface);
             ~StepsManager();
 
             void refresh();

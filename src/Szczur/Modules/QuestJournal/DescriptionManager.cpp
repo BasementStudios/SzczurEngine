@@ -3,14 +3,14 @@ namespace rat
 {
 namespace journal
 {
-    DescriptionManager::DescriptionManager(sf::Font *font,InterfaceWidget* interface)
+    DescriptionManager::DescriptionManager(sf::Font *font,Widget* interface)
     :_font(font)
     {
         _scroller = new ScrollAreaWidget;
         _list = new ListWidget;
         interface->add(_scroller);
         _scroller->setPropSize(0.7f, 0.6f);
-        _scroller->setPropPosition(0.94f, 0.9f);
+        _scroller->setPropPosition(0.3f, 0.4f);
         _list->setBetweenPadding(20.f);
         _list->setPropSize(0.6f, 0.f);
         _list->makeReversed();
@@ -26,33 +26,43 @@ namespace journal
     {
         _list->clear();
         _descriptions = std::make_shared<std::vector<std::string> >(_quest->getDescription());
-        TextWidget* widget;
+        TextAreaWidget* widget;
         for(auto i = _descriptions->begin();i!=_descriptions->end();i++)
         {
-            widget = new TextWidget;
+            widget = new TextAreaWidget;
             widget->setString(*i);
             widget->setFont(_font);
             widget->setCharacterSize(17);
+            widget->setPropSize(1.f,0.0f);
             widget->setColor(sf::Color(135, 89, 247 ,255));
+            widget->setAlign(TextAreaWidget::Align::Left);
+//widget->makeStaticPropPositing();
             _list->add(widget);
         }
         _scroller->resetScrollerPosition();
 
     }
 
+   
+        //fps->setCharacterPropSize(0.06f);
+
+
     void DescriptionManager::setQuest(std::shared_ptr<Quest> quest)
     {
         _list->clear();
         _quest = quest;
         _descriptions = std::make_shared<std::vector<std::string> >(quest->getDescription());
-        TextWidget* widget;
+        TextAreaWidget* widget;
         for(auto i = _descriptions->begin();i!=_descriptions->end();i++)
         {
-            widget = new TextWidget;
+            widget = new TextAreaWidget;
             widget->setString(*i);
             widget->setFont(_font);
             widget->setCharacterSize(17);
             widget->setColor(sf::Color(135, 89, 247 ,255));
+            widget->setAlign(TextAreaWidget::Align::Left);
+            widget->setPropSize(1.f,0.0f);
+           // widget->makeStaticPropPositing();
             _list->add(widget);
         }
     }

@@ -98,11 +98,11 @@ namespace rat
         _interface->setSizingWidthToHeightProportion(1.f);
 
         _fileLoader = std::make_shared<journal::FileLoader>(); 
-        _stepManager = std::make_shared<journal::StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_interface);
+        _stepManager = std::make_shared<journal::StepsManager>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_ninePatchWidget[0]);
       
-        _descriptionManager = std::make_shared<journal::DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_interface);
+        _descriptionManager = std::make_shared<journal::DescriptionManager>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_ninePatchWidget[2]);
         
-        _questName = std::make_shared<journal::QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_interface);
+        _questName = std::make_shared<journal::QuestName>(gui.getAsset<sf::Font>("Assets/GUITest/arial.ttf"),_ninePatchWidget[1]);
 
 
         _stepManager->setScrollTextures(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"),

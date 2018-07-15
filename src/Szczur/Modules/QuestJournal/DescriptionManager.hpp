@@ -1,5 +1,5 @@
 #include <Szczur/Modules/GUI/GUI.hpp>
-#include <Szczur/Modules/GUI/TextWidget.hpp>
+#include <Szczur/Modules/GUI/TextAreaWidget.hpp>
 #include "Szczur/Modules/GUI/ScrollAreaWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
@@ -10,7 +10,7 @@
 namespace rat
 {
     
-class TextWidget; class ScrollAreaWidget;class ListWidget;
+class TextAreaWidget; class ScrollAreaWidget;class ListWidget;
 
 namespace journal
 {
@@ -19,7 +19,7 @@ namespace journal
     {
         public:
 
-            DescriptionManager(sf::Font *font,InterfaceWidget* interface);
+            DescriptionManager(sf::Font *font,Widget* interface);
             ~DescriptionManager();
 
             void refresh();
