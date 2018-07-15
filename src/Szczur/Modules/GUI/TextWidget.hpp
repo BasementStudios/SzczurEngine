@@ -37,6 +37,10 @@ namespace rat {
 
         unsigned int getCharacterSize() const;
 
+        void setOutlineThickness(float thickness);
+        void setOutlinePropThickness(float prop);
+        void setOutlineColor(const sf::Color& color);
+
         void removeLast();
     protected:
         virtual sf::Vector2f _getSize() const override;
@@ -50,6 +54,11 @@ namespace rat {
         float _chPropSize;
         bool _hasChPropSize = false;
         void _calcChPropSize();
+
+        float _outlinePropThickness;
+        bool _hasOutlinePropThickness{false};
+        void _calcOutlinePropThickness();
+
 
         sf::Text _text;
     };

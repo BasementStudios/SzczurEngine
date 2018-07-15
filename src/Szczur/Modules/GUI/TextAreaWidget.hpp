@@ -35,6 +35,10 @@ namespace rat {
         void setAlign(Align align);
         Align getAlign() const;
 
+        void setOutlineThickness(float thickness);
+        void setOutlinePropThickness(float prop);
+        void setOutlineColor(const sf::Color& color);
+
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual sf::Vector2f _getSize() const override;
@@ -50,14 +54,14 @@ namespace rat {
         std::vector<sf::Text> _texts;
 
         std::string _str;
-
-        const sf::Font* _font{nullptr};
-        unsigned int _chSize{0};
-        sf::Color _color;
         Align _align = Align::Left;
 
         float _chPropSize;
         bool _hasChPropSize = false;
+
+        float _outlinePropThickness;
+        bool _hasOutlinePropThickness{false};
+        void _calcOutlinePropThickness();
 
         float _width = 0.f;
 

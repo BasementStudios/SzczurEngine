@@ -8,6 +8,8 @@
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
 
+#include "Utility/TextData.hpp"
+
 #include "InterfaceWidget.hpp"
 
 namespace rat {
@@ -46,6 +48,11 @@ namespace rat {
         object.set("setToCenterAlign", [](TextAreaWidget& owner){
             owner.setAlign(Align::Center);
         });
+        object.set("setOutlineThickness", &TextAreaWidget::setOutlineThickness);
+        object.set("setOutlinePropThickness", &TextAreaWidget::setOutlinePropThickness);
+        object.set("setOutlineColor", [](TextAreaWidget& owner, unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+            owner.setOutlineColor({r, g, b, a});
+        });
         
         object.init();
     }
@@ -61,24 +68,30 @@ namespace rat {
     }
 
     void TextAreaWidget::setFont(sf::Font* font) {
-        _font = font;
-        _isFontChanged = true;
-        _aboutToRecalculate = true;
+        if(font)
+        {
+            for(auto& t : _texts) t.setFont(*font);
+            _aboutToRecalculate = true;
+        }
+        else
+        {
+            LOG_ERROR("Font given to TextAreaWidget is nullptr");
+        }
     }
     const sf::Font* TextAreaWidget::getFont() const
     {
-        return _font;
+        return _texts.front().getFont();
     }
 
     void TextAreaWidget::setCharacterSize(size_t size)
     {
-        _chSize = size;
-        _isChChanged = true;
+        for(auto& t : _texts) t.setCharacterSize(size);
+        if(_hasOutlinePropThickness) _calcOutlinePropThickness();
         _aboutToRecalculate = true;
     }
     size_t TextAreaWidget::getCharacterSize() const
     {
-        return _chSize;
+        return _texts.front().getCharacterSize();
     }
 
     void TextAreaWidget::setCharacterPropSize(float prop)
@@ -88,8 +101,31 @@ namespace rat {
 
         if(_interface) _calcChPropSize();
         else _elementsPropSizeMustBeenCalculated = true;
-
     }
+    void TextAreaWidget::setOutlineThickness(float thickness)
+    {
+        assert(thickness >= 0.f);
+        for(auto& t : _texts) t.setOutlineThickness(thickness);
+    }
+    void TextAreaWidget::setOutlinePropThickness(float prop)
+    {
+        _outlinePropThickness = prop;
+        _hasOutlinePropThickness = true;
+
+        _calcOutlinePropThickness();
+    }
+    void TextAreaWidget::_calcOutlinePropThickness()
+    {
+        assert(_hasOutlinePropThickness);
+        float chSize = float(_texts.front().getCharacterSize());
+        setOutlineThickness(chSize * _outlinePropThickness);
+    }
+
+    void TextAreaWidget::setOutlineColor(const sf::Color& color)
+    {
+        for(auto& t : _texts) t.setOutlineColor(color);
+    }
+
     void TextAreaWidget::_calcChPropSize()
     {
         assert(_hasChPropSize);
@@ -110,7 +146,6 @@ namespace rat {
 
     void TextAreaWidget::_setColor(const sf::Color& color) 
     {
-        _color = color;
         for(auto& t : _texts) t.setFillColor(color);
     }
 
@@ -119,30 +154,30 @@ namespace rat {
         for(auto& t : _texts) target.draw(t, states);
     }
 
-    sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
-        for(size_t i = 0; i < temp.getSize(); ++i)
-            if(temp[i] == '\n')
-                temp[i] = ' ';
-        for(size_t i = _size.x; i < temp.getSize(); i += _size.x) 
-        {
-            auto x = i;
-            while(temp[x] != ' ') {
-                if(--x == 0u) {
-                    x=i;
-                    break;
-                }
-            }
-            if(temp[x] == ' ')
-                temp[x] = '\n';
-            else
-                temp.insert(x, "\n");
-        }
-        return temp;
-    }
+    // sf::String& TextAreaWidget::_wrapText(sf::String& temp) {
+    //     for(size_t i = 0; i < temp.getSize(); ++i)
+    //         if(temp[i] == '\n')
+    //             temp[i] = ' ';
+    //     for(size_t i = _size.x; i < temp.getSize(); i += _size.x) 
+    //     {
+    //         auto x = i;
+    //         while(temp[x] != ' ') {
+    //             if(--x == 0u) {
+    //                 x=i;
+    //                 break;
+    //             }
+    //         }
+    //         if(temp[x] == ' ')
+    //             temp[x] = '\n';
+    //         else
+    //             temp.insert(x, "\n");
+    //     }
+    //     return temp;
+    // }
 
     void TextAreaWidget::_wrap()
     {
-        if(!_font && !_chSize) return;
+        if(!getFont() || getCharacterSize() == size_t(0)) return;
 
         const float width = _minSize.x;
         size_t i = 0;
@@ -150,11 +185,12 @@ namespace rat {
         sf::String str = getUnicodeString(_str);
         const char endingKey = 4;
         str += endingKey;
+        
+        gui::TextData textData(_texts.front());
 
         sf::Text text;
+        textData.applyTo(text);
         text.setString(str);
-        text.setFont(*_font);
-        text.setCharacterSize(_chSize);
 
         size_t begin = 0;
         size_t end;
@@ -205,6 +241,7 @@ namespace rat {
                 lineWidth += keyWidth;
                 fromSpace += keyWidth;
 
+
                 if(lineWidth > width)
                 {
                     if(isFirstKey)
@@ -241,9 +278,7 @@ namespace rat {
             {
                 sf::Text t;
                 t.setString(lineStr);
-                t.setFillColor(_color);
-                t.setFont(*_font);
-                t.setCharacterSize(_chSize);
+                textData.applyTo(t);
                 _texts.emplace_back(t);
             }
             lineIndex++;
@@ -268,6 +303,8 @@ namespace rat {
 
     void TextAreaWidget::_convertToMultiLines()
     {
+        gui::TextData textData(_texts.front());
+
         size_t lineIndex = 0;
         const size_t oldSize = _texts.size();
         size_t begin = 0;
@@ -290,9 +327,7 @@ namespace rat {
                 else
                 {
                     sf::Text t;
-                    t.setFillColor(_color);
-                    t.setFont(*_font);
-                    t.setCharacterSize(_chSize);
+                    textData.applyTo(t);
                     t.setString(lineStr);
                     _texts.emplace_back(t);
                 }
@@ -301,10 +336,10 @@ namespace rat {
             }
             ++i;
         }
-        _texts.resize(lineIndex);
+        _texts.resize(std::max(size_t(1), lineIndex));
 
-        _updateFont();
-        _updateChSize();
+        //_updateFont();
+        //_updateChSize();
         
         _calcTextPos();
     }
@@ -361,7 +396,7 @@ namespace rat {
 
     void TextAreaWidget::_calculateSize()
     {   
-        if(_font)
+        if(getFont())
         {
             if(_isMinSizeSet)
             {
@@ -372,23 +407,13 @@ namespace rat {
                 _convertToMultiLines();
             }
         }
-
-        if(_isFontChanged && _font) _updateFont();
-        if(_isChChanged) _updateChSize();
-
-        _isPosChanged = true;
     }
 
     void TextAreaWidget::_updateFont()
     {
-        assert(_font);
-        for(auto& t : _texts) t.setFont(*_font);
-        _isFontChanged = false;
     }
     void TextAreaWidget::_updateChSize()
     {
-        for(auto& t : _texts) t.setCharacterSize(_chSize);
-        _isChChanged = false;
     }
 
     sf::Vector2f TextAreaWidget::_getSize() const 

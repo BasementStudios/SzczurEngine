@@ -117,7 +117,9 @@ namespace rat
         fps->setColor({255, 255, 255});
         fps->setString(".");
         fps->setAlign(TextAreaWidget::Align::Center);
-        fps->setPropPosition(0.5f, 0.5f);
+        fps->setPropPosition(0.5f, 1.f);
+        fps->setOutlineColor({255, 0, 255});
+        fps->setOutlinePropThickness(0.02f);
         //fps->makeStaticPropPositing();
         //fps->setPropOrigin(0.5f, 0.5f);
  
@@ -182,6 +184,8 @@ namespace rat
             if(_size.y < 0.f) _size.y = 0.f;
         }
 
+        //fps->setOutlineThickness(10.f * _prop);
+
         //list->setBetweenPadding(400.f * _prop);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
@@ -189,8 +193,8 @@ namespace rat
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) fps->setAlign(TextAreaWidget::Align::Left);
-            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
-            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::C)) fps->setAlign(TextAreaWidget::Align::Center);
+        else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)) fps->setAlign(TextAreaWidget::Align::Right);
 
         //scroll->setScrollPropWidth(_prop);
         //std::cout << _prop << '\n';
