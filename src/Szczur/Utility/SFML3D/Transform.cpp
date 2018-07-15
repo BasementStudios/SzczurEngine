@@ -1,5 +1,9 @@
 #include "Transform.hpp"
 
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace sf3d {
 	Transform::Transform() :
 		_mat(1.f) 
@@ -48,6 +52,10 @@ namespace sf3d {
 	}
 
 	glm::mat4 & Transform::getMatrix() {
+		return _mat;
+	}
+
+	const glm::mat4 & Transform::getMatrix() const {
 		return _mat;
 	}
 }

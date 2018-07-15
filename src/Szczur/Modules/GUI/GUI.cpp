@@ -1,6 +1,9 @@
 #include "GUI.hpp"
 #include <iostream>
 #include "ImageWidget.hpp"
+#include "WindowWidget.hpp"
+#include "ListWidget.hpp"
+#include "InterfaceWidget.hpp"
 #include "TextWidget.hpp"
 #include "TextAreaWidget.hpp"
 #include "ScrollAreaWidget.hpp"
@@ -18,7 +21,10 @@ namespace rat {
         auto& mainWindow = getModule<Window>();
         auto& window = mainWindow.getWindow();
         auto winSize = window.getSize();
+		mainWindow.pushGLStates();
         _canvas.create(winSize.x, winSize.y); 
+		mainWindow.popGLStates();
+
 
         _root.setSize(static_cast<sf::Vector2f>(winSize));
         _root.makeChildrenUnresizable();
@@ -37,7 +43,7 @@ namespace rat {
 
 
 
-        script.initClasses<Widget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
+        script.initClasses<Widget, InterfaceWidget, WindowWidget, ListWidget, ImageWidget, TextWidget, TextAreaWidget, ScrollAreaWidget>();
         //script.scriptFile("data/_GUI.lua");
     }
 
@@ -61,11 +67,11 @@ namespace rat {
         if(event.type == sf::Event::Resized)
         {
             sf::Vector2u winSize = { (unsigned int)(event.size.width), (unsigned int)(event.size.height) };
-
             auto& mainWindow = getModule<Window>();
-            mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
-
+            //mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
+			mainWindow.pushGLStates();
             _canvas.create(winSize.x, winSize.y);
+			mainWindow.popGLStates();
 
             _root.setSize(static_cast<sf::Vector2f>(winSize));
 

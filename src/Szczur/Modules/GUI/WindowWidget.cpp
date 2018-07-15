@@ -4,7 +4,9 @@
 
 #include "Szczur/Utility/Logger.hpp"
 
+
 #include "InterfaceWidget.hpp"
+#include "Widget-Scripts.hpp"
 
 namespace rat
 {
@@ -15,11 +17,31 @@ namespace rat
         setScale({0.2f, 0.2f});
     }
 
+    void WindowWidget::initScript(Script& script) 
+    {
+        auto object = script.newClass<WindowWidget>("WindowWidget", "GUI");
+
+        gui::WidgetScripts::set(object);
+
+        object.set("setMainPatchPropSize", &WindowWidget::setMainPatchPropSize);
+
+        object.setOverload("setTexture",
+            static_cast<void (WindowWidget::*)(sf::Texture*, int)>(&WindowWidget::setTexture),
+            static_cast<void (WindowWidget::*)(sf::Texture*, int, int)>(&WindowWidget::setTexture)
+        );
+        object.setOverload("setScale",
+            static_cast<void (WindowWidget::*)(const sf::Vector2f&)>(&WindowWidget::setScale),
+            static_cast<void (WindowWidget::*)(float, float)>(&WindowWidget::setScale)
+        );
+
+        object.init();
+    }
+
+
     void WindowWidget::setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight)
     {
         _ninePatch.setTexture(texture, paddingWidth, paddingHeight);
         if(_isMainPatchPropSizeSet && _interface) _calcMainPatchSize();
-        //_calcPadding();
     }
     
     void WindowWidget::setTexture(sf::Texture* texture, int padding)
@@ -30,31 +52,10 @@ namespace rat
     {
         _ninePatch.setScale(scale);
         _scale = scale;
-        //_calcPadding();
     }
     void WindowWidget::setScale(float x, float y)
     {
         setScale({x, y});
-    }
-
-    void WindowWidget::setPadding(const sf::Vector2f& padding)
-    {
-        _isPaddingSet = true;
-        Widget::setPadding(padding);
-    }
-    void WindowWidget::setPadding(float x, float y)
-    {
-        setPadding({x, y});
-    }
-    void WindowWidget::_calcPadding()
-    {
-        if(!_isPaddingSet)
-        {
-            auto innerRect = _ninePatch.getInnerTextureRect();
-            sf::Vector2f rectPadding = {float(innerRect.left), float(innerRect.top)};
-            sf::Vector2f padding = {float(rectPadding.x * _scale.x), float(rectPadding.y * _scale.y)};
-            Widget::setPadding(padding);
-        }
     }
 
     void WindowWidget::setMainPatchPropSize(const sf::Vector2f& propSize)

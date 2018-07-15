@@ -23,19 +23,12 @@ namespace rat
 
 	class Widget : public sf::Drawable, protected gui::FamilyTransform
 	{
-	public:
-		Widget();
-		Widget(const Widget&) = default;
-		~Widget();
 
-		static void initScript(Script& script);
-
-		
 	public:
 		enum class CallbackType {
 			onHover, onHoverIn, onHoverOut, onPress, onHold, onRelease
 		};
-
+	public:
 		using SolFunction_t = sol::function;
 		using Function_t = std::function<void(Widget*)>;
 		using CallbacksContainer_t = boost::container::flat_map<CallbackType, Function_t>;
@@ -45,8 +38,6 @@ namespace rat
 		using Animation_t = std::unique_ptr<gui::AnimBase>;
 		using AnimationsContainer_t = std::vector<Animation_t>;
 
-		void setParent(Widget* parent);
-		void setInterface(const InterfaceWidget* interface);
 
 		Widget* add(Widget* object);
 
@@ -55,21 +46,13 @@ namespace rat
 
 		void clear();
 
-		void update(float deltaTime);
-
-		virtual void calculateSize();
-		void invokeToCalculate();
-
-		void input(const sf::Event& event);
-		void invokeInput(const sf::Event& event);
-
-		sf::Vector2f getSize() const;
 		sf::Vector2f getMinimalSize() const;
 
 		void move(const sf::Vector2f& offset);
 		void move(float offsetX, float offsetY);
 		void setPosition(const sf::Vector2f& offset);
 		void setPosition(float x, float y);
+		void setPosition2(float x, float y);
 		void setPositionInTime(const sf::Vector2f& offset, float inTime);
 		void setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data);
 		const sf::Vector2f& getPosition() const;
@@ -77,8 +60,10 @@ namespace rat
 
 		void setPropPosition(const sf::Vector2f& propPos);
 		void setPropPosition(float propX, float propY);
-		void setPropPosition(const sf::Vector2f& propPos, float inTime);
-		void setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data);
+		void setPropPositionInTime(const sf::Vector2f& propPos, float inTime);
+		void setPropPositionInTime(const sf::Vector2f& propPos, const gui::AnimData& data);
+
+		void makeStaticPropPositing();
 
 		sf::Vector2f getPosByGlobalPos(const sf::Vector2f& globalPos) const;
 		void setGlobalPosition(const sf::Vector2f& globalPos);
@@ -91,13 +76,18 @@ namespace rat
 		void setPropPadding(const sf::Vector2f& propPad);
 		void setPropPadding(float propWidth, float propHeight);
 
-		sf::Vector2f getInnerSize() const;
-
 		void setColor(const sf::Color& color);
+		void setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
 		void setColorInTime(const sf::Color& color, float inTime);
 		void setColorInTime(const sf::Color& color, const gui::AnimData& data);
 		void resetColor();
-		sf::Color getColor() const; 
+		sf::Color getColor() const;
+
+		// void setBackground(const sf::Color& color);
+		// void setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+		// void removeBackground();
+
+		void makeChildrenUncolorable();
 		
 		void setOrigin(const sf::Vector2f& origin);
 		void setOrigin(float x, float y);
@@ -106,7 +96,7 @@ namespace rat
 		void setPropOrigin(const sf::Vector2f& prop);
 		void setPropOrigin(float x, float y);
 
-		void setSize(sf::Vector2f size);
+		void setSize(const sf::Vector2f& size);
 		void setSize(float width, float height);
 
 		void setPropSize(const sf::Vector2f& propSize);
@@ -128,18 +118,17 @@ namespace rat
 		void makeChildrenPenetrable();
 		void makeChildrenUnresizable();
 
-        void invokeToCalcPropPosition();
-		void forceToUpdatePropSize();
-		void invokeToCalcPosition();
-
-		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
+		void makeUnresizable();
+		void makePenetrable();
 
 		Widget* operator[](size_t index);
 		const Widget* operator[](size_t index) const;
-
 		size_t getChildrenAmount() const;
 
+
 		static void setWinProp(sf::Vector2f prop);
+
+		//		Polimorphism
 
 	protected:
 		virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const {}
@@ -150,19 +139,23 @@ namespace rat
 		virtual void _setColor(const sf::Color& color) {}
 		virtual void _addWidget(Widget* widget) {}
 		virtual void _clear() {}
-
 		virtual void _recalcChildrenPos();
 		virtual void _recalcPos() {}
 		virtual void _recalcElementsPropSize() {}
-
 		virtual sf::Vector2f _getInnerSize() const;
-
 		virtual sf::Vector2f _getChildrenSize();
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
-
 		void _addAnimation(Animation_t animation);
 		void _abortAnimation(gui::AnimType type);
 
+	public:
+		void setParent(Widget* parent);
+		void setInterface(const InterfaceWidget* interface);
+		sf::Vector2f getSize() const;
+		sf::Vector2f getInnerSize() const;
+		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
+
+	protected:
 		Widget* _parent{nullptr};
 		const InterfaceWidget* _interface{nullptr};
 
@@ -194,6 +187,9 @@ namespace rat
 		CallbacksLuaContainer_t _luaCallbacks;
 		
 		Children_t _children;
+
+		//		Utility		
+
 	private:
 		virtual void _callback(CallbackType type);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -201,18 +197,44 @@ namespace rat
 		#ifdef GUI_DEBUG
 		void _drawDebug(sf::RenderTarget& target, sf::RenderStates states) const;
 		#endif
-
-
 		void _recalcOrigin();
 
+	public:
+	public:
+		Widget();
+		Widget(const Widget&) = default;
+		~Widget();
+
+		virtual void calculateSize();
+		void invokeToCalculate();
+		void update(float deltaTime);
+
+		void input(const sf::Event& event);
+		void invokeInput(const sf::Event& event);
+        void invokeToCalcPropPosition();
+		void forceToUpdatePropSize();
+		void invokeToCalcPosition();
+
+	private:
 		AnimationsContainer_t _animations;
 		size_t _currentAnimations{0};
 		void _updateAnimations(float dt);
 
-		sf::Color _color;
+		sf::Color _color{255, 255, 255, 255};
+		void _applyColor(const sf::Color& color);
 
 		bool _areChildrenPenetrable{false}; //lenny
-		bool _areChildrenResizing{true};
+		bool _areChildrenResizable{true};
+		bool _areChildrenUncolorable{true};
+
+		bool _isPenetrable{false};
+		bool _isResizable{true};
+
+		bool _hasStaticPropPositing{false};
+
+		// sf::RectangleShape _background;
+		// bool _hasBackground{false};
+		// void _updateBackgroundPos();
 
 		sf::Vector2f _getBound() const;
 
@@ -232,6 +254,12 @@ namespace rat
 
 	protected:
 		static sf::Vector2f _winProp;
+
+	//		Scripts
+	public:
+		static void initScript(Script& script);		
 	};
 }
+
+
 //#include "Widget.tpp"

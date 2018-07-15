@@ -1,8 +1,8 @@
 #include "Application.hpp"
 
 #ifdef EDITOR
-#	include <ImGui/imgui.h>
-#	include <ImGui/imgui-SFML.h>
+#	include <imgui.h>
+#	include <imgui-SFML.h>
 #   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 #endif
 
@@ -111,6 +111,7 @@ bool Application::input()
 	sf::Event event;
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
+		getModule<Window>().processEvent(event);
 		getModule<Input>().getManager().processEvent(event);
 		getModule<GUI>().input(event);
 
@@ -142,7 +143,6 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));

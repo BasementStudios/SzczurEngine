@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "Transform.hpp"
+
 namespace sf3d {
 
 

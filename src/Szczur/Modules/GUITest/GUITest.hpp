@@ -9,7 +9,7 @@
 
 namespace rat
 {
-    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget;
+    class WindowWidget; class ImageWidget; class Widget; class ScrollAreaWidget; class ListWidget; class TextWidget; class TextAreaWidget;
     class GUITest : public Module<Input, Window, GUI> 
     {
     public:
@@ -22,7 +22,7 @@ namespace rat
         sf::RenderTexture _canvas;   
 
         float _scale{1.f}; 
-        float _prop{1.f}; 
+        float _prop{0.f}; 
         float _shift{0.7f};
         sf::Vector2f _size{30, 30.f};
 
@@ -32,7 +32,7 @@ namespace rat
         InterfaceWidget* _widget{nullptr};
         ImageWidget* _imageWidget{nullptr};
         ListWidget* list{nullptr};
-        TextWidget* fps{nullptr};
+        TextAreaWidget* fps{nullptr};
         ScrollAreaWidget* scroll{nullptr};
     };
 
