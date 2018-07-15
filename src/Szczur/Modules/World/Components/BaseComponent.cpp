@@ -83,6 +83,10 @@ namespace rat {
 
 			ImGui::SameLine(0.f, 0.f);
 			ImGui::Checkbox("Scale##base_component", &lockRatio);
+
+			bool isVisible = object->isVisible();
+			ImGui::Checkbox("Is visible##base_component", &isVisible);
+			object->setVisible(isVisible);
 		}
 	}
 
@@ -109,6 +113,9 @@ namespace rat {
 
 		entity.set("setOrigin", [](Entity& entity, float x, float y, float z){entity.setOrigin({x,y,z});});
 		entity.set("getOrigin", [](Entity& entity){return entity.getOrigin();});
+
+		entity.set("setVisible", [] (Entity& entity, bool isVisible) { entity.setVisible(isVisible); });
+		entity.set("isVisible", [] (Entity& entity) { return entity.isVisible(); });
 
 		object.init();
 

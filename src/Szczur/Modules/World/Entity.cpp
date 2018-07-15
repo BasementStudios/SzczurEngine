@@ -70,18 +70,30 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 
 void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	if (auto* ptr = getFeature<sf3d::Drawable>()) {
-		target.draw(*ptr, states);
-	}
+	if (_isVisible) {
+		if (auto* ptr = getFeature<sf3d::Drawable>()) {
+			target.draw(*ptr, states);
+		}
 	
-	if (auto* comp = getComponentAs<TraceComponent>()) {
-		comp->render(target);
+		if (auto* comp = getComponentAs<TraceComponent>()) {
+			comp->render(target);
+		}
 	}
 }
 
 void Entity::destroy()
 {
 	_exists = false;
+}
+
+void Entity::setVisible(bool visible)
+{
+	_isVisible = visible;
+}
+
+bool Entity::isVisible() const
+{
+	return _isVisible;
 }
 
 size_t Entity::getID() const

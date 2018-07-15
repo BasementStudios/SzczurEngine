@@ -54,6 +54,12 @@ public:
 	bool exists() const { return _exists; }
 
 	///
+	void setVisible(bool visible);
+
+	///
+	bool isVisible() const;
+
+	///
 	size_t getID() const;
 
 	///
@@ -200,6 +206,8 @@ private:
 // Main
 
 	bool _exists = true;
+	bool _isVisible = true;
+
 	size_t _id;
 	std::string _group;
 	std::string _name;
