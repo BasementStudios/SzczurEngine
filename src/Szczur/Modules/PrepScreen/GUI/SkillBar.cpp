@@ -51,9 +51,7 @@ namespace rat
 
         _infoBar->setPropSize(prSize);
         _infoBar->setMainPatchPropSize({prSize.y, prSize.y});
-        //_infoBar->setPadding(5, 5);
         _infoBar->makeChildrenPenetrable();
-        //_infoBar->makeChildrenUnresizable();
         _addWidget(_infoBar);
 
         _filter = new WindowWidget;
@@ -199,12 +197,10 @@ namespace rat
             if(_titlePar->isFullyDeactivated())
             {
                 _titlePar->fullyActivate();
-                std::cout << "Mech" << std::endl;
             }
             else
             {
                 _titlePar->fullyDeactivate();
-                std::cout << "Kech" << std::endl;
             }
         }
     }
@@ -239,7 +235,7 @@ namespace rat
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
         auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
-        _iconWindow->setTexture(barTex, 6);
+        //_iconWindow->setTexture(barTex, 6);
         _infoBar->setTexture(barTex, 6);
         _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));

@@ -8,8 +8,29 @@
 
 #include "InterfaceWidget.hpp"
 
+#include "Widget-Scripts.hpp"
+
+
+
 namespace rat
 {
+    void ListWidget::initScript(Script& script) 
+    {
+        auto object = script.newClass<ListWidget>("ListWidget", "GUI");
+
+        gui::WidgetScripts::set(object);
+
+        object.set("setBetweenPadding", &ListWidget::setBetweenPadding);
+        object.set("setPropBetweenPad", &ListWidget::setPropBetweenPad);
+        object.set("setAutoBetweenPadding", &ListWidget::setAutoBetweenPadding);
+        object.set("makeVertical", &ListWidget::makeVertical);
+        object.set("makeHorizontal", &ListWidget::makeHorizontal);
+        object.set("makeFronted", &ListWidget::makeFronted);
+        object.set("makeReversed", &ListWidget::makeReversed);
+        object.set("popBack", &ListWidget::popBack);
+
+        object.init();
+    }
     void ListWidget::popBack(size_t amount)
     {
         if(_children.size() < amount)

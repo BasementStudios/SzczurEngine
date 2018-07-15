@@ -72,7 +72,7 @@ namespace rat
     void InfoBar::_initInfoBar(TextAreaWidget* infoBar)
     {  
         infoBar->setCharacterSize(13);
-        infoBar->setTextSize({30u, 20u});
+        //infoBar->setTextSize({30u, 20u});
         infoBar->setColor(sf::Color::White);
         infoBar->setFont(_font);
         _infoArea->add(infoBar);

@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Szczur/Utility/Logger.hpp"
+
 #include "Szczur/Modules/PrepScreen/ResourcesContainer.hpp"
 
 #include "../GlyphTypes.hpp"

@@ -27,6 +27,10 @@ namespace rat
         void resetScrollerPositionInTime(float time);
         void resetScrollerPositionInTime(const gui::AnimData& data);
         void setScrollerProp(float prop);
+
+        void setScrollWidth(float width);
+        void setScrollPropWidth(float propWidth);
+        void makeScrollAutoHiding();
     protected:
         virtual void _draw(sf::RenderTarget& target, sf::RenderStates states) const override;
         virtual void _update(float deltaTime) override;
@@ -38,7 +42,8 @@ namespace rat
 		virtual void _drawChildren(sf::RenderTarget& target, sf::RenderStates states) const override;
         
         virtual void _recalcChildrenPos() override;
-        virtual void _recalcPos() override;     
+        virtual void _recalcPos() override;
+        virtual void _recalcElementsPropSize() override;   
 
         virtual sf::Vector2f _getInnerSize() const override;
     private:
@@ -49,13 +54,20 @@ namespace rat
         float _scrollSpeed{7.f};
 
         Scroller _scroller;
-        sf::Vector2f _minScrollSize{20, 50};
+        sf::Vector2f _minScrollSize{30.f, 50.f};
 
         void _recalcScroller();
         float _scrollerProp{0.f};
 
         float _childrenHeight{0};
         float _childrenHeightProp{1.f};
+
+        bool _hasScrollerPropWidth{false};
+        float _scrollerPropWidth;
+
+        void _recalcScrollerPropWidth();
+
+        bool _isAutoHiding{false};
 
         virtual void _callback(CallbackType type) override;
     };

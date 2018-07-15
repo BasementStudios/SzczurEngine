@@ -1,17 +1,16 @@
 #include "Widget.hpp"
-#include "ImageWidget.hpp"
-#include "TextWidget.hpp"
-#include "TextAreaWidget.hpp"
-#include "Test.hpp"
 
 #include <iostream>
 #include <algorithm>
 
-#include "Animation/Anim.hpp"
-
 #include "InterfaceWidget.hpp"
 
+
+#include "Animation/Anim.hpp"
+
+
 #include "Szczur/Utility/Logger.hpp"
+#include "Widget-Scripts.hpp"
 
 #undef GUI_DEBUG
 
@@ -34,7 +33,7 @@ namespace rat
 
     void Widget::initScript(Script& script) {
         auto object = script.newClass<Widget>("Widget", "GUI");
-        basicScript(object);
+        gui::WidgetScripts::set(object);
         object.init();
     }
 
@@ -122,6 +121,11 @@ namespace rat
         return object;
     }
 
+    void Widget::makePenetrable()
+    {
+        _isPenetrable = true;
+    }
+
     void Widget::invokeInput(const sf::Event& event)
     {
         switch(event.type)
@@ -145,11 +149,11 @@ namespace rat
         }
         if(isAnyPressed && !_areChildrenPenetrable) return true;
 
-        if(!_isHovered) return false;
-        
+        if(!_isHovered) return isAnyPressed;
+
         _isPressed = true;
         _callback(CallbackType::onPress);
-        if(_isPenetrable) return false;
+        if(_isPenetrable) return isAnyPressed;
         return true;
     }
     void Widget::_onRealesed()
@@ -195,13 +199,7 @@ namespace rat
             _input(event);
             for(auto child : _children) child->input(event);
         }
-    }
-
-    void Widget::madePenetrable()
-    {
-        _isPenetrable = true;
-    }
-    
+    }   
 
     void Widget::update(float deltaTime) {
         if(isActivated()) {
@@ -224,6 +222,7 @@ namespace rat
             #ifdef GUI_DEBUG
             _drawDebug(target, states);
 	        #endif
+            // if(_hasBackground) target.draw(_background, states);
             _draw(target, states);
             _drawChildren(target, states);
         }
@@ -273,7 +272,7 @@ namespace rat
 
     void Widget::makeChildrenUnresizable()
     {
-        _areChildrenResizing = false;
+        _areChildrenResizable = false;
         _aboutToRecalculate = true;
     }
 
@@ -287,6 +286,7 @@ namespace rat
 
     void Widget::calculateSize() 
     {
+        //std::cout << "Calcing size...\n";
         auto oldSize = _size;
         _size = {};
 
@@ -297,12 +297,13 @@ namespace rat
         }
 
         auto chSize = static_cast<sf::Vector2f>(_padding * 2.f);
-        if(_areChildrenResizing)
+        if(_areChildrenResizable)
         {
             chSize += _getChildrenSize();
         }
         _size.x = std::max(_size.x, chSize.x + 2 * _padding.x);
         _size.y = std::max(_size.y, chSize.y + 2 * _padding.y);
+        ////
 
         _calculateSize();
         auto ownSize = _getSize();
@@ -320,9 +321,11 @@ namespace rat
                 //_parent->_isPosChanged = true;
             }
             _childrenPropSizesMustBeenRecalculated = true;
+            if(_props.hasPosition) _propPosMustBeenRecalculated = true;
         }
 
         gui::FamilyTransform::setSize(_size);
+        // _background.setSize(_size);
 
         _aboutToRecalculate = false;
     }
@@ -350,14 +353,24 @@ namespace rat
 
         if(_props.hasPosition)
         {
-            position = {0, 0};
-            origin = {0, 0};
+            position = {};
+            origin = {};
+        }
+        if(!_isResizable)
+        {
+            size = {};
         }
 
         auto width = (position.x + size.x - origin.x);
         auto height = (position.y + size.y - origin.y);
 
         return {width, height};
+    }
+
+    void Widget::makeUnresizable()
+    {
+        _isResizable = false;
+        if(_parent) _parent->_aboutToRecalculate = true;
     }
     
 
@@ -423,16 +436,26 @@ namespace rat
 	void Widget::setColor(const sf::Color& color)
     {
         _color = color;
-        _setColor(color);
-        for(auto* child : _children)
-        {
-            child->setColor(color);
-        }
+        sf::Color baseColor(255, 255, 255);
+        if(_parent && !_parent->_areChildrenUncolorable) baseColor = _parent->_color;
+        _applyColor(baseColor);
+    }
+    void Widget::setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    {
+        setColor({r, g, b, a});
+    }
+    void Widget::_applyColor(const sf::Color& color)
+    {
+        auto mixedColor = color * _color;
+        _setColor(mixedColor);
+        if(_areChildrenUncolorable) for(auto* child : _children) child->_applyColor(mixedColor);
     }
     void Widget::setColorInTime(const sf::Color& color, const gui::AnimData& data)
     {
-		using ColorAnim_t = gui::Anim<Widget, gui::AnimType::Color, sf::Color>;        
-        auto animCol = std::make_unique<ColorAnim_t>(this, &Widget::setColor);
+		using ColorAnim_t = gui::Anim<Widget, gui::AnimType::Color, sf::Color>;  
+        auto setter = static_cast<void (Widget::*)(const sf::Color&)>(&Widget::setColor);
+
+        auto animCol = std::make_unique<ColorAnim_t>(this, setter);
         animCol->setAnim(getColor(), color, data);
         _addAnimation(std::move(animCol));
     }
@@ -450,6 +473,26 @@ namespace rat
     sf::Color Widget::getColor() const
     {
         return _color;
+    }
+
+    // void Widget::setBackground(const sf::Color& color)
+    // {
+    //     _hasBackground = true;
+    //     _background.setFillColor(color);
+    // }
+    // void Widget::setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    // {
+    //     setBackground({r, g, b, a});
+    // }
+    // void Widget::removeBackground()
+    // {
+    //     _hasBackground = false;
+    // }
+
+    void Widget::makeChildrenUncolorable()
+    {
+        _areChildrenUncolorable = true;
+        for(auto* child : _children) child->_applyColor({255, 255, 255});
     }
 
 
@@ -515,6 +558,10 @@ namespace rat
     {
         setPosition({x, y});
     }
+    void Widget::setPosition2(float x, float y) 
+    {
+        setPosition({x, y});
+    }
 
 
     void Widget::setPositionInTime(const sf::Vector2f& offset, const gui::AnimData& data)
@@ -570,7 +617,7 @@ namespace rat
         setPropPosition({propX, propY});
     }
 
-	void Widget::setPropPosition(const sf::Vector2f& propPos, const gui::AnimData& data)
+	void Widget::setPropPositionInTime(const sf::Vector2f& propPos, const gui::AnimData& data)
     {
         using PosAnim_t = gui::Anim<Widget, gui::AnimType::Pos, sf::Vector2f>;
         
@@ -581,9 +628,18 @@ namespace rat
         _addAnimation(std::move(posAnim));
     }
     
-	void Widget::setPropPosition(const sf::Vector2f& propPos, float inTime)
+	void Widget::setPropPositionInTime(const sf::Vector2f& propPos, float inTime)
     {
-        setPropPosition(propPos, gui::AnimData(inTime));
+        setPropPositionInTime(propPos, gui::AnimData(inTime));
+    }
+
+    void Widget::makeStaticPropPositing()
+    {
+        _hasStaticPropPositing = true;
+        if(_props.hasPosition)
+        {
+            _propPosMustBeenRecalculated = true;
+        }
     }
     
 
@@ -648,7 +704,7 @@ namespace rat
     }
         
 
-    void Widget::setSize(sf::Vector2f size)
+    void Widget::setSize(const sf::Vector2f& size)
     {
         _isMinSizeSet = true;
         _minSize = size;
@@ -735,14 +791,20 @@ namespace rat
         if(!_props.hasPosition) return;
         if(!_parent) return;
 
-        auto size = getSize();
         auto origin = getOrigin();
         auto parentSize = _parent ->_getInnerSize();
 
-        auto posRange = parentSize - size;
+        auto posRange = parentSize;
+        if(!_hasStaticPropPositing) posRange -= getSize();;
 
-        const float x = posRange.x * _props.position.x + origin.x;
-        const float y = posRange.y * _props.position.y + origin.y;
+        float x = float(float(posRange.x) * _props.position.x);
+        float y = float(float(posRange.y) * _props.position.y);
+
+        if(!_hasStaticPropPositing)
+        {
+            x += origin.x;
+            y += origin.y;
+        }
 
         gui::FamilyTransform::setPosition(x, y);
 
@@ -784,6 +846,7 @@ namespace rat
     {
         if(_isPosChanged)
         {
+            // _updateBackgroundPos();
             _recalcPos();
             _recalcChildrenPos();
             _isPosChanged = false;
@@ -802,9 +865,14 @@ namespace rat
     void Widget::applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos)
     {
         gui::FamilyTransform::applyParentPosition(globalPos, drawPos);
-        //std::cout << "x: " << globalPos.x << " y: " << globalPos.y << " x: " << drawPos.x << " y: " << drawPos.y << '\n';
+        // _updateBackgroundPos();
         _isPosChanged = true;
     }
+
+    // void Widget::_updateBackgroundPos()
+    // {
+    //     _background.setPosition(gui::FamilyTransform::getDrawPosition());
+    // }
     
     
 }

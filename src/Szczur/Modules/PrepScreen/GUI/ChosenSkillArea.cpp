@@ -31,7 +31,7 @@ namespace rat
 
         _border = new ImageWidget;
         _border->setPropSize(0.4761421319797f, 0.07f); //szerokosć i długość w procentach
-        _border->madePenetrable();
+        _border->makePenetrable();
         _addWidget(_border);
 
 

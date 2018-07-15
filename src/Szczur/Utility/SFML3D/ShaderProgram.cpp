@@ -123,6 +123,12 @@ void ShaderProgram::_destroy()
 	if (_program) {
 		glDeleteProgram(_program);
 	}
+	_program = 0;
+}
+
+bool ShaderProgram::isVaild() const
+{
+	return _program != 0;
 }
 
 }

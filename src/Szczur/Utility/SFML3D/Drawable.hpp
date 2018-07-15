@@ -8,6 +8,6 @@ namespace sf3d {
 	public:
 		virtual ~Drawable() {};
 
-		virtual void draw(RenderTarget& target, RenderStates states) const = 0;
+		virtual void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const = 0;
 	};
 }

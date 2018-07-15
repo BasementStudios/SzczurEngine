@@ -12,8 +12,7 @@
 
 #include "Animation/Anim.hpp"
 
-#include "Test.hpp"
-#include "Szczur/Modules/Script/Script.hpp"
+#include "Widget-Scripts.hpp"
 
 namespace rat {
     ImageWidget::ImageWidget() :
@@ -28,15 +27,20 @@ namespace rat {
 
     void ImageWidget::initScript(Script& script) {
         auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //Widget::basicScript<ImageWidget>(object);
-        basicScript(object);
 
-        object.setProperty(
-            "texture",
-            [](ImageWidget& owner){owner.getTexture();},
-            [](ImageWidget& owner, sf::Texture* texture){owner.setTexture(texture);}
-        );
+        gui::WidgetScripts::set(object);
+
+        object.set("setTexture", &ImageWidget::setTexture);
+        object.set("getTexture", &ImageWidget::getTexture);
+        object.set("removeTexture", &ImageWidget::removeTexture);
+        object.set("setScale", &ImageWidget::setScale);
+        object.set("setTextureRect", &ImageWidget::setTextureRect);
+        object.set("setPropTextureRect", &ImageWidget::setPropTextureRect);
+        
+        object.set("setFullyTexSizing", &ImageWidget::setFullyTexSizing);
+        object.set("setStaticTexPositing", &ImageWidget::setStaticTexPositing);
+
+        object.set("setFullSizeFilling", &ImageWidget::setFullSizeFilling);
         
         object.init();
     }
@@ -139,13 +143,26 @@ namespace rat {
 
     sf::Vector2f ImageWidget::_getSize() const 
     {
-        if(_hasTexture) return {(float)_sprite.getGlobalBounds().width, (float)_sprite.getGlobalBounds().height};
+        if(_hasTexture) 
+        {
+            if(_hasFullSizeFilling) return {};
+            else
+            {
+                return {(float)_sprite.getGlobalBounds().width, (float)_sprite.getGlobalBounds().height};
+            }
+        }
         return {};
     }
 
     void ImageWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const 
     {
         if(_hasTexture) target.draw(_sprite, states);
+    }
+
+    void ImageWidget::setFullSizeFilling()
+    {
+        _hasFullSizeFilling = true;
+        if(!_aboutToRecalculate) _calculateSize();
     }
 
     void ImageWidget::_calculateSize()
@@ -162,7 +179,12 @@ namespace rat {
             texSize = sf::Vector2f{float(_sprite.getTextureRect().width), float(_sprite.getTextureRect().height)};
         }
         sf::Vector2f scale = {1.f, 1.f};
-        if(_isMinSizeSet)
+        if(_hasFullSizeFilling)
+        {
+            auto size = static_cast<sf::Vector2f>(getSize());
+            scale = {size.x / texSize.x, size.y / texSize.y};
+        }
+        else if(_isMinSizeSet)
         {
             auto minSize = static_cast<sf::Vector2f>(getMinimalSize());
             scale = {minSize.x / texSize.x, minSize.y / texSize.y};            

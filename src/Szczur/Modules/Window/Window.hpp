@@ -7,25 +7,29 @@
  **/
 
 #include <string>
+#include <memory> // unique_ptr
 
+namespace sf {
+	class Drawable;
+	class Vertex;
+}
 #include <SFML/Window/VideoMode.hpp>
-#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Window/WindowStyle.hpp>
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
-#include <SFML/Graphics/Vertex.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
 
+namespace sf3d {
+	class Drawable;
+	class Vertex;
+}
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
-#include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "Szczur/Utility/SFML3D/Vertex.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
 
-/** @class Window
- ** @description Manages application window.
- **/
+/// Manages application window.
 class Window : public Module<>
 {
 	/* Types */
@@ -37,48 +41,52 @@ public:
 	/* Variables */
 private:
 	Window_t        window;
-	sf::VideoMode   videoMode		{1920, 1080};
-	std::string     title 			{"SzczurEngine"};
+
+	sf::VideoMode   videoMode		{1280, 720};
+
 	unsigned int	framerateLimit	{60};
+	std::unique_ptr<sf3d::ShaderProgram> program;
+
+	std::string     title 			{"SzczurEngine"};
+
+	sf::Uint32		windowStyle		{sf::Style::Default};
+
+	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
 
 
 
 	/* Properties */
 public:
-	/** @property Window
-	 ** @description Provides access to application window.
-	 ** @access reference get
-	 **/
+	/// Provides access to application window.
 	Window_t& getWindow();
 	const Window_t& getWindow() const;
 
-	/** @property VideoMode
-	 ** @description Defines a video mode.
-	 ** @access get set
-	 ** @info Aslo recreates the window.
-	 **/
-	sf::VideoMode getVideoMode() const;
-	void setVideoMode(const sf::VideoMode& mode);
+	/// Defines a video mode. Aslo recreates the window.
+    sf::VideoMode getVideoMode() const noexcept;
+    void setVideoMode(const sf::VideoMode& mode);
 
-	/** @property FrameRate
-	 ** @description Limit of updated and rendered frames per second.
-	 ** @access get set
-	 **/
+    /// Size of window. Related to video mode.
+    glm::uvec2 getSize() const noexcept;
+    void setSize(glm::uvec2 size);
+
+	/// Limit of updated and rendered frames per second.
 	unsigned int getFramerateLimit() const;
 	void setFramerateLimit(const unsigned int limit);
 
-	/** @property Title
-	 ** @description Title of application window.
-	 ** @access get set
-	 **/
+	/// Title of application window.
 	const std::string& getTitle() const;
 	void setTitle(const std::string& title);
+
+	/// Full screen mode
+	bool getFullscreen() const;
+	void setFullscreen(bool state);
+
+	void processEvent(sf::Event event);
 
 
 
 	/* Operators */
 public:
-	// Module constructor/destructor
 	Window();
 	~Window();
 
@@ -98,6 +106,11 @@ public:
 	void init();
 	void render();
 
+protected:
+	/// Recreates window to apply settings
+	void recreateWindow();
+
+public:
 	// Cleaning
 	void clear(const sf::Color& color = sf::Color::Transparent);
 
@@ -110,9 +123,9 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 	// 	3D
-	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states);
+	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
 	void draw(const sf3d::Drawable& drawable);
-	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states);
+	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
 	void draw(const sf3d::VertexArray& vertices);
 };
 

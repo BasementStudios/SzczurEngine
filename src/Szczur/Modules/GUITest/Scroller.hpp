@@ -41,6 +41,10 @@ namespace rat
 
         void setScrollerPosition(const sf::Vector2f& position);
 
+        void invisible();
+        void visible();
+        bool isVisible() const;
+
         void applyFamilyTransform(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
 
         void input(const sf::Event& event);
@@ -67,6 +71,8 @@ namespace rat
 
         sf::Vector2f _size;
         sf::Vector2f _position;
+
+        bool _isVisible{true};
 
 
         float _proportion{0.f};   
