@@ -15,7 +15,9 @@ namespace rat {
 		_base->add(_shadowImage);
 		_base->add(_itemImage);	
 		_base->add(_nullWidget);
-		
+
+		//_itemImage->setPropPosition(0.3f, 0.4f);
+
 		setHighlight(false);
 	}
 	void EquipmentSlot::setTexture(sf::Texture* text, sf::Texture* shadowText) {
@@ -48,9 +50,11 @@ namespace rat {
 	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
 		_slotImage->setPropSize(size);
-		_itemImage->setPropSize({size.x + .002f, size.y + .003f});
+		_itemImage->setPropSize({size.x + .006f, size.y + .008f});
+		//_itemImage->setPropSize(size);
 		_shadowImage->setPropSize(size);
 		_nullWidget->setPropSize(size);
+		_itemImage->setPropPosition(-0.3f, -0.4f);
 	}
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {

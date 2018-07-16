@@ -16,7 +16,7 @@
 
 #include "Szczur/Modules/GUI/Animation/Anim.hpp"
 
-namespace rat {		//beware spagetti monster down there :/
+namespace rat {
 	Equipment::Equipment()
 	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow()), _input(getModule<Input>())
 	{
