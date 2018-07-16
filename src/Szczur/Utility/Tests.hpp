@@ -60,10 +60,13 @@ struct Tester : public TesterInvoker
 #define LOG_TEST(...) { rat::logger->log(filename, line, "TEST", __VA_ARGS__); }
 		try {
 			LOG_TEST("Testing case ", testCase, " in ", testName, "...");
-			TTestClass* test = new TTestClass();
-			test->SetUp();
-			test->Run();
-			test->TearDown();
+			{
+				TTestClass* test = new TTestClass();
+				test->SetUp();
+				test->Run();
+				test->TearDown();
+				delete test;
+			}
 			LOG_TEST("[+] Test case ", testCase, " in ", testName, " succeeded!");
 		}
 		catch (const std::exception& exception) {
@@ -79,37 +82,64 @@ struct Tester : public TesterInvoker
 /// Basic fixture test class
 struct Test
 {
-	virtual ~Test() {};
 	virtual void SetUp() {};
-	virtual void Run() { LOG_INFO("Invaild test?"); }
+	virtual void Run() = 0;
 	virtual void TearDown() {};
+	virtual ~Test() {};
 };
 
 }
 
 #define TEST(NAME, CASE) \
-	struct test_##CLASS##_##CASE : public ::testing::Test {}; 	\
-	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( \
+	struct test_##NAME##_##CASE : public ::testing::Test {}; 	\
+	::testing::detail::Tester<test_##NAME##_##CASE> tester_##NAME##_##CASE( \
 		__FILENAME__, __LINE__, #NAME, #CASE					\
 	);															\
-	void test_##CLASS##_##CASE::Run()
+	void test_##NAME##_##CASE::Run()
 
 #define TEST_F(CLASS, CASE) \
 	static_assert(std::is_base_of<::testing::Test, CLASS>::value, "Fixture must derive from ::testing::Test!"); \
 	struct test_##CLASS##_##CASE : public CLASS					\
-		{ virtual void Run() override; };						\
+	{															\
+		virtual void Run() override; 							\
+	};															\
 	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( \
 		__FILENAME__, __LINE__, #CLASS, #CASE					\
 	);															\
 	void test_##CLASS##_##CASE::Run()
 
-#define VISUAL_TESTING_TIME 3s
-#define VISUAL_TESTING() \
-	using namespace std::chrono_literals;						\
-	std::this_thread::sleep_for(VISUAL_TESTING_TIME);
-#define VISUAL_TESTING_FOR(MY_TIME) \
-	using namespace std::chrono_literals;						\
-	std::this_thread::sleep_for(MY_TIME);
+#define VISUAL_TEST_TIME 3s
+
+#define VISUAL_TEST(NAME, CASE) \
+	struct test_##NAME##_##CASE : public NAME					\
+	{															\
+		virtual ~test_##NAME##_##CASE() 						\
+		{														\
+			using namespace std::chrono_literals; 				\
+			std::this_thread::sleep_for(VISUAL_TEST_TIME);		\
+		}														\
+		virtual void Run() override;							\
+	};															\
+	::testing::detail::Tester<test_##NAME##_##CASE> tester_##NAME##_##CASE( \
+		__FILENAME__, __LINE__, #NAME, #CASE					\
+	);															\
+	void test_##NAME##_##CASE::Run()
+
+#define VISUAL_TEST_F(CLASS, CASE) \
+	static_assert(std::is_base_of<::testing::Test, CLASS>::value, "Fixture must derive from ::testing::Test!"); \
+	struct test_##CLASS##_##CASE : public CLASS					\
+	{															\
+		virtual ~test_##CLASS##_##CASE() 						\
+		{														\
+			using namespace std::chrono_literals; 				\
+			std::this_thread::sleep_for(VISUAL_TEST_TIME);		\
+		}														\
+		virtual void Run() override;							\
+	};															\
+	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( \
+		__FILENAME__, __LINE__, #CLASS, #CASE					\
+	);															\
+	void test_##CLASS##_##CASE::Run()
 
 
 

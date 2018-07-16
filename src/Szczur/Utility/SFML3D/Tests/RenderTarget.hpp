@@ -23,19 +23,17 @@ struct SimpleRenderTargetTest : public RenderTargetTest
 	}
 };
 
-TEST_F(SimpleRenderTargetTest, DrawBasic)
+VISUAL_TEST_F(SimpleRenderTargetTest, DrawBasic)
 {
 	sf3d::RectangleShape object({0.3f, 0.2f});
 	renderTarget->draw(object);
-	VISUAL_TESTING();
 }
 
-TEST_F(SimpleRenderTargetTest, DrawMove)
+VISUAL_TEST_F(SimpleRenderTargetTest, DrawMove)
 {
 	sf3d::RectangleShape object({0.3f, 0.2f});
 	object.move({-0.5f, 0.1f, 0.f});
 	renderTarget->draw(object);
-	VISUAL_TESTING();
 }
 
 // @todo , more tests

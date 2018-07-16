@@ -17,6 +17,10 @@ struct SimpleRenderLayerTest : public RenderTargetTest
 	{
 		RenderTargetTest::SetUp();
 
+		// Layer
+		this->renderLayer.create(this->windowModule->getSize());
+		this->renderLayer.clear({0u, 0u, 0u, 0u}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		// Shader for target
 		this->targetShaderProgram.linkShaders(
 			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/assemble.vert"},
@@ -41,9 +45,14 @@ struct SimpleRenderLayerTest : public RenderTargetTest
 	}
 };
 
-TEST_F(SimpleRenderLayerTest, DrawBasic)
+VISUAL_TEST_F(SimpleRenderLayerTest, Clear)
+{
+	sf3d::RectangleShape object({0.3f, 0.2f});
+	renderLayer.clear({0u, 0u, 200u, 255u}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+VISUAL_TEST_F(SimpleRenderLayerTest, DrawBasic)
 {
 	sf3d::RectangleShape object({0.3f, 0.2f});
 	renderLayer.draw(object);
-	VISUAL_TESTING();
 }
