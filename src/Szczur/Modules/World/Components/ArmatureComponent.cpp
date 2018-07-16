@@ -157,8 +157,16 @@ void ArmatureComponent::saveToConfig(Json& config) const
 {
 	Component::saveToConfig(config);
 	config["armatureDisplayData"] = _armatureDisplayData ? mapWindows1250ToUtf8(_armatureDisplayData->getName()) : "";
-	config["animationMame"] = _armature ? _armature->getAnimation()->getLastAnimationName() : "";
-	config["speed"] = _armature ? _armature->getAnimation()->timeScale : 1.f;
+
+	if (_armature)
+	{
+		config["speed"] = _armature->getAnimation()->timeScale;
+
+		if (_armature->getAnimation()->isPlaying())
+		{
+			config["animationMame"] = _armature->getAnimation()->getLastAnimationName();
+		}
+	}
 }
 
 void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
@@ -193,6 +201,33 @@ void ArmatureComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates stat
 	{
 		states.transform *= getEntity()->getTransform();
 		_armature->draw(target, states);
+	}
+}
+
+void ArmatureComponent::loadArmature()
+{
+	if (_armatureDisplayData)
+	{
+		setArmatureDisplayData(_armatureDisplayData);
+
+		if (_armature && _armature->getAnimation() && !_lastPlayingAnimation.empty())
+		{
+			_armature->getAnimation()->play(_lastPlayingAnimation);
+		}
+	}
+}
+
+void ArmatureComponent::unloadArmature()
+{
+	if (_armature)
+	{
+		if (_armature->getAnimation())
+		{
+			_lastPlayingAnimation = _armature->getAnimation()->getLastAnimationName();
+		}
+
+		delete _armature;
+		_armature = nullptr;
 	}
 }
 

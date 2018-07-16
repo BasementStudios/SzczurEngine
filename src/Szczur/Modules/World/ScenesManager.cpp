@@ -1,24 +1,21 @@
 #include "ScenesManager.hpp"
 
-#include <experimental/filesystem>
-
-#include "Szczur/Modules/FileSystem/FileDialog.hpp"
-#include "Szczur/Modules/FileSystem/DirectoryDialog.hpp"
-
 #include <algorithm>
+#include <experimental/filesystem>
 
 #include "Components/CameraComponent.hpp"
 #include "Components/BaseComponent.hpp"
 #include "Components/ScriptableComponent.hpp"
 #include "Components/PointLightComponent.hpp"
 
-#include <Szczur/Modules/World/World.hpp>
-#include <Szczur/Modules/Cinematics/Cinematics.hpp> 
-#include <Szczur/Modules/Music/Music.hpp> 
-#include <Szczur/Modules/Sound/Sound.hpp> 
-#include <Szczur/Modules/Equipment/Equipment.hpp>
+#include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/Modules/World/World.hpp"
+#include "Szczur/Modules/Cinematics/Cinematics.hpp"
+#include "Szczur/Modules/Music/Music.hpp" 
+#include "Szczur/Modules/Sound/Sound.hpp"
+#include "Szczur/Modules/Equipment/Equipment.hpp"
 
-#include <Szczur/Utility/SFML3D/LightPoint.hpp>
+#include "Szczur/Utility/SFML3D/LightPoint.hpp"
 
 namespace rat
 {
@@ -133,11 +130,11 @@ bool ScenesManager::setCurrentScene(size_t id)
 		
 		_currentSceneID = id;
 
-		if(isGameRunning()) {
+		if (isGameRunning()) {
 			auto* scene = getCurrentScene();		
 		
 			scene->forEach([](const std::string& group, Entity& entity) {
-					if(auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
+					if (auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
 				}
 			);
 		}
@@ -318,7 +315,7 @@ void ScenesManager::addSun()
 
 	Entity* sun = scene->addEntity("single");
 	sun->setName("Sun");
-	auto* comp = static_cast<PointLightComponent*>(sun->addComponent<PointLightComponent>());
+	auto comp = static_cast<PointLightComponent*>(sun->addComponent<PointLightComponent>());
 	comp->setPosition({ 0.f, 0.f, 0.f });
 	comp->setColor({1.f, 1.f, 1.f});
 	comp->setAttenuation(sf3d::LightPoint::Attenuation{1.f, 0.f, 0.f});
@@ -336,15 +333,42 @@ void ScenesManager::runGame() {
 		_gameIsRunning = true;
 		saveToConfig(_configBeforeRun);
 
-		for(auto& scene : _holder) {
-			scene->forEach([](const std::string& group, Entity& entity) {
-				if(auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->runScript();
-				if(auto* comp = entity.getComponentAs<AudioComponent>()) comp->play();
+		#ifdef EDITOR
+		LevelEditor& levelEditor = detail::globalPtr<World>->getLevelEditor();
+		#endif
+
+		for (auto& scene : _holder) {
+			scene->forEach([&](const std::string& group, Entity& entity) {
+				if (auto comp = entity.getComponentAs<ScriptableComponent>()) comp->runScript();
+				if (auto comp = entity.getComponentAs<AudioComponent>()) comp->play();
+
+				#ifdef EDITOR
+				if (levelEditor.reloadArmaturesAtStart()) {
+					if (auto comp = entity.getComponentAs<ArmatureComponent>())
+						comp->unloadArmature();
+				}
+				#endif
 			});
 		}
 
+		#ifdef EDITOR
+		if (levelEditor.reloadArmaturesAtStart()) {
+			auto& arms = getArmatureDisplayDataHolder();
+
+			for (auto& arm : arms) {
+				arm->reload();
+			}
+
+			for (auto& scene : _holder) {
+				scene->forEach([] (const std::string& group, Entity& entity) {
+					if (auto comp = entity.getComponentAs<ArmatureComponent>()) comp->loadArmature();
+				});
+			}
+		}
+		#endif
+
 		getCurrentScene()->forEach([] (const std::string& group, Entity& entity) {
-			if (auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
+			if (auto comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
 		}
 		);
 	}

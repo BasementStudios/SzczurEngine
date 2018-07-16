@@ -501,6 +501,7 @@ namespace rat {
 
 		config["mcCameraMovement"] = _isMCCameraMovement;
 		config["dragAndDropObjects"] = _dragAndDropObjects;
+		config["reloadArmatureOnStart"] = _reloadArmatureAtStart;
 
 		file << std::setw(4) << config << std::endl;
 	}
@@ -512,9 +513,20 @@ namespace rat {
 
 			file >> config;
 
-			_isMCCameraMovement = config["mcCameraMovement"];
-			_dragAndDropObjects = config["dragAndDropObjects"];
+			if (config.find("mcCameraMovement") != config.end())
+				_isMCCameraMovement = config["mcCameraMovement"];
+
+			if (config.find("dragAndDropObjects") != config.end())
+				_dragAndDropObjects = config["dragAndDropObjects"];
+
+			if (config.find("reloadArmatureOnStart") != config.end())
+				_reloadArmatureAtStart = config["reloadArmatureOnStart"];
 		}
+	}
+
+	bool LevelEditor::reloadArmaturesAtStart()
+	{
+		return _reloadArmatureAtStart;
 	}
 
 	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {

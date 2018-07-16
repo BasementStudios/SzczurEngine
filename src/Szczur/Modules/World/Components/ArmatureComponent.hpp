@@ -78,6 +78,12 @@ public:
 // Manipulations
 
 	///
+	void loadArmature();
+
+	///
+	void unloadArmature();
+
+	///
 	void playAnim(const std::string& animationName, int playTimes = -1);
 
 	///
@@ -139,6 +145,8 @@ private:
 
 	std::string _lastAnimationName;
 	float _lastAnimationFadeInTime = 0.f;
+
+	std::string _lastPlayingAnimation;
 };
 
 }

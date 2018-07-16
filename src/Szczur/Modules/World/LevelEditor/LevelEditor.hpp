@@ -86,6 +86,9 @@ public:
 	///
 	void loadConfig(const std::string& path);
 
+	///
+	bool reloadArmaturesAtStart();
+
 private:
 	
 	///
@@ -161,6 +164,8 @@ private:
 	ArmatureDisplayDataManager _armatureDisplayDataManager;
 	DialogEditor* _dialogEditor = nullptr;
 	AudioEditor* _audioEditor = nullptr;
+
+	bool _reloadArmatureAtStart = false;
 
 // Free camera
 

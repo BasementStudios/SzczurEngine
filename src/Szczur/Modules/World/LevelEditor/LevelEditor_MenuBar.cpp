@@ -207,6 +207,11 @@ namespace rat {
 					_dragAndDropObjects = !_dragAndDropObjects;
 					saveConfig(LevelEdtiorConfigPath);
 				}
+				if (ImGui::MenuItem("Reload armatures at start", nullptr, _reloadArmatureAtStart))
+				{
+					_reloadArmatureAtStart = !_reloadArmatureAtStart;
+					saveConfig(LevelEdtiorConfigPath);
+				}
 				if(ImGui::MenuItem("Show demo", nullptr, _ifShowImGuiDemoWindow)) 
 				{
 					_ifShowImGuiDemoWindow = !_ifShowImGuiDemoWindow;
