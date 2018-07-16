@@ -76,7 +76,7 @@ public:
 	void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
 
 	///
-	void playOnce(const std::string& animationName, float fadeInTime = -1.f);
+	void playOnce(const std::string& animationName, float fadeInTime = -1.f, float animationSpeed = 1.f, bool waitToEndCurr = false);
 
 	///
 	void setFlipX(bool flipX);
@@ -112,9 +112,17 @@ private:
 	dragonBones::SF3DArmatureDisplay* _armature = nullptr;
 	ArmatureDisplayData* _armatureDisplayData = nullptr;
 
+	OnceAnimStatus _onceAnimStatus;
+
+	std::string _playOnceAnimationName;
+	float _playOnceAnimationFadeInTime = 0.f;
+	float _playOnceAnimationSpeed = 1.f;
+
 	std::string _lastAnimationName;
 	float _lastAnimationFadeInTime = 0.f;
-	bool _isPlayingOnceAnimation = false;
+	float _lastAnimationSpeed = 1.f;
+
+	std::string _lastPlayingAnimation;
 };
 
 }
