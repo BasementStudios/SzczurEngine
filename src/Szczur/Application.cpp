@@ -2,9 +2,6 @@
 
 #include "Utility/MsgBox.hpp"
 
-namespace rat
-{
-
 #ifdef EDITOR
 #	include <imgui.h>
 #	include <imgui-SFML.h>

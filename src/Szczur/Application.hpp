@@ -63,6 +63,7 @@ public:
 
 private:
 
+	bool _isImGuiInitialized = false;
 	
 	Clock _mainClock;
 	ModulesHolder<Window, Input, GUI, Dialog, Script, DialogEditor> _modules;
