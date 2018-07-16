@@ -16,9 +16,7 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
-
-	// For testing `Script`
-	initModule<BattleField>();
+	initModule<Player>();
 
 	LOG_INFO("Modules initialized");
 
@@ -130,7 +128,6 @@ void Application::update()
 	/*
 		Put other updates here
 	*/
-	_modules.getModule<BattleField>().update();
 	
 	#ifdef EDITOR
 	{
@@ -150,7 +147,6 @@ void Application::render()
 	getModule<Window>().clear();
 
 	// For testing `Script`
-	_modules.getModule<BattleField>().render();
 
 	#ifdef EDITOR
 	{

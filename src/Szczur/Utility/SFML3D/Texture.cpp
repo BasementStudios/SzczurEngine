@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 
-#include <glad.h>
+#include <glad/glad.h>
 #include <SFML/Graphics/Image.hpp>
 
 namespace sf3d {

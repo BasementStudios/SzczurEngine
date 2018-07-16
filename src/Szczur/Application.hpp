@@ -4,7 +4,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/BattleField/BattleField.hpp"
+#include "Szczur/Modules/Player/Player.hpp"
 #include "Szczur/Utility/Modules/ModulesHolder.hpp"
 namespace rat
 {
@@ -61,7 +61,7 @@ public:
 private:
 
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, BattleField> _modules;
+	ModulesHolder<Window, Input, Script, Player> _modules;
 
 	#ifdef EDITOR
 	bool _isImGuiInitialized = false;
