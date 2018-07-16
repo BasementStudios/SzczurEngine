@@ -90,7 +90,7 @@ public:
 	void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
 
 	///
-	void playOnce(const std::string& animationName, float fadeInTime = -1.f, bool waitToEndCurr = false);
+	void playOnce(const std::string& animationName, float fadeInTime = -1.f, float animationSpeed = 1.f, bool waitToEndCurr = false);
 
 	///
 	void setFlipX(bool flipX);
@@ -142,9 +142,11 @@ private:
 
 	std::string _playOnceAnimationName;
 	float _playOnceAnimationFadeInTime = 0.f;
+	float _playOnceAnimationSpeed = 1.f;
 
 	std::string _lastAnimationName;
 	float _lastAnimationFadeInTime = 0.f;
+	float _lastAnimationSpeed = 1.f;
 
 	std::string _lastPlayingAnimation;
 };

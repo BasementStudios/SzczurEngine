@@ -177,18 +177,25 @@ void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
 
 		if (_onceAnimStatus == OnceAnimStatus::IsAboutToPlay)
 		{
-			if (_armature->getAnimation()->isCompleted())
+			auto anim = _armature->getAnimation();
+
+			if (anim->isCompleted())
 			{
-				_armature->getAnimation()->fadeIn(_playOnceAnimationName, _playOnceAnimationFadeInTime, 1);
+				anim->fadeIn(_playOnceAnimationName, _playOnceAnimationFadeInTime, 1);
+				anim->timeScale = _playOnceAnimationSpeed;
 				_onceAnimStatus = OnceAnimStatus::IsPlaying;
 			}
 		}
 
 		if (_onceAnimStatus == OnceAnimStatus::IsPlaying)
 		{
-			if (_armature->getAnimation()->isCompleted())
+			auto anim = _armature->getAnimation();
+
+			if (anim->isCompleted())
 			{
 				fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
+				anim->timeScale = _lastAnimationSpeed;
+
 				_onceAnimStatus = OnceAnimStatus::None;
 			}
 		}
@@ -253,7 +260,7 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 	}
 }
 
-void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, bool waitToEnd)
+void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, float animationSpeed, bool waitToEnd)
 {
 	if (_armature)
 	{
@@ -266,12 +273,14 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 			{
 				_lastAnimationName = lastAnimation->name;
 				_lastAnimationFadeInTime = lastAnimation->fadeTotalTime;
+				_lastAnimationSpeed = anim->timeScale;
 
 				if (waitToEnd)
 				{
 					_onceAnimStatus = OnceAnimStatus::IsAboutToPlay;
 					_playOnceAnimationName = animationName;
 					_playOnceAnimationFadeInTime = fadeInTime;
+					_playOnceAnimationSpeed = animationSpeed;
 
 					auto time = lastAnimation->getCurrentTime();
 					anim->gotoAndPlayByTime(lastAnimation->getName(), time, 1);
@@ -280,6 +289,7 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 				{
 					_onceAnimStatus = OnceAnimStatus::IsPlaying;
 					anim->fadeIn(animationName, fadeInTime, 1);
+					anim->timeScale = animationSpeed;
 				}
 			}
 		}
