@@ -260,7 +260,7 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 	}
 }
 
-void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, float animationSpeed, bool waitToEnd)
+void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, bool waitToEnd, float animationSpeed)
 {
 	if (_armature)
 	{
