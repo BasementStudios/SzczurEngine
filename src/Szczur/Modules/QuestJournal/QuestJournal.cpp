@@ -92,8 +92,8 @@ namespace rat
         _scroller->deactivate();
         _scroller->invisible();
         
-        _interface->add(_scroller);
-        _interface->add(_doneScroller);
+        _ninePatchWidget[3]->add(_scroller);
+        _ninePatchWidget[3]->add(_doneScroller);
 
         _interface->setSizingWidthToHeightProportion(1.f);
 

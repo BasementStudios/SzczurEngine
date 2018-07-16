@@ -28,6 +28,8 @@ namespace journal
         _list->clear();
         _descriptions = std::make_shared<std::vector<std::string> >(_quest->getDescription());
         TextAreaWidget* widget;
+        widget = new TextAreaWidget;
+        
         for(auto i = _descriptions->begin();i!=_descriptions->end();i++)
         {
             widget = new TextAreaWidget;

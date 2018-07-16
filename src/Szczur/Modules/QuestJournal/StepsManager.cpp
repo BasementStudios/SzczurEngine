@@ -36,6 +36,7 @@ namespace journal
             widget->setCharacterSize(17);
             widget->setColor(sf::Color(135, 89, 247 ,255));
             widget->setPropSize(0.35f, 0.f);
+            widget->setAlign(TextAreaWidget::Align::Left);
             _list->add(widget);
         }
         _scroller->resetScrollerPosition();
@@ -62,6 +63,7 @@ namespace journal
             widget->setCharacterSize(17);
             widget->setPropSize(0.35f, 0.f);
             widget->setColor(sf::Color(135, 89, 247 ,255));
+            widget->setAlign(TextAreaWidget::Align::Left);
             _list->add(widget);
         }
         _scroller->resetScrollerPosition();
