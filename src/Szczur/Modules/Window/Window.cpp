@@ -170,12 +170,6 @@ void Window::processEvent(sf::Event event)
         }
         break;
         
-        case sf::Event::Closed:
-        {
-            this->getWindow().close();
-        }
-        break;
-        
         default:
         {
             // Do nothing.

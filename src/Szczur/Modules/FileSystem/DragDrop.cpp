@@ -1,7 +1,9 @@
 #include "DragDrop.hpp"
-#ifdef OS_WINDOWS
-#   include <shellapi.h>
+
+#ifdef EDITOR
+#include <shellapi.h>
 #endif
+
 namespace rat
 {
 

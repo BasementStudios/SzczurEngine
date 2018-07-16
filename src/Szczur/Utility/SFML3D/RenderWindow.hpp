@@ -40,6 +40,8 @@ public:
 	/// Updates RenderWindow (glViewport) after resizing
 	void onResize() override;
 	
+    virtual bool _setActive(bool states = true) override;
+	
 	using sf3d::RenderTarget::clear;
 	using sf3d::RenderTarget::draw;
 	using sf::RenderWindow::draw;

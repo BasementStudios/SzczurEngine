@@ -7,8 +7,17 @@
 
 namespace ed = ax::NodeEditor;
 
+namespace sf
+{
+
+class Texture;
+class Sprite;
+
+}
+
 namespace rat
 {
+
 class DialogEditor;
 
 class NodeEditor
@@ -50,6 +59,11 @@ private:
 
 	char _renameBuffer[256];
 
+/// icons
+
+	std::unique_ptr<sf::Texture> _iconsTex;
+	std::vector<std::unique_ptr<sf::Sprite>> _icons;
+
 public:
 	NodeEditor(DialogEditor* dialogEditor);
 	~NodeEditor();
@@ -65,6 +79,8 @@ public:
 	void setTextContainer(DLGEditor::TextContainer_t* parts) { _parts = parts; }
 
 private:
+	void loadIcons();
+
 	void showPopups();
 	void showOptionConfig();
 
@@ -75,7 +91,7 @@ private:
 	void backupLuaFunctions();
 	std::string getLuaFunction(NodePin* pin, FunctionType functionType, const std::string& code = std::string(), size_t* lastIndex = nullptr);
 
-	void showTooltip(const std::string& message);
+	void showTooltip(const std::string& message, sf::Sprite* sprite = nullptr, const std::string& spriteName = "");
 
 	int generateNodeNameId();
 };

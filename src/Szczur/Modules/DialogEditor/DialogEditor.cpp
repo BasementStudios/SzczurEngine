@@ -77,22 +77,12 @@ void DialogEditor::update()
 #endif
 			}
 
-			ImGui::Separator();
-
 			if (ImGui::Button("Save"))
 			{
 				if (!_projectPath.empty())
 				{
 					saveProject();
 				}
-			}
-
-			if (ImGui::Button("Generate lua"))
-			{
-				LOG_INFO("Generating lua...");
-
-				if (!_projectPath.empty())
-					_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
 			}
 
 			ImGui::Separator();
@@ -209,9 +199,13 @@ void DialogEditor::update()
 
 void DialogEditor::saveProject()
 {
-	_dlgEditor.save();
-	_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
-	_CharactersManager.save(_projectPath + "/characters.json");
+	if (!_projectPath.empty())
+	{
+		_dlgEditor.save();
+		_nodeEditor.save(_projectPath + "/dialog.json", NodeEditor::FileFormat::Json);
+		_nodeEditor.save(_projectPath + "/dialog.lua", NodeEditor::FileFormat::Lua);
+		_CharactersManager.save(_projectPath + "/characters.json");
+	}
 }
 
 void DialogEditor::createProject(const std::string& path)
@@ -246,6 +240,8 @@ void DialogEditor::openProject(const std::string& path)
 
 	if (isProjectDirectory(_path))
 	{
+		getModule<Dialog>().unload();
+
 		_projectPath = _path;
 
 		_CharactersManager.load(_projectPath + "/characters.json");
