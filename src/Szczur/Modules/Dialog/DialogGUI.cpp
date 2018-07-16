@@ -55,7 +55,7 @@ namespace rat {
     }
 
 	void DialogGUI::setText(const std::string& text) {
-		//_dialogText->visible();
+		_dialogText->visible();
 		_dialogText->setString(text);
 	}
 
