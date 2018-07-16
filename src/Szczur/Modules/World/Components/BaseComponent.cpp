@@ -87,6 +87,12 @@ namespace rat {
 			bool isVisible = object->isVisible();
 			ImGui::Checkbox("Visible##base_component", &isVisible);
 			object->setVisible(isVisible);
+
+			ImGui::SameLine();
+
+			bool isActive = object->isActive();
+			ImGui::Checkbox("Active##base_component", &isActive);
+			object->setActive(isActive);
 		}
 	}
 
@@ -116,6 +122,9 @@ namespace rat {
 
 		entity.set("setVisible", [] (Entity& entity, bool isVisible) { entity.setVisible(isVisible); });
 		entity.set("isVisible", [] (Entity& entity) { return entity.isVisible(); });
+
+		entity.set("setActive", [] (Entity& entity, bool isActive) { entity.setActive(isActive); });
+		entity.set("isActive", [] (Entity& entity) { return entity.isActive(); });
 
 		object.init();
 

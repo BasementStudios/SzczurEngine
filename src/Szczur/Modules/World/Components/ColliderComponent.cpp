@@ -129,6 +129,9 @@ void ColliderComponent::move(float x, float y, float z)
 			return;
 		}
 
+		if (!entity->isActive())
+			return;
+
 		// if entity has collider
 		if (entity->hasComponent<ColliderComponent>())
 		{

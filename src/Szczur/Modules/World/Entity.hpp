@@ -60,6 +60,12 @@ public:
 	bool isVisible() const;
 
 	///
+	void setActive(bool active);
+
+	///
+	bool isActive();
+
+	///
 	size_t getID() const;
 
 	///
@@ -206,6 +212,7 @@ private:
 // Main
 
 	bool _exists = true;
+	bool _isActive = true;
 	bool _isVisible = true;
 
 	size_t _id;

@@ -53,19 +53,21 @@ Entity& Entity::operator = (const Entity& rhs)
 
 void Entity::update(ScenesManager& scenes, float deltaTime)
 {
-	if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
-	if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
-	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
-	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
-	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
-	if(auto* comp = getComponentAs<AnimatedSpriteComponent>()) comp->update(scenes, deltaTime);
-	if(auto* comp = getComponentAs<SpriteComponent>()) comp->update(scenes, deltaTime);
+	if (_isActive) {
+		if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
+		if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
+		if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
+		if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
+		if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
+		if(auto* comp = getComponentAs<AnimatedSpriteComponent>()) comp->update(scenes, deltaTime);
+		if(auto* comp = getComponentAs<SpriteComponent>()) comp->update(scenes, deltaTime);
 
-	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
-		if(getScene()->getScenes()->isGameRunning()) { 
-			comp->update(scenes, deltaTime); 
+		if(auto* comp = getComponentAs<ScriptableComponent>()) {  
+			if(getScene()->getScenes()->isGameRunning()) { 
+				comp->update(scenes, deltaTime); 
+			} 
 		} 
-	} 
+	}
 }
 
 void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
@@ -94,6 +96,16 @@ void Entity::setVisible(bool visible)
 bool Entity::isVisible() const
 {
 	return _isVisible;
+}
+
+void Entity::setActive(bool active)
+{
+	_isActive = active;
+}
+
+bool Entity::isActive()
+{
+	return _isActive;
 }
 
 size_t Entity::getID() const
