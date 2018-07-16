@@ -72,8 +72,10 @@ void Scene::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	for (auto& holder : this->getAllEntities()) {
 		for (auto& entity : holder.second) {
 			if (PointLightComponent* component = entity->getComponentAs<PointLightComponent>()) {
-				target.registerLightPoint(component);
-				component->setPosition(entity->getPosition());
+				if (entity->isVisible()) {
+					target.registerLightPoint(component);
+					component->setPosition(entity->getPosition());
+				}
 			}
 		}
 	}
