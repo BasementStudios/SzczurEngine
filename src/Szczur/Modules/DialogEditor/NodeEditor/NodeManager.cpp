@@ -149,6 +149,25 @@ bool NodeManager::read(const Json& j)
 			pin->ActionFunc = true;
 			pin->ActionFuncName = action["name"].get<std::string>();
 		}
+
+		if (j.find("color") != j.end())
+		{
+			auto& color = j["color"];
+
+			pin->Colorful = true;
+			pin->Color.r = color["r"];
+			pin->Color.g = color["g"];
+			pin->Color.b = color["b"];
+			pin->Color.a = color["a"];
+		}
+
+		if (j.find("icon") != j.end())
+		{
+			auto& icon = j["icon"];
+
+			pin->Icon = true;
+			pin->IconId = icon;
+		}
 	};
 
 
@@ -161,27 +180,27 @@ bool NodeManager::read(const Json& j)
 	_lastId = j["lastId"];
 
 	// Nodes
-	Json::array_t JsonNodes = j["nodes"];
+	Json::array_t jsonNodes = j["nodes"];
 
-	for (auto& JsonNode : JsonNodes)
+	for (auto& jsonNode : jsonNodes)
 	{
 		auto node = std::make_unique<Node>();
-		node->Id = JsonNode["id"];
-		node->Type = static_cast<Node::NodeType>(JsonNode["type"]);
-		node->Name = JsonNode["name"].get<std::string>();
+		node->Id = jsonNode["id"];
+		node->Type = static_cast<Node::NodeType>(jsonNode["type"]);
+		node->Name = jsonNode["name"].get<std::string>();
 
 		if (node->Type == Node::NodeType::Options)
-			node->NameId = JsonNode.find("nodeId") == JsonNode.end() ? node->Id : JsonNode["nodeId"].get<int>();
+			node->NameId = jsonNode.find("nodeId") == jsonNode.end() ? node->Id : jsonNode["nodeId"].get<int>();
 
-		node->_lastPinId = JsonNode["lastPinId"];
+		node->_lastPinId = jsonNode["lastPinId"];
 
 		ImVec2 pos;
-		pos.x = JsonNode["position"][0];
-		pos.y = JsonNode["position"][1];
+		pos.x = jsonNode["position"][0];
+		pos.y = jsonNode["position"][1];
 		ed::SetNodePosition(node->Id, pos);
 
 		// Inputs
-		Json::array_t JsonInputs = JsonNode["inputs"];
+		Json::array_t JsonInputs = jsonNode["inputs"];
 
 		for (auto& JsonInput : JsonInputs)
 		{
@@ -195,7 +214,7 @@ bool NodeManager::read(const Json& j)
 		}
 
 		// Outputs
-		Json::array_t JsonOutputs = JsonNode["outputs"];
+		Json::array_t JsonOutputs = jsonNode["outputs"];
 
 		for (auto& JsonOutputs : JsonOutputs)
 		{
@@ -251,6 +270,19 @@ void NodeManager::write(Json& j)
 			}
 
 			j["skip"] = pin->SkipOptions;
+
+			if (pin->Colorful)
+			{
+				j["color"]["r"] = pin->Color.r;
+				j["color"]["g"] = pin->Color.g;
+				j["color"]["b"] = pin->Color.b;
+				j["color"]["a"] = pin->Color.a;
+			}
+
+			if (pin->Icon)
+			{
+				j["icon"] = pin->IconId;
+			}
 		}
 
 		j["linkToSameNode"] = pin->LinkToSameNode;
@@ -274,42 +306,42 @@ void NodeManager::write(Json& j)
 	j["lastId"] = _lastId;
 
 	// Nodes
-	auto JsonNodes = Json::array();
+	auto jsonNodes = Json::array();
 
 	for (auto& node : _nodes)
 	{
-		auto JsonNode = Json::object();
+		auto jsonNode = Json::object();
 
-		JsonNode["id"] = node->Id;
-		JsonNode["name"] = node->Name;
+		jsonNode["id"] = node->Id;
+		jsonNode["name"] = node->Name;
 
 		if (node->Type == Node::NodeType::Options)
-			JsonNode["nameId"] = node->NameId;
+			jsonNode["nameId"] = node->NameId;
 		
-		JsonNode["type"] = node->Type;
-		JsonNode["lastPinId"] = node->_lastPinId;
+		jsonNode["type"] = node->Type;
+		jsonNode["lastPinId"] = node->_lastPinId;
 		
 		auto pos = ed::GetNodePosition(node->Id);
-		JsonNode["position"] = { pos.x, pos.y };
+		jsonNode["position"] = { pos.x, pos.y };
 
 
 		// Inputs
-		auto JsonInputs = Json::array();
+		auto jsonInputs = Json::array();
 
 		for (auto& input : node->Inputs)
 		{
-			auto JsonInput = Json::object();
+			auto jsonInput = Json::object();
 
-			writePin(JsonInput, input.get());
+			writePin(jsonInput, input.get());
 
-			JsonInputs.push_back(JsonInput);
+			jsonInputs.push_back(jsonInput);
 		}
 
-		JsonNode["inputs"] = JsonInputs;
+		jsonNode["inputs"] = jsonInputs;
 
 
 		// Outputs
-		auto JsonOutputs = Json::array();
+		auto jsonOutputs = Json::array();
 
 		for (auto& output : node->Outputs)
 		{
@@ -317,33 +349,33 @@ void NodeManager::write(Json& j)
 
 			writePin(JsonOutput, output.get());
 
-			JsonOutputs.push_back(JsonOutput);
+			jsonOutputs.push_back(JsonOutput);
 		}
 
-		JsonNode["outputs"] = JsonOutputs;
+		jsonNode["outputs"] = jsonOutputs;
 
 
-		JsonNodes.push_back(JsonNode);
+		jsonNodes.push_back(jsonNode);
 	}
 
-	j["nodes"] = JsonNodes;
+	j["nodes"] = jsonNodes;
 
 	// Links
-	auto JsonLinks = Json::array();
+	auto jsonLinks = Json::array();
 
 	for (auto& link : _links)
 	{
-		auto JsonLink = Json::object();
-		JsonLink["id"] = link->Id;
-		JsonLink["startPinId"] = link->StartPinId;
-		JsonLink["endPinId"] = link->EndPinId;
-		JsonLink["sameNode"] = link->SameNode;
-		JsonLink["color"] = ImGui::ColorConvertFloat4ToU32(link->Color.Value);
+		auto jsonLink = Json::object();
+		jsonLink["id"] = link->Id;
+		jsonLink["startPinId"] = link->StartPinId;
+		jsonLink["endPinId"] = link->EndPinId;
+		jsonLink["sameNode"] = link->SameNode;
+		jsonLink["color"] = ImGui::ColorConvertFloat4ToU32(link->Color.Value);
 
-		JsonLinks.push_back(JsonLink);
+		jsonLinks.push_back(jsonLink);
 	}
 
-	j["links"] = JsonLinks;
+	j["links"] = jsonLinks;
 }
 
 void NodeManager::reset()

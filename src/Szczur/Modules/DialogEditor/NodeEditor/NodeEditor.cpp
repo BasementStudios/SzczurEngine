@@ -27,6 +27,8 @@ NodeEditor::NodeEditor(DialogEditor* dialogEditor)
 	ed::NavigateToContent();
 
 	_parts = &_dialogEditor->_dlgEditor.getContainer();
+
+	loadIcons();
 }
 
 NodeEditor::~NodeEditor()
@@ -275,6 +277,20 @@ std::string NodeEditor::generateCode()
 					code += "\tminorTarget = " + std::to_string(out->OptionTarget.Ptr->minorId) + ";\n";
 				}
 
+				// color
+				if (out->Colorful)
+				{
+					code += "\tcolor = {"	+ std::to_string(static_cast<int>(out->Color.r * 255)) + ", " 
+											+ std::to_string(static_cast<int>(out->Color.g * 255)) + ", "
+											+ std::to_string(static_cast<int>(out->Color.b * 255)) + ", " 
+											+ std::to_string(static_cast<int>(out->Color.a * 255)) + "};\n";
+				}
+
+				if (out->Icon)
+				{
+					code += "\ticonId = " + std::to_string(out->IconId) + ";\n";
+				}
+
 				// skip
 				if (out->SkipOptions)
 				{
@@ -438,12 +454,20 @@ std::string NodeEditor::getLuaFunction(NodePin* pin, FunctionType functionType, 
 	return std::string();
 }
 
-void NodeEditor::showTooltip(const std::string& message)
+void NodeEditor::showTooltip(const std::string& message, sf::Sprite* sprite, const std::string& spriteName)
 {
 	ImGui::SetNextWindowPos(ed::CanvasToScreen(ImGui::GetMousePos()) + ImVec2(16, 8));
 
 	ImGui::BeginTooltip();
 	ImGui::Text(message.c_str());
+
+	if (sprite)
+	{
+		ImGui::Text(spriteName.c_str());
+		ImGui::SameLine();
+		ImGui::ImageButton(*sprite, 0);
+	}
+
 	ImGui::EndTooltip();
 }
 
@@ -577,7 +601,9 @@ void NodeEditor::update()
 								str = "Major: " + output->OptionTarget.Ptr->majorFullName;
 								str += "\nMinor: " + output->OptionTarget.Ptr->minorFullName;
 
-								showTooltip(str);
+								auto tex = output->IconId > -1 ? _icons.at(output->IconId).get() : nullptr;
+
+								showTooltip(str, tex, "Icon:");
 							}
 						}
 
@@ -593,6 +619,14 @@ void NodeEditor::update()
 					}
 					else
 					{
+						ImGui::PushID(output->Id);
+
+						if (output->Colorful)
+						{
+							ImGui::ColorButton("", ImVec4(output->Color.r, output->Color.g, output->Color.b, output->Color.a), 0, ImVec2(8, 24));
+							ImGui::SameLine();
+						}
+
 						ImGui::Text(output->OptionTarget.Ptr->label.c_str());
 
 						if (output->ActionFunc)
@@ -601,7 +635,7 @@ void NodeEditor::update()
 
 							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(183, 28, 28).Value);
 							
-							if (ImGui::Button(("!##" + std::to_string(output->Id)).c_str()))
+							if (ImGui::Button("!", ImVec2(24, 24)))
 							{
 								_optionFunctionConfigWindow = true;
 								_currentFunctionOption = output.get();
@@ -624,7 +658,7 @@ void NodeEditor::update()
 					
 							ImGui::PushStyleColor(ImGuiCol_Button, ImColor(63, 81, 181).Value);
 							
-							if (ImGui::Button(("?##" + std::to_string(output->Id)).c_str()))
+							if (ImGui::Button("?", ImVec2(24, 24)))
 							{
 								_optionFunctionConfigWindow = true;
 								_currentFunctionOption = output.get();
@@ -640,6 +674,8 @@ void NodeEditor::update()
 								showTooltip(output->ConditionFuncName);
 							}
 						}
+
+						ImGui::PopID();
 					}
 
 					ImGui::EndGroup();
@@ -811,6 +847,44 @@ void NodeEditor::update()
 	showPopups();
 	showOptionConfig();
 	showOptionFunctionConfig();
+}
+
+void NodeEditor::loadIcons()
+{
+	std::string iconsPath = "Assets/Dialog/Config/icons.png";
+
+
+	LOG_INFO("Icons path: ", iconsPath);
+
+	_iconsTex = std::make_unique<sf::Texture>();
+
+	if (!_iconsTex->loadFromFile(iconsPath))
+	{
+		LOG_INFO("Cannot load icons!");
+		_iconsTex.reset();
+		return;
+	}
+
+	
+
+	sf::Vector2i iconSize = sf::Vector2i(_iconsTex->getSize().y, _iconsTex->getSize().y);
+
+	LOG_INFO("Icon size: ", iconSize.x, "x", iconSize.y);
+
+	auto iconNumber = _iconsTex->getSize().x / iconSize.x;
+
+	LOG_INFO("Icons number: ", iconNumber);
+
+	for (int i = 0; i < iconNumber; i++)
+	{
+		auto icon = std::make_unique<sf::Sprite>();
+		icon->setTexture(*_iconsTex);
+		icon->setTextureRect(sf::IntRect({ iconSize.x * i, 0 }, iconSize));
+		icon->setScale(0.5f, 0.5f);
+
+		_icons.push_back(std::move(icon));
+	}
+
 }
 
 void NodeEditor::showPopups()
@@ -1059,6 +1133,48 @@ void NodeEditor::showOptionConfig()
 						{
 							_currentOption->ActionFuncName = buffer;
 						}
+					}
+
+					ImGui::Checkbox("Color", &_currentOption->Colorful);
+
+					if (_currentOption->Colorful)
+					{
+						ImGui::ColorEdit4("Color", &_currentOption->Color[0]);
+					}
+
+					ImGui::Checkbox("Icon", &_currentOption->Icon);
+
+					if (_currentOption->Icon)
+					{
+						for (int i = 0; i < _icons.size(); ++i)
+						{
+							bool current = _currentOption->IconId == i;
+
+							if (current)
+							{
+								ImGui::PushStyleColor(ImGuiCol_Button, sf::Color(0x1B5E20FF));
+							}
+
+							ImGui::PushID(i);
+
+							if (ImGui::ImageButton(*_icons[i]))
+							{
+								_currentOption->IconId = i;
+							}
+
+							ImGui::PopID();
+
+							if (current)
+							{
+								ImGui::PopStyleColor();
+							}
+
+							if (i != _icons.size() - 1 && (i + 1) % 5 != 0)
+							{
+								ImGui::SameLine();
+							}
+						}
+
 					}
 				}
 			}

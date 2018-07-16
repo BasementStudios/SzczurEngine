@@ -134,6 +134,7 @@ bool Application::input()
 						getModule<DialogEditor>().saveProject();
 					case MsgBox::Result::No:
 						getModule<Window>().getWindow().close();
+						return true;
 						break;
 					case MsgBox::Result::Cancel:
 						break;
@@ -152,8 +153,8 @@ bool Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
+	getModule<Dialog>().update();
 
 	/*
 		Put other updates here

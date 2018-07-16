@@ -7,6 +7,7 @@
 
 #include <NodeEditor/NodeEditor.h>
 #include <nlohmann/json.hpp>
+#include <glm/vec4.hpp>
 
 #include "../DLGEditor/DialogData.hpp"
 
@@ -48,6 +49,12 @@ struct NodePin
 	std::string ActionFuncCode;
 
 	bool SkipOptions = false;
+
+	bool Colorful = false;
+	glm::vec4 Color = { 1.f, 1.f, 1.f, 1.f };
+
+	bool Icon = false;
+	int IconId = -1;
 
 	NodePin() { }
 	NodePin(int id, ed::PinKind kind) :

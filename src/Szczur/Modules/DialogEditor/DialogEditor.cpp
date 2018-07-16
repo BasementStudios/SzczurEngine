@@ -240,6 +240,8 @@ void DialogEditor::openProject(const std::string& path)
 
 	if (isProjectDirectory(_path))
 	{
+		getModule<Dialog>().unload();
+
 		_projectPath = _path;
 
 		_CharactersManager.load(_projectPath + "/characters.json");
