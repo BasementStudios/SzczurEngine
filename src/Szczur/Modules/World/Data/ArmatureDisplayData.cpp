@@ -19,6 +19,7 @@ ArmatureDisplayData::ArmatureDisplayData(const std::string& path)
 
 	checkForReload();
 	load();
+	_needReload = false;
 }
     
 ArmatureDisplayData::~ArmatureDisplayData() 
