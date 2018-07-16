@@ -18,16 +18,16 @@ public:
 	Module();
 
 	///
-	Module(const Module&) = default;
+	Module(const Module&) = delete;
 
 	///
-	Module& operator = (const Module&) = default;
+	Module& operator = (const Module&) = delete;
 
 	///
-	Module(Module&&) = default;
+	Module(Module&&) = delete;
 
 	///
-	Module& operator = (Module&&) = default;
+	Module& operator = (Module&&) = delete;
 
 	///
 	~Module() = default;

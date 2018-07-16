@@ -1,63 +1,81 @@
+CXX      := g++
+CXXFLAGS := -static -std=c++17 -g -Wall -Wextra -Wpedantic
+LD       := g++
+LDFLAGS  := -lcomdlg32 -lstdc++fs
 
-#
-# Settings
-#
+CROSS  := no
+TARGET := win64
+COLORS := yes
 
-# Compiler
-#CROSS := no # Uncomment 
-#CXX := clang
-#LD := clang
+TTARGET  := x86_64
+TNAME    := MinGW
+TVERSION := 7.3.0
 
-# Fancy
-COLORS = yes
+# Directory for all libraries
+LIBS_DIR :=
 
+# Linkable libraries
+LIB_LIST := BOOST IMGUI GLAD SFML LUA DRAGONBONES
 
+# boost
+INC_DIR_BOOST_$(ARCH) := $(LIBS_DIR)/boost-1.67.0/include
+LIB_DIR_BOOST_$(ARCH) := $(LIBS_DIR)/boost-1.67.0/lib/$(TTARGET)/$(TNAME)/$(TVERSION)
+BIN_DIR_BOOST_$(ARCH) :=
 
-# SFML 32bit
-INC_DIR_SFML_32 := e:/Libraries/SFML-2.4.2/include
-LIB_DIR_SFML_32 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/lib
-BIN_DIR_SFML_32 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/bin
-# SFML 64bit
-INC_DIR_SFML_64 := e:/Libraries/SFML-2.4.2/include
-LIB_DIR_SFML_64 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/lib
-BIN_DIR_SFML_64 := e:/Libraries/SFML-2.4.2/MinGW-7.2-x86_64/bin
+LDFLAGS_STATIC_BOOST  :=
+LDFLAGS_DYNAMIC_BOOST :=
 
-# ImGUI 32bit
-INC_DIR_IMGUI_32 := e:/Libraries/ImGui-1.60/include
-LIB_DIR_IMGUI_32 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
-BIN_DIR_IMGUI_32 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
-# ImGUI 64bit
-INC_DIR_IMGUI_64 := e:/Libraries/ImGui-1.60/include
-LIB_DIR_IMGUI_64 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
-BIN_DIR_IMGUI_64 := e:/Libraries/ImGui-1.60/lib/MinGW-7.2.0-x86_64
+# ImGui
+INC_DIR_IMGUI_$(ARCH) := $(LIBS_DIR)/ImGui-1.60/include
+LIB_DIR_IMGUI_$(ARCH) := $(LIBS_DIR)/ImGui-1.60/lib/$(TTARGET)/$(TNAME)/$(TVERSION)
+BIN_DIR_IMGUI_$(ARCH) :=
 
-# Boost 32bit
-INC_DIR_BOOST_32 := e:/Libraries/Boost-1.65.1/boost
-LIB_DIR_BOOST_32 := e:/Libraries/Boost-1.65.1/MinGW-7.2-x86_64/lib
-BIN_DIR_BOOST_32 := e:/Libraries/Boost-1.65.1/MinGW-7.2-x86_64/bin
-# Boost 64bit
-INC_DIR_BOOST_64 := e:/Libraries/Boost-1.65.1/boost
-LIB_DIR_BOOST_64 := e:/Libraries/Boost-1.65.1/MinGW-7.2-x86_64/lib
-BIN_DIR_BOOST_64 := e:/Libraries/Boost-1.65.1/MinGW-7.2-x86_64/bin
+LDFLAGS_STATIC_IMGUI  := -limgui
+LDFLAGS_DYNAMIC_IMGUI :=
 
-# Lua 32bit
-INC_DIR_LUA_32 := e:/Libraries/Lua-5.3.4/src
-LIB_DIR_LUA_32 := e:/Libraries/Lua-5.3.4/MinGW-7.2-x86_64/lib
-BIN_DIR_LUA_32 := e:/Libraries/Lua-5.3.4/MinGW-7.2-x86_64/bin
-# Lua 64bit
-INC_DIR_LUA_64 := e:/Libraries/Lua-5.3.4/src
-LIB_DIR_LUA_64 := e:/Libraries/Lua-5.3.4/MinGW-7.2-x86_64/lib
-BIN_DIR_LUA_64 := e:/Libraries/Lua-5.3.4/MinGW-7.2-x86_64/bin
+# glad
+INC_DIR_GLAD_$(ARCH) := $(LIBS_DIR)/glad-3.3.0/include
+LIB_DIR_GLAD_$(ARCH) := $(LIBS_DIR)/glad-3.3.0/lib/$(TTARGET)/$(TNAME)/$(TVERSION)
+BIN_DIR_GLAD_$(ARCH) :=
 
-# Lua sol2
-HEADER_INC_SOL2 := e:/Libraries/Lua-sol2-2.18.7/include
-# JSON
-HEADER_INC_JSON := e:/Libraries/JSON-2.1.1/include
-# GLM
-HEADER_INC_GLM := e:/Libraries/glm/include
+LDFLAGS_STATIC_GLAD  := -lglad
+LDFLAGS_DYNAMIC_GLAD :=
 
-# DragonBones \w SFML wrapper
-SRC_DIRS += e:/Libraries/DragonBones/DragonBones/src e:/Libraries/DragonBones/SFML/src e:/Libraries/DragonBones/3rdParty
-INC_DIRS += e:/Libraries/DragonBones/DragonBones/src e:/Libraries/DragonBones/SFML/src e:/Libraries/DragonBones/3rdParty
+# SFML
+INC_DIR_SFML_$(ARCH) := $(LIBS_DIR)/SFML-2.4.2/include
+LIB_DIR_SFML_$(ARCH) := $(LIBS_DIR)/SFML-2.4.2/lib/$(TTARGET)/$(TNAME)/$(TVERSION)
+BIN_DIR_SFML_$(ARCH) :=
 
+# Lua
+INC_DIR_LUA_$(ARCH) := $(LIBS_DIR)/Lua-5.3.4/include
+LIB_DIR_LUA_$(ARCH) := $(LIBS_DIR)/Lua-5.3.4/lib/$(TTARGET)/$(TNAME)/$(TVERSION)
+BIN_DIR_LUA_$(ARCH) :=
 
+LDFLAGS_STATIC_LUA  := -llua
+LDFLAGS_DYNAMIC_LUA :=
+
+# DragonBones
+INC_DIR_DRAGONBONES_$(ARCH) := $(LIBS_DIR)/DragonBones-5.6.3/include
+LIB_DIR_DRAGONBONES_$(ARCH) := $(LIBS_DIR)/DragonBones-5.6.3/lib/$(TTARGET)/$(TNAME)/$(TVERSION)
+BIN_DIR_DRAGONBONES_$(ARCH) :=
+
+LDFLAGS_STATIC_DRAGONBONES  := -ldragonbones
+LDFLAGS_DYNAMIC_DRAGONBONES :=
+
+# Header-only libraries
+HEADER_LIB_LIST := GLM JSON RAPIDJSON SOL OPENAL
+
+# glm
+HEADER_INC_GLM := $(LIBS_DIR)/glm-0.9.9/include
+
+# Json
+HEADER_INC_JSON := $(LIBS_DIR)/Json-3.1.2/include
+
+# RapidJson
+HEADER_INC_RAPIDJSON := $(LIBS_DIR)/RapidJson-1.1.0/include
+
+# Sol
+HEADER_INC_SOL := $(LIBS_DIR)/Sol-2.19.5/include
+
+# OpenAL
+HEADER_INC_OPENAL := $(LIBS_DIR)/OpenAL-1.15.1/include
