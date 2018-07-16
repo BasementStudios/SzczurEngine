@@ -6,7 +6,7 @@
 namespace rat {
 	struct Skill {
 	public:
-		void initScript();
+		static void initScript(Script& script);
 
 		void setNameId(std::string& nameId);
 		std::string& getNameId();
@@ -23,8 +23,8 @@ namespace rat {
 		void setEssenceCost(size_t index, int value);
 		int getEssenceCost(size_t index);
 
-		void setSkillPath(int path);
-		int getSkillPath();
+		void setSkillType(int path);
+		int getSkillType();
 	private:
 		std::string nameId;
 
@@ -35,7 +35,7 @@ namespace rat {
 
 		int essenceContainer [4];
 
-		int skillPath;
+		int type;
 	};
 
 	class Player : public Module<Script>
@@ -66,7 +66,7 @@ namespace rat {
 
 		bool addSkill(std::string& nameId);
 		bool removeSkill(std::string& nameId);
-		Skill& getSkill(std::string& nameId);
+		Skill* getSkill(std::string& nameId);
 	private:
 		std::string _pathToJson;
 
@@ -78,7 +78,7 @@ namespace rat {
 
 		int _essenceContainer [4];
 
-		std::vector<Skill&> _skillsList;
-		std::vector<Skill&> _knownSkillsList;
+		std::vector<Skill*> _skillsList;
+		std::vector<Skill*> _knownSkillsList;
 	};
 }

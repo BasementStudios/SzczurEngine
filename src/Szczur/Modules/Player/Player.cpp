@@ -4,6 +4,16 @@
 
 namespace rat {
 	//skill methods
+	void Skill::initScript(Script& script) {
+		auto object = script.newClass<Skill>("Skill", "Player");
+		object.set("getName", &Skill::getName);
+		object.set("getDescription", &Skill::getDescription);
+		object.set("getPPCost", &Skill::getPPcost);
+		object.set("getEssenceCost", &Skill::getEssenceCost);
+		object.set("getSkillType", &Skill::getSkillType);
+		object.init();
+	}
+
 	void Skill::setNameId(std::string& _nameId) {
 		nameId = _nameId;
 	}
@@ -39,19 +49,19 @@ namespace rat {
 		return essenceContainer[index];
 	}
 
-	void Skill::setSkillPath(int path) {
-		skillPath = path;
+	void Skill::setSkillType(int path) {
+		type = path;
 	}
-	int Skill::getSkillPath() {
-		return skillPath;
+	int Skill::getSkillType() {
+		return type;
 	}
 
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
 		_pathToJson = "Assets/Skills/skills.json";
 
-		initJson();
 		initScript();
+		initJson();
 
 		LOG_INFO("Player module initialized");
 	}
@@ -73,30 +83,30 @@ namespace rat {
 				for (auto itr = config["skills"].begin(); itr != config["skills"].end(); ++itr) {
 					auto& skill = itr.value();
 
-					Skill temp;
-					temp.setNameId(itr.key());
+					Skill* temp = new Skill;
+					temp->setNameId(itr.key());
 
 					if (auto& name = skill["name"]; !skill["name"].is_null()) {
-						temp.setName(name);
+						temp->setName(name);
 					}
 
 					if (auto& description = skill["description"]; !skill["description"].is_null()) {
-						temp.setDescription(description);
+						temp->setDescription(description);
 					}
 
 					if (auto& PPCost = skill["PPCost"]; !skill["PPCost"].is_null()) {
-						temp.setPPCost(PPCost);
+						temp->setPPCost(PPCost);
 					}
 
 					if (auto& essenceCost = skill["essenceCost"]; !skill["essenceCost"].is_null()) {
 						for (size_t i = 0; i < 4; i++)
 						{
-							temp.setEssenceCost(i, essenceCost[i]);
+							temp->setEssenceCost(i, essenceCost[i].get<int>());
 						}			
 					}
 
-					if (auto& skillPath = skill["skillPath"]; !skill["skillPath"].is_null()) {
-						temp.setSkillPath(skillPath);
+					if (auto& type = skill["type"]; !skill["type"].is_null()) {
+						temp->setSkillType(type);
 					}
 
 					_skillsList.push_back(temp);
@@ -141,7 +151,7 @@ namespace rat {
 
 	bool Player::addSkill(std::string& nameId) {
 		for (auto& i : _skillsList) {
-			if (i.getNameId == nameId) {
+			if (i->getNameId() == nameId) {
 				_knownSkillsList.push_back(i);
 				return true;
 			}
@@ -150,18 +160,19 @@ namespace rat {
 	}
 
 	bool Player::removeSkill(std::string& nameId) {
-		for (auto it = _knownSkillsList.begin(); it != _knownSkillsList.end(); it++) {
-			if (it->getNameId() == nameId) {
-				_knownSkillsList.erase(it);
+		for (size_t i = 0; i < _knownSkillsList.size(); i++)
+		{
+			if (_knownSkillsList[i]->getNameId() == nameId) {
+				_knownSkillsList.erase(_knownSkillsList.begin() + i);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	Skill& Player::getSkill(std::string& nameId) {
+	Skill* Player::getSkill(std::string& nameId) {
 		for (auto& i : _skillsList) {
-			if (i.getNameId == nameId) {
+			if (i->getNameId() == nameId) {
 				return i;
 			}
 		}

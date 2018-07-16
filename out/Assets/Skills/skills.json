@@ -5,14 +5,14 @@
 			"description": "fajny opis",
 			"PPCost": 3,
 			"essenceCost": [0, 0, 1, 1],
-			"skillCost": 1
+			"type": 1
 		},
 		"drugi fajny skill":{
 			"name": "też fajne imie",
 			"description": "też fajny opis",
 			"PPCost": 5,
 			"essenceCost": [3, 1, 0, 0],
-			"skillPath": 2
+			"type": 2
 		}
 	}
 }
