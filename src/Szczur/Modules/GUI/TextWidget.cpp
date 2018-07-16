@@ -34,6 +34,11 @@ namespace rat {
         object.set("getCharacterPropSize", &TextWidget::getCharacterPropSize);
         object.set("getCharacterSize", &TextWidget::getCharacterSize);
         object.set("removeLast", &TextWidget::removeLast);
+        object.set("setOutlineThickness", &TextWidget::setOutlineThickness);
+        object.set("setOutlinePropThickness", &TextWidget::setOutlinePropThickness);
+        object.set("setOutlineColor", [](TextWidget& owner, unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+            owner.setOutlineColor({r, g, b, a});
+        });
 
         object.init();
     }
@@ -113,7 +118,10 @@ namespace rat {
     void TextWidget::setCharacterSize(unsigned int size) {
         _text.setCharacterSize(size);
         _aboutToRecalculate = true;
+        
+        if(_hasOutlinePropThickness) _calcOutlinePropThickness();
     }
+    
 
     unsigned int TextWidget::getCharacterSize() const {
         return _text.getCharacterSize();
@@ -130,6 +138,30 @@ namespace rat {
     float TextWidget::getCharacterPropSize() const
     {
         return _chPropSize;
+    }
+
+    void TextWidget::setOutlineThickness(float thickness)
+    {
+        assert(thickness >= 0.f);
+        _text.setOutlineThickness(thickness);
+    }
+    void TextWidget::setOutlinePropThickness(float prop)
+    {
+        _outlinePropThickness = prop;
+        _hasOutlinePropThickness = true;
+
+        _calcOutlinePropThickness();
+    }
+    void TextWidget::setOutlineColor(const sf::Color& color)
+    {
+        _text.setOutlineColor(color);
+    }
+
+    void TextWidget::_calcOutlinePropThickness()
+    {
+        assert(_hasOutlinePropThickness);
+        float chSize = float(_text.getCharacterSize());
+        setOutlineThickness(chSize * _outlinePropThickness);
     }
 
     void TextWidget::_calcChPropSize()

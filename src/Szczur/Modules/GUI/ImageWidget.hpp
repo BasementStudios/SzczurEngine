@@ -40,6 +40,8 @@ namespace rat
 
         void setFullyTexSizing();
         void setStaticTexPositing();
+
+        void setFullSizeFilling();
     
     protected:
         virtual sf::Vector2f _getSize() const override;
@@ -60,5 +62,6 @@ namespace rat
         void _calcStaticSizing();
 
         bool _hasTexture{false};
+        bool _hasFullSizeFilling{false};
     };
 }

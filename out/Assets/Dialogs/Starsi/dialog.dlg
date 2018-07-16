@@ -1,0 +1,141 @@
+[0][0][00:00-00:18][Start]{
+	[00:00][Kultysta]Czcigodni Bracia, oto obiecany nam Wybraniec...
+	[00:03][Starszy 1]Dobrze się spisałeś, młody uczniu. Wyrażamy głęboką nadzieję, że nie niepokoiłeś naszego gościa, prawda, niemilcu?
+	[00:07][Kultysta]Nie śmiałbym, Czcigodny Bracie, wystarczą już te tłumy na drodze...
+	[00:11][Starszy 1]Twój wysiłek zostanie wynagrodzony, a teraz możesz odejść.
+	[00:13][Kultysta]Tak, o Czcigodni!
+	[00:15][Starszy 1]Podejdź synu, chcemy z tobą porozmawiać.
+}
+[1][0][00:18-00:33][Podejdź do Starszych.]{
+	[00:18][Karion]Podobno oczekiwaliście mojego przybycia?
+	[00:21][Starszy 3]Nawet nie wiesz od jak dawna… a teraz w końcu spotkał nas ten zaszczyt.
+	[00:24][Starszy 2]Twoje przebudzenie w naszej wiosce jest darem zesłanym przez Wilczego Boga.
+	[00:27][Starszy 1]Wybrańcze… wyglądasz na zakłopotanego, coś cię trapi?
+	[00:30][Starszy 2]To musi być znak… Wyczuwam Wilczy ślad w jego umyśle!
+}
+[1][1][00:33-00:55][Zapytaj o głos w głowie.]{
+	[00:33][Karion]Skąd wiecie o... tym głosie?
+	[00:36][Starszy 2]Synu... Jakże moglibyśmy nie poznać tego głosu? Czuć od ciebie Wilczą woń...
+	[00:40][Starszy 1]Po wielu latach modlitw zostaliśmy obdarzeni darem podobnym do twojego, jednak o wiele słabszym.
+	[00:44][Starszy 1]Słyszymy jego ciche wycie. Możemy porozumiewać się z naszym panem, aby spełniać jego rozkazy...
+	[00:47][Starszy 1]Ale ty... Ty jesteś wyjątkowy. Masz stać się narzędziem w jego rękach. Narzędziem, dzięki, któremu odzyska wolność i oczyści ten świat.
+	[00:51][Starszy 3]Wilk zadecydował. Jesteś jego Wybrańcem.
+}
+[1][2][00:55-01:17][Zapytaj o Wilczego Boga.]{
+	[00:55][Karion]Jesteście więc wyznawcami Wilczego Boga?
+	[00:58][Starszy 1]Tak. Chwalimy jego potęgę naszymi niegodnymi głosami.
+	[01:01][Karion]Możecie powiedzieć mi coś więcej na jego temat?
+	[01:04][Starszy 2]Bardzo chętnie, ale nie teraz.
+	[01:06][Starszy 3]Moglibyśmy o nim mówić przez wiele dni, a i tak nie wyczerpalibyśmy tematu... Jego powołaniem jest śmierć...
+	[01:10][Starszy 3]Ostateczny koniec wszystkich męk i bólów, ukojenie i spokój, wieczny sen... I w tej właśnie śmierci chce nas wszystkich odrodzić, abyśmy mogli kroczyć ścieżką pokoju.
+	[01:14][Starszy 2]Jego miłosierdzie nie zna granic.
+}
+[1][3][01:17-01:32][Zapytaj o rozmówców.]{
+	[01:17][Karion]Cieszycie się tu niezłym szacunkiem... kim wy w ogóle jesteście?
+	[01:20][Starszy 3]Jesteśmy opiekunami tej małej wspólnoty. Prowadzimy tych zagubionych ludzi ku wiecznej chwale naszego pana, Wilczego Boga. Podążamy JEGO śladami!
+	[01:23][Wszyscy Starsi]Albowiem one wiodą nas do ukojenia!
+	[01:25][Starszy 1]Poza tym pilnujemy, aby w wiosce panował porządek... Jak już mogłeś zauważyć, nie wszyscy akolici...
+	[01:28][Starszy 2]Są w stanie normalnie funkcjonować w społeczeństwie. Dbamy o to, aby mogli wyznawać swoją wiarę w spokoju, z dala od nieprzychylnych spojrzeń. 
+}
+[1][4][01:32-01:42][Zapytaj o powód wezwania.]{
+	[01:32][Karion]Właściwie to... czego wy ode mnie chcecie?
+	[01:35][Starszy 2]My? Nie śmielibyśmy zamartwiać Wybrańca... Niczego od ciebie nie chcemy, synu.
+	[01:38][Starszy 3]To Wilk. On ma dla ciebie zadanie. Wyznaczył cię na wykonawcę swojej woli.
+}
+[1][5][01:42-02:00][Zapytaj o świętą księgę.]{
+	[01:42][Karion]Ten kultysta... wspominał coś o świętej księdze. Czym ona jest?
+	[01:45][Starszy 1]Cieszy nas twoje zainteresowanie. Bardzo dobrze, że chcesz poznać Pismo.
+	[01:48][Starszy 2]W Księdze zapisane są wszystkie mądrości Wilczego Boga, jego pochodzenie oraz plany naszego zbawienia.
+	[01:52][Starszy 3]Niewielu jednak potrafi ją trafnie interpretować, dlatego zmuszeni jesteśmy ograniczyć dostęp do niej zwykłym akolitom, aby nie siali zbędnej paniki lub co gorsza herezji.
+	[01:56][Starszy 1]Przyjmij ten oto dar, jako wyraz naszego zaufania dla ciebie i wiary w skuteczność twojej misji.
+}
+[2][0][05:36-05:38][Wróć do poprzednich pytań.]{
+	[05:36][Karion]_
+}
+[2][1][02:00-02:43][Kontynuuj rozmowę.]{
+	[02:00][Karion]Niczego nie rozumiem...
+	[02:03][Starszy 1]Zrozumiesz z czasem. Nasz pan uprzedził nas o twoim przybyciu, o twoim powrocie do naszego wymiaru. Zdradził też nam twoje skryte pragnienie…
+	[02:06][Karion]Pragnienie? O czym ty mówisz?
+	[02:09][Starszy 1]Nywia? Tak jej na imię, mam rację?
+	[02:11][Karion]Skąd wiesz o...
+	[02:13][Starszy 1] Nie czas teraz na pytania. Posłuchaj mnie uważnie, chłopcze.
+	[02:16][Starszy 1]Masz na swoich barkach ogromną odpowiedzialność.
+	[02:19][Starszy 1]Możesz stać się tym, który ocali cały nasz świat przed zgubnym wpływem Smoczych Uzurpatorów, których ślepy lud nazywa Bogami...
+	[02:23][Starszy 1]Albowiem jest tylko jeden Bóg - Wilczy Bóg i nie ma Boga ponad Wilka..! 
+	[02:27][Starszy 1]On cię potrzebuje, my cię potrzebujemy, cały świat cię potrzebuje! Musisz nam pomóc dokończyć rytuał.
+	[02:31][Karion]Jaki rytuał..?
+	[02:32][Starszy 2]Wskrzeszenia. Musimy wreszcie sprowadzić Wilczego Boga do naszego wymiaru.
+	[02:36][Starszy 3]Zbyt długo ten świat czeka na jego przybycie. Zbyt długo ta niesprawiedliwa kara naznacza los naszego pana! Nadszedł czas, aby to zmienić!
+	[02:40][Karion]I ty nam w tym pomożesz...
+}
+[2][2][02:43-02:54][Odmów pomocy.]{
+	[02:43][Karion]Nie... mam dość bycia marionetką. Niczego nie rozumiem i nie chcę tego rozumieć.
+	[02:46][Starszy 1]Nie możesz tak po prostu odrzucić własnego przeznaczenia.
+	[02:49][Karion]Doprawdy?
+	[02:51][Starszy 2]Albo go dopełnisz albo wrócisz skąd przybyłeś i już nigdy nie zobaczysz Nywii.
+}
+[2][3][05:34-05:36][Wyjdź ze świątyni.]{
+	[05:34][Karion]Wychodze...
+}
+[2][4][02:54-03:18][Zmieniłem zdanie]{
+	[02:54][Karion]Nywia... dobrze, co mam zrobić?
+	[02:56][Starszy 3]Mądra decyzja.
+	[02:58][Starszy 1]Krew musi zmazać krew. Gwałt odcisnąć się na gwałcie... Odnajdziesz swojego mordercę i odpłacisz mu za ten niegodny czyn.
+	[03:02][Starszy 1]Jego dusza musi trafić do naszego pana, tylko wtedy będzie w stanie z tobą porozmawiać, bez żadnych przeszkód i zakłóceń.
+	[03:06][Karion]I to powinno dopełnić rytuału?
+	[03:08][Starszy 1]Tak zostało zapisane w księgach...O tym, co nastąpi dalej dowiesz się od naszego pana.
+	[03:12][Starszy 1]A teraz ruszaj. Masz w sobie instynkt Wilka. Wytrop mordercę i... ZABIJ...
+	[03:16][Wszyscy Starsi]Niech prowadzi cię Wilczy Bóg.
+}
+[2][5][03:18-03:50][Jak mam pomóc?]{
+	[03:18][Karion]Ale... jak mogę pomóc?
+	[03:20][Starszy 1]Musisz odnaleźć w sobie wewnętrznego Wilka, obudzić jego dziką wściekłość i niezaspokojony głód.
+	[03:24][Starszy 2]Musisz stać się myśliwym, łowcą, niech każdy czuję lęk na samo wspomnienie o twoim imieniu.
+	[03:28][Starszy 3]Musisz obudzić w sobie nienawiść, najsilniejszą ludzką emocję, która rozpali w tobie żar zdolny do pokonania każdego, kto ośmieli się stanąć na twojej drodze.
+	[03:32][Starszy 1]Zapolujesz. Odnajdziesz swojego mordercę i zaszlachtujesz go jak zwierzę. 
+	[03:36][Starszy 1]Ofiara krwi jest miła naszemu panu. Kiedy trafi do niego dusza twojego prześladowcy... Wtedy... wtedy będzie mógł wreszcie z tobą porozmawiać.
+	[03:39][Karion]I wtedy odzyskam Nywię?
+	[03:41][Starszy 1]Niezbadane jest Jego szaleństwo... Wszystkiego dowiesz się od naszego pana.
+	[03:45][Starszy 1]Miej wiarę, synu. A teraz ruszaj. Instynkt Wilka jest ukryty głęboko w twoim sercu.
+	[03:48][Wszyscy Starsi]Niech prowadzi cię Wilczy Bóg.
+}
+[3][0][03:50-04:27][Pozostań w miejscu.]{
+	[03:50][Karion]Czego ode mnie chcecie?
+	[03:52][Starszy 2]Spokojnie... Nie masz powodu do obaw, jesteś wśród swoich.
+	[03:55][Starszy 1]Nie grozi ci żadne niebezpieczeństwo, co więcej możemy ci pomóc osiągnąć twój cel.
+	[03:59][Starszy 3]Pomożemy ci wyleczyć twoje złamane serce.
+	[04:02][Karion]O czym wy mówicie?
+	[04:05][Starszy 1]Nywia... przecież tak bardzo ci jej brakuje. Czyż nie?
+	[04:08][Starszy 2]Tak... nawet teraz go słyszy.
+	[04:11][Starszy 3]Po tylu latach zniewolenia nareszcie nadszedł ten dzień.
+	[04:14][Karion]Zacznijcie wreszcie mówić wprost. Kim jesteście i o co w tym wszystkim chodzi?
+	[04:18][Starszy 1]Musisz podążać ścieżką Wilka, taki jest twój los.
+	[04:21][Karion]Przestańcie zmieniać temat...
+	[04:23][Karion]Nie pozwól, aby lata przygotowań poszły na marne... Nie możesz tak po prostu teraz odpuścić... Chyba nie zostawisz tak Nywii?
+}
+[3][1][04:27-04:46][Odejdź.]{
+	[04:27][Karion]Nywia... przestań ciągle o niej wspominać!
+	[04:30][Starszy 1]Chcesz ją tak po prostu zostawić?
+	[04:32][Karion]Ona odeszła już dawno, nic nie można z tym zrobić.
+	[04:35][Starszy 1]Jesteś tego pewien?
+	[04:37][Karion]Przestańcie mnie wreszcie wodzić za nos!
+	[04:40][Starszy 2]Czeka cię śmierć, zdajesz sobie z tego sprawę?
+	[04:43][Karion]Być może taki jest mój los, może wtedy spotkam wreszcie Nywię.
+}
+[3][2][04:46-05:34][Kontynuuj rozmowę.]{
+	[04:46][Karion]Nigdy... ale co wy możecie na to poradzić...
+	[04:49][Starszy 1]My nic, ale moc naszego pana może ją do ciebie sprowadzić.
+	[04:52][Starszy 2]Wilczy Bóg może ci ją oddać, po tak długiej rozłące.
+	[04:55][Starszy 3]Wystarczy, że tylko dopełnisz rytuał.
+	[04:58][Karion]Jaki znowu rytuał?
+	[05:00][Starszy 1]Wilczy ślad musi naznaczyć ziemię i wypalić w niej krwawe znamię. Nasz pan musi wrócić do tego wymiaru.
+	[05:04][Karion]I niby jak ja mam wam w tym pomóc?
+	[05:06][Starszy 3]Siejąc śmierć, domenę Wilka.
+	[05:09][Starszy 1]Jeśli chcesz móc wreszcie z nim porozmawiać… Bo widzę, że ciągle nie jesteś przekonany co do jasności naszych intencji… Musisz złożyć ofiarę.
+	[05:13][Karion]Zaczyna mnie to powoli nudzić.
+	[05:16][Starszy 1]Musisz zabić swojego zabójcę... Czyż to nie jest piękna historia? Powrócić zza grobu, żeby zemścić się na swym mordercy...
+	[05:20][Starszy 2]Wtedy głos, który słyszysz stanie się dla ciebie zrozumiały, a wszelkie wątpliwości cię opuszczą.
+	[05:24][Starszy 3]Musisz tylko mieć wiarę w Wilka, ona wskaże ci drogę do ukojenia.
+	[05:28][Starszy 1]Znajdź mordercę... ZABIJ... Dokończ rytuał... 
+	[05:31][Karion]Pokładamy w tobie wielkie nadzieje... Nie zawiedź nas.
+}

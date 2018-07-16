@@ -67,7 +67,6 @@ namespace rat {
         if(event.type == sf::Event::Resized)
         {
             sf::Vector2u winSize = { (unsigned int)(event.size.width), (unsigned int)(event.size.height) };
-
             auto& mainWindow = getModule<Window>();
             //mainWindow.setVideoMode(sf::VideoMode{winSize.x, winSize.y});
 			mainWindow.pushGLStates();

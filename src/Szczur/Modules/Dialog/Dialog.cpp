@@ -4,7 +4,10 @@ namespace rat {
     Dialog::Dialog() :
     _dialogGUI(getModule<GUI>()) {
         LOG_INFO(this, "Module Dialog constructed")
+        auto& gui = getModule<GUI>();
         _initScript();
+		getModule<Script>().scriptFile("Assets/Dialog/Config/dialogConfig.lua");
+		_dialogGUI.init();
     }
 
 
@@ -20,7 +23,7 @@ namespace rat {
 		module.set_function("load", &Dialog::load, this);
         module.set("GUI", &_dialogGUI);
 
-
+		
         script.initClasses<DialogManager, Options, DialogGUI>();
     }
 

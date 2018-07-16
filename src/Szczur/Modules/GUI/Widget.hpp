@@ -83,9 +83,9 @@ namespace rat
 		void resetColor();
 		sf::Color getColor() const;
 
-		void setBackground(const sf::Color& color);
-		void setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-		void removeBackground();
+		// void setBackground(const sf::Color& color);
+		// void setBackground(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+		// void removeBackground();
 
 		void makeChildrenUncolorable();
 		
@@ -232,9 +232,9 @@ namespace rat
 
 		bool _hasStaticPropPositing{false};
 
-		sf::RectangleShape _background;
-		bool _hasBackground{false};
-		void _updateBackgroundPos();
+		// sf::RectangleShape _background;
+		// bool _hasBackground{false};
+		// void _updateBackgroundPos();
 
 		sf::Vector2f _getBound() const;
 

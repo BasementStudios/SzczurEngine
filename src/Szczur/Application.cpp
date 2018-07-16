@@ -83,8 +83,8 @@ void Application::update()
 	_imGuiStyler.update();
 
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
+	getModule<Dialog>().update();
 	getModule<Music>().update(deltaTime);
 	getModule<Equipment>().update(deltaTime);
 	/*
