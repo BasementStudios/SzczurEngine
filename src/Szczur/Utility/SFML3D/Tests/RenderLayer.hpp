@@ -1,81 +1,49 @@
 #pragma once
 
-#include <chrono>
-#include <thread>
-
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
+#include "./Fixtures/RenderTargetTest.hpp"
 #include "Szczur/Utility/Tests.hpp"
 
-#include "Szczur/Modules/Window/Window.hpp"
-#include "../RenderLayer.hpp"
-#include "../CircleShape.hpp"
-#include "../RectangleShape.hpp"
-#include <SFML/Graphics.hpp>
-
-TEST(sf3d_RenderLayer, WorldProjection)
+struct SimpleRenderLayerTest : public RenderTargetTest
 {
-	using namespace rat;
-	using namespace sf3d;
-
-	LOG_INFO("Getting window module");
-	Window& windowModule = *(rat::detail::globalPtr_v<Window>);
-	windowModule.clear({24u, 20u, 28u, 255u});
-
-	LOG_INFO("Loading simple shader for Window");
-	ShaderProgram simpleShaderProgram(
-		Shader(Shader::Vertex, "Assets/Shaders/simple.vert"),
-		Shader(Shader::Fragment, "Assets/Shaders/simple.frag")
-	);
-	windowModule.getWindow().setDefaultShaderProgram(simpleShaderProgram);
-
-	// LOG_INFO("Rendering something on window (SFML)");
-	// {
-	// 	windowModule.pushGLStates();
-	// 	sf::RectangleShape shapeOnWindow({300.f, 200.f});
-	// 	shapeOnWindow.setPosition({10.f, 100.f});
-	// 	shapeOnWindow.setOutlineColor(sf::Color::Red);
-	// 	shapeOnWindow.setOutlineThickness(5);
-	// 	windowModule.getWindow().draw(shapeOnWindow);
-	// 	windowModule.popGLStates();
-	// }
-
-	LOG_INFO("Rendering something on window (SFML3D)");
+	sf3d::RenderLayer renderLayer;
+	
+	sf3d::ShaderProgram targetShaderProgram;
+	sf3d::ShaderProgram layerShaderProgram;
+	
+	virtual void SetUp() 
 	{
-		//RectangleShape shapeOnWindow({1.8f, 1.8f});
-		RectangleShape shapeOnWindow({0.9f, 0.9f});
-		shapeOnWindow.move({-0.9.f, -0.9f, 0.f});
-		windowModule.getWindow().draw(shapeOnWindow, RenderStates{Transform{}});
+		RenderTargetTest::SetUp();
+
+		// Shader for target
+		this->targetShaderProgram.linkShaders(
+			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/assemble.vert"},
+			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/assemble.frag"}
+		);
+		this->renderTarget->setDefaultShaderProgram(targetShaderProgram);
+
+		// Shader for layer
+		this->layerShaderProgram.linkShaders(
+			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/model.vert"},
+			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/texture.frag"}
+		);
+		this->renderLayer.setDefaultShaderProgram(layerShaderProgram);
 	}
 
-	// LOG_INFO("Loading shader");
-	// ShaderProgram shaderProgram(
-	// 	Shader(Shader::Vertex, "Assets/Shaders/projection.vert"),
-	// 	Shader(Shader::Fragment, "Assets/Shaders/world.frag")
-	// );
+	virtual void TearDown()
+	{
+		RenderTargetTest::TearDown();
 
-	// LOG_INFO("Creating layer");
-	// RenderLayer layer(windowModule.getSize(), &shaderProgram);
+		// Draw layer
+		this->renderTarget->draw(this->renderLayer);
+	}
+};
 
-	//glEnable(GL_DEPTH_TEST);
-
-	// LOG_INFO("Clearing layer with color");
-	// layer.clear(0.f, 0.f, 1.f, 1.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// LOG_INFO("Rendering something over layer");
-	// {
-	// 	CircleShape circleShape1;
-	// 	layer.draw(circleShape1, {Transform{}});
-	// }
-	// CircleShape circleShape2;
-	
-	//glDisable(GL_DEPTH_TEST);
-
-	// LOG_INFO("Drawing layer to the window");
-	// windowModule.draw(layer);
-
-	LOG_INFO("Display window");
-	windowModule.getWindow().display();
-
-	using namespace std::chrono_literals;
-	std::this_thread::sleep_for(5s);
-	return false;
+TEST_F(SimpleRenderLayerTest, DrawBasic)
+{
+	sf3d::RectangleShape object({0.3f, 0.2f});
+	renderLayer.draw(object);
+	VISUAL_TESTING();
 }

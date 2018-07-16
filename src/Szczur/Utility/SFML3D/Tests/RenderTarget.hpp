@@ -1,58 +1,41 @@
 #pragma once
 
-#include <chrono>
-#include <thread>
-#include <memory>
-
-#include <SFML/Graphics.hpp>
-#include "Szczur/Modules/Window/Window.hpp"
-#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
-#include "Szczur/Utility/SFML3D/CircleShape.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"
+#include "./Fixtures/RenderTargetTest.hpp"
 #include "Szczur/Utility/Tests.hpp"
 
-struct RenderTargetTest : public ::testing::Test
+struct SimpleRenderTargetTest : public RenderTargetTest
 {
-	rat::Window* windowModule;
-	sf3d::RenderTarget* renderTarget;
 	sf3d::ShaderProgram shaderProgram;
 	
 	virtual void SetUp() 
 	{
-		// Window
-		this->windowModule = rat::detail::globalPtr_v<rat::Window>;
-		this->windowModule->clear({24u, 20u, 28u, 255u});
-		
-		// Target
-		this->renderTarget = &(this->windowModule->getWindow());
+		RenderTargetTest::SetUp();
 
 		// Shader
 		this->shaderProgram.linkShaders(
-			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/simple/vertex.vert"},
-			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/simple/vertex.frag"}
+			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/model.vert"},
+			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/color.frag"}
 		);
-		this->windowModule->getWindow().setDefaultShaderProgram(shaderProgram);
-	}
-
-	virtual void TearDown()
-	{
-		// Render
-		this->windowModule->render();
-
-		// Wait
-		using namespace std::chrono_literals;
-		std::this_thread::sleep_for(333ms);
+		this->renderWindow->setDefaultShaderProgram(shaderProgram);
 	}
 };
 
-TEST_F(RenderTargetTest, DrawBasic)
+TEST_F(SimpleRenderTargetTest, DrawBasic)
 {
 	sf3d::RectangleShape object({0.3f, 0.2f});
 	renderTarget->draw(object);
+	VISUAL_TESTING();
 }
-// TEST_F(RenderTargetTest, DrawMove)
-// {
-// 	sf3d::RectangleShape object({0.3f, 0.2f});
-// 	object.move();	
-// 	renderTarget.draw(object);
-// }
+
+TEST_F(SimpleRenderTargetTest, DrawMove)
+{
+	sf3d::RectangleShape object({0.3f, 0.2f});
+	object.move({-0.5f, 0.1f, 0.f});
+	renderTarget->draw(object);
+	VISUAL_TESTING();
+}
+
+// @todo , more tests

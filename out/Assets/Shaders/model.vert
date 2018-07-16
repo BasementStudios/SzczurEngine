@@ -14,20 +14,17 @@ out vec2 fragmentTexCoord;
 
 // Model, view, projection matrixes
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 uniform float positionFactor = 1.0;
 
 
 
-// Main shader function
-void main()
-{
-    fragmentPosition = vec3(model * vec4(_position * positionFactor, 1.0));
+// Main shader funciton
+void main() {
+	fragmentPosition = vec3(model * vec4(_position * positionFactor, 1.0));
     fragmentColor    = _color;
     fragmentTexCoord = _texCoord;
     
-    gl_Position = (projection * view * vec4(fragmentPosition, 1.0));
+	gl_Position = vec4(_position, 1.0);
 }
 
 

@@ -43,7 +43,7 @@ struct Material
 
 
 
-// Vertex
+// Fragment
 in vec3 fragmentPosition;
 in vec4 fragmentColor;
 in vec2 fragmentTexCoord;
