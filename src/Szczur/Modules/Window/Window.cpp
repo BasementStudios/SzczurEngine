@@ -144,18 +144,17 @@ void Window::init()
 		// Print OpenGL version
 		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
 
-		// GL flags
-		glEnable(GL_DEPTH_TEST);
+		// Overall GL flags
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CCW);
 
 		// Shader
 		try {
-			sf3d::Shader VShader(sf3d::Shader::Vertex, "Assets/Shaders/assemble.vert");
-			sf3d::Shader FShader(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
-
-			this->shaderProgram.linkShaders(VShader, FShader);
+			this->shaderProgram.linkShaders(
+				sf3d::Shader {sf3d::Shader::Vertex,		"Assets/Shaders/assemble.vert"},
+				sf3d::Shader {sf3d::Shader::Fragment,	"Assets/Shaders/assemble.frag"}
+			);
 			LOG_INFO("Shader loaded, compiled and linked.");
 		}
 		catch (...) {
