@@ -11,7 +11,7 @@
 #include "../RectangleShape.hpp"
 #include <SFML/Graphics.hpp>
 
-TEST(sf3d, RenderLayer, WorldProjection)
+TEST(sf3d_RenderLayer, WorldProjection)
 {
 	using namespace rat;
 	using namespace sf3d;
@@ -40,8 +40,9 @@ TEST(sf3d, RenderLayer, WorldProjection)
 
 	LOG_INFO("Rendering something on window (SFML3D)");
 	{
-		RectangleShape shapeOnWindow({0.3f, 0.2f});
-		shapeOnWindow.move({0.f, 0.f, -10.f});
+		//RectangleShape shapeOnWindow({1.8f, 1.8f});
+		RectangleShape shapeOnWindow({0.9f, 0.9f});
+		shapeOnWindow.move({-0.9.f, -0.9f, 0.f});
 		windowModule.getWindow().draw(shapeOnWindow, RenderStates{Transform{}});
 	}
 
@@ -54,23 +55,25 @@ TEST(sf3d, RenderLayer, WorldProjection)
 	// LOG_INFO("Creating layer");
 	// RenderLayer layer(windowModule.getSize(), &shaderProgram);
 
+	//glEnable(GL_DEPTH_TEST);
+
 	// LOG_INFO("Clearing layer with color");
 	// layer.clear(0.f, 0.f, 1.f, 1.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	// LOG_INFO("Rendering something over layer");
 	// {
 	// 	CircleShape circleShape1;
 	// 	layer.draw(circleShape1, {Transform{}});
 	// }
 	// CircleShape circleShape2;
+	
+	//glDisable(GL_DEPTH_TEST);
 
 	// LOG_INFO("Drawing layer to the window");
 	// windowModule.draw(layer);
 
 	LOG_INFO("Display window");
-	glDisable(GL_DEPTH_TEST);
 	windowModule.getWindow().display();
-	glEnable(GL_DEPTH_TEST);
 
 	using namespace std::chrono_literals;
 	std::this_thread::sleep_for(5s);

@@ -3,71 +3,107 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <type_traits>
 
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
-// Test macros
-#define TEST(GROUP, NAME, CASE) \
-	bool testfn_##GROUP##_##NAME##_##CASE(); 									\
-	Test test_##GROUP##_##NAME##_##CASE(testfn_##GROUP##_##NAME##_##CASE, 		\
-		__FILENAME__, __LINE__, #GROUP, #NAME, #CASE);							\
-	inline bool testfn_##GROUP##_##NAME##_##CASE()
+namespace testing
+{
 
-// Test helpers
-struct Test;
-std::vector<Test*> tests;
-typedef bool (*TestFunction)();
-struct Test {
-	TestFunction test_function;
-	const char* test_file = nullptr;
-	int test_line;
-	const char* test_group = nullptr;
-	const char* test_name = nullptr;
-	const char* test_case = nullptr;
+namespace detail
+{
 
-	Test(
-		TestFunction _function, 
+/// ;F
+struct TesterInvoker
+{
+	virtual void operator() () = 0;
+};
+
+// Vector with all tests
+std::vector<TesterInvoker*> tests;
+
+// Test object registering
+void registerTest(TesterInvoker* test)
+{
+	tests.push_back(test);
+}
+
+/// ;F
+template <typename TTestClass>
+struct Tester : public TesterInvoker
+{
+	const char* filename;
+	int line;
+	const char* testName;
+	const char* testCase;
+
+	Tester(
 		const char* _file, 
 		int _line,
-		const char* _group, 
 		const char* _name, 
 		const char* _case
 	)
-	:	test_function(_function),
-		test_file(_file),
-		test_line(_line),
-		test_group(_group),
-		test_name(_name),
-		test_case(_case)
+	:	filename(_file),
+		line(_line),
+		testName(_name),
+		testCase(_case)
 	{
-		tests.push_back(this);
+		registerTest(this);
 	}
-
+	
 	void operator()()
 	{
-#define LOG_TEST(...) { rat::logger->log(test_file, test_line, "TEST", __VA_ARGS__); }
+#define LOG_TEST(...) { rat::logger->log(filename, line, "TEST", __VA_ARGS__); }
 		try {
-			LOG_TEST("Testing case ", test_case, " in ", test_name, " from ", test_group, "...");
-			if (test_function()) {
-				LOG_TEST("Test case ", test_case, " in ", test_name, " from ", test_group, " done successful.");
-			}
-			else {
-				LOG_TEST("Test case ", test_case, " in ", test_name, " from ", test_group, " failed!");
-			}
+			LOG_TEST("Testing case ", testCase, " in ", testName, "...");
+			TTestClass* test = new TTestClass();
+			test->SetUp();
+			test->Run();
+			test->TearDown();
 		}
 		catch (const std::exception& exception) {
-			LOG_TEST("Test case ", test_case, " in ", test_name, " from ", test_group, " failed!");
+			LOG_TEST("[-] Test case ", testCase, " in ", testName, " failed!");
 			LOG_EXCEPTION(exception);
 		}
 #undef LOG_TEST
-	}
+	};
 };
+
+}
+
+/// Basic fixture test class
+struct Test
+{
+	virtual ~Test() {};
+	virtual void SetUp() {};
+	virtual void Run() { LOG_INFO("Invaild test?"); }
+	virtual void TearDown() {};
+};
+
+}
+
+#define TEST(NAME, CASE) \
+	struct test_##CLASS##_##CASE : public ::testing::Test {}; 	\
+	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( \
+		__FILENAME__, __LINE__, #NAME, #CASE					\
+	);															\
+	void test_##CLASS##_##CASE::Run()
+
+#define TEST_F(CLASS, CASE) \
+	static_assert(std::is_base_of<::testing::Test, CLASS>::value, "Fixture must derive from ::testing::Test!"); \
+	struct test_##CLASS##_##CASE : public CLASS					\
+		{ virtual void Run() override; };						\
+	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( \
+		__FILENAME__, __LINE__, #CLASS, #CASE					\
+	);															\
+	void test_##CLASS##_##CASE::Run()
 
 
 
 // Reginster files with test here
-#include "Szczur/Utility/SFML3D/Tests/RenderLayer.hpp"
+#include "Szczur/Utility/SFML3D/Tests/RenderTarget.hpp"
+//#include "Szczur/Utility/SFML3D/Tests/RenderLayer.hpp"
 
 
 
@@ -75,7 +111,7 @@ struct Test {
 void runTests()
 {
 	LOG_INFO("Starting tests...");
-	for (Test* test : tests) {
+	for (auto test : ::testing::detail::tests) {
 		(*test)();
 	}
 	LOG_INFO("All tests done...");
