@@ -189,7 +189,7 @@ namespace rat
             _currentOffsetID = 0;
 
         if (_callbacks.size() > 0 && _currentCallback < _callbacks.size()){
-            if ((int)getOffset() = (int)_callbacks[_currentCallback].time){
+            if ((int)getOffset() == (int)_callbacks[_currentCallback].time){
                 std::invoke(_callbacks[_currentCallback].cback);
                 _currentCallback++;
             }

@@ -18,25 +18,31 @@ namespace rat
         _topRightCorner.setDirection(Patch::Direction::None);
         _bottomLeftCorner.setDirection(Patch::Direction::None);
         _bottomRightCorner.setDirection(Patch::Direction::None);
+
+        _inner.setDirection(Patch::Direction::All);
     }
     
-    void NinePatch::draw(sf::RenderTarget& target)
+    void NinePatch::draw(sf::RenderTarget& target, sf::RenderStates states) const 
     {
         if(_texture)
         {
-            target.draw(_topLeftCorner);
-            target.draw(_topBar);
-            target.draw(_topRightCorner);
+            //states.transform *= getTransform();
 
-            target.draw(_leftBar);
-            target.draw(_rightBar);
-            target.draw(_bottomLeftCorner);
-            target.draw(_bottomBar);
-            target.draw(_bottomRightCorner);
+            target.draw(_topLeftCorner, states);
+            target.draw(_topBar, states);
+            target.draw(_topRightCorner, states);
+
+            target.draw(_leftBar, states);
+            target.draw(_rightBar, states);
+            target.draw(_bottomLeftCorner, states);
+            target.draw(_bottomBar, states);
+            target.draw(_bottomRightCorner, states);
+
+            target.draw(_inner, states);
         }
     }
 
-    void NinePatch::setTexture(sf::Texture* texture)
+    void NinePatch::setTexture(const sf::Texture* texture)
     {
         _texture = texture;
 
@@ -48,25 +54,31 @@ namespace rat
         _topRightCorner.setTexture(texture);
         _bottomLeftCorner.setTexture(texture);
         _bottomRightCorner.setTexture(texture);
+        _inner.setTexture(texture);
 
         _recalcTexturesAreas();
     }
-    void NinePatch::setTexture(sf::Texture* texture, const sf::IntRect& rect)
+    void NinePatch::setTexture(const sf::Texture* texture, const sf::IntRect& rect)
     {
         _texture = nullptr;
         setInnerSize(rect);
         setTexture(texture);
     }
-    void NinePatch::setTexture(sf::Texture* texture, int paddingWidth, int paddingHeight)
+    void NinePatch::setTexture(const sf::Texture* texture, int paddingWidth, int paddingHeight)
     {
         auto textureSize = static_cast<sf::Vector2i>(texture->getSize());
         auto paddingSize = sf::Vector2i(2*paddingWidth, 2*paddingHeight);
         sf::IntRect rect = {{paddingWidth, paddingHeight}, textureSize - paddingSize};
         setTexture(texture, rect);
     }
-    void NinePatch::setTexture(sf::Texture* texture, int padding)
+    void NinePatch::setTexture(const sf::Texture* texture, int padding)
     {
         setTexture(texture, padding, padding);
+    }
+
+    const sf::Texture* NinePatch::getTexture() const
+    {
+        return _texture;
     }
     
     
@@ -76,6 +88,27 @@ namespace rat
         _isInnerRectSet = true;
         if(_texture) _recalcTexturesAreas();
     }
+    void NinePatch::setInnerSize(int x, int y, int width, int height)
+    {
+        setInnerSize({{x, y}, {width, height}});
+    }
+
+    void NinePatch::setColor(const sf::Color& color)
+    {
+        _topBar.setColor(color);
+        _bottomBar.setColor(color);
+        _leftBar.setColor(color);
+        _rightBar.setColor(color);
+
+        _topLeftCorner.setColor(color);
+        _topRightCorner.setColor(color);
+        _bottomLeftCorner.setColor(color);
+        _bottomRightCorner.setColor(color);
+
+        _inner.setColor(color);
+    }
+    
+
     void NinePatch::_recalcTexturesAreas()
     {
         if(!_texture) LOG_ERROR("Trying recalculating nullptr texture");
@@ -99,6 +132,8 @@ namespace rat
         _bottomBar.setTextureRect({ {innerX, innerY + innerH}, {innerW, textureH - (innerY + innerH)} });
         _bottomRightCorner.setTextureRect({ {innerX + innerW, innerY + innerH}, {textureW - (innerX + innerW), textureH - (innerY + innerH)} });
 
+        _inner.setTextureRect({ {innerX, innerY}, {innerW, innerH} });
+
         _recalcSpritesSize();
         _recalcSpritesPos();
     }
@@ -111,59 +146,151 @@ namespace rat
         int topCornerH = _topLeftCorner.getSize().y;
         int bottomCornerH = _bottomLeftCorner.getSize().y;
 
-        auto texSize = static_cast<sf::Vector2i>(_texture->getSize());
         int innerWidth = _size.x - (leftCornerW + rightCornerW);
         int innerHeight = _size.y - (topCornerH + bottomCornerH);
 
-        _topLeftCorner.setPosition(_position);
-        _topBar.setPosition(_position.x + leftCornerW, _position.y);
-        _topRightCorner.setPosition(_position.x + leftCornerW + innerWidth, _position.y);
+        _topLeftCorner.setPosition({0.f, 0.f});
+        _topBar.setPosition(leftCornerW, 0.f);
+        _topRightCorner.setPosition(leftCornerW + innerWidth, 0.f);
 
-        _leftBar.setPosition(_position.x + 0, _position.y + topCornerH);
-        _rightBar.setPosition(_position.x + leftCornerW + innerWidth, _position.y + topCornerH);
+        _leftBar.setPosition(0, topCornerH);
+        _rightBar.setPosition(leftCornerW + innerWidth, topCornerH);
 
-        _bottomLeftCorner.setPosition(_position.x + 0, _position.y + topCornerH + innerHeight);
-        _bottomBar.setPosition(_position.x + leftCornerW, _position.y + topCornerH + innerHeight);
-        _bottomRightCorner.setPosition(_position.x + leftCornerW + innerWidth, _position.y + topCornerH + innerHeight);
+        _bottomLeftCorner.setPosition(0, topCornerH + innerHeight);
+        _bottomBar.setPosition(leftCornerW, topCornerH + innerHeight);
+        _bottomRightCorner.setPosition(leftCornerW + innerWidth, topCornerH + innerHeight);
+
+        _inner.setPosition(leftCornerW, topCornerH);
     }
 
     void NinePatch::_recalcSpritesSize()
     {
-        int leftCornerW = _topLeftCorner.getSize().x;
-        int rightCornerW = _topLeftCorner.getSize().x;
+        int width = _size.x;
+        int height = _size.y;
 
-        int topCornerH = _topLeftCorner.getSize().y;
-        int bottomCornerH = _bottomLeftCorner.getSize().y;
 
-        auto texSize = static_cast<sf::Vector2i>(_texture->getSize());
-        int innerWidth = _size.x - (leftCornerW + rightCornerW);
-        int innerHeight = _size.y - (topCornerH + bottomCornerH);
+        int leftCornerW = _topLeftCorner.getElementSize().x;
+        int rightCornerW = _topRightCorner.getElementSize().x;
 
-        _topBar.setSize(innerWidth, 0);
-        _bottomBar.setSize(innerWidth, 0);
+        int topCornerH = _topLeftCorner.getElementSize().y;
+        int bottomCornerH = _bottomLeftCorner.getElementSize().y;
 
-        _leftBar.setSize(0, innerHeight);
-        _rightBar.setSize(0, innerHeight);
+        int cornersWidth = leftCornerW + rightCornerW;
+        int cornersHeight = topCornerH + bottomCornerH;
+
+        int innerWidth = width - cornersWidth;
+        int innerHeight = height - cornersHeight;
+
+        if(innerWidth < 0)
+        {
+            float prop = float(leftCornerW)/float(cornersWidth);
+
+            int leftW = int(round(prop * float(_size.x)));
+            int rightW = int(round((1.f - prop) * float(_size.x)));
+
+            _topLeftCorner.setWidth(leftW);
+            _bottomLeftCorner.setWidth(leftW);
+            _leftBar.setWidth(leftW);
+
+            _topRightCorner.setWidth(rightW);
+            _bottomRightCorner.setWidth(rightW);
+            _rightBar.setWidth(rightW);
+
+            
+
+            innerWidth = 0;
+        }
+        else
+        {
+            _topLeftCorner.setWidth(leftCornerW);
+            _bottomLeftCorner.setWidth(leftCornerW);
+            _leftBar.setWidth(leftCornerW);
+
+            _topRightCorner.setWidth(rightCornerW);
+            _bottomRightCorner.setWidth(rightCornerW);
+            _rightBar.setWidth(rightCornerW);
+        }
+        if(innerHeight < 0)
+        {
+            float prop = float(topCornerH)/float(cornersHeight);
+            int topH = int(round(prop * float(_size.y)));
+            int bottomH = int(round((1.f - prop) * float(_size.y)));
+
+            _topLeftCorner.setHeight(topH);
+            _topRightCorner.setHeight(topH);
+            _topBar.setHeight(topH);
+
+            _bottomLeftCorner.setHeight(bottomH);
+            _bottomRightCorner.setHeight(bottomH);
+            _bottomBar.setHeight(bottomH);
+
+            innerHeight = 0;
+        }
+        else
+        {
+            _topLeftCorner.setHeight(topCornerH);
+            _topRightCorner.setHeight(topCornerH);
+            _topBar.setHeight(topCornerH);            
+
+            _bottomLeftCorner.setHeight(bottomCornerH);
+            _bottomRightCorner.setHeight(bottomCornerH);
+            _bottomBar.setHeight(bottomCornerH);
+        }
+
+        _topBar.setWidth(innerWidth);
+        _bottomBar.setWidth(innerWidth);
+
+        _leftBar.setHeight(innerHeight);
+        _rightBar.setHeight(innerHeight);
+
+        _inner.setSize(innerWidth, innerHeight);
+
+
+    }
+
+    void NinePatch::setPosition(const sf::Vector2f& position)
+    {
+        _pos = position;
+
+        _topBar.setBasePosition(position);
+        _bottomBar.setBasePosition(position);
+        _leftBar.setBasePosition(position);
+        _rightBar.setBasePosition(position);
+        _topLeftCorner.setBasePosition(position);
+        _topRightCorner.setBasePosition(position);
+        _bottomLeftCorner.setBasePosition(position);
+        _bottomRightCorner.setBasePosition(position);
+        _inner.setBasePosition(position);
+    }
+    void NinePatch::setPosition(float x, float y)
+    {
+        setPosition({x, y});
+    }
+
+    const sf::Vector2f& NinePatch::getPosition() const
+    {
+        return _pos;
     }
     
-    void NinePatch::setInnerSize(int x, int y, int width, int height)
-    {
-        setInnerSize({{x, y}, {width, height}});
-    }
 
-    void NinePatch::setSize(int x, int y)
+    void NinePatch::setSize(const sf::Vector2f& size)
     {
         _isSizeSet = true;
-        _size = {x, y};
+        _size = size;
         _recalcSpritesSize();
         _recalcSpritesPos();
     }
 
-    void NinePatch::setPosition(float x, float y)
+    void NinePatch::setSize(float x, float y)
     {
-        _position = {x, y};
-        _recalcSpritesPos();
+        setSize({x, y});
     }
+
+    sf::Vector2f NinePatch::getSize() const
+    {
+        return _size;
+    }
+
     void NinePatch::setScale(const sf::Vector2f& scale)
     {
         _topLeftCorner.setScale(scale);
@@ -174,14 +301,38 @@ namespace rat
         _bottomLeftCorner.setScale(scale);
         _bottomBar.setScale(scale);
         _bottomRightCorner.setScale(scale);
+        _inner.setScale(scale);
 
         _recalcSpritesSize();
         _recalcSpritesPos();
     }
+    
     void NinePatch::setScale(float x, float y)
     {
         setScale({x, y});
     }
+
+    sf::Vector2f NinePatch::getInnerPathSize() const
+    {
+        return static_cast<sf::Vector2f>(_inner.getElementSize());
+    }
+    sf::Vector2f NinePatch::getInnerSize() const
+    {
+        return _inner.getSize();
+    }
+
+    sf::Vector2f NinePatch::getCornersCombinedSize() const
+    {
+        float width = float(_topLeftCorner.getElementSize().x + _topRightCorner.getElementSize().x);
+        float height = float(_topLeftCorner.getElementSize().y + _bottomLeftCorner.getElementSize().y);
+        return {width, height};
+    }
+
+    sf::IntRect NinePatch::getInnerTextureRect() const
+    {
+        return _innerRect;
+    }
+    
     
     
 }

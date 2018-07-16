@@ -50,6 +50,11 @@ namespace rat {
         }
     }
 
+	bool DialogManager::isDialogPlaying()
+	{
+		return _isDialogPlaying;
+	}
+
     void DialogManager::skip() {
         _soundManager.skip();
     }
@@ -63,8 +68,11 @@ namespace rat {
             auto state = _soundManager.update();
             if(state == sf::SoundSource::Status::Paused) {
                 //if(!_nextMinor()) { //Finished every minor in this id
-                if(_destroyed)
-                    return true;
+				if (_destroyed)
+				{
+					_isDialogPlaying = false;
+					return true;
+				}
                 _paused = true;
                 for(auto& it : _options) {
                     if(it->checkIfRunsWith(_currentMajor, _currentMinor)) {
@@ -95,6 +103,7 @@ namespace rat {
     
     void DialogManager::play() {
         _paused = false;
+		_isDialogPlaying = true;
         return play(_currentMajor, _currentMinor);
     }
 
@@ -126,7 +135,6 @@ namespace rat {
                 it->first,
                 [this, it](){
                     _dialogGUI.setText(it->second.second);
-                    _dialogGUI.setCharacterName(it->second.first);
                     if(
                         auto result = _charactersBinds.find(
                             fnv1a_32(
@@ -136,7 +144,7 @@ namespace rat {
                         );
                         result != _charactersBinds.end()
                     ) {
-                        _dialogGUI.setCharacterTexture( result->second );
+                        //_dialogGUI.setCharacterTexture( result->second );
                     }
                 }
             );

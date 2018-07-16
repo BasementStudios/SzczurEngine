@@ -3,7 +3,7 @@ namespace rat
 
 template <typename... Ts>
 Module<Ts...>::Module()
-	: _modulesRefs{ *detail::globalPtr_v<Ts>... }
+	: _modulesRefs { *detail::globalPtr<Ts>... }
 {
 
 }

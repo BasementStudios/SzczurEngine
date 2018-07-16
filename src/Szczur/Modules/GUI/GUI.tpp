@@ -1,6 +1,6 @@
 namespace rat {
     template<typename T>
-    T* GUI::getAsset(const std::string& key) const {
+    T* GUI::getAsset(const std::string& key){
         return _assets.get<T>(key);
     }
     template<typename T>

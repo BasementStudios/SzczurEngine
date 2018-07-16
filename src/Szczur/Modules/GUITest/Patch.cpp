@@ -15,35 +15,31 @@ namespace rat
     {
         if(_texture)
         {        
-            target.draw(_sprite);
-            switch(_direction)
-            {
-                case Direction::Horizontal:
+            const auto oldPos = _sprite.getPosition();
+            for(int y = 0; y < _elementAmount.y; y++)
+                for(int x = 0; x < _elementAmount.x; x++)
                 {
-                    for(int i = 0; i < _elementAmount; i++)
-                    {
-                        target.draw(_sprite);
-                        _sprite.move(_elementDim.x, 0.f);
-                    }
-                } break;
-                case Direction::Vertical:
-                {
-                    for(int i = 0; i < _elementAmount; i++)
-                    {
-                        target.draw(_sprite);
-                        _sprite.move(0.f, _elementDim.y);
-                    }
-                } break;
-
-                case Direction::None:
-                {
-                    target.draw(_sprite);
-                } break;
-            }
-
-            _recalcSpritePos();
+                    _sprite.setPosition(oldPos + sf::Vector2f{float(x) * _elementDim.x, float(y) * _elementDim.y});
+                    target.draw(_sprite, states);
+                }
+            _sprite.setPosition(oldPos);
         }
+    }
 
+    void Patch::setBasePosition(const sf::Vector2f& basePosition)
+    {
+        _sprite.move(-_basePos);
+        _basePos = basePosition;
+        _sprite.move(_basePos);
+
+    }
+    void Patch::setPosition(const sf::Vector2f& position)
+    {
+        _sprite.setPosition(_basePos + position);
+    }
+    void Patch::setPosition(float x, float y)
+    {
+        setPosition({x, y});
     }
     
     void Patch::setScale(float x, float y)
@@ -55,42 +51,48 @@ namespace rat
         _scale = scale;
         if(_texture) _recalcRecurrence();
     }
-    const sf::Vector2i& Patch::getSize()
+    const sf::Vector2f& Patch::getSize() const
     {
         return _size;
     }
+    sf::Vector2f Patch::getElementSize() const
+    {
+        sf::Vector2f texSize = {(float)_sprite.getTextureRect().width, (float)_sprite.getTextureRect().height};
+        return { texSize.x * _scale.x, texSize.y * _scale.y };
+    }
     
     
-    void Patch::setTexture(sf::Texture* texture)
+    void Patch::setTexture(const sf::Texture* texture)
     {
         _texture = nullptr;
 
         if(!_isTextureRectSet) setTextureRect({{0, 0}, static_cast<sf::Vector2i>(texture->getSize())});        
-        if(!_isSizeSet) setSize( static_cast<sf::Vector2i>(texture->getSize()) );                        
+        if(!_isSizeSet) setSize( static_cast<sf::Vector2f>(texture->getSize()) );                        
 
         _texture = texture;
         _sprite.setTexture(*texture);
 
         _recalcRecurrence();
     }
+
+    void Patch::setWidth(float width)
+    {
+        setSize(width, _size.y);
+    }
+    void Patch::setHeight(float height)
+    {
+        setSize(_size.x, height);
+    }
     
-    void Patch::setSize(sf::Vector2i size)
+    void Patch::setSize(sf::Vector2f size)
     {
         setSize(size.x, size.y);
     }
     
 
-    void Patch::setSize(int x, int y)
+    void Patch::setSize(float x, float y)
     {
-        switch(_direction)
-        {
-            case Direction::Horizontal:
-                _size.x = x;
-            break;
-            case Direction::Vertical:
-                _size.y = y;
-            break;
-        }
+        _size = {x, y};
         _isSizeSet = true;
         if(_texture) _recalcRecurrence();
 
@@ -102,23 +104,15 @@ namespace rat
         _isTextureRectSet = true;
         if(_texture) _recalcRecurrence();
     }
+
+    void Patch::setColor(const sf::Color& color)
+    {
+        _sprite.setColor(color);
+    }
+    
     
     void Patch::_recalcSpriteSize()
     {}
-    void Patch::setPosition(sf::Vector2f position)
-    {
-        setPosition(position.x, position.y);
-    }
-    
-    void Patch::setPosition(float x, float y)
-    {
-        _position = {x, y};
-        _recalcSpritePos();
-    }
-    void Patch::_recalcSpritePos() const
-    {
-        _sprite.setPosition(_position);
-    }
 
     void Patch::setDirection(Direction direction)
     {
@@ -126,52 +120,45 @@ namespace rat
         if(_texture) _recalcRecurrence();
     }
     
-    const sf::Vector2f& Patch::getPosition()
-    {
-        return _position;
-    }
-    
 
     void Patch::_recalcRecurrence()
     {
 
-        switch(_direction)
+        auto elementSize = static_cast<sf::Vector2f>(getElementSize());
+        _elementDim = elementSize;
+        _sprite.setScale(_scale);
+        _elementAmount = {1, 1};
+
+
+        if(_direction == Direction::Horizontal || _direction == Direction::All)
         {
-            case Direction::Horizontal:
-            {
-                float totalWidth = float(_size.x);
+            float totalWidth = float(_size.x);
+            float realWidth = elementSize.x;
+            
+            float widthTimes = std::max(float(round(totalWidth/realWidth)), 1.f);
+            _elementAmount.x = int(widthTimes);
+            _elementDim.x = totalWidth/widthTimes;
 
-                float realElementDim = float(_sprite.getTextureRect().width) * _scale.x;
-                
-                float widthTimes = std::max(round(totalWidth/realElementDim), 1.f);
-                _elementAmount = int(widthTimes);
-                _elementDim.x = totalWidth/widthTimes;
-
-                float xScale = _elementDim.x / realElementDim;
-                _sprite.setScale(xScale * _scale.x, _scale.y);
-            } break;
-
-            case Direction::Vertical:
-            {
-                float totalHeigt = float(_size.y);
-
-                float realElementDim = float(_sprite.getTextureRect().height) * _scale.y;
-                
-                float heightTimes = std::max(round(totalHeigt/realElementDim), 1.f);
-                _elementAmount = int(heightTimes);
-                _elementDim.y = totalHeigt/heightTimes;
-
-                float yScale = _elementDim.y / realElementDim;
-                _sprite.setScale(_scale.x, yScale * _scale.y);
-            } break;
-
-            case Direction::None:
-            {
-                _elementAmount = 1;
-                _sprite.setScale(_scale);
-                _size = {int(_sprite.getGlobalBounds().width), int(_sprite.getGlobalBounds().height)};
-            } break;
+            float xScale = _elementDim.x / realWidth;
+            _sprite.scale(xScale, 1.f);
         }
+        if(_direction == Direction::Vertical || _direction == Direction::All)
+        {
+            float totalHeigt = float(_size.y);
+            float realHeight = elementSize.y;
+            
+            float heightTimes = std::max(float(round(totalHeigt/realHeight)), 1.f);
+            _elementAmount.y = int(heightTimes);
+            _elementDim.y = totalHeigt/heightTimes;
+
+            float yScale = _elementDim.y / realHeight;
+            _sprite.scale(1.f, yScale);
+        }
+
+        sf::Vector2f scale{1.f, 1.f};
+        if(float(_size.x) < elementSize.x && _direction != Direction::Horizontal && _direction != Direction::All) scale.x = float(_size.x)/elementSize.x;
+        if((float)_size.y < elementSize.y && _direction != Direction::Vertical && _direction != Direction::All) scale.y = float(_size.y)/elementSize.y;
+        _sprite.scale(scale);
     }
     
 }

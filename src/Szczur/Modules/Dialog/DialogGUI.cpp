@@ -8,8 +8,7 @@
 
 namespace rat {
 
-    DialogGUI::DialogGUI(GUI& gui) :
-    _character(nullptr) {
+    DialogGUI::DialogGUI(GUI& gui) {
         
         
     }
@@ -18,112 +17,51 @@ namespace rat {
         //@TODO: remove _interface from _gui
     }
 
+	void DialogGUI::init() {
+		/*if(_onInit && _reset && 
+		   _clearButtons && _getButton && 
+		   _onUpdate && _interface && 
+		   _dialogText && _listHolder && _list)*/
+		_onInit(this);
+		_reset(this);
+	}
+
     void DialogGUI::hide() {
-        _interface->deactivate();
-        _interface->invisible();
+		_interface->fullyDeactivate();
     }
 
     void DialogGUI::show() {
-        _interface->activate();
-        _interface->visible();
+		_interface->fullyActivate();
     }
 
     void DialogGUI::initScript(Script& script) {
         auto object = script.newClass<DialogGUI>("DialogGUI", "Dialog");
-        object.setProperty(
-            "set",
-            [](){},
-            [](DialogGUI& owner, sol::table tab){
-                if(tab["area"].valid() && tab["container"].valid() && 
-                tab["character"].valid() && tab["name"].valid() &&
-                tab["creator"].valid() && tab["interface"].valid()) {
-					owner.setArea(tab["area"]);
-                    owner.setButtonsContainer(tab["container"]);
-                    owner.setCharacterHolder(tab["character"]);
-                    owner.setName(tab["name"]);
-                    owner.setButtonsCreator(tab["creator"]);
-                    owner.setInterface(tab["interface"]);
-                    owner.hide();
-                }
-            }
-        );
+
+		object.set("onInit", &DialogGUI::_onInit);
+		object.set("reset", &DialogGUI::_reset);
+		object.set("clearButtons", &DialogGUI::_clearButtons);
+		object.set("getButton", &DialogGUI::_getButton);
+
+		object.set("interface", &DialogGUI::_interface);
+		object.set("dialogText", &DialogGUI::_dialogText);
+		object.set("listHolder", &DialogGUI::_listHolder);
+		object.set("list", &DialogGUI::_list); 
+
         object.init();
     }
 
     void DialogGUI::clear() {
-        _buttonsContainer->clear();
+		_clearButtons(this);
     }
 
-    void DialogGUI::setText(const std::string& text) {
-        _area->setString(text);
-        _area->visible();
-    }
-
-    void DialogGUI::setCharacterTexture(sf::Texture* texture) {
-        if(_character == nullptr) {
-            _character = new ImageWidget;
-            
-            _characterHolder->add(_character);
-        }
-        _character->setTexture(texture);
-    }
-
-    void DialogGUI::setCharacterName(const std::string& name) {
-        _name->setString(name);
-    }
-
-
-    void DialogGUI::setName(TextWidget* name) {
-        _name = name;
-    }
-
-    TextWidget* DialogGUI::getName() const {
-        return _name;
-    }
-
-    void DialogGUI::setInterface(Widget* _interface) {
-        this->_interface = _interface;
-    }
-
-    Widget* DialogGUI::getInterface() const {
-        return _interface;
-    }
-    
-    void DialogGUI::setCharacterHolder(Widget* holder) {
-        _characterHolder = holder;
-    }
-
-    Widget* DialogGUI::getCharacterHolder() const {
-        return _characterHolder;
-    }
-
-    void DialogGUI::setArea(TextAreaWidget* area) {
-        _area = area;
-    }
-
-    TextAreaWidget* DialogGUI::getArea() const {
-        return _area;
-    }   
-
-    void DialogGUI::setButtonsCreator(const sol::function& func) {
-        _buttonsCreator = func;
-    }
-
-    Widget* DialogGUI::getButtonsCreator() const {
-        return _buttonsContainer;
-    }
-
-    void DialogGUI::setButtonsContainer(Widget* container) {
-        _buttonsContainer = container;
-    }
-
-    const sol::function& DialogGUI::getButtonsContainer() const {
-        return _buttonsCreator;
-    }
+	void DialogGUI::setText(const std::string& text) {
+		//_dialogText->visible();
+		_dialogText->setString(text);
+	}
 
     void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback) {
         size_t i = 0u;
-        _area->invisible();
+		_dialogText->invisible();
         bool skipped{false};
         options.forEach([&i, this, callback, &textManager, &skipped](Options::Option* option){
             if(!skipped) {
@@ -134,20 +72,20 @@ namespace rat {
                         if(option->afterAction.valid())
                             option->afterAction();
                     }
-                    TextWidget* button = new TextWidget;
-                    _buttonsCreator.call(
-                        i, 
-                        button
-                    );
-                    button->setString(textManager.getLabel(option->majorTarget, option->minorTarget));
+					auto* button = _getButton(this,
+											  textManager.getLabel(option->majorTarget, option->minorTarget),
+											  option->color.r,
+											  option->color.g,
+											  option->color.b,
+											  option->color.a,
+											  option->iconId
+									).get<TextWidget*>();
                     button->setCallback(Widget::CallbackType::onRelease, [this, option, callback](Widget*){
                             if(option->afterAction.valid())
                                 option->afterAction();
                                 //std::invoke(option->afterAction);
                             std::invoke(callback, option->majorTarget, option->minorTarget, option->finishing);
                     });
-                    
-                    _buttonsContainer->add(button);
                     ++i;
                 }
             }

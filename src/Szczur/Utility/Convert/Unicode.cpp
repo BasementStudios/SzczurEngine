@@ -25,6 +25,4 @@ std::string getUtf8String(const sf::String& src)
 	return str;
 }
 
-
-
 }
