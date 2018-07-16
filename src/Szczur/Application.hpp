@@ -17,9 +17,9 @@
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
+#include "Szczur/Modules/Player/Player.hpp"
 
 #include "ImGuiStyler.hpp"
-
 namespace rat
 {
 
@@ -61,7 +61,7 @@ private:
 
 	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, DialogEditor, Music, Sound, AudioEditor, AudioEffects, Cinematics, Listener, Equipment>_modules;
+	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, DialogEditor, Music, Sound, AudioEditor, AudioEffects, Cinematics, Listener, Equipment, Player>_modules;
 
 };
 
