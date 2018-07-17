@@ -324,7 +324,7 @@ void ArmatureComponent::replaceSkin(const std::string& skinName, sol::variadic_a
 
 	std::vector<std::string> slotsToExclude;
 
-	for (auto& slot : excludes)
+	for (auto slot : excludes)
 	{
 		slotsToExclude.push_back(slot.get<std::string>());
 	}
@@ -389,13 +389,11 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("play", &ArmatureComponent::playAnim);
 	object.set("fadeIn", &ArmatureComponent::fadeIn);
 
-
 	object.set("playOnce", sol::overload(
 		&ArmatureComponent::playOnce,
 		[&] (ArmatureComponent* comp, const std::string& animationName, float fadeInTime, bool waitToEnd) { comp->playOnce(animationName, fadeInTime, waitToEnd); },
 		[&] (ArmatureComponent* comp, const std::string& animationName, float fadeInTime) { comp->playOnce(animationName, fadeInTime); }
 	));
-
 
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
