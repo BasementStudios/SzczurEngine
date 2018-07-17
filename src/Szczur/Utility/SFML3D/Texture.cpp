@@ -1,84 +1,139 @@
 #include "Texture.hpp"
 
+#include <string>
+#include <stdexcept>
+
+
 #include <glad/glad.h>
 #include <SFML/Graphics/Image.hpp>
 
-namespace sf3d {
-	Texture::Texture() {
-		glGenTextures(1, &_texture);
+namespace sf3d
+{
+
+/* Properties */
+GLuint Texture::getID() const noexcept
+{
+	return this->textureID;
+}
+
+glm::uvec2 Texture::getSize() const noexcept
+{
+	return this->size;
+}
+
+
+
+/* Operators */
+Texture::Texture()
+{
+	;
+}
+Texture::~Texture()
+{
+	if (this->textureID) {
+		glDeleteTextures(1, &(this->textureID));
+	}
+}
+
+Texture::Texture(Texture&& other)
+{
+	if (this != &other) {
+		this->textureID = other.textureID; 
+		this->size      = other.size;
+		other.textureID = 0u;
+	}
+}
+Texture& Texture::operator = (Texture&& other)
+{
+	if (this != &other) {
+		this->textureID = other.textureID; 
+		this->size      = other.size;
+		other.textureID = 0u;
+	}
+	return *this;
+}
+
+Texture::Texture(glm::uvec2 size) 
+{
+	this->create(size);
+}
+
+Texture::Texture(const char* path)
+{
+	this->loadFromFile(path);
+}
+Texture::Texture(const std::string& path)
+{
+	this->loadFromFile(path);
+}
+
+
+
+/* Methods */
+void Texture::create(glm::vec2 size)
+{
+	// Delete first, if it is recreation
+	if (this->textureID) {
+		glDeleteTextures(1, &(this->textureID));
+	}
+	glGenTextures(1, &(this->textureID));
+
+	// Setup the texture
+	glBindTexture(GL_TEXTURE_2D, this->textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	this->size = size;
+}
+
+void Texture::loadFromFile(const char* path)
+{
+	if (this->textureID) {
+		glDeleteTextures(1, &(this->textureID));
 	}
 
-	Texture::~Texture() {
-		if(_texture)
-			glDeleteTextures(1, &_texture);
+	// Load texture file
+	sf::Image image;
+	if (!image.loadFromFile(path)) {
+		throw std::runtime_error(std::string("Cannot load texture from ") + path);
 	}
 
-	Texture::Texture(Texture&& other) {
-		this->_texture = other._texture; 
-		other._texture = 0u;
-	}
-	Texture& Texture::operator = (Texture&& other) {
-		this->_texture = other._texture;
-		other._texture = 0u;
-		return *this;
-	}
+	auto size = image.getSize();
+	this->size.x = size.x;
+	this->size.y = size.y;
+	
+	// Load into graphics 
+	glBindTexture(GL_TEXTURE_2D, this->textureID);
+	glTexImage2D(
+		GL_TEXTURE_2D, 0, GL_RGBA,
+		image.getSize().x, image.getSize().y,
+		0,
+		GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
+	);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+void Texture::loadFromFile(const std::string& path)
+{
+	this->loadFromFile(path.c_str());
+}
 
-	bool Texture::loadFromFile(const char * path) {
-		if(_texture)
-			glDeleteTextures(1, &_texture);
-
-		sf::Image image;
-		if(image.loadFromFile(path)) {
-			auto size = image.getSize();
-			_size.x = size.x;
-			_size.y = size.y;
-			
-			glBindTexture(GL_TEXTURE_2D, _texture);
-			glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_RGBA,
-				image.getSize().x, image.getSize().y,
-				0,
-				GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
-			);
-			glGenerateMipmap(GL_TEXTURE_2D);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			return true;
-		}
-		return false;
+void Texture::bind() const noexcept
+{
+	if (this->textureID) {
+		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
+}
 
-	bool Texture::loadFromFile(const std::string& path)
-	{
-		return this->loadFromFile(path.c_str());
-	}
+void Texture::unbind() const noexcept
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
 
-	void Texture::bind() const {
-		if(_texture)
-			glBindTexture(GL_TEXTURE_2D, _texture);
-	}
-
-	void Texture::unbind() const {
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	void Texture::create(const glm::vec2& size) {
-		bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, size.x, size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		unbind();
-		_size = size;
-	}
-
-	GLuint Texture::getID() const {
-		return _texture;
-	}
-
-	const glm::uvec2& Texture::getSize() const {
-		return _size;
-	}
 }

@@ -8,9 +8,13 @@
 
 #include <string>
 #include <memory> // unique_ptr
+#include <stdexcept>
+
+#include <glad/glad.h>
 
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -18,10 +22,13 @@
 #include <SFML/Graphics/Vertex.hpp>
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderWindow.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "Szczur/Utility/SFML3D/Vertex.hpp"
-#include "Szczur/Utility/SFML3D/Shader.hpp"
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/Vertex.hpp"
+#include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -29,11 +36,11 @@ namespace rat
 
 /* Properties */
 // Window
-Window::Window_t& Window::getWindow()
+Window::Window_t& Window::getWindow() noexcept
 {
 	return this->window;
 }
-const Window::Window_t& Window::getWindow() const
+const Window::Window_t& Window::getWindow() const noexcept
 {
 	return this->window;
 }
@@ -54,43 +61,43 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 // Size
 glm::uvec2 Window::getSize() const noexcept
 {
-    return {this->videoMode.width, this->videoMode.height};
+	return {this->videoMode.width, this->videoMode.height};
 }
 void Window::setSize(glm::uvec2 size)
 {
-    this->videoMode.width = size.x;
-    this->videoMode.height = size.y;
-    this->setVideoMode(this->videoMode);
+	this->videoMode.width = size.x;
+	this->videoMode.height = size.y;
+	this->setVideoMode(this->videoMode);
 }
 
 // FrameRate
-unsigned int Window::getFramerateLimit() const
+unsigned int Window::getFramerateLimit() const noexcept
 {
 	return this->framerateLimit;
 }
-void Window::setFramerateLimit(const unsigned int limit)
+void Window::setFramerateLimit(unsigned int limit)
 {
 	this->framerateLimit = limit;
-	LOG_INFO("framerateLimit: " + this->framerateLimit);
+	LOG_INFO("framerateLimit: ", this->framerateLimit);
 
 	this->getWindow().setFramerateLimit(this->framerateLimit);
 }
 
 // Title
-const std::string& Window::getTitle() const
+const std::string& Window::getTitle() const noexcept
 {
 	return this->title;
 }
 void Window::setTitle(const std::string& title)
 {
 	this->title = title;
-	LOG_INFO("Window title: " + this->title);
+	LOG_INFO("Window title: ", this->title);
 
 	this->getWindow().setTitle(this->title);
 }
 
 // Fullscreen
-bool Window::getFullscreen() const
+bool Window::getFullscreen() const noexcept
 {
 	return this->windowStyle & sf::Style::Fullscreen;
 }
@@ -106,10 +113,11 @@ void Window::setFullscreen(bool state)
 }
 
 
+
 /* Operators */
 // Constructors
 Window::Window()
-: 	window({1280, 800}, "SzczurEngine")
+:	window(this->videoMode, this->title)
 {
 	LOG_INFO("Window module initializing");
 	this->init();
@@ -127,30 +135,37 @@ Window::~Window()
 // init
 void Window::init()
 {
+	try {
 		// Set video mode, also creates window
 		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,
 		//  which require some rendering context which is created in SFML `sf::RenderWindow::create`.
 		this->setVideoMode(this->videoMode); // @todo ? load videomode from settings
 
-	// Print OpenGL version
-	LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
-	
-	// GL flags
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);  
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CCW);
+		// Print OpenGL version
+		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
 
-	// Default shaders
-	sf3d::FShader frag;
-	frag.loadFromFile("Assets/Shaders/default.frag");
+		// Overall GL flags
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glFrontFace(GL_CCW);
 
-	sf3d::VShader vert;
-	vert.loadFromFile("Assets/Shaders/default.vert");
+		// Shader
+		try {
+			this->shaderProgram.linkShaders(
+				sf3d::Shader {sf3d::Shader::Vertex,		"Assets/Shaders/assemble.vert"},
+				sf3d::Shader {sf3d::Shader::Fragment,	"Assets/Shaders/assemble.frag"}
+			);
+			LOG_INFO("Shader loaded, compiled and linked.");
+		}
+		catch (...) {
+			std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
+		}
 
-	this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
-	this->shaderProgram->linkShaders(frag, vert);
-	this->getWindow().setDefaultShaderProgram(shaderProgram.get());
+		this->getWindow().setDefaultShaderProgram(this->shaderProgram);
+	}
+	catch (...) {
+		std::throw_with_nested(std::runtime_error("Cannot initialized Window module."));
+	}
 }
 
 // render
@@ -162,33 +177,39 @@ void Window::render()
 // processEvent
 void Window::processEvent(sf::Event event)
 {
-    switch (event.type) {
-        case sf::Event::Resized:
-        {
-            // Update video mode
-            this->setSize({event.size.width, event.size.height});
-        }
-        break;
-        
-        default:
-        {
-            // Do nothing.
-        }
-        break;
-    }
+	switch (event.type) {
+		case sf::Event::Resized:
+		{
+			// Update video mode
+			this->setSize({event.size.width, event.size.height}); // @todo . sajkowiecozrobic;)COD3IT
+		}
+		break;
+		
+		case sf::Event::Closed:
+		{
+			this->getWindow().close();
+		}
+		break;
+		
+		default:
+		{
+			// Do nothing.
+		}
+		break;
+	}
 }
 
 // Window recreate
 void Window::recreateWindow()
 {
-	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	this->getWindow().create(this->videoMode, this->title, &(this->shaderProgram), this->windowStyle);
 	this->setFramerateLimit(this->framerateLimit);
 }
 
 // clear
 void Window::clear(const sf::Color& color)
 {
-	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
 }
 
 // GL states
@@ -214,19 +235,19 @@ void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::Primi
 // 3D
 void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(drawable, states);
+	drawable.draw(this->getWindow(), states);
 }
 void Window::draw(const sf3d::Drawable& drawable)
 {
-	this->getWindow().draw(drawable);
+	drawable.draw(this->getWindow());
 }
 void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(vertices, states);
+	vertices.draw(this->getWindow(), states);
 }
 void Window::draw(const sf3d::VertexArray& vertices)
 {
-	this->getWindow().draw(vertices);
+	vertices.draw(this->getWindow());
 }
 
 }

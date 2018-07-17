@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include "Szczur/Utility/Tests.hpp"
 
 #include "Utility/MsgBox.hpp"
 #ifdef EDITOR
@@ -44,9 +45,13 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
+	
+#ifdef TESTING
+	runTests();
+#endif
 }
 
-bool Application::input()
+void Application::input()
 {
 	sf::Event event;
 
@@ -70,28 +75,25 @@ bool Application::input()
 					getModule<World>().getScenes().menuSave();
 				case MsgBox::Result::No:
 					getModule<Window>().getWindow().close();
-					return false;
+					return;
 					break;
 				case MsgBox::Result::Cancel:
 					break;
 			}
 		}
 	}
-	return true;
 }
 
 void Application::update()
 {
 	_imGuiStyler.update();
 
-	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
+	auto deltaTime = _mainClock.restart().asFSeconds();
+	
 	getModule<GUI>().update(deltaTime);
 	getModule<Dialog>().update();
 	getModule<Music>().update(deltaTime);
 	getModule<Equipment>().update(deltaTime);
-	/*
-		Put other updates here
-	*/
 
 	#ifdef EDITOR
 	{
@@ -116,6 +118,8 @@ void Application::render()
 	getModule<Window>().popGLStates();
 	getModule<Cinematics>().render();
 
+	// getModule<World>().render();
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
@@ -127,28 +131,31 @@ void Application::render()
 int Application::run()
 {
 	try {
+		// Starting
 		init();
 
 		LOG_INFO("Starting main loop of application");
 
+		// Main loop
 		while (getModule<Window>().getWindow().isOpen()) {
-			if(input()) {
-				update();
-				render();
-			}
+			update();
+			render();
+			input();
 		}
+
+		// Exiting
+		#ifdef EDITOR
+		{
+			ImGui::SFML::Shutdown();
+		}
+		#endif
+
+		LOG_INFO("Shutdowning application in normal way");
 	}
 	catch (const std::exception& exception) {
 		LOG_EXCEPTION(exception);
+		return 1;
 	}
-
-	#ifdef EDITOR
-	{
-		ImGui::SFML::Shutdown();
-	}
-	#endif
-
-	LOG_INFO("Shutdowning application");
 
 	return 0;
 }

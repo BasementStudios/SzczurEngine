@@ -4,21 +4,38 @@
 #include "Transformable.hpp"
 #include "VertexArray.hpp"
 
-namespace sf3d {
-	class Shape : public Drawable, public Transformable {
-	public:
-		Shape(size_t vertexSize = 8u);
+namespace sf3d
+{
 
-		size_t getVerticesCount() const;
+class Shape : public Drawable, public Transformable
+{
+public:
+	/* Variables */
+	VertexArray _vertices;
+	
 
-		virtual void draw(RenderTarget& target, RenderStates states) const override;
-	protected:
-		void _update();
 
-	private:
-		virtual glm::vec3 getPointPosition(size_t index) const;
-		virtual glm::vec4 getPointColor(size_t index) const;
-		virtual glm::vec2 getPointCoord(size_t index) const;
-		VertexArray _vertices;
-	};
+	/* Properties */
+	virtual glm::vec3 getPointPosition(std::size_t index) const = 0;
+	virtual glm::vec4 getPointColor(std::size_t index) const = 0;
+	virtual glm::vec2 getPointCoord(std::size_t index) const = 0;
+
+	std::size_t getVerticesCount() const;
+
+
+
+	/* Operators */
+protected:
+	Shape(std::size_t vertexSize = 4u);
+
+
+
+	/* Methods */
+public:
+	virtual void draw(RenderTarget& target, RenderStates states) const override;
+
+protected:
+	void _update();
+};
+
 }

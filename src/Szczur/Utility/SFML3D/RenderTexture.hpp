@@ -12,28 +12,30 @@ namespace sf3d {
 #include "RenderTarget.hpp"
 #include "Texture.hpp"
 
-namespace sf3d
+namespace sf3d 
 {
 
 class RenderTexture : public RenderTarget
 {
 	/* Variables */
-private:
-	GLuint _FBO{0u};
-	Texture _texture;
-	GLuint _RBO{0u};
+protected:
+	GLuint FBO {0u};
+	GLuint RBO {0u};
+	Texture texture;
 
 
 	
 	/* Properties */
 public:
-	/// 
-	Texture* getTexture();
+	/// Provides access to texture 
+	const Texture& getTexture() const;
+	Texture& getTexture();
 
 
 
 	/* Operators */
 public:
+	RenderTexture();
 	RenderTexture(glm::uvec2 size, ShaderProgram* program);
 	~RenderTexture();
 
@@ -41,6 +43,8 @@ public:
 
 	/* Methods */
 public:
+	void create(glm::uvec2 size, ShaderProgram* program);
+	
 	virtual bool _setActive(bool states = true) override;
 };
 

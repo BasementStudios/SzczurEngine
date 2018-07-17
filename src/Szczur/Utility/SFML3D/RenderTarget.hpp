@@ -32,18 +32,21 @@ namespace sf3d
 class RenderTarget
 {
 	/* Variables */
-private:
+protected:
 	glm::uvec2 size;
 
 	RenderStates defaultStates;
 	
 	Camera* camera {nullptr};
-	Camera* defaultCamera = nullptr;
+	Camera* defaultCamera {nullptr};
 
+public:
 	float positionFactor;
 
+protected:
 	std::vector<LightPoint*> lightPoints;
 
+private:
 	char uniformNameBuffer[64];
 
 
@@ -54,6 +57,7 @@ public:
 	RenderStates getDefaultRenderStates() const;
 	void setDefaultRenderStates(const RenderStates& states);
 	void setDefaultShaderProgram(ShaderProgram* program);
+	void setDefaultShaderProgram(ShaderProgram& program);
 
 	/// Current camera object which define what to render
 	Camera* getCamera();
@@ -64,21 +68,22 @@ public:
 
 
 	/* Operators */
-public:
+	// Protected to avoid construction (it is only base type).
+protected:
 	RenderTarget();
+	~RenderTarget();
 
 	RenderTarget(glm::uvec2 size, ShaderProgram* program = nullptr);
-
-	~RenderTarget();
 
 
 
 	/* Methods */
-public:
+protected:
 	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
-	
-	virtual bool _setActive(bool state = true);
 
+	virtual bool _setActive(bool state = true) = 0;
+
+public:
 	/// Helper function to scale matrix coords propertly
 	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 

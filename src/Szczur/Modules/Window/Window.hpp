@@ -20,11 +20,15 @@ namespace sf {
 #include <SFML/Graphics/PrimitiveType.hpp>
 
 namespace sf3d {
+	class Event;
 	class Drawable;
 	class Vertex;
+	class VertexArray;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat
@@ -41,8 +45,7 @@ public:
 
 	/* Variables */
 private:
-	Window_t        window;
-
+	// Window informations
 	sf::VideoMode   videoMode		{1280, 720};
 
 	unsigned int	framerateLimit	{60};
@@ -51,34 +54,38 @@ private:
 
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
-	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
+	// Elmenents for render
+	Window_t window;
+	
+	// Shader programs
+	sf3d::ShaderProgram shaderProgram;
 
 
 
 	/* Properties */
 public:
 	/// Provides access to application window.
-	Window_t& getWindow();
-	const Window_t& getWindow() const;
-
+	Window_t& getWindow() noexcept;
+	const Window_t& getWindow() const noexcept;
+	
 	/// Defines a video mode. Aslo recreates the window.
-    sf::VideoMode getVideoMode() const noexcept;
-    void setVideoMode(const sf::VideoMode& mode);
+	sf::VideoMode getVideoMode() const noexcept;
+	void setVideoMode(const sf::VideoMode& mode);
 
-    /// Size of window. Related to video mode.
-    glm::uvec2 getSize() const noexcept;
-    void setSize(glm::uvec2 size);
+	/// Size of window. Related to video mode.
+	glm::uvec2 getSize() const noexcept;
+	void setSize(glm::uvec2 size);
 
 	/// Limit of updated and rendered frames per second.
-	unsigned int getFramerateLimit() const;
-	void setFramerateLimit(const unsigned int limit);
+	unsigned int getFramerateLimit() const noexcept;
+	void setFramerateLimit(unsigned int limit);
 
 	/// Title of application window.
-	const std::string& getTitle() const;
+	const std::string& getTitle() const noexcept;
 	void setTitle(const std::string& title);
 
 	/// Full screen mode
-	bool getFullscreen() const;
+	bool getFullscreen() const noexcept;
 	void setFullscreen(bool state);
 
 	void processEvent(sf::Event event);
@@ -105,6 +112,7 @@ public:
 	// Module system
 	void init();
 	void render();
+	void processEvent(sf::Event event);
 
 protected:
 	/// Recreates window to apply settings
@@ -123,7 +131,7 @@ public:
 	void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
 	void draw(const sf::Vertex* vertices, size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = sf::RenderStates::Default);
 	// 	3D
-	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
+	void draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states/* = sf3d::RenderStates::Default*/);
 	void draw(const sf3d::Drawable& drawable);
 	void draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states = sf3d::RenderStates::Default);
 	void draw(const sf3d::VertexArray& vertices);

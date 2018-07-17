@@ -1,6 +1,6 @@
 #include "RenderWindow.hpp"
 
-#include <iostream> // cout
+#include <stdexcept>
 #include <string>
 
 #include <glad/glad.h>
@@ -31,8 +31,7 @@ RenderWindow::RenderWindow(
 	sf3d::RenderTarget(glm::vec2{mode.width, mode.height}, program)
 {
 	if (!gladLoadGL()) {
-		std::cout << "Failed to initialize GLAD!\n";
-		return;
+		throw std::runtime_error("Failed to initialize GLAD!");
 	}
 	glViewport(0, 0, mode.width, mode.height);
 }
@@ -49,22 +48,21 @@ void RenderWindow::create(
 	sf3d::RenderTarget::create(glm::vec2{mode.width, mode.height}, program);
 	
 	if (!gladLoadGL()) {
-		std::cout << "Failed to initialize GLAD!\n";
-		return;
+		throw std::runtime_error("Failed to initialize GLAD!");
 	}
 	glViewport(0, 0, mode.width, mode.height);
 }
 
 void RenderWindow::onResize()
 {
-    sf::Vector2u size = this->getSize();
-    glViewport(0, 0, size.x, size.y);
+	sf::Vector2u size = this->getSize();
+	glViewport(0, 0, size.x, size.y);
 }
 
 bool RenderWindow::_setActive(bool /*states*/)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    return true;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return true;
 }
 
 }
