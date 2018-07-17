@@ -25,6 +25,9 @@ namespace rat {
 
 		void setSkillType(int path);
 		int getSkillType();
+
+		void setIsKnown(bool);
+		bool getIsKnown();
 	private:
 		std::string nameId;
 
@@ -36,6 +39,8 @@ namespace rat {
 		int essenceContainer [4];
 
 		int type;
+
+		bool isKnown;
 	};
 
 	class Player : public Module<Script>
@@ -79,6 +84,5 @@ namespace rat {
 		int _essenceContainer [4];
 
 		std::vector<Skill*> _skillsList;
-		std::vector<Skill*> _knownSkillsList;
 	};
 }

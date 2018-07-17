@@ -11,6 +11,7 @@ namespace rat {
 		object.set("getPPCost", &Skill::getPPcost);
 		object.set("getEssenceCost", &Skill::getEssenceCost);
 		object.set("getSkillType", &Skill::getSkillType);
+		object.set("getIsKnown", &Skill::getIsKnown);
 		object.init();
 	}
 
@@ -56,6 +57,12 @@ namespace rat {
 		return type;
 	}
 
+	void Skill::setIsKnown(bool _isKnown) {
+		isKnown = _isKnown;
+	}
+	bool Skill::getIsKnown() {
+		return isKnown;
+	}
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
 		_pathToJson = "Assets/Skills/skills.json";
@@ -152,7 +159,7 @@ namespace rat {
 	bool Player::addSkill(std::string& nameId) {
 		for (auto& i : _skillsList) {
 			if (i->getNameId() == nameId) {
-				_knownSkillsList.push_back(i);
+				i->setIsKnown(true);
 				return true;
 			}
 		}
@@ -160,10 +167,10 @@ namespace rat {
 	}
 
 	bool Player::removeSkill(std::string& nameId) {
-		for (size_t i = 0; i < _knownSkillsList.size(); i++)
+		for (size_t i = 0; i < _skillsList.size(); i++)
 		{
-			if (_knownSkillsList[i]->getNameId() == nameId) {
-				_knownSkillsList.erase(_knownSkillsList.begin() + i);
+			if (_skillsList[i]->getNameId() == nameId && _skillsList[i]->getIsKnown()) {
+				_skillsList[i]->setIsKnown(false);
 				return true;
 			}
 		}
