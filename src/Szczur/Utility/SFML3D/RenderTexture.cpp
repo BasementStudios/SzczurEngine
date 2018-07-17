@@ -17,6 +17,10 @@ namespace sf3d
 {
 
 /* Properties */
+const Texture& RenderTexture::getTexture() const
+{
+	return this->texture;
+}
 Texture& RenderTexture::getTexture()
 {
 	return this->texture;

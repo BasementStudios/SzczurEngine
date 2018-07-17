@@ -27,7 +27,8 @@ protected:
 	
 	/* Properties */
 public:
-	/// 
+	/// Provides access to texture 
+	const Texture& getTexture() const;
 	Texture& getTexture();
 
 
