@@ -186,7 +186,7 @@ namespace rat
 
         //fps->setOutlineThickness(10.f * _prop);
 
-        //list->setBetweenPadding(400.f * _prop);
+        list->setBetweenPadding(400.f * _prop);
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             fps->setSize(mousePos.x, 0.f);
@@ -220,6 +220,10 @@ namespace rat
                     break;
                     case sf::Keyboard::Num3:
                         fps->setString("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+                    break;
+                    case sf::Keyboard::P:
+                        if(scroll->isHidden()) scroll->show();
+                        else scroll->hide();
                     break;
 
                     default: break;

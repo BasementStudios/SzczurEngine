@@ -111,6 +111,10 @@ namespace rat
 		void invisible();
 		bool isVisible() const;
 
+		void show();
+		void hide();
+		bool isHidden() const;
+
 		void fullyDeactivate();
 		void fullyActivate();
 		bool isFullyDeactivated() const;
@@ -166,11 +170,12 @@ namespace rat
 		bool _isPosChanged{false};
 		bool _elementsPropSizeMustBeenCalculated{false};
 
-		bool _isHovered;
-		bool _isPressed;
-		bool _isActivated;
-		bool _isVisible;
+		bool _isHovered{false};
+		bool _isPressed{false};
 
+		bool _isActivated{true};
+		bool _isVisible{true};
+		bool _isHidden{false};
 		bool _isFullyDeactivated{false};
 
 		sf::Vector2f _size;
