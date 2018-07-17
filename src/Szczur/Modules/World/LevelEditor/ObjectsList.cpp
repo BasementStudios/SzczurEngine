@@ -78,7 +78,7 @@ namespace rat {
 			ImGui::Separator();
 
 			// Operations buttons
-			availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.33333f;
+			availWidth = (ImGui::GetContentRegionAvailWidth()-ImGui::GetStyle().ItemSpacing.x-ImGui::GetStyle().WindowPadding.x)*0.25f;
 
 
 			bool isSingleTab = _tab == "single";
@@ -106,6 +106,18 @@ namespace rat {
 					removeObject(_selectedEntityID);
 				}
 			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Sort##operation", ImVec2(availWidth, 0)))
+			{
+				auto& entities = scene->getEntities(_tab);
+
+				std::sort(entities.begin(), entities.end(), [] (std::unique_ptr<Entity>& a, std::unique_ptr<Entity>& b) {
+					return a->getPosition().z < b->getPosition().z;
+				});
+			}
+
 			ImGui::Separator();
 
 			// Child for scroll and separate top part
