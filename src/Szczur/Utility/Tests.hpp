@@ -10,6 +10,7 @@
 
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 
 namespace testing
 {
@@ -55,11 +56,15 @@ struct Tester : public TesterInvoker
 		registerTest(this);
 	}
 	
+#define LOG_TEST(TEXT) \
+	{ 															\
+		rat::logger->log(filename, line, "TEST", TEXT);			\
+		rat::detail::globalPtr_v<rat::Window>->getWindow().setTitle(TEXT); \
+	}															
 	void operator()()
 	{
-#define LOG_TEST(...) { rat::logger->log(filename, line, "TEST", __VA_ARGS__); }
 		try {
-			LOG_TEST("Testing case ", testCase, " in ", testName, "...");
+			LOG_TEST(std::string("Testing case ") + testCase + " in " + testName + "...");
 			{
 				TTestClass* test = new TTestClass();
 				test->SetUp();
@@ -67,11 +72,11 @@ struct Tester : public TesterInvoker
 				test->TearDown();
 				delete test;
 			}
-			LOG_TEST("[+] Test case ", testCase, " in ", testName, " succeeded!");
+			LOG_TEST(std::string("[+] Test case ") + testCase + " in " + testName + " succeeded!");
 		}
 		catch (const std::exception& exception) {
 			LOG_EXCEPTION(exception);
-			LOG_TEST("[-] Test case ", testCase, " in ", testName, " failed!");
+			LOG_TEST(std::string("[-] Test case ") + testCase + " in " + testName + " failed!");
 		}
 #undef LOG_TEST
 	};
