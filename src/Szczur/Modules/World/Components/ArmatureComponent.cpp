@@ -240,9 +240,12 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 		{
 			if (auto lastAnimation = anim->getLastAnimationState())
 			{
-				_lastAnimationName = lastAnimation->name;
-				_lastAnimationFadeInTime = lastAnimation->fadeTotalTime;
-				_lastAnimationSpeed = anim->timeScale;
+				if (_onceAnimStatus == OnceAnimStatus::None)
+				{
+					_lastAnimationName = lastAnimation->name;
+					_lastAnimationFadeInTime = lastAnimation->fadeTotalTime;
+					_lastAnimationSpeed = anim->timeScale;
+				}
 
 				if (waitToEnd)
 				{
@@ -300,7 +303,15 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	// Main
 	object.set("play", &ArmatureComponent::playAnim);
 	object.set("fadeIn", &ArmatureComponent::fadeIn);
-	object.set("playOnce", &ArmatureComponent::playOnce);
+
+
+	object.set("playOnce", sol::overload(
+		&ArmatureComponent::playOnce,
+		[&] (ArmatureComponent* comp, const std::string& animationName, float fadeInTime, bool waitToEnd) { comp->playOnce(animationName, fadeInTime, waitToEnd); },
+		[&] (ArmatureComponent* comp, const std::string& animationName, float fadeInTime) { comp->playOnce(animationName, fadeInTime); }
+	));
+
+
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
 	object.set("isPlaying", &ArmatureComponent::isPlaying);
