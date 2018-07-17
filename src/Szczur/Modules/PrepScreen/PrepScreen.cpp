@@ -348,6 +348,7 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/PPSlots.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBarFilter.png");
+        gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
         gui.addTexture("Assets/PrepScreen/ChosenSkillArea.png");
                 
 

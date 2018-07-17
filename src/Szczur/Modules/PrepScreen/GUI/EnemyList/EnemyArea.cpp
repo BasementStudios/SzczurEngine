@@ -15,12 +15,13 @@ namespace rat
         _border = new WindowWidget;
         _addWidget(_border);
         //_border->setScale(0.2f, 0.2f);
-        _border->setMainPatchPropSize({0.1625f, 0.1625f});
+        _border->setMainPatchPropSize({0.3f, 0.3f});
         _border->setPropSize(0.463f, 0.85f);
 
         _scroller = new ScrollAreaWidget;
-        _scroller->setPropSize(0.37f, 0.8f); //0.65f
+        _scroller->setPropSize(0.37f, 0.75f); //0.65f
         _scroller->setPropPosition(0.5f, 0.5f);
+        _scroller->makeScrollAutoHiding();
         _border->add(_scroller);
 
         _list = new ListWidget;
@@ -40,7 +41,7 @@ namespace rat
         _scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         _scroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
-        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
+        _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png"), 30);
 
         _infoBar.initAssetsViaGUI(gui);
 

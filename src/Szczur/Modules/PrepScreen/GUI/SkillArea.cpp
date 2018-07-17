@@ -25,12 +25,13 @@ namespace rat
     {
         _border = new WindowWidget;
         _addWidget(_border);
-        _border->setMainPatchPropSize({0.1625f, 0.1625f});
+        _border->setMainPatchPropSize({0.3f, 0.3f});
         _border->setPropSize(0.463f, 0.85f);
 
         _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setPropSize(0.37f, 0.8f); //0.65f
+        _skillsScroller->setPropSize(0.37f, 0.75f); //0.65f
         _skillsScroller->setPropPosition(0.5f, 0.5f);
+        _skillsScroller->makeScrollAutoHiding();
         _border->add(_skillsScroller);
 
         _skillsList = new ListWidget;
@@ -64,7 +65,7 @@ namespace rat
 
         _infoBar.initAssetsViaGUI(gui);
 
-        _border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
+        _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png"), 30);
         
 
         for(auto& skillBar : _skillBars)

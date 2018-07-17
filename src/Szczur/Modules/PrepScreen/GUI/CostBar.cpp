@@ -26,7 +26,7 @@ namespace rat
         _costAmount = new TextWidget;
         _costAmount->setPropPosition(0.5f, 0.5f);
         _costAmount->setCharacterSize(25);
-        _costAmount->setColor({50, 0, 100});
+        _costAmount->setColor({255, 255, 255});
         _costPP->add(_costAmount);
 
         GlyphTypes glyphs;

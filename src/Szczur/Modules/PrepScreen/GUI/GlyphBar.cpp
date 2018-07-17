@@ -23,7 +23,7 @@ namespace rat
         _amountState = new TextWidget;
 
         _addWidget(_container);
-        _container->setPropSize(0.15f, 0.15f);
+        _container->setPropSize(0.18f, 0.18f);
         _container->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
         });
@@ -54,7 +54,8 @@ namespace rat
         //     _glyphTextures[i] = gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) /*+ to_string(i) + */+ "Glyph.png");
         // }
 
-        _container->setTexture(gui.getAsset<sf::Texture>("Assets/Test/GlyphCircle.png"));
+        _container->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/PPSlots.png"));
+        _container->setTextureRect({{0, 0},{90, 90}});
         _glyph->setTexture(gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) + ".png"));
         _amountState->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
     }

@@ -16,6 +16,8 @@ namespace rat
     :
     _parentArea(parentArea)
     {
+        _getBase()->setPropPosition(0.5f, 0.f);
+
         _border = new WindowWidget;
         _icon = new ImageWidget;
         _name = new TextWidget;
@@ -56,8 +58,9 @@ namespace rat
         iconParent->setPropSize(prSize.y, prSize.y);
         //iconParent->setPropPadding(prPad); 
         infoList->add(iconParent);
-
-        _icon->setPropSize(prSize.y - prPad.x, prSize.y - prPad.y);
+        
+        const float iconPropDim = (prSize.y - prPad.x) * 0.9f;
+        _icon->setPropSize(iconPropDim, iconPropDim);
         _icon->setPropPosition(0.5f, 0.5f);
         iconParent->add(_icon);
 
@@ -105,8 +108,8 @@ namespace rat
 
     void EnemyBar::initAssetsViaGUI(GUI& gui)
     {
-        auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
-        _border->setTexture(barTex, 6);
+        auto* barTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
+        _border->setTexture(barTex, 30);
         auto* font = gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
         _name->setFont(font);
         _hp->setFont(font);

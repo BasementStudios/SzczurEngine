@@ -24,23 +24,12 @@ namespace rat
     SkillBar::SkillBar(PrepScreen& prepScreen)
     :
     _prepScreen(prepScreen),
-    BaseBar( [this]
-        {
-            auto* base = new ListWidget; 
-            //base->makeHorizontal();
-            base->makeChildrenPenetrable();
-            base->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
-                _onClick();
-            });
-            base->setCallback(Widget::CallbackType::onHoverIn, [&](Widget* owner){
-                _onHoverIn();
-            });
-            base->setCallback(Widget::CallbackType::onHoverOut, [&](Widget* owner){
-                _onHoverOut();
-            });
-            return base;
-        } () )
+    BaseBar()
     {
+        // auto* base = new ListWidget; 
+        // //base->makeHorizontal();
+        // base->makeChildrenPenetrable();
+
         _iconWindow = new WindowWidget; 
         _icon = new ImageWidget;
         _infoBar = new WindowWidget;
@@ -53,16 +42,26 @@ namespace rat
         _infoBar->setMainPatchPropSize({prSize.y, prSize.y});
         _infoBar->makeChildrenPenetrable();
         _addWidget(_infoBar);
+        _infoBar->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
+            _onClick();
+        });
+        _infoBar->setCallback(Widget::CallbackType::onHoverIn, [&](Widget* owner){
+            _onHoverIn();
+        });
+        _infoBar->setCallback(Widget::CallbackType::onHoverOut, [&](Widget* owner){
+            _onHoverOut();
+        });
 
         _filter = new WindowWidget;
         _filter->setPropSize(prSize);
         _filter->setMainPatchPropSize(prSize);
-        _filter->invisible();
+        _filter->makeChildrenUncolorable();
+        _filter->hide();
         //_iconWindow->add(_filter);
         _infoBar->add(_filter);
 
         auto* mainList = new ListWidget;
-        _infoBar->add(mainList);
+        _filter->add(mainList);
 
         auto* list = new ListWidget;
         list->makeHorizontal();
@@ -162,7 +161,7 @@ namespace rat
         }
 
         _canBeBought = _prepScreen.canSkillBeBought(_skill);
-        _filter->invisible();
+        _filter->hide();
         if(_canBeBought)
         {
             _getBase()->setColorInTime({255, 255, 255}, 0.1f);
@@ -217,7 +216,7 @@ namespace rat
         if(_canBeBought)
         {
             //_getBase()->setColorInTime({180, 180, 180}, 0.1f);
-            _filter->visible();
+            _filter->show();
             _prepScreen.dimPPsNeededToBuySkill(_skill);
         }
     }
@@ -226,7 +225,7 @@ namespace rat
         if(_canBeBought)
         {
             //_getBase()->setColorInTime({255, 255, 255}, 0.1f);
-            _filter->invisible();
+            _filter->hide();
             _prepScreen.normPPsNeededToBuySkill(_skill);
         }
     }
@@ -234,9 +233,9 @@ namespace rat
 
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
-        auto* barTex = gui.getAsset<sf::Texture>("Assets/Test/Bar.png");
+        auto* barTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
         //_iconWindow->setTexture(barTex, 6);
-        _infoBar->setTexture(barTex, 6);
+        _infoBar->setTexture(barTex, 30);
         _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
         _costBar.loadAssetsFromGUI(gui);

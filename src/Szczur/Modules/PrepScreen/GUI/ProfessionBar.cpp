@@ -21,8 +21,8 @@ namespace rat
         _addWidget(_window);
         _window->makeChildrenPenetrable();
         _window->setPadding(0.f, 0.f);
-        _window->setMainPatchPropSize({0.1625f, 0.1625f});
-        _window->setPropSize({0.1342592592592593f, 0.1342592592592593f});
+        _window->setMainPatchPropSize({0.3, 0.3});
+        _window->setPropSize({0.15f, 0.15f});
         _window->makeChildrenUnresizable();
 
         _icon = new ImageWidget;
@@ -61,7 +61,7 @@ namespace rat
         _chosen = gui.getTexture(path + "1.png");
 
         _icon->setTexture(_unchosen);
-        _window->setTexture(gui.getAsset<sf::Texture>("Assets/Test/Window.png"), 200);
+        _window->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png"), 30);
         //_window->setScale(0.2f, 0.2f);
         //_window->setPadding(5.f, 5.f);
     }

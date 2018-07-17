@@ -1,12 +1,12 @@
 {
-    "iconsPath": "Assets/PrepScreen/Icons/",
+    "iconsPath": "Assets/PrepScreen/Skills/",
 
     "skills": {
         "kek": {
             "name": "Nemo",
             "ppCost": 5,
             "profession": "Mele",
-            "iconPath": "test1.png",
+            "iconPath": "skill_1.png",
             "glyphes": {
                 "Wrath": 1,
                 "Fear" : 1
@@ -16,7 +16,7 @@
             "name": "Pluto",
             "ppCost": 3,
             "profession": "Range",
-            "iconPath": "test2.png",
+            "iconPath": "skill_2.png",
             "glyphes": {
                 "Wrath": 1
             }

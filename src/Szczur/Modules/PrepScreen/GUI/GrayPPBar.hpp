@@ -24,7 +24,7 @@ namespace rat
 
         void _updateTextRect();
 
-        static constexpr int ppDim = 288;
+        static constexpr int ppDim = 90;
 
     };
 }
