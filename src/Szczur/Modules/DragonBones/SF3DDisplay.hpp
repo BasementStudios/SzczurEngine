@@ -31,13 +31,11 @@ public:
 	const sf3d::Texture* texture = nullptr;
 
 	std::vector<std::vector<int>> 			verticesInTriagles;
-	sf3d::VertexArray		 				verticesDisplay{ 4 };
+	sf3d::VertexArray		 				verticesDisplay {4u, sf3d::PrimitiveType::TriangleFan};
 
 	bool visible = true;
 
 	// sf::BlendMode blendMode; // @todo . BlendMode
-
-	GLuint primitiveType = GL_TRIANGLE_STRIP;
 
 protected:
 	sf3d::Transform transform;

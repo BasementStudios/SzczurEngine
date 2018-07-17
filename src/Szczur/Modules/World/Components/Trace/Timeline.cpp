@@ -11,7 +11,7 @@ namespace rat
 Timeline::Timeline(int id, Entity* entity)
 	: _id(id), _entity(entity)
 {
-	_vertexArray.setPrimitveType(GL_LINES);
+	_vertexArray.setPrimitiveType(sf3d::PrimitiveType::Lines);
 }
 
 Timeline::~Timeline()

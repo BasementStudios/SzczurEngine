@@ -88,8 +88,6 @@ public:
 	bool getFullscreen() const noexcept;
 	void setFullscreen(bool state);
 
-	void processEvent(sf::Event event);
-
 
 
 	/* Operators */

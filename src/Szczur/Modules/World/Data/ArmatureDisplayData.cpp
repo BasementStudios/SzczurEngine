@@ -1,5 +1,6 @@
 #include "ArmatureDisplayData.hpp"
 
+#include <chrono>
 #include <experimental/filesystem>
  
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"

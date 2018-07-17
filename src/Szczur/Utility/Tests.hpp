@@ -62,7 +62,7 @@ struct Tester : public TesterInvoker
 #define LOG_TEST(TEXT) \
 	{ 															\
 		rat::logger->log(filename, line, "TEST", TEXT);			\
-		rat::detail::globalPtr_v<rat::Window>->getWindow().setTitle(TEXT); \
+		rat::detail::globalPtr<rat::Window>->getWindow().setTitle(TEXT); \
 	}															
 	void operator()()
 	{
@@ -123,7 +123,7 @@ struct Test
 		sf::Event event;								\
 		rat::Clock clock;								\
 		bool testing = true;							\
-		sf3d::RenderWindow& window = rat::detail::globalPtr_v<rat::Window>->getWindow(); \
+		sf3d::RenderWindow& window = rat::detail::globalPtr<rat::Window>->getWindow(); \
 		while (testing) {								\
 			UPDATE;										\
 			RENDER;										\

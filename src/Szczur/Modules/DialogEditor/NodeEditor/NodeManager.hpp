@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include <NodeEditor/NodeEditor.h>
+#include <NodeEditor.h>
 #include <nlohmann/json.hpp>
 #include <glm/vec4.hpp>
 

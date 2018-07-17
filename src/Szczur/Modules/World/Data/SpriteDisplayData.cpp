@@ -16,9 +16,8 @@ namespace rat {
 
     void SpriteDisplayData::loadTexture() {
         try {
-            if(_texture.loadFromFile(_name)) {
-                _sprite.setTexture(&_texture);
-            }
+            _texture.loadFromFile(_name);
+            _sprite.setTexture(_texture);
         }
         catch (const std::exception& e) {
             LOG_INFO(e.what());
@@ -35,7 +34,7 @@ namespace rat {
     }
 
     void SpriteDisplayData::setupSprite() {
-        _sprite.setTexture(&_texture);
+        _sprite.setTexture(_texture);
     }
 
     const sf3d::Texture& SpriteDisplayData::getTexture() const {    

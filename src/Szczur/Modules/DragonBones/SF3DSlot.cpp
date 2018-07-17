@@ -172,7 +172,7 @@ void SF3DSlot::_updateFrame()
 
 				_renderDisplay->texture = currentTextureData->texture;
 				_renderDisplay->verticesInTriagles = std::move(verticesInTriagles);
-				_renderDisplay->verticesDisplay.setPrimitveType(GL_TRIANGLES);
+				_renderDisplay->verticesDisplay.setPrimitiveType(sf3d::PrimitiveType::Triangles);
 
 				const auto isSkinned = currentVerticesData->weight != nullptr;
 				if (isSkinned)
@@ -188,9 +188,8 @@ void SF3DSlot::_updateFrame()
 				_renderDisplay->texture = currentTextureData->texture;
 				_renderDisplay->verticesDisplay.resize(4);
 				_renderDisplay->verticesInTriagles.resize(0);
-				_renderDisplay->primitiveType = GL_TRIANGLE_FAN;
-
-				_renderDisplay->verticesDisplay.setPrimitveType(GL_TRIANGLE_FAN);
+				_renderDisplay->verticesDisplay.setPrimitiveType(sf3d::PrimitiveType::TriangleFan);
+				
 				// Setup verticles
 				{
 					const auto& region = currentTextureData->region;
