@@ -25,11 +25,11 @@ namespace rat
     {
         _border = new WindowWidget;
         _addWidget(_border);
-        _border->setMainPatchPropSize({0.3f, 0.3f});
-        _border->setPropSize(0.463f, 0.85f);
+        _border->setMainPatchPropSize({0.5f, 0.5f});
+        _border->setPropSize(0.463f, 0.9f);
 
         _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setPropSize(0.37f, 0.75f); //0.65f
+        _skillsScroller->setPropSize(0.43f, 0.75f); //0.65f
         _skillsScroller->setPropPosition(0.5f, 0.5f);
         _skillsScroller->makeScrollAutoHiding();
         _border->add(_skillsScroller);
@@ -57,7 +57,7 @@ namespace rat
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
     {
-        _font = gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
+        _font = gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf");
 
         _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
@@ -65,7 +65,7 @@ namespace rat
 
         _infoBar.initAssetsViaGUI(gui);
 
-        _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png"), 30);
+        _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/BackgroundEQ.png"), 30);
         
 
         for(auto& skillBar : _skillBars)

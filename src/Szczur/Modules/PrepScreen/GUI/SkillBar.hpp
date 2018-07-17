@@ -46,6 +46,7 @@ namespace rat
 
         CostBar _costBar;
 
+        WindowWidget* _firstSlot{nullptr};
         WindowWidget* _iconWindow{nullptr};
         ImageWidget* _icon{nullptr};
 

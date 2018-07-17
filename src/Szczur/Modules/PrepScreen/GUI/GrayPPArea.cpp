@@ -17,20 +17,11 @@ namespace rat
     :
     BaseBar()
     {
-        _border = new WindowWidget;
-        _addWidget(_border);
-        //_border->setMainPatchPropSize({0.326f, 0.0772f});
-        _border->setMainPatchPropSize({0.25, 0.064f}); //nie pamietam co to xD
-        //_border->setPropSize(0.768f, 0.0772f);
-        _border->setPropSize(0.4, 0.064f);
-        _border->setPropPadding(0.035f, 0.f);
-
         _ppsList = new ListWidget;
+        _addWidget(_ppsList);
         _ppsList->makeHorizontal();
         _ppsList->setBetweenPadding(7.f);
         _ppsList->setPropPosition(0.5f, 0.5f);
-
-        _border->add(_ppsList);
 
         _getBase()->setPropPosition(0.5f, 0.f);
     }
@@ -125,8 +116,5 @@ namespace rat
     void GrayPPArea::initAssetsViaGUI(GUI& gui)
     {
         _slotTex = gui.getTexture("Assets/PrepScreen/PPSlots.png");
-
-        auto* borderTex = gui.getAsset<sf::Texture>("Assets/Test/GrayPPWindow.png");
-        _border->setTexture(borderTex, 144, 76);
     }
 }

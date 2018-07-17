@@ -10,7 +10,7 @@ namespace rat
     {
         _slot = new ImageWidget;
         _addWidget(_slot);
-        _slot->setPropSize(0.042f, 0.042f);
+        _slot->setPropSize(0.05f, 0.05f);
     }
 
     bool GrayPPBar::isTaken() const

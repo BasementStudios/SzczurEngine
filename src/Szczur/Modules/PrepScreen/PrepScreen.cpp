@@ -234,38 +234,18 @@ namespace rat
 
         _loadAssetsFromGUI();
         _initAssetsViaGUI();
-        
 
+        auto* background = new ImageWidget;
+        gui.addInterface()->add(background);
+        background->setPropSize(1.777778f, 1.f);
+        background->setPropPosition(0.5f, 0.5f);
+        background->setTexture(gui.getTexture("Assets/PrepScreen/Background.png"));
+        
         _base = gui.addInterface();
         _base->setPadding(20.f, 20.f);
         _base->setSizingWidthToHeightProportion(1.f);
+        
 
-        /*auto* list = new ListWidget;
-        _base->add(list);
-        list->setPropPosition(0.5f, 0.f);
-        //list->setPosition(100.f, 100.f);
-        list->setPropSize(0.f, 1.f);
-        list->setAutoBetweenPadding();
-
-        _glyphArea.setParent(list);
-        _glyphArea.setPropPosition(0.5f, 0.f);
-
-        _grayPPArea.setParent(list);
-        _grayPPArea.setPropPosition(0.5f, 0.f);
-
-        auto* mainList = new ListWidget;
-        list->add(mainList);
-        mainList->setPropPosition(0.5f, 0.f);
-        mainList->makeHorizontal();
-        mainList->setPropSize(1.6f, 0.f);
-        mainList->setAutoBetweenPadding();
-        mainList->setPropPosition(0.5f, 0.f);
-
-        auto* skillList = new ListWidget;
-        skillList->makeHorizontal();
-        skillList->setPropBetweenPad(0.0288387f);
-        mainList->add(skillList);
-        */
 
        auto* mainList = new ListWidget;
        mainList->makeHorizontal();
@@ -350,6 +330,8 @@ namespace rat
         gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBarFilter.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
         gui.addTexture("Assets/PrepScreen/ChosenSkillArea.png");
+        gui.addTexture("Assets/PrepScreen/Background.png");
+        gui.addTexture("Assets/PrepScreen/BackgroundEQ.png");
                 
 
         GlyphTypes glyphTypes;
@@ -361,6 +343,8 @@ namespace rat
 
         gui.addAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
         gui.addAsset<sf::Font>("Assets/fonts/anirm.ttf");
+        gui.addFont("Assets/fonts/NotoSerif-Regular.ttf");
+
         _codex.initAssetsViaGUI(gui);
         _enemyCodex.initAssetsViaGUI(gui);
     }

@@ -36,7 +36,8 @@ namespace rat
         _name = new TextWidget;
 
 
-        const sf::Vector2f prSize(0.312037037037037f, 0.1148148148148f);
+        //const sf::Vector2f prSize(0.312037037037037f, 0.1148148148148f);
+        const sf::Vector2f prSize(0.4f, 0.1148148148148f);
 
         _infoBar->setPropSize(prSize);
         _infoBar->setMainPatchPropSize({prSize.y, prSize.y});
@@ -63,9 +64,15 @@ namespace rat
         auto* mainList = new ListWidget;
         _filter->add(mainList);
 
+        _firstSlot = new WindowWidget;
+        mainList->add(_firstSlot);
+        _firstSlot->makeChildrenUnresizable();
+        _firstSlot->setPropSize(prSize);
+        _firstSlot->setMainPatchPropSize({prSize.y, prSize.y});
+
         auto* list = new ListWidget;
         list->makeHorizontal();
-        mainList->add(list);
+        _firstSlot->add(list);
 
 
         _iconWindow->setPropSize(prSize.y, prSize.y);
@@ -83,8 +90,7 @@ namespace rat
 
         list->add(infos);
 
-        _name->setCharacterSize(14);
-        _name->setPropPosition(0.f, 0.f);
+        _name->setCharacterPropSize(0.02f);
         infos->add(_name);
 
         _costBar.setParent(infos);
@@ -104,7 +110,7 @@ namespace rat
 
 
         _title = new TextWidget;
-        _title->setCharacterSize(12);
+        _title->setCharacterPropSize(0.02f);
         _title->setColor({255, 255, 255});
         _title->setPropPosition(0.5f, 0.5f);
         _title->setString("Hejjjj");
@@ -216,7 +222,7 @@ namespace rat
         if(_canBeBought)
         {
             //_getBase()->setColorInTime({180, 180, 180}, 0.1f);
-            _filter->show();
+            //_filter->show();
             _prepScreen.dimPPsNeededToBuySkill(_skill);
         }
     }
@@ -234,10 +240,11 @@ namespace rat
     void SkillBar::loadAssetsFromGUI(GUI& gui)
     {
         auto* barTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
-        //_iconWindow->setTexture(barTex, 6);
+        _iconWindow->setTexture(barTex, 30);
         _infoBar->setTexture(barTex, 30);
-        _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
-        _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/anirm.ttf"));
+        _firstSlot->setTexture(barTex, 30);
+        _name->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf"));
+        _title->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf"));
         _costBar.loadAssetsFromGUI(gui);
         _filter->setTexture(gui.getTexture("Assets/PrepScreen/SkillBarFilter.png"), 280, 100);
     }

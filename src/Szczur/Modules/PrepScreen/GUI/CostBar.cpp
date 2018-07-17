@@ -81,8 +81,8 @@ namespace rat
             sf::Texture* texture = gui.getAsset<sf::Texture>(path);
             widget->setTexture(texture);
         }        
-        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
-        _costPP->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png"));
+        _costAmount->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf"));
+        //_costPP->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png"));
     }
    
     void CostBar::_recalculateGlyphs()

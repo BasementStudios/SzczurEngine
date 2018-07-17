@@ -74,7 +74,7 @@ namespace rat
         _name->setPropPosition(1.f, 0.f);
 
         titles->add(_hp);
-        _hp->setCharacterSize(20);
+        _hp->setCharacterPropSize(0.025f);
         _hp->setPropPosition(1.f, 1.f);
 
         _descParent = new Widget;
@@ -86,7 +86,7 @@ namespace rat
 
         _description = new TextWidget;
         _descParent->add(_description);
-        _description->setCharacterSize(20);
+        _description->setCharacterPropSize(0.025f);
         _description->setPropPosition(0.5f, 0.5f);
 
         auto* base = _getBase();
@@ -110,7 +110,7 @@ namespace rat
     {
         auto* barTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
         _border->setTexture(barTex, 30);
-        auto* font = gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf");
+        auto* font = gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf");
         _name->setFont(font);
         _hp->setFont(font);
         _description->setFont(font);

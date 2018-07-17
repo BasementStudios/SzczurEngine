@@ -3,20 +3,46 @@
 
     "skills": {
         "kek": {
-            "name": "Nemo",
+            "name": "Wściekły wybuch",
             "ppCost": 5,
-            "profession": "Mele",
+            "profession": "Range",
             "iconPath": "skill_1.png",
             "glyphes": {
-                "Wrath": 1,
-                "Fear" : 1
+                "Wrath": 1
             }
         },
-        "mech": {
-            "name": "Pluto",
+        "foot": {
+            "name": "Zgrabne nóżki",
             "ppCost": 3,
-            "profession": "Range",
+            "profession": "Aura",
             "iconPath": "skill_2.png",
+            "glyphes": {
+                "Wrath": 1
+            }
+        },
+		"sword1": {
+            "name": "Szybkie czmychnięcie",
+            "ppCost": 5,
+            "profession": "Mele",
+            "iconPath": "skill_3.png",
+            "glyphes": {
+                "Wrath": 1
+            }
+        },
+		"sword2": {
+            "name": "Rozżażona stal",
+            "ppCost": 5,
+            "profession": "Mele",
+            "iconPath": "skill_4.png",
+            "glyphes": {
+                "Wrath": 1
+            }
+        },
+		"sword3": {
+            "name": "Zamaszyste zamachnięcie",
+            "ppCost": 5,
+            "profession": "Mele",
+            "iconPath": "skill_5.png",
             "glyphes": {
                 "Wrath": 1
             }
