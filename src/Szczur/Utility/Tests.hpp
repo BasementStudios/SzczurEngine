@@ -114,14 +114,16 @@ struct Test
 	void test_##CLASS##_##CASE::Run()
 
 #define VISUAL_TEST_TIME 3s
+#define VISUAL_TEST_WAIT(TIME) \
+	using namespace std::chrono_literals; 				\
+	std::this_thread::sleep_for(TIME);
 
 #define VISUAL_TEST(NAME, CASE) \
 	struct test_##NAME##_##CASE : public NAME					\
 	{															\
 		virtual ~test_##NAME##_##CASE() 						\
 		{														\
-			using namespace std::chrono_literals; 				\
-			std::this_thread::sleep_for(VISUAL_TEST_TIME);		\
+			VISUAL_TEST_WAIT(VISUAL_TEST_TIME);					\
 		}														\
 		virtual void Run() override;							\
 	};															\
@@ -136,8 +138,7 @@ struct Test
 	{															\
 		virtual ~test_##CLASS##_##CASE() 						\
 		{														\
-			using namespace std::chrono_literals; 				\
-			std::this_thread::sleep_for(VISUAL_TEST_TIME);		\
+			VISUAL_TEST_WAIT(VISUAL_TEST_TIME);					\
 		}														\
 		virtual void Run() override;							\
 	};															\
