@@ -18,9 +18,11 @@ namespace rat {
 	
 
 	void Script::init() {
-		_lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::table, sol::lib::math);
+		_lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::table, sol::lib::math, sol::lib::string);
 		_lua["Math"] = _lua["math"];
 		_lua["math"] = sol::nil;
+		_lua["String"] = _lua["string"];
+		_lua["string"] = sol::nil;
 		initSFML();
 		initMainFunctions();
 	}
