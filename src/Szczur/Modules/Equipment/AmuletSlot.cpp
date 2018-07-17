@@ -46,7 +46,7 @@ namespace rat {
 
 		_amuletImage->setCallback(Widget::CallbackType::onHoverIn, [equipment, this](Widget* owner) {
 			if (getChosenAmulet())
-				equipment->enableItemPreview(getChosenAmulet());
+				//equipment->enableItemPreview(getChosenAmulet());
 			_highlight->fullyActivate();
 		});
 

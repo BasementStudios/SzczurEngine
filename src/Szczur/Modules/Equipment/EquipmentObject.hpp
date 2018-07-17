@@ -18,11 +18,13 @@ namespace rat {
 		sf::Texture* getTexture();
 		std::string& getName();
 		std::string& getDescription();
+		std::string& getLoreDescription();
 		std::string& getNameId();
 		
 		//cos z tekstura
 		void setName(std::string name);
 		void setDescription(std::string description);
+		void setLoreDescription(std::string description);
 		//void setIcon(sf::Texture* text);
 		void setIcon(std::string path);
 
@@ -33,7 +35,7 @@ namespace rat {
 		void deactivate();*/
 	private:
 		std::shared_ptr<sf::Texture> _objectIcon;
-		std::string _objectDescription, _objectName, _objectNameId;
+		std::string _objectDescription, _objectName, _objectNameId, _objectLoreDescription;
 
 	};
 }

@@ -2,12 +2,14 @@
     "items": {
 	    "potion": {
             "pl": {
-                "name": "potion",
-                "description": "To jest super potion"
+                "name": "Redbull",
+                "description": "+10 do wpierdolu",
+                "lore description": "doda ci skrzydeł"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": ""
+                "description": "",
+                "lore description": "To jest super potion"
             },
             "type": "usable",
             "icon": "Assets/Equipment/potion/potion.png",
@@ -15,12 +17,14 @@
         },
 	    "potion2": {
             "pl": {
-                "name": "potion2",
-                "description": "To tez jest super potion"
+                "name": "Odtrutka",
+                "description": "Neutralizuje toksyny, lecząc zatrucie",
+                "lore description": "Podobno smakuje paskudnie, ale lepsze to niż śmierć"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": "To jest",
+                "lore description": "To jest super potion"
             },
             "type": "usable",
             "icon": "Assets/Equipment/potion2/potion2.png",
@@ -29,11 +33,13 @@
 		"stone1": {
             "pl": {
                 "name": "stone1",
-                "description": "To jest super pierscien"
+                "description": "To jest super pierscien",
+                "lore description": "To jest super potion"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": "To jest",
+                "lore description": "To jest super potion"
             },
             "type": "wearable",
 			"category": "stone",
@@ -43,11 +49,13 @@
 		"stone2": {
             "pl": {
                 "name": "stone2",
-                "description": "To jest super kamyczek"
+                "description": "To jest super kamyczek",
+                "lore description": "To jest super potion"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": "To jest",
+                "lore description": "To jest super potion"
             },
             "type": "wearable",
 			"category": "stone",

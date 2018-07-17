@@ -36,6 +36,7 @@ namespace rat {
 		
 		void setSize(const sf::Vector2f& size);
 		void setPropSize(const sf::Vector2f& size);
+		sf::Vector2f getSize();
 
 		bool getStatus();
 		void setStatus(bool newState);

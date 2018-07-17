@@ -66,6 +66,12 @@ namespace rat {
 									newItem->setDescription(description);
 								}
 								else { assert(false); }
+
+								// Lore description
+								if (auto& description = var["lore description"]; !description.is_null()) {
+									newItem->setLoreDescription(description);
+								}
+								else { assert(false); }
 							}
 
 							// Load script

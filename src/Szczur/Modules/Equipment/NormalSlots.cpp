@@ -15,7 +15,7 @@ namespace rat
 		: _slotAmount(slotNumber), _frameText(frameText), _equipment(equipment)
 	{
 		_base = new Widget;
-		_base->setPropSize({4 * 0.086f, _slotAmount / 4 * 0.086f });
+		//_base->setPropSize({4 * 0.086f, _slotAmount / 4 * 0.086f });
 		_base->makeChildrenUnresizable();
 		size_t x = 0;
 		size_t y = 0;
@@ -57,13 +57,11 @@ namespace rat
 				if(newSlot->getStatus())
 					_slotDropped = newSlot;
 				if (newSlot->getItem())
-					equipment->enableItemPreview(newSlot->getItem());
+					equipment->enableItemPreview(newSlot->getItem(), newSlot->getGlobalPosition() + newSlot->getSize());
 				newSlot->setHighlight(true);
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
-				if (newSlot->getStatus())
-					_removeSlotDropped(newSlot);
-				if (newSlot->getItem())
+				if (newSlot->getItem() && _removeSlotDropped(newSlot))
 					equipment->disableItemPreview();
 				newSlot->setHighlight(false);
 			});
@@ -71,7 +69,7 @@ namespace rat
 		}
 		_itemHeldWidget = new ImageWidget;
 		_base->add(_itemHeldWidget);
-		_itemHeldWidget->setPropSize(frameSize);
+		_itemHeldWidget->setPropSize({ frameSize.x + .003f, frameSize.y + .004f });
 
 	}
 	void NormalSlots::setParent(Widget* newBase) {
@@ -321,10 +319,12 @@ namespace rat
 		}
 	}
 
-	void NormalSlots::_removeSlotDropped(std::shared_ptr<EquipmentSlot> slot) {
+	bool NormalSlots::_removeSlotDropped(std::shared_ptr<EquipmentSlot> slot) {
 		if (_slotDropped == slot) {
 			_slotDropped = nullptr;
+			return true;
 		}
+		return false;
 	}
 
 	itemMap_t NormalSlots::getItemMap() {

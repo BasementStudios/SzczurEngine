@@ -9,10 +9,6 @@ namespace rat {
 		_objectIcon.reset(new sf::Texture);
 	}
 
-	/*void EquipmentObject::setIcon(sf::Texture* text) {
-		_objectIcon = text;
-	}*/
-
 	void EquipmentObject::setIcon(std::string path) {
 		_objectIcon->loadFromFile(path);
 	}
@@ -22,6 +18,9 @@ namespace rat {
 	}
 	void EquipmentObject::setDescription(std::string description) {
 		_objectDescription = description;
+	}
+	void EquipmentObject::setLoreDescription(std::string description) {
+		_objectLoreDescription = description;
 	}
 
 	sf::Texture* EquipmentObject::getTexture() {
@@ -38,6 +37,10 @@ namespace rat {
 
 	std::string& EquipmentObject::getNameId() {
 		return _objectNameId;
+	}
+
+	std::string& EquipmentObject::getLoreDescription() {
+		return _objectLoreDescription;
 	}
 
 	/*void EquipmentObject::setCallback(sol::function firstCallback) {

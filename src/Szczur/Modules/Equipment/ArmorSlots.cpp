@@ -21,7 +21,7 @@ namespace rat {
 		_weaponSlot->setPropSize(frameSize);
 		_weaponSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [equipment, this](Widget* owner) {
 			if (this->getWeaponSlot()->getItem())
-				equipment->enableItemPreview(this->getWeaponSlot()->getItem());
+				equipment->enableItemPreview(this->getWeaponSlot()->getItem(), {0,0});
 			_weaponSlot->setHighlight(true);
 		});
 		_weaponSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [equipment, this](Widget* owner) {
@@ -36,7 +36,7 @@ namespace rat {
 		_armorSlot->setPropPosition({0.5f, 0.f});//sf::Vector2f(frameSize.x + 10, 0.f));
 		_armorSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [equipment, this](Widget* owner) {
 			if (this->getArmorSlot()->getItem())
-				equipment->enableItemPreview(this->getArmorSlot()->getItem());
+				equipment->enableItemPreview(this->getArmorSlot()->getItem(), {0,0});
 			_armorSlot->setHighlight(true);
 		});
 		_armorSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [equipment, this](Widget* owner) {

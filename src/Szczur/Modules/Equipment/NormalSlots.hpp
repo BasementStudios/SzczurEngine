@@ -64,7 +64,7 @@ namespace rat {
 
 		Widget* _base;
 
-		void _removeSlotDropped(std::shared_ptr<EquipmentSlot>);
+		bool _removeSlotDropped(std::shared_ptr<EquipmentSlot>);
 
 		sf::Texture* _frameText;
 

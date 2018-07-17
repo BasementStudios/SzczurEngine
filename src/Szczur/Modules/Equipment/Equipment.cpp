@@ -85,9 +85,9 @@ namespace rat {
 		gui.addTexture("Assets/Equipment/background.png");
 		gui.addTexture("Assets/Equipment/ringsSlider.png");
 		gui.addTexture("Assets/Equipment/slot.png");
-		gui.addFont("Assets/Equipment/NotoMono.ttf");
+		gui.addFont("Assets/Equipment/SourceSansPro-Italic.ttf");
+		gui.addFont("Assets/Equipment/SourceSansPro-SemiBold.ttf");
 		gui.addTexture("Assets/Equipment/cancel.png");
-		gui.addTexture("Assets/Equipment/rozwijanie.png");
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
@@ -132,13 +132,13 @@ namespace rat {
 
 		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png"), gui.getTexture("Assets/Equipment/lock.png"), this, { .068f, 0.091f });
 		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->setPropPosition(sf::Vector2f(0.37f, .66f));
+		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .25f));
 
-		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
+		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/preview.png"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-SemiBold.ttf"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-Italic.ttf"));
 		_itemPreview->setParent(_base);
 		_itemPreview->minimalize();
 
-		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"), this);
+		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-SemiBold.ttf"), this);
 		_replaceItem->setParent(_base);
 		_replaceItem->close();
 
@@ -160,6 +160,13 @@ namespace rat {
 		if (_input.getManager().isPressed(rat::Keyboard::I) && !_isEquipmentHidden) {
 			_closeEquipment();
 		}
+		if (_isPreviewOn && _timeFromStartingPreview >= 1.f && !_isPreviewMaximized) {
+			_itemPreview->maximize();
+			_isPreviewMaximized = true;
+		}
+		if (_isPreviewOn) {
+			_timeFromStartingPreview += deltaTime;
+		}
 	}
 
 	//when play button in pressed and we activate equipment
@@ -178,23 +185,25 @@ namespace rat {
 		_closeEquipment();
 	}
 
-	void Equipment::enableItemPreview(EquipmentObject* item) {
+	void Equipment::enableItemPreview(EquipmentObject* item, sf::Vector2f pos) {
 		if (canPreviewBeInstantiated) {
-			LOG_INFO("1");
-			_itemPreview->setItem(item);
+			_itemPreview->setItem(item, pos);
+			_itemPreview->minimalize();
+			_timeFromStartingPreview = 0.f;
 			_isPreviewOn = true;
-			if (_isReplacing) {
+			_isPreviewMaximized = false;
+			/*if (_isReplacing) {
 				_replaceItem->higherPosition();
-			}
+			}*/
 		}
 	}
 
 	void Equipment::disableItemPreview() {
 		_itemPreview->minimalize();
 		_isPreviewOn = false;
-		if (_isReplacing) {
+		/*if (_isReplacing) {
 			_replaceItem->lowerPosition();
-		}
+		}*/
 	}
 
 	UsableItem* Equipment::getUsableItem(const std::string& nameId) {
@@ -321,6 +330,7 @@ namespace rat {
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
+		_itemPreview->minimalize();
 		_equipmentFrame->setPropPositionInTime({ -.7f, .4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = true;
 			_equipmentFrame->fullyDeactivate();

@@ -51,13 +51,17 @@ namespace rat {
 			temp->setPropSize(frameSize);
 			temp->setTexture(_slotTexture, _shadowTexture, _lockTexture);
 			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {
-				if (temp->getItem())
-				_equipment->disableItemPreview();
+				if (temp->getItem() && _currentSlot == temp) {
+					_equipment->disableItemPreview();
+					_currentSlot = nullptr;
+				}
 				temp->setHighlight(false);
 			});
 			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [this, temp](Widget* owner) {
-				if(temp->getItem())
-				_equipment->enableItemPreview(temp->getItem());
+				if (temp->getItem()) {
+					_equipment->enableItemPreview(temp->getItem(), temp->getGlobalPosition() + temp->getSize());
+					_currentSlot = temp;
+				}
 				temp->setHighlight(true);
 			});
 			temp->getWidget()->setCallback(Widget::CallbackType::onPress, [temp, this](Widget* owner) {

@@ -39,6 +39,7 @@ namespace rat {
 
 		std::vector<EquipmentSlot*> _stoneSlots;
 		std::vector<EquipmentSlot*> _selectedSlots;
+		EquipmentSlot* _currentSlot = nullptr;
 
 		ScrollAreaWidget* _scroll = nullptr;
 		Widget* _base = nullptr;

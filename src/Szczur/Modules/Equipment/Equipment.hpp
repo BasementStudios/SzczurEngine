@@ -18,6 +18,7 @@ namespace rat
 
 	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; 
 	class RingSlider; class ItemManager; class InterfaceWidget; class ReplaceItem; class Necklace;
+	class EquipmentSlot;
 	class Equipment : public Module<Window, Input, GUI, Script> {
 		friend class NormalSlots;
 		friend class ReplaceItem;
@@ -32,7 +33,7 @@ namespace rat
 		Equipment();
 		~Equipment();
 
-		void enableItemPreview(EquipmentObject* item);
+		void enableItemPreview(EquipmentObject* item, sf::Vector2f pos);
 		void disableItemPreview();
 
 		bool canPreviewBeInstantiated;
@@ -65,6 +66,9 @@ namespace rat
 		ImageWidget* _equipmentFrame = nullptr;
 
 		bool _isPreviewOn = false;
+		bool _isPreviewMaximized = false;
+		float _timeFromStartingPreview;
+
 		bool _isEquipmentHidden = true;
 
 		sf::Vector2f _equipmentPosition;

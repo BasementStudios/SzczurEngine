@@ -24,7 +24,7 @@ namespace rat {
 
 			_stonesImages[i].image->setCallback(Widget::CallbackType::onHoverIn, [this, i](Widget* owner) {
 				if(_stonesImages[i].item)
-				_equipment->enableItemPreview(_stonesImages[i].item);
+				_equipment->enableItemPreview(_stonesImages[i].item, _stonesImages[i].image->getGlobalPosition() + _stonesImages[i].image->getSize());
 			});
 
 			_stonesImages[i].image->setCallback(Widget::CallbackType::onHoverOut, [this](Widget* owner) {

@@ -64,6 +64,10 @@ namespace rat {
 		_itemImage->setPropPosition(-0.3f, -0.4f);
 	}
 
+	sf::Vector2f EquipmentSlot::getSize() {
+		return _slotImage->getSize();
+	}
+
 	void EquipmentSlot::setItem(EquipmentObject* item) {
 		_itemPlaced = item;
 		if (item) {
