@@ -8,9 +8,12 @@
 #include <chrono>
 #include <thread>
 
+#include <SFML/Window/Event.hpp>
+
 #include "Szczur/Config.hpp"
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Utility/Time/Clock.hpp"
 
 namespace testing
 {
@@ -112,6 +115,35 @@ struct Test
 		__FILENAME__, __LINE__, #CLASS, #CASE					\
 	);															\
 	void test_##CLASS##_##CASE::Run()
+
+
+
+#define VISUAL_TEST_LOOP(UPDATE, RENDER, INPUT) \
+	{													\
+		sf::Event event;								\
+		rat::Clock clock;								\
+		bool testing = true;							\
+		sf3d::RenderWindow& window = rat::detail::globalPtr_v<rat::Window>->getWindow(); \
+		while (testing) {								\
+			UPDATE;										\
+			RENDER;										\
+			while (window.pollEvent(event))	{			\
+				INPUT;									\
+			}											\
+		}												\
+	}
+
+#define VISUAL_TEST_ANYKEY() \
+	VISUAL_TEST_LOOP((void)0;,(void)0;,{				\
+		switch (event.type) {							\
+			case sf::Event::Closed:						\
+			case sf::Event::KeyReleased:				\
+				testing = false;						\
+				break;									\
+			default:									\
+				break;									\
+		}												\
+	})
 
 #define VISUAL_TEST_TIME 3s
 #define VISUAL_TEST_WAIT(TIME) \
