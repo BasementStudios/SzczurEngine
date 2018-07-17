@@ -218,12 +218,15 @@ namespace rat
 
     void Widget::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         if(isVisible() && !isFullyDeactivated()) {
-
+            
             #ifdef GUI_DEBUG
             _drawDebug(target, states);
 	        #endif
-            // if(_hasBackground) target.draw(_background, states);
-            _draw(target, states);
+            if(!_isHidden)
+            {
+                _draw(target, states);
+            }
+
             _drawChildren(target, states);
         }
     }
@@ -518,6 +521,16 @@ namespace rat
 
     bool Widget::isVisible() const {
         return _isVisible;
+    }
+
+    void Widget::show(){
+        _isHidden = false;
+    }
+    void Widget::hide(){
+        _isHidden = true;
+    }   
+    bool Widget::isHidden() const{
+        return _isHidden;
     }
 
     void Widget::fullyDeactivate()
