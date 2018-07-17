@@ -11,13 +11,19 @@ in vec2 fragmentTexCoord;
 out vec4 finalColor;
 
 // Texture
+uniform bool hasTexture = false;
 uniform sampler2D texture;
 
 
 
 // Main shader function
 void main() {
-    finalColor = fragmentColor * texture2D(texture, fragmentTexCoord);
+    if (hasTexture) {
+        finalColor = fragmentColor * texture2D(texture, fragmentTexCoord);
+    }
+    else {
+        finalColor = fragmentColor;
+    }
 }
 
 

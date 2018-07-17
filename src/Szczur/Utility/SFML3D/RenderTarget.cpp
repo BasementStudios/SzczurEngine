@@ -1,4 +1,5 @@
 #include "RenderTarget.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 /** @file RenderTarget.cpp
  ** @author Tomasz (Knayder) Jatkowski
@@ -173,6 +174,15 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		{
 			glUseProgram(shaderProgram->getNativeHandle());
 
+			// For futher testing...
+			// LOG_INFO("vertices[0] = ", vertices[0].position, " ", vertices[0].color, " ", vertices[0].texCoord);
+			// LOG_INFO("vertices[1] = ", vertices[1].position, " ", vertices[1].color, " ", vertices[1].texCoord);
+			// LOG_INFO("vertices[2] = ", vertices[2].position, " ", vertices[2].color, " ", vertices[2].texCoord);
+			// LOG_INFO("vertices[3] = ", vertices[3].position, " ", vertices[3].color, " ", vertices[3].texCoord);
+			// LOG_INFO("model: ", scaleMatrixCoords(states.transform.getMatrix()));
+			// LOG_INFO("view: ", scaleMatrixCoords(camera->getViewMatrix()));
+			// LOG_INFO("projection", camera->getProjectionMatrix());
+
 			// Model, view. projection matrixes
 			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
 			shaderProgram->setUniform("view",			scaleMatrixCoords(camera->getViewMatrix()));
@@ -180,6 +190,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 			shaderProgram->setUniform("positionFactor", this->positionFactor);
 
 			if (states.texture) { // @todo ? Może dodać `Lightable`, a nie oświetlać tylko oteksturowane...
+				shaderProgram->setUniform("hasTexture", true);
 				shaderProgram->setUniform("isObject", true);
 
 				// Material
@@ -188,6 +199,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 					glActiveTexture(GL_TEXTURE0);
 					states.texture->bind();
 					shaderProgram->setUniform("material.diffuseTexture", 0);
+					shaderProgram->setUniform("texture", 0);
 
 					// Specular // @todo . specular
 					//aderProgram->setUniform("material.specularTexture", ???.texture->getID());
