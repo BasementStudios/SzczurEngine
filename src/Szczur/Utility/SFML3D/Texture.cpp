@@ -1,7 +1,8 @@
 #include "Texture.hpp"
 
 #include <string>
-#include <iostream>
+#include <stdexcept>
+
 
 #include <glad/glad.h>
 #include <SFML/Graphics/Image.hpp>
@@ -57,6 +58,15 @@ Texture::Texture(glm::uvec2 size)
 	this->create(size);
 }
 
+Texture::Texture(const char* path)
+{
+	this->loadFromFile(path);
+}
+Texture::Texture(const std::string& path)
+{
+	this->loadFromFile(path);
+}
+
 
 
 /* Methods */
@@ -78,7 +88,7 @@ void Texture::create(glm::vec2 size)
 	this->size = size;
 }
 
-bool Texture::loadFromFile(const char* path)
+void Texture::loadFromFile(const char* path)
 {
 	if (this->textureID) {
 		glDeleteTextures(1, &(this->textureID));
@@ -103,13 +113,12 @@ bool Texture::loadFromFile(const char* path)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		return true;
 	}
-	return false;
+	throw std::runtime_error(std::string("Cannot load texture from ") + path);
 }
-bool Texture::loadFromFile(const std::string& path)
+void Texture::loadFromFile(const std::string& path)
 {
-	return this->loadFromFile(path.c_str());
+	this->loadFromFile(path.c_str());
 }
 
 void Texture::bind() const noexcept

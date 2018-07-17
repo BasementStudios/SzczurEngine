@@ -37,8 +37,12 @@ public:
 
 	Texture(const Texture&) = delete;
 	Texture& operator = (const Texture&) = delete;
-
+	
 	Texture(glm::uvec2 size);
+	
+	/// Constructs texture by loading from file
+	Texture(const char* path);
+	Texture(const std::string& path);
 
 
 
@@ -46,8 +50,8 @@ public:
 public:
 	void create(glm::vec2 size);
 
-	bool loadFromFile(const char* path);
-	bool loadFromFile(const std::string& path);
+	void loadFromFile(const char* path);
+	void loadFromFile(const std::string& path);
 
 	void bind() const noexcept;
 	void unbind() const noexcept;
