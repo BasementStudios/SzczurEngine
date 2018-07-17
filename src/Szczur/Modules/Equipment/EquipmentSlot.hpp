@@ -11,7 +11,7 @@ namespace rat {
 	public:
 		EquipmentSlot();
 
-		void setTexture(sf::Texture*, sf::Texture* shadowText);
+		void setTexture(sf::Texture*, sf::Texture* shadowText, sf::Texture* lockText);
 
 		void setHighlight(bool state);
 
@@ -47,7 +47,8 @@ namespace rat {
 
 		ImageWidget* _slotImage = nullptr;
 		ImageWidget* _shadowImage = nullptr;
-		ImageWidget* _itemImage = nullptr;		
+		ImageWidget* _itemImage = nullptr;
+		ImageWidget* _lockImage = nullptr;
 		Widget* _nullWidget = nullptr;	//null widget only for callbacks
 
 		EquipmentObject* _itemPlaced = nullptr;

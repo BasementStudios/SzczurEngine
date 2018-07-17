@@ -75,6 +75,8 @@ namespace rat {
 		auto& gui = getModule<GUI>(); 
 
 		gui.addTexture("Assets/Equipment/Okno.png");
+		gui.addTexture("Assets/Equipment/preview.png");
+		gui.addTexture("Assets/Equipment/lock.png");
 		gui.addTexture("Assets/Equipment/Zbroja.png");
 		gui.addTexture("Assets/Equipment/Miecz.png");
 		gui.addTexture("Assets/Equipment/Naszyjnik.png");
@@ -104,35 +106,35 @@ namespace rat {
 	
 		_armorImage = new ImageWidget;
 		_equipmentFrame->add(_armorImage);
-		_armorImage->setPropSize(.262f, .836f);
-		_armorImage->setPropPosition(-0.4f, .31f);
+		_armorImage->setPropSize(.23f, .836f);
+		_armorImage->setPropPosition(-0.285f, .28f);
 		_armorImage->setTexture(gui.getTexture("Assets/Equipment/Zbroja.png"));
 
 		_weaponImage = new ImageWidget;
 		_equipmentFrame->add(_weaponImage);
-		_weaponImage->setPropSize(.454f, .99f);
-		_weaponImage->setPropPosition(2.95f, .43f);
+		_weaponImage->setPropSize(.364f, .89f);
+		_weaponImage->setPropPosition(1.82f, 0.4f);
 		_weaponImage->setTexture(gui.getTexture("Assets/Equipment/Miecz.png"));
 
 		_necklace = new Necklace(gui.getTexture("Assets/Equipment/Naszyjnik.png"), this);
 		_necklace->setParent(_equipmentFrame);
 		_necklace->setPropPosition(1.f, .0f);
-		_necklace->setPropSize(0.42f, 0.14f);
+		_necklace->setPropSize(0.46f, 0.14f);
 
 		/*_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPropPosition({ 0.15f, 0.08f });
 		_armorSlots->initAssetsViaGUI(gui);*/
 
-		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png"), this, {.068f, 0.091f});
-		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->setPropPosition(sf::Vector2f(0.37f, .69f));
-
 		_ringSlider = new RingSlider(this, gui, { .068f, 0.091f });
 		_ringSlider->setParent(_equipmentFrame);
-		_ringSlider->setPropPosition({ 0.97f, .9f });
+		_ringSlider->setPropPosition({ 0.97f, .85f });
 
-		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
+		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png"), gui.getTexture("Assets/Equipment/lock.png"), this, { .068f, 0.091f });
+		_normalSlots->setParent(_equipmentFrame);
+		_normalSlots->setPropPosition(sf::Vector2f(0.37f, .66f));
+
+		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
 		_itemPreview->setParent(_base);
 		_itemPreview->minimalize();
 
@@ -178,6 +180,7 @@ namespace rat {
 
 	void Equipment::enableItemPreview(EquipmentObject* item) {
 		if (canPreviewBeInstantiated) {
+			LOG_INFO("1");
 			_itemPreview->setItem(item);
 			_isPreviewOn = true;
 			if (_isReplacing) {

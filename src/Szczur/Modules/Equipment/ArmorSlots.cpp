@@ -47,10 +47,10 @@ namespace rat {
 	}
 
 	void ArmorSlots::initAssetsViaGUI(GUI& gui) {
-		_weaponSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr);
+		_weaponSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr, nullptr);//placeholders
 		//_weaponSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
 
-		_armorSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr);
+		_armorSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr, nullptr);
 		//_armorSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
 
 		_amuletSlot->initAssetsViaGUI(gui);

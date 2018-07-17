@@ -11,7 +11,7 @@ namespace rat
 		return lhs->index > rhs->index;
 	}
 
-	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* shadowText, Equipment* equipment, sf::Vector2f frameSize)
+	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* shadowText, sf::Texture* lockText, Equipment* equipment, sf::Vector2f frameSize)
 		: _slotAmount(slotNumber), _frameText(frameText), _equipment(equipment)
 	{
 		_base = new Widget;
@@ -22,7 +22,7 @@ namespace rat
 
 		_verticalListOfLists = new ListWidget;
 		_base->add(_verticalListOfLists);
-		_verticalListOfLists->setPropBetweenPad(0.005f);
+		_verticalListOfLists->setPropBetweenPad(0.003f);
 		_verticalListOfLists->makeVertical();
 
 		for (size_t i = 0; i < _slotAmount; i++)
@@ -35,7 +35,7 @@ namespace rat
 
 				_slotLists.push_back(new ListWidget);
 				_verticalListOfLists->add(_slotLists[y]);
-				_slotLists[y]->setPropBetweenPad(0.005f);
+				_slotLists[y]->setPropBetweenPad(0.003f);
 				_slotLists[y]->makeHorizontal();
 			}
 			std::shared_ptr<EquipmentSlot> newSlot = std::make_shared<EquipmentSlot>();
@@ -43,7 +43,7 @@ namespace rat
 			newSlot->index = i;
 			_freeSlots.push(newSlot);
 			newSlot->setParent(_slotLists[y]);
-			newSlot->setTexture(_frameText, shadowText);
+			newSlot->setTexture(_frameText, shadowText, lockText);
 			newSlot->setPropSize(frameSize);
 			newSlot->getWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
 				if (newSlot->getStatus())

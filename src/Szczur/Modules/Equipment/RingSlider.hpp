@@ -35,6 +35,7 @@ namespace rat {
 		sf::Texture* _slotTexture;
 		sf::Texture* _slotChosenTexture;
 		sf::Texture* _shadowTexture;
+		sf::Texture* _lockTexture;
 
 		std::vector<EquipmentSlot*> _stoneSlots;
 		std::vector<EquipmentSlot*> _selectedSlots;

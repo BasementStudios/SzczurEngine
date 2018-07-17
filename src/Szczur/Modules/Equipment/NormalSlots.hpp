@@ -35,7 +35,7 @@ namespace rat {
 	{
 		friend class Equipment;
 	public:
-		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* shadowText, Equipment* equipment, sf::Vector2f frameSize);
+		NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* shadowText, sf::Texture* lockText, Equipment* equipment, sf::Vector2f frameSize);
 
 		bool addItem(EquipmentObject* item);
 		bool removeItem(const std::string& itemNameId);

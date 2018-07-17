@@ -7,6 +7,9 @@ namespace rat {
 		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
+		_lockImage = new ImageWidget();
+		_lockImage->setPropPosition(0.5f, 0.5f);
+		_lockImage->fullyDeactivate();
 		_shadowImage = new ImageWidget();
 		_shadowImage->fullyDeactivate();
 		_nullWidget = new Widget;
@@ -14,21 +17,23 @@ namespace rat {
 		_base->add(_slotImage);
 		_base->add(_shadowImage);
 		_base->add(_itemImage);	
+		_base->add(_lockImage);
 		_base->add(_nullWidget);
 
 		//_itemImage->setPropPosition(0.3f, 0.4f);
 
 		setHighlight(false);
 	}
-	void EquipmentSlot::setTexture(sf::Texture* text, sf::Texture* shadowText) {
+	void EquipmentSlot::setTexture(sf::Texture* text, sf::Texture* shadowText, sf::Texture* lockText) {
 		_slotImage->setTexture(text);
 		_shadowImage->setTexture(shadowText);
+		_lockImage->setTexture(lockText);
 	}
 
 	void EquipmentSlot::setHighlight(bool state) {
-		if (state && isUsable)
+		if (state)
 			_slotImage->setColor(sf::Color::Color(140, 140, 140));
-		else if(isUsable)
+		else
 			_slotImage->setColor(sf::Color(255u, 255u, 255u, 150u));
 	}
 
@@ -45,14 +50,16 @@ namespace rat {
 		_slotImage->setSize(size);
 		_itemImage->setSize(size);
 		_shadowImage->setSize(size);
+		_lockImage->setSize(size / 2.f);
 		_nullWidget->setSize(size);
 	}
 	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
 		_slotImage->setPropSize(size);
-		_itemImage->setPropSize({size.x + .006f, size.y + .008f});
+		_itemImage->setPropSize({size.x + .003f, size.y + .004f});
 		//_itemImage->setPropSize(size);
 		_shadowImage->setPropSize(size);
+		_lockImage->setPropSize(size / 2.f);
 		_nullWidget->setPropSize(size);
 		_itemImage->setPropPosition(-0.3f, -0.4f);
 	}
@@ -124,14 +131,12 @@ namespace rat {
 
 	void EquipmentSlot::setStatus(bool newState) {
 		if (newState) {
-			_slotImage->resetColor();
-			_base->fullyActivate();
+			_lockImage->fullyDeactivate();
 			isUsable = true;
 		}
 		else {
 			removeItem();
-			_base->fullyDeactivate();
-			//_slotImage->setColor(sf::Color::Color(170, 170, 170));
+			_lockImage->fullyActivate();
 			isUsable = false;
 		}
 	}

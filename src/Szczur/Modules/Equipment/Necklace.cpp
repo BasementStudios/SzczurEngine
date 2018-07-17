@@ -32,9 +32,9 @@ namespace rat {
 			});
 		}
 
-		_stonesImages[0].image->setPropPosition(0.2f, 1.3f);
-		_stonesImages[1].image->setPropPosition(0.8f, .7f);
-		_stonesImages[2].image->setPropPosition(0.5f, .2f);
+		_stonesImages[0].image->setPropPosition(.19f, .5f);
+		_stonesImages[1].image->setPropPosition(.405f, .77f);
+		_stonesImages[2].image->setPropPosition(.62f, .5f);
 	}
 
 	void Necklace::setPropSize(float x, float y) {

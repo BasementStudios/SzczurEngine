@@ -6,7 +6,7 @@ namespace rat {
 	class ItemPreview 
 	{
 	public:
-		ItemPreview(sf::Texture* backgroundText, sf::Texture* backgroundDescriptionText, sf::Font* font);
+		ItemPreview(sf::Texture* backgroundDescriptionText, sf::Font* font);
 
 		void minimalize();
 		void setItem(EquipmentObject*);

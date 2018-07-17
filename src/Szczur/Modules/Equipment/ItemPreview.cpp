@@ -6,7 +6,7 @@
 #include "EquipmentObject.hpp"
 
 namespace rat {
-	ItemPreview::ItemPreview(sf::Texture* backgroundIconText, sf::Texture* backgroundDescriptionText, sf::Font* font)
+	ItemPreview::ItemPreview(sf::Texture* backgroundDescriptionText, sf::Font* font)
 	{
 		_base = new Widget;
 		_base->makeChildrenUnresizable();

@@ -31,7 +31,7 @@ Equipment.addWearableItem(ads)
 local g = Equipment.getWearableItem("stone2")
 Equipment.addWearableItem(g)
 
-local h = Equipment.getWearableItem("stone3")
+local h = Equipment.getWearableItem("stone2")
 Equipment.addWearableItem(h)
 
 local test = Equipment.getUsableItem("potion")

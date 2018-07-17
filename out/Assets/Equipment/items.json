@@ -53,20 +53,6 @@
 			"category": "stone",
             "icon": "Assets/Equipment/stone2/stone2.png",
             "script": "Assets/Equipment/stone2/stone2.lua"
-        },
-        "stone3": {
-            "pl": {
-                "name": "stone3",
-                "description": "To jest super kamyczek"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-            "category": "stone",
-            "icon": "Assets/Equipment/stone3/stone3.png",
-            "script": "Assets/Equipment/stone3/stone3.lua"
         }
 	}
 }

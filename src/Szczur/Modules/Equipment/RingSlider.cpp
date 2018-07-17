@@ -25,7 +25,7 @@ namespace rat {
 		_base->add(_scroll);*/	
 		
 		_baseForItems = new ListWidget;
-		_baseForItems->setPropBetweenPad(0.005f);
+		_baseForItems->setPropBetweenPad(0.003f);
 		_baseForItems->makeHorizontal();
 		_base->add(_baseForItems);
 
@@ -35,7 +35,7 @@ namespace rat {
 			_itemsLists.push_back(new ListWidget);
 			_baseForItems->add(_itemsLists[i]);
 			_itemsLists[i]->makeVertical();
-			_itemsLists[i]->setPropBetweenPad(0.005f);
+			_itemsLists[i]->setPropBetweenPad(0.003f);
 		}
 
 		size_t row = 0;
@@ -49,7 +49,7 @@ namespace rat {
 			_stoneSlots.push_back(temp);
 			temp->setParent(_itemsLists[row]);
 			temp->setPropSize(frameSize);
-			temp->setTexture(_slotTexture, _shadowTexture);
+			temp->setTexture(_slotTexture, _shadowTexture, _lockTexture);
 			temp->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, temp](Widget* owner) {
 				if (temp->getItem())
 				_equipment->disableItemPreview();
@@ -77,6 +77,7 @@ namespace rat {
 
 		_slotTexture = gui.getAsset<sf::Texture>("Assets/Equipment/slot.png");
 		_shadowTexture = gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png");
+		_lockTexture = gui.getAsset<sf::Texture>("Assets/Equipment/lock.png");
 	}
 
 	void RingSlider::setParent(Widget* newBase) {
