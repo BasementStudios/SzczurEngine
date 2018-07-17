@@ -94,27 +94,30 @@ void Texture::loadFromFile(const char* path)
 		glDeleteTextures(1, &(this->textureID));
 	}
 
+	// Load texture file
 	sf::Image image;
-	if (image.loadFromFile(path)) {
-		auto size = image.getSize();
-		this->size.x = size.x;
-		this->size.y = size.y;
-		
-		glBindTexture(GL_TEXTURE_2D, this->textureID);
-		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_RGBA,
-			image.getSize().x, image.getSize().y,
-			0,
-			GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
-		);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		glBindTexture(GL_TEXTURE_2D, 0);
+	if (!image.loadFromFile(path)) {
+		throw std::runtime_error(std::string("Cannot load texture from ") + path);
 	}
-	throw std::runtime_error(std::string("Cannot load texture from ") + path);
+
+	auto size = image.getSize();
+	this->size.x = size.x;
+	this->size.y = size.y;
+	
+	// Load into graphics 
+	glBindTexture(GL_TEXTURE_2D, this->textureID);
+	glTexImage2D(
+		GL_TEXTURE_2D, 0, GL_RGBA,
+		image.getSize().x, image.getSize().y,
+		0,
+		GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
+	);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 void Texture::loadFromFile(const std::string& path)
 {
