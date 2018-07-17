@@ -13,8 +13,8 @@ out vec4 fragmentColor;
 out vec2 fragmentTexCoord;
 
 // Model, view, projection matrixes
-uniform mat4 model;
-uniform mat4 view;
+uniform mat4 model      = mat4(1.0);
+uniform mat4 view       = mat4(1.0);
 uniform float positionFactor = 1.0;
 
 
