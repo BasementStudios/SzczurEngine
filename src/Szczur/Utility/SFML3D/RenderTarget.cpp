@@ -109,6 +109,7 @@ void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
 		);
 	}
 
+	// @warn @todo . It shouldn't be here...
 	this->positionFactor = 2.f / static_cast<float>(this->size.y);
 }
 

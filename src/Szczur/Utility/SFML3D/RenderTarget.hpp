@@ -40,8 +40,10 @@ protected:
 	Camera* camera {nullptr};
 	Camera* defaultCamera {nullptr};
 
+public:
 	float positionFactor;
 
+protected:
 	std::vector<LightPoint*> lightPoints;
 
 private:

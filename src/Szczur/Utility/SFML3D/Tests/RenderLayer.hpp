@@ -34,14 +34,17 @@ struct SimpleRenderLayerTest : public RenderTargetTest
 			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/texture.frag"}
 		);
 		this->renderLayer.setDefaultShaderProgram(layerShaderProgram);
+
+		// Reset position factor
+		this->renderLayer.positionFactor = 1.f;
 	}
 
 	virtual void TearDown()
 	{
-		RenderTargetTest::TearDown();
-
 		// Draw layer
 		this->renderTarget->draw(this->renderLayer);
+
+		RenderTargetTest::TearDown();
 	}
 };
 

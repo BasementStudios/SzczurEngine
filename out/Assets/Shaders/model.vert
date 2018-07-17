@@ -24,7 +24,7 @@ void main() {
     fragmentColor    = _color;
     fragmentTexCoord = _texCoord;
     
-	gl_Position = vec4(_position, 1.0);
+	gl_Position = vec4(fragmentPosition, 1.0);
 }
 
 

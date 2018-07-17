@@ -20,8 +20,16 @@ struct SimpleRenderTargetTest : public RenderTargetTest
 			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/color.frag"}
 		);
 		this->renderWindow->setDefaultShaderProgram(shaderProgram);
+
+		// Reset position factor
+		this->renderTarget->positionFactor = 1.f;
 	}
 };
+
+VISUAL_TEST_F(SimpleRenderTargetTest, Clear)
+{
+	renderTarget->clear({0u, 0u, 128u, 255u}, GL_COLOR_BUFFER_BIT);
+}
 
 VISUAL_TEST_F(SimpleRenderTargetTest, DrawBasic)
 {
