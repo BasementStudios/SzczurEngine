@@ -10,11 +10,11 @@ struct RenderWindowTest : public ::testing::Test
 	
 	virtual void SetUp() 
 	{
-		// Window
+		// Module
 		this->windowModule = rat::detail::globalPtr_v<rat::Window>;
 		this->windowModule->clear({24u, 20u, 28u, 255u});
 		
-		// Target
+		// Window
 		this->renderWindow = &(this->windowModule->getWindow());
 	}
 

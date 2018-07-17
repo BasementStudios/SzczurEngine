@@ -44,4 +44,11 @@ VISUAL_TEST_F(SimpleRenderTargetTest, DrawMove)
 	renderTarget->draw(object);
 }
 
+VISUAL_TEST_F(SimpleRenderTargetTest, DrawRotate)
+{
+	sf3d::RectangleShape object({0.3f, 0.2f});
+	object.rotate({30.f, 40.f, 10.f});
+	renderTarget->draw(object);
+}
+
 // @todo , more tests

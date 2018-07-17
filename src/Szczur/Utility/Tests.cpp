@@ -15,8 +15,8 @@ std::vector<TesterInvoker*> tests;
 
 
 // Register files with test here
-#include "Szczur/Utility/SFML3D/Tests/RenderTarget.hpp"
-//#include "Szczur/Utility/SFML3D/Tests/RenderLayer.hpp"
+//#include "Szczur/Utility/SFML3D/Tests/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/Tests/RenderLayer.hpp"
 
 
 
