@@ -3,6 +3,10 @@
 #include <fstream>
 
 #include "Szczur/Modules/GUI/InterfaceWidget.hpp"
+#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
+
+#include "HPBar.hpp"
 
 namespace rat {
 	Player::Player() {
@@ -23,8 +27,33 @@ namespace rat {
 	void Player::initGUI() {
 		auto& gui = getModule<GUI>();
 
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_1.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_2.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_3.png");
+
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_1.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_2.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_3.png");
+
+		gui.addTexture("Assets/Player/background.png");
+
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
+
+		_background = new ImageWidget;
+		_base->add(_background);
+		_background->setTexture(gui.getTexture("Assets/Player/background.png"));
+		_background->setPropSize({1.77f, 1.f});
+
+		_HPBar = new HPBar();
+		_HPBar->setParent(_base);
+		_HPBar->initGUI(gui);
+		_HPBar->setPropSize({0.368f, 0.1f});
+		_HPBar->setPropPosition({0.03f, 0.f});	
+		_HPBar->setMaxHP(100);
+		_HPBar->setCurrentHP(100);
+		_HPBar->setHPBarIndex(2);
+		
 	}
 
 	void Player::initJson() {

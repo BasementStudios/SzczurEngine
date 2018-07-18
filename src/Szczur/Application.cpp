@@ -16,8 +16,8 @@ void Application::init()
 	initModule<Window>();
 	initModule<Input>();
 	initModule<Script>();
-	initModule<Player>();
 	initModule<GUI>();
+	initModule<Player>();
 	#ifdef GUI_TEST
 	{
 		initModule<GUITest>();
