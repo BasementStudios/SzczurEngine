@@ -64,7 +64,7 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI
+	ModulesHolder<Window, Input, Script, GUI, Player
 	#ifdef GUI_TEST
 	,GUITest 
 	#endif

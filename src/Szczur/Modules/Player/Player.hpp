@@ -3,50 +3,12 @@
 #include <string>
 #include <vector>
 
-#include "Szczur/Utility/Modules/Module.hpp"
+#include "Skill.hpp"
 
+#include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
-	struct Skill {
-	public:
-		static void initScript(Script& script);
-
-		const std::string& getNameID();
-		void setNameID(const std::string& nameID);
-
-		const std::string& getName();
-		void setName(const std::string& name);
-
-		const std::string& getDescription();
-		void setDescription(const std::string& description);
-
-		void setPPCost(int cost);
-		int getPPcost();
-
-		void setEssenceCost(size_t index, int value);
-		int getEssenceCost(size_t index);
-
-		void setSkillType(int type);
-		int getSkillType();
-
-		void setIsKnown(bool isKnown);
-		bool getIsKnown();
-	private:
-		std::string nameID;
-
-		std::string name;
-		std::string description;
-
-		int PPCost;
-
-		int essenceContainer [4];
-
-		int type;
-
-		bool isKnown;
-	};
-
 	class Player : public Module<Script>
 	{
 	public:
