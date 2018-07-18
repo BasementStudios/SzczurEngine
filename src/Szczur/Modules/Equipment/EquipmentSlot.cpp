@@ -19,8 +19,9 @@ namespace rat {
 		_base->add(_itemImage);	
 		_base->add(_lockImage);
 		_base->add(_nullWidget);
+		//_base->makeChildrenUnresizable();
 
-		//_itemImage->setPropPosition(0.3f, 0.4f);
+		_itemImage->setPropPosition(0.5f, 0.5f);
 
 		setHighlight(false);
 	}
@@ -55,13 +56,14 @@ namespace rat {
 	}
 	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
+		_base->setPropSize(size);
 		_slotImage->setPropSize(size);
 		_itemImage->setPropSize({size.x + .003f, size.y + .004f});
 		//_itemImage->setPropSize(size);
 		_shadowImage->setPropSize(size);
 		_lockImage->setPropSize(size / 2.f);
 		_nullWidget->setPropSize(size);
-		_itemImage->setPropPosition(-0.3f, -0.4f);
+		_base->makeChildrenUnresizable();
 	}
 
 	sf::Vector2f EquipmentSlot::getSize() {

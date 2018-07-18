@@ -25,7 +25,6 @@ namespace rat
 		friend class Necklace;
 		friend class RingSlider;
 	public:
-
 		void init();
 		void initScript();
 		void update(float deltaTime = (1.f / 60.f));
@@ -44,6 +43,8 @@ namespace rat
 
 		void startEquipment();
 		void stopEquipment();
+
+		void setPropPosition(sf::Vector2f pos);
 	private:
 		std::string _pathToJson;
 

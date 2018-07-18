@@ -132,7 +132,7 @@ namespace rat {
 
 		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png"), gui.getTexture("Assets/Equipment/lock.png"), this, { .068f, 0.091f });
 		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .25f));
+		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .27f));
 
 		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/preview.png"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-SemiBold.ttf"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-Italic.ttf"));
 		_itemPreview->setParent(_base);
@@ -147,7 +147,7 @@ namespace rat {
 		_itemManager->setNewPath(_pathToJson);
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
-		_equipmentPosition = _equipmentFrame->getPosition();
+		_equipmentPosition = { 0.1f, 0.4f };
 		_openEquipment();
 	}
 
@@ -322,7 +322,7 @@ namespace rat {
 	}
 
 	void Equipment::_openEquipment() {
-		_equipmentFrame->setPropPositionInTime({ 0.1f, 0.4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
+		_equipmentFrame->setPropPositionInTime(_equipmentPosition, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = false; 
 			_replaceItem->maximize();
 		} });
@@ -330,6 +330,7 @@ namespace rat {
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
+		_isPreviewOn = false;
 		_itemPreview->minimalize();
 		_equipmentFrame->setPropPositionInTime({ -.7f, .4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = true;
@@ -389,5 +390,10 @@ namespace rat {
 			_ringSlider->_takeStoneOf(stone);
 			return _necklace->removeStone(stone);		
 		}
+	}
+
+	void Equipment::setPropPosition(sf::Vector2f pos) {
+		_equipmentFrame->setPropPosition(pos);
+		_equipmentPosition = pos;
 	}
 }

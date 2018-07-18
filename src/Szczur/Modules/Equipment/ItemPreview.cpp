@@ -35,7 +35,7 @@ namespace rat {
 		_itemDescription->setColor(sf::Color(66u, 244u, 119u));
 		_itemDescription->setCharacterPropSize(0.015f);
 		_itemDescription->setPropSize(sf::Vector2f(.23f, 0.f));
-		_itemDescription->setPropPosition(.8f, 0.4f);
+		_itemDescription->setPropPosition(.8f, 0.35f);
 		_itemDescription->setAlign(TextAreaWidget::Align::Center);
 
 		_itemLoreDescription = new TextAreaWidget;

@@ -46,6 +46,7 @@ namespace rat
 			newSlot->setTexture(_frameText, shadowText, lockText);
 			newSlot->setPropSize(frameSize);
 			newSlot->getWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
+				LOG_INFO("1");
 				if (newSlot->getStatus())
 					this->_onMouseButtonPressed(newSlot);
 			});
@@ -61,7 +62,7 @@ namespace rat
 				newSlot->setHighlight(true);
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
-				if (newSlot->getItem() && _removeSlotDropped(newSlot))
+				if (newSlot->getStatus() && newSlot->getItem() && _removeSlotDropped(newSlot))
 					equipment->disableItemPreview();
 				newSlot->setHighlight(false);
 			});
