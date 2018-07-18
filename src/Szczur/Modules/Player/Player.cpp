@@ -10,6 +10,7 @@
 #include "TimeBar.hpp"
 #include "PPCount.hpp"
 #include "SkillSlots.hpp"
+#include "ItemSlots.hpp"
 
 namespace rat {
 	Player::Player() {
@@ -116,6 +117,9 @@ namespace rat {
 		_skillSlots->setPropPosition({0.5f, 0.05f});
 		_skillSlots->addSkill(&_skillsList[0]);
 		_skillSlots->addSkill(&_skillsList[1]);
+
+		_itemSlots = new ItemSlots(gui);
+
 	}
 
 	void Player::initJson() {
