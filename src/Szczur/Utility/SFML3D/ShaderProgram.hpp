@@ -45,11 +45,28 @@ public:
 
 	///
 	template <typename... Ts>
-	ShaderProgram(Ts&&... shaders);
+	ShaderProgram(Ts&&... shaders) {
+		linkShaders(std::forward<Ts>(shaders)...);
+	}
 
 	///
 	template <typename... Ts>
-	void linkShaders(Ts&&... shaders);
+	void linkShaders(Ts&&... shaders) {
+		static_assert((std::is_same_v<Shader, std::remove_cv_t<std::remove_reference_t<Ts>>> && ...), "All Ts must be exactly sf3d::Shader");
+
+		_destroy();
+
+		_program = glCreateProgram();
+
+		(glAttachShader(_program, shaders.getNativeHandle()), ...);
+
+		glLinkProgram(_program);
+
+		(glDetachShader(_program, shaders.getNativeHandle()), ...);
+
+		_finishLinking();
+	}
+
 
 	///
 	bool setUniform(const char* name, bool value);
@@ -152,7 +169,7 @@ private:
 	NativeHandle_t _program = 0;
 
 };
-
+/*
 template <typename... Ts>
 ShaderProgram::ShaderProgram(Ts&&... shaders)
 {
@@ -176,5 +193,6 @@ void ShaderProgram::linkShaders(Ts&&... shaders)
 
 	_finishLinking();
 }
+*/
 
 }
