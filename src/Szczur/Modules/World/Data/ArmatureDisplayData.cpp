@@ -69,10 +69,11 @@ void ArmatureDisplayData::checkForReload()
 {
 	namespace fs = std::experimental::filesystem;
 
+#ifndef PSYCHOX // Przepraszam :C 
 	auto lastSkeFileUpdate			= system_clock::to_time_t(fs::last_write_time(_folderPath + _skeFilePath));
 	auto lastTextureAtlasFileUpdate = system_clock::to_time_t(fs::last_write_time(_folderPath + _textureAtlasFilePath));
 	auto lastTextureFileUpdate		= system_clock::to_time_t(fs::last_write_time(_folderPath + _textureFilePath));
-
+	
 	if (lastSkeFileUpdate			!= _lastSkeFileUpdate ||
 		lastTextureAtlasFileUpdate	!= _lastTextureAtlasFileUpdate ||
 		lastTextureFileUpdate		!= _lastTextureFileUpdate)
@@ -82,6 +83,9 @@ void ArmatureDisplayData::checkForReload()
 		_lastTextureFileUpdate = lastTextureFileUpdate;
 		_needReload = true;
 	}
+#else
+	_needReload = true;
+#endif
 }
  
 }
