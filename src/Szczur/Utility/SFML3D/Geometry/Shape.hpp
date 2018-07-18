@@ -19,6 +19,7 @@ protected:
 
 
 	/* Properties */
+public:
 	std::size_t getVerticesCount() const;
 
 	/// Color used to display whole shape 

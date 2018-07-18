@@ -219,6 +219,10 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 				shaderProgram->setUniform("basicAmbient", glm::vec3{0.1f, 0.1f, 0.1f});
 				applyLightPoints(shaderProgram);
 			}
+			else {
+				shaderProgram->setUniform("hasTexture", false);
+				shaderProgram->setUniform("isObject", false);
+			}
 		}
 
 		// Pass the vertices
