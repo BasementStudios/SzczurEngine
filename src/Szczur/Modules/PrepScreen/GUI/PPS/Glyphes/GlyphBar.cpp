@@ -18,26 +18,32 @@ namespace rat
     :
     _prepScreen(prepScreen)
     {
-        _container = new ImageWidget;
+        _background = new ImageWidget;
+        _border = new ImageWidget;
         _glyph = new ImageWidget;
         _amountState = new TextWidget;
 
-        _addWidget(_container);
-        _container->setPropSize(0.18f, 0.18f);
-        _container->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
+        const sf::Vector2f prSize = { 0.18f, 0.18f };
+
+        _addWidget(_background);
+        _background->setPropSize(prSize);
+        _background->setCallback(Widget::CallbackType::onPress, [&](Widget* owner){
             _onClick();
         });
-        _container->makeChildrenPenetrable();
-        _container->add(_glyph);
-        _glyph->setPropSize(0.13f, 0.13f);
+        _background->makeChildrenPenetrable();
+        _background->add(_glyph);
+        _glyph->setPropSize(prSize);
         _glyph->setPropPosition(0.5f, 0.5f);
         _glyph->setStaticTexPositing();
         _glyph->setFullyTexSizing();
 
-        _container->add(_amountState);
-        _amountState->setPropPosition(13.f, 13.f);
-        _amountState->setCharacterSize(17);
-        _amountState->setColor(sf::Color::White);
+        // _background->add(_amountState);
+        // _amountState->setPropPosition(1.f, 1.f);
+        // _amountState->setCharacterSize(17);
+        // _amountState->setColor(sf::Color::White);
+
+        _background->add(_border);
+        _border->setPropSize(prSize);
     }
 
     void GlyphBar::setType(GlyphID glyph)
@@ -54,8 +60,8 @@ namespace rat
         //     _glyphTextures[i] = gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) /*+ to_string(i) + */+ "Glyph.png");
         // }
 
-        _container->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/PPSlots.png"));
-        _container->setTextureRect({{0, 0},{90, 90}});
+        _background->setTexture(gui.getTexture("Assets/PrepScreen/Glyphes/Background.png"));
+        _border->setTexture(gui.getTexture("Assets/PrepScreen/Glyphes/Border.png"));
         _glyph->setTexture(gui.getAsset<sf::Texture>(path + GlyphesConverter().toString(_type) + ".png"));
         _amountState->setFont(gui.getAsset<sf::Font>("Assets/fonts/NotoMono.ttf"));
     }

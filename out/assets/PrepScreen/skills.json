@@ -35,7 +35,8 @@
             "profession": "Mele",
             "iconPath": "skill_4.png",
             "glyphes": {
-                "Wrath": 1
+                "Wrath": 1,
+                "Fear": 1
             }
         },
 		"sword3": {
@@ -44,7 +45,9 @@
             "profession": "Mele",
             "iconPath": "skill_5.png",
             "glyphes": {
-                "Wrath": 1
+                "Wrath": 1,
+                "Fear": 1,
+                "Wearines": 1
             }
         }
     } 

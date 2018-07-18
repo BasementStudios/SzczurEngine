@@ -23,40 +23,43 @@ namespace rat
         _border = new WindowWidget;
         _addWidget(_border);
         _border->setMainPatchPropSize({0.5f, 0.5f});
-        _border->setPropSize(0.463f, 0.9f);
+        _border->setPropPadding(0.01f, 0.01f);
+        //_border->setPropSize(0.15f, 0.9f);
 
-        _skillsScroller = new ScrollAreaWidget;
-        _skillsScroller->setPropSize(0.43f, 0.75f); //0.65f
-        _skillsScroller->setPropPosition(0.5f, 0.5f);
-        _skillsScroller->makeScrollAutoHiding();
-        _border->add(_skillsScroller);
+        // _skillsScroller = new ScrollAreaWidget;
+        // _skillsScroller->setPropSize(0.15f, 0.75f); //0.65f
+        // _skillsScroller->setPropPosition(0.5f, 0.5f);
+        // _skillsScroller->makeScrollAutoHiding();
+        //_border->add(_skillsScroller);
 
         _skillsList = new ListWidget;
-        _skillsList->setBetweenPadding(10.f);
-        _skillsScroller->add(_skillsList);
+        _skillsList->setPropBetweenPad(0.03f);
+        _skillsList->setPropPosition(0.5f, 0.5f);
+        _border->add(_skillsList);
 
-        _getBase()->setPropPosition(0.5f, 0.f);
 
-        for(size_t i = 0; i < 20; i++)
+        for(size_t i = 0; i < 5; i++)
         {
-            auto skillBar = std::make_unique<SkillBar>(prep);
+            auto skillBar = std::make_unique<SkillSlot>(prep);
             skillBar->setParent(_skillsList);
             _skillBars.emplace_back(std::move(skillBar));
         }
+
+        //_getBase()->setPropPosition(0.f, 0.f);
     }
 
     void SkillArea::resetScroller()
     {
-        _skillsScroller->resetScrollerPositionInTime(0.3f);
+        //_skillsScroller->resetScrollerPositionInTime(0.3f);
     }
 
     void SkillArea::initAssetsViaGUI(GUI& gui)
     {
         _font = gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf");
 
-        _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        _skillsScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+        // _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        // _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        // _skillsScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
         _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/BackgroundEQ.png"), 30);
         
@@ -76,7 +79,7 @@ namespace rat
             _skillBars[i]->setSkill(skills[i]);
         }
 
-        _skillsScroller->resetScrollerPosition();
+        //_skillsScroller->resetScrollerPosition();
     }
 
     void SkillArea::recalculateSkillsAvailability()

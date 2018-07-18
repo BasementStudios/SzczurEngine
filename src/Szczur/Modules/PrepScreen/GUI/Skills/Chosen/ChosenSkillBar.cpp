@@ -13,7 +13,6 @@ namespace rat
     :
     _prepScreen(prepScreen)
     {
-         // zabawa z rectami nowa funkcja ;V
 
          const sf::Vector2f prSize = {0.12f, 0.12f};
 
@@ -33,7 +32,6 @@ namespace rat
             {
                 _icon->setColorInTime({125, 125, 125}, 0.5f);
             }
-
         });
 
         _border->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){

@@ -255,7 +255,8 @@ namespace rat
        auto* skillList = new ListWidget;
        //skillList->setPropSize(0.416f, 0.f);///0,463  0,85177777777777777777777777777778
        skillList->setPropSize(0.463f, 1.f);
-       skillList->setAutoBetweenPadding();
+       //skillList->setAutoBetweenPadding();
+       skillList->setPropBetweenPad(0.04f);
        mainList->add(skillList);
 
         _profArea.setParent(skillList);
@@ -333,6 +334,8 @@ namespace rat
         gui.addTexture("Assets/PrepScreen/Background.png");
         gui.addTexture("Assets/PrepScreen/BackgroundEQ.png");
                 
+        gui.addTexture("Assets/PrepScreen/Glyphes/Background.png");
+        gui.addTexture("Assets/PrepScreen/Glyphes/Border.png");
 
         GlyphTypes glyphTypes;
         for(auto& type : glyphTypes)

@@ -34,7 +34,8 @@ namespace rat
 
         constexpr static float _circleShiftProp = 0.14644660940672f;
 
-        ImageWidget* _container{nullptr};
+        ImageWidget* _border{nullptr};
+        ImageWidget* _background{nullptr};
         ImageWidget* _glyph{nullptr};
         TextWidget* _amountState{nullptr};
 

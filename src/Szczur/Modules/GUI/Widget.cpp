@@ -12,7 +12,7 @@
 #include "Szczur/Utility/Logger.hpp"
 #include "Widget-Scripts.hpp"
 
-#undef GUI_DEBUG
+//#undef GUI_DEBUG
 
 namespace rat 
 {

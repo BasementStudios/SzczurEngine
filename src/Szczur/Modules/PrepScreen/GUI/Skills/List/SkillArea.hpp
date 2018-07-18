@@ -3,6 +3,7 @@
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
 #include "SkillBar.hpp"
+#include "../SkillSlot.hpp"
 #include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
 #include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 
@@ -17,7 +18,7 @@ namespace rat
 
     class SkillArea : public BaseBar
     {
-        using SkillBars_t = std::vector<std::unique_ptr<SkillBar>>;
+        using SkillBars_t = std::vector<std::unique_ptr<SkillSlot>>;
     public:
         SkillArea(PrepScreen& prepScreen);
 
