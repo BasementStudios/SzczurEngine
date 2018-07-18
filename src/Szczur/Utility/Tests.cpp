@@ -1,4 +1,7 @@
 #include "Tests.hpp"
+#if TESTING
+
+#include <vector>
 
 namespace testing
 {
@@ -30,3 +33,7 @@ void runTests()
 	}
 	LOG_INFO("All tests done...");
 }
+
+
+
+#endif // TESTING
