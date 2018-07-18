@@ -10,7 +10,7 @@
 #include "VideoLoop.hpp"
 
 /*
- Main class of playing movies.  
+ Main class of playing movies.
  Just call loadFromFile(<filepath>) and play()
 */
 namespace rat
@@ -20,7 +20,7 @@ class Cinematics :public Module<Input,Window,Script>
 {
 public:
     /* callback */
-    typedef std::function<void()> callme;
+    typedef sol::function callme;
 
     Cinematics();
     ~Cinematics();
@@ -44,10 +44,10 @@ public:
 */
     void play();
 
-  
+
 /*
     Method for video seeking. Better don't use it if you already used "addLoop"
-    "seekTarget" is a time expressed with microseconds. 
+    "seekTarget" is a time expressed with microseconds.
 */
     void jumpTo(const unsigned int &seekTarget);
 
@@ -57,12 +57,12 @@ public:
 */
     void setFont(sf::Font &font);
     void setFontPath(const char *filename);
-    
 
-/* 
+
+/*
     Call it if you want add video loop like when main character have to make a decision and video should not play without this decision
     Cinematics will show "text1" and "text2" on the screen as sf::Text. When video come to "endtime", everything will return to "startTime"
-    During watch a movie we can choose an option and press "enter" button to call one of callback "fevent1" or "fevent2". callback should save decision etc... 
+    During watch a movie we can choose an option and press "enter" button to call one of callback "fevent1" or "fevent2". callback should save decision etc...
     Sometimes after make a decision you maybe want to skip part of movie and watch other part. "jump1" and "jump2" is a new playback time - movie will skip to this moment
     after press "enter" button. If you type 0 Cinematics will not skip anything. Don't forget to set font with "setFont" method. Time is expressed with microseconds.
 */
@@ -104,7 +104,7 @@ public:
 */
     bool isPlaying();
 
-/*  
+/*
     Tell me what I should do at the end of the movie
 */
     void setCallbackFinish(callme t);
@@ -134,7 +134,7 @@ private:
     bool                m_isInit = false;
     bool                m_play = false;
     bool                m_isMusic = false;
- 
+
     int                 m_ICurrentLoop;
     int                 m_frameFinished;
     int                 m_numBytes;
@@ -147,9 +147,9 @@ private:
     int                 m_IstartTime;
     int                 m_FrameSize;
     unsigned int        m_alfa;
-    
+
     callme              m_callbackFinish;
-    
+
     sf::Uint8*          m_data;
     sf::Sprite          m_sprite;
     sf::Font            m_font;
@@ -159,6 +159,6 @@ private:
 
     std::vector<AVPacket*> m_audioSyncBuffer;
     std::vector<std::shared_ptr<VideoLoop> > m_loops;
-  
+
 };
 }
