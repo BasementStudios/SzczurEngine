@@ -48,7 +48,7 @@ public:
 
 	/* Methods */
 public:
-	void create(glm::vec2 size);
+	void create(glm::uvec2 size);
 
 	void loadFromFile(const char* path);
 	void loadFromFile(const std::string& path);
