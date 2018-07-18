@@ -179,9 +179,10 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 			// LOG_INFO("vertices[1] = ", vertices[1].position, " ", vertices[1].color, " ", vertices[1].texCoord);
 			// LOG_INFO("vertices[2] = ", vertices[2].position, " ", vertices[2].color, " ", vertices[2].texCoord);
 			// LOG_INFO("vertices[3] = ", vertices[3].position, " ", vertices[3].color, " ", vertices[3].texCoord);
-			// LOG_INFO("model: ", scaleMatrixCoords(states.transform.getMatrix()));
-			// LOG_INFO("view: ", scaleMatrixCoords(camera->getViewMatrix()));
-			// LOG_INFO("projection", camera->getProjectionMatrix());
+			// LOG_INFO("model       = ", scaleMatrixCoords(states.transform.getMatrix()));
+			// LOG_INFO("view        = ", scaleMatrixCoords(camera->getViewMatrix()));
+			// LOG_INFO("projection  = ", camera->getProjectionMatrix());
+			// LOG_INFO("texture ID  = ", (states.texture ? states.texture->getID() : -1));
 
 			// Model, view. projection matrixes
 			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
