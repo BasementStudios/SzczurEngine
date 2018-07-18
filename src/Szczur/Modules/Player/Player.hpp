@@ -6,16 +6,21 @@
 #include "Skill.hpp"
 
 #include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
-	class Player : public Module<Script>
+	class InterfaceWidget;
+	class Player : public Module<Script, GUI, Window>
 	{
 	public:
 		Player();
 		~Player();
 
 		void initJson();
+		void initGUI();
+
 		const std::string& getPathToJson();
 		void reloadJson();
 
@@ -40,6 +45,8 @@ namespace rat {
 		Skill getSkill(const std::string& nameID); // @todo ? const? nie?
 
 	private:
+		InterfaceWidget* _base = nullptr;
+
 		std::string _pathToJson;
 
 		int _currentHP;

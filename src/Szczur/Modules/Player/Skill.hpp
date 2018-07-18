@@ -6,6 +6,8 @@
 namespace rat {
 	struct Skill {
 	public:
+		Skill();
+
 		static void initScript(Script& script);
 
 		const std::string& getNameID();
@@ -29,7 +31,7 @@ namespace rat {
 		void setIsKnown(bool isKnown);
 		bool getIsKnown();
 
-		void setIcon(sf::Texture* _icon);
+		void setIcon(const std::string& _icon);
 		sf::Texture* getIcon();
 	private:
 		std::string nameID;

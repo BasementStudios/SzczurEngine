@@ -2,11 +2,14 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
+#include "Szczur/Modules/GUI/InterfaceWidget.hpp"
+
 namespace rat {
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
-		_pathToJson = "Assets/Skills/skills.json";
+		_pathToJson = "Assets/Player/skills.json";
 
+		initGUI();
 		initScript();
 		initJson();
 
@@ -15,6 +18,13 @@ namespace rat {
 
 	Player::~Player() {
 		LOG_INFO("Player module destructed");
+	}
+
+	void Player::initGUI() {
+		auto& gui = getModule<GUI>();
+
+		_base = gui.addInterface();
+		_base->setSizingWidthToHeightProportion(1.f);
 	}
 
 	void Player::initJson() {
@@ -54,6 +64,10 @@ namespace rat {
 
 					if (auto& type = skill["type"]; !skill["type"].is_null()) {
 						temp.setSkillType(type);
+					}
+
+					if (auto& icon = skill["iconPath"]; !skill["iconPath"].is_null()) {
+						temp.setIcon(icon);
 					}
 
 					_skillsList.push_back(temp);

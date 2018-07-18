@@ -1,6 +1,10 @@
 #include "Skill.hpp"
 
 namespace rat {
+	Skill::Skill() {
+		icon = new sf::Texture;
+	}
+
 	void Skill::initScript(Script& script) {
 		auto object = script.newClass<Skill>("Skill", "Player");
 		object.set("getName", &Skill::getName);
@@ -61,8 +65,8 @@ namespace rat {
 		return isKnown;
 	}
 
-	void Skill::setIcon(sf::Texture* _icon) {
-		icon = _icon;
+	void Skill::setIcon(const std::string& _icon) {
+		icon->loadFromFile(_icon);
 	}
 	sf::Texture* Skill::getIcon() {
 		return icon;
