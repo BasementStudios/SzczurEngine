@@ -10,7 +10,9 @@
 #include <stdexcept>
 
 #define GLM_ENABLE_EXPERIMENTAL
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -131,18 +133,23 @@ glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
 }
 
 // Clearing
-void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags)
+void RenderTarget::clear(const glm::vec4& color, GLbitfield flags)
 {
 	if (this->_setActive()) {
-		glClearColor(r, g, b, a);
+		glClearColor(color.r, color.g, color.b, color.a);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
-void RenderTarget::clear(const sf::Color& color, GLbitfield flags)
+void RenderTarget::clearSFML(const sf::Color& color, GLbitfield flags)
 {
 	if (this->_setActive()) {
-		glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
+		glClearColor(
+			static_cast<float>(color.r) / 255.f, 
+			static_cast<float>(color.g) / 255.f, 
+			static_cast<float>(color.b) / 255.f, 
+			static_cast<float>(color.a) / 255.f
+		);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

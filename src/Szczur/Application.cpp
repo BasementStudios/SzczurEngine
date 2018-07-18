@@ -117,7 +117,7 @@ void Application::update()
 
 void Application::render()
 {
-	getModule<Window>().clear({24u, 20u, 28u, 255u});
+	getModule<Window>().clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
 
 	getModule<World>().render();
 	

@@ -10,6 +10,7 @@
 #include <memory> // unique_ptr
 #include <stdexcept>
 
+#include <glm/vec4.hpp>
 #include <glad/glad.h>
 
 #include <SFML/Window/VideoMode.hpp>
@@ -219,12 +220,20 @@ void Window::recreateWindow()
 }
 
 // clear
-void Window::clear(const sf::Color& color)
+void Window::clear(const glm::vec4& color)
 {
 #ifndef WARSTWY_OGARNIETE_W_WORLD
 	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 #else
 	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
+#endif
+}
+void Window::clearSFML(const sf::Color& color)
+{
+#ifndef WARSTWY_OGARNIETE_W_WORLD
+	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#else
+	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT);
 #endif
 }
 

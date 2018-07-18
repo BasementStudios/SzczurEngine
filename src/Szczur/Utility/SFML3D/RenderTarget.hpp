@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 #include <glad/glad.h> // GLbitfield
 #include <SFML/Graphics/Color.hpp>
@@ -85,8 +86,9 @@ public:
 	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 
 	// Clearing
-	void clear(float r = 0.f, float g = 0.f, float b = 0.f, float a = 0.f, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	void clear(const sf::Color& color = sf::Color::Transparent, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	void clear(const glm::vec3& color, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	[[deprecated("SF3D should operate on its own color class in the future, but at now it is `glm::vec4`.")]]
+	void clearSFML(const sf::Color& color = sf::Color::Transparent, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 	// Drawing drawables
 	void draw(const Drawable& drawable, const RenderStates& states);
