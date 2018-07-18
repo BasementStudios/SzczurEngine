@@ -1,21 +1,25 @@
 #pragma once
-#include "Szczur/Utility/Modules/Module.hpp"
-#include "Szczur/Modules/Script/Script.hpp"
+
+#include <string>
 #include <vector>
+
+#include "Szczur/Utility/Modules/Module.hpp"
+
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
 	struct Skill {
 	public:
 		static void initScript(Script& script);
 
-		void setNameId(std::string& nameId);
-		std::string& getNameId();
+		const std::string& getNameID();
+		void setNameID(const std::string& nameID);
 
-		void setName(std::string name);
-		std::string& getName();
+		const std::string& getName();
+		void setName(const std::string& name);
 
-		void setDescription(std::string description);
-		std::string& getDescription();
+		const std::string& getDescription();
+		void setDescription(const std::string& description);
 
 		void setPPCost(int cost);
 		int getPPcost();
@@ -29,7 +33,7 @@ namespace rat {
 		void setIsKnown(bool);
 		bool getIsKnown();
 	private:
-		std::string nameId;
+		std::string nameID;
 
 		std::string name;
 		std::string description;
@@ -50,7 +54,7 @@ namespace rat {
 		~Player();
 
 		void initJson();
-		std::string& getPathToJson();
+		const std::string& getPathToJson();
 		void reloadJson();
 
 		void initScript();
@@ -69,9 +73,10 @@ namespace rat {
 		int getMaxPP();
 		void setMaxPP(int newMaxPP);
 
-		bool addSkill(std::string& nameId);
-		bool removeSkill(std::string& nameId);
-		Skill* getSkill(std::string& nameId);
+		bool addSkill(const std::string& nameID);
+		bool removeSkill(const std::string& nameID);
+		Skill* getSkill(const std::string& nameID); // @todo ? const? nie?
+
 	private:
 		std::string _pathToJson;
 

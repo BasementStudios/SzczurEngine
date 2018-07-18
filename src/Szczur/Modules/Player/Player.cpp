@@ -15,24 +15,24 @@ namespace rat {
 		object.init();
 	}
 
-	void Skill::setNameId(std::string& _nameId) {
-		nameId = _nameId;
+	void Skill::setNameID(const std::string& _nameID) {
+		nameID = _nameID;
 	}
-	std::string& Skill::getNameId() {
-		return nameId;
+	const std::string& Skill::getNameID() {
+		return nameID;
 	}
 
-	void Skill::setName(std::string _name) {
+	void Skill::setName(const std::string& _name) {
 		name = _name;
 	}
-	std::string& Skill::getName() {
+	const std::string& Skill::getName() {
 		return name;
 	}
 
-	void Skill::setDescription(std::string _description) {
+	void Skill::setDescription(const std::string& _description) {
 		description = _description;
 	}
-	std::string& Skill::getDescription() {
+	const std::string& Skill::getDescription() {
 		return description;
 	}
 
@@ -91,7 +91,7 @@ namespace rat {
 					auto& skill = itr.value();
 
 					Skill* temp = new Skill;
-					temp->setNameId(itr.key());
+					temp->setNameID(itr.key());
 
 					if (auto& name = skill["name"]; !skill["name"].is_null()) {
 						temp->setName(name);
@@ -148,7 +148,7 @@ namespace rat {
 		script.initClasses<Skill>();
 	}
 
-	std::string& Player::getPathToJson() {
+	const std::string& Player::getPathToJson() {
 		return _pathToJson;
 	}
 
@@ -156,18 +156,18 @@ namespace rat {
 		initJson();
 	}
 
-	bool Player::addSkill(std::string& nameId) {
-		for (auto& i : _skillsList) {
-			if (i->getNameId() == nameId) {
-				i->setIsKnown(true);
+	bool Player::addSkill(const std::string& nameID) {
+		for (const auto& i : _skillsList) {
+			if (i->getNameID() == nameId) {
+				_knownSkillsList.push_back(i);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	bool Player::removeSkill(std::string& nameId) {
-		for (size_t i = 0; i < _skillsList.size(); i++)
+	bool Player::removeSkill(const std::string& nameId) {
+		for (std::size_t i = 0; i < _knownSkillsList.size(); i++)
 		{
 			if (_skillsList[i]->getNameId() == nameId && _skillsList[i]->getIsKnown()) {
 				_skillsList[i]->setIsKnown(false);
@@ -177,12 +177,13 @@ namespace rat {
 		return false;
 	}
 
-	Skill* Player::getSkill(std::string& nameId) {
+	Skill* Player::getSkill(const std::string& nameID) {
 		for (auto& i : _skillsList) {
-			if (i->getNameId() == nameId) {
+			if (i->getNameID() == nameID) {
 				return i;
 			}
 		}
+		return nullptr;
 	}
 
 	//HP section
@@ -231,8 +232,8 @@ namespace rat {
 		_maxPP = newMaxPP;
 	}
 	/*
-	void addSkill(std::string& nameId);
-	void removeSkill(std::string& nameId);
-	Skill getSkill(std::string& nameId);
+	void addSkill(std::string& nameID);
+	void removeSkill(std::string& nameID);
+	Skill getSkill(std::string& nameID);
 	*/
 }
