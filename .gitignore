@@ -1,3 +1,4 @@
+
 # Compiling results
 obj/
 out/*
@@ -7,8 +8,10 @@ out/*
 # Configurations
 settings.mk
 .gitignore
+.bash_session
 
 # Projects and sessions 
+.clang-format
 .clang_complete
 .vscode/
 *.npp
