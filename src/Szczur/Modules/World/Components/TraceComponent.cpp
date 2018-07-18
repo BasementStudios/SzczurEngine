@@ -280,7 +280,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar);
 			{
-				for (int aId = 0; aId < actions.size(); ++aId)
+				for (std::size_t aId = 0; aId < actions.size(); ++aId)
 				{
 					auto& action = actions[aId];
 
@@ -370,7 +370,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 						if (ImGui::Selectable("Move to left"))
 						{
-							for (int i = 0; i < actions.size(); ++i)
+							for (std::size_t i = 0; i < actions.size(); ++i)
 							{
 								if (i > 0 && actions[i].get() == action.get())
 								{
@@ -382,7 +382,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 						if (ImGui::Selectable("Move to right"))
 						{
-							for (int i = 0; i < actions.size(); ++i)
+							for (std::size_t i = 0; i < actions.size(); ++i)
 							{
 								if (i < actions.size() - 1 && actions[i].get() == action.get())
 								{

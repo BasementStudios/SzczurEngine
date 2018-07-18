@@ -306,17 +306,17 @@ namespace rat {
 
 	}
 	std::string CameraComponent::enumToString(MoveType type) {
-		switch(type) {
+		switch (type) {
 			case Smooth: return "Smooth";
 			case Linear: return "Linear";
+			default: return "None";
 		}
-		return "None";
 	}
 
 	std::string CameraComponent::enumToString(TargetingType type) {
-		switch(type) {
+		switch (type) {
 			case Forwarded: return "Forwarded";
+			default: return "Precise";
 		}
-		return "Precise";
 	}
 }

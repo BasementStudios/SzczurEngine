@@ -1,5 +1,7 @@
 #include "SpriteDisplayDataManager.hpp"
 
+#include "../Scene.hpp"
+
 #include "../ScenesManager.hpp"
 
 namespace rat {
@@ -16,11 +18,10 @@ namespace rat {
             
             ImGui::SameLine();
             if(ImGui::Button("Add")) {
-                try{
+                try {
                     spriteDisplayDataHolder.emplace_back(enteredText);
                 }
-                catch (const std::exception& exc)
-                {
+                catch (const std::exception& exc) {
                     LOG_EXCEPTION(exc);
                 }
                 for(int i = 0; i<255; ++i)

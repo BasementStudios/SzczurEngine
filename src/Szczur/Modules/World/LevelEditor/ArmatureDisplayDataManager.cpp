@@ -16,7 +16,6 @@ ArmatureDisplayDataManager::ArmatureDisplayDataManager(ScenesManager& scenes)
 
 void ArmatureDisplayDataManager::render(bool& ifRender)
 {
-	static char enteredText[255];
 	if (ImGui::Begin("Armature Display Data Manager", &ifRender))
 	{
 		auto& armatureDisplayDataHolder = _scenes.getArmatureDisplayDataHolder();

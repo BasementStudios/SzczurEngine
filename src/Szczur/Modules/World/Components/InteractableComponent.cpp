@@ -2,12 +2,12 @@
 
 #include <nlohmann/json.hpp>
 
-#include "../Entity.hpp"
-#include "../ScenesManager.hpp"
-
 #include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
+#include "../Scene.hpp"
+#include "../Entity.hpp"
+#include "../ScenesManager.hpp"
 
 namespace rat {
 	InteractableComponent::InteractableComponent(Entity* parent) :
