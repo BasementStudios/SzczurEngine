@@ -89,5 +89,6 @@ namespace rat {
 		int _essenceContainer [4];
 
 		std::vector<Skill*> _skillsList;
+		std::vector<Skill*> _knownSkillsList;
 	};
 }
