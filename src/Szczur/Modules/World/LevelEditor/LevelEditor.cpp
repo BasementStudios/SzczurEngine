@@ -12,6 +12,7 @@
 // #include <NodeEditor/NodeEditor.h>
 
 #include "Szczur/Utility/Convert/GLMStreams.hpp"
+#include "Szczur/Utility/Convert/GLM_JSON.hpp"
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RectangleShape.hpp"

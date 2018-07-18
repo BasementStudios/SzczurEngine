@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 
+#include <nlohmann/json.hpp>
 #include <Shared/Math2D.h>
 #include <Shared/Interop.h>
 
