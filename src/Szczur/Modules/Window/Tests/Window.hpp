@@ -11,7 +11,7 @@ struct SimpleWindowTest : public ::testing::Test
 	{
 		// Module
 		this->windowModule = rat::detail::globalPtr_v<rat::Window>;
-		this->windowModule->clear({24u, 20u, 28u, 255u});
+		this->windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f});
 	}
 
 	virtual void TearDown()
@@ -23,7 +23,7 @@ struct SimpleWindowTest : public ::testing::Test
 
 VISUAL_TEST_F(SimpleWindowTest, Clear)
 {
-	windowModule->clear({0u, 0u, 128u, 255u});
+	windowModule->clear({0.f, 0.f, 0.5f, 1.f});
 }
 
 VISUAL_TEST_F(SimpleWindowTest, DrawSFML)
@@ -43,7 +43,7 @@ TEST_F(SimpleWindowTest, Resize)
 		// Update
 	},{
 		// Render
-		windowModule->clear({24u, 20u, 28u});
+		windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f});
 		windowModule->pushGLStates();
 		windowModule->draw(object);
 		windowModule->popGLStates();

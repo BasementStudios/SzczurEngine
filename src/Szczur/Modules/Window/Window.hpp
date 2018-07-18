@@ -8,6 +8,8 @@
 
 #include <string>
 
+#include <glm/vec4.hpp>
+
 namespace sf {
 	class Drawable;
 	class Vertex;
@@ -116,7 +118,8 @@ protected:
 
 public:
 	// Cleaning
-	void clear(const sf::Color& color = sf::Color::Transparent);
+	void clear(const glm::vec4& color = {0.f, 0.f, 0.f, 0.f});
+	void clearSFML(const sf::Color& color = sf::Color::Transparent);
 
 	// GL states
 	void pushGLStates();
