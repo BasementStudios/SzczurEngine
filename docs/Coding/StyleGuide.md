@@ -1,17 +1,19 @@
 
+
+
+
+
 # C++ Code Style Guide
+
+These rules are not strictly mandatory in some cases, but you should follow them.
 
 
 
 ## General
 
-
-
 ### Indents
 
 We use tabulators (`\t`) equal to the width of 4 spaces.
-
-
 
 ### Braces
 
@@ -44,7 +46,16 @@ void foo(int a, int b) const {
 }
 ```
 
+### Namespaces
 
+For namespaces we do not have indentation.
+
+```cpp
+namespace rat
+{
+//...
+}
+```
 
 ### Naming
 
@@ -57,8 +68,6 @@ void foo(int a, int b) const {
 * Class aliases: `PascalCase_t`
 * Macros: `UPPER_SNAKE`
 * Templates: `T` or `PascalCase`
-
-
 
 ### Expressions and function parameters
 
@@ -75,8 +84,6 @@ int a=(x+y)*z;
 std::cout<<"Hello World"<<std::endl;
 ```
 
-
-
 ### Variable declaration
 
 Each declaration separately.
@@ -89,8 +96,6 @@ int bar;
 // Bad
 int foo, bar;
 ```
-
-
 
 ### Pointers and references
 
@@ -106,26 +111,32 @@ int *foo;
 int &bar;
 ```
 
+### Constructors
+
+There should be new line for construction list. Remember also the order of variables to avoid construction reorder warning. 
+
+```cpp
+SomeClass::SomeClass(int foo, int bar)
+:	foo(foo),
+	bar(bar * 2)
+{
+	//...
+}
+```
+
 
 
 ## Files
 
-
-
 ### Extensions
 
-* Source files: `.cpp`
-* Header files: `.hpp`
-* Template files: `.tpp`
-* Docs: `.md`
-
-
+* Source files: `.cpp` - compiled as compiler units.
+* Header files: `.hpp` - code documentation and templates.
+* Documents: `.md` - external documentation.
 
 ### Encoding
 
 Every file should use `UTF-8` encoding.
-
-
 
 ### Structure
 
@@ -138,18 +149,14 @@ src/
 			ExampleModule/
 				*.cpp
 				*.hpp
-				*.tpp
 		Utility/
 			*.cpp
 			*.hpp
-			*.tpp
 ```
 
 
 
 ## Header files
-
-
 
 ### Include guards
 
@@ -157,30 +164,39 @@ src/
 #pragma once
 ```
 
-
-
-### Order of includes
+### Order of file
 
 1. Corresponding header file (if `.cpp`)
-2. C++ system files
-3. Other libraries' .hpp files
-4. Your project's .hpp files
-5. Template file at the end (if `.hpp`)
-
-
+2. Note about file and authors
+3. C++ system files
+4. Other libraries' forward declarations
+5. Other libraries' .hpp files
+6. Your project's forward declarations
+7. Your project's .hpp files
+8. Your code
+9. Templates implementation at the end (if `.hpp`)
 
 ```cpp
 // Use quotation marks to include the corresponding header file
 #include "CorrespondingHeader.hpp"
 
+/** @file CorrespondingHeader.cpp
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
 // Use angle brackets to include C++ libraries
-#include <iostream>
+// Good practice is to mark what you need from certain includes if name couldn't tell that
+#include <iostream> // cout, setw
 #include <ctime>
 #include <string>
 
 // Use angle brackets to include 3rd-party libraries
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+// Avoid using global includes (i.e. use `SFML/Graphics/Sprite.hpp` instead of `SFML/Graphics.hpp` if you want use `Sprite`)
+namespace sf {
+	class RenderWindow;
+}
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 
 // Use quotation marks to include another SzczurEngine headers
 #include "Szczur/Foo/Bar.hpp"
@@ -189,26 +205,20 @@ src/
 #include "Bar.hpp"
 ```
 
-
-
 ### Using `using`
 
-Do not use `using` keyword in the global namespace nor the header files.
-
-
+Do not use `using` keyword in the global namespace nor the header files. You can use them inside implementations and classes (type aliases).
 
 ### Forward Declarations
 
-Avoid using forward declarations where possible.
-
-
+Use where posible to speed up the compilation.
 
 ### Inline Functions
 
-Use `inline` functions only when they are small e.g. 10 lines or less; or describe why you use it.
-
-
+Novadays, compiler knows better when inline your function even if you put it in `.cpp` file (C++ LTO), but you can still use `inline` functions only when they are small e.g. 10 lines or less; or describe why you use it.
 
 ### Naming
 
-Our common namespace is `rat::` that stands for `Szczur`.
+Our common namespace is `rat::` that stands for `Szczur`. There is also `sf3d::` for SFML 3D extensions of `sf::` - SFML library..
+
+
