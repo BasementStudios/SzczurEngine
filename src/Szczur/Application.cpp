@@ -108,8 +108,7 @@ void Application::update()
 
 void Application::render()
 {
-	glEnable(GL_DEPTH_TEST);
-	getModule<Window>().getWindow().clear(22.f, 20.f, 28.f, 255.f, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	getModule<Window>().clear({24u, 20u, 28u, 255u});
 
 	getModule<World>().render();
 	
