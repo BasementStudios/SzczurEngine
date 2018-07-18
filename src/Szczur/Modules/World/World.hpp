@@ -2,10 +2,11 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
-#include "ScenesManager.hpp"
+#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "ScenesManager.hpp"
 
 #ifdef EDITOR
 	#include "LevelEditor/LevelEditor.hpp"

@@ -83,6 +83,8 @@ void Application::input()
 					break;
 				case MsgBox::Result::Cancel:
 					break;
+				default:
+					break;
 			}
 		}
 		else {

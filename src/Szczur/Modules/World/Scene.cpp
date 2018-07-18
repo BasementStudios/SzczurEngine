@@ -1,6 +1,9 @@
 #include "ScenesManager.hpp"
 
-#include <functional>
+#include <string>
+#include <functional> // find_if
+
+#include <nlohmann/json.hpp>
 
 #include "Szczur/Utility/Logger.hpp"
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
@@ -441,7 +444,7 @@ Entity* Scene::getCamera()
 }
 
 //170
-void Scene::loadFromConfig(Json& config, bool withNewID)
+void Scene::loadFromConfig(nlohmann::json& config, bool withNewID)
 {
 	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>(); 
 	_name = config["name"].get<std::string>();
@@ -450,11 +453,11 @@ void Scene::loadFromConfig(Json& config, bool withNewID)
 	
 	trySettingInitialUniqueID<Entrance>(maxId);
 
-	Json& groups = config["groups"];
+	nlohmann::json& groups = config["groups"];
 
 	for (auto it = groups.begin(); it != groups.end(); ++it)
 	{
-		for (Json& current : it.value())
+		for (nlohmann::json& current : it.value())
 		{
 			addRawEntity(it.key())->loadFromConfig(current);
 		}
@@ -471,7 +474,7 @@ void Scene::loadFromConfig(Json& config, bool withNewID)
 	trySettingInitialUniqueID<Scene>(_id);
 }
 
-void Scene::saveToConfig(Json& config) const
+void Scene::saveToConfig(nlohmann::json& config) const
 {
 	// Scene informations 
 	config["id"] = getID();
@@ -480,16 +483,16 @@ void Scene::saveToConfig(Json& config) const
 	// Save player entity ID 
 	config["player"] = getPlayer()->getID();
 
-	Json& groups = config["groups"] = Json::object();
+	nlohmann::json& groups = config["groups"] = nlohmann::json::object();
 
 	for (auto& holder : getAllEntities())
 	{
-		Json& group = groups[holder.first] = Json::array();
+		nlohmann::json& group = groups[holder.first] = nlohmann::json::array();
 
 		for (auto& entity : holder.second)
 		{
-			group.push_back(Json::object());
-			Json& current = group.back();
+			group.push_back(nlohmann::json::object());
+			nlohmann::json& current = group.back();
 
 			entity->saveToConfig(current);
 		}

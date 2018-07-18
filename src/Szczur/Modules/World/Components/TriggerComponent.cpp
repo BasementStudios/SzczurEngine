@@ -1,5 +1,7 @@
 #include "TriggerComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include <SFML/Graphics/Rect.hpp>
 
 #include "../Entity.hpp"
@@ -136,7 +138,7 @@ namespace rat {
 		return None;
 	}
 
-	void TriggerComponent::loadFromConfig(Json& config) {
+	void TriggerComponent::loadFromConfig(nlohmann::json& config) {
 		Component::loadFromConfig(config);
 		
 		if (config.find("shapeType") != config.end()) {
@@ -164,7 +166,7 @@ namespace rat {
 		}
 	}
 
-	void TriggerComponent::saveToConfig(Json& config) const {
+	void TriggerComponent::saveToConfig(nlohmann::json& config) const {
 		Component::saveToConfig(config);
 
 		config["shapeType"] = static_cast<size_t>(_triggerShape);

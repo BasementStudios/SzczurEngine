@@ -1,4 +1,9 @@
-#include "Entity.hpp"
+#include "Component.hpp"
+
+#include <memory>
+#include <vector>
+
+#include <nlohmann/json.hpp>
 
 #include "ScenesManager.hpp"
 
@@ -54,7 +59,7 @@ const Entity* Component::getEntity() const
 	return _parent;
 }
 
-void Component::loadFromConfig(Json& config)
+void Component::loadFromConfig(nlohmann::json& config)
 {
 	_id = config["id"];
 	_features = config["features"];
@@ -63,7 +68,7 @@ void Component::loadFromConfig(Json& config)
 	trySettingInitialUniqueID<Component>(_id);
 }
 
-void Component::saveToConfig(Json& config) const
+void Component::saveToConfig(nlohmann::json& config) const
 {
 	config["id"] = getComponentID();
 	config["features"] = getFeatures();

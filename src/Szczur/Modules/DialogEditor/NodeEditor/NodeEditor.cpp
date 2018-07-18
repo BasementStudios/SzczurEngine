@@ -100,7 +100,7 @@ void NodeEditor::save(const std::string& fileName, FileFormat saveFormat)
 
 		if (file.good())
 		{
-			Json j;
+			nlohmann::json j;
 
 			_nodeManager->write(j);
 
@@ -135,7 +135,7 @@ void NodeEditor::load(const std::string& fileName, FileFormat loadFormat)
 		{
 			reset();
 
-			Json j;
+			nlohmann::json j;
 			file >> j;
 			file.close();
 

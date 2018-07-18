@@ -182,7 +182,9 @@ void Window::init()
 // render
 void Window::render()
 {
+	glDisable(GL_DEPTH_TEST);
 	this->getWindow().display();
+	glEnable(GL_DEPTH_TEST);
 }
 
 // processEvent

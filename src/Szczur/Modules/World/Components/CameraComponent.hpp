@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 #include "Szczur/Utility/SFML3D/Camera.hpp"
 
@@ -25,10 +26,10 @@ public:
     virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
     ///
-    virtual void loadFromConfig(Json& config) override;
+    virtual void loadFromConfig(nlohmann::json& config) override;
 
     ///
-    virtual void saveToConfig(Json& config) const override;
+    virtual void saveToConfig(nlohmann::json& config) const override;
 
     ///
     void setVelocity(float velocity);

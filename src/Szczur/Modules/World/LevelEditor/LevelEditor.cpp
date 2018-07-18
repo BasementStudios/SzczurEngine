@@ -8,6 +8,7 @@
 #endif
 
 #include <imgui.h>
+#include <nlohmann/json.hpp>
 // #include <NodeEditor/NodeEditor.h>
 
 #include "Szczur/Utility/Convert/GLMStreams.hpp"
@@ -497,7 +498,7 @@ namespace rat {
 
 	void LevelEditor::saveConfig(const std::string& path) {
 		std::ofstream file{ path };
-		Json config;
+		nlohmann::json config;
 
 		config["mcCameraMovement"] = _isMCCameraMovement;
 		config["dragAndDropObjects"] = _dragAndDropObjects;
@@ -509,7 +510,7 @@ namespace rat {
 	void LevelEditor::loadConfig(const std::string& path) {
 		if (std::experimental::filesystem::exists(path)) {
 			std::ifstream file{ path };
-			Json config;
+			nlohmann::json config;
 
 			file >> config;
 

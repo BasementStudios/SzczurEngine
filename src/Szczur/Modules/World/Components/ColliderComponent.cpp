@@ -21,7 +21,7 @@ std::unique_ptr<Component> ColliderComponent::copy(Entity* newParent) const
 	return ptr;
 }
 
-void ColliderComponent::loadFromConfig(Json& config)
+void ColliderComponent::loadFromConfig(nlohmann::json& config)
 {
 	Component::loadFromConfig(config);
 
@@ -41,7 +41,7 @@ void ColliderComponent::loadFromConfig(Json& config)
 	}
 }
 
-void ColliderComponent::saveToConfig(Json& config) const
+void ColliderComponent::saveToConfig(nlohmann::json& config) const
 {
 	Component::saveToConfig(config);
 

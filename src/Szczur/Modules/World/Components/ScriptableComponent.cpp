@@ -1,5 +1,7 @@
 #include "ScriptableComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
@@ -93,14 +95,14 @@ namespace rat {
 	}
 
 	///
-	void ScriptableComponent::loadFromConfig(Json& config)
+	void ScriptableComponent::loadFromConfig(nlohmann::json& config)
 	{
 		Component::loadFromConfig(config);
 		if(auto& var = config["script"]; !var.is_null()) _scriptPath = var.get<std::string>();
 	}
 
 	///
-	void ScriptableComponent::saveToConfig(Json& config) const
+	void ScriptableComponent::saveToConfig(nlohmann::json& config) const
 	{
 		Component::saveToConfig(config);
 		config["script"] = _scriptPath;

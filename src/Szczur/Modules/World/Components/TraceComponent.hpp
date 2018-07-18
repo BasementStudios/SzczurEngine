@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <nlohmann/json_fwd.hpp>
+
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 
 #include "../Component.hpp"
@@ -50,10 +52,10 @@ public:
 // Config
 
 	///
-	virtual void loadFromConfig(Json& config);
+	virtual void loadFromConfig(nlohmann::json& config);
 
 	///
-	virtual void saveToConfig(Json& config) const;
+	virtual void saveToConfig(nlohmann::json& config) const;
 
 // Main
 

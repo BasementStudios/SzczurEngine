@@ -1,5 +1,7 @@
 #include "InteractableComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
@@ -23,7 +25,7 @@ namespace rat {
 		return ptr;
 	}
 
-	void AudioComponent::loadFromConfig(Json& config) 
+	void AudioComponent::loadFromConfig(nlohmann::json& config) 
     {
 		Component::loadFromConfig(config);
 
@@ -35,7 +37,7 @@ namespace rat {
 
 	}
 
-	void AudioComponent::saveToConfig(Json& config) const 
+	void AudioComponent::saveToConfig(nlohmann::json& config) const 
     {
 		Component::saveToConfig(config);
 		

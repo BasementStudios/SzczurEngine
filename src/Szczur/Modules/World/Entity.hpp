@@ -1,21 +1,20 @@
 #pragma once
 
-#include <unordered_map>
+#include <nlohmann/json_fwd.hpp>
+#include <string>
+#include <memory> // unique_ptr
+#include <vector>
 
-#include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Utility/SFML3D/Transformable.hpp"
+namespace rat 
+{
+	class Scene;
+}
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
-
+#include "Szczur/Utility/SFML3D/Transformable.hpp"
 #include "Components.hpp"
 
 namespace rat
 {
-
-// FWD
-class Scene;
-class ScenesManager;
 
 class Entity : public sf3d::Transformable, public sf3d::Drawable
 {
@@ -174,10 +173,10 @@ public:
 	const ComponentsHolder_t& getComponents() const;
 
 	///
-	virtual void loadFromConfig(Json& config, bool withNewID = false);
+	virtual void loadFromConfig(nlohmann::json& config, bool withNewID = false);
 
 	///
-	virtual void saveToConfig(Json& config) const;
+	virtual void saveToConfig(nlohmann::json& config) const;
 
 	///
 	static void initScript(Script& script);

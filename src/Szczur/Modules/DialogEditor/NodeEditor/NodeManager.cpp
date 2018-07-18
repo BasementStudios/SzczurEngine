@@ -112,9 +112,9 @@ void NodeManager::removeLink(int linkId)
 	}
 }
 
-bool NodeManager::read(const Json& j)
+bool NodeManager::read(const nlohmann::json& j)
 {
-	auto readPin = [] (Json::reference j, NodePin* pin) 
+	auto readPin = [] (nlohmann::json::reference j, NodePin* pin) 
 	{
 		pin->Id = j["id"];
 
@@ -180,7 +180,7 @@ bool NodeManager::read(const Json& j)
 	_lastId = j["lastId"];
 
 	// Nodes
-	Json::array_t jsonNodes = j["nodes"];
+	nlohmann::json::array_t jsonNodes = j["nodes"];
 
 	for (auto& jsonNode : jsonNodes)
 	{
@@ -200,7 +200,7 @@ bool NodeManager::read(const Json& j)
 		ed::SetNodePosition(node->Id, pos);
 
 		// Inputs
-		Json::array_t JsonInputs = jsonNode["inputs"];
+		nlohmann::json::array_t JsonInputs = jsonNode["inputs"];
 
 		for (auto& JsonInput : JsonInputs)
 		{
@@ -214,7 +214,7 @@ bool NodeManager::read(const Json& j)
 		}
 
 		// Outputs
-		Json::array_t JsonOutputs = jsonNode["outputs"];
+		nlohmann::json::array_t JsonOutputs = jsonNode["outputs"];
 
 		for (auto& JsonOutputs : JsonOutputs)
 		{
@@ -232,7 +232,7 @@ bool NodeManager::read(const Json& j)
 	}
 
 	// Links
-	Json::array_t JsonLinks = j["links"];
+	nlohmann::json::array_t JsonLinks = j["links"];
 
 	for (auto& JsonLink : JsonLinks)
 	{
@@ -250,9 +250,9 @@ bool NodeManager::read(const Json& j)
 	return true;
 }
 
-void NodeManager::write(Json& j)
+void NodeManager::write(nlohmann::json& j)
 {
-	auto writePin = [] (Json::object_t::mapped_type::reference j, NodePin* pin) {
+	auto writePin = [] (nlohmann::json::object_t::mapped_type::reference j, NodePin* pin) {
 		j["id"] = pin->Id;
 
 		if (pin->Kind == ed::PinKind::Output)
@@ -261,7 +261,7 @@ void NodeManager::write(Json& j)
 			{
 				const auto& optionTargetId = pin->OptionTarget.Ptr;
 
-				auto target = Json::object();
+				auto target = nlohmann::json::object();
 
 				target["major"] = optionTargetId->id;
 				target["minor"] = optionTargetId->minorId;
@@ -306,11 +306,11 @@ void NodeManager::write(Json& j)
 	j["lastId"] = _lastId;
 
 	// Nodes
-	auto jsonNodes = Json::array();
+	auto jsonNodes = nlohmann::json::array();
 
 	for (auto& node : _nodes)
 	{
-		auto jsonNode = Json::object();
+		auto jsonNode = nlohmann::json::object();
 
 		jsonNode["id"] = node->Id;
 		jsonNode["name"] = node->Name;
@@ -326,11 +326,11 @@ void NodeManager::write(Json& j)
 
 
 		// Inputs
-		auto jsonInputs = Json::array();
+		auto jsonInputs = nlohmann::json::array();
 
 		for (auto& input : node->Inputs)
 		{
-			auto jsonInput = Json::object();
+			auto jsonInput = nlohmann::json::object();
 
 			writePin(jsonInput, input.get());
 
@@ -341,11 +341,11 @@ void NodeManager::write(Json& j)
 
 
 		// Outputs
-		auto jsonOutputs = Json::array();
+		auto jsonOutputs = nlohmann::json::array();
 
 		for (auto& output : node->Outputs)
 		{
-			auto JsonOutput = Json::object();
+			auto JsonOutput = nlohmann::json::object();
 
 			writePin(JsonOutput, output.get());
 
@@ -361,11 +361,11 @@ void NodeManager::write(Json& j)
 	j["nodes"] = jsonNodes;
 
 	// Links
-	auto jsonLinks = Json::array();
+	auto jsonLinks = nlohmann::json::array();
 
 	for (auto& link : _links)
 	{
-		auto jsonLink = Json::object();
+		auto jsonLink = nlohmann::json::object();
 		jsonLink["id"] = link->Id;
 		jsonLink["startPinId"] = link->StartPinId;
 		jsonLink["endPinId"] = link->EndPinId;

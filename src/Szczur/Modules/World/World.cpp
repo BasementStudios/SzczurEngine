@@ -1,12 +1,17 @@
 #include "World.hpp"
 
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
 #include <Szczur/Modules/World/Data/TextureDataHolder.hpp>
+#include "ScenesManager.hpp"
+#include "Scene.hpp"
 
 namespace rat
 {
 
 World::World()
-	: _levelEditor { _scenes }, _blackScreen(sf::Vector2f(9999.f, 9999.f))
+: 	_levelEditor { _scenes }, _blackScreen(sf::Vector2f(9999.f, 9999.f))
 {
 	LOG_INFO("Initializing World module");
 
@@ -43,7 +48,7 @@ World::World()
 
 World::~World()
 {
-	LOG_INFO("Module World destructed");
+	LOG_INFO("World module destructed");
 }
 
 void World::update(float deltaTime)

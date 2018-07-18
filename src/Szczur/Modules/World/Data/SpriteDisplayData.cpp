@@ -46,7 +46,6 @@ namespace rat {
     }
 
     void SpriteDisplayData::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const {
-        states.texture = &_texture;
         target.draw(_sprite, states);
     }
 }

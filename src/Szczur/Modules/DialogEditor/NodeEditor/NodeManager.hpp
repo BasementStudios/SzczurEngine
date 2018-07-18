@@ -6,13 +6,12 @@
 #include <string>
 
 #include <NodeEditor.h>
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 #include <glm/vec4.hpp>
 
 #include "../DLGEditor/DialogData.hpp"
 
 namespace ed = ax::NodeEditor;
-using Json = nlohmann::json;
 
 namespace rat
 {
@@ -125,8 +124,8 @@ public:
 	NodeManager() = default;
 	~NodeManager() = default;
 
-	bool read(const Json& j);
-	void write(Json& j);
+	bool read(const nlohmann::json& j);
+	void write(nlohmann::json& j);
 
 	void reset();
 

@@ -1,5 +1,7 @@
 #include "Trace.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "Timeline.hpp"
 
 #include "Actions/AnimAction.hpp"
@@ -41,9 +43,9 @@ void Trace::setCurrentTimeline(Timeline* timeline)
 	_currentTimeline = timeline;
 }
 
-void Trace::loadFromConfig(Json& config)
+void Trace::loadFromConfig(nlohmann::json& config)
 {
-	Json::array_t jsonTimelines = config["timelines"];
+	nlohmann::json::array_t jsonTimelines = config["timelines"];
 
 	_lastId = config["lastId"];
 
@@ -62,7 +64,7 @@ void Trace::loadFromConfig(Json& config)
 			timeline->ShowLines = jsonTimeline["showLines"];
 		}
 
-		Json::array_t jsonActions = jsonTimeline["actions"];
+		nlohmann::json::array_t jsonActions = jsonTimeline["actions"];
 
 		for (auto& jsonAction : jsonActions)
 		{
@@ -134,29 +136,29 @@ void Trace::loadFromConfig(Json& config)
 	}
 }
 
-void Trace::saveToConfig(Json& config) const
+void Trace::saveToConfig(nlohmann::json& config) const
 {
 	if (_currentTimeline)
 		config["currentTimeline"] = _currentTimeline->getId();
 
 	config["lastId"] = _lastId;
 
-	auto jsonTimelines = Json::array();
+	auto jsonTimelines = nlohmann::json::array();
 
 	for (auto& timeline : _timelines)
 	{
-		auto jsonTimeline = Json::object();
+		auto jsonTimeline = nlohmann::json::object();
 
 		jsonTimeline["id"] = timeline->getId();
 		jsonTimeline["loop"] = timeline->Loop;
 		jsonTimeline["speedMultiplier"] = timeline->SpeedMultiplier;
 		jsonTimeline["showLines"] = timeline->ShowLines;
 
-		auto jsonActions = Json::array();
+		auto jsonActions = nlohmann::json::array();
 
 		for (auto& action : timeline->getActions())
 		{
-			auto jsonAction = Json::object();
+			auto jsonAction = nlohmann::json::object();
 			
 			jsonAction["type"] = action->getType();
 			switch (action->getType())

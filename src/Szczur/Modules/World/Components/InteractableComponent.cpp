@@ -1,5 +1,7 @@
 #include "InteractableComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
 
@@ -48,12 +50,12 @@ namespace rat {
 		return ptr;
 	}
 
-	void InteractableComponent::loadFromConfig(Json& config) {
+	void InteractableComponent::loadFromConfig(nlohmann::json& config) {
 		Component::loadFromConfig(config);
 		_distance = config["distance"];
 	}
 
-	void InteractableComponent::saveToConfig(Json& config) const {
+	void InteractableComponent::saveToConfig(nlohmann::json& config) const {
 		Component::saveToConfig(config);
 		config["distance"] = _distance;
 	}

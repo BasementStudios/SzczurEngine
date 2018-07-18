@@ -2,6 +2,8 @@
 
 #include <experimental/filesystem>
 
+#include <nlohmann/json.hpp>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
@@ -58,7 +60,7 @@ namespace rat {
 		return nullptr;
 	}
 
-	void AnimatedSpriteComponent::loadFromConfig(Json& config)
+	void AnimatedSpriteComponent::loadFromConfig(nlohmann::json& config)
 	{
 		Component::loadFromConfig(config);
 
@@ -87,7 +89,7 @@ namespace rat {
 		_speed = config["speed"];
 	}
 
-	void AnimatedSpriteComponent::saveToConfig(Json& config) const
+	void AnimatedSpriteComponent::saveToConfig(nlohmann::json& config) const
 	{
 		Component::saveToConfig(config);
 		config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";

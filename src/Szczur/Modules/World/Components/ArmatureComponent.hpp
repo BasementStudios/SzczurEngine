@@ -1,12 +1,20 @@
 #pragma once
 
-#include <memory>
+#include <memory> // unique_ptr
 
+#include <nlohmann/json_fwd.hpp>
+
+namespace dragonBones {
+    class SF3DArmatureDisplay;
+}
+
+namespace rat
+{
+    class Entity;
+    class ArmatureDisplayData;
+}
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Modules/DragonBones/SF3DArmatureDisplay.hpp"
-
 #include "Szczur/Modules/World/Component.hpp"
-#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
 
 #include <Szczur/Modules/Script/Script.hpp>
 
@@ -70,10 +78,10 @@ public:
 // Saving and loading
 
 	///
-	virtual void loadFromConfig(Json& config);
+	virtual void loadFromConfig(nlohmann::json& config);
 
 	///
-	virtual void saveToConfig(Json& config) const;
+	virtual void saveToConfig(nlohmann::json& config) const;
 
 // Manipulations
 

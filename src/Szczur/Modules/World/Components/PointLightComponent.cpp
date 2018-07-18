@@ -6,7 +6,6 @@
  **/
 
 #include <nlohmann/json.hpp>
-using Json = nlohmann::json;
 #include <glm/vec3.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -39,7 +38,7 @@ std::unique_ptr<Component> PointLightComponent::copy(Entity* newParent) const {
 }
 
 // Configuration
-void PointLightComponent::loadFromConfig(Json& config) {
+void PointLightComponent::loadFromConfig(nlohmann::json& config) {
 	Component::loadFromConfig(config);
 	
 	// Color
@@ -73,7 +72,7 @@ void PointLightComponent::loadFromConfig(Json& config) {
 		if (auto& var = subconfig["b"]; !var.is_null()) this->specularFactor.b = var;
 	}
 }
-void PointLightComponent::saveToConfig(Json& config) const {
+void PointLightComponent::saveToConfig(nlohmann::json& config) const {
 	Component::saveToConfig(config);
 	
 	// Color

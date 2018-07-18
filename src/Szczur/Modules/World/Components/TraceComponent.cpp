@@ -1,5 +1,7 @@
 #include "TraceComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -63,7 +65,7 @@ void TraceComponent::resume()
 	}
 }
 
-void TraceComponent::loadFromConfig(Json& config)
+void TraceComponent::loadFromConfig(nlohmann::json& config)
 {
 	Component::loadFromConfig(config);
 	
@@ -73,7 +75,7 @@ void TraceComponent::loadFromConfig(Json& config)
 	_currentAction = nullptr;
 }
 
-void TraceComponent::saveToConfig(Json& config) const
+void TraceComponent::saveToConfig(nlohmann::json& config) const
 {
 	Component::saveToConfig(config);
 

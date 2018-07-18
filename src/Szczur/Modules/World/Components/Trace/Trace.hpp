@@ -3,8 +3,7 @@
 #include <vector>
 #include <memory> // unique_ptr
 
-#include <nlohmann/json.hpp>
-using Json = nlohmann::json;
+#include <nlohmann/json_fwd.hpp>
 
 namespace sf3d {
 	class RenderTarget;
@@ -41,8 +40,8 @@ public:
 
 	auto& getTimelines() { return _timelines; }
 
-	void loadFromConfig(Json& config);
-	void saveToConfig(Json& config) const;
+	void loadFromConfig(nlohmann::json& config);
+	void saveToConfig(nlohmann::json& config) const;
 
 	void update(float deltaTime);
 

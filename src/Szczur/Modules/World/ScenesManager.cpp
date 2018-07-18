@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <experimental/filesystem>
 
+#include <nlohmann/json.hpp>
+
 #include "Components/CameraComponent.hpp"
 #include "Components/BaseComponent.hpp"
 #include "Components/ScriptableComponent.hpp"
@@ -162,13 +164,13 @@ bool ScenesManager::isCurrentSceneValid() const
 	return _currentSceneID != 0u;
 }
 
-void ScenesManager::loadFromConfig(Json& config) {
+void ScenesManager::loadFromConfig(nlohmann::json& config) {
 
 	removeAllScenes();
 
 	_currentSceneID = config["currentSceneID"];
 
-	Json& scenes = config["scenes"];
+	nlohmann::json& scenes = config["scenes"];
 
 	for (auto& current : scenes) {
 		auto* scene = addScene();
@@ -203,23 +205,23 @@ void ScenesManager::loadFromConfig(Json& config) {
 	}
 }
 
-void ScenesManager::saveToConfig(Json& config) {
+void ScenesManager::saveToConfig(nlohmann::json& config) {
 
 	config["version"] = std::string("1.6.7");
 	config["currentSceneID"] = getCurrentSceneID();
-	Json& scenes = config["scenes"] = Json::array();
+	nlohmann::json& scenes = config["scenes"] = nlohmann::json::array();
 
 	for (auto& scene : _holder)
 	{
-		scenes.push_back(Json::object());
-		Json& current = scenes.back();
+		scenes.push_back(nlohmann::json::object());
+		nlohmann::json& current = scenes.back();
 
 		scene->saveToConfig(current);
 	}
 }
 
-void ScenesManager::saveEntityToConfig(Entity* entity, Json& config) { 
-	Json& scenes = config["scenes"]; 
+void ScenesManager::saveEntityToConfig(Entity* entity, nlohmann::json& config) { 
+	nlohmann::json& scenes = config["scenes"]; 
 	int sceneID = entity->getScene()->getID(); 
 	
 	for(auto& scene : scenes) { 
@@ -236,7 +238,7 @@ void ScenesManager::saveEntityToConfig(Entity* entity, Json& config) {
 				} 
 			} 
 	  		// Add with normal way 
-			group.push_back(Json::object()); 
+			group.push_back(nlohmann::json::object()); 
 			entity->saveToConfig(group.back()); 
 			return; 
 		} 
@@ -246,7 +248,7 @@ void ScenesManager::saveEntityToConfig(Entity* entity, Json& config) {
 void ScenesManager::loadFromFile(const std::string& filepath)
 {
 	std::ifstream file{ filepath };
-	Json config;
+	nlohmann::json config;
 
 	file >> config;
 
@@ -256,7 +258,7 @@ void ScenesManager::loadFromFile(const std::string& filepath)
 void ScenesManager::saveToFile(const std::string& filepath)
 {
 	std::ofstream file{ filepath };
-	Json config;
+	nlohmann::json config;
 
 	saveToConfig(config);
 	file << std::setw(4) << config << std::endl;
@@ -275,11 +277,11 @@ const ScenesManager::ArmatureDisplayDataHolder_t& ScenesManager::getArmatureDisp
 void ScenesManager::loadScenesFromFile(const std::string& filepath)
 {
 	std::ifstream file{ filepath };
-	Json config;
+	nlohmann::json config;
 
 	file >> config;
 
-	Json& scenes = config["scenes"];
+	nlohmann::json& scenes = config["scenes"];
 
 	for (auto& current : scenes)
 	{
@@ -392,7 +394,7 @@ void ScenesManager::stopGame() {
 	}
 }
 
-Json& ScenesManager::getRunConfig() {
+nlohmann::json& ScenesManager::getRunConfig() {
 	return _configBeforeRun;
 }
 

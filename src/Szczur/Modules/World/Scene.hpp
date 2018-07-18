@@ -6,11 +6,14 @@
 #include <unordered_map>
 
 #include <boost/container/flat_map.hpp>
+#include <nlohmann/json.hpp> 
 
 #include <Szczur/Utility/SFML3D/Drawable.hpp>
 #include <Szczur/Utility/SFML3D/RenderTarget.hpp>
 #include <Szczur/Utility/SFML3D/RenderStates.hpp>
 
+#include "Szczur/Modules/World/Data/SpriteDisplayData.hpp"
+#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
 #include "Entity.hpp"
 
 namespace rat
@@ -152,10 +155,10 @@ public:
 	Entity* getCamera();
 	
 	///
-	void loadFromConfig(Json& config, bool withNewID = false);
+	void loadFromConfig(nlohmann::json& config, bool withNewID = false);
 
 	///
-	void saveToConfig(Json& config) const;
+	void saveToConfig(nlohmann::json& config) const;
 
 	///
 	template <typename F>

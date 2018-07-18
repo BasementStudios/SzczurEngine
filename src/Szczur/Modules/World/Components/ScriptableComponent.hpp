@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sol.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace rat {
 	class Entity;
@@ -67,10 +68,10 @@ public:
 	void runScript(const std::string& path);
 
 	///
-	virtual void loadFromConfig(Json& config) override;
+	virtual void loadFromConfig(nlohmann::json& config) override;
 
 	///
-	virtual void saveToConfig(Json& config) const override;
+	virtual void saveToConfig(nlohmann::json& config) const override;
 
 	///
 	static void initScript(ScriptClass<Entity>& entity, Script& script);

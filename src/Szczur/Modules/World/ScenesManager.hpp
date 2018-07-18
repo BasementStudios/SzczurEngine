@@ -8,8 +8,7 @@
 #include "Scene.hpp"
 #include "Data/TextureDataHolder.hpp"
 
-#include <nlohmann/json.hpp>
-using Json = nlohmann::json;
+#include <nlohmann/json_fwd.hpp>
 
 namespace rat
 {
@@ -80,13 +79,13 @@ public:
 	const ArmatureDisplayDataHolder_t& getArmatureDisplayDataHolder() const;
 
 	///
-	void loadFromConfig(Json& config);
+	void loadFromConfig(nlohmann::json& config);
 
 	///
-	void saveToConfig(Json& config);
+	void saveToConfig(nlohmann::json& config);
 
 	///
-  	void saveEntityToConfig(Entity* entity, Json& config);
+  	void saveEntityToConfig(Entity* entity, nlohmann::json& config);
 
 	///
 	void loadFromFile(const std::string& filepath);
@@ -116,7 +115,7 @@ public:
 	bool isGameRunning();
 
 	///
-	Json& getRunConfig();
+	nlohmann::json& getRunConfig();
 
 	///
 	TextureDataHolder& getTextureDataHolder();
@@ -142,7 +141,7 @@ private:
 
 // Running state
 
-	Json _configBeforeRun;
+	nlohmann::json _configBeforeRun;
 	bool _gameIsRunning = false;
 
 // Data

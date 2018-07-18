@@ -35,10 +35,10 @@ public:
 	std::unique_ptr<Component> copy(Entity* newParent) const override;
 
 	///
-	void loadFromConfig(Json& config) override;
+	void loadFromConfig(nlohmann::json& config) override;
 
 	///
-	void saveToConfig(Json& config) const override;
+	void saveToConfig(nlohmann::json& config) const override;
 
 	///
 	void renderHeader(ScenesManager& scenes, Entity* object) override;

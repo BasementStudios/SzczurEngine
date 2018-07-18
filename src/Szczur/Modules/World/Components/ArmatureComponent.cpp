@@ -2,7 +2,12 @@
 
 #include <experimental/filesystem>
 
+#include <nlohmann/json.hpp>
+
 #include "Szczur/Modules/DragonBones/SF3DFactory.hpp"
+#include "Szczur/Modules/DragonBones/SF3DArmatureDisplay.hpp"
+#include "Szczur/Modules/World/Data/ArmatureDisplayData.hpp"
+#include "Szczur/Modules/World/Entity.hpp"
 
 #include "../Entity.hpp"
 #include "../Scene.hpp"
@@ -134,7 +139,7 @@ const void* ArmatureComponent::getFeature(Component::Feature_e feature) const
 	return nullptr;
 }
 
-void ArmatureComponent::loadFromConfig(Json& config)
+void ArmatureComponent::loadFromConfig(nlohmann::json& config)
 {
 	Component::loadFromConfig(config);
 	auto name = mapUtf8ToWindows1250(config["armatureDisplayData"].get<std::string>());
@@ -153,7 +158,7 @@ void ArmatureComponent::loadFromConfig(Json& config)
 	}
 }
 
-void ArmatureComponent::saveToConfig(Json& config) const
+void ArmatureComponent::saveToConfig(nlohmann::json& config) const
 {
 	Component::saveToConfig(config);
 	config["armatureDisplayData"] = _armatureDisplayData ? mapWindows1250ToUtf8(_armatureDisplayData->getName()) : "";

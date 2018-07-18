@@ -4,6 +4,7 @@
 
 #include <glm/vec3.hpp>
 #include <sol.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 namespace rat {
     class ScenesManger;
@@ -45,10 +46,10 @@ public:
     float getHeight() const;
 
     ///
-    virtual void loadFromConfig(Json& config) override;
+    virtual void loadFromConfig(nlohmann::json& config) override;
 
     ///
-    virtual void saveToConfig(Json& config) const override;
+    virtual void saveToConfig(nlohmann::json& config) const override;
 
     ///
     static void initScript(ScriptClass<Entity>& entity, Script& script);

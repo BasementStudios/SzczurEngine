@@ -2,6 +2,8 @@
 
 #include <experimental/filesystem>
 
+#include <nlohmann/json.hpp>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
@@ -9,10 +11,17 @@
 #include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
-#include "Szczur/Modules/World/World.hpp"
+#include "Szczur/Modules/World/World.hpp" 
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp" 
+#include "Szczur/Utility/SFML3D/RenderStates.hpp" 
+#include "Szczur/Utility/SFML3D/Drawable.hpp" 
+#include "Szczur/Modules/World/Data/SpriteDisplayData.hpp" 
+#include "Szczur/Modules/World/Component.hpp" 
+#include "Szczur/Modules/World/Entity.hpp" 
 
 
-namespace rat {
+namespace rat
+{
 	SpriteComponent::SpriteComponent(Entity* parent)
 	: Component { parent, fnv1a_64("SpriteComponent"), "SpriteComponent", Component::Drawable }
 	{
@@ -63,7 +72,7 @@ namespace rat {
 	}
 
 	///
-	void SpriteComponent::loadFromConfig(Json& config)
+	void SpriteComponent::loadFromConfig(nlohmann::json& config)
 	{
 		Component::loadFromConfig(config);
 		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
@@ -99,7 +108,7 @@ namespace rat {
 	}
 
 	///
-	void SpriteComponent::saveToConfig(Json& config) const
+	void SpriteComponent::saveToConfig(nlohmann::json& config) const
 	{
 		Component::saveToConfig(config);
 		config["spriteDisplayData"] = _spriteDisplayData ? mapWindows1250ToUtf8(_spriteDisplayData->getName()) : "";

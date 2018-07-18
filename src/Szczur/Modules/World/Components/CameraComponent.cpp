@@ -1,5 +1,7 @@
 #include "CameraComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "Szczur/Modules/Input/InputManager.hpp"
 
 #include "../Entity.hpp"
@@ -65,7 +67,7 @@ namespace rat {
 		_stickTo = getEntity()->getScene()->getPlayer();
 	}
 
-	void CameraComponent::loadFromConfig(Json& config) {
+	void CameraComponent::loadFromConfig(nlohmann::json& config) {
 		Component::loadFromConfig(config);
 		if(auto& var = config["velocity"]; !var.is_null()) _velocity = var;
 		if(auto& var = config["locked"]; !var.is_null()) _locked = var;
@@ -94,7 +96,7 @@ namespace rat {
 
 	}
 
-	void CameraComponent::saveToConfig(Json& config) const {
+	void CameraComponent::saveToConfig(nlohmann::json& config) const {
 		Component::saveToConfig(config);
 		config["velocity"] = _velocity;
 		config["locked"] = _locked;

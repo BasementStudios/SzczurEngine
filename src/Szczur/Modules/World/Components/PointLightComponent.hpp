@@ -9,8 +9,7 @@
 #include <variant>
 
 #include <glm/vec3.hpp>
-#include <nlohmann/json.hpp>
-using Json = nlohmann::json;
+#include <nlohmann/json_fwd.hpp>
 
 namespace rat {
 	class ScenesManager;
@@ -42,8 +41,8 @@ public:
     virtual std::unique_ptr<Component> copy(Entity* newParent) const override;
 
 	// Configuration
-    virtual void loadFromConfig(Json& config) override;
-    virtual void saveToConfig(Json& config) const override;
+    virtual void loadFromConfig(nlohmann::json& config) override;
+    virtual void saveToConfig(nlohmann::json& config) const override;
 
 	// Editor view
     virtual void renderHeader(ScenesManager& scenes, Entity* object) override;

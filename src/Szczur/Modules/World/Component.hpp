@@ -5,7 +5,6 @@
 #include <functional>
 
 #include <nlohmann/json_fwd.hpp>
-using Json = nlohmann::json;
 
 #include <imgui.h>
 
@@ -75,10 +74,10 @@ public:
 	const Entity* getEntity() const;
 
 	///
-	virtual void loadFromConfig(Json& config);
+	virtual void loadFromConfig(nlohmann::json& config);
 
 	///
-	virtual void saveToConfig(Json& config) const;
+	virtual void saveToConfig(nlohmann::json& config) const;
 
 	///
 	void updateIDs();

@@ -1,5 +1,7 @@
 #include "BaseComponent.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include "../Entity.hpp"
 #include "../Scene.hpp"
 
@@ -26,13 +28,13 @@ namespace rat {
 		return ptr;
 	}
 
-	void BaseComponent::loadFromConfig(Json& config)
+	void BaseComponent::loadFromConfig(nlohmann::json& config)
 	{
 		Component::loadFromConfig(config);
 		if(auto& var = config["position_only"]; !var.is_null()) _positionOnly = var;
 	}
 
-	void BaseComponent::saveToConfig(Json& config) const
+	void BaseComponent::saveToConfig(nlohmann::json& config) const
 	{
 		Component::saveToConfig(config);
 		config["position_only"] = _positionOnly;
