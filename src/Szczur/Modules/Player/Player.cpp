@@ -151,7 +151,7 @@ namespace rat {
 
 	bool Player::addSkill(const std::string& nameID) {
 		for (const auto& i : _skillsList) {
-			if (i->getNameID() == nameId) {
+			if (i->getNameID() == nameID) {
 				_knownSkillsList.push_back(i);
 				return true;
 			}
@@ -159,10 +159,10 @@ namespace rat {
 		return false;
 	}
 
-	bool Player::removeSkill(const std::string& nameId) {
+	bool Player::removeSkill(const std::string& nameID) {
 		for (std::size_t i = 0; i < _knownSkillsList.size(); i++)
 		{
-			if (_knownSkillsList[i]->getNameId() == nameId) {
+			if (_knownSkillsList[i]->getNameID() == nameID) {
 				_knownSkillsList.erase(_knownSkillsList.begin() + i);
 				return true;
 			}
