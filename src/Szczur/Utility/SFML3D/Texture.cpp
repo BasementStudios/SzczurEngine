@@ -29,9 +29,8 @@ Texture::Texture()
 }
 Texture::~Texture()
 {
-	if (this->textureID) {
-		glDeleteTextures(1, &(this->textureID));
-	}
+	// `glDeleteTextures` silently ignores 0's and names that do not correspond to existing textures.
+	glDeleteTextures(1, &(this->textureID));
 }
 
 Texture::Texture(Texture&& other)
@@ -45,9 +44,7 @@ Texture::Texture(Texture&& other)
 Texture& Texture::operator = (Texture&& other)
 {
 	if (this != &other) {
-		if (this->textureID) {
-			glDeleteTextures(1, &(this->textureID));
-		}
+		glDeleteTextures(1, &(this->textureID));
 
 		this->textureID = other.textureID; 
 		this->size      = other.size;
@@ -76,7 +73,7 @@ Texture::Texture(const std::string& path)
 void Texture::create(glm::uvec2 size)
 {
 	// Delete first, if it is recreation and size is diffrent
-	if (this->textureID && (this->size != size)) {
+	if (this->size != size) {
 		glDeleteTextures(1, &(this->textureID));
 		glGenTextures(1, &(this->textureID));
 	}
@@ -101,7 +98,7 @@ void Texture::loadFromFile(const char* path)
 	const glm::uvec2 size = {image.getSize().x, image.getSize().y};
 
 	// Delete first, if it is recreation and size is diffrent
-	if (this->textureID && (this->size != size)) {
+	if (this->size != size) {
 		glDeleteTextures(1, &(this->textureID));
 		glGenTextures(1, &(this->textureID));
 	}
