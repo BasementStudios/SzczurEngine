@@ -9,15 +9,16 @@
 #include "HPBar.hpp"
 #include "TimeBar.hpp"
 #include "PPCount.hpp"
+#include "SkillSlots.hpp"
 
 namespace rat {
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
 		_pathToJson = "Assets/Player/skills.json";
-
-		initGUI();
+	
 		initScript();
 		initJson();
+		initGUI();
 
 		LOG_INFO("Player module initialized");
 	}
@@ -52,6 +53,15 @@ namespace rat {
 		gui.addTexture("Assets/Player/pp.png");
 		gui.addTexture("Assets/Player/pp_back.png");
 		gui.addTexture("Assets/Player/pp_broken.png");
+
+		gui.addTexture("Assets/Player/skills/skill_back.png");
+		gui.addTexture("Assets/Player/skills/selected_skill_back.png");
+
+		gui.addTexture("Assets/Player/1pp.png");
+		gui.addTexture("Assets/Player/2pp.png");
+		gui.addTexture("Assets/Player/3pp.png");
+		gui.addTexture("Assets/Player/4pp.png");
+		gui.addFont("Assets/Player/SourceSansPro-SemiBold.ttf");
 
 		gui.addTexture("Assets/Player/background.png");
 		gui.addTexture("Assets/Player/gui_back.png");
@@ -88,12 +98,24 @@ namespace rat {
 		_TimeBar->setCurrentTime(95);
 		_TimeBar->setTimeBarIndex(1);
 
+		_PPBack = new ImageWidget;
+		_base->add(_PPBack);
+		_PPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
+		_PPBack->setPropPosition(0.5f, 0.f);
+		_PPBack->setPropSize(0.6f, 0.1f);
+
 		_PPCount = new PPCount;
 		_PPCount->setParent(_base);
 		_PPCount->initGUI(gui);
 		_PPCount->setPropPosition({0.5f, 0.f});
 		_PPCount->setBrokenSlotAmount(10);
 		_PPCount->setPPCount(5);
+
+		_skillSlots = new SkillSlots(gui);
+		_skillSlots->setParent(_base);
+		_skillSlots->setPropPosition({0.5f, 0.05f});
+		_skillSlots->addSkill(&_skillsList[0]);
+		_skillSlots->addSkill(&_skillsList[1]);
 	}
 
 	void Player::initJson() {
@@ -238,12 +260,12 @@ namespace rat {
 
 	void Player::addPP(int PP) {
 		_currentPP += PP;
-		std::clamp(_currentPP, 0, _maxPP);
+		_currentPP = std::clamp(_currentPP, 0, _maxPP);
 	}
 
 	void Player::setPP(int PP) {
 		_currentPP = PP;
-		std::clamp(_currentPP, 0, _maxPP);
+		_currentPP = std::clamp(_currentPP, 0, _maxPP);
 	}
 
 	int Player::getMaxPP() {

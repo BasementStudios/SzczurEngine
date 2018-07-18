@@ -24,14 +24,14 @@ namespace rat {
 		int _brokenCount;
 		int _slotCount = 15;
 
-		Widget* _base;
+		Widget* _base = nullptr;
 
-		sf::Texture* _PPTexture;
-		sf::Texture* _slotTexture;
-		sf::Texture* _brokenSlotTexture;
+		sf::Texture* _PPTexture = nullptr;
+		sf::Texture* _slotTexture = nullptr;
+		sf::Texture* _brokenSlotTexture = nullptr;
 
-		ListWidget* _PPListWidget;
-		ListWidget* _slotListWidget;
+		ListWidget* _PPListWidget = nullptr;
+		ListWidget* _slotListWidget = nullptr;
 
 		std::vector<ImageWidget*> _PPList;
 		std::vector<ImageWidget*> _slotList;
