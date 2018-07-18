@@ -56,7 +56,6 @@ void Application::input()
 	sf::Event event;
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
-		getModule<Window>().processEvent(event);
 		getModule<Input>().getManager().processEvent(event);
 		getModule<GUI>().input(event);
 
@@ -67,19 +66,27 @@ void Application::input()
 		#endif
 
 		if (event.type == sf::Event::Closed) {
-			auto result = MsgBox::show(getModule<Window>().getWindow().getSystemHandle(), "Do you want to save the world?", "SzczurEngine", MsgBox::Icon::Question, MsgBox::Button::YesNoCancel);
+			auto result = MsgBox::show(
+				getModule<Window>().getWindow().getSystemHandle(), 
+				"Do you want to save the world?", "SzczurEngine", 
+				MsgBox::Icon::Question, MsgBox::Button::YesNoCancel
+			);
 
 			switch (result)
 			{
 				case MsgBox::Result::Yes:
 					getModule<World>().getScenes().menuSave();
+					[[fallthrough]];
 				case MsgBox::Result::No:
-					getModule<Window>().getWindow().close();
+					getModule<Window>().processEvent(event);
 					return;
 					break;
 				case MsgBox::Result::Cancel:
 					break;
 			}
+		}
+		else {
+			getModule<Window>().processEvent(event);
 		}
 	}
 }
