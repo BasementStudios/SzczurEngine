@@ -133,8 +133,8 @@ struct Test
 		}												\
 	}
 
-#define VISUAL_TEST_ANYKEY() \
-	VISUAL_TEST_LOOP((void)0;,(void)0;,{				\
+#define VISUAL_TEST_INPUT_ANYKEY \
+	{													\
 		switch (event.type) {							\
 			case sf::Event::Closed:						\
 			case sf::Event::KeyReleased:				\
@@ -143,7 +143,11 @@ struct Test
 			default:									\
 				break;									\
 		}												\
-	})
+	}
+#define VISUAL_TEST_ANYKEY() \
+	VISUAL_TEST_LOOP((void)0;,(void)0;,				\
+		VISUAL_TEST_INPUT_ANYKEY					\
+	)
 
 #define VISUAL_TEST_TIME 3s
 #define VISUAL_TEST_WAIT(TIME) \

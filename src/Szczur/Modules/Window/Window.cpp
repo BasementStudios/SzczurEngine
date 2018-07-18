@@ -69,7 +69,9 @@ void Window::setSize(glm::uvec2 size)
 	this->videoMode.height = size.y;
 	LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
 
-	this->getWindow().setSize(size);
+	this->setVideoMode(this->videoMode);
+	//this->getWindow().setSize(size);
+	// @todo . dobra :/ mam jeszcze jeden pomysł ale to kiedyś... 
 }
 
 // FrameRate
@@ -182,7 +184,7 @@ void Window::processEvent(sf::Event event)
 		case sf::Event::Resized:
 		{
 			// Update video mode
-			this->setSize({event.size.width, event.size.height}); // @todo . sajkowiecozrobic;)COD3IT
+			this->setSize({event.size.width, event.size.height});
 		}
 		break;
 		
