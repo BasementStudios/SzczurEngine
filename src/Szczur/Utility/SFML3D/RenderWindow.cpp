@@ -49,6 +49,7 @@ RenderWindow::RenderWindow(
 	if (!gladLoadGL()) {
 		throw std::runtime_error("Failed to initialize GLAD!");
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, mode.width, mode.height);
 }
 
@@ -69,13 +70,17 @@ void RenderWindow::create(
 	if (!gladLoadGL()) {
 		throw std::runtime_error("Failed to initialize GLAD!");
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, mode.width, mode.height);
 }
 
 void RenderWindow::onResize()
 {
 	const sf::Vector2u size = this->getSize();
-	glViewport(0, 0, size.x, size.y);
+	
+	if (this->_setActive()) {
+		glViewport(0, 0, size.x, size.y);
+	}
 }
 
 bool RenderWindow::_setActive(bool /*states*/)
