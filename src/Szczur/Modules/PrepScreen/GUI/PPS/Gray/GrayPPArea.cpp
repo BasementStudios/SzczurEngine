@@ -7,7 +7,7 @@
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
-#include "../ResourcesContainer.hpp"
+#include "Szczur/Modules/PrepScreen/ResourcesContainer.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 

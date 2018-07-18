@@ -5,8 +5,8 @@
 #include <string>
 #include <map>
 
-#include "../Skill/Skill.hpp"
-#include "../GlyphTypes.hpp"
+#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 
 namespace rat
 {

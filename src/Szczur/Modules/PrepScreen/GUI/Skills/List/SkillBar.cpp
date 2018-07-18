@@ -9,10 +9,6 @@
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
-#include "GrayPPArea.hpp"
-#include "SkillArea.hpp"
-#include "ChosenSkillArea.hpp"
-
 #include "Szczur/Utility/Logger.hpp"
 
 
@@ -26,7 +22,7 @@ namespace rat
     _prepScreen(prepScreen),
     BaseBar()
     {
-        // auto* base = new ListWidget; 
+        // auto* base = new ListWidget;
         // //base->makeHorizontal();
         // base->makeChildrenPenetrable();
 
@@ -37,7 +33,7 @@ namespace rat
 
 
         //const sf::Vector2f prSize(0.312037037037037f, 0.1148148148148f);
-        const sf::Vector2f prSize(0.4f, 0.1148148148148f);
+        const sf::Vector2f prSize(0.4f, 0.12f);
 
         _infoBar->setPropSize(prSize);
         _infoBar->setMainPatchPropSize({prSize.y, prSize.y});

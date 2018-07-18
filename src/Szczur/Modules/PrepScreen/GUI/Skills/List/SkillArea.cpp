@@ -10,10 +10,7 @@
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
-#include "ChosenSkillArea.hpp"
-#include "GrayPPArea.hpp"
-
-#include "../Skill/SkillCodex.hpp"
+#include "Szczur/Modules/PrepScreen/Skill/SkillCodex.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -38,8 +35,6 @@ namespace rat
         _skillsList->setBetweenPadding(10.f);
         _skillsScroller->add(_skillsList);
 
-        _addBar(_infoBar);
-        _infoBar.deactivate();
         _getBase()->setPropPosition(0.5f, 0.f);
 
         for(size_t i = 0; i < 20; i++)
@@ -62,8 +57,6 @@ namespace rat
         _skillsScroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
         _skillsScroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
         _skillsScroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
-
-        _infoBar.initAssetsViaGUI(gui);
 
         _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/BackgroundEQ.png"), 30);
         

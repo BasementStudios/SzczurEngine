@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
-#include "../GlyphTypes.hpp"  
+#include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"  
 
 namespace rat
 {

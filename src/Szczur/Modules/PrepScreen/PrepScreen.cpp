@@ -4,8 +4,6 @@
 
 #include "Skill/Skill.hpp"
 
-#include "GUI/SkillBar.hpp"
-
 #include "ProfessionTypes.hpp"
 
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
@@ -232,8 +230,9 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
+        std::cout << "Kek\n";
         _loadAssetsFromGUI();
-        _initAssetsViaGUI();
+        std::cout << "Kek2\n";
 
         auto* background = new ImageWidget;
         gui.addInterface()->add(background);
@@ -279,6 +278,7 @@ namespace rat
 
 
 
+        _initAssetsViaGUI();
         
         //_enemyArea.setParent(mainList);
         //_enemyArea.setPropPosition(0.f, 0.5f);
@@ -357,7 +357,9 @@ namespace rat
         _glyphArea.initAssetsViaGUI(gui);
         _profArea.initAssetsViaGUI(gui);
         _skillArea.initAssetsViaGUI(gui);
+        std::cout << "mech\n";
         _chosenSkillArea.initAssetsViaGUI(gui);
+        std::cout << "mech\n";
         _enemyArea.initEnemiesViaCodex(_enemyCodex);
         _enemyArea.initAssetsViaGUI(gui);
     }

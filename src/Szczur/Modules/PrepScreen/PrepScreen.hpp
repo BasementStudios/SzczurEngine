@@ -9,15 +9,13 @@
 
 #include "Szczur/Modules/PrepScreen/ResourcesContainer.hpp"
 #include "Szczur/Modules/PrepScreen/Skill/SkillCodex.hpp"
-#include "GUI/SkillArea.hpp"
-#include "GUI/GrayPPArea.hpp"
-#include "GUI/ProfessionArea.hpp"
-#include "GUI/ChosenSkillArea.hpp"
+#include "GUI/Skills/List/SkillArea.hpp"
+#include "GUI/PPS/Gray/GrayPPArea.hpp"
+#include "GUI/Professions/ProfessionArea.hpp"
+#include "GUI/Skills/Chosen/ChosenSkillArea.hpp"
 
 #include "GUI/EnemyList/EnemyArea.hpp"
-
-#include "GUI/InfoBar.hpp"
-#include "GUI/GlyphArea.hpp"
+#include "GUI/PPS/Glyphes/GlyphArea.hpp"
 
 #include "Szczur/Modules/PrepScreen/Skill/SortedSkillsContainer.hpp"
 
@@ -81,8 +79,6 @@ namespace rat
         ProfessionArea _profArea;
         ChosenSkillArea _chosenSkillArea;
         GlyphArea _glyphArea;
-
-        InfoBar _infoBar;
 
         bool _isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const;
 

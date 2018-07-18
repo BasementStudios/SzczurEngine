@@ -4,9 +4,9 @@
 
 #include <memory>
 
-#include "../GlyphContainer.hpp"
+#include "Szczur/Modules/PrepScreen/GlyphContainer.hpp"
+#include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 #include "GlyphBar.hpp"
-#include "../GlyphTypes.hpp"
 
 
 namespace rat 

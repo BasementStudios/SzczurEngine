@@ -4,7 +4,7 @@
     "skills": {
         "kek": {
             "name": "Wściekły wybuch",
-            "ppCost": 5,
+            "ppCost": 3,
             "profession": "Range",
             "iconPath": "skill_1.png",
             "glyphes": {
@@ -22,7 +22,7 @@
         },
 		"sword1": {
             "name": "Szybkie czmychnięcie",
-            "ppCost": 5,
+            "ppCost": 3,
             "profession": "Mele",
             "iconPath": "skill_3.png",
             "glyphes": {
@@ -31,7 +31,7 @@
         },
 		"sword2": {
             "name": "Rozżażona stal",
-            "ppCost": 5,
+            "ppCost": 3,
             "profession": "Mele",
             "iconPath": "skill_4.png",
             "glyphes": {
@@ -40,7 +40,7 @@
         },
 		"sword3": {
             "name": "Zamaszyste zamachnięcie",
-            "ppCost": 5,
+            "ppCost": 3,
             "profession": "Mele",
             "iconPath": "skill_5.png",
             "glyphes": {

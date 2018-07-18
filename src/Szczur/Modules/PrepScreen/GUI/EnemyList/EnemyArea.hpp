@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "EnemyBar.hpp"
-#include "../InfoBar.hpp"
 
 namespace rat
 {
@@ -30,8 +29,6 @@ namespace rat
         ScrollAreaWidget* _scroller{nullptr};
         ListWidget* _list{nullptr};
 
-        InfoBar _infoBar;
         Enemy* _chosenEnemy{nullptr};
-
     };
 }

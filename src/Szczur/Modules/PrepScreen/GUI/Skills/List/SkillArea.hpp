@@ -3,15 +3,13 @@
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
 #include "SkillBar.hpp"
-#include "../Skill/Skill.hpp"
-#include "../GlyphTypes.hpp"
+#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 
 #include <unordered_map>
 #include <set>
 #include <vector>
 #include <memory>
-
-#include "InfoBar.hpp"
 
 namespace rat
 {
@@ -39,8 +37,6 @@ namespace rat
         WindowWidget* _border{nullptr};
         ScrollAreaWidget* _skillsScroller{nullptr};
         ListWidget* _skillsList{nullptr};
-
-        InfoBar _infoBar;
 
         void _initNewSkillBarsAmount(size_t newAmount);
     };

@@ -2,8 +2,6 @@
 
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
-#include "SkillArea.hpp"
-
 #include "Szczur/Modules/GUI/GUI.hpp"
 
 namespace rat

@@ -2,7 +2,7 @@
 
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
-#include "../Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
 
 #include "CostBar.hpp"
 

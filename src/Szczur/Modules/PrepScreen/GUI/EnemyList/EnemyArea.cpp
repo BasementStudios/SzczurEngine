@@ -28,10 +28,6 @@ namespace rat
         _scroller->add(_list);
         _list->setPropPosition(0.2f, 0.f);
         _list->setPropBetweenPad(0.01f);
-
-        _addBar(_infoBar);
-        _infoBar.deactivate();
-        //_infoBar.setPropOrigin(1.f, 0.f);
     }
         
     void EnemyArea::initAssetsViaGUI(GUI& gui)
@@ -42,8 +38,6 @@ namespace rat
         _scroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
         _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png"), 30);
-
-        _infoBar.initAssetsViaGUI(gui);
 
         for(auto& enemyBar : _enemyBars)
         {
@@ -62,9 +56,6 @@ namespace rat
     }
     void EnemyArea::setEnemyInfo(Enemy* enemy, const sf::Vector2f& pos)
     {
-        _infoBar.setPosition(pos);
-        _infoBar.setName(enemy->getName());
-        _infoBar.activate();
     }
     bool EnemyArea::isEnemyInInfo(Enemy* enemy)
     {
@@ -73,6 +64,5 @@ namespace rat
     void EnemyArea::deactivateInfo()
     {
         _chosenEnemy = nullptr;
-        _infoBar.deactivate();
     }
 }

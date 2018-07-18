@@ -13,16 +13,22 @@ namespace rat
     :
     _prepScreen(prepScreen)
     {
-        _icon = new ImageWidget;
-        _addWidget(_icon);
-        _icon->setPropSize(0.07f, 0.07f);
          // zabawa z rectami nowa funkcja ;V
 
-        //_border = new ImageWidget;
-        //_addWidget(_border);
-        //_border->setPropSize(0.07f, 0.07f);
+         const sf::Vector2f prSize = {0.12f, 0.12f};
 
-        _icon->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
+        _border = new ImageWidget;
+        _addWidget(_border);
+        _border->setPropSize(prSize);
+        _border->makeChildrenPenetrable();
+
+        _icon = new ImageWidget;
+        _addWidget(_icon);
+        _icon->setPropSize(prSize);
+        _icon->setPropPosition(0.5f, 0.5f);
+
+
+        _border->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
             if(hasSkill())
             {
                 _icon->setColorInTime({125, 125, 125}, 0.5f);
@@ -30,10 +36,10 @@ namespace rat
 
         });
 
-        _icon->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
+        _border->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
             if(hasSkill())
             {
-                _icon->setColorInTime({255, 255, 255}, 0.5f);
+               _icon->setColorInTime({255, 255, 255}, 0.5f);
             }
         });
 
@@ -44,7 +50,7 @@ namespace rat
 
     void ChosenSkillBar::initAssetsViaGUI(GUI& gui)
     {
-        //_border->setTexture(gui.getAsset<sf::Texture>("Assets/Test/ChosenSkill.png"));
+        _border->setTexture(gui.getTexture("Assets/PrepScreen/SkillBack.png"));
     }
 
     void ChosenSkillBar::setSkill(const Skill* skill)
@@ -59,7 +65,7 @@ namespace rat
             _hasSkill = true;
             auto* texture = skill->getTexture();
             _icon->setTexture(texture);
-            _icon->setPropTextureRect({{0.25f, 0.f}, {0.5f, 1.f}});
+            //_icon->setPropTextureRect({{0.25f, 0.f}, {0.5f, 1.f}});
         }
         _skill = skill;
     }
@@ -78,16 +84,12 @@ namespace rat
     
     void ChosenSkillBar::_onClick()
     {
-        if(hasSkill()) _prepScreen.returnSkill(_skill);
+        if(hasSkill()) {_prepScreen.returnSkill(_skill); std::cout << "Returned\n"; }
     }
 
     void ChosenSkillBar::swapSkillsWith(ChosenSkillBar& other)
     {
         const Skill* othersSkill = other._skill;
-
-        std::cout << "Skill: " << (_skill ? _skill->getName() : "nullptr")
-        << " swaped into Skill: " << (othersSkill ? othersSkill->getName() : "nullptr") << "\n";
-
 
         other.setSkill(_skill);
         setSkill(othersSkill);

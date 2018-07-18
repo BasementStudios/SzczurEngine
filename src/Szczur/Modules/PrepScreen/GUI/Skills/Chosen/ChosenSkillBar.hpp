@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
-#include "../Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
 
 namespace rat
 {

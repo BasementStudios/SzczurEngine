@@ -2,7 +2,7 @@
 
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
-#include "../ProfessionTypes.hpp"
+#include "Szczur/Modules/PrepScreen/ProfessionTypes.hpp"
 
 namespace rat
 {

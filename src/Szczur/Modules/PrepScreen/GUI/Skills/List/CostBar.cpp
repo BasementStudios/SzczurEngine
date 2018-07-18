@@ -4,7 +4,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
-#include "../GlyphTypes.hpp"
+#include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
 
