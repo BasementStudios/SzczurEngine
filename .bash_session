@@ -1,6 +1,0 @@
-#!/bin/bash
-
-iwant () 
-{ 
-	grep --color=auto -rni "$@" src/*
-}
