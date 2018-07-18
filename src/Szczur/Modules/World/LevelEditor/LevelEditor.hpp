@@ -8,8 +8,8 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
-#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
-#include "Szczur/Utility/SFML3D/CircleShape.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/CircleShape.hpp"
 #include "Szczur/Utility/SFML3D/Camera.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
 

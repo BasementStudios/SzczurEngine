@@ -87,42 +87,28 @@ void TextureDataHolder::loadAll() {
 
 void TextureDataHolder::loadAllInNewThread() {
 
-	if(_allLoaded) return;
-
-	//LOG_INFO("A");
-	if(_threadStatus == 0) {
-		//LOG_INFO("B");
+	if (_allLoaded) return;
+	
+	if (_threadStatus == 0) {
 		_threadStatus = 1;
-		//LOG_INFO("C");
 		std::thread thread([&]{
 			int size = _data.size();
-			//LOG_INFO("E");
 			int i = 1;
-			//LOG_INFO("F");
-			for(auto& obj : _data) {
-				//LOG_INFO("G");
-				if(!obj.reloaded) {
-					//LOG_INFO("H");
+			for (auto& obj : _data) {
+				if (!obj.reloaded) {
 					obj.data->loadTextureWithoutSet();
-					//LOG_INFO("I");
-					std::cout<<"Loading textures: "<<i<<'/'<<size<<" | "<<obj.data->getName()<<std::endl;
-					//LOG_INFO("J");
+					std::cout << "Loading textures: " << i << '/' << size << " | " << obj.data->getName() << std::endl;
 				}
 				++i;
 			}
 			_threadStatus = 2;
 		});
 		thread.join();
-		//LOG_INFO("K");
 	}
-	else if(_threadStatus == 2) {
-		//LOG_INFO("X1");
-		for(auto& obj : _data) {
-			//LOG_INFO("X2");
-			if(!obj.reloaded) {
-				//LOG_INFO("X3");
+	else if (_threadStatus == 2) {
+		for (auto& obj : _data) {
+			if (!obj.reloaded) {
 				obj.data->setupSprite();
-				//LOG_INFO("X4");
 				obj.reloaded = true;
 			}
 		}

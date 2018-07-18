@@ -9,7 +9,7 @@
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
 #include "Szczur/Utility/SFML3D/Sprite.hpp"
 #include "Szczur/Utility/SFML3D/Texture.hpp"
-#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp"
 
 // Components
 #include "Components/ScriptableComponent.hpp"

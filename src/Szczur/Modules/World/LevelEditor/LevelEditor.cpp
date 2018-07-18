@@ -15,9 +15,9 @@
 #include "Szczur/Utility/Convert/GLM_JSON.hpp"
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
-#include "Szczur/Utility/SFML3D/CircleShape.hpp"
-#include "Szczur/Utility/SFML3D/Linear.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/CircleShape.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/Linear.hpp"
 #include "Szczur/Utility/SFML3D/Camera.hpp"
 
 #include "Szczur/Utility/Convert/Windows1250.hpp"
