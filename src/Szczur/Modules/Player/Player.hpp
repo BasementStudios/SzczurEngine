@@ -10,7 +10,7 @@
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
-	class InterfaceWidget; class HPBar; class ImageWidget; class TimeBar;
+	class InterfaceWidget; class HPBar; class ImageWidget; class TimeBar; class PPCount;
 	class Player : public Module<Script, GUI>
 	{
 	public:
@@ -50,6 +50,7 @@ namespace rat {
 		ImageWidget* _HPBack;
 		HPBar* _HPBar;
 		TimeBar* _TimeBar;
+		PPCount* _PPCount;
 
 		std::string _pathToJson;
 

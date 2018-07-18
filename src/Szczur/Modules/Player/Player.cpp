@@ -8,6 +8,7 @@
 
 #include "HPBar.hpp"
 #include "TimeBar.hpp"
+#include "PPCount.hpp"
 
 namespace rat {
 	Player::Player() {
@@ -48,6 +49,10 @@ namespace rat {
 		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_2.png");
 		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_3.png");
 
+		gui.addTexture("Assets/Player/pp.png");
+		gui.addTexture("Assets/Player/pp_back.png");
+		gui.addTexture("Assets/Player/pp_broken.png");
+
 		gui.addTexture("Assets/Player/background.png");
 		gui.addTexture("Assets/Player/gui_back.png");
 
@@ -82,6 +87,13 @@ namespace rat {
 		_TimeBar->setMaxTime(100);
 		_TimeBar->setCurrentTime(95);
 		_TimeBar->setTimeBarIndex(1);
+
+		_PPCount = new PPCount;
+		_PPCount->setParent(_base);
+		_PPCount->initGUI(gui);
+		_PPCount->setPropPosition({0.5f, 0.f});
+		_PPCount->setBrokenSlotAmount(10);
+		_PPCount->setPPCount(5);
 	}
 
 	void Player::initJson() {
