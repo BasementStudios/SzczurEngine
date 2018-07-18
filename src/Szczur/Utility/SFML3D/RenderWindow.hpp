@@ -37,6 +37,11 @@ public:
 		const sf::ContextSettings& settings = sf::ContextSettings{24u, 0u, 0u, 3u, 3u}
 	);
 	
+	/// Updates RenderWindow (glViewport) after resizing
+    void onResize() override;
+
+    virtual bool _setActive(bool states = true) override;
+	
 	using sf3d::RenderTarget::clear;
 	using sf3d::RenderTarget::draw;
 	using sf::RenderWindow::draw;

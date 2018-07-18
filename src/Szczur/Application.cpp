@@ -17,6 +17,12 @@ void Application::init()
 	initModule<Input>();
 	initModule<Script>();
 	initModule<Player>();
+	initModule<GUI>();
+	#ifdef GUI_TEST
+	{
+		initModule<GUITest>();
+	}
+	#endif
 
 	LOG_INFO("Modules initialized");
 
@@ -97,6 +103,7 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
+	
 }
 
 bool Application::input()
@@ -104,7 +111,13 @@ bool Application::input()
 	sf::Event event;
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
+		getModule<Window>().processEvent(event);
 		getModule<Input>().getManager().processEvent(event);
+		getModule<GUI>().input(event);
+
+		#ifdef GUI_TEST
+		getModule<GUITest>().input(event);
+		#endif
 
 		#ifdef EDITOR
 		{
@@ -124,7 +137,12 @@ bool Application::input()
 void Application::update()
 {
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-
+	getModule<GUI>().update(deltaTime);
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().update(deltaTime);
+	}
+	#endif
 	/*
 		Put other updates here
 	*/
@@ -140,20 +158,25 @@ void Application::update()
 	#endif
 
 	getModule<Input>().getManager().finishLogic();
+	
 }
 
 void Application::render()
 {
 	getModule<Window>().clear();
-
-	// For testing `Script`
-
+	getModule<GUI>().render();
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().render();
+	}
+	#endif
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Render(getModule<Window>().getWindow());
 	}
 	#endif
 
+	
 	getModule<Window>().render();
 }
 int Application::run()
@@ -187,6 +210,5 @@ int Application::run()
 
 	return 0;
 }
- 
 
 }
