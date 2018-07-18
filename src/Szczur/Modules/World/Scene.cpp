@@ -68,27 +68,52 @@ void Scene::update(float deltaTime)
 	}
 }
 
-void Scene::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
+void Scene::render(sf3d::RenderTarget& target) 
 {
+	sf3d::RenderLayer& layer = this->getScenes()->getHelperRenderLayer();
+
 	// Register light components to shader
-	target.resetLightPoints();
+	layer.resetLightPoints();
 	for (auto& holder : this->getAllEntities()) {
 		for (auto& entity : holder.second) {
 			if (PointLightComponent* component = entity->getComponentAs<PointLightComponent>()) {
 				if (entity->isVisible()) {
-					target.registerLightPoint(component);
+					layer.registerLightPoint(component);
 					component->setPosition(entity->getPosition());
 				}
 			}
 		}
 	}
-	
-	// Draw the entites
-	for (auto& holder : this->getAllEntities()) {
-		for (auto& entity : holder.second) {
-			entity->draw(target, states);
-		}
+
+	// Background 
+	glEnable(GL_DEPTH_TEST);
+	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	for (auto& entity : this->getEntities("background")) {
+		entity->draw(layer);
 	}
+	glDisable(GL_DEPTH_TEST);
+	target.draw(layer);
+	
+	// Path & single
+	glEnable(GL_DEPTH_TEST);
+	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	for (auto& entity : this->getEntities("path")) {
+		entity->draw(layer);
+	}
+	for (auto& entity : this->getEntities("single")) {
+		entity->draw(layer);
+	}
+	glDisable(GL_DEPTH_TEST);
+	target.draw(layer);
+
+	// Foreground 
+	glEnable(GL_DEPTH_TEST);
+	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	for (auto& entity : this->getEntities("foreground")) {
+		entity->draw(layer);
+	}
+	glDisable(GL_DEPTH_TEST);
+	target.draw(layer);
 }
 
 size_t Scene::getID() const

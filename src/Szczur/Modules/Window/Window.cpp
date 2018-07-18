@@ -152,20 +152,12 @@ void Window::init()
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 		glFrontFace(GL_CCW);
-#ifndef WARSTWY_OGARNIETE_W_WORLD
-		glEnable(GL_DEPTH_TEST);
-#endif
 
 		// Shader
 		try {
 			this->shaderProgram.linkShaders(
-#ifndef WARSTWY_OGARNIETE_W_WORLD
-				sf3d::Shader {sf3d::Shader::Vertex,		"Assets/Shaders/projection.vert"},
-				sf3d::Shader {sf3d::Shader::Fragment,	"Assets/Shaders/world.frag"}
-#else
 				sf3d::Shader {sf3d::Shader::Vertex,		"Assets/Shaders/assemble.vert"},
 				sf3d::Shader {sf3d::Shader::Fragment,	"Assets/Shaders/assemble.frag"}
-#endif
 			);
 			LOG_INFO("Shader loaded, compiled and linked.");
 		}
@@ -222,19 +214,11 @@ void Window::recreateWindow()
 // clear
 void Window::clear(const glm::vec4& color)
 {
-#ifndef WARSTWY_OGARNIETE_W_WORLD
-	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#else
 	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
-#endif
 }
 void Window::clearSFML(const sf::Color& color)
 {
-#ifndef WARSTWY_OGARNIETE_W_WORLD
 	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-#else
-	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT);
-#endif
 }
 
 // GL states

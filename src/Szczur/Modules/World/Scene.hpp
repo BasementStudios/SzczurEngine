@@ -23,7 +23,7 @@ namespace rat
 class ScenesManager;
 class Script;
 
-class Scene : public sf3d::Drawable
+class Scene
 {
 public:
 
@@ -61,7 +61,7 @@ public:
 	void update(float deltaTime);
 
 	///
-	virtual void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
+	void render(sf3d::RenderTarget& target);
 
 	///
 	size_t getID() const;

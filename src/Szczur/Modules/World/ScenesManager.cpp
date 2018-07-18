@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <experimental/filesystem>
 
+#include <SFML/Window/Event.hpp>
 #include <nlohmann/json.hpp>
 
 #include "Components/CameraComponent.hpp"
@@ -10,6 +11,9 @@
 #include "Components/ScriptableComponent.hpp"
 #include "Components/PointLightComponent.hpp"
 
+#include "Szczur/Utility/SFML3D/RenderLayer.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
+#include "Szczur/Utility/SFML3D/LightPoint.hpp"
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
 #include "Szczur/Modules/World/World.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
@@ -17,13 +21,55 @@
 #include "Szczur/Modules/Sound/Sound.hpp"
 #include "Szczur/Modules/Equipment/Equipment.hpp"
 
-#include "Szczur/Utility/SFML3D/LightPoint.hpp"
+#include "Components/CameraComponent.hpp"
+#include "Components/BaseComponent.hpp"
+#include "Components/ScriptableComponent.hpp"
+#include "Components/PointLightComponent.hpp"
+
 
 namespace rat
 {
 
-ScenesManager::ScenesManager() {
+ScenesManager::ScenesManager()
+{
 	_armatureDisplayDataHolder.reserve(100);
+}
+
+void ScenesManager::init(rat::Window& windowModule)
+{
+	// Create layer
+	_helperRenderLayer.create(windowModule.getSize());
+
+	// Shader
+	try {
+		_shaderProgram.linkShaders(
+			sf3d::Shader {sf3d::Shader::Vertex,		"Assets/Shaders/projection.vert"},
+			sf3d::Shader {sf3d::Shader::Fragment,	"Assets/Shaders/world.frag"}
+		);
+		LOG_INFO("Shader loaded, compiled and linked.");
+	}
+	catch (...) {
+		std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
+	}
+	_helperRenderLayer.setDefaultShaderProgram(_shaderProgram);
+}
+
+void ScenesManager::render(sf3d::RenderTarget& target)
+{
+	if (isCurrentSceneValid()) {
+		getCurrentScene()->render(target);
+	}
+}
+
+void ScenesManager::processEvent(sf::Event event)
+{
+	switch (event.type) {
+		case sf::Event::Resized:
+			_helperRenderLayer.create({event.size.width, event.size.height});
+			break;
+		default:
+			break;
+	}
 }
 
 Scene* ScenesManager::addScene()
@@ -398,8 +444,20 @@ nlohmann::json& ScenesManager::getRunConfig() {
 	return _configBeforeRun;
 }
 
-TextureDataHolder& ScenesManager::getTextureDataHolder() {
+
+TextureDataHolder& ScenesManager::getTextureDataHolder()
+{
 	return _textureDataHolder;
+}
+
+// HelperRenderLayer
+const sf3d::RenderLayer& ScenesManager::getHelperRenderLayer() const
+{
+	return _helperRenderLayer;
+}
+sf3d::RenderLayer& ScenesManager::getHelperRenderLayer()
+{
+	return _helperRenderLayer;
 }
 
 typename ScenesManager::ScenesHolder_t::iterator ScenesManager::_find(size_t id)
@@ -417,25 +475,15 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 }
 
 #ifdef EDITOR
-	bool ScenesManager::menuSave() {
-		if(currentFilePath == "") {
-			std::string relative = getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
-			// std::cout<<"--s-"<<relative<<std::endl;
-			if(relative != "") {
-				try {
-					saveToFile(relative);
-					currentFilePath = relative;
-					return true;
-				}
-				catch (const std::exception& exc)
-				{
-					LOG_EXCEPTION(exc);
-				}
-			}
-		}
-		else {
+bool ScenesManager::menuSave()
+{
+	if (currentFilePath == "") {
+		std::string relative = getRelativePathFromExplorer("Save world", ".\\Editor\\Saves", "Worlds (*.world)|*.world", true);
+		// std::cout<<"--s-"<<relative<<std::endl;
+		if (relative != "") {
 			try {
-				saveToFile(currentFilePath);
+				saveToFile(relative);
+				currentFilePath = relative;
 				return true;
 			}
 			catch (const std::exception& exc)
@@ -443,29 +491,44 @@ typename ScenesManager::ScenesHolder_t::const_iterator ScenesManager::_find(size
 				LOG_EXCEPTION(exc);
 			}
 		}
-
-		return false;
+	}
+	else {
+		try {
+			saveToFile(currentFilePath);
+			return true;
+		}
+		catch (const std::exception& exc)
+		{
+			LOG_EXCEPTION(exc);
+		}
 	}
 
-	std::string ScenesManager::getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
-		namespace filesystem = std::experimental::filesystem;
+	return false;
+}
 
-		std::string file;
-		if(saveButton) 
-			file = FileDialog::getSaveFileName(title, directory, filter);
-		else 
-			file = FileDialog::getOpenFileName(title, directory, filter);
+std::string ScenesManager::getRelativePathFromExplorer(const std::string& title, const std::string& directory, const std::string& filter, bool saveButton) {
+	namespace filesystem = std::experimental::filesystem;
 
-		if(file == "") 
-			return "";
+	std::string file;
+	if (saveButton) {
+		file = FileDialog::getSaveFileName(title, directory, filter);
+	}
+	else {
+		file = FileDialog::getOpenFileName(title, directory, filter);
+	}
 
-		std::string current = filesystem::current_path().string();
-
-		if(current == file.substr(0, current.size()))
-			return file.substr(current.size()+1);
-
+	if (file == "") {
 		return "";
 	}
+
+	std::string current = filesystem::current_path().string();
+
+	if (current == file.substr(0, current.size())) {
+		return file.substr(current.size()+1);
+	}
+
+	return "";
+}
 #endif
 
 }

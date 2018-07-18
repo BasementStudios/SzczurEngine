@@ -8,6 +8,9 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
+namespace sf3d {
+	class RenderTarget;
+}
 #include "Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp"
 #include "Szczur/Utility/SFML3D/Geometry/CircleShape.hpp"
 #include "Szczur/Utility/SFML3D/Camera.hpp"
@@ -48,7 +51,7 @@ public:
 	void render(sf3d::RenderTarget& target);
 
 	///
-	void update(InputManager& input, Window& camera);
+	void update(InputManager& input, Window& camera, sf3d::RenderTarget& target);
 
 	///
 	void updateDisabledEditor(InputManager& input);

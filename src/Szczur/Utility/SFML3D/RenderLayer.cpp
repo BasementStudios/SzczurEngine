@@ -36,18 +36,18 @@ void RenderLayer::create(glm::uvec2 size, ShaderProgram* program)
 {
 	RenderTexture::create(size, program);
 
-	// Setup vertices	
+	// Setup vertices (inverted since framebuffer needs this)
 	this->vertices[0].position = {-1.f, 1.f, 0.f};
-	this->vertices[0].texCoord = {0.f, 0.f};
+	this->vertices[0].texCoord = {0.f, 1.f};
 
 	this->vertices[1].position = { 1.f, 1.f, 0.f};
-	this->vertices[1].texCoord = {1.f, 0.f};
+	this->vertices[1].texCoord = {1.f, 1.f};
 
 	this->vertices[2].position = { 1.f, -1.f, 0.f};
-	this->vertices[2].texCoord = {1.f, 1.f};
+	this->vertices[2].texCoord = {1.f, 0.f};
 
 	this->vertices[3].position = {-1.f, -1.f, 0.f};
-	this->vertices[3].texCoord = {0.f, 1.f};
+	this->vertices[3].texCoord = {0.f, 0.f};
 }
 
 void RenderLayer::draw(RenderTarget& target, RenderStates states) const

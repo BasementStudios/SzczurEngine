@@ -102,7 +102,7 @@ namespace rat {
 
 			scene = _scenes.getCurrentScene();
 			
-			_renderOrigins(target);
+			//_renderOrigins(target); // @todo !
 		}
 
 		if (_isGroupSelecting) {
@@ -132,7 +132,7 @@ namespace rat {
 		updateCameraMovement(cameraEntity, input);
 	}
 
-	void LevelEditor::update(InputManager& input, Window& windowModule) {
+	void LevelEditor::update(InputManager& input, Window& windowModule, sf3d::RenderTarget& target) {
 		auto* scene = _scenes.getCurrentScene();
 		auto& window = windowModule.getWindow();
 		auto mouse = _getFixedMousePos(input.getMousePosition());
@@ -150,10 +150,10 @@ namespace rat {
 		// Use camera for rendering
 		//	@todo , This should be done when changing camera only...
 		if (cameraEntity) {
-			window.setCamera(cameraEntity->getComponentAs<CameraComponent>());
+			target.setCamera(cameraEntity->getComponentAs<CameraComponent>());
 		}
 		else {
-			window.setCamera(_freeCamera);
+			target.setCamera(_freeCamera);
 		}
 
 		// Object selection

@@ -59,6 +59,8 @@ void Application::input()
 		getModule<Input>().getManager().processEvent(event);
 		getModule<GUI>().input(event);
 
+		getModule<World>().processEvent(event);
+
 		#ifdef EDITOR
 		{
 			ImGui::SFML::ProcessEvent(event);

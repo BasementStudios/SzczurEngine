@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include "Szczur/Utility/SFML3D/RenderLayer.hpp"
 #include "Szczur/Modules/Window/Window.hpp"
@@ -23,25 +24,27 @@ public:
 	World();
 
 	///
-	World(const World&) = delete;
+	~World();
 
-	///
+	/// Non-copyable
+	World(const World&) = delete;
 	World& operator = (const World&) = delete;
 
-	///
+	/// Non-movable
 	World(World&&) = delete;
-
-	///
 	World& operator = (World&&) = delete;
 
 	///
-	~World();
-
+	void init();
+	
 	///
 	void update(float deltaTime);
 
 	///
 	void render();
+
+	///
+	void processEvent(sf::Event event);
 
 	#ifdef EDITOR
 	LevelEditor& getLevelEditor() {return _levelEditor;}
@@ -50,10 +53,10 @@ public:
 	// void initScript();
 
 	///
-	ScenesManager& getScenes();
+	const ScenesManager& getScenes() const;
 
 	///
-	const ScenesManager& getScenes() const;
+	ScenesManager& getScenes();
 
 	///
 	void initScript();

@@ -1,5 +1,6 @@
 #include "World.hpp"
 
+#include <SFML/Window/Event.hpp>
 #include "Szczur/Utility/SFML3D/Shader.hpp"
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/SFML3D/RenderLayer.hpp"
@@ -7,25 +8,41 @@
 #include "ScenesManager.hpp"
 #include "Scene.hpp"
 
+#include "Szczur/Modules/World/Data/TextureDataHolder.hpp"
+
 namespace rat
 {
 
 World::World()
-: 	_levelEditor { _scenes }, _blackScreen(sf::Vector2f(9999.f, 9999.f))
+: 	_levelEditor { _scenes }, 
+	_blackScreen(sf::Vector2f(9999.f, 9999.f)) // XD
 {
 	LOG_INFO("Initializing World module");
+	this->init();
+	LOG_INFO("Module World initialized");
+}
 
+World::~World()
+{
+	LOG_INFO("Module World destructed");
+}
+
+void World::init()
+{
 	// ComponentTraits::initScript(getModule<Script>());
 
+	// Init scenes manager
+	_scenes.init(getModule<Window>());
+
+	// Init scripts
 	initScript();
 
+	// Create and select default scene
 	_scenes.setCurrentScene(_scenes.addScene()->getID());
 
-	#ifdef EDITOR
-		//_levelEditor.setScene(_scenes.getCurrentScene(), camera->getID());
-	#endif
-
-	LOG_INFO("Module World initialized");
+#ifdef EDITOR
+	//_levelEditor.setScene(_scenes.getCurrentScene(), camera->getID());
+#endif
 
 	// test1.world
 	// _scenes.addScene()->addEntity("single")->setName("Karion");
@@ -46,51 +63,46 @@ World::World()
 	// _scenes.saveToFile("out.world");
 }
 
-World::~World()
-{
-	LOG_INFO("World module destructed");
-}
-
 void World::update(float deltaTime)
 {
-	if(getModule<Input>().getManager().isReleased(Keyboard::F10)) {
+	// Editor toggle
+	if (getModule<Input>().getManager().isReleased(Keyboard::F10)) {
 		_doEditor = !_doEditor;
 	}
-	if (getScenes().isCurrentSceneValid())
-	{
+
+	// Scene update
+	if (getScenes().isCurrentSceneValid()) {
 		getScenes().getCurrentScene()->update(deltaTime);
 	}
-	#ifdef EDITOR
-		if(_doEditor)
-			_levelEditor.update(getModule<Input>().getManager(), getModule<Window>());
-		else
-			_levelEditor.updateDisabledEditor(getModule<Input>().getManager());
-	#endif
 
-	if (_isChangingScene)
-	{
+	// Editor update
+#ifdef EDITOR
+	if (_doEditor) {
+		_levelEditor.update(getModule<Input>().getManager(), getModule<Window>(), getScenes().getHelperRenderLayer());
+	} 
+	else {
+		_levelEditor.updateDisabledEditor(getModule<Input>().getManager());
+	}
+#endif
+
+	// Changing scene fade update
+	if (_isChangingScene) {
 		float progress = _fadeStart.getElapsedTime().asSeconds() / _fadeTime;
 
-		if (_fadeStage == 1)
-		{
-			if (progress >= 1.f)
-			{
+		if (_fadeStage == 1) {
+			if (progress >= 1.f) {
 				progress = 1.f;
 				_scenes.setCurrentScene(_sceneToChange);
 				_fadeStage = 2;
 				_fadeStart.restart();
 			}
 		}
-		else if (_fadeStage == 2)
-		{
-			if (progress < 1.f)
-			{
+		else if (_fadeStage == 2) {
+			if (progress < 1.f) {
 				progress = 1.f - progress;
 			}
-			else if (progress >= 1.f)
-			{
+			else if (progress >= 1.f) {
 				progress = 0.f;
-
 				_isChangingScene = false;
 			}
 		}
@@ -101,30 +113,35 @@ void World::update(float deltaTime)
 
 void World::render()
 {
-	auto& target = getModule<Window>().getWindow();
+	sf3d::RenderWindow& windowTarget = getModule<Window>().getWindow();
 
-	if (getScenes().isCurrentSceneValid())
-	{
-		getScenes().getCurrentScene()->draw(target);
-		// getScenes().getCurrentScene()->forEach([&window](const std::string&, Entity& entity) {
-		// 	if (auto ptr = entity.getFeature<sf3d::Drawable>(); ptr != nullptr)
-		// 	{
-		// 		window.draw(*ptr);
-		// 	}
-		// });
+	// Scene 
+	getScenes().render(windowTarget);
+
+	// Fade
+	if (_isChangingScene) {
+		windowTarget.pushGLStates();
+		windowTarget.draw(_blackScreen);
+		windowTarget.popGLStates();
 	}
 
-	if (_isChangingScene)
-	{
-		target.pushGLStates();
-		target.draw(_blackScreen);
-		target.popGLStates();
+	// Editor
+#ifdef EDITOR
+	if (_doEditor) {
+		_levelEditor.render(windowTarget);
 	}
+#endif
+}
 
-	#ifdef EDITOR
-		if(_doEditor)
-			_levelEditor.render(target);
-	#endif
+void World::processEvent(sf::Event event)
+{
+	getScenes().processEvent(event);
+}
+
+
+const ScenesManager& World::getScenes() const
+{
+	return _scenes;
 }
 
 ScenesManager& World::getScenes()
@@ -132,16 +149,13 @@ ScenesManager& World::getScenes()
 	return _scenes;
 }
 
-const ScenesManager& World::getScenes() const
+bool World::isEditor()
 {
-	return _scenes;
-}
-
-bool World::isEditor() {
 	return _doEditor;
 }
 
-void World::setEditor(bool flag) {
+void World::setEditor(bool flag)
+{
 	_doEditor = flag;
 }
 
