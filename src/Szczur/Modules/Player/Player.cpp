@@ -64,6 +64,8 @@ namespace rat {
 		gui.addTexture("Assets/Player/4pp.png");
 		gui.addFont("Assets/Player/SourceSansPro-SemiBold.ttf");
 
+		gui.addTexture("Assets/Player/item_slot.png");
+
 		gui.addTexture("Assets/Player/background.png");
 		gui.addTexture("Assets/Player/gui_back.png");
 
@@ -119,7 +121,8 @@ namespace rat {
 		_skillSlots->addSkill(&_skillsList[1]);
 
 		_itemSlots = new ItemSlots(gui);
-
+		_itemSlots->setParent(_base);
+		_itemSlots->setPropPosition({ .95f, 0.05f });
 	}
 
 	void Player::initJson() {

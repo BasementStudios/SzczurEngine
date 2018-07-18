@@ -20,12 +20,12 @@ namespace rat {
 			_slotsList.push_back(new Slot);
 			
 			_slotsList[i]->_slotImage = new ImageWidget;
-			_slotsList[i]->_slotImage->setPosition({ .068f, 0.091f });
+			_slotsList[i]->_slotImage->setPropSize({ .082f, 0.109f });
 			_slotsList[i]->_slotImage->setTexture(_slotTexture);
 			_slotsListWidget->add(_slotsList[i]->_slotImage);
 
 			_slotsList[i]->_itemImage = new ImageWidget;
-			_slotsList[i]->_itemImage->setPosition({ .068f, 0.091f });
+			_slotsList[i]->_itemImage->setPropSize({ .082f, 0.109f });
 			_slotsList[i]->_slotImage->add(_slotsList[i]->_itemImage);
 		}
 	}
@@ -60,5 +60,8 @@ namespace rat {
 		}
 	}
 
+	void ItemSlots::setPropPosition(sf::Vector2f pos) {
+		_base->setPropPosition(pos);
+	}
 
 }
