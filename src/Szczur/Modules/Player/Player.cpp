@@ -7,6 +7,7 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 
 #include "HPBar.hpp"
+#include "TimeBar.hpp"
 
 namespace rat {
 	Player::Player() {
@@ -35,7 +36,20 @@ namespace rat {
 		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_2.png");
 		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_3.png");
 
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_1.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_2.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_3.png");
+
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_back_1.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_back_2.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_back_3.png");
+
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_1.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_2.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_3.png");
+
 		gui.addTexture("Assets/Player/background.png");
+		gui.addTexture("Assets/Player/gui_back.png");
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
@@ -45,15 +59,29 @@ namespace rat {
 		_background->setTexture(gui.getTexture("Assets/Player/background.png"));
 		_background->setPropSize({1.77f, 1.f});
 
+		_HPBack = new ImageWidget;
+		_base->add(_HPBack);
+		_HPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
+		_HPBack->setPropPosition(0.f, 0.f);
+		_HPBack->setPropSize(0.33f, 0.06f);
+
 		_HPBar = new HPBar();
 		_HPBar->setParent(_base);
 		_HPBar->initGUI(gui);
 		_HPBar->setPropSize({0.368f, 0.1f});
-		_HPBar->setPropPosition({0.03f, 0.f});	
+		_HPBar->setPropPosition({0.03f, 0.01f});	
 		_HPBar->setMaxHP(100);
-		_HPBar->setCurrentHP(100);
-		_HPBar->setHPBarIndex(2);
-		
+		_HPBar->setCurrentHP(95);
+		_HPBar->setHPBarIndex(1);
+
+		_TimeBar = new TimeBar();
+		_TimeBar->setParent(_base);
+		_TimeBar->initGUI(gui);
+		_TimeBar->setPropSize({ 0.295f, 0.044f });
+		_TimeBar->setPropPosition({ 0.077f, 0.068f });
+		_TimeBar->setMaxTime(100);
+		_TimeBar->setCurrentTime(95);
+		_TimeBar->setTimeBarIndex(1);
 	}
 
 	void Player::initJson() {
