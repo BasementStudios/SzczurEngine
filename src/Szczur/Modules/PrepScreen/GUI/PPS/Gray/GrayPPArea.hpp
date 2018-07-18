@@ -13,19 +13,21 @@ namespace rat
 
     class GrayPPArea : public BaseBar
     {
-        using amount_t = size_t;
     public:
         GrayPPArea();
         void initAssetsViaGUI(GUI& gui);
 
-        void setPPs(const size_t activated);
-        void setMaxPPs(size_t maxPPs);
+        void setMaximum(int amount);
+        void setUnlocked(int amount);
+        void setFilled(int amount);
 
-        void dimPPs(size_t amount);
+        void dimFilledPPs(int amount);
+        void dimEmptyPPs(int amount);
         void undimPPs();
     private:
-        amount_t _slots{0};
-        amount_t _activated{0};
+        int _maximum{0}; 
+        int _slots{0};
+        int _filled{0};
 
         WindowWidget* _border{nullptr};
         ListWidget* _ppsList{nullptr};

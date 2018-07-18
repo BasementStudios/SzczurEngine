@@ -53,13 +53,4 @@ namespace rat
     {
         return _glyphsRequired.size();
     }
-
-    bool SkillCost::canBeBoughtFrom(const ResourcesContainer& container) const
-    {
-        const auto& ppCont = container.ppContainer;
-        const auto& glyphCont = container.glyphContainer;
-
-        if(_cost > ppCont.getAmount()) return false;
-        return glyphCont.hasRequirements(_glyphsRequired);
-    }
 }

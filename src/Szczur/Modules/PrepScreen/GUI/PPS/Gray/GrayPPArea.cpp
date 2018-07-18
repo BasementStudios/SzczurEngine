@@ -25,43 +25,27 @@ namespace rat
 
         _getBase()->setPropPosition(0.5f, 0.f);
     }
-    
-    void GrayPPArea::setPPs(const size_t activated)
+
+    void GrayPPArea::setMaximum(int amount)
     {
-        if(activated == _activated) return;
-
-        if(activated > _pps.size())
-        {
-            LOG_ERROR(activated, " PPs cannot be activated, not enough slots...");
-            return;
-        }
-
-        for(size_t i = 0; i < activated; ++i) _pps[i]->returnTo();
-        for(size_t i = activated; i < _pps.size(); ++i) _pps[i]->take();
-
-        _activated = activated;
-    }
-
-    void GrayPPArea::setMaxPPs(size_t maxPPs)
-    {
-        size_t totalsDiff = size_t(abs(int(maxPPs) - int(_pps.size())));
+        int maximum = int(_pps.size());
+        int totalsDiff = abs(amount - maximum);
         if(totalsDiff > 0)
         {
-            if(_slots < maxPPs)
+            if(maximum < amount)
             {
-                for(size_t i = 0; i < totalsDiff; i++)
+                for(int i = 0; i < totalsDiff; i++)
                 {
                     _addPPBar();
                 }
             }
             else
             {
-                for(size_t i = 0; i < totalsDiff; i++)
+                for(int i = 0; i < totalsDiff; i++)
                 {
                     _removePPBar();
                 }
             }
-            _slots = maxPPs;
         }
     }
 
@@ -70,7 +54,7 @@ namespace rat
         auto ppBar = std::make_unique<GrayPPBar>();
         ppBar->setSlotTextures(_slotTex);
         ppBar->setParent(_ppsList);
-        ppBar->take();
+        ppBar->lock();
         _pps.emplace_back(std::move(ppBar));
     }
     void GrayPPArea::_removePPBar()
@@ -79,31 +63,66 @@ namespace rat
         
         _pps.pop_back();
         _ppsList->popBack();
-    }   
+    } 
 
-    void GrayPPArea::_resetTakenPPBars()
-    {   
-        for(auto& ppBar : _pps)
+    void GrayPPArea::setUnlocked(int amount)
+    {
+        assert(amount <= _pps.size());
+        for(int i = 0; i < amount; ++i)
         {
-            ppBar->take();
+            _pps[i]->unlock();
         }
+        for(int i = amount; i < _pps.size(); ++i)
+        {
+            _pps[i]->lock();
+        }
+        _slots = amount;
+    }
+    void GrayPPArea::setFilled(int amount)
+    {
+        assert(amount <= _slots);
+
+        for(int i = 0; i < amount; ++i)
+        {
+            _pps[i]->fill();
+        }
+        for(int i = amount; i < _slots; ++i)
+        {
+            _pps[i]->empty();
+        }
+
+        _filled = amount;
     }
 
-    void GrayPPArea::dimPPs(size_t amount)
+    void GrayPPArea::dimFilledPPs(int amount)
     {
-        size_t ppsAmount = _pps.size();
-        if(amount > _activated)
+        if(amount > _filled)
         {
             LOG_ERROR("GrayPPArea::dimPPs tried to dim ", amount, " not existing pps");
             return;
         }
-        for(auto& pp : _pps) pp->undim();
-        for(size_t i = _activated - amount; i < _activated; ++i)
+        undimPPs();
+
+        for(int i = _filled - amount; i < _filled; ++i)
         {
             auto& pp = _pps[i];
             pp->dim();
         }
+    }
+    void GrayPPArea::dimEmptyPPs(int amount)
+    {
+        if(amount > (_slots - _filled))
+        {
+            LOG_ERROR("GrayPPArea::dimPPs tried to dim ", amount, " not existing pps");
+            return;
+        }
 
+        undimPPs();
+        for(int i = _filled; i < _filled + amount; ++i)
+        {
+            auto& pp = _pps[i];
+            pp->dim();
+        }
     }
     void GrayPPArea::undimPPs()
     {
@@ -112,6 +131,10 @@ namespace rat
             pp->undim();
         }
     }
+
+
+
+
 
     void GrayPPArea::initAssetsViaGUI(GUI& gui)
     {

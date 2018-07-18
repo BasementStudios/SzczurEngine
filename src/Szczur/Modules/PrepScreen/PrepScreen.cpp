@@ -42,34 +42,62 @@ namespace rat
     {
     }
 
-    void PrepScreen::addPP(int amount)
+    void PrepScreen::setMaximumPPSlotsAmount(int amount)
     {
-        if(amount < 0)
-        {
-            _source.ppContainer.remove(size_t(-amount));
-        }
-        else
-        {
-            _source.ppContainer.add(size_t(amount));
-        }
+        _source.ppContainer.setMaximumSlotsAmount(amount);
+        _calcPPsGUI();
+        _calcSkillsGUI();
+    }
+
+    int PrepScreen::getMaximumPPSlotsAmount() const
+    {
+        _source.ppContainer.getMaximumSlotsAmount();
+    }
+
+    void PrepScreen::unlockPPSlots(int amount)
+    {
+        _source.ppContainer.unlockSlots(amount);
 
         _calcPPsGUI();
         _calcSkillsGUI();
     }
-    void PrepScreen::takePP(int amount)
+    void PrepScreen::lockPPSlots(int amount)
     {
-        if(amount < 0)
-        {
-            _source.ppContainer.returnTo(size_t(-amount));
-        }
-        else _source.ppContainer.takeFrom(size_t(amount));
+        _source.ppContainer.lockSlots(amount);
 
-        _grayPPArea.setPPs(_source.ppContainer.getAmount());
+        _calcPPsGUI();
         _calcSkillsGUI();
     }
-    bool PrepScreen::hasPPAmount(int amount) const
+
+    void PrepScreen::setUnlockedPPSlots(int amount)
     {
-        return _source.ppContainer.getAmount() >= size_t(amount);
+        _source.ppContainer.setUnlockedAmount(amount);
+
+        _calcPPsGUI();
+        _calcSkillsGUI();
+    }
+
+    void PrepScreen::fillPP(int amount)
+    {
+        emptyPP(-amount);
+    }
+    void PrepScreen::emptyPP(int amount)
+    {
+        _source.ppContainer.emptyPP(amount);
+
+        _grayPPArea.setFilled(_source.ppContainer.getFilledPPAmount());
+        _calcSkillsGUI();
+    }
+    void PrepScreen::setFilledPPAmount(int amount)
+    {
+        _source.ppContainer.setFilledPPAmount(amount);
+
+        _grayPPArea.setFilled(_source.ppContainer.getFilledPPAmount());
+        _calcSkillsGUI();
+    }
+    bool PrepScreen::hasFilledPPAmount(int amount) const
+    {
+        return _source.ppContainer.getFilledPPAmount() >= amount;
     }
 
     void PrepScreen::addGlyph(GlyphID glyphID)
@@ -97,7 +125,7 @@ namespace rat
     {
         size_t glyphsPower = _source.glyphContainer.getGlyphAmount(glyphID);
         if(glyphsPower == 0) return false;
-        if(_source.ppContainer.getAmount() == 0) return false;
+        if(_source.ppContainer.getFilledPPAmount() == 0) return false;
         if(_isAnyBoughtSkillNeedGlyph(glyphID, glyphsPower)) return false;
         return true;
     }
@@ -125,7 +153,7 @@ namespace rat
     {
         assert(canSkillBeBought(skill));
         const auto& cost = skill->getCostInfo();
-        takePP(cost.getCost());
+        emptyPP(int(cost.getCost()));
 
         skill->buy();
         _boughtSkills.emplace(skill);
@@ -137,7 +165,7 @@ namespace rat
     bool PrepScreen::canSkillBeBought(const Skill* skill) const
     {
         const auto& cost = skill->getCostInfo();
-        if(cost.getCost() > _source.ppContainer.getAmount()) return false;
+        if(cost.getCost() > _source.ppContainer.getFilledPPAmount()) return false;
         for(auto& [id, power] : cost)
         {
             if(!hasEnoughPowerfulGlyph(id, power)) return false;
@@ -150,7 +178,7 @@ namespace rat
         assert(skill->isBought());
 
         const auto& cost = skill->getCostInfo();
-        takePP(-int(cost.getCost()));
+        fillPP(int(cost.getCost()));
 
         skill->unBuy();
         _boughtSkills.erase(skill);
@@ -187,7 +215,7 @@ namespace rat
         auto& cost = skill->getCostInfo();
 
         size_t ppCost = cost.getCost();
-        _grayPPArea.dimPPs(ppCost);
+        _grayPPArea.dimFilledPPs(ppCost);
 
         _dimedPPsSkill = skill;
     }
@@ -214,11 +242,13 @@ namespace rat
     
     void PrepScreen::_calcPPsGUI()
     {
-        size_t active = _source.ppContainer.getAmount();
-        size_t total = _source.ppContainer.getTotalAmount();
+        int filled = _source.ppContainer.getFilledPPAmount();
+        int slots = _source.ppContainer.getUnlockedSlotsAmount();
+        int maximum = _source.ppContainer.getMaximumSlotsAmount();
 
-        _grayPPArea.setMaxPPs(total);
-        _grayPPArea.setPPs(active);
+        _grayPPArea.setMaximum(maximum);
+        _grayPPArea.setUnlocked(slots);
+        _grayPPArea.setFilled(filled);
     }
     
     void PrepScreen::_calcSkillsGUI()
@@ -291,11 +321,9 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-        addPP(4);
-        addPP(-1);
-        addPP(8);
-
-        takePP(-9); //ładniejszy syntax by się przydał xd
+        setMaximumPPSlotsAmount(8);
+        unlockPPSlots(6);
+        fillPP(4);
 
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);

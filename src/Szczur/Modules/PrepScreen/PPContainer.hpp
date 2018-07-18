@@ -1,27 +1,82 @@
 #pragma once
 
+#include <algorithm>
+
+#include "Szczur/Utility/Logger.hpp"
+
+
 namespace rat
 {
     class PPContainer
     {
-        using amount_t = unsigned long long int;
-        using power_t = unsigned long long int;
-        
     public:
-        PPContainer();
+        void setMaximumSlotsAmount(int amount)
+        {
+            _maximum = amount;
+            _unlocked = std::min(_maximum, _unlocked);
+            _filled = std::min(_filled, _unlocked);
+        }
+        int getMaximumSlotsAmount() const
+        {
+            return _maximum;
+        }
 
-        amount_t getTotalAmount() const;
-        amount_t getAmount() const;
+        void unlockSlots(int addon = 1)
+        {
+            setUnlockedAmount(_unlocked + addon);
+        }
+        void lockSlots(int sub = 1)
+        {
+            setUnlockedAmount(_unlocked - sub);
+        }
+        void setUnlockedAmount(int amount)
+        {
+            if(amount > _maximum || amount < 0)
+            {
+                LOG_ERROR("TODO");
+                return;
+            }
+            _unlocked = amount;
+        }
+        int getUnlockedSlotsAmount() const
+        {
+            return _unlocked;
+        }
+        int getLockedSlotsAmount() const
+        {
+            return _maximum - _unlocked;
+        }
 
-        void add(amount_t addon = 1);
-        void remove(amount_t sub = 1);
-
-        void takeFrom(amount_t takenAmount);
-        void returnTo(amount_t returnAmount);
+        void fillPP(int amount)
+        {
+            setFilledPPAmount(_filled + amount);
+        }
+        void emptyPP(int amount)
+        {
+            setFilledPPAmount(_filled - amount);
+        }
+        void setFilledPPAmount(int amount)
+        {
+            if(amount < 0 || amount > _unlocked)
+            {
+                LOG_ERROR("TODO");
+                return;
+            }
+            _filled = amount;
+        }
+        int getFilledPPAmount() const
+        {
+            return _filled;
+        }
+        int getEmptyPPAmount() const
+        {
+            return _unlocked - _filled;
+        }
 
         void reset();
     private:
-        amount_t _actualAmount;
-        amount_t _totalAmount;
+        int _filled{0};
+        int _unlocked{0};
+        int _maximum{0};
     };
 }

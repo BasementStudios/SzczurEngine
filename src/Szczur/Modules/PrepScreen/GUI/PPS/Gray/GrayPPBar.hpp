@@ -8,9 +8,11 @@ namespace rat
     {
     public:
         GrayPPBar();
-        bool isTaken() const;
-        void take();
-        void returnTo();
+        bool isEmpty() const;
+        void fill();
+        void empty();
+        void lock();
+        void unlock();
 
         void setSlotTextures(sf::Texture* tex);
 
@@ -18,8 +20,8 @@ namespace rat
         void undim();
 
     private:
-        bool _isTaken{true};
-        enum class State { Empty, Full, Dimmed } _state = State::Full;
+        bool _isDimmed{false};
+        enum class State { Empty, Full, Locked } _state = State::Full;
         ImageWidget* _slot{nullptr};
 
         void _updateTextRect();

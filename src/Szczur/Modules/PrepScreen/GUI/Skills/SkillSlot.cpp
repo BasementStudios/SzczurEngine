@@ -55,6 +55,7 @@ namespace rat
         _ppCost->setPropOrigin(0.5f, 0.5f);
         //_ppCost->makeStaticPropPositing();
         _ppCost->setPropPosition(1.f, 1.f);
+        _ppCost->hide();
 
         _glyphes.resize(3, nullptr);
         for(auto& glyphIcon : _glyphes)
@@ -82,6 +83,7 @@ namespace rat
         auto& ppCost = _skill->getCostInfo();
         size_t cost = ppCost.getCost();
         _ppCost->setString(std::to_string(cost));
+        _ppCost->show();
 
         size_t glyphesAmount = ppCost.getNumberOfRequirements();
 
@@ -160,6 +162,8 @@ namespace rat
     void SkillSlot::removeSkill()
     {
         _icon->removeTexture();
+        _ppCost->hide();
+        for(auto* gl : _glyphes) gl->show();
     }
 
     void SkillSlot::_onClick()

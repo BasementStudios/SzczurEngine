@@ -42,10 +42,19 @@ namespace rat
 
         SkillCodex& getSkillCodex();
 
-        void setSlotsPP(size_t amount);
-        void addPP(int amount = 1);
-        void takePP(int amount = 1);
-        bool hasPPAmount(int amount) const;
+        void setMaximumPPSlotsAmount(int amount);
+        int getMaximumPPSlotsAmount() const;
+
+        void unlockPPSlots(int amount = 1);
+        void lockPPSlots(int amount = 1);
+        void setUnlockedPPSlots(int amount);
+        bool hasFilledPPAmount(int amount) const;
+
+        void fillPP(int amount);
+        void emptyPP(int amount);
+        void setFilledPPAmount(int amount);
+        int getFilledPPAmount() const;
+
 
         void addGlyph(GlyphID glyphID);
         void removeGlyph(GlyphID glyphID);
