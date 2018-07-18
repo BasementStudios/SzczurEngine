@@ -27,7 +27,7 @@ namespace rat {
                         ((tab["action"].valid()) ? (tab["action"].get<sol::function>()) : sol::function{}),
                         (tab["finishing"].valid()) ? tab["finishing"] : false,
                         (tab["skip"].valid()) ? tab["skip"] : false,
-						(tab["color"].valid()) ? sf::Color(tab["color"][1].get<int>(), tab["color"][2].get<int>(), tab["color"][3].get<int>(), tab["color"][4].get<int>()) : sf::Color::White,
+						(tab["color"].valid()) ? sf::Color(tab["color"][1].get<int>(), tab["color"][2].get<int>(), tab["color"][3].get<int>(), tab["color"][4].get<int>()) : sf::Color(108, 90, 168),
                         (tab["iconId"].valid()) ? tab["iconId"] : -1
 					);
                 }

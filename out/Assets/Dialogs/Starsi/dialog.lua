@@ -11,13 +11,12 @@ options:addRunner(0, 0)
 options.add = {
 	majorTarget = 1;
 	minorTarget = 0;
-	color = {255, 0, 255, 125};
+	iconId = 2;
 }
 
 options.add = {
 	majorTarget = 3;
 	minorTarget = 0;
-	color = {255, 255, 0, 255};
 
 	--b:a(304): Karion pozostaje w miejscu.
 	action = function()
@@ -42,26 +41,31 @@ options:addRunner(1, 5)
 options.add = {
 	majorTarget = 1;
 	minorTarget = 1;
+	iconId = 2;
 }
 
 options.add = {
 	majorTarget = 1;
 	minorTarget = 2;
+	iconId = 3;
 }
 
 options.add = {
 	majorTarget = 1;
 	minorTarget = 3;
+	iconId = 4;
 }
 
 options.add = {
 	majorTarget = 1;
 	minorTarget = 4;
+	iconId = 5;
 }
 
 options.add = {
 	majorTarget = 1;
 	minorTarget = 5;
+	iconId = 9;
 
 	--b:c(506): Jeśli we wcześniejszej rozmowie z Kultystą Karion dowie się o istnieniu świętej księgi może o nią zapytać Starszych.
 	condition = function()
