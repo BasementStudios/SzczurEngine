@@ -9,12 +9,9 @@
 
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
-
 #include <glad/glad.h> // GLbitfield
+#include <SFML/Graphics/Color.hpp>
 
-namespace sf {
-	class Color;
-}
 #include "RenderStates.hpp"
 #include "Camera.hpp"
 namespace sf3d {
@@ -88,8 +85,8 @@ public:
 	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 
 	// Clearing
-	void clear(float r, float g, float b, float a, GLbitfield flags);
-	void clear(const sf::Color& color, GLbitfield flags);
+	void clear(float r = 0.f, float g = 0.f, float b = 0.f, float a = 0.f, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	void clear(const sf::Color& color = sf::Color::Transparent, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 	// Drawing drawables
 	void draw(const Drawable& drawable, const RenderStates& states);

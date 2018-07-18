@@ -67,7 +67,11 @@ void Window::setSize(glm::uvec2 size)
 {
 	this->videoMode.width = size.x;
 	this->videoMode.height = size.y;
+	LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
+
 	this->setVideoMode(this->videoMode);
+	//this->getWindow().setSize(size);
+	// @todo . dobra :/ mam jeszcze jeden pomysł ale to kiedyś... 
 }
 
 // FrameRate
@@ -168,7 +172,6 @@ void Window::init()
 		catch (...) {
 			std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
 		}
-
 		this->getWindow().setDefaultShaderProgram(this->shaderProgram);
 	}
 	catch (...) {
@@ -189,7 +192,7 @@ void Window::processEvent(sf::Event event)
 		case sf::Event::Resized:
 		{
 			// Update video mode
-			this->setSize({event.size.width, event.size.height}); // @todo . sajkowiecozrobic;)COD3IT
+			this->setSize({event.size.width, event.size.height});
 		}
 		break;
 		

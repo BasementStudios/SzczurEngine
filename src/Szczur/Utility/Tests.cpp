@@ -1,5 +1,5 @@
 #include "Tests.hpp"
-#if TESTING
+#ifdef TESTING
 
 #include <vector>
 
@@ -18,6 +18,7 @@ std::vector<TesterInvoker*> tests;
 
 
 // Register files with test here
+#include "Szczur/Modules/Window/Tests/Window.hpp"
 #include "Szczur/Utility/SFML3D/Tests/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/Tests/RenderLayer.hpp"
 #include "Szczur/Utility/SFML3D/Tests/Other/Test001.hpp"
@@ -36,4 +37,6 @@ void runTests()
 
 
 
-#endif // TESTING
+#endif
+
+

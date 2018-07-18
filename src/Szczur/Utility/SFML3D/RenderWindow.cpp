@@ -1,5 +1,10 @@
 #include "RenderWindow.hpp"
 
+/** @file RenderWindow.cpp
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ ** @author Tomasz (Knayder) Jatkowski
+ **/
+
 #include <stdexcept>
 #include <string>
 
@@ -17,8 +22,19 @@
 namespace sf3d
 {
 
+/* Properties */
+void RenderWindow::setSize(glm::uvec2 size) 
+{
+	this->setSize(sf::Vector2u{size.x, size.y});
+}
+
+
+
+/* Operators */
 RenderWindow::RenderWindow() 
-{}
+{
+	;
+}
 
 RenderWindow::RenderWindow(
 	sf::VideoMode mode,
@@ -36,6 +52,9 @@ RenderWindow::RenderWindow(
 	glViewport(0, 0, mode.width, mode.height);
 }
 
+
+
+/* Methods */
 void RenderWindow::create(
 	sf::VideoMode mode,
 	const std::string& title,
@@ -55,7 +74,7 @@ void RenderWindow::create(
 
 void RenderWindow::onResize()
 {
-	sf::Vector2u size = this->getSize();
+	const sf::Vector2u size = this->getSize();
 	glViewport(0, 0, size.x, size.y);
 }
 

@@ -5,6 +5,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #ifdef EDITOR
