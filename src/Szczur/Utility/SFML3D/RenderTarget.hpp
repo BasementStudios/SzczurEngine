@@ -86,7 +86,7 @@ public:
 	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 
 	// Clearing
-	void clear(const glm::vec3& color, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	void clear(const glm::vec4& color, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	[[deprecated("SF3D should operate on its own color class in the future, but at now it is `glm::vec4`.")]]
 	void clearSFML(const sf::Color& color = sf::Color::Transparent, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 

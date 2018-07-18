@@ -11,7 +11,7 @@ struct SimpleWindowTest : public ::testing::Test
 	{
 		// Module
 		this->windowModule = rat::detail::globalPtr_v<rat::Window>;
-		this->windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f});
+		this->windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
 	}
 
 	virtual void TearDown()
@@ -43,7 +43,7 @@ TEST_F(SimpleWindowTest, Resize)
 		// Update
 	},{
 		// Render
-		windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f});
+		windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
 		windowModule->pushGLStates();
 		windowModule->draw(object);
 		windowModule->popGLStates();
