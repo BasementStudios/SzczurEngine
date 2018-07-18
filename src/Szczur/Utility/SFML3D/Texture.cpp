@@ -3,7 +3,6 @@
 #include <string>
 #include <stdexcept>
 
-
 #include <glad/glad.h>
 #include <SFML/Graphics/Image.hpp>
 
@@ -70,13 +69,13 @@ Texture::Texture(const std::string& path)
 
 
 /* Methods */
-void Texture::create(glm::vec2 size)
+void Texture::create(glm::uvec2 size)
 {
-	// Delete first, if it is recreation
-	if (this->textureID) {
+	// Delete first, if it is recreation and size is diffrent
+	if (this->textureID && (this->size != size)) {
 		glDeleteTextures(1, &(this->textureID));
+		glGenTextures(1, &(this->textureID));
 	}
-	glGenTextures(1, &(this->textureID));
 
 	// Setup the texture
 	glBindTexture(GL_TEXTURE_2D, this->textureID);
@@ -90,25 +89,24 @@ void Texture::create(glm::vec2 size)
 
 void Texture::loadFromFile(const char* path)
 {
-	if (this->textureID) {
-		glDeleteTextures(1, &(this->textureID));
-	}
-
 	// Load texture file
 	sf::Image image;
 	if (!image.loadFromFile(path)) {
 		throw std::runtime_error(std::string("Cannot load texture from ") + path);
 	}
+	const glm::uvec2 size = {image.getSize().x, image.getSize().y};
 
-	auto size = image.getSize();
-	this->size.x = size.x;
-	this->size.y = size.y;
+	// Delete first, if it is recreation and size is diffrent
+	if (this->textureID && (this->size != size)) {
+		glDeleteTextures(1, &(this->textureID));
+		glGenTextures(1, &(this->textureID));
+	}
 	
 	// Load into graphics 
 	glBindTexture(GL_TEXTURE_2D, this->textureID);
 	glTexImage2D(
 		GL_TEXTURE_2D, 0, GL_RGBA,
-		image.getSize().x, image.getSize().y,
+		size.x, size.y,
 		0,
 		GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
 	);
@@ -118,6 +116,8 @@ void Texture::loadFromFile(const char* path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	this->size = size;
 }
 void Texture::loadFromFile(const std::string& path)
 {

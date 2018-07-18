@@ -67,7 +67,6 @@ void Window::setSize(glm::uvec2 size)
 {
 	this->videoMode.width = size.x;
 	this->videoMode.height = size.y;
-	LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
 
 	this->setVideoMode(this->videoMode);
 	//this->getWindow().setSize(size);
