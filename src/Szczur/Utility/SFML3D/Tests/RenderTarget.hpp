@@ -2,7 +2,7 @@
 
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/SFML3D/Shader.hpp"
-#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
+#include "Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp"
 #include "./Fixtures/RenderTargetTest.hpp"
 #include "Szczur/Utility/Tests.hpp"
 
@@ -28,7 +28,7 @@ struct SimpleRenderTargetTest : public RenderTargetTest
 
 VISUAL_TEST_F(SimpleRenderTargetTest, Clear)
 {
-	renderTarget->clear({0u, 0u, 128u, 255u}, GL_COLOR_BUFFER_BIT);
+	renderTarget->clear({0.f, 0.f, 0.5f, 1.f}, GL_COLOR_BUFFER_BIT);
 }
 
 VISUAL_TEST_F(SimpleRenderTargetTest, DrawBasic)

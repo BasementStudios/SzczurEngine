@@ -11,8 +11,8 @@ struct RenderWindowTest : public ::testing::Test
 	virtual void SetUp() 
 	{
 		// Module
-		this->windowModule = rat::detail::globalPtr<rat::Window>;
-		this->windowModule->clear({24u, 20u, 28u, 255u});
+		this->windowModule = rat::detail::globalPtr_v<rat::Window>;
+		this->windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
 		
 		// Window
 		this->renderWindow = &(this->windowModule->getWindow());

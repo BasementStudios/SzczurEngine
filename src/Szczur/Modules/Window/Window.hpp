@@ -11,6 +11,8 @@
 
 #include <glm/vec4.hpp>
 
+#include <glm/vec4.hpp>
+
 namespace sf {
 	class Drawable;
 	class Vertex;

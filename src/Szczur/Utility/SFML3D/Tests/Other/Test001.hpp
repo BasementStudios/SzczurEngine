@@ -44,7 +44,7 @@ struct Test001_RenderLayerTest : public RenderTargetTest
 			// Create
 			glEnable(GL_DEPTH_TEST);
 			this->backgroundLayer.create(this->windowModule->getSize());
-			this->backgroundLayer.clear({0u, 0u, 0u, 0u}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			this->backgroundLayer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			// Select shader
 			this->backgroundLayer.setDefaultShaderProgram(layerShaderProgram);
@@ -58,7 +58,7 @@ struct Test001_RenderLayerTest : public RenderTargetTest
 			// Create
 			glEnable(GL_DEPTH_TEST);
 			this->foregroundLayer.create(this->windowModule->getSize());
-			this->foregroundLayer.clear({0u, 0u, 0u, 0u}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			this->foregroundLayer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			// Select shader
 			this->foregroundLayer.setDefaultShaderProgram(layerShaderProgram);
@@ -97,16 +97,16 @@ TEST_F(Test001_RenderLayerTest, Case1)
 		glEnable(GL_DEPTH_TEST);
 
 		// Background layer
-		backgroundLayer.clear({0u, 0u, 0u, 0u}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		backgroundLayer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		backgroundLayer.draw(backgroundSprite);
 
 		// Foreground layer
-		foregroundLayer.clear({0u, 0u, 0u, 0u}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		foregroundLayer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		foregroundLayer.draw(foregroundSprite);
 
 		// Window
 		glDisable(GL_DEPTH_TEST);
-		windowModule->clear({24u, 20u, 28u, 255u});
+		windowModule->clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
 		renderTarget->draw(backgroundLayer);
 		renderTarget->draw(foregroundLayer);
 		windowModule->render();

@@ -26,12 +26,12 @@ void Shape::setColor(const glm::vec4& color)
 
 void Shape::setColorSFML(const sf::Color& sfcolor)
 {
-	this->setColor(
+	this->setColor({
 		static_cast<float>(sfcolor.r) / 255.f,
 		static_cast<float>(sfcolor.g) / 255.f,
 		static_cast<float>(sfcolor.b) / 255.f,
 		static_cast<float>(sfcolor.a) / 255.f
-	);
+	});
 }
 
 

@@ -236,6 +236,14 @@ void Window::clearSFML(const sf::Color& color)
 	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT);
 #endif
 }
+void Window::clearSFML(const sf::Color& color)
+{
+#ifndef WARSTWY_OGARNIETE_W_WORLD
+	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#else
+	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT);
+#endif
+}
 
 // GL states
 void Window::pushGLStates()
