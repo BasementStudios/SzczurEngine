@@ -26,7 +26,7 @@
 #include "VertexArray.hpp"
 #include "Drawable.hpp"
 #include "LightPoint.hpp"
-#include "Linear.hpp"
+#include "Geometry/Linear.hpp"
 #include "ShaderProgram.hpp"
 
 namespace sf3d
@@ -235,42 +235,6 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 void RenderTarget::draw(const VertexArray& vertices)
 {
 	this->draw(vertices, this->defaultStates);
-}
-
-// "Simple draw"
-void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
-{
-    if (vertices.getSize() > 0 && this->_setActive()) {
-		vertices.update();
-
-		// Shader selection
-		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
-        if (!(shaderProgram && shaderProgram->isValid())) {
-            throw std::runtime_error("No shader available for rendering!");
-            return;
-        }
-
-        glUseProgram(shaderProgram->getNativeHandle());
-
-        // Shader configuration
-		if (states.texture) {
-            glActiveTexture(GL_TEXTURE0);
-            states.texture->bind();
-        }
-
-        // Pass the vertices
-		vertices.bind();
-        glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
-        vertices.unbind();
-
-		// Unbind testures if any
-        if (states.texture) {
-			states.texture->unbind();
-		}
-    }
-}
-void RenderTarget::simpleDraw(const VertexArray& vertices) {
-    this->simpleDraw(vertices, this->defaultStates);
 }
 
 // Interaction
