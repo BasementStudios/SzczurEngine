@@ -45,6 +45,10 @@ Texture::Texture(Texture&& other)
 Texture& Texture::operator = (Texture&& other)
 {
 	if (this != &other) {
+		if (this->textureID) {
+			glDeleteTextures(1, &(this->textureID));
+		}
+
 		this->textureID = other.textureID; 
 		this->size      = other.size;
 		other.textureID = 0u;
