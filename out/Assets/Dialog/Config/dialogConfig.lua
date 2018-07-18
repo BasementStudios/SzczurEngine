@@ -8,12 +8,12 @@ function dialogGUI:onInit()
     GUI.addTexture("Assets/Dialog/config/button.png")
     GUI.addTexture("Assets/Dialog/config/icons.png")
 
-	GUI.addTexture("Assets/Dialog/config/map1.png")
+	--GUI.addTexture("Assets/Dialog/config/map1.png")
  
-	local inter = GUI.addInterface()
-	local img = inter:addImage()
-	img:setTexture(GUI.getTexture("Assets/Dialog/config/map1.png"))
-	img:setPropSize(2, 1)
+	--local inter = GUI.addInterface()
+	--local img = inter:addImage()
+	--img:setTexture(GUI.getTexture("Assets/Dialog/config/map1.png"))
+	--img:setPropSize(2, 1)
 
  
     self.interface = GUI.addInterface()
