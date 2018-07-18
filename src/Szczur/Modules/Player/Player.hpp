@@ -27,8 +27,11 @@ namespace rat {
 		void setEssenceCost(size_t index, int value);
 		int getEssenceCost(size_t index);
 
-		void setSkillType(int path);
+		void setSkillType(int type);
 		int getSkillType();
+
+		void setIsKnown(bool isKnown);
+		bool getIsKnown();
 	private:
 		std::string nameID;
 
@@ -40,6 +43,8 @@ namespace rat {
 		int essenceContainer [4];
 
 		int type;
+
+		bool isKnown;
 	};
 
 	class Player : public Module<Script>
@@ -70,7 +75,7 @@ namespace rat {
 
 		bool addSkill(const std::string& nameID);
 		bool removeSkill(const std::string& nameID);
-		Skill* getSkill(const std::string& nameID); // @todo ? const? nie?
+		Skill getSkill(const std::string& nameID); // @todo ? const? nie?
 
 	private:
 		std::string _pathToJson;
@@ -83,7 +88,6 @@ namespace rat {
 
 		int _essenceContainer [4];
 
-		std::vector<Skill*> _skillsList;
-		std::vector<Skill*> _knownSkillsList;
+		std::vector<Skill> _skillsList;
 	};
 }

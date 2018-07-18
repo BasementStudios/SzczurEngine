@@ -11,6 +11,7 @@ namespace rat {
 		object.set("getPPCost", &Skill::getPPcost);
 		object.set("getEssenceCost", &Skill::getEssenceCost);
 		object.set("getSkillType", &Skill::getSkillType);
+		object.set("getIsKnown", &Skill::getIsKnown);
 		object.init();
 	}
 
@@ -56,6 +57,13 @@ namespace rat {
 		return type;
 	}
 
+	void Skill::setIsKnown(bool _isKnown) {
+		isKnown = _isKnown;
+	}
+	bool Skill::getIsKnown() {
+		return isKnown;
+	}
+
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
 		_pathToJson = "Assets/Skills/skills.json";
@@ -83,30 +91,30 @@ namespace rat {
 				for (auto itr = config["skills"].begin(); itr != config["skills"].end(); ++itr) {
 					auto& skill = itr.value();
 
-					Skill* temp = new Skill;
-					temp->setNameID(itr.key());
+					Skill temp;
+					temp.setNameID(itr.key());
 
 					if (auto& name = skill["name"]; !skill["name"].is_null()) {
-						temp->setName(name);
+						temp.setName(name);
 					}
 
 					if (auto& description = skill["description"]; !skill["description"].is_null()) {
-						temp->setDescription(description);
+						temp.setDescription(description);
 					}
 
 					if (auto& PPCost = skill["PPCost"]; !skill["PPCost"].is_null()) {
-						temp->setPPCost(PPCost);
+						temp.setPPCost(PPCost);
 					}
 
 					if (auto& essenceCost = skill["essenceCost"]; !skill["essenceCost"].is_null()) {
 						for (size_t i = 0; i < 4; i++)
 						{
-							temp->setEssenceCost(i, essenceCost[i].get<int>());
+							temp.setEssenceCost(i, essenceCost[i].get<int>());
 						}			
 					}
 
 					if (auto& type = skill["type"]; !skill["type"].is_null()) {
-						temp->setSkillType(type);
+						temp.setSkillType(type);
 					}
 
 					_skillsList.push_back(temp);
@@ -150,9 +158,9 @@ namespace rat {
 	}
 
 	bool Player::addSkill(const std::string& nameID) {
-		for (const auto& i : _skillsList) {
-			if (i->getNameID() == nameID) {
-				_knownSkillsList.push_back(i);
+		for (auto& i : _skillsList) {
+			if (i.getNameID() == nameID) {
+				i.setIsKnown(true);
 				return true;
 			}
 		}
@@ -160,23 +168,22 @@ namespace rat {
 	}
 
 	bool Player::removeSkill(const std::string& nameID) {
-		for (std::size_t i = 0; i < _knownSkillsList.size(); i++)
+		for (std::size_t i = 0; i < _skillsList.size(); i++)
 		{
-			if (_knownSkillsList[i]->getNameID() == nameID) {
-				_knownSkillsList.erase(_knownSkillsList.begin() + i);
+			if (_skillsList[i].getNameID() == nameID && _skillsList[i].getIsKnown()) {
+				_skillsList[i].setIsKnown(false);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	Skill* Player::getSkill(const std::string& nameID) {
+	Skill Player::getSkill(const std::string& nameID) {
 		for (auto& i : _skillsList) {
-			if (i->getNameID() == nameID) {
+			if (i.getNameID() == nameID) {
 				return i;
 			}
 		}
-		return nullptr;
 	}
 
 	//HP section
