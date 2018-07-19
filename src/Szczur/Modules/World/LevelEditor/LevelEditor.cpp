@@ -102,7 +102,7 @@ namespace rat {
 
 			scene = _scenes.getCurrentScene();
 			
-			//_renderOrigins(target); // @todo !
+			_renderOrigins(target);
 		}
 
 		if (_isGroupSelecting) {

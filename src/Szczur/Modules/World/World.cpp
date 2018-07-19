@@ -128,7 +128,13 @@ void World::render()
 	// Editor
 #ifdef EDITOR
 	if (_doEditor) {
-		_levelEditor.render(windowTarget);
+		sf3d::RenderLayer& layer = getScenes().getHelperRenderLayer();
+
+		glEnable(GL_DEPTH_TEST);
+		_levelEditor.render(layer);
+		
+		glDisable(GL_DEPTH_TEST);
+		windowTarget.draw(layer);
 	}
 #endif
 }
