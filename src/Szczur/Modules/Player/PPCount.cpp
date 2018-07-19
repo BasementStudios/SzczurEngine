@@ -53,8 +53,8 @@ namespace rat {
 		if (newAmount < _highlightedPP) {
 			for (size_t i = 0; i < _highlightedPP; i++)
 			{
-				if (i >= newAmount) {
-					_PPList[i]->setTexture(_PPTexture);
+				if (i >= newAmount && _PPCount > 0) {
+					_PPList[_PPCount - i - 1]->setTexture(_PPTexture);
 				}
 
 			}
@@ -62,8 +62,8 @@ namespace rat {
 		if (newAmount > _highlightedPP) {
 			for (size_t i = 0; i < newAmount; i++)
 			{
-				if(i < newAmount)
-				_PPList[i]->setTexture(_highlightPPTexture);
+				if(i < newAmount && _PPCount > 0)
+				_PPList[_PPCount - i - 1]->setTexture(_highlightPPTexture);
 			}
 		}
 		_highlightedPP = newAmount;
@@ -128,19 +128,19 @@ namespace rat {
 
 	void PPCount::setPPCount(int newAmount) {
 		if (_PPCount != newAmount) {
+			_PPCount = newAmount;
 			for (size_t i = 0; i < _slotCount; i++)
 			{
 				if (i < newAmount) {	
 					if (i < _highlightedPP)
-						_PPList[i]->setTexture(_highlightPPTexture);
+						_PPList[_PPCount - i - 1]->setTexture(_highlightPPTexture);
 					else
-						_PPList[i]->setTexture(_PPTexture);
+						_PPList[_PPCount - i - 1]->setTexture(_PPTexture);
 				}
 				else {
 					_PPList[i]->removeTexture();
 				}
-			}
-			_PPCount = newAmount;
+			}			
 		}
 	}
 }
