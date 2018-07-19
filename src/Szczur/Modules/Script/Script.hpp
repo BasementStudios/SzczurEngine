@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include <sol.hpp>
-
 #include "Szczur/Utility/Modules/Module.hpp"
 
 #include "Szczur/Modules/Script/ScriptClass.hpp"
