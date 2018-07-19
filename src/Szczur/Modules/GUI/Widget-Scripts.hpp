@@ -101,6 +101,10 @@ namespace gui
             object.set("invisible", &T::invisible);
             object.set("isVisible", &T::isVisible);
 
+            object.set("show", &T::show);
+            object.set("hide", &T::hide);
+            object.set("isHidden", &T::isHidden);
+
             object.set("fullyDeactivate", &T::fullyDeactivate);
             object.set("fullyActivate", &T::fullyActivate);
             object.set("isFullyDeactivated", &T::isFullyDeactivated);

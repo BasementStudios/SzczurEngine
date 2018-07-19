@@ -207,16 +207,13 @@ namespace rat
     {
         _isPosChanged = true;
     }
-    sf::Vector2f ListWidget::_getInnerSize() const
-    {
-        const auto size = getSize();
-        if(_positioning == Positioning::Horizontal)
-        {
-            return { size.x / 2.f, 0.f };
-        }
-        else
-        {
-            return { 0.f, size.y / 2.f };
-        }
-    }
+	sf::Vector2f ListWidget::_getInnerSize() const {
+		const auto size = getSize();
+		if(_positioning == Positioning::Vertical) {
+			return {size.x, 0.f};
+		}
+		else {
+			return {0.f, size.y};
+		}
+	}
 }
