@@ -131,7 +131,7 @@ namespace rat {
 		if (focusedObject->getGroup() != "entries") {
 			if (ImGui::Button("Change components...")) {
 				ImGui::OpenPopup("Change components...##modal");
-				ImGui::SetNextWindowSize(ImVec2(300, 300));
+				ImGui::SetNextWindowSize(ImVec2(300, 400));
 			}
 		}
 
