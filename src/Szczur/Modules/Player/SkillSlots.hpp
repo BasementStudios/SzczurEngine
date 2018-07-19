@@ -19,6 +19,7 @@ namespace rat {
 		void unChooseSkill(const std::string& nameID);
 
 		void setCounter(const std::string& nameID, const std::string& number);
+		void setPPCost(const std::string& nameID, int number);
 
 		void clear();
 	private:

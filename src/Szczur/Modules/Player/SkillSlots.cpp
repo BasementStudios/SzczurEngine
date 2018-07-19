@@ -89,6 +89,17 @@ namespace rat {
 		}
 	}
 
+	void SkillSlots::setPPCost(const std::string& nameID, int number) {
+		for (size_t i = 0; i < 6; i++)
+		{
+			if (_slotsList[i]->skill->getNameID() == nameID) {
+				_slotsList[i]->PPImage->setTexture(_PPList[number - 1]);
+				_slotsList[i]->skill->setPPCost(number);
+			}
+		}
+	}
+
+
 	void SkillSlots::setPropPosition(sf::Vector2f pos) {
 		_base->setPropPosition(pos);
 	}

@@ -52,11 +52,13 @@ namespace rat {
 		/*void setBrokenPPAmount(int);
 		void setGoodPPAmount(int);*/
 		void setPPSlotsAmount(int good, int broken);
+		void setHighlightedPPAmount(int newAmount);
 
 		void addSkillToSlot(const std::string&);
 		void chooseSkill(const std::string&);
 		void unChooseSkill(const std::string&);
 		void setCounter(const std::string&, const std::string& number);
+		void setPPCost(const std::string&, int number);
 
 		void addItem(const std::string&, sf::Texture*);
 		void removeItem(const std::string&);

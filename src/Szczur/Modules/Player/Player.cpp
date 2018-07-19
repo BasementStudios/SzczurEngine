@@ -340,6 +340,11 @@ namespace rat {
 		_PPCount->setSlotsAmount(good, broken);
 	}
 
+	void Player::setHighlightedPPAmount(int newAmount) {
+		_PPCount->setHighlightedPPAmount(newAmount);
+	}
+
+
 	/*void Player::setBrokenPPAmount(int amount) {
 		_PPCount->setBrokenSlotAmount(amount);
 	}
@@ -364,6 +369,10 @@ namespace rat {
 	void Player::setCounter(const std::string& nameID, const std::string& number) {
 		//if number = "0" skill resets (number is no longer visible)
 		_skillSlots->setCounter(nameID, number);
+	}
+
+	void Player::setPPCost(const std::string& nameID, int number) {
+		_skillSlots->setPPCost(nameID, number);
 	}
 
 	void Player::addItem(const std::string& nameID, sf::Texture* text) {
