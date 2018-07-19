@@ -110,6 +110,7 @@ namespace rat
     {
         _source.glyphContainer.removeGlyph(glyphID);
         _calcGlyphGUI(glyphID);
+        _calcSkillsGUI();
     }
     bool PrepScreen::canBeGlyphActivated(GlyphID glyphID) const
     {
@@ -184,9 +185,6 @@ namespace rat
         _boughtSkills.erase(skill);
 
         _chosenSkillArea.recalculate();
-
-        //_chosenSkillArea.removeSkill(skill);
-        //_skillArea.addSkill(skill);
 
         _calcPPsGUI();
         _calcSkillsGUI();
@@ -282,22 +280,29 @@ namespace rat
        _base->add(mainList);
        mainList->setPropPosition(0.5f, 0.5f);
 
-       auto* skillList = new ListWidget;
-       //skillList->setPropSize(0.416f, 0.f);///0,463  0,85177777777777777777777777777778
-       skillList->setPropSize(0.463f, 1.f);
-       //skillList->setAutoBetweenPadding();
-       skillList->setPropBetweenPad(0.04f);
-       mainList->add(skillList);
+       auto* leftList = new ListWidget;
+       leftList->setPropSize(0.463f, 1.f);
+       leftList->setPropBetweenPad(0.04f);
+       mainList->add(leftList);
 
-        _profArea.setParent(skillList);
+        _profArea.setParent(leftList);
+
+        auto* skillList = new ListWidget;
+        skillList->makeHorizontal();
+        // skillList->setPropSize(0.463f, 0.f);
+        skillList->setPropSize(0.38, 0.f);
+        skillList->setAutoBetweenPadding();
+        leftList->add(skillList);
+
+
+        _glyphArea.setParent(skillList);
         _skillArea.setParent(skillList);
 
         auto* infoList = new ListWidget;
         infoList->setPropSize(0.8517777777777777f, 1.f);
-        infoList->setPropBetweenPad(0.03f);
+        infoList->setPropBetweenPad(0.005f);
         mainList->add(infoList);
 
-        _glyphArea.setParent(infoList);
         _grayPPArea.setParent(infoList);
         _chosenSkillArea.setParent(infoList);
 
@@ -321,7 +326,7 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-        setMaximumPPSlotsAmount(8);
+        setMaximumPPSlotsAmount(10);
         unlockPPSlots(6);
         fillPP(4);
 
@@ -331,7 +336,8 @@ namespace rat
         addGlyph(GlyphID::Wearines);
         addGlyph(GlyphID::Wearines);
         addGlyph(GlyphID::Wearines);
-        addGlyph(GlyphID::Wearines);
+        addGlyph(GlyphID::Fear);
+        addGlyph(GlyphID::Fear);
         activateGlyph(GlyphID::Wrath);
         
         setProfession("Range");

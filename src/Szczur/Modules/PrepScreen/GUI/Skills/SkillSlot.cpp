@@ -25,18 +25,33 @@ namespace rat
 
         const sf::Vector2f prSize = { 0.12f, 0.12f };
 
+        _base = new Widget;
+        _base->setPropSize(prSize);
+        _base->makeChildrenPenetrable();
+
+        _glyphes.resize(3, nullptr);
+        for(auto& glyphIcon : _glyphes)
+        {
+            glyphIcon = new ImageWidget;
+            glyphIcon->setPropSize(0.027f, 0.027f);
+            glyphIcon->setPropOrigin(0.5f, 0.5f);
+            glyphIcon->makeStaticPropPositing();
+            glyphIcon->hide();
+            _base->add(glyphIcon);
+        }
+
         _background = new ImageWidget;
-        _background->makeChildrenPenetrable();
+        _base->add(_background);
         _background->makeChildrenUnresizable();
         _background->setPropSize(prSize);
 
-        _background->setCallback(Widget::CallbackType::onPress, [this](auto){
+        _base->setCallback(Widget::CallbackType::onPress, [this](auto){
             this->_onClick();
         });
-        _background->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
+        _base->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
             this->_onHoverIn();
         });
-        _background->setCallback(Widget::CallbackType::onHoverOut, [this](auto){
+        _base->setCallback(Widget::CallbackType::onHoverOut, [this](auto){
             this->_onHoverOut();
         });
         
@@ -57,26 +72,17 @@ namespace rat
         _ppCost->setPropPosition(1.f, 1.f);
         _ppCost->hide();
 
-        _glyphes.resize(3, nullptr);
-        for(auto& glyphIcon : _glyphes)
-        {
-            glyphIcon = new ImageWidget;
-            glyphIcon->setPropSize(0.03f, 0.03f);
-            glyphIcon->setPropOrigin(0.75f, 0.75f);
-            //glyphIcon->makeStaticPropPositing();
-            glyphIcon->hide();
-            _background->add(glyphIcon);
-        }
     }
     void SkillSlot::setParent(Widget* parent)
     {
-        parent->add(_background);
+        parent->add(_base);
     }
 
     void SkillSlot::setSkill(const Skill* skill)
     {
         _skill = skill;
         _icon->setTexture(skill->getTexture());
+        _icon->setColor({255, 255, 255, 255});
 
         _canBeBought = _prep.canSkillBeBought(skill);
 
@@ -87,7 +93,7 @@ namespace rat
 
         size_t glyphesAmount = ppCost.getNumberOfRequirements();
 
-        for(auto* glyphIcon : _glyphes) glyphIcon->hide();
+        for(auto glyphIcon : _glyphes) glyphIcon->hide();
 
         size_t i = 0;
         for(auto& [glyph, power] : ppCost)
@@ -98,23 +104,25 @@ namespace rat
             auto* texture = _glyphesTexs.find(glyph)->second;
             widget->setTexture(texture);
 
-            sf::Vector2f pos = {1.f, 0.f};
+            sf::Vector2f pos = {0.f, 0.5f};
+            const float a = 0.2f;
 
             if(glyphesAmount == 2)
             {
-                if(i == 0) pos.x = 0.8f;
-                else pos.y = 0.2f;
+                if(i == 0) pos.y = a;
+                else pos.y = 1.f - a;
             }
             else if(glyphesAmount == 3)
             {
-                if(i == 0) pos.x = 0.65f;
-                else if(i == 2) pos.y = 0.35f;
+                if(i == 0) pos.y = a;
+                else if(i == 2) pos.y = 1.f - a;
             }
 
             widget->setPropPosition(pos);
 
             ++i;
         }
+        _glyphesAmount = i;
     }
 
     void SkillSlot::loadAssetsFromGUI(GUI& gui)
@@ -135,35 +143,51 @@ namespace rat
     void SkillSlot::recalculateAvailability()
     {
         bool isBought = _skill->isBought();
-        if(_isKnownAsBought != isBought)
-        {
-            if(isBought)
-            {
-                _background->fullyDeactivate();
-            }
-            else
-            {
-                _background->fullyActivate();
-            }
-            _isKnownAsBought = isBought;
-        }
-
         _canBeBought = _prep.canSkillBeBought(_skill);
-        if(_canBeBought)
+
+        if(isBought)
         {
-            _background->setColorInTime({255, 255, 255}, 0.1f);
+            _onBought();
         }
         else
         {
-            _background->setColorInTime({125, 125, 125}, 0.1f);
+            _onSale();
+            if(_canBeBought)
+            {
+                _base->setColorInTime({255, 255, 255}, 0.1f);
+            }
+            else
+            {
+                _base->setColorInTime({90, 90, 90}, 0.1f);
+            }
         }
+        _isKnownAsBought = isBought;
+
+
+        
     }
 
     void SkillSlot::removeSkill()
     {
         _icon->removeTexture();
         _ppCost->hide();
-        for(auto* gl : _glyphes) gl->show();
+        for(auto* gl : _glyphes) gl->hide();
+        _base->setColor(sf::Color::White);
+        //_skill = nullptr;
+    }
+
+    void SkillSlot::_onSale()
+    {
+        _icon->setColor({255, 255, 255, 255});
+        _ppCost->show();
+        for(int i = 0; i < _glyphesAmount; ++i) _glyphes[i]->show();
+    }
+    void SkillSlot::_onBought()
+    {
+        _icon->setColor({64, 64, 64, 200});
+        //_ppCost->hide();
+        //for(auto* gl : _glyphes) gl->hide();
+        _base->setColor(sf::Color::White);
     }
 
     void SkillSlot::_onClick()

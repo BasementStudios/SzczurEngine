@@ -7,11 +7,11 @@ namespace rat
 {
     GlyphArea::GlyphArea(PrepScreen& prepScreen)
     :
-    BaseBar([]{ auto* base = new ListWidget; base->makeHorizontal(); base->setPropBetweenPad(0.03f); return base;}())
+    BaseBar([]{ auto* base = new ListWidget; /*base->makeHorizontal();*/ base->setPropBetweenPad(0.03f); return base;}())
     {
         //setPropOrigin(0.5f, 0.f);
         //setPropSize(0.768f, 0.f);
-        _getBase()->setPropPosition(0.5f , 0.f);
+        //_getBase()->setPropPosition(0.f , 0.5f);
 
         GlyphTypes types;
         GlyphesConverter converter;

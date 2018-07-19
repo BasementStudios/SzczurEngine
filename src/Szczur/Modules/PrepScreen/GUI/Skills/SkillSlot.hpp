@@ -23,6 +23,7 @@ namespace rat
         void loadAssetsFromGUI(GUI& gui);
         void recalculateAvailability();
     protected:
+        Widget* _base{nullptr};
         ImageWidget* _background{nullptr};
         ImageWidget* _icon{nullptr};
         TextWidget* _ppCost{nullptr};
@@ -30,6 +31,7 @@ namespace rat
     protected:
         std::vector<ImageWidget*> _glyphes;
         std::map<GlyphID, sf::Texture*> _glyphesTexs;
+        size_t _glyphesAmount = 0;
 
     protected:
         PrepScreen& _prep;
@@ -41,5 +43,8 @@ namespace rat
         void _onClick();
         void _onHoverIn();
         void _onHoverOut();
+
+        void _onSale();
+        void _onBought();
     };
 }

@@ -63,7 +63,7 @@ namespace rat
             _hasSkill = true;
             auto* texture = skill->getTexture();
             _icon->setTexture(texture);
-            //_icon->setPropTextureRect({{0.25f, 0.f}, {0.5f, 1.f}});
+            _icon->setColor({255, 255, 255});
         }
         _skill = skill;
     }

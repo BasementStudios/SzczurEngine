@@ -23,7 +23,7 @@ namespace rat
         _glyph = new ImageWidget;
         _amountState = new TextWidget;
 
-        const sf::Vector2f prSize = { 0.18f, 0.18f };
+        const sf::Vector2f prSize = { 0.12f, 0.12f };
 
         _addWidget(_background);
         _background->setPropSize(prSize);

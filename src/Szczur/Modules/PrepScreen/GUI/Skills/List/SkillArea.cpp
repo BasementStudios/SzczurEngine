@@ -45,7 +45,7 @@ namespace rat
             _skillBars.emplace_back(std::move(skillBar));
         }
 
-        //_getBase()->setPropPosition(0.f, 0.f);
+        _getBase()->setPropPosition(0.f, 0.5f);
     }
 
     void SkillArea::resetScroller()

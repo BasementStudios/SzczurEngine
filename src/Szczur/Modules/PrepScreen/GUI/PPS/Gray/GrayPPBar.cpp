@@ -23,12 +23,14 @@ namespace rat
     void GrayPPBar::fill()
     {
         assert(_state != State::Locked);
+        _isDimmed = false;
         _state = State::Full;
         _updateTextRect();
     }
     void GrayPPBar::empty()
     {
         assert(_state != State::Locked);
+        _isDimmed = false;
         _state = State::Empty;
         _updateTextRect();
     }
