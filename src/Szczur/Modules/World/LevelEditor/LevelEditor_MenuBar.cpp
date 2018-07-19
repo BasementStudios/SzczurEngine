@@ -153,7 +153,7 @@ namespace rat {
 				ImGui::Separator();
 
 				if(ImGui::MenuItem("Exit")) {
-					std::cout << "Exit\n";
+					detail::globalPtr<Window>->getWindow().close();
 				}
 				ImGui::EndMenu();
 			}
