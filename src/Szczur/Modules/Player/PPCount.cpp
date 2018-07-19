@@ -50,20 +50,16 @@ namespace rat {
 	}
 
 	void PPCount::setHighlightedPPAmount(int newAmount) {
-		if (newAmount < _highlightedPP) {
-			for (size_t i = 0; i < _highlightedPP; i++)
+		if (newAmount != _highlightedPP) {
+			for (int i = _PPCount - 1; i >= 0; i--)
 			{
-				if (i >= newAmount && _PPCount > 0) {
-					_PPList[_PPCount - i - 1]->setTexture(_PPTexture);
+				if (_PPCount > 0 && i < _PPCount - newAmount) {
+					_PPList[i]->setTexture(_PPTexture);
+				}
+				else if (_PPCount > 0 && i < _PPCount && i >= _PPCount - newAmount) {
+					_PPList[i]->setTexture(_highlightPPTexture);
 				}
 
-			}
-		}
-		if (newAmount > _highlightedPP) {
-			for (size_t i = 0; i < newAmount; i++)
-			{
-				if(i < newAmount && _PPCount > 0)
-				_PPList[_PPCount - i - 1]->setTexture(_highlightPPTexture);
 			}
 		}
 		_highlightedPP = newAmount;
@@ -129,13 +125,15 @@ namespace rat {
 	void PPCount::setPPCount(int newAmount) {
 		if (_PPCount != newAmount) {
 			_PPCount = newAmount;
-			for (size_t i = 0; i < _slotCount; i++)
+			for (int i = _slotCount - 1; i >= 0; i--)
 			{
 				if (i < newAmount) {	
-					if (i < _highlightedPP)
-						_PPList[_PPCount - i - 1]->setTexture(_highlightPPTexture);
-					else
-						_PPList[_PPCount - i - 1]->setTexture(_PPTexture);
+					if (i >= _PPCount - _highlightedPP) {
+						_PPList[i]->setTexture(_highlightPPTexture);
+					}
+					else {
+						_PPList[i]->setTexture(_PPTexture);
+					}
 				}
 				else {
 					_PPList[i]->removeTexture();

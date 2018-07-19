@@ -22,11 +22,11 @@ namespace rat {
 
 		void initGUI(GUI& gui);
 	private:
-		int _PPCount;
-		int _brokenCount;
-		int _goodCount;
+		int _PPCount = 0;
+		int _brokenCount = 0;
+		int _goodCount = 0;
 		int _slotCount = 15;
-		int _highlightedPP;
+		int _highlightedPP = 0;
 
 		Widget* _base = nullptr;
 
