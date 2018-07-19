@@ -22,9 +22,6 @@ void Application::init()
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
 	initModule<World>();
-	initModule<GUI>();
-	initModule<Dialog>();
-	initModule<DialogEditor>();
 	initModule<Cinematics>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
@@ -35,6 +32,7 @@ void Application::init()
 		initModule<GUITest>();
 	}
 	#endif
+	initModule<Battle>();
 
 	LOG_INFO("Modules initialized");
 
@@ -49,7 +47,7 @@ void Application::init()
 	}
 	#endif
 
-	getModule<BattleScene>().loadBattle("Assets/Battles/battle_1.json");
+	// getModule<Battle>().loadBattle("Assets/Battles/battle_1.json");
 
 }
 
@@ -60,7 +58,6 @@ bool Application::input()
 	while (getModule<Window>().getWindow().pollEvent(event)) {
 		getModule<Window>().processEvent(event);
 		getModule<Input>().getManager().processEvent(event);
-		getModule<GUI>().input(event);
 
 		#ifdef GUI_TEST
 		getModule<GUITest>().input(event);
@@ -75,7 +72,12 @@ bool Application::input()
 		/*
 			Put other inputs here
 		*/		
-		getModule<BattleScene>().input(event);
+		// getModule<Battle>().input(event);
+
+		// if (event.type == sf::Event::Resized) {
+		// 	auto windowSize = getModule<Window>().getWindow().getSize();
+		// 	getModule<Window>().setVideoMode(sf::VideoMode(event.size.width, event.size.height));
+		// }
 
 		if (event.type == sf::Event::Closed) {
 			auto result = MsgBox::show(getModule<Window>().getWindow().getSystemHandle(), "Do you want to save the world?", "SzczurEngine", MsgBox::Icon::Question, MsgBox::Button::YesNoCancel);
@@ -101,7 +103,6 @@ void Application::update()
 	_imGuiStyler.update();
 
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
-	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
 	#ifdef GUI_TEST
 	{

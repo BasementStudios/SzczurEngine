@@ -15,12 +15,10 @@
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
-#include "Szczur/Modules/GUI/GUI.hpp"
-#include "Szczur/Modules/Dialog/Dialog.hpp"
-#include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
 #include "Szczur/Modules/Player/Player.hpp"
+#include "Szczur/Modules/Battle/Battle.hpp"
 
 #include "ImGuiStyler.hpp"
 
@@ -64,15 +62,21 @@ public:
 
 private:
 
-	ModulesHolder<Window, Input, Script, GUI, Player
-	#ifdef GUI_TEST
-	,GUITest 
-	#endif
-	> _modules;
 	Clock _mainClock;
 	#ifdef EDITOR
-	bool _isImGuiInitialized = false;
+	ImGuiStyler _imGuiStyler;
 	#endif
+	ModulesHolder<
+		Window, Input, Script, DragonBones, 
+		GUI, World, Music, Sound, AudioEditor, 
+		AudioEffects, Cinematics, Listener, 
+		Player, Battle
+
+		#ifdef GUI_TEST
+		,GUITest 
+		#endif
+
+	> _modules;
 
 };
 
