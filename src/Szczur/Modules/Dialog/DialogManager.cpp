@@ -72,16 +72,28 @@ namespace rat {
                 //if(!_nextMinor()) { //Finished every minor in this id
 				if (_destroyed)
 				{
-					if(_onEnd)
-						_onEnd(this);
+					if(_onEnd) {
+						try {
+							_onEnd(this);
+						}
+						catch(const sol::error& exc) {
+							LOG_EXCEPTION(exc);
+						}
+					}
 					_isDialogPlaying = false;
 					return true;
 				}
                 _paused = true;
                 for(auto& it : _options) {
                     if(it->checkIfRunsWith(_currentMajor, _currentMinor)) {
-						if(_onChange)
-							_onChange(this, 2);
+						if(_onChange) {
+							try {
+								_onChange(this, 2);
+							}
+							catch(const sol::error& exc) {
+								LOG_EXCEPTION(exc);
+							}
+						}
                         _dialogGUI.interpretOptions(_textManager, *it, [this](size_t major, size_t minor, bool finishing){
                             _currentMajor = major;
                             _currentMinor = minor;
@@ -142,10 +154,15 @@ namespace rat {
                 [this, it]() {
 
 					if(_onChange) {
-						if(it->second.first == "Karion")
-							_onChange(this, 0);
-						else
-							_onChange(this, 1);
+						try {
+							if(it->second.first == "Karion")
+								_onChange(this, 0);
+							else
+								_onChange(this, 1);
+						}
+						catch(const sol::error& exc) {
+							LOG_EXCEPTION(exc);
+						}
 					}
                     _dialogGUI.setText(it->second.second);
                     if(
