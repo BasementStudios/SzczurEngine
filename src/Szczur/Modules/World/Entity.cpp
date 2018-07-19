@@ -63,7 +63,7 @@ void Entity::update(ScenesManager& scenes, float deltaTime)
 	if(auto* comp = getComponentAs<BattleComponent>()) comp->update(scenes, deltaTime);
 
 	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
-		if(getScene()->getScenes()->isGameRunning()) { 
+		if(scenes.isGameRunning()) { 
 			comp->update(scenes, deltaTime); 
 		} 
 	} 
