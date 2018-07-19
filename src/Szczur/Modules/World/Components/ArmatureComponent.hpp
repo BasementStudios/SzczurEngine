@@ -23,6 +23,14 @@ template<class T> class ScriptClass;
 
 class ArmatureComponent : public Component, public sf3d::Drawable
 {
+private:
+	enum OnceAnimStatus
+	{
+		IsAboutToPlay,
+		IsPlaying,
+		None
+	};
+
 public:
 
 // Constructors
@@ -70,13 +78,19 @@ public:
 // Manipulations
 
 	///
+	void loadArmature();
+
+	///
+	void unloadArmature();
+
+	///
 	void playAnim(const std::string& animationName, int playTimes = -1);
 
 	///
 	void fadeIn(const std::string& animationName, float fadeInTime = -1.f, int playTimes = -1);
 
 	///
-	void playOnce(const std::string& animationName, float fadeInTime = -1.f, float animationSpeed = 1.f, bool waitToEndCurr = false);
+	void playOnce(const std::string& animationName, float fadeInTime = -1.f, bool waitToEnd = false, float animationSpeed = 1.f);
 
 	///
 	void setFlipX(bool flipX);
@@ -85,7 +99,19 @@ public:
 	void setSpeed(float speed);
 
 	///
+	void replaceSkin(const std::string& skinName, sol::variadic_args excludes);
+
+	///
+	void setSlotDisplayIndex(const std::string& slotName, int displayIndex);
+
+	///
+	void setSlotDisplay(const std::string& slotName, const std::string& displayName);
+
+	///
 	bool isPlaying();
+	
+	///
+	std::string getCurrentPlayingAnim();
 
 // Scripts
 

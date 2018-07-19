@@ -8,8 +8,9 @@
 #include "../Scene.hpp"
 #include "../ScenesManager.hpp"
 
-#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Windows1250.hpp"
+#include "Szczur/Utility/ImGuiTweaks.hpp"
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
@@ -57,7 +58,7 @@ void ArmatureComponent::setArmature(const std::string& armatureName)
 	auto& armatures = getEntity()->getScene()->getScenes()->getArmatureDisplayDataHolder();
 
 	// find armature
-	auto armature = std::find_if(armatures.begin(), armatures.end(), [&] (auto& armature) { return armature.getFolderPath() == directory; });
+	auto armature = std::find_if(armatures.begin(), armatures.end(), [&] (auto& armature) { return armature->getFolderPath() == directory; });
 
 	ArmatureDisplayData* it = nullptr;
 
@@ -66,7 +67,7 @@ void ArmatureComponent::setArmature(const std::string& armatureName)
 	{
 		try
 		{
-			it = &armatures.emplace_back(directory);
+			it = armatures.emplace_back(std::move(std::make_unique<ArmatureDisplayData>(directory))).get();
 		}
 		catch (std::exception& ex)
 		{
@@ -76,7 +77,7 @@ void ArmatureComponent::setArmature(const std::string& armatureName)
 	}
 	else
 	{
-		it = &(*armature);
+		it = armature->get();
 	}
 
 	// try set armature data
@@ -156,8 +157,16 @@ void ArmatureComponent::saveToConfig(Json& config) const
 {
 	Component::saveToConfig(config);
 	config["armatureDisplayData"] = _armatureDisplayData ? mapWindows1250ToUtf8(_armatureDisplayData->getName()) : "";
-	config["animationMame"] = _armature ? _armature->getAnimation()->getLastAnimationName() : "";
-	config["speed"] = _armature ? _armature->getAnimation()->timeScale : 1.f;
+
+	if (_armature)
+	{
+		config["speed"] = _armature->getAnimation()->timeScale;
+
+		if (_armature->getAnimation()->isPlaying())
+		{
+			config["animationMame"] = _armature->getAnimation()->getLastAnimationName();
+		}
+	}
 }
 
 void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
@@ -165,11 +174,8 @@ void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
 	if (_armature)
 	{
 		_armature->getArmature()->advanceTime(deltaTime);
-	}
 
-	if (_isPlayingOnceAnimation)
-	{
-		if (_armature && _armature->getAnimation()->isCompleted())
+		if (_onceAnimStatus == OnceAnimStatus::IsAboutToPlay)
 		{
 			auto anim = _armature->getAnimation();
 
@@ -205,6 +211,33 @@ void ArmatureComponent::draw(sf3d::RenderTarget& target, sf3d::RenderStates stat
 	}
 }
 
+void ArmatureComponent::loadArmature()
+{
+	if (_armatureDisplayData)
+	{
+		setArmatureDisplayData(_armatureDisplayData);
+
+		if (_armature && _armature->getAnimation() && !_lastPlayingAnimation.empty())
+		{
+			_armature->getAnimation()->play(_lastPlayingAnimation);
+		}
+	}
+}
+
+void ArmatureComponent::unloadArmature()
+{
+	if (_armature)
+	{
+		if (_armature->getAnimation())
+		{
+			_lastPlayingAnimation = _armature->getAnimation()->getLastAnimationName();
+		}
+
+		delete _armature;
+		_armature = nullptr;
+	}
+}
+
 void ArmatureComponent::playAnim(const std::string& animationName, int playTimes)
 {
 	if (_armature)
@@ -222,19 +255,17 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 			return;
 		}
 
-		_isPlayingOnceAnimation = false;
+		_onceAnimStatus = OnceAnimStatus::None;
 		_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
 	}
 }
 
-void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, float animationSpeed, bool waitToEnd)
+void ArmatureComponent::playOnce(const std::string& animationName, float fadeInTime, bool waitToEnd, float animationSpeed)
 {
 	if (_armature)
 	{
-		if (_isPlayingOnceAnimation)
-		{
-			_armature->getAnimation()->fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
-		}
+		if (_onceAnimStatus == OnceAnimStatus::IsPlaying)
+			return;
 
 		if (auto anim = _armature->getAnimation(); anim && anim->isPlaying())
 		{
@@ -265,8 +296,6 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 				}
 			}
 		}
-
-		_armature->getAnimation()->fadeIn(animationName, fadeInTime, 1);
 	}
 }
 
@@ -286,6 +315,52 @@ void ArmatureComponent::setSpeed(float speed)
 	}
 }
 
+void ArmatureComponent::replaceSkin(const std::string& skinName, sol::variadic_args excludes)
+{
+	auto skinData = dragonBones::SF3DFactory::get()->getArmatureData(skinName)->defaultSkin;
+
+	if (skinData == nullptr)
+		return;
+
+	std::vector<std::string> slotsToExclude;
+
+	for (auto slot : excludes)
+	{
+		slotsToExclude.push_back(slot.get<std::string>());
+	}
+
+	dragonBones::SF3DFactory::get()->replaceSkin(_armature->getArmature(), skinData, false, &slotsToExclude);
+}
+
+void ArmatureComponent::setSlotDisplayIndex(const std::string& slotName, int displayIndex)
+{
+	auto slot = _armature->getArmature()->getSlot(slotName);
+
+	if (slot == nullptr)
+		return;
+
+	slot->setDisplayIndex(displayIndex);
+}
+
+void ArmatureComponent::setSlotDisplay(const std::string& slotName, const std::string& displayName)
+{
+	auto slot = _armature->getArmature()->getSlot(slotName);
+
+	if (slot == nullptr)
+		return;
+
+	auto& displays = *slot->getRawDisplayDatas();
+
+	auto display = std::find_if(displays.begin(), displays.end(), [&] (dragonBones::DisplayData* displayData) { return displayData->name == displayName; });
+
+	if (display != displays.end())
+	{
+		auto index = std::distance(displays.begin(), display);
+
+		slot->setDisplayIndex(static_cast<int>(index));
+	}
+}
+
 bool ArmatureComponent::isPlaying()
 {
 	if (_armature)
@@ -294,6 +369,16 @@ bool ArmatureComponent::isPlaying()
 	}
 
 	return false;
+}
+
+std::string ArmatureComponent::getCurrentPlayingAnim()
+{
+	if (_armature && _armature->getAnimation())
+	{
+		return _armature->getAnimation()->getLastAnimationName();
+	}
+
+	return std::string();
 }
 
 void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
@@ -315,7 +400,11 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
 	object.set("isPlaying", &ArmatureComponent::isPlaying);
+	object.set("getCurrentPlayingAnim", &ArmatureComponent::getCurrentPlayingAnim);
 	object.set("setArmature", &ArmatureComponent::setArmature);
+	object.set("replaceSkin", &ArmatureComponent::replaceSkin);
+	object.set("setSlotDisplayIndex", &ArmatureComponent::setSlotDisplayIndex);
+	object.set("setSlotDisplay", &ArmatureComponent::setSlotDisplay);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
@@ -329,7 +418,6 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 {
 	if (ImGui::CollapsingHeader("Armature##armature_component"))
 	{
-		//Component::drawOriginSetter(&ArmatureComponent::setOrigin);
 		Component::drawOriginSetter<ArmatureComponent>(&ArmatureComponent::setOrigin);
 
 		// Load armature button
@@ -345,9 +433,11 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		}
 
 		// Change entity name
-		if(getArmatureDisplayData()) {
-				ImGui::SameLine();
-			if(ImGui::Button("Change entity name")) {
+		if (getArmatureDisplayData())
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Change entity name"))
+			{
 				getEntity()->setName(std::experimental::filesystem::path(getArmatureDisplayData()->getName()).stem().string());
 			}
 		}
@@ -385,7 +475,7 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 				}
 			}
 
-			ImGui::DragFloat("Animation speed##armature_component", &arm->getAnimation()->timeScale, 0.01f);
+			ImGui::DragFloat<ImGui::CopyPaste>("Animation speed##armature_component", arm->getAnimation()->timeScale, 0.01f);
 		}
 	}
 }
@@ -395,33 +485,33 @@ void ArmatureComponent::setOrigin(int vertical, int horizontal)
 	if (!_armature || !_armature->getArmature())
 		return;
 
-	auto size = _armature->getBoundingBox();
+	auto bb = _armature->getBoundingBox();
 
 	glm::vec2 pos;
 
 	switch (vertical)
 	{
 		case -1:
-			pos.x = -size.width / 2.f;
+			pos.x = bb.left;
 			break;
 		case 0:
 			pos.x = 0;
 			break;
 		case 1:
-			pos.x = size.width / 2.f;
+			pos.x = bb.left + bb.width;
 			break;
 	}
 
 	switch (horizontal)
 	{
 		case -1:
-			pos.y = -size.height / 2.f;
+			pos.y = -(bb.top + bb.height);
 			break;
 		case 0:
 			pos.y = 0;
 			break;
 		case 1:
-			pos.y = size.height / 2.f;
+			pos.y = bb.height - (bb.top + bb.height);
 			break;
 	}
 
