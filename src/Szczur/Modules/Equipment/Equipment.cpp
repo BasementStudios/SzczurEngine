@@ -88,6 +88,7 @@ namespace rat {
 		gui.addFont("Assets/Equipment/SourceSansPro-Italic.ttf");
 		gui.addFont("Assets/Equipment/SourceSansPro-SemiBold.ttf");
 		gui.addTexture("Assets/Equipment/cancel.png");
+		gui.addTexture("Assets/Equipment/list.png");
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
@@ -142,12 +143,19 @@ namespace rat {
 		_replaceItem->setParent(_base);
 		_replaceItem->close();
 
+		_letter = new ImageWidget;
+		_base->add(_letter);
+		_letter->setPropSize({ .605f, 0.779f});
+		_letter->setPropPosition({ .2f, .4f});
+		_letter->setTexture(gui.getTexture("Assets/Equipment/list.png"));
+		_letter->fullyDeactivate();
+
 		_itemManager = new ItemManager;
 		_pathToJson = "Assets/Equipment/items.json";
 		_itemManager->setNewPath(_pathToJson);
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
-		_equipmentPosition = { 0.1f, 0.4f };
+		_equipmentPosition = { 0.8f, 0.4f };
 		_openEquipment();
 	}
 
@@ -160,9 +168,13 @@ namespace rat {
 		if (_input.getManager().isPressed(rat::Keyboard::I) && !_isEquipmentHidden) {
 			_closeEquipment();
 		}
-		if (_isPreviewOn && _timeFromStartingPreview >= 1.f && !_isPreviewMaximized) {
+		if (_isPreviewOn && _timeFromStartingPreview >= .5f && !_isPreviewMaximized) {
 			_itemPreview->maximize();
 			_isPreviewMaximized = true;
+			if (_isLetterOn) {
+				_letter->fullyActivate();
+				_isLetterOn = false;
+			}
 		}
 		if (_isPreviewOn) {
 			_timeFromStartingPreview += deltaTime;
@@ -192,6 +204,12 @@ namespace rat {
 			_timeFromStartingPreview = 0.f;
 			_isPreviewOn = true;
 			_isPreviewMaximized = false;
+			if (!_letter->isFullyDeactivated()) {
+				_letter->fullyDeactivate();
+			}
+			if (item->getNameId() == "letter") {
+				_isLetterOn = true;
+			}
 			/*if (_isReplacing) {
 				_replaceItem->higherPosition();
 			}*/
@@ -201,6 +219,9 @@ namespace rat {
 	void Equipment::disableItemPreview() {
 		_itemPreview->minimalize();
 		_isPreviewOn = false;
+		if (!_letter->isFullyDeactivated()) {
+			_letter->fullyDeactivate();
+		}
 		/*if (_isReplacing) {
 			_replaceItem->lowerPosition();
 		}*/
@@ -332,10 +353,13 @@ namespace rat {
 		_replaceItem->minimalize();
 		_isPreviewOn = false;
 		_itemPreview->minimalize();
-		_equipmentFrame->setPropPositionInTime({ -.7f, .4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
+		_equipmentFrame->setPropPositionInTime({ 1.7f, .4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = true;
 			_equipmentFrame->fullyDeactivate();
 		} });
+		if (!_letter->isFullyDeactivated()) {
+			_letter->fullyDeactivate();
+		}
 	}
 	bool Equipment::_isEquipmentOpen() {
 		return !_isEquipmentHidden;

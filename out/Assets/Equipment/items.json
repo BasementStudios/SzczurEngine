@@ -15,6 +15,21 @@
             "icon": "Assets/Equipment/potion/potion.png",
             "script": "Assets/Equipment/potion/potion.lua"
         },
+	    "letter": {
+            "pl": {
+                "name": "List",
+                "description": "Neutralizuje toksyny, lecząc zatrucie",
+                "lore description": "Podobno smakuje paskudnie, ale lepsze to niż śmierć"
+            },
+            "eng": {                    
+                "name": "Miecz",
+                "description": "To jest",
+                "lore description": "To jest super potion"
+            },
+            "type": "usable",
+            "icon": "Assets/Equipment/paper.png",
+            "script": "Assets/Equipment/potion2/potion2.lua"
+        },
 	    "potion2": {
             "pl": {
                 "name": "Odtrutka",

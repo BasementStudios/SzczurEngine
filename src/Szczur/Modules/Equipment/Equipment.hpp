@@ -65,9 +65,11 @@ namespace rat
 		ImageWidget* _weaponImage = nullptr;
 		ImageWidget* _background = nullptr;
 		ImageWidget* _equipmentFrame = nullptr;
+		ImageWidget* _letter = nullptr;
 
 		bool _isPreviewOn = false;
 		bool _isPreviewMaximized = false;
+		bool _isLetterOn = false;
 		float _timeFromStartingPreview;
 
 		bool _isEquipmentHidden = true;

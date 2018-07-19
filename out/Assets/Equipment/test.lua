@@ -9,6 +9,9 @@ Equipment.addWearableItem(a)]]
 local c = Equipment.getUsableItem("potion")
 Equipment.addUsableItem(c)
 
+local b = Equipment.getUsableItem("letter")
+Equipment.addUsableItem(b)
+
 local v = Equipment.getUsableItem("potion2")
 Equipment.addUsableItem(v)
 local zxc = Equipment.getUsableItem("potion2")
