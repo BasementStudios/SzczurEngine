@@ -1,16 +1,44 @@
 {
 	"pawns": {
-		"karion": {
-			"armature": "Assets/Armatures/Cedmin",
-			"scale": 0.2,
+		"karion" : {
+			"armature": "Cedmin",
+			"scale": 0.5,
 			"radius": 100.0,
-			"origin": [100.0, 400.0]
+			"origin": [0.0, 850.0],
+			"health": [40, 100],
+			"time": [40, 50],
+			"script": "karion.lua",
+			"height": 900
 		},
-		"pig": {
-			"armature": "Assets/Armatures/Pig",
-			"scale": 0.15,
-			"radius": 150.0,
-			"origin": [300.0, 1000.0]
+		"krowolyk": {
+			"armature": "Krowolyk",
+			"scale": 0.3,
+			"radius": 200.0,
+			"health": [50, 100],
+			"time": [0, 80],
+			"origin": [0.0, 1600.0],	
+			"script": "krowolyk.lua",	
+			"height": 1000
+		},
+		"krowolykA": {
+			"armature": "Krowolyk",
+			"scale": 0.3,
+			"radius": 200.0,
+			"health": [100, 150],
+			"time": [0, 180],
+			"origin": [0.0, 1600.0],	
+			"script": "../krowolyk/krowolyk.lua",
+			"height": 1000
+		},
+		"krowolykB": {
+			"armature": "Krowolyk",
+			"scale": 0.3,
+			"radius": 200.0,
+			"health": [150, 200],
+			"time": [0, 280],
+			"origin": [0.0, 1600.0],	
+			"script": "../krowolyk/krowolyk.lua",
+			"height": 1000
 		}
 	}
 }
