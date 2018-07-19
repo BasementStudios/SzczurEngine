@@ -17,12 +17,14 @@ namespace rat
 	};
 
 	class WindowWidget; class NormalSlots; class ArmorSlots; class ImageWidget; class ItemPreview; 
-	class RingSlider; class ItemManager; class InterfaceWidget; class ReplaceItem;
+	class RingSlider; class ItemManager; class InterfaceWidget; class ReplaceItem; class Necklace;
+	class EquipmentSlot;
 	class Equipment : public Module<Window, Input, GUI, Script> {
 		friend class NormalSlots;
 		friend class ReplaceItem;
+		friend class Necklace;
+		friend class RingSlider;
 	public:
-
 		void init();
 		void initScript();
 		void update(float deltaTime = (1.f / 60.f));
@@ -30,7 +32,7 @@ namespace rat
 		Equipment();
 		~Equipment();
 
-		void enableItemPreview(EquipmentObject* item);
+		void enableItemPreview(EquipmentObject* item, sf::Vector2f pos);
 		void disableItemPreview();
 
 		bool canPreviewBeInstantiated;
@@ -41,30 +43,42 @@ namespace rat
 
 		void startEquipment();
 		void stopEquipment();
+
+		void setPropPosition(sf::Vector2f pos);
 	private:
 		std::string _pathToJson;
-		NormalSlots* _normalSlots;
-		ArmorSlots* _armorSlots;
-		ItemPreview* _itemPreview;
-		ReplaceItem* _replaceItem;
-		RingSlider* _ringSlider;
-		ItemManager* _itemManager;
+
+		NormalSlots* _normalSlots = nullptr;
+		ArmorSlots* _armorSlots = nullptr;
+		ItemPreview* _itemPreview = nullptr;
+		ReplaceItem* _replaceItem = nullptr;
+		RingSlider* _ringSlider = nullptr;
+		ItemManager* _itemManager = nullptr;
+		Necklace* _necklace = nullptr;
 
 		Window& _mainWindow;
 		sf3d::RenderWindow& _window;
+		Input& _input;
 
-		InterfaceWidget* _base{ nullptr };
-		WindowWidget* _equipmentFrame{ nullptr };
-		ImageWidget* _hideButton{ nullptr };
-
-		sf::RenderTexture _canvas;
+		InterfaceWidget* _base = nullptr;
+		ImageWidget* _armorImage = nullptr;
+		ImageWidget* _weaponImage = nullptr;
+		ImageWidget* _background = nullptr;
+		ImageWidget* _equipmentFrame = nullptr;
+		ImageWidget* _letter = nullptr;
 
 		bool _isPreviewOn = false;
+		bool _isPreviewMaximized = false;
+		bool _isLetterOn = false;
+		float _timeFromStartingPreview;
+
 		bool _isEquipmentHidden = true;
 
 		sf::Vector2f _equipmentPosition;
 
 		std::map<std::string, EquipmentObject*> _listOfObjects;
+
+		bool _stoneStatusChanged(WearableItem* stone, bool status);
 
 		void _replaceNewItem(EquipmentObject* item);
 		void _stopReplacingItem(bool hasBeenSuccesfull);
@@ -88,15 +102,14 @@ namespace rat
 		bool removeUsableItem(const std::string&);
 		bool removeUsableItem(const std::string&, int);
 		bool removeAllItems(const std::string&);
-		bool removeWearableItem(WearableItem* item);
 		sol::table getItemsList();
 		int getFreeSlotsAmount();
-		void setSelectedRingsLimit(int newSize);
 		void resizeSlots(int newCapacity);
 		int getSlotsAmount();
-		bool hasChosenAmulet(const std::string&);
+		bool hasChosenStone(std::string& nameId);
+		/*bool hasChosenAmulet(const std::string&);
 		bool hasArmor(const std::string&);
-		bool hasWeapon(const std::string&);
+		bool hasWeapon(const std::string&);*/
 		bool useItem(const std::string&);
 
 	};

@@ -11,9 +11,8 @@ namespace rat {
 	public:
 		EquipmentSlot();
 
-		void setTexture(sf::Texture*);
+		void setTexture(sf::Texture*, sf::Texture* shadowText, sf::Texture* lockText);
 
-		void setHighlightTexture(sf::Texture*);
 		void setHighlight(bool state);
 
 		void setItemColor(sf::Color color);
@@ -31,11 +30,13 @@ namespace rat {
 		void setPosition(sf::Vector2f pos);
 		void setPropPosition(sf::Vector2f pos);
 		sf::Vector2f getPosition();
+		sf::Vector2f getGlobalPosition();
 
 		void setPropOrigin(sf::Vector2f pos);
 		
 		void setSize(const sf::Vector2f& size);
 		void setPropSize(const sf::Vector2f& size);
+		sf::Vector2f getSize();
 
 		bool getStatus();
 		void setStatus(bool newState);
@@ -45,13 +46,14 @@ namespace rat {
 	private:
 		bool isUsable = true;	//is this slot accessible
 
-		ImageWidget* _slotImage;
-		ImageWidget* _itemImage;
-		ImageWidget* _highlightFrameImage;
-		Widget* _nullWidget;	//null widget only for callbacks
+		ImageWidget* _slotImage = nullptr;
+		ImageWidget* _shadowImage = nullptr;
+		ImageWidget* _itemImage = nullptr;
+		ImageWidget* _lockImage = nullptr;
+		Widget* _nullWidget = nullptr;	//null widget only for callbacks
 
-		EquipmentObject* _itemPlaced{ nullptr };
+		EquipmentObject* _itemPlaced = nullptr;
 
-		Widget* _base;
+		Widget* _base = nullptr;
 	};
 }

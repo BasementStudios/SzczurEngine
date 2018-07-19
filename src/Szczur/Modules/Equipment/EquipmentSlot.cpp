@@ -7,28 +7,35 @@ namespace rat {
 		_base = new Widget();
 		_slotImage = new ImageWidget();
 		_itemImage = new ImageWidget();
-		_highlightFrameImage = new ImageWidget();
+		_lockImage = new ImageWidget();
+		_lockImage->setPropPosition(0.5f, 0.5f);
+		_lockImage->fullyDeactivate();
+		_shadowImage = new ImageWidget();
+		_shadowImage->fullyDeactivate();
 		_nullWidget = new Widget;
+
 		_base->add(_slotImage);
-		_base->add(_itemImage);
-		_base->add(_highlightFrameImage);
+		_base->add(_shadowImage);
+		_base->add(_itemImage);	
+		_base->add(_lockImage);
 		_base->add(_nullWidget);
+		//_base->makeChildrenUnresizable();
+
+		_itemImage->setPropPosition(0.5f, 0.5f);
 
 		setHighlight(false);
 	}
-	void EquipmentSlot::setTexture(sf::Texture* text) {
+	void EquipmentSlot::setTexture(sf::Texture* text, sf::Texture* shadowText, sf::Texture* lockText) {
 		_slotImage->setTexture(text);
-	}
-
-	void EquipmentSlot::setHighlightTexture(sf::Texture* text) {
-		_highlightFrameImage->setTexture(text);
+		_shadowImage->setTexture(shadowText);
+		_lockImage->setTexture(lockText);
 	}
 
 	void EquipmentSlot::setHighlight(bool state) {
-		if (state && isUsable)
-			_highlightFrameImage->fullyActivate();
+		if (state)
+			_slotImage->setColor(sf::Color::Color(140, 140, 140));
 		else
-			_highlightFrameImage->fullyDeactivate();
+			_slotImage->setColor(sf::Color(255u, 255u, 255u, 150u));
 	}
 
 	void EquipmentSlot::setItemColor(sf::Color color) {
@@ -43,29 +50,42 @@ namespace rat {
 	{
 		_slotImage->setSize(size);
 		_itemImage->setSize(size);
-		_highlightFrameImage->setSize(size);
+		_shadowImage->setSize(size);
+		_lockImage->setSize(size / 2.f);
 		_nullWidget->setSize(size);
 	}
 	void EquipmentSlot::setPropSize(const sf::Vector2f& size)
 	{
+		_base->setPropSize(size);
 		_slotImage->setPropSize(size);
-		_itemImage->setPropSize(size);
-		_highlightFrameImage->setPropSize(size);
+		_itemImage->setPropSize({size.x + .003f, size.y + .004f});
+		//_itemImage->setPropSize(size);
+		_shadowImage->setPropSize(size);
+		_lockImage->setPropSize(size / 2.f);
 		_nullWidget->setPropSize(size);
+		_base->makeChildrenUnresizable();
+	}
+
+	sf::Vector2f EquipmentSlot::getSize() {
+		return _slotImage->getSize();
 	}
 
 	void EquipmentSlot::setItem(EquipmentObject* item) {
 		_itemPlaced = item;
 		if (item) {
+			_shadowImage->fullyActivate();
 			_itemImage->setTexture(item->getTexture());
 			_itemImage->resetColor();
 		}
-		else
+		else {
+			_shadowImage->fullyDeactivate();
 			_itemImage->removeTexture();
+		}
 	}
 
 	void EquipmentSlot::removeItem() {
 		if (_itemPlaced) {
+			_shadowImage->fullyDeactivate();
 			delete _itemPlaced;
 			_itemPlaced = nullptr;
 			_itemImage->removeTexture();
@@ -111,14 +131,18 @@ namespace rat {
 		return _base->getPosition();
 	}
 
+	sf::Vector2f EquipmentSlot::getGlobalPosition() {
+		return _base->getGlobalPosition();
+	}
+
 	void EquipmentSlot::setStatus(bool newState) {
 		if (newState) {
-			_slotImage->resetColor();
+			_lockImage->fullyDeactivate();
 			isUsable = true;
 		}
 		else {
 			removeItem();
-			_slotImage->setColor(sf::Color(170u, 170u, 170u));
+			_lockImage->fullyActivate();
 			isUsable = false;
 		}
 	}

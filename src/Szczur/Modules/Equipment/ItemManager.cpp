@@ -9,7 +9,7 @@ namespace rat {
 	ItemManager::ItemManager() {
 		_enumMap.insert(std::make_pair("weapon", equipmentObjectType::weapon));
 		_enumMap.insert(std::make_pair("armor", equipmentObjectType::armor));
-		_enumMap.insert(std::make_pair("ring", equipmentObjectType::ring));
+		_enumMap.insert(std::make_pair("stone", equipmentObjectType::stone));
 		_enumMap.insert(std::make_pair("amulet", equipmentObjectType::amulet));
 	}
 	std::map<std::string, EquipmentObject*> ItemManager::loadFromFile(Script& script)
@@ -64,6 +64,12 @@ namespace rat {
 								// Description
 								if (auto& description = var["description"]; !description.is_null()) {
 									newItem->setDescription(description);
+								}
+								else { assert(false); }
+
+								// Lore description
+								if (auto& description = var["lore description"]; !description.is_null()) {
+									newItem->setLoreDescription(description);
 								}
 								else { assert(false); }
 							}

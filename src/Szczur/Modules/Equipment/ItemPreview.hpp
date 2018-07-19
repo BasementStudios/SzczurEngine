@@ -2,21 +2,22 @@
 #include <SFML/Graphics.hpp>
 
 namespace rat {
-	class ImageWidget; class Widget; class EquipmentObject; class TextAreaWidget; class WindowWidget; class InterfaceWidget;
+	class ImageWidget; class Widget; class EquipmentObject; class TextAreaWidget; class WindowWidget; class InterfaceWidget; class EquipmentSlot;
 	class ItemPreview 
 	{
 	public:
-		ItemPreview(sf::Texture* backgroundText, sf::Texture* backgroundDescriptionText, sf::Font* font);
+		ItemPreview(sf::Texture* backgroundDescriptionText, sf::Font* font, sf::Font* italicFont);
 
 		void minimalize();
-		void setItem(EquipmentObject*);
+		void maximize();
+		void setItem(EquipmentObject*, sf::Vector2f pos);
 		void setParent(Widget* base);
 	private:
-		WindowWidget* _descriptionWidget{ nullptr };
+		ImageWidget* _descriptionWidget{ nullptr };
 		TextAreaWidget* _itemName{ nullptr };
+		TextAreaWidget* _itemDescription = nullptr;
+		TextAreaWidget* _itemLoreDescription = nullptr;
 
 		Widget* _base{nullptr};
-
-		TextAreaWidget* _itemDescription;
 	};
 }

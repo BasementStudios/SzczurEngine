@@ -1,114 +1,81 @@
 {
     "items": {
-        "sword": {
-            "pl": {
-                "name": "Miecz",
-                "description": "To jest tak dobry miecz ze nie miesci sie w jednej linijce"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest super miecz."
-            },
-            "type": "wearable",
-		    "category": "weapon",
-            "icon": "Assets/Equipment/miecz/miecz.png",
-            "script": "Assets/Equipment/miecz/miecz.lua"
-        },
-	    "armor": {
-            "pl": {
-                "name": "zbroja",
-                "description": "zażółć gęślą jaźń ZAŻÓŁĆ GĘŚLĄ JAŹŃ"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-			"category": "armor",
-            "icon": "Assets/Equipment/zbroja/zbroja.png",
-            "script": "Assets/Equipment/zbroja/zbroja.lua"
-        },
 	    "potion": {
             "pl": {
-                "name": "potion",
-                "description": "To jest super potion"
+                "name": "Redbull",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
+                "lore description": "doda ci skrzydeł nawet bardzo dużo skrzydeł"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": ""
+                "description": "",
+                "lore description": "To jest super potion"
             },
             "type": "usable",
             "icon": "Assets/Equipment/potion/potion.png",
             "script": "Assets/Equipment/potion/potion.lua"
         },
-	    "potion2": {
+	    "letter": {
             "pl": {
-                "name": "potion2",
-                "description": "To tez jest super potion"
+                "name": "List",
+                "description": "Neutralizuje toksyny, lecząc zatrucie",
+                "lore description": "Podobno smakuje paskudnie, ale lepsze to niż śmierć"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": "To jest",
+                "lore description": "To jest super potion"
+            },
+            "type": "usable",
+            "icon": "Assets/Equipment/paper.png",
+            "script": "Assets/Equipment/potion2/potion2.lua"
+        },
+	    "potion2": {
+            "pl": {
+                "name": "Odtrutka",
+                "description": "Neutralizuje toksyny, lecząc zatrucie",
+                "lore description": "Podobno smakuje paskudnie, ale lepsze to niż śmierć"
+            },
+            "eng": {                    
+                "name": "Miecz",
+                "description": "To jest",
+                "lore description": "To jest super potion"
             },
             "type": "usable",
             "icon": "Assets/Equipment/potion2/potion2.png",
             "script": "Assets/Equipment/potion2/potion2.lua"
         },
-		"amulet1": {
+		"stone1": {
             "pl": {
-                "name": "amulet1",
-                "description": "To jest super amulet"
+                "name": "stone1",
+                "description": "To jest super pierscien",
+                "lore description": "To jest super potion"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": "To jest",
+                "lore description": "To jest super potion"
             },
             "type": "wearable",
-			"category": "amulet",
-            "icon": "Assets/Equipment/amulet1/amulet1.png",
-            "script": "Assets/Equipment/amulet1/amulet1.lua"
+			"category": "stone",
+            "icon": "Assets/Equipment/stone1/stone1.png",
+            "script": "Assets/Equipment/stone1/stone1.lua"
         },
-		"amulet2": {
+		"stone2": {
             "pl": {
-                "name": "amulet2",
-                "description": "To jest super amulet"
+                "name": "stone2",
+                "description": "To jest super kamyczek",
+                "lore description": "To jest super potion"
             },
             "eng": {                    
                 "name": "Miecz",
-                "description": "To jest"
+                "description": "To jest",
+                "lore description": "To jest super potion"
             },
             "type": "wearable",
-			"category": "amulet",
-            "icon": "Assets/Equipment/amulet2/amulet2.png",
-            "script": "Assets/Equipment/amulet2/amulet2.lua"
-        },
-		"ring1": {
-            "pl": {
-                "name": "ring1",
-                "description": "To jest super pierscien"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-			"category": "ring",
-            "icon": "Assets/Equipment/ring1/ring1.png",
-            "script": "Assets/Equipment/ring1/ring1.lua"
-        },
-		"ring2": {
-            "pl": {
-                "name": "ring2",
-                "description": "To jest super pierscien"
-            },
-            "eng": {                    
-                "name": "Miecz",
-                "description": "To jest"
-            },
-            "type": "wearable",
-			"category": "ring",
-            "icon": "Assets/Equipment/ring2/ring2.png",
-            "script": "Assets/Equipment/ring2/ring2.lua"
+			"category": "stone",
+            "icon": "Assets/Equipment/stone2/stone2.png",
+            "script": "Assets/Equipment/stone2/stone2.lua"
         }
 	}
 }

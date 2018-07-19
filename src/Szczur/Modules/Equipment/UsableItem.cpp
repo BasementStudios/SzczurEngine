@@ -15,7 +15,6 @@ namespace rat {
 		object.set("setName", &EquipmentObject::setName);
 		object.set("setDescription", &EquipmentObject::setDescription);
 		object.set("setIcon", &EquipmentObject::setIcon);
-		object.set("isUsable", &UsableItem::_isUsable);
 		object.set("callback", &UsableItem::_callback);
 		object.set("destroy", &UsableItem::_destroy);
 		object.init();
@@ -26,12 +25,10 @@ namespace rat {
 	}
 
 	bool UsableItem::useItem() {
-		if (_isUsable.valid()) {
-			_isUsable(this);
-			if (_callback.valid() && _destroyed) {
-				_callback(this);
+		if (_callback.valid()) {
+			_callback(this);
+			if(_destroyed)
 				return true;
-			}			
 		}
 		return false;
 	}

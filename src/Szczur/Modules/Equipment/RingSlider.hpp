@@ -6,12 +6,13 @@ namespace rat {
 	class EquipmentSlot; class Equipment; class Widget; class ScrollAreaWidget; class WearableItem; class WindowWidget; class GUI; class EquipmentObject; class ListWidget;
 	class RingSlider
 	{
+		friend class Equipment;
 	public:
 
 		RingSlider(
-			sf::Vector2f frameSize,
 			Equipment* equipment,
-			GUI& gui
+			GUI& gui,
+			sf::Vector2f frameSize
 		);
 
 		void initAssetsViaGUI(GUI& gui);
@@ -25,28 +26,28 @@ namespace rat {
 
 		Equipment* _equipment;
 
-		void setSelectedRingsLimit(int newSize);
 		std::vector<EquipmentObject*> getSelectedRings();
-		std::vector<EquipmentObject*> getRingsList();
+		std::vector<EquipmentObject*> getStonesList();
 
 		void selectRing(EquipmentSlot* slot);
 		void reset();
-	private:	
-		sf::Vector2f _slotSize;
+	private:
 		sf::Texture* _slotTexture;
 		sf::Texture* _slotChosenTexture;
-		sf::Texture* _highlightTexture;
+		sf::Texture* _shadowTexture;
+		sf::Texture* _lockTexture;
 
-		std::vector<EquipmentSlot*> _ringSlots;
+		std::vector<EquipmentSlot*> _stoneSlots;
 		std::vector<EquipmentSlot*> _selectedSlots;
-		int _maxSelectedRings = 3;
+		EquipmentSlot* _currentSlot = nullptr;
 
-		ScrollAreaWidget* _scroll;
-		Widget* _base;
-		ListWidget* _baseForItems;
-		WindowWidget* _border;
+		ScrollAreaWidget* _scroll = nullptr;
+		Widget* _base = nullptr;
+		ListWidget* _baseForItems = nullptr;
+		std::vector<ListWidget*> _itemsLists;
+		WindowWidget* _border = nullptr;
 
-		float _length;
+		void _takeStoneOf(WearableItem* stone);
 		
 	};
 }

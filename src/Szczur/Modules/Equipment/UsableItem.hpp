@@ -15,9 +15,8 @@ namespace rat {
 		bool useItem();
 	private:
 		std::string pathToScript;
-		sol::function _callback;
 
-		sol::function _isUsable;
+		sol::function _callback;
 
 		bool _destroyed;
 		void _destroy();

@@ -3,6 +3,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Equipment.hpp"
+#include "Szczur/Modules/GUI/ListWidget.hpp"
 
 namespace rat
 {
@@ -10,31 +11,42 @@ namespace rat
 		return lhs->index > rhs->index;
 	}
 
-	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* highlightText, sf::Vector2i frameSize, Equipment* equipment)
-		: _slotAmount(slotNumber), _frameText(frameText), _frameSize(frameSize), _equipment(equipment)
+	NormalSlots::NormalSlots(unsigned int slotNumber, sf::Texture* frameText, sf::Texture* shadowText, sf::Texture* lockText, Equipment* equipment, sf::Vector2f frameSize)
+		: _slotAmount(slotNumber), _frameText(frameText), _equipment(equipment)
 	{
 		_base = new Widget;
-		_base->setPropSize({4 * 0.086f, _slotAmount / 4 * 0.086f });
+		//_base->setPropSize({4 * 0.086f, _slotAmount / 4 * 0.086f });
 		_base->makeChildrenUnresizable();
 		size_t x = 0;
 		size_t y = 0;
+
+		_verticalListOfLists = new ListWidget;
+		_base->add(_verticalListOfLists);
+		_verticalListOfLists->setPropBetweenPad(0.003f);
+		_verticalListOfLists->makeVertical();
+
 		for (size_t i = 0; i < _slotAmount; i++)
 		{
-			if (i % 4 == 0 && i != 0)
+			if (i % 4 == 0)
 			{
+				if(i != 0)
 				y++;
 				x = 0;
+
+				_slotLists.push_back(new ListWidget);
+				_verticalListOfLists->add(_slotLists[y]);
+				_slotLists[y]->setPropBetweenPad(0.003f);
+				_slotLists[y]->makeHorizontal();
 			}
 			std::shared_ptr<EquipmentSlot> newSlot = std::make_shared<EquipmentSlot>();
 			_allSlots.push_back(newSlot);
 			newSlot->index = i;
 			_freeSlots.push(newSlot);
-			newSlot->setParent(_base);
-			newSlot->setTexture(_frameText);
-			newSlot->setPropPosition({x * .33f, y * .25f});
-			newSlot->setPropSize({0.078f, 0.078f});
-			newSlot->setHighlightTexture(highlightText);
+			newSlot->setParent(_slotLists[y]);
+			newSlot->setTexture(_frameText, shadowText, lockText);
+			newSlot->setPropSize(frameSize);
 			newSlot->getWidget()->setCallback(Widget::CallbackType::onPress, [this, newSlot](Widget* owner) {
+				LOG_INFO("1");
 				if (newSlot->getStatus())
 					this->_onMouseButtonPressed(newSlot);
 			});
@@ -46,13 +58,11 @@ namespace rat
 				if(newSlot->getStatus())
 					_slotDropped = newSlot;
 				if (newSlot->getItem())
-					equipment->enableItemPreview(newSlot->getItem());
+					equipment->enableItemPreview(newSlot->getItem(), newSlot->getGlobalPosition() + newSlot->getSize());
 				newSlot->setHighlight(true);
 			});
 			newSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [this, newSlot, equipment](Widget* owner) {
-				if (newSlot->getStatus())
-					_removeSlotDropped(newSlot);
-				if (newSlot->getItem())
+				if (newSlot->getStatus() && newSlot->getItem() && _removeSlotDropped(newSlot))
 					equipment->disableItemPreview();
 				newSlot->setHighlight(false);
 			});
@@ -60,7 +70,7 @@ namespace rat
 		}
 		_itemHeldWidget = new ImageWidget;
 		_base->add(_itemHeldWidget);
-		_itemHeldWidget->setPropSize({ 0.078f, 0.078f });
+		_itemHeldWidget->setPropSize({ frameSize.x + .003f, frameSize.y + .004f });
 
 	}
 	void NormalSlots::setParent(Widget* newBase) {
@@ -183,11 +193,11 @@ namespace rat
 				_itemHeld = clickedObj->getItem();
 
 				//setting current mouse position which will be used for positioning picked item widget
-				_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getPosition());
+				_originalMousePosition = sf::Mouse::getPosition() - static_cast<sf::Vector2i>(_slotHeld->getGlobalPosition());
 
 				//activating and setting picked item widget
 				_itemHeldWidget->fullyActivate();
-				_itemHeldWidget->setPosition(_slotHeld->getPosition());
+				_itemHeldWidget->setGlobalPosition(_slotHeld->getGlobalPosition());
 				_itemHeldWidget->setTexture(_itemHeld->getTexture());
 
 				clickedObj->setItemColor(sf::Color(255u, 255u, 255u, 100u));
@@ -273,7 +283,7 @@ namespace rat
 
 	void NormalSlots::update(float deltaTime) {
 		if (_slotHeld) {
-			_itemHeldWidget->setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition() - _originalMousePosition));
+			_itemHeldWidget->setGlobalPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition() - _originalMousePosition));
 		}
 		_checkForDoubleClick(deltaTime);
 	}
@@ -310,10 +320,12 @@ namespace rat
 		}
 	}
 
-	void NormalSlots::_removeSlotDropped(std::shared_ptr<EquipmentSlot> slot) {
+	bool NormalSlots::_removeSlotDropped(std::shared_ptr<EquipmentSlot> slot) {
 		if (_slotDropped == slot) {
 			_slotDropped = nullptr;
+			return true;
 		}
+		return false;
 	}
 
 	itemMap_t NormalSlots::getItemMap() {

@@ -21,7 +21,7 @@ namespace rat {
 		_weaponSlot->setPropSize(frameSize);
 		_weaponSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [equipment, this](Widget* owner) {
 			if (this->getWeaponSlot()->getItem())
-				equipment->enableItemPreview(this->getWeaponSlot()->getItem());
+				equipment->enableItemPreview(this->getWeaponSlot()->getItem(), {0,0});
 			_weaponSlot->setHighlight(true);
 		});
 		_weaponSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [equipment, this](Widget* owner) {
@@ -36,7 +36,7 @@ namespace rat {
 		_armorSlot->setPropPosition({0.5f, 0.f});//sf::Vector2f(frameSize.x + 10, 0.f));
 		_armorSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverIn, [equipment, this](Widget* owner) {
 			if (this->getArmorSlot()->getItem())
-				equipment->enableItemPreview(this->getArmorSlot()->getItem());
+				equipment->enableItemPreview(this->getArmorSlot()->getItem(), {0,0});
 			_armorSlot->setHighlight(true);
 		});
 		_armorSlot->getItemWidget()->setCallback(Widget::CallbackType::onHoverOut, [equipment, this](Widget* owner) {
@@ -47,11 +47,11 @@ namespace rat {
 	}
 
 	void ArmorSlots::initAssetsViaGUI(GUI& gui) {
-		_weaponSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"));
-		_weaponSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
+		_weaponSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr, nullptr);//placeholders
+		//_weaponSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
 
-		_armorSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"));
-		_armorSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
+		_armorSlot->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), nullptr, nullptr);
+		//_armorSlot->setHighlightTexture(gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"));
 
 		_amuletSlot->initAssetsViaGUI(gui);
 	}
@@ -74,7 +74,7 @@ namespace rat {
 		_amuletSlot->addAmulet(amulet);
 	}
 
-	bool ArmorSlots::removeAmulet(sf::String name) {
+	bool ArmorSlots::removeAmulet(std::string& name) {
 		return _amuletSlot->removeAmulet(name);
 	}
 

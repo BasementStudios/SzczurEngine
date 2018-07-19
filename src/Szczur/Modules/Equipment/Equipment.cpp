@@ -9,20 +9,18 @@
 #include "EquipmentObject.hpp"
 #include "RingSlider.hpp"
 #include "ReplaceItem.hpp"
+#include "Necklace.hpp"
 
 #include "ItemManager.hpp"
 #include "Szczur/Modules/GUI/InterfaceWidget.hpp"
 
 #include "Szczur/Modules/GUI/Animation/Anim.hpp"
 
-namespace rat {		//beware spagetti monster down there :/
+namespace rat {
 	Equipment::Equipment()
-	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow())
+	: _mainWindow(getModule<Window>()), _window(_mainWindow.getWindow()), _input(getModule<Input>())
 	{
 		LOG_INFO("Initializing Equipment module");
-		_mainWindow.pushGLStates();
-		_canvas.create(_window.getSize().x, _window.getSize().y);
-		_mainWindow.popGLStates();
 	
 		initScript();
 		init();		
@@ -50,7 +48,6 @@ namespace rat {		//beware spagetti monster down there :/
 		module.set_function("getFreeSlotsAmount", &Equipment::getFreeSlotsAmount, this);
 		module.set_function("resizeSlots", &Equipment::resizeSlots, this);
 		module.set_function("getSlotsAmount", &Equipment::getSlotsAmount, this);
-		module.set_function("setSelectedRingsLimit", &Equipment::setSelectedRingsLimit, this);
 		module.set_function("getLastChangeStatus", &Equipment::lastChangeStatus, this);
 		module.set_function("closeEquipment", &Equipment::_closeEquipment, this);
 		module.set_function("openEquipment", &Equipment::_openEquipment, this);
@@ -67,10 +64,9 @@ namespace rat {		//beware spagetti monster down there :/
 			[&](const std::string& a) {return _hasItem(a); },
 			[&](const std::string& a, int b) {return _hasItem(a, b); }
 		));
-		module.set_function("hasChosenAmulet", &Equipment::hasChosenAmulet, this);
-		module.set_function("hasArmor", &Equipment::hasArmor, this);
-		module.set_function("hasWeapon", &Equipment::hasWeapon, this);
+		
 		module.set_function("useItem", &Equipment::useItem, this);
+		module.set_function("hasChosenStone", &Equipment::hasChosenStone, this);
 
 		script.initClasses<WearableItem, UsableItem>();
 	}
@@ -78,80 +74,110 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::init() {
 		auto& gui = getModule<GUI>(); 
 
-		gui.addTexture("Assets/Equipment/ringsSlider.png");
-		gui.addTexture("Assets/Test/ScrollerBound.png");
-		gui.addTexture("Assets/Test/ScrollerBar.png");
-		gui.addTexture("Assets/Test/Scroller.png");
-		gui.addTexture("Assets/Equipment/slot.png");
-		gui.addTexture("Assets/Equipment/chosenSlot.png");
-		gui.addTexture("Assets/Equipment/highlight.png");
-		gui.addTexture("Assets/Equipment/leftArrow.png");
-		gui.addTexture("Assets/Equipment/rightArrow.png");
-		gui.addFont("Assets/Equipment/NotoMono.ttf");
+		gui.addTexture("Assets/Equipment/Okno.png");
+		gui.addTexture("Assets/Equipment/preview.png");
+		gui.addTexture("Assets/Equipment/lock.png");
+		gui.addTexture("Assets/Equipment/Zbroja.png");
+		gui.addTexture("Assets/Equipment/Miecz.png");
+		gui.addTexture("Assets/Equipment/Naszyjnik.png");
+		gui.addTexture("Assets/Equipment/shadow.png");
 		gui.addTexture("Assets/Equipment/szczegoly.png");
+		gui.addTexture("Assets/Equipment/background.png");
+		gui.addTexture("Assets/Equipment/ringsSlider.png");
+		gui.addTexture("Assets/Equipment/slot.png");
+		gui.addFont("Assets/Equipment/SourceSansPro-Italic.ttf");
+		gui.addFont("Assets/Equipment/SourceSansPro-SemiBold.ttf");
 		gui.addTexture("Assets/Equipment/cancel.png");
-		gui.addTexture("Assets/Equipment/rozwijanie.png");
+		gui.addTexture("Assets/Equipment/list.png");
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
 
-		_equipmentFrame = new WindowWidget();
+		_background = new ImageWidget;
+		_base->add(_background);
+		_background->setTexture(gui.getTexture("Assets/Equipment/background.png"));
+		_background->setPropSize(1.78f, 1.f);
+
+		_equipmentFrame = new ImageWidget;
 		_base->add(_equipmentFrame);
 		_equipmentFrame->makeChildrenUnresizable();
 		_equipmentFrame->setPropPosition(0.5f, 3.33f);
-		_equipmentFrame->setPropSize(.63f, .7f);
-		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/ringsSlider.png"), 180);
+		_equipmentFrame->setPropSize(.564f, .689f);
+		_equipmentFrame->setTexture(gui.getAsset<sf::Texture>("Assets/Equipment/Okno.png"));
 	
-		_hideButton = new ImageWidget;
-		_equipmentFrame->add(_hideButton);
-		_hideButton->setPropPosition(0.5f, -0.06f);
-		_hideButton->setPropSize(0.25f, 0.042f);
-		_hideButton->setTexture(gui.getTexture("Assets/Equipment/rozwijanie.png"));
-		_hideButton->setCallback(Widget::CallbackType::onRelease, [this](Widget* owner) {
-			if (_isEquipmentHidden)
-				_openEquipment();
-			else
-				_closeEquipment();
-		});
+		_armorImage = new ImageWidget;
+		_equipmentFrame->add(_armorImage);
+		_armorImage->setPropSize(.23f, .836f);
+		_armorImage->setPropPosition(-0.285f, .28f);
+		_armorImage->setTexture(gui.getTexture("Assets/Equipment/Zbroja.png"));
 
-		_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
+		_weaponImage = new ImageWidget;
+		_equipmentFrame->add(_weaponImage);
+		_weaponImage->setPropSize(.364f, .89f);
+		_weaponImage->setPropPosition(1.82f, 0.4f);
+		_weaponImage->setTexture(gui.getTexture("Assets/Equipment/Miecz.png"));
+
+		_necklace = new Necklace(gui.getTexture("Assets/Equipment/Naszyjnik.png"), this);
+		_necklace->setParent(_equipmentFrame);
+		_necklace->setPropPosition(1.f, .0f);
+		_necklace->setPropSize(0.46f, 0.14f);
+
+		/*_armorSlots = new ArmorSlots({0.11f, 0.11f}, this);
 		_armorSlots->setParent(_equipmentFrame);
 		_armorSlots->setPropPosition({ 0.15f, 0.08f });
-		_armorSlots->initAssetsViaGUI(gui);
+		_armorSlots->initAssetsViaGUI(gui);*/
 
-		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/highlight.png"), { 62, 62 }, this);
-		_normalSlots->setParent(_equipmentFrame);
-		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .9f));
-
-		_ringSlider = new RingSlider({ 70u, 70u }, this, gui);
+		_ringSlider = new RingSlider(this, gui, { .068f, 0.091f });
 		_ringSlider->setParent(_equipmentFrame);
-		_ringSlider->setPropPosition({ 0.9f, 0.4f });
+		_ringSlider->setPropPosition({ 0.97f, .85f });
 
-		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"));
+		_normalSlots = new NormalSlots(20, gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/shadow.png"), gui.getTexture("Assets/Equipment/lock.png"), this, { .068f, 0.091f });
+		_normalSlots->setParent(_equipmentFrame);
+		_normalSlots->setPropPosition(sf::Vector2f(0.15f, .27f));
+
+		_itemPreview = new ItemPreview(gui.getAsset<sf::Texture>("Assets/Equipment/preview.png"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-SemiBold.ttf"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-Italic.ttf"));
 		_itemPreview->setParent(_base);
 		_itemPreview->minimalize();
 
-		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/NotoMono.ttf"), this);
+		_replaceItem = new ReplaceItem(gui.getAsset<sf::Texture>("Assets/Equipment/slot.png"), gui.getAsset<sf::Texture>("Assets/Equipment/szczegoly.png"), gui.getAsset<sf::Texture>("Assets/Equipment/cancel.png"), gui.getAsset<sf::Font>("Assets/Equipment/SourceSansPro-SemiBold.ttf"), this);
 		_replaceItem->setParent(_base);
 		_replaceItem->close();
+
+		_letter = new ImageWidget;
+		_base->add(_letter);
+		_letter->setPropSize({ .605f, 0.779f});
+		_letter->setPropPosition({ .2f, .4f});
+		_letter->setTexture(gui.getTexture("Assets/Equipment/list.png"));
+		_letter->fullyDeactivate();
 
 		_itemManager = new ItemManager;
 		_pathToJson = "Assets/Equipment/items.json";
 		_itemManager->setNewPath(_pathToJson);
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
-		_equipmentPosition = _equipmentFrame->getPosition();
-		_base->fullyDeactivate();
+		_equipmentPosition = { 0.8f, 0.4f };
+		_openEquipment();
 	}
 
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && _isEquipmentHidden) {
+		if (_input.getManager().isPressed(rat::Keyboard::I) && _isEquipmentHidden) {
 			_openEquipment();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::I) && !_isEquipmentHidden) {
+		if (_input.getManager().isPressed(rat::Keyboard::I) && !_isEquipmentHidden) {
 			_closeEquipment();
+		}
+		if (_isPreviewOn && _timeFromStartingPreview >= .5f && !_isPreviewMaximized) {
+			_itemPreview->maximize();
+			_isPreviewMaximized = true;
+			if (_isLetterOn) {
+				_letter->fullyActivate();
+				_isLetterOn = false;
+			}
+		}
+		if (_isPreviewOn) {
+			_timeFromStartingPreview += deltaTime;
 		}
 	}
 
@@ -165,27 +191,40 @@ namespace rat {		//beware spagetti monster down there :/
 	void Equipment::stopEquipment() {
 		_base->fullyDeactivate();
 		_armorSlots->reset();
+		_necklace->reset();
 		_ringSlider->reset();
 		_normalSlots->reset();
 		_closeEquipment();
 	}
 
-	void Equipment::enableItemPreview(EquipmentObject* item) {
+	void Equipment::enableItemPreview(EquipmentObject* item, sf::Vector2f pos) {
 		if (canPreviewBeInstantiated) {
-			_itemPreview->setItem(item);
+			_itemPreview->setItem(item, pos);
+			_itemPreview->minimalize();
+			_timeFromStartingPreview = 0.f;
 			_isPreviewOn = true;
-			if (_isReplacing) {
-				_replaceItem->higherPosition();
+			_isPreviewMaximized = false;
+			if (!_letter->isFullyDeactivated()) {
+				_letter->fullyDeactivate();
 			}
+			if (item->getNameId() == "letter") {
+				_isLetterOn = true;
+			}
+			/*if (_isReplacing) {
+				_replaceItem->higherPosition();
+			}*/
 		}
 	}
 
 	void Equipment::disableItemPreview() {
 		_itemPreview->minimalize();
 		_isPreviewOn = false;
-		if (_isReplacing) {
-			_replaceItem->lowerPosition();
+		if (!_letter->isFullyDeactivated()) {
+			_letter->fullyDeactivate();
 		}
+		/*if (_isReplacing) {
+			_replaceItem->lowerPosition();
+		}*/
 	}
 
 	UsableItem* Equipment::getUsableItem(const std::string& nameId) {
@@ -227,7 +266,7 @@ namespace rat {		//beware spagetti monster down there :/
 		case equipmentObjectType::weapon:
 			_armorSlots->setWeapon(item);
 			break;
-		case equipmentObjectType::ring:
+		case equipmentObjectType::stone:
 			_ringSlider->addItem(item);
 			break;
 		}
@@ -254,7 +293,7 @@ namespace rat {		//beware spagetti monster down there :/
 		if (_armorSlots->getWeaponSlot()->getItem()) {
 			_table.add(_armorSlots->getWeaponSlot()->getItem()->getNameId());
 		}
-		for (auto& it : _ringSlider->getRingsList())
+		for (auto& it : _ringSlider->getStonesList())
 		{
 			_table.add(it->getNameId());
 		}
@@ -281,10 +320,6 @@ namespace rat {		//beware spagetti monster down there :/
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 	}
 
-	void Equipment::setSelectedRingsLimit(int newSize) {
-		_ringSlider->setSelectedRingsLimit(newSize);
-	}
-
 	void Equipment::_replaceNewItem(EquipmentObject* item) {
 		_replaceItem->setItem(item);
 		_isReplacing = true;
@@ -308,21 +343,28 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 
 	void Equipment::_openEquipment() {
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 1.f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_equipmentFrame->setPropPositionInTime(_equipmentPosition, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = false; 
 			_replaceItem->maximize();
 		} });
+		_equipmentFrame->fullyActivate();
 	}
 	void Equipment::_closeEquipment() {
 		_replaceItem->minimalize();
-		_equipmentFrame->setPropPositionInTime({ 0.5f, 3.34f }, { .2f, gui::Easing::EaseOutExpo , [this]() {
+		_isPreviewOn = false;
+		_itemPreview->minimalize();
+		_equipmentFrame->setPropPositionInTime({ 1.7f, .4f }, { .2f, gui::Easing::EaseOutQuad , [this]() {
 			_isEquipmentHidden = true;
+			_equipmentFrame->fullyDeactivate();
 		} });
+		if (!_letter->isFullyDeactivated()) {
+			_letter->fullyDeactivate();
+		}
 	}
 	bool Equipment::_isEquipmentOpen() {
 		return !_isEquipmentHidden;
 	}
-	bool Equipment::hasChosenAmulet(const std::string& nameId) {
+	/*bool Equipment::hasChosenAmulet(const std::string& nameId) {
 		return _armorSlots->getChosenAmulet()->getNameId() == nameId;
 	}
 	bool Equipment::hasArmor(const std::string& nameId) {
@@ -330,7 +372,12 @@ namespace rat {		//beware spagetti monster down there :/
 	}
 	bool Equipment::hasWeapon(const std::string& nameId) {
 		return _armorSlots->getWeaponSlot()->getItem()->getNameId() == nameId;
+	}*/
+
+	bool Equipment::hasChosenStone(std::string& nameId) {
+		return _necklace->hasStone(nameId);
 	}
+
 	bool Equipment::useItem(const std::string& nameId) {
 		if (_normalSlots->hasItem(nameId)) {
 			return _normalSlots->useItem(nameId);
@@ -355,5 +402,22 @@ namespace rat {		//beware spagetti monster down there :/
 
 	std::string& Equipment::getPathToJson() {
 		return _pathToJson;
+	}
+
+	bool Equipment::_stoneStatusChanged(WearableItem* stone, bool status) {
+		//we're putting stone on
+		if (status) {
+			return _necklace->addStone(stone);
+		}
+		//we're taking stone of
+		else {
+			_ringSlider->_takeStoneOf(stone);
+			return _necklace->removeStone(stone);		
+		}
+	}
+
+	void Equipment::setPropPosition(sf::Vector2f pos) {
+		_equipmentFrame->setPropPosition(pos);
+		_equipmentPosition = pos;
 	}
 }

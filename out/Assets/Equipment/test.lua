@@ -1,13 +1,16 @@
-Equipment.resizeSlots(20);
+Equipment.resizeSlots(8);
 
-local b = Equipment.getWearableItem("sword")
+--[[local b = Equipment.getWearableItem("sword")
 Equipment.addWearableItem(b)
 
 local a = Equipment.getWearableItem("armor")
-Equipment.addWearableItem(a)
+Equipment.addWearableItem(a)]]
 
 local c = Equipment.getUsableItem("potion")
 Equipment.addUsableItem(c)
+
+local b = Equipment.getUsableItem("letter")
+Equipment.addUsableItem(b)
 
 local v = Equipment.getUsableItem("potion2")
 Equipment.addUsableItem(v)
@@ -16,19 +19,25 @@ Equipment.addUsableItem(zxc)
 local zxcz = Equipment.getUsableItem("potion2")
 Equipment.addUsableItem(zxcz)
 
-local d = Equipment.getWearableItem("amulet1")
+--[[local d = Equipment.getWearableItem("amulet1")
 Equipment.addWearableItem(d)
 
 local e = Equipment.getWearableItem("amulet2")
-Equipment.addWearableItem(e)
+Equipment.addWearableItem(e)]]
 
-local f = Equipment.getWearableItem("ring1")
+local f = Equipment.getWearableItem("stone1")
 Equipment.addWearableItem(f)
 
-local g = Equipment.getWearableItem("ring2")
+local ads = Equipment.getWearableItem("stone1")
+Equipment.addWearableItem(ads)
+
+local g = Equipment.getWearableItem("stone2")
 Equipment.addWearableItem(g)
 
-c:setName("Wykurwiste imię")
+local h = Equipment.getWearableItem("stone2")
+Equipment.addWearableItem(h)
 
 local test = Equipment.getUsableItem("potion")
 Equipment.addUsableItem(test)
+
+Equipment.hasChosenStone("stone1")
