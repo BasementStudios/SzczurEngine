@@ -46,20 +46,62 @@ namespace rat {
 		_PPTexture = gui.getTexture("Assets/Player/pp.png");
 		_slotTexture = gui.getTexture("Assets/Player/pp_back.png");
 		_brokenSlotTexture = gui.getTexture("Assets/Player/pp_broken.png");
+		_highlightPPTexture = gui.getTexture("Assets/Player/pp_light.png");;
 	}
 
+	void PPCount::setHighlightedPPAmount(int newAmount) {
+		if (newAmount < _highlightedPP) {
+			for (size_t i = 0; i < _highlightedPP; i++)
+			{
+				if (i >= newAmount) {
+					_PPList[i]->setTexture(_PPTexture);
+				}
+
+			}
+		}
+		if (newAmount > _highlightedPP) {
+			for (size_t i = 0; i < newAmount; i++)
+			{
+				_PPList[i]->setTexture(_highlightPPTexture);
+			}
+		}
+	}
+
+	void PPCount::setSlotsAmount(int goodAmount, int badAmount) {
+		if (_goodCount != goodAmount || _brokenCount != badAmount) {
+			_goodCount = goodAmount;
+			_brokenCount = badAmount;
+			for (size_t i = 0; i < _slotCount; i++)
+			{
+				if (i < _goodCount) {
+					_slotList[i]->setTexture(_slotTexture);
+				}
+				else if (i >= _goodCount && i < _goodCount + _brokenCount) {
+					_slotList[i]->setTexture(_brokenSlotTexture);
+				}
+				else {
+					_slotList[i]->fullyDeactivate();
+				}
+			}
+		}
+	}
+
+
 	void PPCount::setGoodSlotAmount(int newAmount) {
-		if (15 - _brokenCount != newAmount) {
+		if (_goodCount != newAmount) {
+			_goodCount = newAmount;
 			for (size_t i = 0; i < _slotCount; i++)
 			{
 				if (i < newAmount) {
 					_slotList[i]->setTexture(_slotTexture);
 				}
-				else {
+				else if (i >= newAmount && i < newAmount + _brokenCount){
 					_slotList[i]->setTexture(_brokenSlotTexture);
 				}
-			}
-			_brokenCount = 15 - newAmount;
+				else {
+					_slotList[i]->fullyDeactivate();
+				}
+			}		
 		}	
 	}
 
@@ -67,11 +109,15 @@ namespace rat {
 		if (_brokenCount != newAmount) {
 			for (size_t i = 0; i < _slotCount; i++)
 			{
-				if (i < _slotCount - newAmount) {
+				if (i < _goodCount)
+				{
 					_slotList[i]->setTexture(_slotTexture);
 				}
-				else {
+				if (i >= _goodCount && i < newAmount + _goodCount) {
 					_slotList[i]->setTexture(_brokenSlotTexture);
+				}
+				else if(!i < newAmount + _goodCount) {
+					_slotList[i]->fullyDeactivate();
 				}
 			}
 			_brokenCount = newAmount;

@@ -49,8 +49,9 @@ namespace rat {
 		void setCurrentTime(int);
 		void setMaxTime(int);
 
-		void setBrokenPPAmount(int);
-		void setGoodPPAmount(int);
+		/*void setBrokenPPAmount(int);
+		void setGoodPPAmount(int);*/
+		void setPPSlotsAmount(int good, int broken);
 
 		void addSkillToSlot(const std::string&);
 		void chooseSkill(const std::string&);

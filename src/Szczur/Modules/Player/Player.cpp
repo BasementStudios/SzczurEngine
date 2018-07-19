@@ -53,6 +53,7 @@ namespace rat {
 
 		gui.addTexture("Assets/Player/pp.png");
 		gui.addTexture("Assets/Player/pp_back.png");
+		gui.addTexture("Assets/Player/pp_light.png");
 		gui.addTexture("Assets/Player/pp_broken.png");
 
 		gui.addTexture("Assets/Player/skills/skill_back.png");
@@ -114,7 +115,10 @@ namespace rat {
 		_PPCount->setParent(_base);
 		_PPCount->initGUI(gui);
 		_PPCount->setPropPosition({0.5f, 0.f});
-		_PPCount->setBrokenSlotAmount(10);
+		_PPCount->setSlotsAmount(7, 5);
+		_PPCount->setSlotsAmount(5, 5);
+		//_PPCount->setGoodSlotAmount(5);
+		//_PPCount->setBrokenSlotAmount(5);
 		_PPCount->setPPCount(5);
 
 		_skillSlots = new SkillSlots(gui);
@@ -331,12 +335,16 @@ namespace rat {
 		_TimeBar->setMaxTime(time);
 	}
 
-	void Player::setBrokenPPAmount(int amount) {
+	void Player::setPPSlotsAmount(int good, int broken) {
+		_PPCount->setSlotsAmount(good, broken);
+	}
+
+	/*void Player::setBrokenPPAmount(int amount) {
 		_PPCount->setBrokenSlotAmount(amount);
 	}
 	void Player::setGoodPPAmount(int amount) {
 		_PPCount->setGoodSlotAmount(amount);
-	}
+	}*/
 
 	void Player::addSkillToSlot(const std::string& nameID) {
 		for (size_t i = 0; i < _skillsList.size(); i++)
