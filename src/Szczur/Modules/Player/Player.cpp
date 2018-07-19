@@ -117,6 +117,7 @@ namespace rat {
 		_PPCount->setPropPosition({0.5f, 0.f});
 		_PPCount->setSlotsAmount(7, 5);
 		_PPCount->setSlotsAmount(5, 5);
+		_PPCount->setHighlightedPPAmount(2);
 		//_PPCount->setGoodSlotAmount(5);
 		//_PPCount->setBrokenSlotAmount(5);
 		_PPCount->setPPCount(5);

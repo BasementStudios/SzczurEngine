@@ -62,9 +62,11 @@ namespace rat {
 		if (newAmount > _highlightedPP) {
 			for (size_t i = 0; i < newAmount; i++)
 			{
+				if(i < newAmount)
 				_PPList[i]->setTexture(_highlightPPTexture);
 			}
 		}
+		_highlightedPP = newAmount;
 	}
 
 	void PPCount::setSlotsAmount(int goodAmount, int badAmount) {
@@ -128,8 +130,11 @@ namespace rat {
 		if (_PPCount != newAmount) {
 			for (size_t i = 0; i < _slotCount; i++)
 			{
-				if (i < newAmount) {
-					_PPList[i]->setTexture(_PPTexture);
+				if (i < newAmount) {	
+					if (i < _highlightedPP)
+						_PPList[i]->setTexture(_highlightPPTexture);
+					else
+						_PPList[i]->setTexture(_PPTexture);
 				}
 				else {
 					_PPList[i]->removeTexture();
