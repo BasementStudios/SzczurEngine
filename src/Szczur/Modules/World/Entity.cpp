@@ -78,7 +78,7 @@ void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	if (auto* comp = getComponentAs<TraceComponent>()) {
 		comp->render(target);
 	}
-	if (auto* comp = getComponentAs<BattleComponent>()) comp->render(canvas);
+	if (auto* comp = getComponentAs<BattleComponent>()) comp->render(target);
 }
 
 size_t Entity::getID() const
