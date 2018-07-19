@@ -211,6 +211,12 @@ namespace rat {
 
 	// sqrt
 		glmTable.set_function("sqrt", [](float x){return glm::sqrt(x);});
+
+	// radians
+	glmTable.set_function("radians", [](float x){return glm::radians(x);});
+
+	// degrees
+	glmTable.set_function("degrees", [](float x){return glm::degrees(x);});
 	
 	}
 }
