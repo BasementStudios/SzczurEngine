@@ -148,11 +148,6 @@ void Window::init()
 		// Print OpenGL version
 		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
 
-		// Overall GL flags
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		glFrontFace(GL_CCW);
-
 		// Shader
 		try {
 			this->shaderProgram.linkShaders(
@@ -207,8 +202,17 @@ void Window::processEvent(sf::Event event)
 // Window recreate
 void Window::recreateWindow()
 {
-	this->getWindow().create(this->videoMode, this->title, &(this->shaderProgram), this->windowStyle);
+	// Setup window
+	// `ShaderProgram* = nullptr`, so it will not change it from the one from `init`.
+	this->getWindow().create(this->videoMode, this->title, nullptr, this->windowStyle);
 	this->setFramerateLimit(this->framerateLimit);
+
+	// Overall GL flags
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+	
+	glDisable(GL_DEPTH_TEST);
 }
 
 // clear
@@ -218,7 +222,12 @@ void Window::clear(const glm::vec4& color)
 }
 void Window::clearSFML(const sf::Color& color)
 {
-	this->getWindow().clearSFML(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	this->getWindow().clear({
+		static_cast<float>(color.r) / 255.f, 
+		static_cast<float>(color.g) / 255.f, 
+		static_cast<float>(color.b) / 255.f, 
+		static_cast<float>(color.a) / 255.f
+	}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL states
