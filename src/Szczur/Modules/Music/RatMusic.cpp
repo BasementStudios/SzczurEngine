@@ -88,7 +88,7 @@ namespace rat
 	void RatMusic::setVolume(float volume)
 	{
 		_volume = volume;
-		sf::Music::setVolume(volume * (MusicVolume * 100));
+		sf::Music::setVolume(volume * (MusicVolume / 100));
 	}
 
 	//Only for editor
