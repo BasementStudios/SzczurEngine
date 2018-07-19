@@ -72,7 +72,7 @@ namespace rat {
 		}
 	}
 
-	bool Necklace::hasStone(std::string& nameId) {
+	bool Necklace::hasStone(const std::string& nameId) {
 		for (auto& i : _stonesImages) {
 			if (i.item && i.item->getNameId() == nameId) {
 				return true;

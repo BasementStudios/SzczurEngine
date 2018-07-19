@@ -105,7 +105,7 @@ namespace rat
 		int getFreeSlotsAmount();
 		void resizeSlots(int newCapacity);
 		int getSlotsAmount();
-		bool hasChosenStone(std::string& nameId);
+		bool hasChosenStone(const std::string& nameId);
 		/*bool hasChosenAmulet(const std::string&);
 		bool hasArmor(const std::string&);
 		bool hasWeapon(const std::string&);*/

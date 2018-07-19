@@ -13,7 +13,7 @@ namespace rat {
 		bool addStone(WearableItem* stone);
 		bool removeStone(WearableItem* stone);
 
-		bool hasStone(std::string& name);
+		bool hasStone(const std::string& name);
 
 		void reset();
 
