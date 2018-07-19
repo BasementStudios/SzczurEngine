@@ -82,7 +82,6 @@ namespace rat {
 		gui.addTexture("Assets/Equipment/Naszyjnik.png");
 		gui.addTexture("Assets/Equipment/shadow.png");
 		gui.addTexture("Assets/Equipment/szczegoly.png");
-		gui.addTexture("Assets/Equipment/background.png");
 		gui.addTexture("Assets/Equipment/ringsSlider.png");
 		gui.addTexture("Assets/Equipment/slot.png");
 		gui.addFont("Assets/Equipment/SourceSansPro-Italic.ttf");
@@ -92,11 +91,6 @@ namespace rat {
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
-
-		_background = new ImageWidget;
-		_base->add(_background);
-		_background->setTexture(gui.getTexture("Assets/Equipment/background.png"));
-		_background->setPropSize(1.78f, 1.f);
 
 		_equipmentFrame = new ImageWidget;
 		_base->add(_equipmentFrame);

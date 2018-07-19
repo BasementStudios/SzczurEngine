@@ -63,7 +63,6 @@ namespace rat
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _armorImage = nullptr;
 		ImageWidget* _weaponImage = nullptr;
-		ImageWidget* _background = nullptr;
 		ImageWidget* _equipmentFrame = nullptr;
 		ImageWidget* _letter = nullptr;
 
