@@ -13,12 +13,12 @@ namespace rat {
 
 		_poisoningStatus = new ImageWidget;
 		_base->add(_poisoningStatus);
-		_poisoningStatus->setPropPosition(0.4f, 1.7f);
+		_poisoningStatus->setPropPosition(0.4f, 1.3f);
 		_poisoningStatus->fullyDeactivate();
 
 		_bleedingStatus = new ImageWidget;
 		_base->add(_bleedingStatus);
-		_bleedingStatus->setPropPosition(0.2f, 1.7f);
+		_bleedingStatus->setPropPosition(0.2f, 1.3f);
 		_bleedingStatus->fullyDeactivate();
 
 	}
@@ -79,8 +79,8 @@ namespace rat {
 		_base->setPropSize(size);
 		_foregroundHeart->setPropSize(size);
 		_backgroundHeart->setPropSize(size);
-		_poisoningStatus->setPropSize(size.y / 2, size.y / 2);
-		_bleedingStatus->setPropSize(size.y / 2, size.y / 2);
+		_poisoningStatus->setPropSize(size.y / 3, size.y / 3);
+		_bleedingStatus->setPropSize(size.y / 3, size.y / 3);
 	}
 
 	void HPBar::setPropPosition(sf::Vector2f pos) {
@@ -98,9 +98,9 @@ namespace rat {
 			_poisoningStatus->fullyActivate();
 			_isPoisoningActivated = true;
 			if(_isBleedingActivated)
-				_poisoningStatus->setPropPosition(0.4f, 1.7f);
+				_poisoningStatus->setPropPosition(0.32f, 1.3f);
 			else
-				_poisoningStatus->setPropPosition(0.2f, 1.7f);
+				_poisoningStatus->setPropPosition(0.2f, 1.3f);
 		}
 	}
 	void HPBar::removeStatus(const std::string& name) {
@@ -108,7 +108,7 @@ namespace rat {
 			_bleedingStatus->fullyDeactivate();
 			_isBleedingActivated = false;
 			if(_isPoisoningActivated)
-				_poisoningStatus->setPropPosition(0.2f, 1.7f);
+				_poisoningStatus->setPropPosition(0.2f, 1.3f);
 		}
 		if (name == "poisoning") {
 			_poisoningStatus->fullyDeactivate();
