@@ -82,7 +82,8 @@ namespace rat {
 				_slotsList[i]->skill = skill;
 				_slotsList[i]->skillImage->setTexture(skill->getIcon());
 
-				_slotsList[i]->PPImage->setTexture(_PPList[skill->getPPcost() - 1]);
+				if(skill->getPPcost() != 0 && skill->getPPcost() <= 4)
+					_slotsList[i]->PPImage->setTexture(_PPList[skill->getPPcost() - 1]);
 				break;
 			}
 		}
