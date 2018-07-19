@@ -1,0 +1,20 @@
+{
+	"skills":{
+		"fajny skill":{
+			"name": "fajne imie",
+			"description": "fajny opis",
+			"PPCost": 3,
+			"essenceCost": [0, 0, 1, 1],
+			"type": 1,
+			"iconPath": "Assets/Player/skills/skill_1.png"
+		},
+		"drugi fajny skill":{
+			"name": "też fajne imie",
+			"description": "też fajny opis",
+			"PPCost": 4,
+			"essenceCost": [3, 1, 0, 0],
+			"type": 2,
+			"iconPath": "Assets/Player/skills/skill_2.png"
+		}
+	}
+}

@@ -1,30 +1,61 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+
+#include "Szczur/Modules/GUI/Widget/FamilyTransform.hpp"
+
+#include "NinePatch.hpp"
 
 namespace rat
 {
-    class Scroller : public sf::Drawable
+    class Scroller : public sf::Drawable, protected gui::FamilyTransform
     {
     public:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
         void setPosition(float x, float y);
         void setPosition(const sf::Vector2f& position);
+
         void setPathTexture(const sf::Texture* texture);
-        void setScrollerTexture(const sf::Texture* texture);
+        void setScrollerTexture(sf::Texture* texture, int boundHeight);
         void setBoundTexture(const sf::Texture* texture);
 
-        void setSize(const sf::Vector2i& size);
+        void setScrollerPropHeight(float propY);
+
+        void setSize(const sf::Vector2f& size);
+        void setSize(float width, float height);
         void setWidthProportion(float proportion);
+        void setScrollerHeightProp(float prop);
         void setBoundShiftProportion(float proportion);
 
+        sf::Vector2f getSize() const;
+        sf::Vector2f getScrollerSize() const;
+        sf::Vector2f getScrollerPosition() const;
+
         void setProportion(float proportion);
+        void moveProportion(float proportionOffset);
+        float getProportion() const;
+
+        sf::FloatRect getBound() const;
+
         void setScrollerPosition(const sf::Vector2f& position);
+
+        void invisible();
+        void visible();
+        bool isVisible() const;
+
+        void applyFamilyTransform(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
+
+        void input(const sf::Event& event);
     private:
+        bool _isClicked{false};
+        bool _hasBeenClicked{false};
+        bool _isHovered{false};
+        sf::Vector2f _clickedShift;
 
         sf::Sprite _path;
-        sf::Sprite _scroller;
+        NinePatch _scroller;
 
         sf::Sprite _upperBound;
         sf::Sprite _bottomBound;
@@ -35,10 +66,13 @@ namespace rat
         bool _isPathSet{false};
 
         float _widthProp{1.f};
-        int _scrollerLength{60};
+        float _scrollerHeightProp{1.f};
+        float _scrollerLength{60.f};
 
-        sf::Vector2i _size{0, 0};
-        sf::Vector2f _position{0.f, 0.f};
+        sf::Vector2f _size;
+        sf::Vector2f _position;
+
+        bool _isVisible{true};
 
 
         float _proportion{0.f};   
@@ -57,6 +91,8 @@ namespace rat
         float _getRealBoundLength() const;
 
         void _recalcAll();
+
+        sf::Vector2f _getScrollerGlobalPos() const;
 
     };
 }

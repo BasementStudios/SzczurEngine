@@ -8,6 +8,10 @@
 #include "Szczur/Modules/Music/Music.hpp"
 #include "Szczur/Modules/Sound/Sound.hpp"
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
+#ifdef GUI_TEST
+#include "Szczur/Modules/GUITest/GUITest.hpp"
+#endif
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 #include "Szczur/Modules/World/World.hpp"
@@ -16,6 +20,7 @@
 #include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #include "Szczur/Modules/Cinematics/Cinematics.hpp"
 #include "Szczur/Modules/Listener/Listener.hpp"
+#include "Szczur/Modules/Player/Player.hpp"
 
 #include "ImGuiStyler.hpp"
 
@@ -48,7 +53,8 @@ public:
 
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
-
+	
+	///
 	template <typename U>
 	U& getModule();
 
@@ -58,12 +64,17 @@ public:
 
 private:
 
-	ImGuiStyler _imGuiStyler;
+	ModulesHolder<Window, Input, Script, GUI, Player
+	#ifdef GUI_TEST
+	,GUITest 
+	#endif
+	> _modules;
 	Clock _mainClock;
-	ModulesHolder<Window, Input, Script, GUI, Dialog, DragonBones, World, DialogEditor, Music, Sound, AudioEditor, AudioEffects, Cinematics, Listener>_modules;
+	#ifdef EDITOR
+	bool _isImGuiInitialized = false;
+	#endif
 
 };
 
 }
-
 #include "Application.tpp"

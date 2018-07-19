@@ -1,9 +1,12 @@
 #include "TextWidget.hpp"
-#include "Test.hpp"
 
 #include <string>
-#include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Utility/Convert/Unicode.hpp"
+
+#include "Widget-Scripts.hpp"
+#include "Animation/Anim.hpp"
+#include "InterfaceWidget.hpp"
+
 namespace rat {
     TextWidget::TextWidget() :
     Widget(),
@@ -16,59 +19,52 @@ namespace rat {
     _text(text) {
         _text.setFont(*font);
     }
-
     void TextWidget::initScript(Script& script) {
+
         auto object = script.newClass<TextWidget>("TextWidget", "GUI");
-        //auto object = script.newClass<ImageWidget>("ImageWidget", "GUI");
-        //Widget::basicScript<ImageWidget>(object);
-        basicScript(object);
+        gui::WidgetScripts::set(object);
 
-        object.setProperty(
-            "font",
-            [](TextWidget& owner){owner.getFont();},
-            [](TextWidget& owner, sf::Font* font){owner.setFont(font);}
-        );
+        object.set("getLength", &TextWidget::getLength);
+        object.set("addLetter", &TextWidget::addLetter);
+        object.set("getString", &TextWidget::getString);
+        object.set("setString", &TextWidget::setString);
+        object.set("setFont", &TextWidget::setFont);
+        object.set("setCharacterSize", &TextWidget::setCharacterSize);
+        object.set("setCharacterPropSize", &TextWidget::setCharacterPropSize);
+        object.set("getCharacterPropSize", &TextWidget::getCharacterPropSize);
+        object.set("getCharacterSize", &TextWidget::getCharacterSize);
+        object.set("removeLast", &TextWidget::removeLast);
+        object.set("setOutlineThickness", &TextWidget::setOutlineThickness);
+        object.set("setOutlinePropThickness", &TextWidget::setOutlinePropThickness);
+        object.set("setOutlineColor", [](TextWidget& owner, unsigned char r, unsigned char g, unsigned char b, unsigned char a){
+            owner.setOutlineColor({r, g, b, a});
+        });
 
-        object.setProperty(
-            "text",
-            [](TextWidget& owner){return owner._text.getString();},
-            [](TextWidget& owner, const std::string& text){owner.setString(text);}
-        );
-
-        object.setProperty(
-            "fontSize",
-            [](TextWidget& owner){return owner._text.getCharacterSize();},
-            [](TextWidget& owner, size_t size){owner.setCharacterSize(size);}
-        );
-
-        object.setProperty(
-            "color",
-            [](TextWidget& owner){return owner._text.getFillColor();},
-            [](TextWidget& owner, sol::table tab){ owner.setColor( sf::Color(tab[1], tab[2], tab[3]) ); }
-        );
-        
         object.init();
     }
 
-    sf::Vector2u TextWidget::_getSize() const {
+    sf::Vector2f TextWidget::_getSize() const 
+    {
         auto rect = _text.getGlobalBounds();
         return {
-            static_cast<unsigned int>(rect.left + rect.width),
-            static_cast<unsigned int>(rect.top + rect.height)
+            static_cast<float>(rect.width),
+            static_cast<float>(rect.height)
         };
     }
 
-    void TextWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    void TextWidget::_draw(sf::RenderTarget& target, sf::RenderStates states) const 
+    {
         target.draw(_text, states);
     }
 
-    void TextWidget::setColor(const sf::Color& newColor) {
-        _text.setFillColor(newColor);
+    void TextWidget:: _setColor(const sf::Color& color)
+    {
+        _text.setFillColor(color);
     }
 
     void TextWidget::addLetter(char letter) {
         _text.setString( _text.getString() + letter );
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     void TextWidget::removeLast() {
@@ -77,7 +73,7 @@ namespace rat {
             str.erase( str.getSize()-1, 1 );
             _text.setString(str);
         }
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     size_t TextWidget::getLength() {
@@ -88,16 +84,31 @@ namespace rat {
         return _text.getString().toAnsiString();
     }
 
-    void TextWidget::setString(const std::string& str) {
-        //_text.setString(sf::String::fromUtf8(std::begin(str), std::end(str)));
-        //_aboutToRecalculate=true;
+    void TextWidget::setString(const std::string& str) 
+    {
         _text.setString(getUnicodeString(str));
-        calculateSize();
+        _aboutToRecalculate = true;
+    }
+
+    void TextWidget::setStringInTime(const std::string& str, const gui::AnimData& data)
+    {
+        if(str == getString()) return;
+
+        using TextAnim_t = gui::Anim<TextWidget, gui::AnimType::Text, std::string>;
+        auto setter = static_cast<void (TextWidget::*)(const std::string&)>(&TextWidget::setString);
+
+        auto textAnim = std::make_unique<TextAnim_t>(this, setter);
+        textAnim->setAnim(getString(), str, data);
+        _addAnimation(std::move(textAnim)); 
+    }
+    void TextWidget::setStringInTime(const std::string& str, float time)
+    {
+        setStringInTime(str, gui::AnimData{time});
     }
 
     void TextWidget::setFont(sf::Font* font) {
         _text.setFont(*font);
-        calculateSize();
+        _aboutToRecalculate = true;
     }
 
     const sf::Font* TextWidget::getFont() const {
@@ -106,11 +117,65 @@ namespace rat {
 
     void TextWidget::setCharacterSize(unsigned int size) {
         _text.setCharacterSize(size);
-        calculateSize();
+        _aboutToRecalculate = true;
+        
+        if(_hasOutlinePropThickness) _calcOutlinePropThickness();
     }
+    
 
     unsigned int TextWidget::getCharacterSize() const {
         return _text.getCharacterSize();
+    }
+
+    void TextWidget::setCharacterPropSize(float prop)
+    {
+        _hasChPropSize = true;
+        _chPropSize = prop;
+
+        if(_interface) _calcChPropSize();
+        else _elementsPropSizeMustBeenCalculated = true;
+    }
+    float TextWidget::getCharacterPropSize() const
+    {
+        return _chPropSize;
+    }
+
+    void TextWidget::setOutlineThickness(float thickness)
+    {
+        assert(thickness >= 0.f);
+        _text.setOutlineThickness(thickness);
+    }
+    void TextWidget::setOutlinePropThickness(float prop)
+    {
+        _outlinePropThickness = prop;
+        _hasOutlinePropThickness = true;
+
+        _calcOutlinePropThickness();
+    }
+    void TextWidget::setOutlineColor(const sf::Color& color)
+    {
+        _text.setOutlineColor(color);
+    }
+
+    void TextWidget::_calcOutlinePropThickness()
+    {
+        assert(_hasOutlinePropThickness);
+        float chSize = float(_text.getCharacterSize());
+        setOutlineThickness(chSize * _outlinePropThickness);
+    }
+
+    void TextWidget::_calcChPropSize()
+    {
+        assert(_hasChPropSize);
+        assert(_interface);
+
+        auto size = _interface->getSizeByPropSize({_chPropSize, _chPropSize});
+        setCharacterSize(size_t(std::min(size.x, size.y)));
+    }
+
+    void TextWidget::_recalcElementsPropSize()
+    {
+        if(_hasChPropSize) _calcChPropSize();
     }
 
     void TextWidget::_callback(CallbackType type) {
@@ -120,6 +185,11 @@ namespace rat {
         if(auto it = _callbacks.find(type); it != _callbacks.end()) {
             std::invoke(it->second, this);
         }
+    }
+
+    void TextWidget::_recalcPos()
+    {
+        _text.setPosition(static_cast<sf::Vector2f>(gui::FamilyTransform::getDrawPosition()));
     }
 
 }

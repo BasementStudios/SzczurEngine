@@ -28,7 +28,13 @@ void Application::init()
 	initModule<Cinematics>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
-
+	initModule<GUI>();
+	initModule<Player>();
+	#ifdef GUI_TEST
+	{
+		initModule<GUITest>();
+	}
+	#endif
 
 	LOG_INFO("Modules initialized");
 
@@ -52,8 +58,13 @@ bool Application::input()
 	sf::Event event;
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
+		getModule<Window>().processEvent(event);
 		getModule<Input>().getManager().processEvent(event);
 		getModule<GUI>().input(event);
+
+		#ifdef GUI_TEST
+		getModule<GUITest>().input(event);
+		#endif
 
 		#ifdef EDITOR
 		{
@@ -92,13 +103,18 @@ void Application::update()
 	[[maybe_unused]] auto deltaTime = _mainClock.restart().asFSeconds();
 	getModule<Dialog>().update();
 	getModule<GUI>().update(deltaTime);
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().update(deltaTime);
+	}
+	#endif
 	getModule<Music>().update(deltaTime);
 
 
 	/*
 		Put other updates here
 	*/
-
+	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -119,6 +135,11 @@ void Application::render()
 	
 	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().render();
+	}
+	#endif
 	getModule<Window>().popGLStates();
 	getModule<Cinematics>().render();
 

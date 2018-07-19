@@ -39,16 +39,28 @@ const Window::Window_t& Window::getWindow() const
 }
 
 // VideoMode
-sf::VideoMode Window::getVideoMode() const
+sf::VideoMode Window::getVideoMode() const noexcept
 {
-	return this->videoMode;
+    return this->videoMode;
 }
 void Window::setVideoMode(const sf::VideoMode& mode)
 {
-	this->videoMode = mode;
-	LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
+    this->videoMode = mode;
+    LOG_INFO("VideoMode: { width: ", this->videoMode.width,  ", height: ", this->videoMode.height, ", bitsPerPixel: ", this->videoMode.bitsPerPixel, " }");
 
-	this->recreateWindow();
+    this->recreateWindow();
+}
+
+// Size
+glm::uvec2 Window::getSize() const noexcept
+{
+    return {this->videoMode.width, this->videoMode.height};
+}
+void Window::setSize(glm::uvec2 size)
+{
+    this->videoMode.width = size.x;
+    this->videoMode.height = size.y;
+    this->setVideoMode(this->videoMode);
 }
 
 // FrameRate
@@ -99,14 +111,14 @@ void Window::setFullscreen(bool state)
 Window::Window()
 : 	window({1280, 800}, "SzczurEngine")
 {
-	LOG_INFO("Initializing Window module");
+	LOG_INFO("Window module initializing");
 	this->init();
-	LOG_INFO("Module Window initialized");
+	LOG_INFO("Window module initialized");
 }
 // Destructor
 Window::~Window()
 {
-	LOG_INFO("Module Window destructed");
+	LOG_INFO("Window module destructed");
 }
 
 
@@ -115,9 +127,10 @@ Window::~Window()
 // init
 void Window::init()
 {
-	// Create
-	// @todo ? load videomode from settings
-	this->setVideoMode(this->videoMode);
+		// Set video mode, also creates window
+		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,
+		//  which require some rendering context which is created in SFML `sf::RenderWindow::create`.
+		this->setVideoMode(this->videoMode); // @todo ? load videomode from settings
 
 	// Print OpenGL version
 	LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
@@ -144,6 +157,31 @@ void Window::init()
 void Window::render()
 {
 	this->getWindow().display();
+}
+
+// processEvent
+void Window::processEvent(sf::Event event)
+{
+    switch (event.type) {
+        case sf::Event::Resized:
+        {
+            // Update video mode
+            this->setSize({event.size.width, event.size.height});
+        }
+        break;
+        
+        case sf::Event::Closed:
+        {
+            this->getWindow().close();
+        }
+        break;
+        
+        default:
+        {
+            // Do nothing.
+        }
+        break;
+    }
 }
 
 // Window recreate
