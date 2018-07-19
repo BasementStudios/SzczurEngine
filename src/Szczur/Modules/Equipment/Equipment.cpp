@@ -25,7 +25,7 @@ namespace rat {
 		initScript();
 		init();		
 		LOG_INFO("Module Equipment initialized");
-		getModule<Script>().scriptFile("Assets/Equipment/test.lua");
+		//getModule<Script>().scriptFile("Assets/Equipment/test.lua");
 	}
 
 	Equipment::~Equipment() {
@@ -150,7 +150,8 @@ namespace rat {
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
 		_equipmentPosition = { 0.8f, 0.4f };
-		_openEquipment();
+
+		stopEquipment();
 	}
 
 	void Equipment::update(float deltaTime) {
@@ -178,13 +179,12 @@ namespace rat {
 	//when play button in pressed and we activate equipment
 	void Equipment::startEquipment() {
 		_base->fullyActivate();
-		
 	}
 
 	//when stop button is pressed and we deactivate equipment
 	void Equipment::stopEquipment() {
 		_base->fullyDeactivate();
-		_armorSlots->reset();
+		//_armorSlots->reset();
 		_necklace->reset();
 		_ringSlider->reset();
 		_normalSlots->reset();
