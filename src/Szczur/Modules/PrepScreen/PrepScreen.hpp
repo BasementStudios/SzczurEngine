@@ -13,6 +13,7 @@
 #include "GUI/PPS/Gray/GrayPPArea.hpp"
 #include "GUI/Professions/ProfessionArea.hpp"
 #include "GUI/Skills/Chosen/ChosenSkillArea.hpp"
+#include "GUI/BattleButton/BattleButton.hpp"
 
 #include "GUI/EnemyList/EnemyArea.hpp"
 #include "GUI/PPS/Glyphes/GlyphArea.hpp"
@@ -69,6 +70,9 @@ namespace rat
         void returnSkill(const Skill* skill);
         bool isSkillBought(const Skill* skill) const;
 
+        void hide();
+        void show();
+
         void setProfession(const std::string& profession);
 
         void dimPPsNeededToBuySkill(const Skill* skill);
@@ -96,7 +100,7 @@ namespace rat
 
         std::string _currentProf;
 
-
+        BattleButton _battleButton;
         EnemyArea _enemyArea;
         EnemyCodex _enemyCodex;
 

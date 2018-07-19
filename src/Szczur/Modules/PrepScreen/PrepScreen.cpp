@@ -310,6 +310,7 @@ namespace rat
         monsterList->setPropSize(0.463f, 1.f);
         mainList->add(monsterList);
 
+        _battleButton.setParent(monsterList);
         _enemyArea.setParent(monsterList);
 
 
@@ -319,6 +320,15 @@ namespace rat
         //_enemyArea.setParent(mainList);
         //_enemyArea.setPropPosition(0.f, 0.5f);
         test();
+    }
+
+    void PrepScreen::show()
+    {
+        _base->fullyActivate();
+    }
+    void PrepScreen::hide()
+    {
+        _base->fullyDeactivate();
     }
 
 
@@ -341,6 +351,13 @@ namespace rat
         activateGlyph(GlyphID::Wrath);
         
         setProfession("Range");
+
+        _battleButton.setCallback([](Widget*){
+            std::cout << "Do walki!!111\n";
+        });
+
+        hide();
+        show();
     }
 
 
@@ -394,11 +411,10 @@ namespace rat
         _glyphArea.initAssetsViaGUI(gui);
         _profArea.initAssetsViaGUI(gui);
         _skillArea.initAssetsViaGUI(gui);
-        std::cout << "mech\n";
         _chosenSkillArea.initAssetsViaGUI(gui);
-        std::cout << "mech\n";
         _enemyArea.initEnemiesViaCodex(_enemyCodex);
         _enemyArea.initAssetsViaGUI(gui);
+        _battleButton.loadAssetsFromGUI(gui);
     }
     
 }

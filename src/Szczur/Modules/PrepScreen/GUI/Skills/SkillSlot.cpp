@@ -91,36 +91,40 @@ namespace rat
         _ppCost->setString(std::to_string(cost));
         _ppCost->show();
 
-        size_t glyphesAmount = ppCost.getNumberOfRequirements();
+        int glyphesAmount = 0;
+        for(auto& [glyph, amount] : ppCost) glyphesAmount += int(amount);
 
         for(auto glyphIcon : _glyphes) glyphIcon->hide();
 
         size_t i = 0;
         for(auto& [glyph, power] : ppCost)
         {
-            auto* widget = _glyphes[i];
-            widget->show();
-
             auto* texture = _glyphesTexs.find(glyph)->second;
-            widget->setTexture(texture);
-
-            sf::Vector2f pos = {0.f, 0.5f};
-            const float a = 0.2f;
-
-            if(glyphesAmount == 2)
+            for(int j = 0; j < int(power); ++j)
             {
-                if(i == 0) pos.y = a;
-                else pos.y = 1.f - a;
-            }
-            else if(glyphesAmount == 3)
-            {
-                if(i == 0) pos.y = a;
-                else if(i == 2) pos.y = 1.f - a;
-            }
+                auto* widget = _glyphes[i];
+                widget->show();
 
-            widget->setPropPosition(pos);
+                widget->setTexture(texture);
 
-            ++i;
+                sf::Vector2f pos = {0.f, 0.5f};
+                const float a = 0.2f;
+
+                if(glyphesAmount == 2)
+                {
+                    if(i == 0) pos.y = a;
+                    else pos.y = 1.f - a;
+                }
+                else if(glyphesAmount == 3)
+                {
+                    if(i == 0) pos.y = a;
+                    else if(i == 2) pos.y = 1.f - a;
+                }
+
+                widget->setPropPosition(pos);
+
+                ++i;
+            }
         }
         _glyphesAmount = i;
     }
@@ -173,7 +177,7 @@ namespace rat
         _ppCost->hide();
         for(auto* gl : _glyphes) gl->hide();
         _base->setColor(sf::Color::White);
-        //_skill = nullptr;
+        _skill = nullptr;
     }
 
     void SkillSlot::_onSale()

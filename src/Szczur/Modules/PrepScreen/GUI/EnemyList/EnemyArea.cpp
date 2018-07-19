@@ -12,7 +12,7 @@ namespace rat
 {
     EnemyArea::EnemyArea()
     {
-        _getBase()->setPropPosition(0.f, 0.5f);
+        //_getBase()->setPropPosition(0.f, 0.5f);
         _border = new WindowWidget;
         _addWidget(_border);
         //_border->setScale(0.2f, 0.2f);

@@ -11,7 +11,7 @@ namespace rat
     public:
         BattleButton();
         void setParent(Widget* parent);
-        void setCallback(std::function<void(Widget*)>& call);
+        void setCallback(const std::function<void(Widget*)>& call);
         void loadAssetsFromGUI(GUI& gui);
     private:
         WindowWidget* _background{nullptr};

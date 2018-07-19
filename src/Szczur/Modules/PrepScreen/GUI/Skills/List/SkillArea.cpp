@@ -78,8 +78,7 @@ namespace rat
         {
             _skillBars[i]->setSkill(skills[i]);
         }
-
-        //_skillsScroller->resetScrollerPosition();
+        recalculateSkillsAvailability();
     }
 
     void SkillArea::recalculateSkillsAvailability()
