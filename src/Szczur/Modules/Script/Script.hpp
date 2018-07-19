@@ -3,8 +3,6 @@
 #include <string>
 #include <memory> // unique_ptr
 
-#include <sol.hpp>
-
 #include "Szczur/Utility/Modules/Module.hpp"
 #include "Szczur/Modules/Script/ScriptClass.hpp"
 

@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 
-#include <sol.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -82,10 +81,10 @@ namespace rat {
 
 	}
 	void Script::scriptFile(const std::string& filePath) {
-		_lua.script_file(filePath);
+		_lua.safe_script_file(filePath);
 	}
 	void Script::script(const std::string& code) {
-		_lua.script(code);
+		_lua.safe_script(code);
 	}
 
 	sol::state& Script::get() {
@@ -93,13 +92,14 @@ namespace rat {
 	}
 	sol::table Script::newModule(const std::string& moduleName, const std::string &scriptPath) {
 		_lua.create_table(moduleName);
-		if (scriptPath != "") _lua.script_file(scriptPath);
+		if (scriptPath != "") _lua.safe_script_file(scriptPath);
 		return _lua[moduleName];
 	}
 
 	Script::Script(){
 		LOG_INFO(this, " : Module Script constructed");
 		init();
+
 		if (!_this) _this = this;
 	}
 
