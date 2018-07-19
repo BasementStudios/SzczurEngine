@@ -24,8 +24,8 @@ BattleComponent::BattleComponent(Entity* parent) :
    	_areaShape.setRotation({ 90.f, 0.f, 0.f });
 
 	// TEST
-	_config.addPawn("pig")->position = glm::vec2(400.f, 200.f);
-	_config.addPawn("pig")->position = glm::vec2(0.f, 0.f);
+	// _config.addPawn("pig")->position = glm::vec2(400.f, 200.f);
+	// _config.addPawn("pig")->position = glm::vec2(0.f, 0.f);
 	// --TEST
 }
 
@@ -63,7 +63,7 @@ void BattleComponent::saveToConfig(Json& config) const
 
 void BattleComponent::setSize(const glm::vec2& size)
 {
-	_config.setSize(size);
+	// _config.setSize(size);
    	_areaShape.setSize(size); 
    	_areaShape.setOrigin({ size.x / 2.f, size.y / 2.f, 0.f }); 
 }
@@ -87,27 +87,27 @@ void BattleComponent::update(ScenesManager& scenes, float deltaTime)
 void BattleComponent::render(sf3d::RenderTarget& target) 
 {
    	_areaShape.setPosition(getEntity()->getPosition()); 
-    target.draw(_areaShape);
+    // target.draw(_areaShape);
 }
 
 void BattleComponent::renderHeader(ScenesManager& scenes, Entity* object) 
 {
-	if(ImGui::CollapsingHeader("Battle##battle_component")) {
+	// if(ImGui::CollapsingHeader("Battle##battle_component")) {
 
-		// Edit battle button
-		if(ImGui::Button("Edit battle")) {
-			_config.setPosition(getEntity()->getPosition());
-			auto* scene = _battleModule->activateScene(getEntity()->getScene());
-			scene->setupConfig(&_config);
-		}
+	// 	// Edit battle button
+	// 	if(ImGui::Button("Edit battle")) {
+	// 		_config.setPosition(getEntity()->getPosition());
+	// 		auto* scene = _battleModule->activateScene(getEntity()->getScene());
+	// 		scene->setupConfig(&_config);
+	// 	}
 
-		// Change area size
-		glm::vec2 areaSize = _config.getSize();
-		if(ImGui::DragFloat2("Area size", reinterpret_cast<float*>(&areaSize))) {
+	// 	// Change area size
+	// 	glm::vec2 areaSize = _config.getSize();
+	// 	if(ImGui::DragFloat2("Area size", reinterpret_cast<float*>(&areaSize))) {
 		
-		}
-		setSize(areaSize);
-	}
+	// 	}
+	// 	setSize(areaSize);
+	// }
 }
 
 } //namespace rat

@@ -4,8 +4,6 @@
 
 #include <Szczur/Modules/World/Component.hpp>
 
-#include <Szczur/Modules/Battle/BattleConfig.hpp>
-
 #include <Szczur/Utility/SFML3D/RectangleShape.hpp>
 
 namespace rat
@@ -68,7 +66,6 @@ private:
 // Vars
 
 	Battle* _battleModule;
-	BattleConfig _config;
 	sf3d::RectangleShape _areaShape;
 };
 
