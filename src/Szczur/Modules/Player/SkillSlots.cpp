@@ -92,9 +92,10 @@ namespace rat {
 	void SkillSlots::setPPCost(const std::string& nameID, int number) {
 		for (size_t i = 0; i < 6; i++)
 		{
-			if (_slotsList[i]->skill->getNameID() == nameID) {
+			if (_slotsList[i]->skill && _slotsList[i]->skill->getNameID() == nameID) {
 				_slotsList[i]->PPImage->setTexture(_PPList[number - 1]);
 				_slotsList[i]->skill->setPPCost(number);
+				return;
 			}
 		}
 	}
