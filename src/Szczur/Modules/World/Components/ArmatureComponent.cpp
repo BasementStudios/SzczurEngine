@@ -453,9 +453,9 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		// Select animation button
 		if (auto* arm = getArmature(); arm && arm->getAnimation())
 		{
-			if (ImGui::BeginCombo("Animation", arm->getAnimation()->getLastAnimationName().c_str()))
+			if (ImGui::BeginCombo("Animation##armature_component", arm->getAnimation()->getLastAnimationName().c_str()))
 			{
-				for (auto& anim : arm->getArmature()->getAnimation()->getAnimationNames())
+				for (auto& anim : arm->getAnimation()->getAnimationNames())
 				{
 					bool isSelected = (arm->getAnimation()->getLastAnimationName() == anim);
 
@@ -479,6 +479,14 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			}
 
 			ImGui::DragFloat<ImGui::CopyPaste>("Animation speed##armature_component", arm->getAnimation()->timeScale, 0.01f);
+
+
+			bool flipX = arm->getArmature()->getFlipX();
+			if (ImGui::Checkbox("Flip X##armature_component", &flipX))
+			{
+				arm->getArmature()->setFlipX(flipX);
+			}
+
 		}
 	}
 }
