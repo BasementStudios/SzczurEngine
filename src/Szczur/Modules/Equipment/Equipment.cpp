@@ -312,7 +312,7 @@ namespace rat {
 		return _normalSlots->getSlotsAmount();
 	}
 	
-	void Equipment::setNewItemsPath(std::string newPath){
+	void Equipment::setNewItemsPath(const std::string& newPath){
 		_pathToJson = newPath;
 		_itemManager->setNewPath(newPath);
 	}
