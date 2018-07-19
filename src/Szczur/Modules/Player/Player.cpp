@@ -16,10 +16,14 @@ namespace rat {
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
 		_pathToJson = "Assets/Player/skills.json";
-	
+		
+		LOG_INFO("A")
 		initScript();
+		LOG_INFO("B")
 		initJson();
+		LOG_INFO("C")
 		initGUI();
+		LOG_INFO("D")
 
 		LOG_INFO("Player module initialized");
 	}
@@ -30,6 +34,8 @@ namespace rat {
 
 	void Player::initGUI() {
 		auto& gui = getModule<GUI>();
+
+		LOG_INFO("T1")
 
 		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_1.png");
 		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_2.png");
@@ -53,6 +59,7 @@ namespace rat {
 
 		gui.addTexture("Assets/Player/pp.png");
 		gui.addTexture("Assets/Player/pp_back.png");
+		gui.addTexture("Assets/Player/pp_light.png");
 		gui.addTexture("Assets/Player/pp_broken.png");
 
 		gui.addTexture("Assets/Player/skills/skill_back.png");
@@ -66,23 +73,30 @@ namespace rat {
 
 		gui.addTexture("Assets/Player/item_slot.png");
 
+		gui.addTexture("Assets/Player/poisoning.png");
+		gui.addTexture("Assets/Player/bleeding.png");
+
 		gui.addTexture("Assets/Player/background.png");
 		gui.addTexture("Assets/Player/gui_back.png");
+
+		LOG_INFO("T2")
 
 		_base = gui.addInterface();
 		_base->setSizingWidthToHeightProportion(1.f);
 
-		_background = new ImageWidget;
-		_base->add(_background);
-		_background->setTexture(gui.getTexture("Assets/Player/background.png"));
-		_background->setPropSize({1.77f, 1.f});
+		// _background = new ImageWidget;
+		// _base->add(_background);
+		// _background->setTexture(gui.getTexture("Assets/Player/background.png"));
+		// _background->setPropSize({1.77f, 1.f});
 
+		LOG_INFO("T3")
 		_HPBack = new ImageWidget;
 		_base->add(_HPBack);
 		_HPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
 		_HPBack->setPropPosition(0.f, 0.f);
 		_HPBack->setPropSize(0.37f, 0.08f);
 
+		LOG_INFO("T4")
 		_HPBar = new HPBar();
 		_HPBar->setParent(_base);
 		_HPBar->initGUI(gui);
@@ -92,6 +106,7 @@ namespace rat {
 		_HPBar->setCurrentHP(95);
 		_HPBar->setHPBarIndex(1);
 
+		LOG_INFO("T5")
 		_TimeBar = new TimeBar();
 		_TimeBar->setParent(_base);
 		_TimeBar->initGUI(gui);
@@ -101,6 +116,7 @@ namespace rat {
 		_TimeBar->setCurrentTime(95);
 		_TimeBar->setTimeBarIndex(1);
 
+		LOG_INFO("T6")
 		_PPBack = new ImageWidget;
 		_base->add(_PPBack);
 		_PPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
@@ -108,28 +124,38 @@ namespace rat {
 		_PPBack->setPropSize(0.6f, 0.1f);
 
 		_PPCount = new PPCount;
-		_PPCount->setParent(_base);
-		_PPCount->initGUI(gui);
-		_PPCount->setPropPosition({0.5f, 0.f});
-		_PPCount->setBrokenSlotAmount(10);
-		_PPCount->setPPCount(5);
+	    _PPCount->setParent(_base);
+	    _PPCount->initGUI(gui);
+	    _PPCount->setPropPosition({0.5f, 0.f});
+	    _PPCount->setSlotsAmount(7, 5);
+	    _PPCount->setSlotsAmount(5, 5);  
+	    //_PPCount->setGoodSlotAmount(5);
+	    //_PPCount->setBrokenSlotAmount(5);
+	    _PPCount->setPPCount(5);
+	    _PPCount->setHighlightedPPAmount(2);
+	    _PPCount->setPPCount(4);
 
+		LOG_INFO("T8")
 		_skillSlots = new SkillSlots(gui);
 		_skillSlots->setParent(_base);
 		_skillSlots->setPropPosition({0.5f, 0.05f});
 		_skillSlots->addSkill(&_skillsList[0]);
 		_skillSlots->addSkill(&_skillsList[1]);
+		// setPPCost(_skillsList[0].getNameID(), 0);
 
+		LOG_INFO("T9")
 		_itemBack = new ImageWidget;
 		_base->add(_itemBack);
 		_itemBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
 		_itemBack->setPropPosition(1.f, 0.f);
 		_itemBack->setPropSize(0.4f, 0.08f);
 
+		LOG_INFO("T10")
 		_itemSlots = new ItemSlots(gui);
 		_itemSlots->setParent(_base);
 		_itemSlots->setPropPosition({ .97f, 0.03f });
-		stop();
+		//stop();
+		LOG_INFO("T11")
 	}
 
 	void Player::start() {
@@ -138,6 +164,17 @@ namespace rat {
 
 	void Player::stop() {
 		_base->fullyDeactivate();
+	}
+
+	void Player::clearSkillSlots() {
+		_skillSlots->clear();
+	}
+
+	void Player::setHPbarStatus(const std::string& name) {
+		_HPBar->setStatus(name);
+	}
+	void Player::removeHPbarStatus(const std::string& name) {
+		_HPBar->removeStatus(name);
 	}
 
 	void Player::initJson() {
@@ -317,12 +354,21 @@ namespace rat {
 		_TimeBar->setMaxTime(time);
 	}
 
-	void Player::setBrokenPPAmount(int amount) {
+	void Player::setPPSlotsAmount(int good, int broken) {
+		_PPCount->setSlotsAmount(good, broken);
+	}
+
+	void Player::setHighlightedPPAmount(int newAmount) {
+		_PPCount->setHighlightedPPAmount(newAmount);
+	}
+
+
+	/*void Player::setBrokenPPAmount(int amount) {
 		_PPCount->setBrokenSlotAmount(amount);
 	}
 	void Player::setGoodPPAmount(int amount) {
 		_PPCount->setGoodSlotAmount(amount);
-	}
+	}*/
 
 	void Player::addSkillToSlot(const std::string& nameID) {
 		for (size_t i = 0; i < _skillsList.size(); i++)
@@ -341,6 +387,10 @@ namespace rat {
 	void Player::setCounter(const std::string& nameID, const std::string& number) {
 		//if number = "0" skill resets (number is no longer visible)
 		_skillSlots->setCounter(nameID, number);
+	}
+
+	void Player::setPPCost(const std::string& nameID, int number) {
+		_skillSlots->setPPCost(nameID, number);
 	}
 
 	void Player::addItem(const std::string& nameID, sf::Texture* text) {

@@ -49,19 +49,27 @@ namespace rat {
 		void setCurrentTime(int);
 		void setMaxTime(int);
 
-		void setBrokenPPAmount(int);
-		void setGoodPPAmount(int);
+		/*void setBrokenPPAmount(int);
+		void setGoodPPAmount(int);*/
+		void setPPSlotsAmount(int good, int broken);
+		void setHighlightedPPAmount(int newAmount);
 
 		void addSkillToSlot(const std::string&);
 		void chooseSkill(const std::string&);
 		void unChooseSkill(const std::string&);
 		void setCounter(const std::string&, const std::string& number);
+		void setPPCost(const std::string&, int number);
 
 		void addItem(const std::string&, sf::Texture*);
 		void removeItem(const std::string&);
 
 		void start();
 		void stop();
+
+		void clearSkillSlots();
+
+		void setHPbarStatus(const std::string&);
+		void removeHPbarStatus(const std::string&);
 	private:
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _background = nullptr;

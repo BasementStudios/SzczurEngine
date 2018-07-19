@@ -17,16 +17,21 @@ namespace rat {
 		void setPPCount(int newCount);
 		void setGoodSlotAmount(int newAmount);
 		void setBrokenSlotAmount(int newAmount);
+		void setHighlightedPPAmount(int newAmount);
+		void setSlotsAmount(int goodAmount, int badAmount);
 
 		void initGUI(GUI& gui);
 	private:
-		int _PPCount;
-		int _brokenCount;
+		int _PPCount = 0;
+		int _brokenCount = 0;
+		int _goodCount = 0;
 		int _slotCount = 15;
+		int _highlightedPP = 0;
 
 		Widget* _base = nullptr;
 
 		sf::Texture* _PPTexture = nullptr;
+		sf::Texture* _highlightPPTexture = nullptr;
 		sf::Texture* _slotTexture = nullptr;
 		sf::Texture* _brokenSlotTexture = nullptr;
 

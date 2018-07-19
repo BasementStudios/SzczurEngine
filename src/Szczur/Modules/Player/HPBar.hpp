@@ -18,6 +18,8 @@ namespace rat {
 
 		void setPropSize(sf::Vector2f size);
 		void setPropPosition(sf::Vector2f pos);
+		void setStatus(const std::string&);
+		void removeStatus(const std::string&);
 	private:
 		void _recalcBar();
 
@@ -32,6 +34,11 @@ namespace rat {
 
 		Widget* _base = nullptr;
 		ImageWidget* _backgroundHeart = nullptr;
+		ImageWidget* _poisoningStatus = nullptr;
+		ImageWidget* _bleedingStatus = nullptr;
+		bool _isBleedingActivated;
+		bool _isPoisoningActivated;
+
 		ImageWidget* _foregroundHeart = nullptr;
 	};
 }

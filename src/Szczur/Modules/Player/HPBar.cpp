@@ -10,6 +10,17 @@ namespace rat {
 		_base->add(_backgroundHeart);
 		_foregroundHeart = new ImageWidget;
 		_base->add(_foregroundHeart);
+
+		_poisoningStatus = new ImageWidget;
+		_base->add(_poisoningStatus);
+		_poisoningStatus->setPropPosition(0.4f, 1.3f);
+		_poisoningStatus->fullyDeactivate();
+
+		_bleedingStatus = new ImageWidget;
+		_base->add(_bleedingStatus);
+		_bleedingStatus->setPropPosition(0.2f, 1.3f);
+		_bleedingStatus->fullyDeactivate();
+
 	}
 
 	void HPBar::setParent(Widget* newParent) {
@@ -24,6 +35,9 @@ namespace rat {
 		_backgroundTexture.push_back(gui.getTexture("Assets/Player/bars/hp_bar/hp_bar_back_1.png"));
 		_backgroundTexture.push_back(gui.getTexture("Assets/Player/bars/hp_bar/hp_bar_back_2.png"));
 		_backgroundTexture.push_back(gui.getTexture("Assets/Player/bars/hp_bar/hp_bar_back_3.png"));
+
+		_bleedingStatus->setTexture(gui.getTexture("Assets/Player/bleeding.png"));
+		_poisoningStatus->setTexture(gui.getTexture("Assets/Player/poisoning.png"));
 	}
 
 	void HPBar::setHPBarIndex(int index) {
@@ -65,11 +79,40 @@ namespace rat {
 		_base->setPropSize(size);
 		_foregroundHeart->setPropSize(size);
 		_backgroundHeart->setPropSize(size);
+		_poisoningStatus->setPropSize(size.y / 3, size.y / 3);
+		_bleedingStatus->setPropSize(size.y / 3, size.y / 3);
 	}
 
 	void HPBar::setPropPosition(sf::Vector2f pos) {
 		_base->setPropPosition(pos);
 		_foregroundHeart->setPropPosition(pos);
 		_backgroundHeart->setPropPosition(pos);
+	}
+
+	void HPBar::setStatus(const std::string& name) {
+		if (name == "bleeding") {
+			_bleedingStatus->fullyActivate();
+			_isBleedingActivated = true;
+		}
+		if (name == "poisoning") {
+			_poisoningStatus->fullyActivate();
+			_isPoisoningActivated = true;
+			if(_isBleedingActivated)
+				_poisoningStatus->setPropPosition(0.32f, 1.3f);
+			else
+				_poisoningStatus->setPropPosition(0.2f, 1.3f);
+		}
+	}
+	void HPBar::removeStatus(const std::string& name) {
+		if (name == "bleeding") {
+			_bleedingStatus->fullyDeactivate();
+			_isBleedingActivated = false;
+			if(_isPoisoningActivated)
+				_poisoningStatus->setPropPosition(0.2f, 1.3f);
+		}
+		if (name == "poisoning") {
+			_poisoningStatus->fullyDeactivate();
+			_isPoisoningActivated = false;
+		}
 	}
 }

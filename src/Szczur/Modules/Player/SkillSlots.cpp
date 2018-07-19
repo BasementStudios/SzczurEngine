@@ -46,6 +46,18 @@ namespace rat {
 		}
 	}
 
+	void SkillSlots::clear() {
+		for (size_t i = 0; i < 6; i++)
+		{
+			_slotsList[i]->PPImage->removeTexture();
+			_slotsList[i]->itemCounter->setString("");
+			_slotsList[i]->isChosen = false;
+			_slotsList[i]->skillImage->removeTexture();
+			_slotsList[i]->skillImage->resetColor();
+			_slotsList[i]->skill = nullptr;
+		}
+	}
+	
 	void SkillSlots::setParent(Widget* base) {
 		base->add(_base);
 	}
@@ -70,11 +82,27 @@ namespace rat {
 				_slotsList[i]->skill = skill;
 				_slotsList[i]->skillImage->setTexture(skill->getIcon());
 
-				_slotsList[i]->PPImage->setTexture(_PPList[skill->getPPcost() - 1]);
+				if(skill->getPPcost() != 0 && skill->getPPcost() <= 4)
+					_slotsList[i]->PPImage->setTexture(_PPList[skill->getPPcost() - 1]);
 				break;
 			}
 		}
 	}
+
+	void SkillSlots::setPPCost(const std::string& nameID, int number) {
+		for (size_t i = 0; i < 6; i++)
+		{
+			if (_slotsList[i]->skill && _slotsList[i]->skill->getNameID() == nameID) {
+				if (number != 0 && number <= 4)
+					_slotsList[i]->PPImage->setTexture(_PPList[number - 1]);
+				else
+					_slotsList[i]->PPImage->removeTexture();
+				_slotsList[i]->skill->setPPCost(number);
+				return;
+			}
+		}
+	}
+
 
 	void SkillSlots::setPropPosition(sf::Vector2f pos) {
 		_base->setPropPosition(pos);
