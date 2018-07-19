@@ -59,6 +59,9 @@ namespace rat {
 
 		void addItem(const std::string&, sf::Texture*);
 		void removeItem(const std::string&);
+
+		void start();
+		void stop();
 	private:
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _background = nullptr;

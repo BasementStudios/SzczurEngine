@@ -129,6 +129,15 @@ namespace rat {
 		_itemSlots = new ItemSlots(gui);
 		_itemSlots->setParent(_base);
 		_itemSlots->setPropPosition({ .97f, 0.03f });
+		stop();
+	}
+
+	void Player::start() {
+		_base->fullyActivate();
+	}
+
+	void Player::stop() {
+		_base->fullyDeactivate();
 	}
 
 	void Player::initJson() {
