@@ -66,6 +66,9 @@ namespace rat {
 
 		gui.addTexture("Assets/Player/item_slot.png");
 
+		gui.addTexture("Assets/Player/poisoning.png");
+		gui.addTexture("Assets/Player/bleeding.png");
+
 		gui.addTexture("Assets/Player/background.png");
 		gui.addTexture("Assets/Player/gui_back.png");
 
@@ -129,7 +132,7 @@ namespace rat {
 		_itemSlots = new ItemSlots(gui);
 		_itemSlots->setParent(_base);
 		_itemSlots->setPropPosition({ .97f, 0.03f });
-		stop();
+		//stop();
 	}
 
 	void Player::start() {
@@ -144,11 +147,11 @@ namespace rat {
 		_skillSlots->clear();
 	}
 
-	void Player::setHPbarStatus(sf::Texture* text) {
-		_HPBar->setStatus(text);
+	void Player::setHPbarStatus(const std::string& name) {
+		_HPBar->setStatus(name);
 	}
-	void Player::removeHPbarStatus() {
-		_HPBar->removeStatus();
+	void Player::removeHPbarStatus(const std::string& name) {
+		_HPBar->removeStatus(name);
 	}
 
 	void Player::initJson() {

@@ -65,7 +65,8 @@ namespace rat {
 
 		void clearSkillSlots();
 
-		void setHPbarStatus();
+		void setHPbarStatus(const std::string&);
+		void removeHPbarStatus(const std::string&);
 	private:
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _background = nullptr;
