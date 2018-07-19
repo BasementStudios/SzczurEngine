@@ -514,8 +514,13 @@ void Cinematics::stop()
         delete [] m_data;
         m_play = false;
 
-        if(m_callbackFinish.valid())
+        if(m_callbackFinish.valid() && m_isCallbackSet)
+        {
             m_callbackFinish();
+            m_isCallbackSet = false;
+        }
+        
+        
     }
 }
 
@@ -532,6 +537,7 @@ bool Cinematics::isPlaying()
 void Cinematics::setCallbackFinish(callme t)
 {
     m_callbackFinish = t;
+    m_isCallbackSet = true;
 }
 
 }

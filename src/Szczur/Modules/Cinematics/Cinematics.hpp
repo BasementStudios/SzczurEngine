@@ -134,6 +134,7 @@ private:
     bool                m_isInit = false;
     bool                m_play = false;
     bool                m_isMusic = false;
+    bool                m_isCallbackSet = false;
 
     int                 m_ICurrentLoop;
     int                 m_frameFinished;
