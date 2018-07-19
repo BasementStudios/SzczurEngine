@@ -98,7 +98,7 @@ namespace rat {
 			}
 		}
 	}
-	void ItemManager::setNewPath(std::string newPath)
+	void ItemManager::setNewPath(const std::string& newPath)
 	{
 		_pathToFile = newPath;
 	}

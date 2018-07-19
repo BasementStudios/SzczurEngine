@@ -37,7 +37,7 @@ namespace rat
 
 		bool canPreviewBeInstantiated;
 
-		void setNewItemsPath(std::string);
+		void setNewItemsPath(const std::string&);
 		void reloadItemsList();
 		std::string& getPathToJson();
 
