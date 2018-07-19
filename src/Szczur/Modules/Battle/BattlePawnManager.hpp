@@ -25,6 +25,12 @@ class BattlePawnManager {
 		float maxTime = 100.f;
 		float height = 0.f;
 
+		bool isDamageAnimation = false;
+		std::string damageAnimationName = "";
+		float damageAnimationFade = 0.1;
+		bool damageAnimationWait = false;
+		float damageAnimationSpeed = 1.0;
+
 		PawnData(const std::string& nameID);
 	};
 

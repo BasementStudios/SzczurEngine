@@ -111,6 +111,20 @@ public:
 	///
 	int getSkillAmount();
 
+	///
+	void setSkills(const std::vector<std::string>& _skillNames);
+
+// Statuses
+
+	///
+	void setStatus(int index);
+
+	///
+	bool checkStatus(int index);
+
+	///
+	void clearStatuses();
+
 // Script
 
 	///
@@ -137,8 +151,12 @@ public:
 	void setHealth(float value);
 	void setMaxHealth(float value);
 	void addHealth(float value);
+
 	float getHealth();
 	float getMaxHealth();
+
+	void addHealthHit(float value);
+	void setHealthHit(float value);
 
 // Time
 
@@ -147,6 +165,10 @@ public:
 	void addTime(float value);
 	float getTime();
 	float getMaxTime();
+
+// Damage animation
+
+	void setDamageAnimation(const std::string& name, float fade, bool wait, float speed);
 
 // Main
 
@@ -190,6 +212,7 @@ private:
 
 // Callbacks
 	sol::function _onCollision;
+	sol::function _onUpdate;
 
 // Collider
 	float _radius = 50.0;
@@ -209,12 +232,22 @@ private:
 // Skills
 	std::vector<std::unique_ptr<BattleSkill>> _skills;
 
+// Statuses
+	std::vector<int> _statuses;
+
 // Script
 	std::string _scriptPath;
 
 // Identification
 	std::string _nameID;
 	BattleScene* _scene;
+
+// Damage animation
+	bool _isDamageAnimation = false;
+	std::string _damageAnimationName = "";
+	float _damageAnimationFade = 0.1;
+	bool _damageAnimationWait = false;
+	float _damageAnimationSpeed = 1.0;
 };
 
 }

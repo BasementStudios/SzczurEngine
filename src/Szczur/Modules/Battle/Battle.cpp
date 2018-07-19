@@ -33,6 +33,7 @@ Battle::Battle()
 
     // TEST
     getModule<Script>().scriptFile("Assets/Battles/test_battle.lua");
+    getPlayer()->setSkills({"Move", "Stun hit", "Dash and hit", "Magic bomb", "Explosion"});
 	// --TEST
 }
 
@@ -99,6 +100,13 @@ BattlePawn* Battle::getPlayer()
 	return nullptr;
 }
 
+void Battle::setPlayerSkills(const std::vector<std::string>& _skillNames)
+{
+	if(isActiveScene()) {
+		getPlayer()->setSkills(_skillNames);
+	}
+}
+
 // ----------------- Sprites -----------------
 
 BattleSprite* Battle::newSprite(const std::string& textureName)
@@ -121,6 +129,8 @@ BattleAnimationSprite* Battle::newAnimationSprite(const std::string& textureName
 
 BattleScene* Battle::createScene(const glm::vec3& position, const glm::vec2& size, float scale)
 {
+	getModule<Player>().start();
+	
 	_currentScene.reset(new BattleScene(position, size, scale));
 
 	return _currentScene.get();
@@ -128,8 +138,13 @@ BattleScene* Battle::createScene(const glm::vec3& position, const glm::vec2& siz
 
 void Battle::deactivateScene() 
 {
-	_currentScene = nullptr;
-	_battleActive = false;
+	getModule<Player>().stop();
+
+	if(isActiveScene()) {
+		_currentScene->finish();
+		_currentScene = nullptr;
+		_battleActive = false;
+	}
 }
 
 bool Battle::isActiveScene()
@@ -234,6 +249,12 @@ void Battle::update(float deltaTime)
 			// set Player inactive 
 		}
 		_currentScene->update(deltaTime);
+		if(getPlayer()->getHealth()<=0) {
+			deactivateScene();
+		}
+		else if(getCurrentScene()->getPawns().size()==1) {
+			deactivateScene();
+		}
 	}
 }
 
@@ -265,6 +286,7 @@ void Battle::initScript()
 	module.set_function("createScene", &Battle::createScene, this);
 	module.set_function("deactivateScene", &Battle::deactivateScene, this);
 	module.set_function("isActiveScene", &Battle::isActiveScene, this);
+	module.set_function("getCurrentScene", &Battle::getCurrentScene, this);
 
 	// Mouse
 	module.set_function("isSkillButtonPressed", &Battle::isSkillButtonPressed, this);

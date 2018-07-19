@@ -50,10 +50,18 @@ void BattlePawnManager::loadAllPawns(const std::string& configPath)
 						if(auto& var = pawn["time"]; !var.is_null()) {
 							newPawn->time = var[0];
 							newPawn->maxTime = var[1];
-						}
 
 						if(auto& var = pawn["height"]; !var.is_null()) 
 							newPawn->height = var;
+						}
+
+						if(auto& var = pawn["damageAnimation"]; !var.is_null()) {
+							newPawn->damageAnimationName = var[0];
+							newPawn->damageAnimationFade = var[1];
+							newPawn->damageAnimationWait = var[2];
+							newPawn->damageAnimationSpeed = var[3];
+							newPawn->isDamageAnimation = true;
+						}
 					}
 				}
 				catch(nlohmann::json::exception e) {
@@ -103,6 +111,14 @@ std::unique_ptr<BattlePawn> BattlePawnManager::createPawn(const std::string& nam
 			newPawn->setTime(pawn->time);
 			newPawn->setMaxTime(pawn->maxTime);
 			newPawn->setHeight(pawn->height);
+			if(pawn->isDamageAnimation) {
+				newPawn->setDamageAnimation(
+					pawn->damageAnimationName,
+					pawn->damageAnimationFade,
+					pawn->damageAnimationWait,
+					pawn->damageAnimationSpeed
+				);
+			}
 			newPawn->loadScript(pawn->scriptPath);
 			return std::move(newPawn);
 		}

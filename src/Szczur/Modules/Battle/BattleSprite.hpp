@@ -31,6 +31,12 @@ public:
 
 	void setScale(float scale);
 
+	void setRotation(glm::vec3 rotation);
+
+	glm::vec3 getRotation();
+
+	void rotate(glm::vec3 rotation);
+
 	void setHeight(float height);
 
 	void move(glm::vec2 direction);

@@ -31,10 +31,17 @@ public:
 
 	void use(bool zeroTime);
 
+	void setCostPP(int value);
+
+	int getCostPP();
+
 // Identification
 
 	///
 	void setName(const std::string& name);
+
+	///
+	const std::string& getName();
 
 	///
 	void setPawn(BattlePawn* pawn);
@@ -59,6 +66,9 @@ private:
 	sol::object _getScriptDataObject(const std::string& key);
 
 private:
+
+// PP
+	int _costPP = 0;
 
 // Identification
 

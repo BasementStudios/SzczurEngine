@@ -13,4 +13,12 @@ scene:addPawn("krowolykA", GLM.Vec2(1000, 500))
 scene:addPawn("krowolykB", GLM.Vec2(1500, 700))
 scene:activate()
 
+function scene:onFinish(isWin)
+	if isWin then 
+		print("Win (:")
+	else 
+		print("Lose :(")
+	end
+end
+
 -- end

@@ -8,6 +8,8 @@
 #include <Szczur/Utility/SFML3D/RectangleShape.hpp>
 #include <Szczur/Utility/SFML3D/CircleShape.hpp>
 
+#include <sol.hpp>
+
 namespace rat {
 
 class Battle;
@@ -48,6 +50,10 @@ public:
 
 	///
 	float getScale();
+
+// Callbacks
+
+	void finish();
 
 // Parent scene
 
@@ -113,6 +119,24 @@ public:
 
 	void updateCollision();
 
+// GUI
+
+	void updateGuiParameters();
+
+// PP
+
+	void setPP(int value);
+	void addPP(int value);
+	int getPP();
+
+	void setMaxPP(int value);
+	void addMaxPP(int value);
+	int getMaxPP();
+
+	void setBrokenPP(int value);
+	void addBrokenPP(int value);
+	int getBrokenPP();
+
 // Main
 
 	///
@@ -127,6 +151,9 @@ public:
 	static void initScript(Script& script);
 
 private:
+
+// Callbacks
+	sol::function _onFinish;
 
 // Pawns
 	std::vector<std::unique_ptr<BattlePawn>> _pawns;
@@ -143,6 +170,11 @@ private:
 
 // Skills
 	BattleSkill* _selectedSkill = nullptr;
+
+// PP
+	int _maxPP = 7;
+	int _pp = 4;
+	int _brokenPP = 0;
 
 // View
 	sf3d::RectangleShape _areaShape;

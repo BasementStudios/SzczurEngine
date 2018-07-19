@@ -10,6 +10,7 @@
 #include <Szczur/Modules/Window/Window.hpp>
 #include <Szczur/Modules/Input/Input.hpp>
 #include <Szczur/Modules/Script/Script.hpp>
+#include <Szczur/Modules/Player/Player.hpp>
 
 namespace rat {
 
@@ -24,7 +25,7 @@ class BattleSkill;
 class Scene;
 class Entity;
 
-class Battle : public Module<Window, Input, Script> {
+class Battle : public Module<Window, Input, Script, Player> {
 public:
 
 // Constructors
@@ -66,6 +67,9 @@ public:
 
 	///
 	BattlePawn* getPlayer();
+
+	///
+	void setPlayerSkills(const std::vector<std::string>& _skillNames);
 
 // Sprites
 

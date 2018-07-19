@@ -51,6 +51,21 @@ void BattleSprite::setScale(float scale)
 	_sprite.setScale({_scale, _scale, 1.f});
 }
 
+void BattleSprite::setRotation(glm::vec3 rotation)
+{
+	_sprite.setRotation(glm::degrees(rotation));
+}
+
+glm::vec3 BattleSprite::getRotation()
+{
+	return glm::radians(_sprite.getRotation());
+}
+
+void BattleSprite::rotate(glm::vec3 rotation)
+{
+	_sprite.rotate(glm::degrees(rotation));
+}
+
 void BattleSprite::setHeight(float height)
 {
 	glm::vec3 pos = _sprite.getPosition();
@@ -103,6 +118,10 @@ void BattleSprite::initScript(Script& script)
 
 	object.set("setOrigin", &BattleSprite::setOrigin);
 	object.set("getOrigin", &BattleSprite::getOrigin);
+
+	object.set("setRotation", &BattleSprite::setRotation);
+	object.set("getRotation", &BattleSprite::getRotation);
+	object.set("rotate", &BattleSprite::rotate);
 
 	object.set("setScale", &BattleSprite::setScale);
 

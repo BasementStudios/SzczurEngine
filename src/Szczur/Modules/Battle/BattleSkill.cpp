@@ -3,6 +3,9 @@
 #include "Battle.hpp"
 #include "BattlePawn.hpp"
 
+#include <Szczur/Modules/Battle/Battle.hpp>
+#include <Szczur/Modules/Battle/BattleScene.hpp>
+
 #include <Szczur/Modules/Script/Script.hpp>
 
 namespace rat
@@ -31,15 +34,23 @@ void BattleSkill::selectedUpdate()
 
 void BattleSkill::use(bool zeroTime)
 {	
+	auto* battle = detail::globalPtr<Battle>;
+
 	if(_pawn != nullptr) {
 	
 		if(!_pawn->isTimeFull()) 
 			return;
-		
+	
+		if(getPawn() == battle->getPlayer() && battle->getCurrentScene()->getPP()<getCostPP())
+			return;
+
 		if(zeroTime) {
 			_pawn->setTime(0);
 		}
 	}
+
+	if(getPawn() == battle->getPlayer())
+		battle->getCurrentScene()->addPP(-getCostPP());
 
 	if(_onUsed.valid()) {
 		_onUsed(this);
@@ -53,11 +64,26 @@ void BattleSkill::renderSpellIndicator()
 	}
 }
 
+void BattleSkill::setCostPP(int value)
+{
+	_costPP = value;
+}
+
+int BattleSkill::getCostPP()
+{
+	return _costPP;
+}
+
 // ----------------- Identification -----------------
 
 void BattleSkill::setName(const std::string& name)
 {
 	_name = name;
+}
+
+const std::string& BattleSkill::getName()
+{
+	return _name;
 }
 
 void BattleSkill::setPawn(BattlePawn* pawn)
@@ -82,9 +108,12 @@ void BattleSkill::initScript(Script& script)
 	// Callbacks
 	object.set("getPawn", &BattleSkill::getPawn);
 	object.set("onUpdate", &BattleSkill::_onUpdate);
+	object.set("getName", &BattleSkill::getName);
 	object.set("onSelectedUpdate", &BattleSkill::_onSelectedUpdate);
 	object.set("onSpellIndicator", &BattleSkill::_onSpellIndicator);
 	object.set("onUsed", &BattleSkill::_onUsed);
+	object.set("setCostPP", &BattleSkill::setCostPP);
+	object.set("getCostPP", &BattleSkill::getCostPP);
 
 	// Data object
 	object.set(sol::meta_function::index, &BattleSkill::_getScriptDataObject);

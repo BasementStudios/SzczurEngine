@@ -1,20 +1,44 @@
 {
 	"skills":{
-		"fajny skill":{
-			"name": "fajne imie",
+		"Magic bomb":{
+			"name": "Magiczna bomba",
 			"description": "fajny opis",
 			"PPCost": 3,
-			"essenceCost": [0, 0, 1, 1],
-			"type": 1,
+			"essenceCost": [0, 0, 0, 0],
+			"type": 2,
 			"iconPath": "Assets/Player/skills/skill_1.png"
 		},
-		"drugi fajny skill":{
-			"name": "też fajne imie",
+		"Move":{
+			"name": "Szarża",
 			"description": "też fajny opis",
-			"PPCost": 4,
-			"essenceCost": [3, 1, 0, 0],
+			"PPCost": 0,
+			"essenceCost": [0, 0, 0, 0],
 			"type": 2,
 			"iconPath": "Assets/Player/skills/skill_2.png"
+		},
+		"Stun hit":{
+			"name": "Szarża",
+			"description": "też fajny opis",
+			"PPCost": 1,
+			"essenceCost": [0, 0, 0, 0],
+			"type": 2,
+			"iconPath": "Assets/Player/skills/skill_3.png"
+		},
+		"Explosion":{
+			"name": "Szarża",
+			"description": "też fajny opis",
+			"PPCost": 4,
+			"essenceCost": [0, 0, 0, 0],
+			"type": 2,
+			"iconPath": "Assets/Player/skills/skill_4.png"
+		},
+		"Dash and hit":{
+			"name": "Szarża",
+			"description": "też fajny opis",
+			"PPCost": 2,
+			"essenceCost": [0, 0, 0, 0],
+			"type": 2,
+			"iconPath": "Assets/Player/skills/skill_5.png"
 		}
 	}
 }

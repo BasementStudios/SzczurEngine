@@ -104,6 +104,17 @@ bool BattlePawn::isTimeFull()
 	return _time >= _maxTime;
 }
 
+// ----------------- Damage animation -----------------
+
+void BattlePawn::setDamageAnimation(const std::string& name, float fade, bool wait, float speed)
+{
+	_isDamageAnimation = true;
+	_damageAnimationName = name;
+	_damageAnimationFade = fade;
+	_damageAnimationWait = wait;
+	_damageAnimationSpeed = speed;
+}
+
 // ----------------- Collider -----------------
 
 void BattlePawn::setRadius(float radius)
@@ -186,7 +197,8 @@ float BattlePawn::getHeight()
 void BattlePawn::renderBars(sf3d::RenderTarget& canvas)
 {
 	_battleModule->getSpellIndicatorManager().renderHpBarIndicator(_position, _height, _health, _maxHealth);
-	_battleModule->getSpellIndicatorManager().renderTimeBarIndicator(_position + glm::vec2(80.f, 0.f), _height-40.f, _time, _maxTime);
+	_battleModule->getSpellIndicatorManager().renderTimeBarIndicator(_position + glm::vec2(40.f, 0.f), _height-40.f, _time, _maxTime);
+	_battleModule->getSpellIndicatorManager().renderStatusBarIndicator(_position + glm::vec2(20.f, 0.f), _height+70.f, _statuses);
 }
 
 // ----------------- Skills -----------------
@@ -223,6 +235,75 @@ int BattlePawn::getSkillAmount()
 	return _skills.size();
 }
 
+void BattlePawn::setSkills(const std::vector<std::string>& _skillNames)
+{
+	std::vector<std::unique_ptr<BattleSkill>> newSkills;
+
+	LOG_INFO("Start!")
+	for(auto& name : _skillNames) {
+		LOG_INFO("Name:", name)
+		for(auto& skill : _skills) {
+			LOG_INFO("Is null: ", (skill.get()==nullptr));
+			if(skill.get() != nullptr) LOG_INFO("Skill:", skill->getName());
+			if(skill.get() != nullptr && skill->getName() == name) {
+				newSkills.emplace_back(skill.release());
+				LOG_INFO("Skill added!");
+				break;
+			}
+		}
+	}
+	LOG_INFO("Finish!")
+
+	_skills.clear();
+	_skills = std::move(newSkills);
+	LOG_INFO("Yey!")
+
+	// for(auto itr = _skills.begin(); itr != _skills.end(); ) {
+	// 	auto* skill = itr->get();
+
+	// 	bool remove = true; 
+	// 	for(auto& name : _skillNames) {
+	// 		if(skill->getName() == name) {
+	// 			remove = false;
+	// 			break;
+	// 		}
+	// 	}
+	// 	if(remove) {
+	// 		itr = _skills.erase(itr);
+	// 	}
+	// 	else {
+	// 		++itr;
+	// 	}
+	// }
+}
+
+// ----------------- Statuses -----------------
+
+void BattlePawn::setStatus(int index)
+{
+	for(auto& status : _statuses) {
+		if(status == index) {
+			return;
+		}
+	}
+	_statuses.emplace_back(index);
+}
+
+bool BattlePawn::checkStatus(int index)
+{
+	for(auto& status : _statuses) {
+		if(status == index) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void BattlePawn::clearStatuses()
+{
+	_statuses.clear();
+}
+
 // ----------------- Script -----------------
 
 void BattlePawn::loadScript(const std::string& scriptPath)
@@ -250,6 +331,7 @@ void BattlePawn::initScript(Script& script)
 
 	// Callbacks
 	object.set("onCollision", &BattlePawn::_onCollision);
+	object.set("onUpdate", &BattlePawn::_onUpdate);
 
 	// Time
 	object.set("isTimeFull", &BattlePawn::isTimeFull);
@@ -261,6 +343,10 @@ void BattlePawn::initScript(Script& script)
 		sol::resolve<void(glm::vec2)>(&BattlePawn::move),
 		sol::resolve<void(glm::vec2, float)>(&BattlePawn::move)
 	);
+
+	// Radius
+	object.set("getRadius", &BattlePawn::getRadius);
+	object.set("setRadius", &BattlePawn::setRadius);
 
 	// Model
 	object.set("armature", &BattlePawn::getArmature);
@@ -277,6 +363,8 @@ void BattlePawn::initScript(Script& script)
 	object.set("addHealth", &BattlePawn::addHealth);
 	object.set("getHealth", &BattlePawn::getHealth);
 	object.set("getMaxHealth", &BattlePawn::getMaxHealth);
+	object.set("addHealthHit", &BattlePawn::addHealthHit);
+	object.set("setHealthHit", &BattlePawn::setHealthHit);
 
 	// Time
 	object.set("setTime", &BattlePawn::setTime);
@@ -284,6 +372,14 @@ void BattlePawn::initScript(Script& script)
 	object.set("addTime", &BattlePawn::addTime);
 	object.set("getTime", &BattlePawn::getTime);
 	object.set("getMaxTime", &BattlePawn::getMaxTime);
+
+	// Damage animation
+	object.set("setDamageAnimation", &BattlePawn::setDamageAnimation);
+
+	// Statuses
+	object.set("setStatus", &BattlePawn::setStatus);
+	object.set("checkStatus", &BattlePawn::checkStatus);
+	object.set("clearStatuses", &BattlePawn::clearStatuses);
 
 	// Data object
 	object.set(sol::meta_function::index, &BattlePawn::_getScriptDataObject);
@@ -340,12 +436,36 @@ float BattlePawn::getMaxHealth()
 	return _maxHealth;
 }
 
+void BattlePawn::addHealthHit(float value)
+{
+	setHealth(_health + value);
+	if(_isDamageAnimation) {
+		_armature->playOnce(_damageAnimationName, _damageAnimationFade, _damageAnimationWait, _damageAnimationSpeed);
+	}
+}
+
+void BattlePawn::setHealthHit(float value)
+{	
+	bool flag = value < getHealth();
+	setHealth(value);
+	if(flag && _isDamageAnimation) {
+		_armature->playOnce(_damageAnimationName, _damageAnimationFade, _damageAnimationWait, _damageAnimationSpeed);
+	}
+}
+
 // ----------------- Time -----------------
 
 void BattlePawn::setTime(float value)
 {
 	if(value<0) value = 0;
-	else if(value > _maxTime) value = _maxTime;
+	else if(value >= _maxTime) {
+
+		if(_time < _maxTime && this == detail::globalPtr<Battle>->getPlayer()) {
+			detail::globalPtr<Battle>->getCurrentScene()->addPP(1);
+		}
+
+		value = _maxTime;
+	}
 	_time = value;
 }
 
@@ -375,7 +495,11 @@ float BattlePawn::getMaxTime()
 
 void BattlePawn::update(float deltaTime)
 {
+	clearStatuses();
 	_entity.update(_worldModule->getScenes(), deltaTime);
+	if(_onUpdate.valid()) {
+		_onUpdate(this);
+	}
 	updateSkills();
 	addTime(deltaTime*10.f);
 }

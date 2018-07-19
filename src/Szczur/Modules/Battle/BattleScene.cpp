@@ -12,6 +12,7 @@
 #include <Szczur/Modules/World/Scene.hpp>
 #include <Szczur/Modules/World/World.hpp>
 #include <Szczur/Modules/Input/Input.hpp>
+#include <Szczur/Modules/Player/Player.hpp>
 
 namespace rat {
 
@@ -75,6 +76,16 @@ glm::vec2 BattleScene::getSize()
 float BattleScene::getScale()
 {
 	return _scale;
+}
+
+// ----------------- Callbacks -----------------
+
+void BattleScene::finish()
+{
+	if(_onFinish.valid()) {
+		_onFinish(this, bool(getPlayer()->getHealth()>0));
+		_onFinish = sol::function();
+	}
 }
 
 // ----------------- Parent scene -----------------
@@ -205,10 +216,7 @@ bool BattleScene::isActive()
 void BattleScene::activate()
 {
 	_activated = true;
-
-	// @temp
 	_selectedSkill = nullptr;
-	// --temp
 }
 
 // ----------------- Cursor -----------------
@@ -279,6 +287,102 @@ void BattleScene::updateCollision()
 	}
 }
 
+// ----------------- GUI -----------------
+
+void BattleScene::updateGuiParameters()
+{
+
+	Player* gui = detail::globalPtr<Player>;
+	gui->setMaxHP(getPlayer()->getMaxHealth());
+	gui->setHP(getPlayer()->getHealth());
+	
+	gui->setMaxTime(getPlayer()->getMaxTime());
+	gui->setCurrentTime(getPlayer()->getTime());
+
+	gui->setPPSlotsAmount(getMaxPP(), getBrokenPP());
+	gui->setMaxPP(getMaxPP());
+	gui->setPP(getPP());
+	gui->setHighlightedPPAmount(0);
+
+	gui->clearSkillSlots();
+
+	for(int i = 0; i<getPlayer()->getSkillAmount(); ++i)
+	{
+		auto* skill = getPlayer()->getSkill(i);
+
+		// auto* guiSkill = gui->getSkill(skill->getName());
+	// 	guiSkill->setPPCost(skill->getCostPP());
+		gui->setPPCost(skill->getName(), skill->getCostPP());
+		gui->addSkillToSlot(skill->getName());
+
+		if(skill == _selectedSkill) {
+			gui->chooseSkill(skill->getName());
+			if(getPP()>=skill->getCostPP()) {
+				gui->setHighlightedPPAmount(skill->getCostPP());	
+			}
+		}
+		else {
+			gui->unChooseSkill(skill->getName());
+		}
+
+		int deltaPP = skill->getCostPP()-getPP();
+		if(deltaPP < 0) deltaPP = 0;
+		gui->setCounter(skill->getName(), std::to_string(deltaPP));
+	}
+}
+	
+void BattleScene::setPP(int value)
+{
+	if(value<0) value = 0;
+	if(value>_maxPP) value = _maxPP;
+
+	_pp = value;
+}
+
+void BattleScene::addPP(int value)
+{
+	setPP(_pp+value);
+}
+
+int BattleScene::getPP()
+{
+	return _pp;
+}
+
+void BattleScene::setMaxPP(int value)
+{
+	if(value<0) value = 0;
+	_maxPP = value;
+	setPP(_pp);
+}
+
+void BattleScene::addMaxPP(int value)
+{
+	setMaxPP(_maxPP + value);
+}
+
+int BattleScene::getMaxPP()
+{
+	return _maxPP;
+}
+
+void BattleScene::setBrokenPP(int value)
+{
+	if(value<0) value = 0;
+	if(value>_maxPP) value = _maxPP;
+	_brokenPP = value;
+}
+
+void BattleScene::addBrokenPP(int value)
+{
+	setBrokenPP(_brokenPP + value);
+}
+
+int BattleScene::getBrokenPP()
+{
+	return _brokenPP;
+}
+
 // ----------------- Main -----------------
 
 void BattleScene::update(float deltaTime)
@@ -307,14 +411,14 @@ void BattleScene::update(float deltaTime)
 		_selectedSkill->selectedUpdate();
 	}
 
-	// Update effects
-	for(size_t i = 0; i<_effects.size(); ++i) {
-		_effects[i]->update();
-	}
-
 	// Update pawns
 	for(size_t i = 0; i<_pawns.size(); ++i) {
 		_pawns[i]->update(deltaTime);
+	}
+
+	// Update effects
+	for(size_t i = 0; i<_effects.size(); ++i) {
+		_effects[i]->update();
 	}
 
 	// Update collisions
@@ -381,7 +485,9 @@ void BattleScene::render(sf3d::RenderTarget& target)
 		_selectedSkill->renderSpellIndicator();
 
 	for(auto& obj : _pawns) {
-		obj->renderBars(target);
+		if(obj.get() != getPlayer()) {
+			obj->renderBars(target);
+		}
 	}
 
 	sf3d::CircleShape shape;
@@ -391,6 +497,8 @@ void BattleScene::render(sf3d::RenderTarget& target)
 	shape.setColor({200.f, 20.f, 180.f, 40.f});
 	shape.setOrigin({50.f, 50.f, 0.f});
 	target.draw(shape);
+
+	updateGuiParameters();
 }
 
 // ----------------- Script -----------------
@@ -404,6 +512,18 @@ void BattleScene::initScript(Script& script)
 	object.set("getPlayer", &BattleScene::getPlayer);
 	object.set("activate", &BattleScene::activate);
 	object.set("getCursorPosition", &BattleScene::getCursorPosition);
+
+	object.set("setPP", &BattleScene::setPP);
+	object.set("addPP", &BattleScene::addPP);
+	object.set("getPP", &BattleScene::getPP);
+	object.set("setMaxPP", &BattleScene::setMaxPP);
+	object.set("addMaxPP", &BattleScene::addMaxPP);
+	object.set("getMaxPP", &BattleScene::getMaxPP);
+	object.set("setBrokenPP", &BattleScene::setBrokenPP);
+	object.set("addBrokenPP", &BattleScene::addBrokenPP);
+	object.set("getBrokenPP", &BattleScene::getBrokenPP);
+
+	object.set("onFinish", &BattleScene::_onFinish);
 
 	object.init();
 }
