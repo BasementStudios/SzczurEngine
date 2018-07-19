@@ -93,7 +93,10 @@ namespace rat {
 		for (size_t i = 0; i < 6; i++)
 		{
 			if (_slotsList[i]->skill && _slotsList[i]->skill->getNameID() == nameID) {
-				_slotsList[i]->PPImage->setTexture(_PPList[number - 1]);
+				if (number != 0 && number <= 4)
+					_slotsList[i]->PPImage->setTexture(_PPList[number - 1]);
+				else
+					_slotsList[i]->PPImage->removeTexture();
 				_slotsList[i]->skill->setPPCost(number);
 				return;
 			}

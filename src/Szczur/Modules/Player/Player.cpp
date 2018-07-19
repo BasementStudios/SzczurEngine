@@ -127,6 +127,7 @@ namespace rat {
 		_skillSlots->setPropPosition({0.5f, 0.05f});
 		_skillSlots->addSkill(&_skillsList[0]);
 		_skillSlots->addSkill(&_skillsList[1]);
+		setPPCost(_skillsList[0].getNameID(), 0);
 
 		_itemBack = new ImageWidget;
 		_base->add(_itemBack);
