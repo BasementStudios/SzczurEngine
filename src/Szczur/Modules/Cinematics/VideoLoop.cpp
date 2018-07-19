@@ -1,5 +1,12 @@
 #include "VideoLoop.hpp"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector2.hpp>
+
+#include "MovieText.hpp"
+
 namespace rat
 {
 VideoLoop::VideoLoop(

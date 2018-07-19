@@ -1,10 +1,14 @@
 #pragma once
+
 #include <functional>
 
-#include <SFML/Graphics.hpp>
+namespace sf {
+    class RenderTarget;
+    class Font;
+}
+#include <SFML/System/Vector2.hpp>
 
 #include "MovieText.hpp"
-
 
 namespace rat
 {
