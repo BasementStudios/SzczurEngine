@@ -374,7 +374,7 @@ namespace rat {
 		return _armorSlots->getWeaponSlot()->getItem()->getNameId() == nameId;
 	}*/
 
-	bool Equipment::hasChosenStone(std::string& nameId) {
+	bool Equipment::hasChosenStone(const std::string& nameId) {
 		return _necklace->hasStone(nameId);
 	}
 
