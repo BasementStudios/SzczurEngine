@@ -154,7 +154,7 @@ namespace rat
 
 	public:
 		void setParent(Widget* parent);
-		void setInterface(const InterfaceWidget* interface);
+		void setInterface(const InterfaceWidget* inter);
 		sf::Vector2f getSize() const;
 		sf::Vector2f getInnerSize() const;
 		void applyFamilyTrans(const sf::Vector2f& globalPos, const sf::Vector2f& drawPos);
