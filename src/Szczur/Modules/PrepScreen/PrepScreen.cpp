@@ -258,9 +258,7 @@ namespace rat
     {
         auto& gui = getModule<GUI>();
 
-        std::cout << "Kek\n";
         _loadAssetsFromGUI();
-        std::cout << "Kek2\n";
 
         auto* background = new ImageWidget;
         gui.addInterface()->add(background);
