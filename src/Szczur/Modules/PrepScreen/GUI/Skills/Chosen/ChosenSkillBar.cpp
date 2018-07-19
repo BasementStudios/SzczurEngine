@@ -14,7 +14,7 @@ namespace rat
     _prepScreen(prepScreen)
     {
 
-         const sf::Vector2f prSize = {0.12f, 0.12f};
+         const sf::Vector2f prSize = {0.1f, 0.1f};
 
         _border = new ImageWidget;
         _addWidget(_border);
@@ -30,14 +30,14 @@ namespace rat
         _border->setCallback(Widget::CallbackType::onHoverIn, [this](auto){
             if(hasSkill())
             {
-                _icon->setColorInTime({125, 125, 125}, 0.5f);
+                _icon->setColorInTime({125, 125, 125}, 0.2f);
             }
         });
 
         _border->setCallback(Widget::CallbackType::onHoverOut ,[this](auto){
             if(hasSkill())
             {
-               _icon->setColorInTime({255, 255, 255}, 0.5f);
+               _icon->setColorInTime({255, 255, 255}, 0.2f);
             }
         });
 

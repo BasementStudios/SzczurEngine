@@ -93,6 +93,8 @@ namespace rat
         ChosenSkillArea _chosenSkillArea;
         GlyphArea _glyphArea;
 
+        WindowWidget * _ppBack{nullptr};
+
         bool _isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const;
 
         std::set<const Skill*> _boughtSkills;

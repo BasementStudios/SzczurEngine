@@ -40,6 +40,7 @@ namespace rat
     private:
         bool _isKnownAsBought{false};
         bool _canBeBought{false};
+        bool _justSet{false};
         void _onClick();
         void _onHoverIn();
         void _onHoverOut();

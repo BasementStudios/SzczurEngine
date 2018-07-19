@@ -11,9 +11,9 @@ namespace rat
         _background = new WindowWidget;
         _text = new TextWidget;
 
-        const sf::Vector2f prSize = {0.4f, 0.1f};
+        const sf::Vector2f prSize = {0.463f, 0.1f};
     
-        _background->setMainPatchPropSize(prSize);
+        _background->setMainPatchPropSize({0.3f, 0.3f});
         _background->setPropSize(prSize);
         _background->makeChildrenPenetrable();
 
@@ -36,6 +36,6 @@ namespace rat
     void BattleButton::loadAssetsFromGUI(GUI& gui)
     {
         _text->setFont(gui.getFont("Assets/fonts/NotoSerif-Regular.ttf"));
-        _background->setTexture(gui.getTexture("Assets/PrepScreen/BackgroundEQ.png"), 30);
+        _background->setTexture(gui.getTexture("Assets/PrepScreen/SkillBack.png"), 30);
     }
 }

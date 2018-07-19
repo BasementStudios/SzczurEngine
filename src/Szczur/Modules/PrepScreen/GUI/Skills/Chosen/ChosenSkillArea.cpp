@@ -16,28 +16,11 @@ namespace rat
     :
     _size(size)
     {
-        std::cout << "Heh\n";
-        //_getBase()->setPropPadding(, 0.f);
-
-        //auto* padList = new ListWidget;
-        //auto* pad = new Widget;
-        //pad->setPropSize(0.0648148148148148f, 0.f);
-       // padList->add(pad);
-        //_addWidget(padList);
-
         _skillsList = new ListWidget;
         _addWidget(_skillsList);
-        //padList->add(_skillsList);
-        //_addWidget(_skillsList);
+
         _skillsList->makeHorizontal();
-        _skillsList->setPropBetweenPad(0.02f);
-
-        // _border = new ImageWidget;
-        // _border->setPropSize(0.4761421319797f, 0.07f); //szerokosć i długość w procentach
-        // _border->makePenetrable();
-        // _addWidget(_border);
-
-
+        _skillsList->setPropBetweenPad(0.015f);
 
         for(size_t i = 0; i < size; i++)
         {
@@ -46,8 +29,9 @@ namespace rat
             _skillBars.emplace_back(std::move(chSkillBar));
         }
 
-        _getBase()->setPropPosition(0.5f, 0.f);
-        std::cout << "Heh\n";
+        _getBase()->setPropPosition(0.5f, 1.f);
+        _getBase()->setPropOrigin(0.5f, 0.5f);
+        _getBase()->makeStaticPropPositing();
     }
 
     void ChosenSkillArea::initAssetsViaGUI(GUI& gui)

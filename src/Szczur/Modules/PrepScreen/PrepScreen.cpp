@@ -269,19 +269,12 @@ namespace rat
         _base = gui.addInterface();
         _base->setPadding(20.f, 20.f);
         _base->setSizingWidthToHeightProportion(1.f);
-        
-
-
-       auto* mainList = new ListWidget;
-       mainList->makeHorizontal();
-       mainList->setAutoBetweenPadding();
-       _base->add(mainList);
-       mainList->setPropPosition(0.5f, 0.5f);
 
        auto* leftList = new ListWidget;
        leftList->setPropSize(0.463f, 1.f);
        leftList->setPropBetweenPad(0.04f);
-       mainList->add(leftList);
+       leftList->setPropPosition(0.f, 0.f);
+       _base->add(leftList);
 
         _profArea.setParent(leftList);
 
@@ -293,20 +286,24 @@ namespace rat
         leftList->add(skillList);
 
 
-        _glyphArea.setParent(skillList);
         _skillArea.setParent(skillList);
+        _glyphArea.setParent(skillList);
 
-        auto* infoList = new ListWidget;
-        infoList->setPropSize(0.8517777777777777f, 1.f);
-        infoList->setPropBetweenPad(0.005f);
-        mainList->add(infoList);
+        _ppBack = new WindowWidget;
+        _base->add(_ppBack);
+        _ppBack->setPropSize(0.75f, 0.14f);
+        _ppBack->setMainPatchPropSize({0.3f, 0.3f});
+        _ppBack->setPropPosition(0.5f, -0.07f);
+        _ppBack->makeChildrenUnresizable();
 
-        _grayPPArea.setParent(infoList);
-        _chosenSkillArea.setParent(infoList);
+        _grayPPArea.setParent(_ppBack);
+        _grayPPArea.setPropPosition(0.5f, 0.47f);
+        _chosenSkillArea.setParent(_ppBack);
 
         auto* monsterList = new ListWidget;
         monsterList->setPropSize(0.463f, 1.f);
-        mainList->add(monsterList);
+        monsterList->setPropPosition(1.f, 0.f);
+        _base->add(monsterList);
 
         _battleButton.setParent(monsterList);
         _enemyArea.setParent(monsterList);
@@ -314,9 +311,9 @@ namespace rat
 
 
         _initAssetsViaGUI();
-        
-        //_enemyArea.setParent(mainList);
-        //_enemyArea.setPropPosition(0.f, 0.5f);
+
+        _ppBack->setTexture(gui.getTexture("Assets/PrepScreen/BackgroundEQ.png"), 30);
+
         test();
     }
 
@@ -335,8 +332,8 @@ namespace rat
         auto& gui = getModule<GUI>();
 
         setMaximumPPSlotsAmount(10);
-        unlockPPSlots(6);
-        fillPP(4);
+        unlockPPSlots(8);
+        fillPP(8);
 
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);

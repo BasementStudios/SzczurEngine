@@ -82,7 +82,7 @@ namespace rat
     {
         _skill = skill;
         _icon->setTexture(skill->getTexture());
-        _icon->setColor({255, 255, 255, 255});
+        _icon->setColor(sf::Color::White);
 
         _canBeBought = _prep.canSkillBeBought(skill);
 
@@ -127,6 +127,8 @@ namespace rat
             }
         }
         _glyphesAmount = i;
+
+        _justSet = true;
     }
 
     void SkillSlot::loadAssetsFromGUI(GUI& gui)
@@ -156,19 +158,24 @@ namespace rat
         else
         {
             _onSale();
+
+            const float animTime = 0.1f;
             if(_canBeBought)
             {
-                _base->setColorInTime({255, 255, 255}, 0.1f);
+                const unsigned char c = 255;
+                if(_justSet) _base->setColor({c, c, c});
+                else _base->setColorInTime({c, c, c}, animTime);
             }
             else
             {
-                _base->setColorInTime({90, 90, 90}, 0.1f);
+                const unsigned char c = 90;
+                if(_justSet) _base->setColor({c, c, c});
+                else _base->setColorInTime({c, c, c}, animTime);
             }
         }
         _isKnownAsBought = isBought;
 
-
-        
+        _justSet = false;
     }
 
     void SkillSlot::removeSkill()
