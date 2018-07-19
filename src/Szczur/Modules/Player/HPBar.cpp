@@ -10,6 +10,9 @@ namespace rat {
 		_base->add(_backgroundHeart);
 		_foregroundHeart = new ImageWidget;
 		_base->add(_foregroundHeart);
+		_status = new ImageWidget;
+		_base->add(_status);
+		_status->setPropPosition(0.5, -0.2);
 	}
 
 	void HPBar::setParent(Widget* newParent) {
@@ -25,6 +28,9 @@ namespace rat {
 		_backgroundTexture.push_back(gui.getTexture("Assets/Player/bars/hp_bar/hp_bar_back_2.png"));
 		_backgroundTexture.push_back(gui.getTexture("Assets/Player/bars/hp_bar/hp_bar_back_3.png"));
 	}
+
+	void setStatus(sf::Texture*);
+	void removeStatus(sf::Texture*);
 
 	void HPBar::setHPBarIndex(int index) {
 		_backgroundHeart->setTexture(_backgroundTexture[index]);
@@ -65,11 +71,19 @@ namespace rat {
 		_base->setPropSize(size);
 		_foregroundHeart->setPropSize(size);
 		_backgroundHeart->setPropSize(size);
+		_status->setPropSize(size.x, size.y / 2);
 	}
 
 	void HPBar::setPropPosition(sf::Vector2f pos) {
 		_base->setPropPosition(pos);
 		_foregroundHeart->setPropPosition(pos);
 		_backgroundHeart->setPropPosition(pos);
+	}
+
+	void HPBar::setStatus(sf::Texture* t) {
+		_status->setTexture(t);
+	}
+	void HPBar::removeStatus() {
+		_status->removeTexture();
 	}
 }

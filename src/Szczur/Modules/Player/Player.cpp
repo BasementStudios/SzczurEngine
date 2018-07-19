@@ -144,6 +144,13 @@ namespace rat {
 		_skillSlots->clear();
 	}
 
+	void Player::setHPbarStatus(sf::Texture* text) {
+		_HPBar->setStatus(text);
+	}
+	void Player::removeHPbarStatus() {
+		_HPBar->removeStatus();
+	}
+
 	void Player::initJson() {
 		_skillsList.clear();
 
