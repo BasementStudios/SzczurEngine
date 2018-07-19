@@ -67,6 +67,9 @@ namespace rat {
 
 		bool _isDialogPlaying = false;
 
+		sol::function _onChange;
+		sol::function _onEnd;
+
         //bool _nextMinor();
 
         void _changeStruct(TextStruct* strct);

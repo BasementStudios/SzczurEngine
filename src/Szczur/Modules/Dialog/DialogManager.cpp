@@ -22,6 +22,8 @@ namespace rat {
         object.set("startWith", &DialogManager::startWith);
         object.set("play", sol::resolve<void()>(&DialogManager::play));
         object.set("bindCharacter", &DialogManager::bindCharacter);
+		object.set("onChange", &DialogManager::_onChange);
+		object.set("onEnd", &DialogManager::_onEnd);
         object.set(
             "newOptions", 
             [](DialogManager& owner) {
@@ -70,12 +72,16 @@ namespace rat {
                 //if(!_nextMinor()) { //Finished every minor in this id
 				if (_destroyed)
 				{
+					if(_onEnd)
+						_onEnd(this);
 					_isDialogPlaying = false;
 					return true;
 				}
                 _paused = true;
                 for(auto& it : _options) {
                     if(it->checkIfRunsWith(_currentMajor, _currentMinor)) {
+						if(_onChange)
+							_onChange(this, 2);
                         _dialogGUI.interpretOptions(_textManager, *it, [this](size_t major, size_t minor, bool finishing){
                             _currentMajor = major;
                             _currentMinor = minor;
@@ -133,7 +139,14 @@ namespace rat {
         strct->forEach([this](TextStruct::Texts_t::iterator it){
             _soundManager.addCallback( 
                 it->first,
-                [this, it](){
+                [this, it]() {
+
+					if(_onChange) {
+						if(it->second.first == "Karion")
+							_onChange(this, 0);
+						else
+							_onChange(this, 1);
+					}
                     _dialogGUI.setText(it->second.second);
                     if(
                         auto result = _charactersBinds.find(
