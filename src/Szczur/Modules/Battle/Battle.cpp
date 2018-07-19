@@ -1,9 +1,18 @@
 #include "Battle.hpp"
 
-#include "BattleConfig.hpp"
 #include "BattleScene.hpp"
+#include "BattlePawn.hpp"
+#include "BattleSkill.hpp"
+#include "BattleEffect.hpp"
+#include "BattleTrigger.hpp"
+#include "BattleSprite.hpp"
+#include "BattleAnimationSprite.hpp"
 
+#include <Szczur/Utility/SFML3D/Linear.hpp>
+
+#include <Szczur/Modules/World/World.hpp>
 #include <Szczur/Modules/World/Scene.hpp>
+#include <Szczur/Modules/Script/Script.hpp>
 
 namespace rat {
 
@@ -13,9 +22,18 @@ Battle::Battle()
 {
     LOG_INFO("Initializing Battle module");
 
+	const auto& videoMode = getModule<Window>().getVideoMode();
+	_defaultWindowSize = glm::vec2(videoMode.width, videoMode.height);
+
+    initScript();
     _pawnManager.loadAllPawns("Assets/Pawns/pawns.json");
+    _textureManager.loadAllTextures("Assets/Battles/textures/textures.json");
 
     LOG_INFO("Module Battle initialized");
+
+    // TEST
+    getModule<Script>().scriptFile("Assets/Battles/test_battle.lua");
+	// --TEST
 }
 
 Battle::~Battle()
@@ -23,81 +41,248 @@ Battle::~Battle()
     LOG_INFO("Module Battle destructed");
 }
 
-// ----------------- Getters -----------------
+// ----------------- Pawn manager -----------------
 
 BattlePawnManager& Battle::getPawnManager()
 {
 	return _pawnManager;
 }
 
+// ----------------- Spell indicator -----------------
+
+BattleSpellIndicatorManager& Battle::getSpellIndicatorManager()
+{
+	return _spellIndicatorManager;
+}
+
+// ----------------- Spell indicator -----------------
+
+BattleTextureManager& Battle::getTextureManager()
+{
+	return _textureManager;
+}
+
+// ----------------- Effects -----------------
+
+BattleEffect* Battle::newEffect()
+{
+	if(isActiveScene()) {
+		return getCurrentScene()->newEffect();
+	}
+	return nullptr;
+}
+
+BattleEffect* Battle::newEffect(BattleSkill* skill)
+{
+	BattleEffect* ret = newEffect();
+	ret->setSkill(skill);
+	return ret;
+}
+
+// ----------------- Triggers -----------------
+
+BattleTrigger* Battle::newTrigger()
+{
+	if(isActiveScene()) {
+		return getCurrentScene()->newTrigger();
+	}
+	return nullptr;
+}
+
+// ----------------- Pawns -----------------
+
+BattlePawn* Battle::getPlayer()
+{
+	if(isActiveScene()) {
+		return getCurrentScene()->getPlayer();
+	}
+	return nullptr;
+}
+
+// ----------------- Sprites -----------------
+
+BattleSprite* Battle::newSprite(const std::string& textureName)
+{
+	if(isActiveScene()) {
+		return getCurrentScene()->newSprite(textureName);
+	}
+	return nullptr;
+}
+
+BattleAnimationSprite* Battle::newAnimationSprite(const std::string& textureName)
+{
+	if(isActiveScene()) {
+		return getCurrentScene()->newAnimationSprite(textureName);
+	}
+	return nullptr;
+}
+
 // ----------------- Scene -----------------
 
-BattleScene* Battle::activateScene(Scene* scene)
+BattleScene* Battle::createScene(const glm::vec3& position, const glm::vec2& size, float scale)
 {
-	_currentScene.reset(new BattleScene(scene));
+	_currentScene.reset(new BattleScene(position, size, scale));
+
 	return _currentScene.get();
 }
 
 void Battle::deactivateScene() 
 {
 	_currentScene = nullptr;
+	_battleActive = false;
 }
 
 bool Battle::isActiveScene()
 {
-	return _currentScene.get() != nullptr;
+	return _currentScene.get() != nullptr && _currentScene->isActive();
+}
+
+BattleScene* Battle::getCurrentScene()
+{
+	return _currentScene.get();
+}
+
+// ----------------- Mouse -----------------
+
+bool Battle::isSkillButtonPressed()
+{
+	return getModule<Input>().getManager().isPressed(Mouse::Left);
+}
+
+bool Battle::isSkillButtonKept()
+{
+	return getModule<Input>().getManager().isKept(Mouse::Left);
+}
+
+bool Battle::isSkillButtonReleased()
+{
+	return getModule<Input>().getManager().isReleased(Mouse::Left);
+}
+
+glm::vec3 Battle::getCursorPosition(float height)
+{
+	// Mouse position
+	auto mouse = getModule<Input>().getManager().getScreenMousePosition();
+
+	// Projection on Y-plane
+	auto linear = getModule<Window>().getWindow().getLinearByScreenPosition(mouse);
+	glm::vec3 projection = linear.getCameraProjectionY(height);
+
+	return projection;
+}
+
+glm::vec2 Battle::getCursorPosition()
+{
+	if(isActiveScene()) {
+		glm::vec3 pos = getCursorPosition(getCurrentScene()->getPosition().y);
+		return glm::vec2(pos.x, pos.z);
+	}
+
+	return glm::vec2();
+}
+
+// ----------------- Math -----------------
+
+glm::vec2 Battle::getMovedPosition(glm::vec2 position, float angle, float distance)
+{
+	position.x += std::cos(angle)*distance;
+	position.y += std::sin(angle)*distance;
+	return position;
+}
+
+bool Battle::checkCollisionCC(glm::vec2 pos1, float r1, glm::vec2 pos2, float r2)
+{
+	float dis = glm::distance(pos1, pos2);
+
+	return dis < r1+r2;
+}
+
+glm::vec2 Battle::getNormalDirection(glm::vec2 from, glm::vec2 to)
+{
+	return glm::normalize(to-from);
+}
+
+float Battle::getDistance(glm::vec2 pos1, glm::vec2 pos2)
+{
+	return glm::distance(pos1, pos2);
 }
 
 // ----------------- Main -----------------
 
 void Battle::render(sf3d::RenderTarget& target)
 {
-	if(_currentScene) {
+	if(isActiveScene()) {
+		getSpellIndicatorManager().setRenderTarget(target);
+		getSpellIndicatorManager().setBattleScene(_currentScene.get());
 		_currentScene->render(target);
 	}
 }
 
 void Battle::update(float deltaTime)
 {
-	if(_currentScene) {
+	if(isActiveScene()) {
+
+		// TEST
+		if(detail::globalPtr<Input>->getManager().isPressed(Keyboard::Escape)) {
+			deactivateScene();
+		}
+		// --TEST
+
+		if(_battleActive == false) {
+			_battleActive = true;
+			// set Player invisible
+			// set Player inactive 
+		}
 		_currentScene->update(deltaTime);
 	}
 }
 
-void Battle::updateEditor()
+// ----------------- Script -----------------
+
+void Battle::initScript()
 {
-	if(_currentScene) {
-		if(ImGui::Begin("Battle editor")) {
-		
-			// Close editor button
-			bool closeFlag = false;
-			if(ImGui::Button("Close")) {
-				closeFlag = true;
-			}
+	Script& script = getModule<Script>();
 
-			// Save config button
-			if(ImGui::Button("Update config")) {
-				_currentScene->updateConfig();
-			}
-		
+	auto module = script.newModule("Battle");
 
-			// Reload pawns.json file
-			ImGui::SameLine();
-			if(ImGui::Button("Reload pawns")) {
-				getPawnManager().reloadAllPawns();
-				_currentScene->reloadAllPawns();
-			}
+	// Effects
+	module.set_function("newEffect", sol::overload(
+		[&](BattleSkill* skill){return newEffect(skill);},
+		[&](){return newEffect();}
+	));
 
-			// Update editor for current scene
-			ImGui::Separator();
-			_currentScene->updateEditor();
+	// Triggers
+	module.set_function("newTrigger", &Battle::newTrigger, this);
 
-			if(closeFlag) {
-				deactivateScene();
-			}
-		}
-		ImGui::End();
-	}
+	// Pawns
+	module.set_function("getPlayer", &Battle::getPlayer, this);
+
+	// Sprites
+	module.set_function("newSprite", &Battle::newSprite, this);
+	module.set_function("newAnimationSprite", &Battle::newAnimationSprite, this);
+
+	// Scene
+	module.set_function("createScene", &Battle::createScene, this);
+	module.set_function("deactivateScene", &Battle::deactivateScene, this);
+	module.set_function("isActiveScene", &Battle::isActiveScene, this);
+
+	// Mouse
+	module.set_function("isSkillButtonPressed", &Battle::isSkillButtonPressed, this);
+	module.set_function("isSkillButtonKept", &Battle::isSkillButtonKept, this);
+	module.set_function("isSkillButtonReleased", &Battle::isSkillButtonReleased, this);
+
+	// Math
+	module.set_function("getMovedPosition", &Battle::getMovedPosition, this);
+	module.set_function("checkCollisionCC", &Battle::checkCollisionCC, this);
+	module.set_function("getNormalDirection", &Battle::getNormalDirection, this);
+	module.set_function("getDistance", &Battle::getDistance, this);
+
+	// Cursor
+	module.set_function("getCursorPosition", [&]() {
+		return getCursorPosition();
+	});
+
+	script.initClasses<BattleScene, BattlePawn, BattleSkill, BattleEffect, BattleTrigger, BattleSprite, BattleAnimationSprite, BattleSpellIndicatorManager>();
 }
 
 } // namespace rat

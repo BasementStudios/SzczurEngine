@@ -24,19 +24,36 @@ void BattlePawnManager::loadAllPawns(const std::string& configPath)
 		nlohmann::json config;
 		file>>config;
 
-
 		if(auto& pawns = config["pawns"]; !pawns.is_null()) {
 			_pawns.clear();
+
 			for(auto itrPawn = pawns.begin(); itrPawn != pawns.end(); ++itrPawn) {
 				auto& pawn = itrPawn.value();
-				auto* newPawn = addPawn(itrPawn.key());
+
+				PawnData* newPawn = addPawn(itrPawn.key());
 				try {
-					if(newPawn) {
+					if(newPawn != nullptr) {
 						newPawn->armaturePath = pawn["armature"];
 						newPawn->scale = pawn["scale"];
 						newPawn->radius = pawn["radius"];
-						newPawn->origin.x = pawn["origin"][0];
-						newPawn->origin.y = pawn["origin"][1];
+						newPawn->origin.x = pawn["origin"][0].get<float>();
+						newPawn->origin.y = pawn["origin"][1].get<float>();
+
+						if(auto& var = pawn["script"]; !var.is_null()) 
+							newPawn->scriptPath = std::string("Assets/Pawns/") + newPawn->nameID + "/" + var.get<std::string>();
+
+						if(auto& var = pawn["health"]; !var.is_null()) {
+							newPawn->health = var[0];
+							newPawn->maxHealth = var[1];
+						}
+
+						if(auto& var = pawn["time"]; !var.is_null()) {
+							newPawn->time = var[0];
+							newPawn->maxTime = var[1];
+						}
+
+						if(auto& var = pawn["height"]; !var.is_null()) 
+							newPawn->height = var;
 					}
 				}
 				catch(nlohmann::json::exception e) {
@@ -72,7 +89,7 @@ std::vector<std::unique_ptr<BattlePawnManager::PawnData>>& BattlePawnManager::ge
 }
 
 std::unique_ptr<BattlePawn> BattlePawnManager::createPawn(const std::string& nameID, BattleScene* scene)
-{	
+{
 	for(auto& pawn : _pawns) {
 		if(pawn->nameID == nameID) {
 			std::unique_ptr<BattlePawn> newPawn(new BattlePawn(scene));
@@ -81,6 +98,12 @@ std::unique_ptr<BattlePawn> BattlePawnManager::createPawn(const std::string& nam
 			newPawn->setScale(pawn->scale);
 			newPawn->setRadius(pawn->radius);
 			newPawn->setOrigin(pawn->origin);
+			newPawn->setHealth(pawn->health);
+			newPawn->setMaxHealth(pawn->maxHealth);
+			newPawn->setTime(pawn->time);
+			newPawn->setMaxTime(pawn->maxTime);
+			newPawn->setHeight(pawn->height);
+			newPawn->loadScript(pawn->scriptPath);
 			return std::move(newPawn);
 		}
 	}

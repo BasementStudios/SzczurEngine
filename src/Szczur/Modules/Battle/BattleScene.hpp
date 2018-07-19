@@ -1,38 +1,47 @@
 #pragma once
 
 #include <vector>
+#include <string>
+#include <memory>
 
 #include <Szczur/Utility/SFML3D/RenderTarget.hpp>
 #include <Szczur/Utility/SFML3D/RectangleShape.hpp>
+#include <Szczur/Utility/SFML3D/CircleShape.hpp>
 
 namespace rat {
 
-class BattlePawn;
-class BattleConfig;
-class Scene;
 class Battle;
+class BattlePawn;
+class BattleSkill;
+class BattleEffect;
+class BattleTrigger;
+class BattleSprite;
+class BattleAnimationSprite;
 
-class BattleScene {
+class Scene;
+class Window;
+class Input;
+class Script;
+
+class BattleScene 
+{
 public:
 
 // Constructors
 
 	///
-	BattleScene(Scene* scene);
-
+	BattleScene(const glm::vec3& position, const glm::vec2& size, float scale);
+	
 	///
 	~BattleScene();
 
-// Getters
+// Main parameters
 
 	///
-	Scene* getScene();
-
+	void setParameters(const glm::vec3& position, const glm::vec2& size, float scale);
+	
 	///
 	glm::vec3 getPosition();
-
-	///
-	glm::vec3 getRealPosition();
 
 	///
 	glm::vec2 getSize();
@@ -40,37 +49,69 @@ public:
 	///
 	float getScale();
 
-// Config
+// Parent scene
 
 	///
-	void setupConfig(const BattleConfig& config);
+	Scene* getScene();
+
+// Pawns
 
 	///
-	void setupConfig(BattleConfig* config);
+	BattlePawn* addPawn(const std::string& nameID, const glm::vec2& position);
 
 	///
-	BattleConfig createConfig();
-
-	///
-	void updateConfig();
-
-
-// Manipulations
-
-	///
-	void setSize(glm::vec2 size);
-
-	///
-	void setPosition(glm::vec3 position);
-
-	///
-	void setScale(float scale);
-
-	///
-	BattlePawn* addPawn(const std::string& nameID);
+	BattlePawn* addPlayer(const std::string& nameID, const glm::vec2& position);
 
 	///
 	void reloadAllPawns();
+
+	///
+	void updateRemovingPawns();
+
+	///
+	std::vector<std::unique_ptr<BattlePawn>>& getPawns();
+
+	///
+	BattlePawn* getPlayer();
+
+// Effects
+
+	///
+	BattleEffect* newEffect();
+	///
+	void removePawnFromEffects(BattlePawn* pawn);
+
+// Effects
+
+	///
+	BattleTrigger* newTrigger();
+
+// Sprites
+
+	///
+	BattleSprite* newSprite(const std::string& textureName);
+
+	///
+	BattleAnimationSprite* newAnimationSprite(const std::string& textureName);
+
+	///
+	void removeSprite(BattleSprite* sprite);
+
+// State
+
+	///
+	bool isActive();
+	///
+	void activate();
+
+// Cursor
+
+	///
+	glm::vec2 getCursorPosition();
+
+// Collision
+
+	void updateCollision();
 
 // Main
 
@@ -80,34 +121,49 @@ public:
 	///
 	void render(sf3d::RenderTarget& target);
 
+// Script
+
 	///
-	void updateEditor();
+	static void initScript(Script& script);
 
 private:
 
-// Render
+// Pawns
+	std::vector<std::unique_ptr<BattlePawn>> _pawns;
+	BattlePawn* _player = nullptr;
 
-	///
-	void _updateAreaShape();
+// Effects
+	std::vector<std::unique_ptr<BattleEffect>> _effects;
 
-	///
-	void _updateLeftCorner();
+// Sprites
+	std::vector<std::unique_ptr<BattleSprite>> _sprites;
 
-// Vars
+// Triggers
+	std::vector<std::unique_ptr<BattleTrigger>> _triggers;
 
-	BattleConfig* _lastConfig = nullptr;
+// Skills
+	BattleSkill* _selectedSkill = nullptr;
 
+// View
 	sf3d::RectangleShape _areaShape;
+	float _scale;
 
-	Battle* _battleModule;
-	std::vector<std::unique_ptr<BattlePawn>> _pawns; 
+// Size
+	glm::vec2 _size;
+
+// Positioning
+	glm::vec3 _position;
+
+// Parent scene
 	Scene* _scene;
 
-	float _scale;
-	glm::vec3 _position;
-	glm::vec2 _size;
-	glm::vec3 _leftCorner;
+// State
+	bool _activated = false;
 
+// Modules
+	Battle* _battleModule;
+	Window* _windowModule;
+	Input* _inputModule;
 };
 
 }

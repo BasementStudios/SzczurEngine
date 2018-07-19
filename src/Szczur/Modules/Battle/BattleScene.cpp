@@ -2,43 +2,67 @@
 
 #include "Battle.hpp"
 #include "BattlePawn.hpp"
-#include "BattleConfig.hpp"
+#include "BattleSkill.hpp"
+#include "BattleEffect.hpp"
+#include "BattleSprite.hpp"
+#include "BattleTrigger.hpp"
+#include "BattleAnimationSprite.hpp"
 
+#include <Szczur/Modules/Script/Script.hpp>
 #include <Szczur/Modules/World/Scene.hpp>
+#include <Szczur/Modules/World/World.hpp>
+#include <Szczur/Modules/Input/Input.hpp>
 
 namespace rat {
 
+
 // ----------------- Constructors -----------------
 
-BattleScene::BattleScene(Scene* scene) 
-	: _scene(scene)
+BattleScene::BattleScene(const glm::vec3& position, const glm::vec2& size, float scale) 
 {
 	_battleModule = detail::globalPtr<Battle>;
+	_windowModule = detail::globalPtr<Window>;
+	_inputModule = detail::globalPtr<Input>;
+
+	_scene = detail::globalPtr<World>->getScenes().getCurrentScene();
+
+	_areaShape.setRotation({ -90.f, 0.f, 0.f });
+   	_areaShape.setColor({ 0.3f, 0.60f, 0.80f, 0.3f }); 
+
+   	setParameters(position, size, scale);
 }
 
-BattleScene::~BattleScene() 
+BattleScene::~BattleScene()
 {
 	;
 }
 
-// ----------------- Getters -----------------
+// ----------------- Main parameters -----------------
 
-float BattleScene::getScale()
+void BattleScene::setParameters(const glm::vec3& position, const glm::vec2& size, float scale)
 {
-	return _scale;
-}
+	// Set size
+	_size = size;
 
-Scene* BattleScene::getScene()
-{
-	return _scene;
+	// Set position (convert center position to left-top corner position)
+	_position = position - glm::vec3(_size.x/2.f, 0.f, _size.y/2.f);
+	
+	// Update field of battle scene
+   	_areaShape.setSize({_size.x, _size.y}); 
+   	_areaShape.setPosition(_position); 
+   	_areaShape.setOrigin({ 0.f, 0.f, 0.f });
+
+   	// Set global scale for all pawns
+	_scale = scale;
+
+	// Update pawns (if they are on scene)
+	for(auto& pawn : _pawns) {
+		// pawn->setPosition(pawn->getPosition());
+		pawn->setScale(pawn->getScale());
+	}
 }
 
 glm::vec3 BattleScene::getPosition()
-{
-	return _leftCorner;
-}
-
-glm::vec3 BattleScene::getRealPosition()
 {
 	return _position;
 }
@@ -48,88 +72,43 @@ glm::vec2 BattleScene::getSize()
 	return _size;
 }
 
-// ----------------- Config -----------------
-
-void BattleScene::setupConfig(const BattleConfig& config) 
+float BattleScene::getScale()
 {
-	setSize(config.getSize());
-	setPosition(config.getPosition());
-	setScale(config.getScale());
-
-	_pawns.clear();
-	for(const auto& obj : config.getPawns()) {
-		auto* newPawn = addPawn(obj.nameID);
-		if(newPawn) {
-			newPawn->setPosition(obj.position);
-		}
-		else {
-			LOG_ERROR("newPawn == nullptr");
-		}
-	}
-
-	_updateAreaShape();
+	return _scale;
 }
 
-void BattleScene::setupConfig(BattleConfig* config) 
+// ----------------- Parent scene -----------------
+
+Scene* BattleScene::getScene()
 {
-	setupConfig(*config);
-	_lastConfig = config;
+	return _scene;
 }
 
-BattleConfig BattleScene::createConfig()
-{
-	BattleConfig config;
+// ----------------- Pawns -----------------
 
-	config.setSize(_size);
-	config.setPosition(_position);
-	config.setScale(_scale);
-
-	for(auto& pawn : _pawns) {
-		config.addPawn(pawn->getNameID())->position = pawn->getPosition();
-	}
-
-	return std::move(config);
-}
-
-void BattleScene::updateConfig()
-{
-	if(_lastConfig) {
-		*_lastConfig = createConfig();
-	}
-}
-
-// ----------------- Manipulations -----------------
-
-void BattleScene::setSize(glm::vec2 size)
-{
-	_size = size;
-	_updateAreaShape();
-	_updateLeftCorner();
-}
-
-void BattleScene::setPosition(glm::vec3 position)
-{
-	_position = position;
-	_updateAreaShape();
-	_updateLeftCorner();
-}
-
-void BattleScene::setScale(float scale)
-{
-	_scale = scale;
-	for(auto& pawn : _pawns) {
-		pawn->setScale(pawn->getScale());
-	}
-}
-
-BattlePawn* BattleScene::addPawn(const std::string& nameID)
+BattlePawn* BattleScene::addPawn(const std::string& nameID, const glm::vec2& position)
 {
 	auto newPawn = _battleModule->getPawnManager().createPawn(nameID, this);
 	
 	if(!newPawn) 
 		return nullptr;
-	
-	return _pawns.emplace_back(std::move(newPawn)).get();
+
+	auto& pawn = _pawns.emplace_back(std::move(newPawn));
+
+	glm::vec3 pos = getPosition();
+	pawn->setPosition(position + glm::vec2(pos.x, pos.z));
+	return pawn.get();
+}
+
+BattlePawn* BattleScene::addPlayer(const std::string& nameID, const glm::vec2& position)
+{
+	// Create and add pawn
+	BattlePawn* pawn = addPawn(nameID, position);
+
+	// Set player (controller)
+	_player = pawn;
+
+	return pawn;
 }
 
 void BattleScene::reloadAllPawns() 
@@ -137,9 +116,165 @@ void BattleScene::reloadAllPawns()
 	std::vector<std::unique_ptr<BattlePawn>> oldPawns(std::move(_pawns)); 
 
 	for(auto& oldPawn : oldPawns) {
-		auto* newPawn = addPawn(oldPawn->getNameID());
+		auto* newPawn = addPawn(oldPawn->getNameID(), oldPawn->getPosition());
 		if(newPawn != nullptr) {
 			newPawn->setPosition(oldPawn->getPosition());
+		}
+	}
+}
+
+void BattleScene::updateRemovingPawns()
+{
+	for(auto itr = _pawns.begin(); itr != _pawns.end(); ) {
+		if(itr->get() != _player && (*itr)->getHealth() == 0) {
+			removePawnFromEffects(itr->get());
+			itr = _pawns.erase(itr);
+		}
+		else {
+			++itr;
+		}
+	}
+}
+
+std::vector<std::unique_ptr<BattlePawn>>& BattleScene::getPawns()
+{
+	return _pawns;
+}
+
+BattlePawn* BattleScene::getPlayer()
+{
+	return _player;
+}
+
+// ----------------- Effects -----------------
+
+BattleEffect* BattleScene::newEffect()
+{
+	return _effects.emplace_back(new BattleEffect()).get();
+}
+
+void BattleScene::removePawnFromEffects(BattlePawn* pawn) {
+	for(auto& effect : _effects) {
+		effect->clearPawnFromData(pawn);
+	}
+}
+
+// ----------------- Triggers -----------------
+
+BattleTrigger* BattleScene::newTrigger()
+{
+	return _triggers.emplace_back(new BattleTrigger(this)).get();	
+}
+
+// ----------------- Sprites -----------------
+
+BattleSprite* BattleScene::newSprite(const std::string& textureName)
+{
+	auto* newSprite = _sprites.emplace_back(new BattleSprite(this)).get();
+	newSprite->setTexture(textureName);
+	return newSprite;
+}
+
+BattleAnimationSprite* BattleScene::newAnimationSprite(const std::string& textureName)
+{	
+	auto* newSprite = static_cast<BattleAnimationSprite*>(_sprites.emplace_back(new BattleAnimationSprite(this)).get());
+	newSprite->setTexture(textureName);
+	return newSprite;
+}
+
+void BattleScene::removeSprite(BattleSprite* sprite)
+{
+	for(auto itr = _sprites.begin(); itr != _sprites.end(); ) {
+		if(itr->get() == sprite) {
+			itr = _sprites.erase(itr);
+			return;
+		}
+		else {
+			++itr;
+		}
+	}
+}
+
+// ----------------- State -----------------
+
+bool BattleScene::isActive()
+{
+	return _activated;
+}
+
+void BattleScene::activate()
+{
+	_activated = true;
+
+	// @temp
+	_selectedSkill = nullptr;
+	// --temp
+}
+
+// ----------------- Cursor -----------------
+
+glm::vec2 BattleScene::getCursorPosition()
+{
+	glm::vec3 pos = _battleModule->getCursorPosition(getPosition().y);
+	return glm::vec2(pos.x, pos.z) - glm::vec2(_position.x, _position.z);
+}
+
+// ----------------- Collision -----------------
+
+void BattleScene::updateCollision()
+{
+	BattlePawn* last = nullptr;
+	for(auto& pawn : _pawns) {
+		
+		// Collision with other pawns
+		last = nullptr;
+		if(pawn->popMovedFlag()) {
+
+			for(auto& other : _pawns) {
+				
+				if(pawn.get() == other.get()) 
+					continue;
+
+				float rr = pawn->getRadius() + other->getRadius();
+
+				glm::vec2 dir = pawn->getPosition() - other->getPosition();
+				float dis = glm::length(dir);
+				
+				if(dis < rr) {
+					pawn->move(glm::normalize(dir)*(rr-dis+2.f));
+					last = other.get();
+				}
+			}
+		}
+
+		if(last != nullptr) {
+			pawn->collision(last);
+		}
+
+		// Border of battle field
+		// > X
+		bool flag = true;
+		glm::vec2 pos = pawn->getPosition();
+		if(pos.x < _position.x + pawn->getRadius()) {
+			flag = true;
+			pawn->setPosition({_position.x + pawn->getRadius(), pos.y});
+		}
+		else if(pos.x > _position.x + _size.x - pawn->getRadius()) {
+			flag = true;
+			pawn->setPosition({_position.x + _size.x  - pawn->getRadius(), pos.y});
+		}
+		// > Y
+		pos = pawn->getPosition();
+		if(pos.y < _position.z + pawn->getRadius()) {
+			flag = true;
+			pawn->setPosition({pos.x, _position.z + pawn->getRadius()});
+		}
+		else if(pos.y > _position.z + _size.y - pawn->getRadius()) {
+			flag = true;
+			pawn->setPosition({pos.x, _position.z + _size.y  - pawn->getRadius()});
+		}
+		if(flag) {
+			pawn->collision(nullptr);
 		}
 	}
 }
@@ -148,9 +283,78 @@ void BattleScene::reloadAllPawns()
 
 void BattleScene::update(float deltaTime)
 {
-	for(auto& obj : _pawns) {
-		obj->update(deltaTime);
+	// Change skill
+	auto& input = _inputModule->getManager();
+	int skillIndex = -1;
+	if(input.isPressed(Keyboard::Q)) skillIndex = 0;
+	if(input.isPressed(Keyboard::W)) skillIndex = 1;
+	if(input.isPressed(Keyboard::E)) skillIndex = 2;
+	if(input.isPressed(Keyboard::R)) skillIndex = 3;
+	if(input.isPressed(Keyboard::T)) skillIndex = 4;
+	if(input.isPressed(Keyboard::Y)) skillIndex = 5;
+
+	if(skillIndex != -1 && skillIndex < _player->getSkillAmount()) {
+		BattleSkill* nextSkill = _player->getSkill(skillIndex);
+
+		if(nextSkill == _selectedSkill)
+			_selectedSkill = nullptr;
+		else
+			_selectedSkill = nextSkill;
 	}
+
+	// Update selected skill
+	if(_selectedSkill != nullptr) {
+		_selectedSkill->selectedUpdate();
+	}
+
+	// Update effects
+	for(size_t i = 0; i<_effects.size(); ++i) {
+		_effects[i]->update();
+	}
+
+	// Update pawns
+	for(size_t i = 0; i<_pawns.size(); ++i) {
+		_pawns[i]->update(deltaTime);
+	}
+
+	// Update collisions
+	updateCollision();
+
+	// Remove sprites	
+	for(auto itr = _sprites.begin(); itr != _sprites.end();) {
+
+		if((*itr)->isAlive()) {
+			++itr;
+		}
+		else {
+			itr = _sprites.erase(itr);
+		}
+	}
+
+	// Remove effects
+	for(auto itr = _effects.begin(); itr != _effects.end();) {
+
+		if((*itr)->isAlive()) {
+			++itr;
+		}
+		else {
+			itr = _effects.erase(itr);
+		}
+	}
+
+	// Remove triggers
+	for(auto itr = _triggers.begin(); itr != _triggers.end();) {
+
+		if((*itr)->isAlive()) {
+			++itr;
+		}
+		else {
+			itr = _triggers.erase(itr);
+		}
+	}
+
+	// Removing pawns
+	updateRemovingPawns();
 }
 
 void BattleScene::render(sf3d::RenderTarget& target)
@@ -158,78 +362,50 @@ void BattleScene::render(sf3d::RenderTarget& target)
 	for(auto& obj : _pawns) {
 		obj->render(target);
 	}
- 
+
     target.draw(_areaShape);
-}
-
-void BattleScene::updateEditor()
-{
-	// Change area size
-	glm::vec2 areaSize = getSize();
-	if(ImGui::DragFloat2("Area size", reinterpret_cast<float*>(&areaSize))) {
-		setSize(areaSize);
-	}
-
-	// Change main scale for pawns
-	float scale = getScale();
-	if(ImGui::DragFloat("Pawns scale", &scale)) {
-		setScale(scale);
-	}
-
-	// Add pawn button
-	ImGui::Separator();
-	if(ImGui::Button("Add pawn...")) {
-		ImGui::OpenPopup("Available pawns##battle_pawn_manager");
-	}
-
-	if(ImGui::BeginPopupModal("Available pawns##battle_pawn_manager")) {
-		for(auto& obj : _battleModule->getPawnManager().getDataPawns()) {
-			if(ImGui::Selectable(obj->nameID.c_str())) {				
-				addPawn(obj->nameID)->setPosition(glm::vec2(0.f, 0.f));
-			}
-		}
-		ImGui::EndPopup();
-	}
-
-	int i = 0;
-	for(auto itr = _pawns.begin(); itr != _pawns.end();) {
-
-		bool removeSignal = false;
-
-		ImGui::PushID(i);
-		(*itr)->updateEditor(removeSignal);
-		ImGui::PopID();
-
-		if(removeSignal) {
-			_pawns.erase(itr);
-		}
-		else {
-			++itr;
-			++i;
-		}
-	}
-}
-
-// ----------------- Render -----------------
-
-void BattleScene::_updateAreaShape()
-{
-	_areaShape.setRotation({ 90.f, 0.f, 0.f });
-   	_areaShape.setColor({ 0.3f, 0.60f, 0.80f, 0.3f }); 
-   	_areaShape.setSize({_size.x, _size.y}); 
-   	_areaShape.setOrigin({ _size.x / 2.f, _size.y / 2.f, 0.f });
-   	_areaShape.setPosition(_position); 
-}
-
-void BattleScene::_updateLeftCorner()
-{
-	_leftCorner.x = _position.x-_size.x/2.f;
-	_leftCorner.y = _position.y;
-	_leftCorner.z = _position.z-_size.y/2.f;
 
 	for(auto& obj : _pawns) {
-		obj->setPosition(obj->getPosition());
+		obj->bottomRender(target);
 	}
+
+	for(auto& obj : _pawns) {
+		obj->renderSkills(target);
+	}
+
+	for(auto& obj : _sprites) {
+		obj->render(target);
+	}
+
+	if(_selectedSkill != nullptr) 
+		_selectedSkill->renderSpellIndicator();
+
+	for(auto& obj : _pawns) {
+		obj->renderBars(target);
+	}
+
+	sf3d::CircleShape shape;
+	shape.setRadius(20.f);
+	auto pos = _battleModule->getCursorPosition(_position.y);
+	shape.setPosition(pos);
+	shape.setColor({200.f, 20.f, 180.f, 40.f});
+	shape.setOrigin({50.f, 50.f, 0.f});
+	target.draw(shape);
+}
+
+// ----------------- Script -----------------
+
+void BattleScene::initScript(Script& script)
+{
+	auto object = script.newClass<BattleScene>("BattleScene", "Battle");
+
+	object.set("addPawn", &BattleScene::addPawn);
+	object.set("addPlayer", &BattleScene::addPlayer);
+	object.set("getPlayer", &BattleScene::getPlayer);
+	object.set("activate", &BattleScene::activate);
+	object.set("getCursorPosition", &BattleScene::getCursorPosition);
+
+	object.init();
 }
 
 } // namespace rat;

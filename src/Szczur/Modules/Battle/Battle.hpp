@@ -3,18 +3,28 @@
 #include <memory>
 
 #include "BattlePawnManager.hpp"
+#include "BattleSpellIndicatorManager.hpp"
+#include "BattleTextureManager.hpp"
 
-#include <Szczur/Utility/SFML3D/View.hpp>
 #include <Szczur/Utility/Modules/Module.hpp>
 #include <Szczur/Modules/Window/Window.hpp>
+#include <Szczur/Modules/Input/Input.hpp>
+#include <Szczur/Modules/Script/Script.hpp>
 
 namespace rat {
 
-class BattleConfig;
 class BattleScene;
-class Scene;
+class BattlePawn;
+class BattleEffect;
+class BattleTrigger;
+class BattleSprite;
+class BattleAnimationSprite;
+class BattleSkill;
 
-class Battle : public Module<Window> {
+class Scene;
+class Entity;
+
+class Battle : public Module<Window, Input, Script> {
 public:
 
 // Constructors
@@ -25,22 +35,89 @@ public:
 	///
 	~Battle();
 
-// Getters
+// Pawn manager
 
 	///
 	BattlePawnManager& getPawnManager();
 
+// Spell indicator
+
+	///
+	BattleSpellIndicatorManager& getSpellIndicatorManager();
+
+// Texture Manager
+
+	BattleTextureManager& getTextureManager();
+
+// Effects
+
+	///
+	BattleEffect* newEffect();
+
+	///
+	BattleEffect* newEffect(BattleSkill* skill);
+
+// Triggers
+
+	///
+	BattleTrigger* newTrigger();
+
+// Pawns
+
+	///
+	BattlePawn* getPlayer();
+
+// Sprites
+
+	///
+	BattleSprite* newSprite(const std::string& textureName);
+
+	///
+	BattleAnimationSprite* newAnimationSprite(const std::string& textureName);
+
 // Scene
 
 	///
-	BattleScene* activateScene(Scene* scene);
+	BattleScene* createScene(const glm::vec3& position, const glm::vec2& size, float scale);
 
 	///
 	void deactivateScene();
 
 	///
 	bool isActiveScene();
-	
+
+	///
+	BattleScene* getCurrentScene();
+
+// Mouse
+
+	///
+	bool isSkillButtonPressed();
+	///
+	bool isSkillButtonKept();
+	///
+	bool isSkillButtonReleased();
+
+	/// Get Y-plane projection of mouse position on scene
+	glm::vec3 getCursorPosition(float height);
+
+	///
+	glm::vec2 getCursorPosition();
+
+// Math
+
+	///
+	glm::vec2 getMovedPosition(glm::vec2 position, float angle, float distance);
+
+	///
+	bool checkCollisionCC(glm::vec2 pos1, float r1, glm::vec2 pos2, float r2);
+
+	///
+	glm::vec2 getNormalDirection(glm::vec2 from, glm::vec2 to);
+
+	///
+	float getDistance(glm::vec2 pos1, glm::vec2 pos2);
+
 // Main
 
 	///
@@ -49,13 +126,22 @@ public:
 	///
 	void update(float deltaTime);
 
+// Script
+
 	///
-	void updateEditor();
+	void initScript();
 
 private:
 
 	BattlePawnManager _pawnManager;
+	BattleSpellIndicatorManager _spellIndicatorManager;
+	BattleTextureManager _textureManager;
+
 	std::unique_ptr<BattleScene> _currentScene;
+	bool _battleActive = false;
+
+	glm::vec2 _defaultWindowSize;
+
 };
 
 }
