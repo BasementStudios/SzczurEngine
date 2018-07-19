@@ -140,6 +140,11 @@ Window::~Window()
 void Window::init()
 {
 	try {
+		// Just for now...
+		this->videoMode.width = 1920u;
+		this->videoMode.height = 1080u;
+		this->windowStyle = sf::Style::Fullscreen;
+		
 		// Set video mode, also creates window
 		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,
 		//  which require some rendering context which is created in SFML `sf::RenderWindow::create`.
