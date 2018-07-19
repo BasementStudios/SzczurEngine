@@ -10,6 +10,7 @@ namespace rat
 Input::Input()
 {
 	LOG_INFO("Initializing Input module");
+	
 	Script& script = getModule<Script>();
 	auto module = script.newModule("Input");
 

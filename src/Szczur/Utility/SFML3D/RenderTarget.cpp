@@ -282,7 +282,7 @@ Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
 		break;
 	}
 	
-	return Linear(this->camera->getPosition(), rotation);
+	return Linear(this->getCamera()->getPosition(), rotation);
 }
 
 // Light points

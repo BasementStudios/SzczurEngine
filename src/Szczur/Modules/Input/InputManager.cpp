@@ -1,15 +1,28 @@
 #include "InputManager.hpp"
 
-#include "Szczur/Modules/Script/Script.hpp"
+#include <Szczur/Modules/Script/Script.hpp>
+#include <Szczur/Modules/Window/Window.hpp>
+
 namespace rat
 {
+
+InputManager::InputManager()
+{
+	_windowModule = detail::globalPtr<Window>;
+}
 
 void InputManager::processEvent(const sf::Event& event)
 {
 	if (event.type == sf::Event::MouseMoved)
 	{
-		_mousePosition.x = event.mouseMove.x;
-		_mousePosition.y = event.mouseMove.y;
+		_windowMousePosition.x = event.mouseMove.x;
+		_windowMousePosition.y = event.mouseMove.y;
+
+		auto windowSize = _windowModule->getWindow().getSize();
+		auto videoMode = _windowModule->getVideoMode();
+
+		_screenMousePosition.x = _windowMousePosition.x * videoMode.width / windowSize.x;
+		_screenMousePosition.y = _windowMousePosition.y * videoMode.height / windowSize.y;
 	}
 	else if (event.type == sf::Event::KeyPressed)
 	{
@@ -153,9 +166,14 @@ unsigned InputManager::getEnteredCharacter() const
 	return _enteredCharacter;
 }
 
-sf::Vector2i InputManager::getMousePosition() const
+glm::vec2 InputManager::getWindowMousePosition() const
 {
-	return _mousePosition;
+	return _windowMousePosition;
+}
+
+glm::vec2 InputManager::getScreenMousePosition() const
+{
+	return _screenMousePosition;
 }
 
 void InputManager::_pressKey(int id)

@@ -11,7 +11,10 @@ namespace sf3d {
 
 		bool contains(const glm::vec3& pos, const glm::vec3& size) const;
 
-		glm::vec3 getProjectionY(const glm::vec3& pos);
-		glm::vec3 getProjectionZ(const glm::vec3& pos);
+		glm::vec3 getProjectionY(float height);
+		glm::vec3 getProjectionZ(float depth);
+		
+		glm::vec3 getCameraProjectionY(float height);
+		glm::vec3 getCameraProjectionZ(float depth);
 	};
 }
