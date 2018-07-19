@@ -54,16 +54,4 @@ void RenderWindow::create(
 	glViewport(0, 0, mode.width, mode.height);
 }
 
-void RenderWindow::onResize()
-{
-    sf::Vector2u size = this->getSize();
-    glViewport(0, 0, size.x, size.y);
-}
-
-bool RenderWindow::_setActive(bool /*states*/)
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    return true;
-}
-
 }

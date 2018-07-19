@@ -31,10 +31,7 @@ namespace sf3d {
 		void update() const;
 
 		Vertex& operator[](size_t index);
-
 	private:
-		void _update() const;
-
 		unsigned int _VAO;
 		unsigned int _VBO;
 
@@ -49,11 +46,6 @@ namespace sf3d {
 
 		mutable size_t _min{static_cast<size_t>(-1)};
 		mutable size_t _max{0u};
-
-		unsigned int _primitveType{GL_TRIANGLE_FAN};
-
-		const unsigned int _storageUsage;
-		std::vector<Vertex> _vertices;
 
 	};
 }
