@@ -39,9 +39,9 @@ public:
 			{
 				script->runScript(ScriptFilePath);
 			}
-			catch (std::exception exc)
+			catch (sol::error ex)
 			{
-				LOG_EXCEPTION(exc);
+				LOG_EXCEPTION(ex);
 			}
 			
 			_finished = true;

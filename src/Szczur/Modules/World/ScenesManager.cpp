@@ -389,6 +389,7 @@ void ScenesManager::runGame() {
 			scene->forEach([&](const std::string& group, Entity& entity) {
 				if (auto comp = entity.getComponentAs<ScriptableComponent>()) comp->runScript();
 				if (auto comp = entity.getComponentAs<AudioComponent>()) comp->play();
+				if (auto comp = entity.getComponentAs<TraceComponent>()) comp->play();
 
 				#ifdef EDITOR
 				if (levelEditor.reloadArmaturesAtStart()) {

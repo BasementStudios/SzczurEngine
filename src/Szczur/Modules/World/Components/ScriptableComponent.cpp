@@ -33,15 +33,32 @@ namespace rat {
 		}
 		else {      
 			_inited = true;
-			if(_initCallback.valid()) {
-				_initCallback(getEntity());
+
+			try
+			{
+				if (_initCallback.valid())
+				{
+					_initCallback(getEntity());
+				}
+			}
+			catch (sol::error e)
+			{
+				LOG_EXCEPTION(e);
 			}
 		}
 	}
 
 	void ScriptableComponent::sceneChanged() {		
-		if(_sceneChangeCallback.valid()) {
-			_sceneChangeCallback(getEntity());
+		try
+		{
+			if (_sceneChangeCallback.valid())
+			{
+				_sceneChangeCallback(getEntity());
+			}
+		}
+		catch (sol::error e)
+		{
+			LOG_EXCEPTION(e);
 		}
 	}
 

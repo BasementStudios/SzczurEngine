@@ -4,6 +4,7 @@
 
 #include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
+#include "Szczur/Modules/World/World.hpp"
 
 #include "Trace/Trace.hpp"
 #include "Trace/Timeline.hpp"
@@ -35,7 +36,7 @@ void TraceComponent::setTimeline(int id)
 
 void TraceComponent::play()
 {
-	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	if (auto tm = _trace->getCurrentTimeline())
 	{
 		tm->start();
 	}
@@ -43,7 +44,7 @@ void TraceComponent::play()
 
 void TraceComponent::stop()
 {
-	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	if (auto tm = _trace->getCurrentTimeline())
 	{
 		tm->setStatus(Timeline::Stopped);
 	}
@@ -51,7 +52,7 @@ void TraceComponent::stop()
 
 void TraceComponent::pause()
 {
-	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	if (auto tm = _trace->getCurrentTimeline())
 	{
 		tm->setStatus(Timeline::Paused);
 	}
@@ -59,7 +60,7 @@ void TraceComponent::pause()
 
 void TraceComponent::resume()
 {
-	if (auto tm = _trace->getCurrentTimeline(); tm != nullptr)
+	if (auto tm = _trace->getCurrentTimeline())
 	{
 		tm->setStatus(Timeline::Playing);
 	}
@@ -92,7 +93,8 @@ void TraceComponent::update(ScenesManager& scenes, float deltaTime)
 
 void TraceComponent::render(sf3d::RenderTarget& target)
 {
-	_trace->draw(target, sf3d::RenderStates());
+	if (detail::globalPtr<World>->isEditor())
+		_trace->draw(target, sf3d::RenderStates());
 }
 
 void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)

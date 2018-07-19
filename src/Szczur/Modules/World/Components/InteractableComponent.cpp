@@ -15,9 +15,17 @@ namespace rat {
 		_input(detail::globalPtr<Input>->getManager()) {
 	}
 
-	void InteractableComponent::callback() {
-		if(_interactionCallback.valid())
-			_interactionCallback(getEntity());
+	void InteractableComponent::callback()
+	{
+		try
+		{
+			if (_interactionCallback.valid())
+				_interactionCallback(getEntity());
+		}
+		catch (sol::error err)
+		{
+			LOG_EXCEPTION(err);
+		}
 	}
 
 	void InteractableComponent::setDistance(float distance) {

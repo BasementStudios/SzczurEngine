@@ -210,8 +210,14 @@ namespace rat {
 		if (type == TriggerComponent::Overlaping) {
 			if (checkForTrigger(player->getPosition())) {
 				if (!_isPlayerInside) {
-					if (_enterCallback.valid())
-						_enterCallback(getEntity());
+
+					try {
+						if (_enterCallback.valid())
+							_enterCallback(getEntity());
+					}
+					catch (sol::error err) {
+						LOG_EXCEPTION(err);
+					}
 
 					_isPlayerInside = true;
 				}
@@ -221,8 +227,16 @@ namespace rat {
 			}
 			else {
 				if (_isPlayerInside) {
-					if (_leaveCallback.valid())
-						_leaveCallback(getEntity());
+
+					try {
+						if (_leaveCallback.valid())
+							_leaveCallback(getEntity());
+					}
+					catch (sol::error err) {
+						LOG_EXCEPTION(err);
+					}
+
+				
 
 					_isPlayerInside = false;
 				}

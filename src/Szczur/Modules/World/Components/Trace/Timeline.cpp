@@ -43,7 +43,6 @@ void Timeline::removeAction(Action* action)
 
 	_actions.erase(std::remove_if(_actions.begin(), _actions.end(), [action] (auto& it) { return action == it.get(); }));
 	_currentActionIndex = 0;
-	_status = Status::Playing;
 }
 
 void Timeline::update(float deltaTime)

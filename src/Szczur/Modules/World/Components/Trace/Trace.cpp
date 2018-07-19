@@ -9,6 +9,8 @@
 #include "Actions/WaitAction.hpp"
 #include "Actions/ScriptAction.hpp"
 
+#include "Szczur/Modules/World/World.hpp"
+
 namespace rat
 {
 
@@ -130,8 +132,10 @@ void Trace::loadFromConfig(nlohmann::json& config)
 
 		if (timeline != _timelines.end())
 		{
-			_currentTimeline = (*timeline).get();
-			_currentTimeline->start();
+			detail::globalPtr<World>->getScenes().isGameRunning();
+
+			_currentTimeline = timeline->get();
+			//_currentTimeline->start();
 		}
 	}
 }
