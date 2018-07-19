@@ -140,6 +140,10 @@ namespace rat {
 		_base->fullyDeactivate();
 	}
 
+	void Player::clearSkillSlots() {
+		_skillSlots->clear();
+	}
+
 	void Player::initJson() {
 		_skillsList.clear();
 

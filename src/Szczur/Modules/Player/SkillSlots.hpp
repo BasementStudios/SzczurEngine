@@ -19,6 +19,8 @@ namespace rat {
 		void unChooseSkill(const std::string& nameID);
 
 		void setCounter(const std::string& nameID, const std::string& number);
+
+		void clear();
 	private:
 		struct SkillSlot {
 			TextAreaWidget* itemCounter = nullptr;

@@ -46,6 +46,18 @@ namespace rat {
 		}
 	}
 
+	void SkillSlots::clear() {
+		for (size_t i = 0; i < 6; i++)
+		{
+			_slotsList[i]->PPImage->removeTexture();
+			_slotsList[i]->itemCounter->setString("");
+			_slotsList[i]->isChosen = false;
+			_slotsList[i]->skillImage->removeTexture();
+			_slotsList[i]->skillImage->resetColor();
+			_slotsList[i]->skill = nullptr;
+		}
+	}
+	
 	void SkillSlots::setParent(Widget* base) {
 		base->add(_base);
 	}

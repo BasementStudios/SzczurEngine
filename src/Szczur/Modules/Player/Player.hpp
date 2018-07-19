@@ -62,6 +62,8 @@ namespace rat {
 
 		void start();
 		void stop();
+
+		void clearSkillSlots();
 	private:
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _background = nullptr;
