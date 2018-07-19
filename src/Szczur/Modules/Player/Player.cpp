@@ -81,12 +81,12 @@ namespace rat {
 		_base->add(_HPBack);
 		_HPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
 		_HPBack->setPropPosition(0.f, 0.f);
-		_HPBack->setPropSize(0.33f, 0.06f);
+		_HPBack->setPropSize(0.37f, 0.08f);
 
 		_HPBar = new HPBar();
 		_HPBar->setParent(_base);
 		_HPBar->initGUI(gui);
-		_HPBar->setPropSize({0.368f, 0.1f});
+		_HPBar->setPropSize({0.46f, 0.125f});
 		_HPBar->setPropPosition({0.03f, 0.01f});	
 		_HPBar->setMaxHP(100);
 		_HPBar->setCurrentHP(95);
@@ -95,8 +95,8 @@ namespace rat {
 		_TimeBar = new TimeBar();
 		_TimeBar->setParent(_base);
 		_TimeBar->initGUI(gui);
-		_TimeBar->setPropSize({ 0.295f, 0.044f });
-		_TimeBar->setPropPosition({ 0.077f, 0.068f });
+		_TimeBar->setPropSize({ 0.384f, 0.057f });
+		_TimeBar->setPropPosition({ 0.09f, 0.073f });
 		_TimeBar->setMaxTime(100);
 		_TimeBar->setCurrentTime(95);
 		_TimeBar->setTimeBarIndex(1);
@@ -120,9 +120,15 @@ namespace rat {
 		_skillSlots->addSkill(&_skillsList[0]);
 		_skillSlots->addSkill(&_skillsList[1]);
 
+		_itemBack = new ImageWidget;
+		_base->add(_itemBack);
+		_itemBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
+		_itemBack->setPropPosition(1.f, 0.f);
+		_itemBack->setPropSize(0.4f, 0.08f);
+
 		_itemSlots = new ItemSlots(gui);
 		_itemSlots->setParent(_base);
-		_itemSlots->setPropPosition({ .95f, 0.05f });
+		_itemSlots->setPropPosition({ .97f, 0.03f });
 	}
 
 	void Player::initJson() {
@@ -229,7 +235,7 @@ namespace rat {
 		return false;
 	}
 
-	Skill Player::getSkill(const std::string& nameID) {
+	const Skill& Player::getSkill(const std::string& nameID) {
 		for (auto& i : _skillsList) {
 			if (i.getNameID() == nameID) {
 				return i;
@@ -245,11 +251,13 @@ namespace rat {
 	void Player::addHP(int HP) {
 		_currentHP += HP;
 		_currentHP = std::clamp(_currentHP, 0, _maxHP);
+		_HPBar->setCurrentHP(_currentHP);
 	}
 
 	void Player::setHP(int newHP) {
 		_currentHP = newHP;
 		_currentHP = std::clamp(_currentHP, 0, _maxHP);
+		_HPBar->setCurrentHP(_currentHP);
 	}
 
 	int Player::getMaxHP() {
@@ -258,6 +266,7 @@ namespace rat {
 
 	void Player::setMaxHP(int newMaxHP) {
 		_maxHP = newMaxHP;
+		_HPBar->setMaxHP(_maxHP);
 	}
 
 	//PP section
@@ -268,11 +277,13 @@ namespace rat {
 	void Player::addPP(int PP) {
 		_currentPP += PP;
 		_currentPP = std::clamp(_currentPP, 0, _maxPP);
+		_PPCount->setPPCount(_currentPP);
 	}
 
 	void Player::setPP(int PP) {
 		_currentPP = PP;
 		_currentPP = std::clamp(_currentPP, 0, _maxPP);
+		_PPCount->setPPCount(_currentPP);
 	}
 
 	int Player::getMaxPP() {
@@ -282,9 +293,51 @@ namespace rat {
 	void Player::setMaxPP(int newMaxPP) {
 		_maxPP = newMaxPP;
 	}
-	/*
-	void addSkill(std::string& nameID);
-	void removeSkill(std::string& nameID);
-	Skill getSkill(std::string& nameID);
-	*/
+	
+	void Player::setHPBarIndex(int i) {
+		_HPBar->setHPBarIndex(i);
+	}
+
+	void Player::setTimeBarIndex(int i) {
+		_TimeBar->setTimeBarIndex(i);
+	}
+	void Player::setCurrentTime(int time) {
+		_TimeBar->setCurrentTime(time);
+	}
+	void Player::setMaxTime(int time) {
+		_TimeBar->setMaxTime(time);
+	}
+
+	void Player::setBrokenPPAmount(int amount) {
+		_PPCount->setBrokenSlotAmount(amount);
+	}
+	void Player::setGoodPPAmount(int amount) {
+		_PPCount->setGoodSlotAmount(amount);
+	}
+
+	void Player::addSkillToSlot(const std::string& nameID) {
+		for (size_t i = 0; i < _skillsList.size(); i++)
+		{
+			if (nameID == _skillsList[i].getNameID()) {
+				_skillSlots->addSkill(&_skillsList[i]);
+			}
+		}
+	}
+	void Player::chooseSkill(const std::string& nameID) {
+		_skillSlots->chooseSkill(nameID);
+	}
+	void Player::unChooseSkill(const std::string& nameID) {
+		_skillSlots->unChooseSkill(nameID);
+	}
+	void Player::setCounter(const std::string& nameID, const std::string& number) {
+		//if number = "0" skill resets (number is no longer visible)
+		_skillSlots->setCounter(nameID, number);
+	}
+
+	void Player::addItem(const std::string& nameID, sf::Texture* text) {
+		_itemSlots->setItem(text, nameID);
+	}
+	void Player::removeItem(const std::string& nameID) {
+		_itemSlots->removeItem(nameID);
+	}
 }

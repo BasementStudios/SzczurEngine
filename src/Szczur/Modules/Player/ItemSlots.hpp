@@ -15,7 +15,7 @@ namespace rat {
 		void setPropPosition(sf::Vector2f pos);
 
 		void setItem(sf::Texture* text, const std::string& nameID);
-		void removeItem(sf::Texture* text, const std::string& nameID);
+		void removeItem(const std::string& nameID);
 	private:
 		struct Slot {
 			ImageWidget* _slotImage = nullptr;

@@ -49,7 +49,7 @@ namespace rat {
 		}
 	}
 
-	void ItemSlots::removeItem(sf::Texture* text, const std::string& nameID) {
+	void ItemSlots::removeItem(const std::string& nameID) {
 		for (size_t i = 0; i < 4; i++)
 		{
 			if (_slotsList[i]->_itemNameId == nameID) {

@@ -41,8 +41,24 @@ namespace rat {
 
 		bool addSkill(const std::string& nameID);
 		bool removeSkill(const std::string& nameID);
-		Skill getSkill(const std::string& nameID); // @todo ? const? nie?
+		const Skill& getSkill(const std::string& nameID); // @todo ? const? nie?
 
+		void setHPBarIndex(int);
+
+		void setTimeBarIndex(int);
+		void setCurrentTime(int);
+		void setMaxTime(int);
+
+		void setBrokenPPAmount(int);
+		void setGoodPPAmount(int);
+
+		void addSkillToSlot(const std::string&);
+		void chooseSkill(const std::string&);
+		void unChooseSkill(const std::string&);
+		void setCounter(const std::string&, const std::string& number);
+
+		void addItem(const std::string&, sf::Texture*);
+		void removeItem(const std::string&);
 	private:
 		InterfaceWidget* _base = nullptr;
 		ImageWidget* _background = nullptr;
@@ -55,6 +71,7 @@ namespace rat {
 		PPCount* _PPCount;
 		SkillSlots* _skillSlots;
 
+		ImageWidget* _itemBack;
 		ItemSlots* _itemSlots;
 
 		std::string _pathToJson;
