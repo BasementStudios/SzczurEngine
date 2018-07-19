@@ -28,7 +28,7 @@ Scene::Scene(ScenesManager* parent)
 	, _parent { parent }
 {
 
-	_battleModule = detail::globalPtr<Battle>;
+	_battleModule = detail::globalPtr<Battle>; 
 
 	_collectingHolder.emplace_back("background", EntitiesHolder_t{}); 
 	_collectingHolder.emplace_back("single", EntitiesHolder_t{});
@@ -50,14 +50,12 @@ void Scene::update(float deltaTime)
 	_parent->getTextureDataHolder().loadAll();
 	for (auto& holder : getAllEntities())
 	{		
-		if(_battleModule->isActiveScene()) {
-			if(holder.first != "background" || holder.first == "foreground" ) {
-				continue;
-			}
-		}	
 		for (auto& entity : holder.second)
 		{
 			entity->update(*getScenes(), deltaTime);
+		}
+		if(holder.first == "battles") {
+			_battleModule->update(deltaTime);
 		}
 	}
 
@@ -83,6 +81,9 @@ void Scene::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	for (auto& holder : this->getAllEntities()) {
 		for (auto& entity : holder.second) {
 			entity->draw(target, states);
+		}
+		if(holder.first == "battles") {
+			_battleModule->render(target);
 		}
 	}
 }
