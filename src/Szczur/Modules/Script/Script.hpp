@@ -36,6 +36,8 @@ namespace rat
 
 		void initSFML();
 
+		void initGLM();
+
 		void scriptFile(const std::string& filePath);
 
 		void script(const std::string& code);
