@@ -33,7 +33,7 @@ namespace rat {
 
 	void EquipmentSlot::setHighlight(bool state) {
 		if (state)
-			_slotImage->setColor(sf::Color::Color(140, 140, 140));
+			_slotImage->setColor(sf::Color(140, 140, 140));
 		else
 			_slotImage->setColor(sf::Color(255u, 255u, 255u, 150u));
 	}
