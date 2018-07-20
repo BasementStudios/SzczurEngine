@@ -28,6 +28,9 @@ public:
 	/// Set new texture for sprite
 	void setTexture(const Texture& texture);
 
+	/// Set part of given texture for sprite
+	void setTextureRect(const glm::vec2& position, const glm::vec2& size);
+
 
 
 	/* Operators */
