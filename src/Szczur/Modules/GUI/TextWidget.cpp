@@ -46,9 +46,10 @@ namespace rat {
     sf::Vector2f TextWidget::_getSize() const 
     {
         auto rect = _text.getGlobalBounds();
+        auto drawPos = getDrawPosition();
         return {
-            static_cast<float>(rect.width),
-            static_cast<float>(rect.height)
+            static_cast<float>(rect.width + rect.left - drawPos.x),
+            static_cast<float>(rect.height + rect.top - drawPos.y)
         };
     }
 

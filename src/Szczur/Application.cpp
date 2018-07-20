@@ -34,6 +34,7 @@ void Application::init()
 	#endif
 	initModule<Battle>();
 
+	initModule<PrepScreen>();
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR
@@ -94,6 +95,29 @@ bool Application::input()
 					break;
 			}
 		}
+
+
+		//////////////////////
+		switch(event.type)
+        {
+            case sf::Event::KeyPressed:
+            {
+                switch(event.key.code)
+                {
+                    case sf::Keyboard::P:
+                        getModule<PrepScreen>().show();
+                    break; 
+
+                    default: break;
+                }
+            } 
+            break;
+
+            default: break;
+        }
+		//////////////////////
+
+
 	}
 	return true;
 }

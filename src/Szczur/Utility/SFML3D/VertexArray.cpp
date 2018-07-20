@@ -3,6 +3,8 @@
 #include <stdexcept> // out_of_range
 #include <glad/glad.h>
 
+#include <glad/glad.h>
+
 #include "Vertex.hpp"
 
 namespace sf3d {

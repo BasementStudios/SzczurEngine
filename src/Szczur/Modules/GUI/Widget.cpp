@@ -74,9 +74,9 @@ namespace rat
         if(parent->_interface) setInterface(parent->_interface);
         else setInterface(nullptr);
     }
-    void Widget::setInterface(const InterfaceWidget* inter)
+    void Widget::setInterface(const InterfaceWidget* interface)
     {
-        _interface = inter;
+        _interface = interface;
         if((_propSizeMustBeenCalculatedViaInterface || _elementsPropSizeMustBeenCalculated) && _interface)
         {
             _updatePropSize();
@@ -86,7 +86,7 @@ namespace rat
 
         for(auto* child : _children)
         {
-            child->setInterface(inter);
+            child->setInterface(interface);
         }
     }
 
@@ -199,8 +199,7 @@ namespace rat
             _input(event);
             for(auto child : _children) child->input(event);
         }
-    }
-    
+    }   
 
     void Widget::update(float deltaTime) {
         if(isActivated()) {

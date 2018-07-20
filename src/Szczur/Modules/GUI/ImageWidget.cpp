@@ -34,10 +34,7 @@ namespace rat {
         object.set("getTexture", &ImageWidget::getTexture);
         object.set("removeTexture", &ImageWidget::removeTexture);
         object.set("setScale", &ImageWidget::setScale);
-        //object.set("setTextureRect", &ImageWidget::setTextureRect);
-		object.set("setTextureRect", [](ImageWidget& self, sol::table tab) {
-			self.setTextureRect({tab[1], tab[2], tab[3], tab[4]});
-		});
+        object.set("setTextureRect", &ImageWidget::setTextureRect);
         object.set("setPropTextureRect", &ImageWidget::setPropTextureRect);
         
         object.set("setFullyTexSizing", &ImageWidget::setFullyTexSizing);
