@@ -154,7 +154,7 @@ namespace rat {
 		_itemSlots = new ItemSlots(gui);
 		_itemSlots->setParent(_base);
 		_itemSlots->setPropPosition({ .97f, 0.03f });
-		//stop();
+		stop();
 		LOG_INFO("T11")
 	}
 
