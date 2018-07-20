@@ -428,8 +428,6 @@ namespace rat
 
         setProfession("Range");
         hide();
-
-        //pushEnemy("krowolyk");
     }
 
     void PrepScreen::setCallback(const std::function<void(Widget*)>& func )

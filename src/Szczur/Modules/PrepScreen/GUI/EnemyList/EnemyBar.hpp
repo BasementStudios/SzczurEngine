@@ -18,7 +18,9 @@ namespace rat
         const Enemy* _enemy{nullptr};
         EnemyArea& _parentArea;
 
-        WindowWidget* _border{nullptr};
+        WindowWidget* _background{nullptr};
+        WindowWidget* _iconBack{nullptr};
+        WindowWidget* _slotBack{nullptr};
         ImageWidget* _icon{nullptr};
         TextWidget* _name{nullptr};
         TextWidget* _hp{nullptr};
