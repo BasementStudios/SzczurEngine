@@ -50,7 +50,7 @@ namespace rat
         module.set_function("showOnlyEssenceOrbs", &PrepScreen::showOnlyEssenceOrbs, this);
         module.set_function("clearEnemies", &PrepScreen::clearEnemies, this);
         module.set_function("pushEnemy", &PrepScreen::pushEnemy, this);
-        module.set_function("setStartBattleCallback", &PrepScreen::setCallback, this);
+        module.set_function("setStartBattleCallback", &PrepScreen::setLuaCallback, this);
 
         module.set_function("setMaximumPPSlotsAmount", &PrepScreen::setMaximumPPSlotsAmount, this);
         module.set_function("getMaximumPPSlotsAmount", &PrepScreen::getMaximumPPSlotsAmount, this);
@@ -72,8 +72,96 @@ namespace rat
         module.set_function("activateGlyph", &PrepScreen::activateGlyph, this);
         module.set_function("canBeGlyphDeactivated", &PrepScreen::canBeGlyphDeactivated, this);
         module.set_function("deactivateGlyph", &PrepScreen::deactivateGlyph, this);
+    }
 
+    void PrepScreen::reset()
+    {
+        clearEnemies();
+        resetSkills();
+    }
 
+    void PrepScreen::resetSkills()
+    {
+        _codex.reset();
+        _boughtSkills.clear();
+
+        _chosenSkillArea.recalculate();
+        _calcSkillsGUI();
+    }
+
+    void PrepScreen::show()
+    {
+        _base->fullyActivate();
+
+        _profArea.fullyActivate();
+        _skillArea.fullyActivate();
+        _glyphArea.fullyActivate();
+        _glyphArea.setPosToCenter();
+
+        _rightList->fullyActivate();
+        _ppBack->fullyActivate();
+    }
+    void PrepScreen::hide()
+    {
+        _base->fullyDeactivate();
+    }
+
+    std::vector<std::string> PrepScreen::getSelectedSkills() const
+    {
+        std::vector <std::string> ids;
+        ids.reserve (_boughtSkills.size ());
+        for (const auto& skill : _boughtSkills)
+        {
+            ids.emplace_back (skill->getStringID ());
+        }
+        return ids;
+    }
+
+    void PrepScreen::showOnlyEssenceOrbs()
+    {
+        _base->fullyActivate();
+
+        _profArea.fullyDeactivate();
+        _skillArea.fullyDeactivate();
+
+        _rightList->fullyDeactivate();
+        _ppBack->fullyDeactivate();
+
+        _glyphArea.fullyActivate();
+        _glyphArea.moveToLeft();
+    }
+
+    void PrepScreen::loadEnemiesFromJson(nlohmann::json& j)
+    {
+        _enemyCodex.loadFromJson(j);
+
+        auto& gui = getModule<GUI>();
+        _enemyCodex.initAssetsViaGUI(gui);
+    }
+
+    void PrepScreen::clearEnemies()
+    {
+        _enemyArea.clear();
+    }
+    void PrepScreen::pushEnemy(const std::string& nameID)
+    {
+        auto* enemy = _enemyCodex.getEnemy(nameID);
+        if(!enemy)
+        {
+            LOG_ERROR("Cannot find enemy \"", nameID, "\"");
+            return;
+        }
+
+        _enemyArea.pushEnemy(enemy, getModule<GUI>());
+    }
+
+    void PrepScreen::setLuaCallback(sol::function func)
+    {
+        _battleButton.setCallback(func);
+    }
+    void PrepScreen::setCallback(std::function<void(Widget*)> func)
+    {
+        _battleButton.setCallback(func);
     }
 
     void PrepScreen::setMaximumPPSlotsAmount(int amount)
@@ -351,72 +439,6 @@ namespace rat
         test();
     }
 
-    void PrepScreen::show()
-    {
-        _base->fullyActivate();
-
-        _profArea.fullyActivate();
-        _skillArea.fullyActivate();
-        _glyphArea.fullyActivate();
-        _glyphArea.setPosToCenter();
-
-        _rightList->fullyActivate();
-        _ppBack->fullyActivate();
-    }
-    void PrepScreen::hide()
-    {
-        _base->fullyDeactivate();
-    }
-
-    std::vector<std::string> PrepScreen::getSelectedSkills() const
-    {
-        std::vector <std::string> ids;
-        ids.reserve (_boughtSkills.size ());
-        for (const auto& skill : _boughtSkills)
-        {
-            ids.emplace_back (skill->getStringID ());
-        }
-        return ids;
-    }
-
-    void PrepScreen::showOnlyEssenceOrbs()
-    {
-        _base->fullyActivate();
-
-        _profArea.fullyDeactivate();
-        _skillArea.fullyDeactivate();
-
-        _rightList->fullyDeactivate();
-        _ppBack->fullyDeactivate();
-
-        _glyphArea.fullyActivate();
-        _glyphArea.moveToLeft();
-    }
-
-    void PrepScreen::loadEnemiesFromJson(nlohmann::json& j)
-    {
-        _enemyCodex.loadFromJson(j);
-
-        auto& gui = getModule<GUI>();
-        _enemyCodex.initAssetsViaGUI(gui);
-    }
-
-    void PrepScreen::clearEnemies()
-    {
-        _enemyArea.clear();
-    }
-    void PrepScreen::pushEnemy(const std::string& nameID)
-    {
-        auto* enemy = _enemyCodex.getEnemy(nameID);
-        if(!enemy)
-        {
-            LOG_ERROR("Cannot find enemy \"", nameID, "\"");
-            return;
-        }
-
-        _enemyArea.pushEnemy(enemy, getModule<GUI>());
-    }
-
 
     void PrepScreen::test()
     {
@@ -452,12 +474,17 @@ namespace rat
 
         setProfession("Range");
         hide();
+
+        // activateGlyph(GlyphID::Wrath);
+        // pushEnemy("krowolyk");
+        // std::function<void(Widget*)> func = [this](Widget*){
+        //     this->reset();
+        // };
+
+
+        // setCallback(func);
     }
 
-    void PrepScreen::setCallback(sol::function func)
-    {
-        _battleButton.setCallback(func);
-    }
 
 
     void PrepScreen::_loadAssetsFromGUI()

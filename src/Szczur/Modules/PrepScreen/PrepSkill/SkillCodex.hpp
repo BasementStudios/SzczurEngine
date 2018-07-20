@@ -18,6 +18,8 @@ namespace rat
     public:
         SkillCodex();
 
+        void reset();
+
         PrepSkill* getSkill(const std::string& name);
         PrepSkill* addSkill(std::unique_ptr<PrepSkill> skill);
         void renameSkill(const std::string& oldName, const std::string& newName);

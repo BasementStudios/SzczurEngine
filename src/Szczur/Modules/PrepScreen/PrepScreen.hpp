@@ -41,10 +41,15 @@ namespace rat
 
         void loadEnemiesFromJson(nlohmann::json& j);
 
+        void reset();
+
         void clearEnemies();
         void pushEnemy(const std::string& nameID);
 
-        void setCallback(sol::function func);
+        void resetSkills();
+
+        void setLuaCallback(sol::function func);
+        void setCallback(std::function<void(Widget*)> func);
         
     public:
         void init()

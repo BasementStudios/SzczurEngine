@@ -11,6 +11,11 @@ namespace rat
     {
         _initSkills();   
     }
+
+    void SkillCodex::reset()
+    {
+        for(auto& [name, skill] : _skills) skill->unBuy();
+    }
     
 
     PrepSkill* SkillCodex::getSkill(const std::string& name)

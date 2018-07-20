@@ -33,6 +33,10 @@ namespace rat
     {
         _background->setLuaCallback(Widget::CallbackType::onPress, func);
     }
+    void BattleButton::setCallback(const std::function<void(Widget*)>& func)
+    {
+        _background->setCallback(Widget::CallbackType::onPress, func);
+    }
     void BattleButton::loadAssetsFromGUI(GUI& gui)
     {
         _text->setFont(gui.getFont("Assets/fonts/NotoSerif-Regular.ttf"));
