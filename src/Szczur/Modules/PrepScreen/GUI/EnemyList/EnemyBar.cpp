@@ -82,15 +82,15 @@ namespace rat
         _descParent->setPropSize(prSize.x, 0.f);
         _descParent->setPropPadding(0.f, 0.01f);
         _descParent->fullyDeactivate();
-        _descParent->makeChildrenUnresizable();
+        //_descParent->makeChildrenUnresizable();
         mainList->add(_descParent);
 
         _description = new TextAreaWidget;
         _descParent->add(_description);
-        _description->setCharacterPropSize(0.025f);
+        _description->setCharacterPropSize(0.02f);
         _description->setPropPosition(0.5f, 0.5f);
         _description->setAlign(TextAreaWidget::Align::Center);
-        _description->setPropSize(prSize.x * 0.8f, 0.f);
+        _description->setPropSize(prSize.x * 0.9f, 0.f);
 
         auto* base = _getBase();
         base->makeChildrenPenetrable();
