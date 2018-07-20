@@ -32,8 +32,8 @@ Battle::Battle()
     LOG_INFO("Module Battle initialized");
 
     // TEST
-    getModule<Script>().scriptFile("Assets/Battles/test_battle.lua");
-    getPlayer()->setSkills({"Move", "Stun hit", "Dash and hit", "Magic bomb", "Explosion"});
+   // getModule<Script>().scriptFile("Assets/Battles/test_battle.lua");
+   // getPlayer()->setSkills({"Move", "Stun hit", "Dash and hit", "Magic bomb", "Explosion"});
 	// --TEST
 }
 
