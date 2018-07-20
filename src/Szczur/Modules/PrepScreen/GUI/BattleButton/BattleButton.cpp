@@ -29,9 +29,9 @@ namespace rat
     {
         parent->add(_background);
     }
-    void BattleButton::setCallback(const std::function<void(Widget*)>& call)
+    void BattleButton::setCallback(sol::function func)
     {
-        _background->setCallback(Widget::CallbackType::onPress, call);
+        _background->setLuaCallback(Widget::CallbackType::onPress, func);
     }
     void BattleButton::loadAssetsFromGUI(GUI& gui)
     {

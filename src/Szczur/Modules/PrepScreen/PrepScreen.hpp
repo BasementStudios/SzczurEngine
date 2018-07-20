@@ -44,7 +44,7 @@ namespace rat
         void clearEnemies();
         void pushEnemy(const std::string& nameID);
 
-        void setCallback(const std::function<void(Widget*)>& func );
+        void setCallback(sol::function func);
         
     public:
         void init()

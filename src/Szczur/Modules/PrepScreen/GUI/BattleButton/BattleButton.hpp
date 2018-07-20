@@ -1,6 +1,6 @@
 #pragma once
 
-#include <functional>
+#include <sol.hpp>
 
 namespace rat
 {
@@ -11,7 +11,7 @@ namespace rat
     public:
         BattleButton();
         void setParent(Widget* parent);
-        void setCallback(const std::function<void(Widget*)>& call);
+        void setCallback(sol::function func);
         void loadAssetsFromGUI(GUI& gui);
     private:
         WindowWidget* _background{nullptr};

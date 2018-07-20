@@ -50,6 +50,30 @@ namespace rat
         module.set_function("showOnlyEssenceOrbs", &PrepScreen::showOnlyEssenceOrbs, this);
         module.set_function("clearEnemies", &PrepScreen::clearEnemies, this);
         module.set_function("pushEnemy", &PrepScreen::pushEnemy, this);
+        module.set_function("setStartBattleCallback", &PrepScreen::setCallback, this);
+
+        module.set_function("setMaximumPPSlotsAmount", &PrepScreen::setMaximumPPSlotsAmount, this);
+        module.set_function("getMaximumPPSlotsAmount", &PrepScreen::getMaximumPPSlotsAmount, this);
+
+        module.set_function("unlockPPSlots", &PrepScreen::unlockPPSlots, this);
+        module.set_function("lockPPSlots", &PrepScreen::lockPPSlots, this);
+        module.set_function("setUnlockedPPSlots", &PrepScreen::setUnlockedPPSlots, this);
+        module.set_function("hasFilledPPAmount", &PrepScreen::hasFilledPPAmount, this);
+
+        module.set_function("fillPP", &PrepScreen::fillPP, this);
+        module.set_function("emptyPP", &PrepScreen::emptyPP, this);
+        module.set_function("setFilledPPAmount", &PrepScreen::setFilledPPAmount, this);
+        //module.set_function("getFilledPPAmount", &PrepScreen::getFilledPPAmount, this);
+
+
+        module.set_function("addGlyph", &PrepScreen::addGlyph, this);
+        module.set_function("removeGlyph", &PrepScreen::removeGlyph, this);
+        module.set_function("canBeGlyphActivated", &PrepScreen::canBeGlyphActivated, this);
+        module.set_function("activateGlyph", &PrepScreen::activateGlyph, this);
+        module.set_function("canBeGlyphDeactivated", &PrepScreen::canBeGlyphDeactivated, this);
+        module.set_function("deactivateGlyph", &PrepScreen::deactivateGlyph, this);
+
+
     }
 
     void PrepScreen::setMaximumPPSlotsAmount(int amount)
@@ -432,7 +456,7 @@ namespace rat
         //pushEnemy("krowolyk");
     }
 
-    void PrepScreen::setCallback(const std::function<void(Widget*)>& func )
+    void PrepScreen::setCallback(sol::function func)
     {
         _battleButton.setCallback(func);
     }
@@ -454,7 +478,6 @@ namespace rat
         gui.addAsset<sf::Texture>(path + "GlyphCircle.png");
         gui.addAsset<sf::Texture>(path + "GrayPPWindow.png");
         gui.addAsset<sf::Texture>("Assets/Test/ChosenSkill.png");
-        gui.addAsset<sf::Texture>("Assets/PrepScreen/GrayPP.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/PPSlots.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBarFilter.png");
         gui.addAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
