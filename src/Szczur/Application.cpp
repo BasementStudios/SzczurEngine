@@ -104,7 +104,7 @@ void Application::init()
 	}
 	#endif
 
-	getModule<Script>().scriptFile("Assets/Dialogs/Starsi/dialog.lua");
+	getModule<Script>().scriptFile("Assets/Dialogs/starsi/dialog.lua");
 	
 }
 
