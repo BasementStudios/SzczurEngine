@@ -117,6 +117,9 @@ public:
 
 	///
 	void setSlotDisplay(const std::string& slotName, const std::string& displayName);
+	
+	///
+	void setSlotVisibility(const std::string& slotName, bool visible);
 
 	///
 	bool isPlaying();

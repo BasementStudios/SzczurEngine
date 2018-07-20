@@ -359,6 +359,9 @@ void ArmatureComponent::setSlotDisplayIndex(const std::string& slotName, int dis
 
 void ArmatureComponent::setSlotDisplay(const std::string& slotName, const std::string& displayName)
 {
+	if (!_armature || !_armature->getArmature())
+		return;
+
 	auto slot = _armature->getArmature()->getSlot(slotName);
 
 	if (slot == nullptr)
@@ -374,6 +377,19 @@ void ArmatureComponent::setSlotDisplay(const std::string& slotName, const std::s
 
 		slot->setDisplayIndex(static_cast<int>(index));
 	}
+}
+
+void ArmatureComponent::setSlotVisibility(const std::string& slotName, bool visible)
+{
+	if (!_armature || !_armature->getArmature())
+		return;
+
+	auto slot = _armature->getArmature()->getSlot(slotName);
+
+	if (slot == nullptr)
+		return;
+
+	slot->setVisible(visible);
 }
 
 bool ArmatureComponent::isPlaying()
@@ -419,6 +435,7 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.set("replaceSkin", &ArmatureComponent::replaceSkin);
 	object.set("setSlotDisplayIndex", &ArmatureComponent::setSlotDisplayIndex);
 	object.set("setSlotDisplay", &ArmatureComponent::setSlotDisplay);
+	object.set("setSlotVisibility", &ArmatureComponent::setSlotVisibility);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
