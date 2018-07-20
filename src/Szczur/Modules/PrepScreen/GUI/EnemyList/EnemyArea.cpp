@@ -19,24 +19,26 @@ namespace rat
         _border->setMainPatchPropSize({0.3f, 0.3f});
         _border->setPropSize(0.463f, 0.85f);
 
-        _scroller = new ScrollAreaWidget;
-        _scroller->setPropSize(0.37f, 0.75f); //0.65f
-        _scroller->setPropPosition(0.5f, 0.5f);
-        _scroller->makeScrollAutoHiding();
-        _border->add(_scroller);
+        // _scroller = new ScrollAreaWidget;
+        // _scroller->setPropSize(0.37f, 0.75f); //0.65f
+        // _scroller->setPropPosition(0.5f, 0.5f);
+        // _scroller->makeScrollAutoHiding();
+        // _border->add(_scroller);
 
         _list = new ListWidget;
-        _scroller->add(_list);
-        _list->setPropPosition(0.2f, 0.f);
+        _border->add(_list);
+        _list->setPropSize(0.37f, 0.75f);
+        //_scroller->add(_list);
+        _list->setPropPosition(0.5f, 0.5f);
         _list->setPropBetweenPad(0.01f);
     }
         
     void EnemyArea::initAssetsViaGUI(GUI& gui)
     {
 
-        _scroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
-        _scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
-        _scroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
+        // _scroller->setPathTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBar.png"));
+        // _scroller->setScrollerTexture(gui.getAsset<sf::Texture>("Assets/Test/Scroller.png"));
+        // _scroller->setBoundsTexture(gui.getAsset<sf::Texture>("Assets/Test/ScrollerBound.png"));
 
         _border->setTexture(gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png"), 30);
 

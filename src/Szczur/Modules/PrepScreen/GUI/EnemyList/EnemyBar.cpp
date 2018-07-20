@@ -19,64 +19,67 @@ namespace rat
     {
         _getBase()->setPropPosition(0.5f, 0.f);
 
-        _border = new WindowWidget;
+        _background = new WindowWidget;
         _icon = new ImageWidget;
         _name = new TextWidget;
         _hp = new TextWidget;
 
-        const auto prSize = sf::Vector2f{0.312037037037037f, 0.1148148148148};
+        const auto prSize = sf::Vector2f{0.4f, 0.13f};
 
 
-        _addWidget(_border);
-        _border->setMainPatchPropSize({prSize.y, prSize.y});
-        _border->setPropSize(prSize);
-        _border->makeChildrenPenetrable();
-        //_border->makeChildrenUnresizable();
+        _addWidget(_background);
+        _background->setMainPatchPropSize({prSize.y, prSize.y});
+        _background->setPropSize(prSize);
+        _background->makeChildrenPenetrable();
 
-        _filter = new WindowWidget;
-        _filter->setPropSize(prSize);
-        _filter->setMainPatchPropSize(prSize);
-        _border->add(_filter);
-        _filter->invisible();
-
-        _border->setCallback(Widget::CallbackType::onHoverIn, [this](Widget*){
+        _background->setCallback(Widget::CallbackType::onHoverIn, [this](Widget*){
             _onHoverIn();
         });
-        _border->setCallback(Widget::CallbackType::onHoverOut, [this](Widget*){
+        _background->setCallback(Widget::CallbackType::onHoverOut, [this](Widget*){
             _onHoverOut();
         });
 
         auto* mainList = new ListWidget;
-        _border->add(mainList);
+        _background->add(mainList);
+
+        _slotBack = new WindowWidget;
+        mainList->add(_slotBack);
+        _slotBack->setPropSize(prSize);
+        _slotBack->setMainPatchPropSize({prSize.y, prSize.y});
+        _slotBack->makeChildrenUnresizable();
 
         auto* infoList = new ListWidget;
-        mainList->add(infoList);
+        _slotBack->add(infoList);
         infoList->makeHorizontal();
 
         const sf::Vector2f prPad = {0.01f, 0.01f};
 
-        auto* iconParent = new Widget;
-        iconParent->setPropSize(prSize.y, prSize.y);
-        //iconParent->setPropPadding(prPad); 
-        infoList->add(iconParent);
+        _iconBack = new WindowWidget;
+        _iconBack->setPropSize(prSize.y, prSize.y);
+        _iconBack->setMainPatchPropSize({prSize.y, prSize.y}); 
+        infoList->add(_iconBack);
         
-        const float iconPropDim = (prSize.y - prPad.x) * 0.9f;
+        const float iconPropDim = (prSize.y);
         _icon->setPropSize(iconPropDim, iconPropDim);
         _icon->setPropPosition(0.5f, 0.5f);
-        iconParent->add(_icon);
+        _iconBack->add(_icon);
 
         auto* titles = new Widget;
         titles->setPropSize(prSize.x - prSize.y, prSize.y);
-        titles->setPropPadding(0.01f, 0.01f);
+        titles->setPropPadding(0.02f, 0.02f);
         infoList->add(titles);
 
         titles->add(_name);
-        _name->setCharacterSize(20);
+        _name->setCharacterPropSize(0.025f);
         _name->setPropPosition(1.f, 0.f);
+        _name->setOutlinePropThickness(0.06f);
+        _name->setOutlineColor(sf::Color::Black);
 
         titles->add(_hp);
         _hp->setCharacterPropSize(0.025f);
         _hp->setPropPosition(1.f, 1.f);
+        _hp->setOutlinePropThickness(0.06f);
+        _hp->setOutlineColor(sf::Color::Black);
 
         _descParent = new Widget;
         _descParent->setPropSize(prSize.x, 0.f);
@@ -91,6 +94,8 @@ namespace rat
         _description->setPropPosition(0.5f, 0.5f);
         _description->setAlign(TextAreaWidget::Align::Center);
         _description->setPropSize(prSize.x * 0.9f, 0.f);
+        _description->setOutlinePropThickness(0.06f);
+        _description->setOutlineColor(sf::Color::Black);
 
         auto* base = _getBase();
         base->makeChildrenPenetrable();
@@ -112,24 +117,21 @@ namespace rat
     void EnemyBar::initAssetsViaGUI(GUI& gui)
     {
         auto* barTex = gui.getAsset<sf::Texture>("Assets/PrepScreen/SkillBack.png");
-        _border->setTexture(barTex, 30);
+        _background->setTexture(barTex, 30);
+        _iconBack->setTexture(barTex, 30);
+        _slotBack->setTexture(barTex, 30);
         auto* font = gui.getAsset<sf::Font>("Assets/fonts/NotoSerif-Regular.ttf");
         _name->setFont(font);
         _hp->setFont(font);
         _description->setFont(font);
-        _filter->setTexture(gui.getTexture("Assets/PrepScreen/SkillBarFilter.png"), 280, 100);
     }
 
     void EnemyBar::_onHoverIn()
     {
-        //_filter->visible();
         if(!_enemy) return;    
-        //_parentArea.setEnemyInfo(_enemy, {0.f, getPosition().y});
     }
     void EnemyBar::_onHoverOut()
     {
-        //_filter->invisible();
         if(!_enemy) return;
-        //if(_parentArea.isEnemyInInfo(_enemy) || true) _parentArea.deactivateInfo();
     }
 }

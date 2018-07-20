@@ -452,8 +452,6 @@ namespace rat
 
         setProfession("Range");
         hide();
-
-        //pushEnemy("krowolyk");
     }
 
     void PrepScreen::setCallback(sol::function func)
