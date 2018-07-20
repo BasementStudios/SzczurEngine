@@ -23,6 +23,9 @@ struct SimpleRenderTargetTest : public RenderTargetTest
 
 		// Reset position factor
 		this->renderTarget->positionFactor = 1.f;
+
+		// Assurance of GL flags
+		glDisable(GL_DEPTH_TEST);
 	}
 };
 

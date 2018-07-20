@@ -234,6 +234,8 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		if (states.texture) {
 			states.texture->unbind();
 		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
 void RenderTarget::draw(const VertexArray& vertices)

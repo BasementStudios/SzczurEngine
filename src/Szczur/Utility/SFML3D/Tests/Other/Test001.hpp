@@ -42,7 +42,6 @@ struct Test001_RenderLayerTest : public RenderTargetTest
 		// Background layer
 		{
 			// Create
-			glEnable(GL_DEPTH_TEST);
 			this->backgroundLayer.create(this->windowModule->getSize());
 			this->backgroundLayer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
@@ -56,7 +55,6 @@ struct Test001_RenderLayerTest : public RenderTargetTest
 		// Foreground layer
 		{
 			// Create
-			glEnable(GL_DEPTH_TEST);
 			this->foregroundLayer.create(this->windowModule->getSize());
 			this->foregroundLayer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
@@ -66,14 +64,6 @@ struct Test001_RenderLayerTest : public RenderTargetTest
 			// Reset position factor
 			this->foregroundLayer.positionFactor = 1.f;
 		}
-	}
-
-	virtual void TearDown()
-	{
-		// Draw layer
-		glDisable(GL_DEPTH_TEST);
-		
-		RenderTargetTest::TearDown();
 	}
 };
 

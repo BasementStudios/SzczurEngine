@@ -45,6 +45,9 @@ struct SimpleRenderLayerTest : public RenderTargetTest
 			// Reset position factor
 			this->renderLayer.positionFactor = 1.f;
 		}
+
+		// Assurance of GL flags
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	virtual void TearDown()
