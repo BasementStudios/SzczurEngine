@@ -103,12 +103,20 @@ void Scene::render(sf3d::RenderTarget& target)
 	// Draw the entites
 	for (auto& holder : this->getAllEntities()) {
 		for (auto& entity : holder.second) {
-			entity->draw(target, states);
+			entity->draw(layer);
 		}
 		if(holder.first == "battles") {
-			_battleModule->render(target);
+			_battleModule->render(layer);
 		}
 	}
+
+	// Path & single 
+	// glEnable(GL_DEPTH_TEST); 
+	// layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+	for (auto& entity : this->getEntities("path")) {
+		entity->draw(layer);
+	}
+
 	for (auto& entity : this->getEntities("single")) {
 		entity->draw(layer);
 	}

@@ -27,6 +27,8 @@ void Application::init()
 	initModule<AudioEditor>();
 	initModule<Listener>();
 	initModule<GUI>();
+	initModule<Dialog>();
+	initModule<DialogEditor>();
 	initModule<Equipment>();
 	initModule<Player>();
 	initModule<Battle>();

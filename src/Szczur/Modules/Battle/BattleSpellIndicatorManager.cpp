@@ -12,7 +12,7 @@ BattleSpellIndicatorManager::BattleSpellIndicatorManager()
 	// Circle indicator
 	_circleTexture[0].loadFromFile("Assets/Battles/indicators/circle_indicator.png");	
 	_circleTexture[1].loadFromFile("Assets/Battles/indicators/circle_indicator_red.png");	
-	_circleSprite.setTexture(_circleTexture);
+	_circleSprite.setTexture(*_circleTexture);
 	_circleSprite.setOrigin({1024.f/2.f, 1024.f/2.f, -6.f});
 	_circleSprite.setRotation({-90.f, 0.f, 0.f});
 	_circleFactor = 1.f/1024.f;
@@ -22,14 +22,14 @@ BattleSpellIndicatorManager::BattleSpellIndicatorManager()
 	// > 1
 	_lineTexture[0].loadFromFile("Assets/Battles/indicators/line_indicator.png");	
 	_lineTexture[1].loadFromFile("Assets/Battles/indicators/line_indicator_red.png");	
-	_lineSprite.setTexture(_lineTexture);
+	_lineSprite.setTexture(*_lineTexture);
 	_lineSprite.setOrigin({0.f, 440.f/2.f, -6.f});	
 	_lineSprite.setRotation({-90.f, 0.f, 0.f});
 
 	// > 2
 	_lineTexture2[0].loadFromFile("Assets/Battles/indicators/line_indicator_2.png");	
 	_lineTexture2[1].loadFromFile("Assets/Battles/indicators/line_indicator_2_red.png");	
-	_lineSprite2.setTexture(_lineTexture2);
+	_lineSprite2.setTexture(*_lineTexture2);
 	_lineSprite2.setOrigin({0.f, 440.f/2.f, -6.f});	
 	_lineSprite2.setRotation({-90.f, 0.f, 0.f});
 
@@ -81,7 +81,7 @@ BattleSpellIndicatorManager::BattleSpellIndicatorManager()
 
 void BattleSpellIndicatorManager::setRenderTarget(sf3d::RenderTarget& canvas)
 {
-	_canvas = canvas;
+	_canvas = &canvas;
 }
 
 void BattleSpellIndicatorManager::setHeight(float height)
@@ -97,11 +97,11 @@ void BattleSpellIndicatorManager::setBattleScene(BattleScene* scene)
 void BattleSpellIndicatorManager::renderCircleIndicator(int index, glm::vec2 pos, float radius, float deltaY)
 {
 	float size = radius*2.f*_circleFactor;
-	_circleSprite.setTexture(_circleTexture + index);
+	_circleSprite.setTexture(*(_circleTexture + index));
 	_circleSprite.setScale(glm::vec3(size, size, 1.f));
 	_circleSprite.setPosition(glm::vec3(pos.x, _scene->getPosition().y + deltaY, pos.y));
 
-	_canvas.draw(_circleSprite);
+	_canvas->draw(_circleSprite);
 }
 
 void BattleSpellIndicatorManager::renderLineIndicator(int index, glm::vec2 pos, float width, float height, float angle, float deltaY)
@@ -109,12 +109,12 @@ void BattleSpellIndicatorManager::renderLineIndicator(int index, glm::vec2 pos, 
 	float sizeX = width*_lineFactorX;
 	float sizeY = height*_lineFactorY;
 
-	_lineSprite.setTexture(_lineTexture + index);
+	_lineSprite.setTexture(*(_lineTexture + index));
 	_lineSprite.setScale(glm::vec3(sizeX, sizeY, 1.f));
 	_lineSprite.setPosition(glm::vec3(pos.x, _scene->getPosition().y + deltaY, pos.y));
 	_lineSprite.setRotation({-90.f, 0.f, -glm::degrees(angle)});
 
-	_canvas.draw(_lineSprite);
+	_canvas->draw(_lineSprite);
 }
 
 void BattleSpellIndicatorManager::renderLineIndicator2(int index, glm::vec2 pos, float width, float height, float angle, float deltaY)
@@ -122,12 +122,12 @@ void BattleSpellIndicatorManager::renderLineIndicator2(int index, glm::vec2 pos,
 	float sizeX = width*_lineFactorX;
 	float sizeY = height*_lineFactorY;
 
-	_lineSprite2.setTexture(_lineTexture2 + index);
+	_lineSprite2.setTexture(*(_lineTexture2 + index));
 	_lineSprite2.setScale(glm::vec3(sizeX, sizeY, 1.f));
 	_lineSprite2.setPosition(glm::vec3(pos.x, _scene->getPosition().y + deltaY, pos.y));
 	_lineSprite2.setRotation({-90.f, 0.f, -glm::degrees(angle)});
 
-	_canvas.draw(_lineSprite2);
+	_canvas->draw(_lineSprite2);
 }
 
 void BattleSpellIndicatorManager::renderHpBarIndicator(glm::vec2 pos, float height, float hp, float maxHp)
@@ -145,18 +145,18 @@ void BattleSpellIndicatorManager::renderHpBarIndicator(glm::vec2 pos, float heig
 
 	// Hp bar back
 	sf3d::Texture* tex = _hpBarBackTexture + sizeIndex;
-	_hpBarSprite.setTexture(tex);
+	_hpBarSprite.setTexture(*tex);
 	_hpBarSprite.setOrigin({tex->getSize().x/2.f, tex->getSize().y/2.f, 0.f});
 	_hpBarSprite.setPosition({pos.x, _scene->getPosition().y + height, pos.y});
-	_canvas.draw(_hpBarSprite);
+	_canvas->draw(_hpBarSprite);
 
 	// Hp bar
 	tex = _hpBarTexture + sizeIndex;
-	_hpBarSprite.setTexture(tex);
+	_hpBarSprite.setTexture(*tex);
 	_hpBarSprite.setOrigin({tex->getSize().x/2.f, tex->getSize().y/2.f, -1.f});
 	_hpBarSprite.setPosition({pos.x, _scene->getPosition().y + height, pos.y});
 	_hpBarSprite.setTextureRect({0.f, 0.f}, {tex->getSize().x*hp/maxHp, tex->getSize().y});
-	_canvas.draw(_hpBarSprite);
+	_canvas->draw(_hpBarSprite);
 }
 
 void BattleSpellIndicatorManager::renderTimeBarIndicator(glm::vec2 pos, float height, float time, float maxTime)
@@ -174,29 +174,29 @@ void BattleSpellIndicatorManager::renderTimeBarIndicator(glm::vec2 pos, float he
 
 	// Time bar back
 	sf3d::Texture* tex = _timeBarBackTexture + sizeIndex;
-	_timeBarSprite.setTexture(tex);
+	_timeBarSprite.setTexture(*tex);
 	_timeBarSprite.setOrigin({tex->getSize().x/2.f, tex->getSize().y/2.f, 2.f});
 	_timeBarSprite.setPosition({pos.x, _scene->getPosition().y + height, pos.y});
-	_canvas.draw(_timeBarSprite);
+	_canvas->draw(_timeBarSprite);
 
 	if(time<maxTime) {
 
 		// Time bar
 		tex = _timeBarTexture + sizeIndex;
-		_timeBarSprite.setTexture(tex);
+		_timeBarSprite.setTexture(*tex);
 		_timeBarSprite.setOrigin({tex->getSize().x/2.f, tex->getSize().y/2.f, 1.f});
 		_timeBarSprite.setPosition({pos.x, _scene->getPosition().y + height, pos.y});
 		_timeBarSprite.setTextureRect({0.f, 0.f}, {tex->getSize().x*time/maxTime, tex->getSize().y});
-		_canvas.draw(_timeBarSprite);
+		_canvas->draw(_timeBarSprite);
 	}
 	else {
 
 		// Time bar full
 		tex = _timeBarFullTexture + sizeIndex;
-		_timeBarSprite.setTexture(tex);
+		_timeBarSprite.setTexture(*tex);
 		_timeBarSprite.setOrigin({tex->getSize().x/2.f, tex->getSize().y/2.f, 1.f});
 		_timeBarSprite.setPosition({pos.x, _scene->getPosition().y + height, pos.y});
-		_canvas.draw(_timeBarSprite);
+		_canvas->draw(_timeBarSprite);
 	}
 }
 
@@ -205,11 +205,11 @@ void BattleSpellIndicatorManager::renderStatusBarIndicator(glm::vec2 pos, float 
 	_statusBarSprite.setScale({_statusBarFactor, _statusBarFactor, 1.f});
 
 	sf3d::Texture* tex = _statusBarTexture + statusIndex;
-	_statusBarSprite.setTexture(tex);
+	_statusBarSprite.setTexture(*tex);
 	_statusBarSprite.setOrigin({tex->getSize().x/2.f, tex->getSize().y/2.f, -2.f});
 
 	_statusBarSprite.setPosition({pos.x + positionIndex*(tex->getSize().x*_statusBarFactor+5.f), _scene->getPosition().y + height, pos.y});
-	_canvas.draw(_statusBarSprite);
+	_canvas->draw(_statusBarSprite);
 }
 
 

@@ -2,9 +2,13 @@
 
 #include <memory>
 
+#include <nlohmann/json_fwd.hpp>
+
 #include <Szczur/Modules/World/Component.hpp>
 
-#include <Szczur/Utility/SFML3D/RectangleShape.hpp>
+#include <Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp>
+
+using Json = nlohmann::json;
 
 namespace rat
 {

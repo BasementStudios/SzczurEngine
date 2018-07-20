@@ -4,7 +4,7 @@
 
 #include <Szczur/Modules/World/Entity.hpp>
 
-#include <Szczur/Utility/SFML3D/CircleShape.hpp>
+#include <Szczur/Utility/SFML3D/Geometry/CircleShape.hpp>
 
 namespace rat {
 

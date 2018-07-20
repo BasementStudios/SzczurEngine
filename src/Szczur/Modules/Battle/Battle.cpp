@@ -8,7 +8,7 @@
 #include "BattleSprite.hpp"
 #include "BattleAnimationSprite.hpp"
 
-#include <Szczur/Utility/SFML3D/Linear.hpp>
+#include <Szczur/Utility/SFML3D/Geometry/Linear.hpp>
 
 #include <Szczur/Modules/World/World.hpp>
 #include <Szczur/Modules/World/Scene.hpp>

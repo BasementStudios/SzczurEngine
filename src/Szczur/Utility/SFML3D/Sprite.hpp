@@ -28,6 +28,8 @@ public:
 	/// Set new texture for sprite
 	void setTexture(const Texture& texture);
 
+	///
+	void setTextureRect(const glm::uvec2& pos, const glm::uvec2& size);
 
 
 	/* Operators */

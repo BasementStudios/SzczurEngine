@@ -28,6 +28,10 @@ void Sprite::setTexture(const Texture& texture)
 	_vertices[3].texCoord = {0.f, 1.f};
 }
 
+void Sprite::setTextureRect(const glm::uvec2& pos, const glm::uvec2& size)
+{
+}
+
 
 
 /* Operators */

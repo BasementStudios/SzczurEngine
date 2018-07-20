@@ -49,8 +49,15 @@ void BattleTextureManager::pushNewTexture(const std::string& nameID, const std::
 	auto* newTex = _textures.emplace_back(new BattleTextureManager::Texture()).get();
 	newTex->nameID = nameID;
 	newTex->path = path;
-	if(!newTex->texture.loadFromFile(path)) {
+
+	try
+	{
+		newTex->texture.loadFromFile(path);
+	}
+	catch (const std::exception& ex)
+	{
 		_textures.pop_back();
+		LOG_EXCEPTION(ex);
 	}
 }
 

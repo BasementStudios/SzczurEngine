@@ -11,6 +11,8 @@
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 #include "Szczur/Modules/Equipment/Equipment.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
+#include "Szczur/Modules/DialogEditor/DialogEditor.hpp"
 #ifdef GUI_TEST
 #include "Szczur/Modules/GUITest/GUITest.hpp"
 #endif

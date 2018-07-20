@@ -5,8 +5,8 @@
 #include <memory>
 
 #include <Szczur/Utility/SFML3D/RenderTarget.hpp>
-#include <Szczur/Utility/SFML3D/RectangleShape.hpp>
-#include <Szczur/Utility/SFML3D/CircleShape.hpp>
+#include <Szczur/Utility/SFML3D/Geometry/RectangleShape.hpp>
+#include <Szczur/Utility/SFML3D/Geometry/CircleShape.hpp>
 
 #include <sol.hpp>
 

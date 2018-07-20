@@ -157,12 +157,20 @@ namespace rat {
 	void Equipment::update(float deltaTime) {
 		_normalSlots->update(deltaTime);
 
-		if (_input.getManager().isPressed(rat::Keyboard::I) && _isEquipmentHidden) {
-			_openEquipment();
+		if (_input.getManager().isPressed(rat::Keyboard::I))
+		{
+			if (_isEquipmentHidden)
+			{
+				_openEquipment();
+			}
+			else
+			{
+				_closeEquipment();
+			}
+
+			_isEquipmentHidden = !_isEquipmentHidden;
 		}
-		if (_input.getManager().isPressed(rat::Keyboard::I) && !_isEquipmentHidden) {
-			_closeEquipment();
-		}
+
 		if (_isPreviewOn && _timeFromStartingPreview >= .5f && !_isPreviewMaximized) {
 			_itemPreview->maximize();
 			_isPreviewMaximized = true;

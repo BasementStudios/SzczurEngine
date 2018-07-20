@@ -21,7 +21,7 @@ namespace rat
         _addWidget(_window);
         _window->makeChildrenPenetrable();
         _window->setPadding(0.f, 0.f);
-        _window->setMainPatchPropSize({0.3, 0.3});
+        _window->setMainPatchPropSize({0.3f, 0.3f});
         _window->setPropSize({0.15f, 0.15f});
         _window->makeChildrenUnresizable();
 

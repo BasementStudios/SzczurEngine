@@ -61,7 +61,7 @@ namespace rat
 
     int PrepScreen::getMaximumPPSlotsAmount() const
     {
-        _source.ppContainer.getMaximumSlotsAmount();
+        return _source.ppContainer.getMaximumSlotsAmount();
     }
 
     void PrepScreen::unlockPPSlots(int amount)

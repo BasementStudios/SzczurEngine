@@ -24,7 +24,7 @@ namespace rat
         _name = new TextWidget;
         _hp = new TextWidget;
 
-        const auto prSize = sf::Vector2f{0.312037037037037f, 0.1148148148148};
+        const auto prSize = sf::Vector2f{0.312037037037037f, 0.1148148148148f};
 
 
         _addWidget(_border);

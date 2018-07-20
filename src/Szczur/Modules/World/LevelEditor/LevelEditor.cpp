@@ -531,17 +531,6 @@ namespace rat {
 		return _reloadArmatureAtStart;
 	}
 
-	glm::vec2 LevelEditor::_getFixedMousePos(const sf::Vector2i& pos) {
-		glm::vec2 result;
-		
-		const auto& size = detail::globalPtr<Window>->getWindow().getSize();
-
-		result.x = (pos.x * _defaultWindowSize.x) / size.x;
-		result.y = (pos.y * _defaultWindowSize.y) / size.y;
-
-		return result;
-	}
-
 	void LevelEditor::_setupGroup() {
 		_currentGroupPosition = glm::vec3();
 		_currentGroupRotation = glm::vec3();

@@ -100,7 +100,7 @@ sf3d::Sprite& BattleSprite::getSprite()
 
 void BattleSprite::setTexture(const std::string& textureName)
 {
-	_sprite.setTexture(_textureManager.getTexture(textureName));
+	_sprite.setTexture(*_textureManager.getTexture(textureName));
 }
 
 void BattleSprite::render(sf3d::RenderTarget& canvas)

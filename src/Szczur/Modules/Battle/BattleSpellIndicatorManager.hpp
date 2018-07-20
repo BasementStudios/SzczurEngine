@@ -3,6 +3,7 @@
 #include <Szczur/Modules/World/Entity.hpp>
 
 #include <Szczur/Utility/SFML3D/Texture.hpp>
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 
 namespace rat
 {
@@ -47,7 +48,7 @@ private:
 
 	BattleScene* _scene = nullptr;
 
-	sf3d::RenderTarget _canvas;
+	sf3d::RenderTarget* _canvas;
 	float _height = 20;
 	glm::vec2 _leftCorner;
 
