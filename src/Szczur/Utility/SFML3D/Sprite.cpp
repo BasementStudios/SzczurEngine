@@ -32,33 +32,24 @@ void Sprite::setTextureRect(const glm::uvec2& position, const glm::uvec2& size)
 {
 	if (_texture)
 	{
-		glm::vec2 texSize = _texture->getSize();
-		if (texSize.x > 0 && texSize.y > 0)
-		{
-			_vertices[0] = {
-				{ 0.f, 0.f, 0.f },
-			{ 1.f, 1.f, 1.f, 1.f },
-			{ position.x / texSize.x, position.y / texSize.y }
-			};
-			_vertices[1] = {
-				{ size.x, 0.f, 0.f },
-			{ 1.f, 1.f, 1.f, 1.f },
-			{ (position.x + size.x) / texSize.x, position.y / texSize.y }
-			//{1.f, 0.f}
-			};
-			_vertices[2] = {
-				{ size.x, -static_cast<float>(size.y), 0.f },
-			{ 1.f, 1.f, 1.f, 1.f },
-			{ (position.x + size.x) / texSize.x, (position.y + size.y) / texSize.y }
-			//{1.f, 1.f}
-			};
-			_vertices[3] = {
-				{ 0.f, -static_cast<float>(size.y), 0.f },
-			{ 1.f, 1.f, 1.f, 1.f },
-			{ position.x / texSize.x, (position.y + size.y) / texSize.y }
-			//{0.f, 1.f}
-			};
-		}
+		const glm::vec2 textureSize = _texture->getSize();
+		
+		const glm::vec2 p = static_cast<glm::vec2>(position);
+		const glm::vec2 s = static_cast<glm::vec2>(size);
+		const glm::vec2 a = p / textureSize;
+		const glm::vec2 b = (p + s) / textureSize;
+		
+		//ertices[0].position = {0.f, 0.f, 0.f};
+		_vertices[0].texCoord = a;
+
+		_vertices[1].position = {s.x, 0.f, 0.f};
+		_vertices[1].texCoord = {b.x, a.y};
+		
+		_vertices[2].position = {s.x, -s.y, 0.f};
+		_vertices[2].texCoord = b;
+
+		_vertices[3].position = {0.f, -s.y, 0.f};
+		_vertices[3].texCoord = {a.x, b.y};
 	}
 }
 
