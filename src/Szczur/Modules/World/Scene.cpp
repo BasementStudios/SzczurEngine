@@ -93,7 +93,7 @@ void Scene::render(sf3d::RenderTarget& target)
 
 	// Background 
 	// glEnable(GL_DEPTH_TEST);
-	// layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	layer.clear({ 24.f / 255.f, 20.f / 255.f, 28.f / 255.f, 1.f }, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto& entity : this->getEntities("background")) {
 		entity->draw(layer);
 	}

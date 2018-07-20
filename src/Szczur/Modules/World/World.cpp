@@ -14,8 +14,7 @@ namespace rat
 {
 
 World::World()
-: 	_levelEditor { _scenes }, 
-	_blackScreen(sf::Vector2f(9999.f, 9999.f)) // XD
+: 	_levelEditor { _scenes }
 {
 	LOG_INFO("Initializing World module");
 	this->init();
@@ -105,24 +104,27 @@ void World::update(float deltaTime)
 		float progress = _fadeStart.getElapsedTime().asSeconds() / _fadeTime;
 
 		if (_fadeStage == 1) {
-			if (progress >= 1.f) {
-				progress = 1.f;
+			if (progress < 1.f)
+			{
+				progress = 1.f - progress;
+			}
+			else if (progress >= 1.f)
+			{
+				progress = 0.f;
 				_scenes.setCurrentScene(_sceneToChange);
 				_fadeStage = 2;
 				_fadeStart.restart();
 			}
 		}
 		else if (_fadeStage == 2) {
-			if (progress < 1.f) {
-				progress = 1.f - progress;
-			}
-			else if (progress >= 1.f) {
-				progress = 0.f;
+			if (progress >= 1.f)
+			{
+				progress = 1.f;
 				_isChangingScene = false;
 			}
 		}
 
-		_blackScreen.setFillColor(sf::Color(0.f, 0.f, 0.f, progress * 255));
+		_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.setUniform("colorMod", glm::vec3(progress));
 	}
 }
 
@@ -136,13 +138,6 @@ void World::render()
 
 	// Scene 
 	getScenes().render(layer);
-
-	// Fade
-	if (_isChangingScene) {
-		windowTarget.pushGLStates();
-		windowTarget.draw(_blackScreen);
-		windowTarget.popGLStates();
-	}
 
 	// Editor
 #ifdef EDITOR

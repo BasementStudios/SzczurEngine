@@ -84,7 +84,6 @@ private:
 	#endif
 
 // Fade into scene
-	sf::RectangleShape _blackScreen; // @todo: change to postprocess effect when will be avaliable
 	int _fadeStage = 0;
 	bool _isChangingScene = false;
 	size_t _sceneToChange = 0;
