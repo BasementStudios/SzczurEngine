@@ -10,6 +10,10 @@ namespace rat {
 		_base->add(_backgroundTime);
 		_foregroundTime = new ImageWidget;
 		_base->add(_foregroundTime);
+
+		_maxTime = 100.f;
+		_currentTime = 0.f;
+		_currentBar = 0;
 	}
 
 	void TimeBar::setParent(Widget* newParent) {

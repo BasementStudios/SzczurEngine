@@ -5,7 +5,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Skill.hpp"
+#include "PrepSkill.hpp"
 
 
 namespace rat 
@@ -18,8 +18,8 @@ namespace rat
     public:
         SkillCodex();
 
-        Skill* getSkill(const std::string& name);
-        Skill* addSkill(std::unique_ptr<Skill> skill);
+        PrepSkill* getSkill(const std::string& name);
+        PrepSkill* addSkill(std::unique_ptr<PrepSkill> skill);
         void renameSkill(const std::string& oldName, const std::string& newName);
         void initAssetsViaGUI(GUI& gui);
 
@@ -37,7 +37,7 @@ namespace rat
     private:
         void _loadSkills(nlohmann::json& j);
 
-        std::unordered_map<std::string, std::unique_ptr<Skill>> _skills;
+        std::unordered_map<std::string, std::unique_ptr<PrepSkill>> _skills;
         std::string _mainPath = "Assets/PrepScreen/Icons/";
         void _initSkills();
     };

@@ -42,7 +42,7 @@ namespace rat
             chSkillBar->initAssetsViaGUI(gui);
         }
     }
-    void ChosenSkillArea::addSkill(const Skill* skill)
+    void ChosenSkillArea::addSkill(const PrepSkill* skill)
     {
         assert(hasFreeSpace());
         auto freeSlot = std::find_if(_skillBars.begin(), _skillBars.end(), [](const std::unique_ptr<ChosenSkillBar>& skillBar){

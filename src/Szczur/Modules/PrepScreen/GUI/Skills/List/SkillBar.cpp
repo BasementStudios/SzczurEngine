@@ -118,7 +118,7 @@ namespace rat
         _getBase()->fullyDeactivate();
     }
 
-    void SkillBar::setSkill(const Skill* skill)
+    void SkillBar::setSkill(const PrepSkill* skill)
     {
         _skill = skill;
         _name->setString(skill->getName());

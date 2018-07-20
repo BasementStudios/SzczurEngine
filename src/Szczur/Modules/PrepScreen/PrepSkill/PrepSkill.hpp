@@ -12,14 +12,14 @@
 namespace rat
 {
     class ResourcesContainer;
-    class Skill
+    class PrepSkill
     {
         using amount_t = size_t;
         using power_t = size_t;
 
         public:
-        Skill(const std::string& name);
-        Skill(nlohmann::json& j);
+        PrepSkill(const std::string& name);
+        PrepSkill(nlohmann::json& j);
 
         const std::string& getStringID() const;
         const std::string& getName() const;

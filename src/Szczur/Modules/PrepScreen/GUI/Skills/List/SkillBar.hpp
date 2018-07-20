@@ -2,7 +2,7 @@
 
 #include "Szczur/Modules/GUI/Base/BaseBar.hpp"
 
-#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/PrepSkill.hpp"
 
 #include "CostBar.hpp"
 
@@ -14,7 +14,7 @@ namespace rat
     {
     public:
         SkillBar(PrepScreen& prepScreen);
-        void setSkill(const Skill* skill);
+        void setSkill(const PrepSkill* skill);
         const std::string& getIconPath() const;
         void setIconTexture(sf::Texture* icon); 
         void loadAssetsFromGUI(GUI& gui);
@@ -32,7 +32,7 @@ namespace rat
     private:
         PrepScreen& _prepScreen;
 
-        const Skill* _skill{nullptr};
+        const PrepSkill* _skill{nullptr};
 
         bool _isActivate{true};
 

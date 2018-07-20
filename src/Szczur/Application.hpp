@@ -71,7 +71,7 @@ private:
 		Window, Input, Script, DragonBones, 
 		GUI, World, Music, Sound, AudioEditor, 
 		AudioEffects, Cinematics, Listener, 
-		Player, Battle, Prescreen
+		Player, Battle, PrepScreen
 
 		#ifdef GUI_TEST
 		,GUITest 

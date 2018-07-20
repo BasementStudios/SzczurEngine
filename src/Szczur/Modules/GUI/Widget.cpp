@@ -74,9 +74,9 @@ namespace rat
         if(parent->_interface) setInterface(parent->_interface);
         else setInterface(nullptr);
     }
-    void Widget::setInterface(const InterfaceWidget* interface)
+    void Widget::setInterface(const InterfaceWidget* inter)
     {
-        _interface = interface;
+        _interface = inter;
         if((_propSizeMustBeenCalculatedViaInterface || _elementsPropSizeMustBeenCalculated) && _interface)
         {
             _updatePropSize();
@@ -86,7 +86,7 @@ namespace rat
 
         for(auto* child : _children)
         {
-            child->setInterface(interface);
+            child->setInterface(inter);
         }
     }
 

@@ -5,7 +5,7 @@
 #include "Szczur/Modules/GUI/Widget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 
-#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/PrepSkill.hpp"
 #include "Szczur/Modules/PrepScreen/Prepscreen.hpp"
 
 namespace rat
@@ -78,7 +78,7 @@ namespace rat
         parent->add(_base);
     }
 
-    void SkillSlot::setSkill(const Skill* skill)
+    void SkillSlot::setSkill(const PrepSkill* skill)
     {
         _skill = skill;
         _icon->setTexture(skill->getTexture());

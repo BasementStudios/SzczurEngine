@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 
-#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/PrepSkill.hpp"
 #include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 
 namespace rat
@@ -17,13 +17,13 @@ namespace rat
     public:
         CostBar();
         void loadAssetsFromGUI(GUI& gui);
-        void setSkill(const Skill* skill);
+        void setSkill(const PrepSkill* skill);
         void removeSkill();
         void setWidth(float width);
 
         sf::Vector2f getPPSize() const;
     private:
-        const Skill* _skill{nullptr};
+        const PrepSkill* _skill{nullptr};
 
         std::map<GlyphID, ImageWidget*> _glyphs;
         ImageWidget* _costPP{nullptr};

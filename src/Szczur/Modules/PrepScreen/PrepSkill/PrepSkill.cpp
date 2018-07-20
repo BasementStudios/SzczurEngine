@@ -1,4 +1,4 @@
-#include "Skill.hpp"
+#include "PrepSkill.hpp"
 
 #include <cassert>
 
@@ -12,12 +12,12 @@ namespace rat
 {
     using namespace nlohmann;
 
-    Skill::Skill(const std::string& name)
+    PrepSkill::PrepSkill(const std::string& name)
         :
         _name(name)
         {}
 
-    Skill::Skill(json& j)
+    PrepSkill::PrepSkill(json& j)
     {
         setName(j["name"]);
         setPPCost(j["ppCost"]);
@@ -26,7 +26,7 @@ namespace rat
         _loadGlyphsFromJson(j["glyphes"]);
     }
 
-    void Skill::_loadGlyphsFromJson(nlohmann::json& j)
+    void PrepSkill::_loadGlyphsFromJson(nlohmann::json& j)
     {
         GlyphesConverter converter;
         _cost.resetRequirements();
@@ -39,55 +39,55 @@ namespace rat
         }
     }
 
-    void Skill::setName(const std::string& name)
+    void PrepSkill::setName(const std::string& name)
     {
         _name = name;
     }
-    void Skill::setStringID(const std::string& nameID)
+    void PrepSkill::setStringID(const std::string& nameID)
     {
         _id = nameID;
     }
-    const std::string& Skill::getStringID() const
+    const std::string& PrepSkill::getStringID() const
     {
         return _id;
     }
 
-    const std::string& Skill::getName() const 
+    const std::string& PrepSkill::getName() const 
     {
         return _name;
     }
-    const SkillCost& Skill::getCostInfo() const 
+    const SkillCost& PrepSkill::getCostInfo() const 
     {
         return _cost;
     }
-    void Skill::unlock()
+    void PrepSkill::unlock()
     {
         _unlocked = true;
     }
-    bool Skill::isUnlocked() const 
+    bool PrepSkill::isUnlocked() const 
     {
         return _unlocked;
     }
-    void Skill::lock()
+    void PrepSkill::lock()
     {
         _unlocked = false;
     }
-    bool Skill::isBought() const 
+    bool PrepSkill::isBought() const 
     {
         return _isBought;
     }
 
-    void Skill::setPPCost(amount_t cost)
+    void PrepSkill::setPPCost(amount_t cost)
     {
         _cost.setCost(cost);
     }
 
-    void Skill::addRequirement(GlyphID glyph, power_t power)
+    void PrepSkill::addRequirement(GlyphID glyph, power_t power)
     {
         _cost.addRequirement(glyph, power);
     }
 
-    void Skill::setRequirements(std::initializer_list<std::pair<GlyphID, power_t>> requirements)
+    void PrepSkill::setRequirements(std::initializer_list<std::pair<GlyphID, power_t>> requirements)
     {
         _cost.resetRequirements();
         for(const auto& [glyph, power] : requirements)
@@ -96,38 +96,38 @@ namespace rat
         }
     }
 
-    void Skill::setProfession(const std::string& profession)
+    void PrepSkill::setProfession(const std::string& profession)
     {
         _profession = profession;
     }
 
-    const std::string Skill::getProfession() const
+    const std::string PrepSkill::getProfession() const
     {
         return _profession;
     }
 
-    const std::set<GlyphID> Skill::getGlyphs() const
+    const std::set<GlyphID> PrepSkill::getGlyphs() const
     {
         return _cost.getGlyphs();
     }
 
-    void Skill::setTexturePath(const std::string& texturePath)
+    void PrepSkill::setTexturePath(const std::string& texturePath)
     {
         _texturePath = texturePath;
     }
-    const std::string& Skill::getTexturePath() const{
+    const std::string& PrepSkill::getTexturePath() const{
         return _texturePath;
     }
-    void Skill::setTexture(sf::Texture* texture){
+    void PrepSkill::setTexture(sf::Texture* texture){
         assert(texture);
         _iconTexture = texture;
     }
 
-    sf::Texture* Skill::getTexture() const{
+    sf::Texture* PrepSkill::getTexture() const{
         return _iconTexture;
     }
 
-    bool Skill::hasGlyphs(const std::set<GlyphID>& colors) const
+    bool PrepSkill::hasGlyphs(const std::set<GlyphID>& colors) const
     {
         return _cost.getGlyphs() == colors;
     }

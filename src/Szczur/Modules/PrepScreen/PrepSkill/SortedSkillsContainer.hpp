@@ -6,15 +6,15 @@
 #include <string>
 
 #include "../GlyphTypes.hpp"
-#include "Skill.hpp"
+#include "PrepSkill.hpp"
 
 namespace rat
 {
-    class Skill; class SkillCodex;
+    class PrepSkill; class SkillCodex;
     class SortedSkillsContainer
     {
         using Glyphs_t = std::set<GlyphID>;
-        using Skills_t = std::vector<const Skill*>;
+        using Skills_t = std::vector<const PrepSkill*>;
         using SkillGlyphs_t = std::unordered_map<size_t, Skills_t>;
         using SkillProfs_t = std::unordered_map<std::string, SkillGlyphs_t>;
     public:
