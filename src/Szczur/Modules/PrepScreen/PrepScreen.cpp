@@ -267,14 +267,6 @@ namespace rat
     void PrepScreen::initGUI()
     {
         auto& gui = getModule<GUI>();
-
-        _loadAssetsFromGUI();
-
-        auto* background = new ImageWidget;
-        gui.addInterface()->add(background);
-        background->setPropSize(1.777778f, 1.f);
-        background->setPropPosition(0.5f, 0.5f);
-        background->setTexture(gui.getTexture("Assets/PrepScreen/Background.png"));
         
         _base = gui.addInterface();
         _base->setPadding(20.f, 20.f);
