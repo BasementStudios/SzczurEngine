@@ -134,7 +134,6 @@ namespace rat {
 
 	void LevelEditor::update(InputManager& input, Window& windowModule, sf3d::RenderTarget& target) {
 		auto* scene = _scenes.getCurrentScene();
-		auto& window = windowModule.getWindow();
 		auto mouse = input.getScreenMousePosition();
 		Entity* cameraEntity = nullptr;
 		
@@ -161,7 +160,7 @@ namespace rat {
 			if (input.isPressed(Mouse::Left)) {
 				auto mouse = input.getScreenMousePosition();
 				
-				auto linear = window.getLinearByScreenPosition({ mouse.x, mouse.y });
+				auto linear = target.getLinearByScreenPosition({ mouse.x, mouse.y });
 
 				bool selected = false;
 
@@ -243,8 +242,8 @@ namespace rat {
 						std::swap(start.y, end.y);
 
 					// calc linears
-					auto linearStart = window.getLinearByScreenPosition({ start.x, start.y });
-					auto linearEnd = window.getLinearByScreenPosition({ end.x, end.y });
+					auto linearStart = target.getLinearByScreenPosition({ start.x, start.y });
+					auto linearEnd = target.getLinearByScreenPosition({ end.x, end.y });
 
 					// disable dragging
 					_isDragging = false;
@@ -284,7 +283,7 @@ namespace rat {
 			if (input.isKept(Mouse::Left)) {
 				if (_isDragging && _dragAndDropObjects) {
 					auto mouse = input.getScreenMousePosition();
-					auto linear = window.getLinearByScreenPosition(mouse);
+					auto linear = target.getLinearByScreenPosition(mouse);
 
 					glm::vec3 projection;
 					glm::vec3 offset;
@@ -333,7 +332,7 @@ namespace rat {
 				if (_draggingEntity != nullptr) {
 					auto mouse = input.getScreenMousePosition();
 
-					auto linear = window.getLinearByScreenPosition(mouse);
+					auto linear = target.getLinearByScreenPosition(mouse);
 
 					glm::vec3 projection;
 

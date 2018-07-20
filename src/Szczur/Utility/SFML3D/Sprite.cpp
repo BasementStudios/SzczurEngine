@@ -30,23 +30,36 @@ void Sprite::setTexture(const Texture& texture)
 
 void Sprite::setTextureRect(const glm::uvec2& position, const glm::uvec2& size)
 {
-	const glm::vec2 textureSize = _texture.getSize();
-	const float startX = static_cast<float>(position.x) / textureSize.x;
-	const float startY = static_cast<float>(position.y) / textureSize.y;
-	const float endX = startX + static_cast<float>(size.x) / textureSize.x;
-	const float endY = startY + static_cast<float>(size.y) / textureSize.y;
-
-	_vertices[0].position = {0.f, 0.f, 0.f};
-	_vertices[0].texCoord = {startX, startY};
-
-	_vertices[1].position = {size.x, 0.f, 0.f};
-	_vertices[1].texCoord = {endX, startY};
-
-	_vertices[2].position = {size.x, -size.y, 0.f};
-	_vertices[2].texCoord = {endX, endY};
-	
-	_vertices[3].position = {0.f, -size.y, 0.f};
-	_vertices[3].texCoord = {startY, endY};
+	if (_texture)
+	{
+		glm::vec2 texSize = _texture->getSize();
+		if (texSize.x > 0 && texSize.y > 0)
+		{
+			_vertices[0] = {
+				{ 0.f, 0.f, 0.f },
+			{ 1.f, 1.f, 1.f, 1.f },
+			{ position.x / texSize.x, position.y / texSize.y }
+			};
+			_vertices[1] = {
+				{ size.x, 0.f, 0.f },
+			{ 1.f, 1.f, 1.f, 1.f },
+			{ (position.x + size.x) / texSize.x, position.y / texSize.y }
+			//{1.f, 0.f}
+			};
+			_vertices[2] = {
+				{ size.x, -static_cast<float>(size.y), 0.f },
+			{ 1.f, 1.f, 1.f, 1.f },
+			{ (position.x + size.x) / texSize.x, (position.y + size.y) / texSize.y }
+			//{1.f, 1.f}
+			};
+			_vertices[3] = {
+				{ 0.f, -static_cast<float>(size.y), 0.f },
+			{ 1.f, 1.f, 1.f, 1.f },
+			{ position.x / texSize.x, (position.y + size.y) / texSize.y }
+			//{0.f, 1.f}
+			};
+		}
+	}
 }
 
 

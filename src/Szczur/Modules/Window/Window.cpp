@@ -285,10 +285,3 @@ void Window::draw(const sf3d::VertexArray& vertices)
 }
 
 }
-
-	this->getWindow().clear({
-		static_cast<float>(color.r) / 255.f, 
-		static_cast<float>(color.g) / 255.f, 
-		static_cast<float>(color.b) / 255.f, 
-		static_cast<float>(color.a) / 255.f
-	}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

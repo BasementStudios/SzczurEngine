@@ -180,7 +180,7 @@ glm::vec3 Battle::getCursorPosition(float height)
 	auto mouse = getModule<Input>().getManager().getScreenMousePosition();
 
 	// Projection on Y-plane
-	auto linear = getModule<Window>().getWindow().getLinearByScreenPosition(mouse);
+	auto linear = detail::globalPtr<World>->getScenes().getHelperRenderLayer().getLinearByScreenPosition(mouse);
 	glm::vec3 projection = linear.getCameraProjectionY(height);
 
 	return projection;

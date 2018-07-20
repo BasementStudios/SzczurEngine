@@ -135,7 +135,7 @@ void World::render()
 	glEnable(GL_DEPTH_TEST);
 
 	// Scene 
-	getScenes().render(windowTarget);
+	getScenes().render(layer);
 
 	// Fade
 	if (_isChangingScene) {
