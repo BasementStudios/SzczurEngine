@@ -306,10 +306,20 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 
 void ArmatureComponent::setFlipX(bool flipX)
 {
-	if (_armature)
+	if (_armature && _armature->getArmature())
 	{
 		_armature->getArmature()->setFlipX(flipX);
 	}
+}
+
+bool ArmatureComponent::getFlipX()
+{
+	if (_armature && _armature->getArmature())
+	{
+		return _armature->getArmature()->getFlipX();
+	}
+
+	return false;
 }
 
 void ArmatureComponent::setSpeed(float speed)
@@ -401,6 +411,7 @@ void ArmatureComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	));
 
 	object.set("setFlipX", &ArmatureComponent::setFlipX);
+	object.set("getFlipX", &ArmatureComponent::getFlipX);
 	object.set("setSpeed", &ArmatureComponent::setSpeed);
 	object.set("isPlaying", &ArmatureComponent::isPlaying);
 	object.set("getCurrentPlayingAnim", &ArmatureComponent::getCurrentPlayingAnim);

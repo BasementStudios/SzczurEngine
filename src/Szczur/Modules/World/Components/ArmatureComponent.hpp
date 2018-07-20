@@ -104,6 +104,9 @@ public:
 	void setFlipX(bool flipX);
 
 	///
+	bool getFlipX();
+
+	///
 	void setSpeed(float speed);
 
 	///
