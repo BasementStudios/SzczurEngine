@@ -50,6 +50,8 @@ public:
 	LevelEditor& getLevelEditor() {return _levelEditor;}
 	#endif
 
+	void loadFuckingShaderConfig(const std::string& paff);
+
 	// void initScript();
 
 	///
@@ -87,6 +89,9 @@ private:
 	size_t _sceneToChange = 0;
 	float _fadeTime = 1.f;
 	sf::Clock _fadeStart;
+
+	sf3d::ShaderProgram _thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit;
+	float _elapsedTime = 0.f;
 };
 
 }

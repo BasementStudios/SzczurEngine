@@ -61,10 +61,25 @@ void World::init()
 	// _scenes.appendScenesFromFile("test3.world");
 
 	// _scenes.saveToFile("out.world");
+
+	// kurwa mac
+	try {
+		_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.linkShaders(
+			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/assemble.vert"},
+			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/fuck.frag"}
+		);
+		_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.loadConfig("Assets/Shaders/Tests/001/config.json");
+	}
+	catch (...) {
+		std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
+	}	
 }
 
 void World::update(float deltaTime)
 {
+	_elapsedTime += deltaTime;
+	_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.setUniform("time", _elapsedTime);
+	
 	// Editor toggle
 	if (getModule<Input>().getManager().isReleased(Keyboard::F10)) {
 		_doEditor = !_doEditor;
@@ -114,6 +129,10 @@ void World::update(float deltaTime)
 void World::render()
 {
 	sf3d::RenderWindow& windowTarget = getModule<Window>().getWindow();
+	sf3d::RenderLayer& layer = getScenes().getHelperRenderLayer();
+
+	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
 	// Scene 
 	getScenes().render(windowTarget);
@@ -128,15 +147,18 @@ void World::render()
 	// Editor
 #ifdef EDITOR
 	if (_doEditor) {
-		sf3d::RenderLayer& layer = getScenes().getHelperRenderLayer();
-
-		glEnable(GL_DEPTH_TEST);
+		// sf3d::RenderLayer& layer = getScenes().getHelperRenderLayer();
+		
+		// glEnable(GL_DEPTH_TEST);
 		_levelEditor.render(layer);
 		
-		glDisable(GL_DEPTH_TEST);
-		windowTarget.draw(layer);
+		// glDisable(GL_DEPTH_TEST);
+		// windowTarget.draw(layer);
 	}
 #endif
+
+	glDisable(GL_DEPTH_TEST); //
+	windowTarget.draw(getScenes().getHelperRenderLayer(), sf3d::RenderStates{sf3d::Transform{}, &_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit});
 }
 
 void World::processEvent(sf::Event event)
@@ -144,6 +166,10 @@ void World::processEvent(sf::Event event)
 	getScenes().processEvent(event);
 }
 
+void World::loadFuckingShaderConfig(const std::string& paff)
+{
+	_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.loadConfig(paff);
+}
 
 const ScenesManager& World::getScenes() const
 {

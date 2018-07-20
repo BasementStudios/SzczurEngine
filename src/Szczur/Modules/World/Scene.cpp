@@ -86,34 +86,34 @@ void Scene::render(sf3d::RenderTarget& target)
 	}
 
 	// Background 
-	glEnable(GL_DEPTH_TEST);
-	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// glEnable(GL_DEPTH_TEST);
+	// layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto& entity : this->getEntities("background")) {
 		entity->draw(layer);
 	}
-	glDisable(GL_DEPTH_TEST);
-	target.draw(layer);
+	// glDisable(GL_DEPTH_TEST);
+	// target.draw(layer);
 	
 	// Path & single
-	glEnable(GL_DEPTH_TEST);
-	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// glEnable(GL_DEPTH_TEST);
+	// layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto& entity : this->getEntities("path")) {
 		entity->draw(layer);
 	}
 	for (auto& entity : this->getEntities("single")) {
 		entity->draw(layer);
 	}
-	glDisable(GL_DEPTH_TEST);
-	target.draw(layer);
+	// glDisable(GL_DEPTH_TEST);
+	// target.draw(layer);
 
 	// Foreground 
-	glEnable(GL_DEPTH_TEST);
-	layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// glEnable(GL_DEPTH_TEST);
+	// layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (auto& entity : this->getEntities("foreground")) {
 		entity->draw(layer);
 	}
-	glDisable(GL_DEPTH_TEST);
-	target.draw(layer);
+	// glDisable(GL_DEPTH_TEST);
+	// target.draw(layer);
 }
 
 size_t Scene::getID() const
