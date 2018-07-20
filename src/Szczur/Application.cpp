@@ -29,17 +29,12 @@ void Application::init()
 	initModule<GUI>();
 	initModule<Dialog>();
 	initModule<DialogEditor>();
-	initModule<Equipment>();
 	initModule<Player>();
+	initModule<PrepScreen>();
+	initModule<Equipment>();
 	initModule<Battle>();
 
-	#ifdef GUI_TEST
-	{
-		initModule<GUITest>();
-	}
-	#endif
 
-	initModule<PrepScreen>();
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR
@@ -66,6 +61,7 @@ void Application::input()
 		getModule<Input>().getManager().processEvent(event);
 
 		getModule<World>().processEvent(event);
+		getModule<GUI>().input(event);
 
 		#ifdef EDITOR
 		{
@@ -120,6 +116,9 @@ void Application::input()
                     case sf::Keyboard::P:
                         getModule<PrepScreen>().show();
                     break; 
+					case sf::Keyboard::O:
+						getModule<PrepScreen>().hide();
+						break;
 
                     default: break;
                 }
@@ -141,11 +140,6 @@ void Application::update()
 	auto deltaTime = _mainClock.restart().asFSeconds();
 	
 	getModule<GUI>().update(deltaTime);
-	#ifdef GUI_TEST
-	{
-		getModule<GUITest>().update(deltaTime);
-	}
-	#endif
 
 	getModule<Dialog>().update();
 	getModule<Music>().update(deltaTime);

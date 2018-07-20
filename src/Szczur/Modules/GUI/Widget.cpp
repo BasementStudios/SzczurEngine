@@ -781,7 +781,7 @@ namespace rat
         });
         _animations.erase(newEnd, _animations.end());
     }
-    
+
 	void Widget::makeChildrenPenetrable()
     {
         _areChildrenPenetrable = true;

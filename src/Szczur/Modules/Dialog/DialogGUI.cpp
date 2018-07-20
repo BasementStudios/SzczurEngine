@@ -55,13 +55,13 @@ namespace rat {
     }
 
 	void DialogGUI::setText(const std::string& text) {
-		_dialogText->visible();
+		_dialogText->fullyActivate();
 		_dialogText->setString(text);
 	}
 
     void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback) {
         size_t i = 0u;
-		_dialogText->invisible();
+		_dialogText->fullyDeactivate();
         bool skipped{false};
         options.forEach([&i, this, callback, &textManager, &skipped](Options::Option* option){
             if(!skipped) {

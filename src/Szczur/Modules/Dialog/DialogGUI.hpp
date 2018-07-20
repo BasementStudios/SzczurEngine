@@ -29,7 +29,6 @@ namespace rat {
         void hide();
 
         void show();
-
         static void initScript(Script& script);
 
         void clear();

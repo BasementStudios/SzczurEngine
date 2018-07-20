@@ -38,6 +38,7 @@ namespace gui
             }
             else _update();
         }
+
         bool isAlive() const { return _isAlive; }
 
         void setHoldTime(float time) 

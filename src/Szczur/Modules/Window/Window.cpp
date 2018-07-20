@@ -142,7 +142,7 @@ void Window::init()
 {
 	try {
 		// Just for now...
-		/*{
+		{
 			std::ifstream file("kurwa.txt");
 			file >> this->videoMode.width;
 			file >> this->videoMode.height;
@@ -154,7 +154,7 @@ void Window::init()
 			else {
 				this->windowStyle = sf::Style::Default;
 			}
-		}*/
+		}
 		
 		// Set video mode, also creates window
 		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,

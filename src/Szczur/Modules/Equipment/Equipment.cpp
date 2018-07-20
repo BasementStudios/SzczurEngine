@@ -25,7 +25,7 @@ namespace rat {
 		initScript();
 		init();		
 		LOG_INFO("Module Equipment initialized");
-		//getModule<Script>().scriptFile("Assets/Equipment/test.lua");
+		getModule<Script>().scriptFile("Assets/Equipment/test.lua");
 	}
 
 	Equipment::~Equipment() {
@@ -151,7 +151,7 @@ namespace rat {
 
 		_equipmentPosition = { 0.8f, 0.4f };
 
-		stopEquipment();
+		//stopEquipment(); 
 	}
 
 	void Equipment::update(float deltaTime) {
@@ -167,8 +167,6 @@ namespace rat {
 			{
 				_closeEquipment();
 			}
-
-			_isEquipmentHidden = !_isEquipmentHidden;
 		}
 
 		if (_isPreviewOn && _timeFromStartingPreview >= .5f && !_isPreviewMaximized) {
