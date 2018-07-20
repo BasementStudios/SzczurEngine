@@ -22,7 +22,7 @@ namespace rat {
 BattleScene::BattleScene(const glm::vec3& position, const glm::vec2& size, float scale) 
 {
 	_battleModule = detail::globalPtr<Battle>;
-	_windowModule = detail::globalPtr<Window>;
+	//_windowModule = detail::globalPtr<Window>;
 	_inputModule = detail::globalPtr<Input>;
 
 	_scene = detail::globalPtr<World>->getScenes().getCurrentScene();

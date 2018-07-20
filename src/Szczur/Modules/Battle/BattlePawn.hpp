@@ -213,6 +213,7 @@ private:
 // Callbacks
 	sol::function _onCollision;
 	sol::function _onUpdate;
+	sol::function _onIndicator; //@IMP
 
 // Collider
 	float _radius = 50.0;

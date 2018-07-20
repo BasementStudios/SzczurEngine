@@ -1,12 +1,15 @@
 local pawn = THIS
 
 function pawn:onUpdate()
-	self:addHealthHit(0.05)
+	-- regen health if ring
+	-- self:addHealthHit(0.05)
 end
 
 -- Init
 pawn:armature():setSpeed(1.0)
 pawn:armature():fadeIn("Cedmin_Fight_Idle", 0.1, 0)
+
+-- pawn:setDamageAnimation("Cedmin_hurt_001", 0.1, false, 2.0)
 
 -- Skill: "Dash"
 local skillA = pawn:newSkill("Dash and hit")
@@ -406,6 +409,36 @@ function skillE:createExplosion(pos, radius)
 	explosion:setScale(radius*0.007)
 end
 
+function skillE:giveDamage(pos, radius, power)
+
+	-- Create trigger
+	local trigger = Battle.newTrigger()
+	trigger:setPosition(pos)
+	trigger:setRadius(radius)
+	trigger.owner = self:getPawn()
+
+	function trigger:onOverlap(target)
+		if target ~= self.owner then
+
+			local effect = Battle.newEffect()	
+			effect:setDuration(self:getRadius()*0.0001)			
+			effect.target = target
+			effect.vector = power*GLM.normalize(target:getPosition()-self:getPosition())
+
+			function effect:onUpdate()
+				if self.target then
+					self.target:move(self.vector)
+				end
+			end
+			effect:activate()
+			target:addHealthHit(-20)
+		end			
+	end
+
+	trigger:runAndKill()
+
+end
+
 function skillE:onUsed()
 
 	local effect = Battle.newEffect(self)
@@ -421,12 +454,15 @@ function skillE:onUsed()
 		if self:getCurrentDuration() > 0.6 and self.state == 0 then
 			self.state = 1
 			self:getSkill():createExplosion(self.pos + GLM.Vec2(0, 10), self.rad1)
+			self:getSkill():giveDamage(self.pos, self.rad1, 30.0)
 		elseif self:getCurrentDuration() > 0.8 and self.state == 1 then
 			self.state = 2
 			self:getSkill():createExplosion(self.pos + GLM.Vec2(0, 10), self.rad2)
+			self:getSkill():giveDamage(self.pos, self.rad2, -60.0)
 		elseif self:getCurrentDuration() > 1.0 and self.state == 2 then
 			self.state = 3
 			self:getSkill():createExplosion(self.pos + GLM.Vec2(0, 10), self.rad3)
+			self:getSkill():giveDamage(self.pos, self.rad3, 80.0)
 		end
 	end
 
@@ -442,6 +478,7 @@ function skillE:onUsed()
 		end
 
 		effect:getSkill().isUsing = false
+		effect:getSkill():getPawn():addHealthHit(-10)
 	end
 
 	-- create explosion

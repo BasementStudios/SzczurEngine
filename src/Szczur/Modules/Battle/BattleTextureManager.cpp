@@ -49,16 +49,14 @@ void BattleTextureManager::pushNewTexture(const std::string& nameID, const std::
 	auto* newTex = _textures.emplace_back(new BattleTextureManager::Texture()).get();
 	newTex->nameID = nameID;
 	newTex->path = path;
-
-	try
-	{
+	try {
 		newTex->texture.loadFromFile(path);
 	}
-	catch (const std::exception& ex)
-	{
+	catch (const std::exception& exc){
 		_textures.pop_back();
-		LOG_EXCEPTION(ex);
-	}
+		LOG_EXCEPTION(exc);
+	}	
+	
 }
 
 sf3d::Texture* BattleTextureManager::getTexture(const std::string& nameID)

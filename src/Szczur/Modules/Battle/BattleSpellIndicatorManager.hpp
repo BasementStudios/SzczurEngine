@@ -3,7 +3,6 @@
 #include <Szczur/Modules/World/Entity.hpp>
 
 #include <Szczur/Utility/SFML3D/Texture.hpp>
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 
 namespace rat
 {

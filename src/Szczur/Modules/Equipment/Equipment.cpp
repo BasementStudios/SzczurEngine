@@ -150,6 +150,7 @@ namespace rat {
 		_listOfObjects = _itemManager->loadFromFile(getModule<Script>());
 
 		_equipmentPosition = { 0.8f, 0.4f };
+		_closeEquipment();
 
 		//stopEquipment(); 
 	}

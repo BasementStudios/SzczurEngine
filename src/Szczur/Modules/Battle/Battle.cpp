@@ -22,8 +22,7 @@ Battle::Battle()
 {
     LOG_INFO("Initializing Battle module");
 
-	const auto& videoMode = getModule<Window>().getVideoMode();
-	_defaultWindowSize = glm::vec2(videoMode.width, videoMode.height);
+	_defaultWindowSize = getModule<Window>().getSize();
 
     initScript();
     _pawnManager.loadAllPawns("Assets/Pawns/pawns.json");
@@ -32,8 +31,8 @@ Battle::Battle()
     LOG_INFO("Module Battle initialized");
 
     // TEST
-   // getModule<Script>().scriptFile("Assets/Battles/test_battle.lua");
-   // getPlayer()->setSkills({"Move", "Stun hit", "Dash and hit", "Magic bomb", "Explosion"});
+    getModule<Script>().scriptFile("Assets/Battles/krowolyk_walka.lua");
+    getPlayer()->setSkills({"Move", "Stun hit", "Dash and hit", "Magic bomb", "Explosion"});
 	// --TEST
 }
 
@@ -180,7 +179,8 @@ glm::vec3 Battle::getCursorPosition(float height)
 	auto mouse = getModule<Input>().getManager().getScreenMousePosition();
 
 	// Projection on Y-plane
-	auto linear = detail::globalPtr<World>->getScenes().getHelperRenderLayer().getLinearByScreenPosition(mouse);
+	sf3d::RenderLayer& layer = detail::globalPtr<World>->getScenes().getHelperRenderLayer();
+	auto linear = layer.getLinearByScreenPosition(mouse);
 	glm::vec3 projection = linear.getCameraProjectionY(height);
 
 	return projection;
@@ -298,6 +298,15 @@ void Battle::initScript()
 	module.set_function("checkCollisionCC", &Battle::checkCollisionCC, this);
 	module.set_function("getNormalDirection", &Battle::getNormalDirection, this);
 	module.set_function("getDistance", &Battle::getDistance, this);
+
+	// Skills
+	module.set_function("setSkills", [&](sol::variadic_args args){
+		std::vector<std::string> vec;
+		for(auto obj : args) {
+			vec.push_back(obj.get<std::string>());
+		}
+		getPlayer()->setSkills(vec);
+	});
 
 	// Cursor
 	module.set_function("getCursorPosition", [&]() {

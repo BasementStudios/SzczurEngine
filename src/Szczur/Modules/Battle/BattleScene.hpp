@@ -194,7 +194,7 @@ private:
 
 // Modules
 	Battle* _battleModule;
-	Window* _windowModule;
+	//Window* _windowModule;
 	Input* _inputModule;
 };
 

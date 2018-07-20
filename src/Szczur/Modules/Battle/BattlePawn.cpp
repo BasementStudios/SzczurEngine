@@ -213,6 +213,10 @@ BattleSkill* BattlePawn::newSkill(const std::string& name)
 
 void BattlePawn::renderSkills(sf3d::RenderTarget& canvas)
 {
+	//@IMP
+	if(_onIndicator.valid()) {
+		_onIndicator(this, _battleModule->getSpellIndicatorManager());
+	}
 	// for(auto& skill : _skills) {
 	// 	skill->renderSpellIndicator();
 	// }
@@ -332,6 +336,7 @@ void BattlePawn::initScript(Script& script)
 	// Callbacks
 	object.set("onCollision", &BattlePawn::_onCollision);
 	object.set("onUpdate", &BattlePawn::_onUpdate);
+	object.set("onIndicator", &BattlePawn::_onIndicator); //@IMP
 
 	// Time
 	object.set("isTimeFull", &BattlePawn::isTimeFull);
