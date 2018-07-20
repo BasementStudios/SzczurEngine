@@ -187,14 +187,11 @@ bool ScenesManager::setCurrentScene(size_t id)
 			);
 		}
 
-		Window* window = detail::globalPtr<Window>;
-
 		auto camera = getCurrentScene()->getCamera();
 		auto comp = camera->getComponentAs<CameraComponent>();
-
 		comp->setPosition(camera->getPosition());
 
-		window->getWindow().setCamera(comp);
+		getHelperRenderLayer().setCamera(comp);
 
 		return true;
 	}
