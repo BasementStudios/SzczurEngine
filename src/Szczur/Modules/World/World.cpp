@@ -168,7 +168,7 @@ void World::processEvent(sf::Event event)
 
 void World::loadFuckingShaderConfig(const std::string& paff)
 {
-	_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.loadConfig(paff);
+	_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.loadConfig(paff.c_str());
 }
 
 const ScenesManager& World::getScenes() const
