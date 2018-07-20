@@ -21,6 +21,9 @@ namespace rat
         void initAssetsViaGUI(GUI& gui);
 
         void setGlyph(GlyphID id, size_t activated, size_t total);
+
+        void moveToLeft();
+        void setPosToCenter();
     private:
         std::unordered_map<GlyphID, std::unique_ptr<GlyphBar>> _glyphBars;
     };

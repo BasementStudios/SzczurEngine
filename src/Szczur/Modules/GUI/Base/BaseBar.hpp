@@ -30,6 +30,9 @@ namespace rat
         void activate();
         bool isActivate() const;
 
+        void fullyActivate();
+        void fullyDeactivate();
+
         void setPropOrigin(const sf::Vector2f& propOrigin);
         void setPropOrigin(float x, float y);
         void setPropSize(const sf::Vector2f& propSize);

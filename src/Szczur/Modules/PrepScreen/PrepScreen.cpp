@@ -1,6 +1,7 @@
 #include "PrepScreen.hpp"
 
 #include <cassert>
+#include <fstream>
 
 #include "Skill/Skill.hpp"
 
@@ -40,6 +41,15 @@ namespace rat
 
     void PrepScreen::initScript()
     {
+        Script& script = getModule<Script>();
+        auto module = script.newModule("PrepScreen");
+
+        module.set_function("hide", &PrepScreen::hide, this);
+        module.set_function("show", &PrepScreen::show, this);
+        module.set_function("getSelectedSkills", &PrepScreen::getSelectedSkills, this);
+        module.set_function("showOnlyEssenceOrbs", &PrepScreen::showOnlyEssenceOrbs, this);
+        module.set_function("clearEnemies", &PrepScreen::clearEnemies, this);
+        module.set_function("pushEnemy", &PrepScreen::pushEnemy, this);
     }
 
     void PrepScreen::setMaximumPPSlotsAmount(int amount)
@@ -270,24 +280,29 @@ namespace rat
         _base->setPadding(20.f, 20.f);
         _base->setSizingWidthToHeightProportion(1.f);
 
-       auto* leftList = new ListWidget;
-       leftList->setPropSize(0.463f, 1.f);
-       leftList->setPropBetweenPad(0.04f);
-       leftList->setPropPosition(0.f, 0.f);
-       _base->add(leftList);
+    //    _leftList = new ListWidget;
+    //    _leftList->setPropSize(0.463f, 1.f);
+    //    _leftList->setPropBetweenPad(0.04f);
+    //    _leftList->setPropPosition(0.f, 0.f);
+    //    _base->add(_leftList);
 
-        _profArea.setParent(leftList);
+        _profArea.setParent(_base);
+        _profArea.setPropPosition(0.f, 0.f);
+
 
         auto* skillList = new ListWidget;
         skillList->makeHorizontal();
         // skillList->setPropSize(0.463f, 0.f);
-        skillList->setPropSize(0.38, 0.f);
-        skillList->setAutoBetweenPadding();
-        leftList->add(skillList);
+        // skillList->setPropSize(0.38, 0.f);
+        // skillList->setAutoBetweenPadding();
+        // skillList->setPropPosition(0.f, 0.2f);
+        // _base->add(skillList);
 
 
-        _skillArea.setParent(skillList);
-        _glyphArea.setParent(skillList);
+        _skillArea.setParent(_base);
+        _skillArea.setPropPosition(0.f, 0.7f);
+        _glyphArea.setParent(_base);
+        _glyphArea.setPropPosition(0.1f, 0.7f);
 
         _ppBack = new WindowWidget;
         _base->add(_ppBack);
@@ -295,18 +310,19 @@ namespace rat
         _ppBack->setMainPatchPropSize({0.3f, 0.3f});
         _ppBack->setPropPosition(0.5f, -0.07f);
         _ppBack->makeChildrenUnresizable();
+        _ppBack->setColor({255, 255, 255, 170});
 
         _grayPPArea.setParent(_ppBack);
         _grayPPArea.setPropPosition(0.5f, 0.47f);
         _chosenSkillArea.setParent(_ppBack);
 
-        auto* monsterList = new ListWidget;
-        monsterList->setPropSize(0.463f, 1.f);
-        monsterList->setPropPosition(1.f, 0.f);
-        _base->add(monsterList);
+        _rightList = new ListWidget;
+        _rightList->setPropSize(0.463f, 1.f);
+        _rightList->setPropPosition(1.f, 0.f);
+        _base->add(_rightList);
 
-        _battleButton.setParent(monsterList);
-        _enemyArea.setParent(monsterList);
+        _battleButton.setParent(_rightList);
+        _enemyArea.setParent(_rightList);
 
 
 
@@ -320,10 +336,67 @@ namespace rat
     void PrepScreen::show()
     {
         _base->fullyActivate();
+
+        _profArea.fullyActivate();
+        _skillArea.fullyActivate();
+        _glyphArea.fullyActivate();
+        _glyphArea.setPosToCenter();
+
+        _rightList->fullyActivate();
+        _ppBack->fullyActivate();
     }
     void PrepScreen::hide()
     {
         _base->fullyDeactivate();
+    }
+
+    std::vector<std::string> PrepScreen::getSelectedSkills() const
+    {
+        std::vector <std::string> ids;
+        ids.reserve (_boughtSkills.size ());
+        for (const auto& skill : _boughtSkills)
+        {
+            ids.emplace_back (skill->getStringID ());
+        }
+        return ids;
+    }
+
+    void PrepScreen::showOnlyEssenceOrbs()
+    {
+        _base->fullyActivate();
+
+        _profArea.fullyDeactivate();
+        _skillArea.fullyDeactivate();
+
+        _rightList->fullyDeactivate();
+        _ppBack->fullyDeactivate();
+
+        _glyphArea.fullyActivate();
+        _glyphArea.moveToLeft();
+    }
+
+    void PrepScreen::loadEnemiesFromJson(nlohmann::json& j)
+    {
+        _enemyCodex.loadFromJson(j);
+
+        auto& gui = getModule<GUI>();
+        _enemyCodex.initAssetsViaGUI(gui);
+    }
+
+    void PrepScreen::clearEnemies()
+    {
+        _enemyArea.clear();
+    }
+    void PrepScreen::pushEnemy(const std::string& nameID)
+    {
+        auto* enemy = _enemyCodex.getEnemy(nameID);
+        if(!enemy)
+        {
+            LOG_ERROR("Cannot find enemy \"", nameID, "\"");
+            return;
+        }
+
+        _enemyArea.pushEnemy(enemy, getModule<GUI>());
     }
 
 
@@ -335,24 +408,37 @@ namespace rat
         unlockPPSlots(8);
         fillPP(8);
 
+        nlohmann::json j;
+        std::ifstream in("Assets/Pawns/pawns.json");
+        if(!in.good()) std::cout << "Nie Wgralo pliku enemies\n";
+        in >> j;
+
+        loadEnemiesFromJson(j);
+
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
         addGlyph(GlyphID::Wrath);
+
         addGlyph(GlyphID::Wearines);
         addGlyph(GlyphID::Wearines);
         addGlyph(GlyphID::Wearines);
+
         addGlyph(GlyphID::Fear);
         addGlyph(GlyphID::Fear);
-        activateGlyph(GlyphID::Wrath);
+        addGlyph(GlyphID::Fear);
         
+        addGlyph(GlyphID::Desperation);
+        addGlyph(GlyphID::Desperation);
+        addGlyph(GlyphID::Desperation);
+
+
         setProfession("Range");
-
-        _battleButton.setCallback([](Widget*){
-            std::cout << "Do walki!!111\n";
-        });
-
         hide();
-        show();
+    }
+
+    void PrepScreen::setCallback(const std::function<void(Widget*)>& func )
+    {
+        _battleButton.setCallback(func);
     }
 
 

@@ -195,9 +195,25 @@ namespace rat
     }
     void SkillSlot::_onBought()
     {
-        _icon->setColor({64, 64, 64, 200});
-        //_ppCost->hide();
-        //for(auto* gl : _glyphes) gl->hide();
+        sf::Color boughtColor;
+        const auto prof = _skill->getProfession();
+        if(prof == "Mele")
+        {
+            boughtColor = {100, 64, 64, 200};
+        }
+        else if(prof == "Range")
+        {
+            boughtColor = {64, 100, 64, 200};
+        }
+        else if(prof == "Aura")
+        {
+            boughtColor = {64, 64, 100, 200};
+        }
+        else
+        {
+            boughtColor = {64, 64, 64, 200};
+        }
+        _icon->setColor(boughtColor);
         _base->setColor(sf::Color::White);
     }
 

@@ -12,10 +12,10 @@ namespace rat
     public:
         EnemyBar(EnemyArea& parentArea);
 
-        void setEnemy(Enemy* enemy);
+        void setEnemy(const Enemy* enemy);
         void initAssetsViaGUI(GUI& gui);
     private:
-        Enemy* _enemy{nullptr};
+        const Enemy* _enemy{nullptr};
         EnemyArea& _parentArea;
 
         WindowWidget* _border{nullptr};
@@ -26,7 +26,7 @@ namespace rat
         WindowWidget* _filter{nullptr};
 
         Widget* _descParent{nullptr};
-        TextWidget* _description{nullptr};
+        TextAreaWidget* _description{nullptr};
 
         void _onHoverIn();
         void _onHoverOut();

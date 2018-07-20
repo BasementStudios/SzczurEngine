@@ -130,6 +130,29 @@ bool Application::input()
 			getModule<Window>().getWindow().close();
 			return false;
 		}
+
+
+		//////////////////////
+		switch(event.type)
+        {
+            case sf::Event::KeyPressed:
+            {
+                switch(event.key.code)
+                {
+                    case sf::Keyboard::P:
+                        getModule<PrepScreen>().show();
+                    break; 
+
+                    default: break;
+                }
+            } 
+            break;
+
+            default: break;
+        }
+		//////////////////////
+
+
 	}
 
 	return true;

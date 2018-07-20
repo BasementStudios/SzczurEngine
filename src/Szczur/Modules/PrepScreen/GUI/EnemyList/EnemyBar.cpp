@@ -4,6 +4,7 @@
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 #include "Szczur/Modules/GUI/TextWidget.hpp"
+#include "Szczur/Modules/GUI/TextAreaWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 #include "Szczur/Modules/GUI/GUI.hpp"
 
@@ -79,15 +80,17 @@ namespace rat
 
         _descParent = new Widget;
         _descParent->setPropSize(prSize.x, 0.f);
-        _descParent->setPropPadding(0.f, 0.007f);
+        _descParent->setPropPadding(0.f, 0.01f);
         _descParent->fullyDeactivate();
         _descParent->makeChildrenUnresizable();
         mainList->add(_descParent);
 
-        _description = new TextWidget;
+        _description = new TextAreaWidget;
         _descParent->add(_description);
         _description->setCharacterPropSize(0.025f);
         _description->setPropPosition(0.5f, 0.5f);
+        _description->setAlign(TextAreaWidget::Align::Center);
+        _description->setPropSize(prSize.x * 0.8f, 0.f);
 
         auto* base = _getBase();
         base->makeChildrenPenetrable();
@@ -97,13 +100,13 @@ namespace rat
         });
     }
 
-    void EnemyBar::setEnemy(Enemy* enemy)
+    void EnemyBar::setEnemy(const Enemy* enemy)
     {
         _icon->setTexture(enemy->getTexture());
         _hp->setString("HP: " + std::to_string(enemy->getMaxHP()));
         _name->setString(enemy->getName());
         _enemy = enemy;
-        _description->setString(enemy->getName());
+        _description->setString(enemy->getDescription());
     }
 
     void EnemyBar::initAssetsViaGUI(GUI& gui)
@@ -119,13 +122,13 @@ namespace rat
 
     void EnemyBar::_onHoverIn()
     {
-        _filter->visible();
+        //_filter->visible();
         if(!_enemy) return;    
         //_parentArea.setEnemyInfo(_enemy, {0.f, getPosition().y});
     }
     void EnemyBar::_onHoverOut()
     {
-        _filter->invisible();
+        //_filter->invisible();
         if(!_enemy) return;
         //if(_parentArea.isEnemyInInfo(_enemy) || true) _parentArea.deactivateInfo();
     }

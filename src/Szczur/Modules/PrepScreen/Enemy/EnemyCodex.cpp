@@ -6,7 +6,7 @@ namespace rat
 {
     EnemyCodex::EnemyCodex()
     {
-        _testInit();
+       
     }
 
     void EnemyCodex::initAssetsViaGUI(GUI& gui)
@@ -14,25 +14,35 @@ namespace rat
         for(auto& [name, enemy] : _enemies)
         {
             auto& path = enemy->getIconPath();
-            gui.addAsset<sf::Texture>(path);
-            enemy->setTexture(gui.getAsset<sf::Texture>(path));
+            gui.addAsset<sf::Texture>(_iconPaths + path);
+            enemy->setTexture(gui.getAsset<sf::Texture>(_iconPaths + path));
         }
     }
 
-    void EnemyCodex::_testInit()
+    void EnemyCodex::loadFromJson(nlohmann::json& j)
     {
-        _addEnemy("Stefan", "Assets/Test/Enemy1.png", 10);
-        _addEnemy("Maciek", "Assets/Test/Enemy2.png", 13);
-        _addEnemy("PsychoX", "Assets/Test/Enemy3.png", 11);
-        _addEnemy("Hefa", "Assets/Test/Enemy4.png", 3);
+        _enemies.clear();
+
+        if(j.find("iconsPath") != j.end())
+        {
+            _iconPaths = j["iconsPath"];
+        }
+
+        nlohmann::json ps = j["pawns"];
+        for(auto it = ps.begin(); it != ps.end(); ++it)
+        {
+            nlohmann::json pawn = it.value();
+
+            if(!(pawn["isEnemy"].get<bool>())) continue;
+            _enemies.emplace(it.key(), std::make_unique<Enemy>(pawn));
+        }
     }
-    void EnemyCodex::_addEnemy(const std::string& name, const std::string& path, int hp)
+
+    const Enemy* EnemyCodex::getEnemy(const std::string& nameID)
     {
-        auto enemy = std::make_unique<Enemy>();
-        enemy->setName(name);
-        enemy->setIconPath(path);
-        enemy->setMaxHP(hp);
-        _enemies.emplace(name, std::move(enemy));
+        auto found = _enemies.find(nameID);
+        if(found == _enemies.end()) return nullptr;
+        return found->second.get();
     }
     
 }

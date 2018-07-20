@@ -68,20 +68,20 @@ namespace rat
 
     void GlyphBar::_onClick()
     {
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        {
-            if(_prepScreen.canBeGlyphDeactivated(_type))
-            {
-                _prepScreen.deactivateGlyph(_type);
-            }
-        }
-        else
-        {
-            if(_prepScreen.canBeGlyphActivated(_type))
-            {
-                _prepScreen.activateGlyph(_type);
-            }
-        }
+        // if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+        // {
+        //     if(_prepScreen.canBeGlyphDeactivated(_type))
+        //     {
+        //         _prepScreen.deactivateGlyph(_type);
+        //     }
+        // }
+        // else
+        // {
+        //     if(_prepScreen.canBeGlyphActivated(_type))
+        //     {
+        //         _prepScreen.activateGlyph(_type);
+        //     }
+        // }
     }
 
     void GlyphBar::setAmount(size_t activated, size_t total)

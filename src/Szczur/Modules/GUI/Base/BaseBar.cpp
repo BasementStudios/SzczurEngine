@@ -101,6 +101,15 @@ namespace rat
     {
         setPropOrigin({x, y});
     }
+
+    void BaseBar::fullyActivate()
+    {
+        _base->fullyActivate();
+    }
+    void BaseBar::fullyDeactivate()
+    {
+        _base->fullyDeactivate();
+    }
     /*
     void BaseBar::invisible()
     {

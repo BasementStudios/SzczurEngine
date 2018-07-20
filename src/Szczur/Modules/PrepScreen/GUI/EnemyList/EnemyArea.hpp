@@ -7,6 +7,8 @@
 
 #include "EnemyBar.hpp"
 
+namespace sf { class Texture; class Font; }
+
 namespace rat
 {
     class EnemyCodex; class Enemy;
@@ -17,6 +19,9 @@ namespace rat
 
         void initAssetsViaGUI(GUI& gui);
         void initEnemiesViaCodex(EnemyCodex& codex);
+
+        void clear();
+        void pushEnemy(const Enemy* enemy, GUI& gui);
 
         void setEnemyInfo(Enemy* enemy, const sf::Vector2f& pos = {});
         bool isEnemyInInfo(Enemy* enemy);
@@ -30,5 +35,7 @@ namespace rat
         ListWidget* _list{nullptr};
 
         Enemy* _chosenEnemy{nullptr};
+
+
     };
 }

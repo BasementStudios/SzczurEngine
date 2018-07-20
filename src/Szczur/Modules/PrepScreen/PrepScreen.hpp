@@ -1,5 +1,9 @@
-//#include "Szczur/Utility/Modules/Module.hpp"
 #pragma once
+
+#include <Json/json.hpp>
+
+#include <functional>
+
 #include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
@@ -29,18 +33,33 @@ namespace rat
     class PrepScreen : public Module <Window, Input, Script, GUI>
     {
     public:
+        void hide();
+        void show();
+        std::vector<std::string> getSelectedSkills() const;
+
+        void showOnlyEssenceOrbs();
+
+        void loadEnemiesFromJson(nlohmann::json& j);
+
+        void clearEnemies();
+        void pushEnemy(const std::string& nameID);
+
+        void setCallback(const std::function<void(Widget*)>& func );
+        
+    public:
         void init()
         {
             _sortedSkills.initViaSkillCodex(_codex);
             initGUI();
         }
-
         void initScript();
         void initGUI();
 
         PrepScreen();
         ~PrepScreen();
 
+
+    public:
         SkillCodex& getSkillCodex();
 
         void setMaximumPPSlotsAmount(int amount);
@@ -69,15 +88,10 @@ namespace rat
         bool canSkillBeBought(const Skill* skill) const;
         void returnSkill(const Skill* skill);
         bool isSkillBought(const Skill* skill) const;
-
-        void hide();
-        void show();
-
         void setProfession(const std::string& profession);
 
         void dimPPsNeededToBuySkill(const Skill* skill);
         void normPPsNeededToBuySkill(const Skill* skill);
-
     private:
         SkillCodex _codex;
         ResourcesContainer _source;
@@ -93,7 +107,9 @@ namespace rat
         ChosenSkillArea _chosenSkillArea;
         GlyphArea _glyphArea;
 
+        ListWidget* _leftList{nullptr};
         WindowWidget * _ppBack{nullptr};
+        ListWidget* _rightList{nullptr};
 
         bool _isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const;
 

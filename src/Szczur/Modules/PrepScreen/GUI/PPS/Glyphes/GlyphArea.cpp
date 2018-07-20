@@ -39,4 +39,13 @@ namespace rat
         auto& bar = found->second;
         bar->setAmount(activated, total);
     }
+
+    void GlyphArea::moveToLeft()
+    {
+        _getBase()->setPropPositionInTime({0.f, 0.6f}, 0.4f);
+    }
+    void GlyphArea::setPosToCenter()
+    {
+        _getBase()->setPropPosition(0.1f, 0.6f);
+    }
 }

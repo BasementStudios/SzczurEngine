@@ -1,5 +1,7 @@
 #include "Enemy.hpp"
 
+#include <iostream>
+
 namespace rat
 {
     void Enemy::setName(const std::string& name)
@@ -36,5 +38,14 @@ namespace rat
     sf::Texture* Enemy::getTexture() const
     {
         return _iconTex;
+    }
+
+    using namespace nlohmann;
+    Enemy::Enemy(json& j)
+    {
+        setName(j["name"].get<std::string>());
+        setIconPath(j["iconPath"].get<std::string>());
+        setMaxHP(j["health"][1].get<int>());
+        _desc = j["description"];
     }
 }

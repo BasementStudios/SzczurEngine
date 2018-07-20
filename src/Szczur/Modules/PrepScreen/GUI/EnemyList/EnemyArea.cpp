@@ -47,6 +47,9 @@ namespace rat
     }
     void EnemyArea::initEnemiesViaCodex(EnemyCodex& codex)
     {
+        _list->clear();
+        _enemyBars.clear();
+        
         for(auto& [name, enemy] : codex)
         {
             auto bar = std::make_unique<EnemyBar>(*this);
@@ -54,6 +57,19 @@ namespace rat
             bar->setParent(_list);
             _enemyBars.emplace_back(std::move(bar));
         }
+    }
+    void EnemyArea::clear()
+    {
+        _list->clear();
+        _enemyBars.clear();
+    }
+    void EnemyArea::pushEnemy(const Enemy* enemy, GUI& gui)
+    {
+        auto bar = std::make_unique<EnemyBar>(*this);
+        bar->setEnemy(enemy);
+        bar->setParent(_list);
+        bar->initAssetsViaGUI(gui);
+        _enemyBars.emplace_back(std::move(bar));
     }
     void EnemyArea::setEnemyInfo(Enemy* enemy, const sf::Vector2f& pos)
     {
