@@ -12,7 +12,7 @@
 #include "Szczur/Modules/GUI/ImageWidget.hpp"
 
 #include "Szczur/Modules/PrepScreen/ResourcesContainer.hpp"
-#include "Szczur/Modules/PrepScreen/Skill/SkillCodex.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/SkillCodex.hpp"
 #include "GUI/Skills/List/SkillArea.hpp"
 #include "GUI/PPS/Gray/GrayPPArea.hpp"
 #include "GUI/Professions/ProfessionArea.hpp"
@@ -22,7 +22,7 @@
 #include "GUI/EnemyList/EnemyArea.hpp"
 #include "GUI/PPS/Glyphes/GlyphArea.hpp"
 
-#include "Szczur/Modules/PrepScreen/Skill/SortedSkillsContainer.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/SortedSkillsContainer.hpp"
 
 #include "Enemy/EnemyCodex.hpp"
 
@@ -84,14 +84,14 @@ namespace rat
         void deactivateGlyph(GlyphID glyphID);
         bool hasEnoughPowerfulGlyph(GlyphID glyphID, size_t powerLevel) const;
 
-        void buySkill(const Skill* skill);
-        bool canSkillBeBought(const Skill* skill) const;
-        void returnSkill(const Skill* skill);
-        bool isSkillBought(const Skill* skill) const;
+        void buySkill(const PrepSkill* skill);
+        bool canSkillBeBought(const PrepSkill* skill) const;
+        void returnSkill(const PrepSkill* skill);
+        bool isSkillBought(const PrepSkill* skill) const;
         void setProfession(const std::string& profession);
 
-        void dimPPsNeededToBuySkill(const Skill* skill);
-        void normPPsNeededToBuySkill(const Skill* skill);
+        void dimPPsNeededToBuySkill(const PrepSkill* skill);
+        void normPPsNeededToBuySkill(const PrepSkill* skill);
     private:
         SkillCodex _codex;
         ResourcesContainer _source;
@@ -113,8 +113,8 @@ namespace rat
 
         bool _isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const;
 
-        std::set<const Skill*> _boughtSkills;
-        const Skill* _dimedPPsSkill{nullptr};
+        std::set<const PrepSkill*> _boughtSkills;
+        const PrepSkill* _dimedPPsSkill{nullptr};
 
         std::string _currentProf;
 

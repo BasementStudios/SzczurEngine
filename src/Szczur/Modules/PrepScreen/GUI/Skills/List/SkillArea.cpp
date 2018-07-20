@@ -10,7 +10,7 @@
 #include "Szczur/Modules/GUI/WindowWidget.hpp"
 #include "Szczur/Modules/GUI/ListWidget.hpp"
 
-#include "Szczur/Modules/PrepScreen/Skill/SkillCodex.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/SkillCodex.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
 
@@ -70,7 +70,7 @@ namespace rat
         }
     }
 
-    void SkillArea::setSkills(const std::vector<const Skill*>& skills)
+    void SkillArea::setSkills(const std::vector<const PrepSkill*>& skills)
     {
         for(auto& bar : _skillBars) bar->removeSkill();
 

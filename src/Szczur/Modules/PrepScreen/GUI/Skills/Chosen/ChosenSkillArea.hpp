@@ -16,7 +16,7 @@ namespace rat
     public:
         ChosenSkillArea(PrepScreen& prepScreen, size_t size = 6);
         void initAssetsViaGUI(GUI& gui);
-        void addSkill(const Skill* skill);
+        void addSkill(const PrepSkill* skill);
         bool hasFreeSpace() const;
         void recalculate();
     private:

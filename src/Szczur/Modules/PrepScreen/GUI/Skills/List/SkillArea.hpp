@@ -4,7 +4,7 @@
 
 #include "SkillBar.hpp"
 #include "../SkillSlot.hpp"
-#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/PrepSkill.hpp"
 #include "Szczur/Modules/PrepScreen/GlyphTypes.hpp"
 
 #include <unordered_map>
@@ -24,7 +24,7 @@ namespace rat
 
         void initAssetsViaGUI(GUI& gui);
 
-        void setSkills(const std::vector<const Skill*>& skills);
+        void setSkills(const std::vector<const PrepSkill*>& skills);
         void recalculateSkillsAvailability();
         void resetScroller();
 

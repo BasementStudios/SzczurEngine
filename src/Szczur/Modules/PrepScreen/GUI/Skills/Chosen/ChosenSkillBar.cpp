@@ -51,7 +51,7 @@ namespace rat
         _border->setTexture(gui.getTexture("Assets/PrepScreen/SkillBack.png"));
     }
 
-    void ChosenSkillBar::setSkill(const Skill* skill)
+    void ChosenSkillBar::setSkill(const PrepSkill* skill)
     {
         if(skill == nullptr)
         {
@@ -87,7 +87,7 @@ namespace rat
 
     void ChosenSkillBar::swapSkillsWith(ChosenSkillBar& other)
     {
-        const Skill* othersSkill = other._skill;
+        const PrepSkill* othersSkill = other._skill;
 
         other.setSkill(_skill);
         setSkill(othersSkill);

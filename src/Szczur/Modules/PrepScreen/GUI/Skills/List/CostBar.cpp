@@ -47,7 +47,7 @@ namespace rat
         }
     }  
 
-    void CostBar::setSkill(const Skill* skill)
+    void CostBar::setSkill(const PrepSkill* skill)
     {
         _skill = skill;
         auto& ppCost = _skill->getCostInfo();

@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics/Texture.hpp>
 
-#include "Szczur/Modules/PrepScreen/Skill/Skill.hpp"
+#include "Szczur/Modules/PrepScreen/PrepSkill/PrepSkill.hpp"
 
 namespace rat
 {
@@ -15,7 +15,7 @@ namespace rat
     public:
         ChosenSkillBar(PrepScreen& prepScreen);
 
-        void setSkill(const Skill* skill);
+        void setSkill(const PrepSkill* skill);
         void removeSkill();
         bool hasSkill() const;
         bool isFree() const;
@@ -27,7 +27,7 @@ namespace rat
 
     private:
         PrepScreen& _prepScreen;
-        const Skill* _skill{nullptr};
+        const PrepSkill* _skill{nullptr};
         ImageWidget* _icon{nullptr};
         ImageWidget* _border{nullptr};      
 

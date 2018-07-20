@@ -3,7 +3,7 @@
 #include <functional>
 #include <algorithm>
 
-#include "Skill.hpp"
+#include "PrepSkill.hpp"
 #include "SkillCodex.hpp"
 
 #include "Szczur/Utility/Logger.hpp" 
@@ -43,7 +43,7 @@ namespace rat
         _recalcMaxSkillsAmountProfession();
     }
 
-    std::vector<const Skill*> SortedSkillsContainer::getSkills(const std::string& profession, const Glyphs_t& glyphs) const
+    std::vector<const PrepSkill*> SortedSkillsContainer::getSkills(const std::string& profession, const Glyphs_t& glyphs) const
     {
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end()) return {};
@@ -82,7 +82,7 @@ namespace rat
         return _maxSkillsAmountInProfession;
     }
 
-    std::vector<const Skill*> SortedSkillsContainer::getWholeProfession(const std::string& profession) const
+    std::vector<const PrepSkill*> SortedSkillsContainer::getWholeProfession(const std::string& profession) const
     {
         auto foundProf = _skills.find(profession);
         if(foundProf == _skills.end())
@@ -93,7 +93,7 @@ namespace rat
         Skills_t wholeProf;
         for(auto& [key, glyphs] : foundProf->second)
         {
-            for(const Skill* skill : glyphs)
+            for(const PrepSkill* skill : glyphs)
             {
                 wholeProf.emplace_back(skill);
             }
@@ -103,7 +103,7 @@ namespace rat
         return wholeProf;
     }
 
-    std::vector<const Skill*> SortedSkillsContainer::getWholeGlyphs(const std::string& profession, const Glyphs_t& glyphs) const
+    std::vector<const PrepSkill*> SortedSkillsContainer::getWholeGlyphs(const std::string& profession, const Glyphs_t& glyphs) const
     {
         if(glyphs.size() == 0) return getWholeProfession(profession);
         auto foundProf = _skills.find(profession);
@@ -126,13 +126,13 @@ namespace rat
 
     void SortedSkillsContainer::_sort(Skills_t& skills) const
     {
-        std::sort(skills.begin(), skills.end(), [](const Skill* lhs, const Skill* rhs){
+        std::sort(skills.begin(), skills.end(), [](const PrepSkill* lhs, const PrepSkill* rhs){
                     return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
                 });
     }
     void SortedSkillsContainer::_sort(Skills_t& skills)
     {
-        std::sort(skills.begin(), skills.end(), [](const Skill* lhs, const Skill* rhs){
+        std::sort(skills.begin(), skills.end(), [](const PrepSkill* lhs, const PrepSkill* rhs){
                     return lhs->getCostInfo().getCost() < rhs->getCostInfo().getCost();
                 });
     }

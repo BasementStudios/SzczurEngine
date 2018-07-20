@@ -9,7 +9,7 @@ namespace sf { class Texture; }
 
 namespace rat
 {
-    class PrepScreen; class Skill; class GUI;
+    class PrepScreen; class PrepSkill; class GUI;
     class ImageWidget; class Widget; class TextWidget;
 
     class SkillSlot
@@ -17,7 +17,7 @@ namespace rat
     public:
         SkillSlot(PrepScreen& prepScreen);
         void setParent(Widget* parent);
-        void setSkill(const Skill* skill);
+        void setSkill(const PrepSkill* skill);
         void removeSkill();
         bool hasSkill() const { return _skill != nullptr; }
         void loadAssetsFromGUI(GUI& gui);
@@ -35,7 +35,7 @@ namespace rat
 
     protected:
         PrepScreen& _prep;
-        const Skill* _skill{nullptr};
+        const PrepSkill* _skill{nullptr};
 
     private:
         bool _isKnownAsBought{false};

@@ -3,7 +3,7 @@
 #include <cassert>
 #include <fstream>
 
-#include "Skill/Skill.hpp"
+#include "PrepSkill/PrepSkill.hpp"
 
 #include "ProfessionTypes.hpp"
 
@@ -142,7 +142,7 @@ namespace rat
     }
     bool PrepScreen::_isAnyBoughtSkillNeedGlyph(GlyphID glyphID, size_t power) const
     {
-        auto oneThatNeed = std::find_if(_boughtSkills.begin(), _boughtSkills.end(), [&glyphID, &power](const Skill* skill){
+        auto oneThatNeed = std::find_if(_boughtSkills.begin(), _boughtSkills.end(), [&glyphID, &power](const PrepSkill* skill){
             const auto& cost = skill->getCostInfo();
             return cost.needGlyphThatPower(glyphID, power);
         });
@@ -160,7 +160,7 @@ namespace rat
         return _source.glyphContainer.hasRequirements({{glyphID, powerLevel}});
     }
 
-    void PrepScreen::buySkill(const Skill* skill)
+    void PrepScreen::buySkill(const PrepSkill* skill)
     {
         assert(canSkillBeBought(skill));
         const auto& cost = skill->getCostInfo();
@@ -173,7 +173,7 @@ namespace rat
         _calcPPsGUI();
         _calcSkillsGUI();
     }
-    bool PrepScreen::canSkillBeBought(const Skill* skill) const
+    bool PrepScreen::canSkillBeBought(const PrepSkill* skill) const
     {
         const auto& cost = skill->getCostInfo();
         if(cost.getCost() > _source.ppContainer.getFilledPPAmount()) return false;
@@ -184,7 +184,7 @@ namespace rat
         if(!_chosenSkillArea.hasFreeSpace()) return false;
         return true;
     }
-    void PrepScreen::returnSkill(const Skill* skill)
+    void PrepScreen::returnSkill(const PrepSkill* skill)
     {
         assert(skill->isBought());
 
@@ -217,7 +217,7 @@ namespace rat
         }
     }
 
-    void PrepScreen::dimPPsNeededToBuySkill(const Skill* skill)
+    void PrepScreen::dimPPsNeededToBuySkill(const PrepSkill* skill)
     {
         assert(canSkillBeBought(skill));
         auto& cost = skill->getCostInfo();
@@ -227,7 +227,7 @@ namespace rat
 
         _dimedPPsSkill = skill;
     }
-    void PrepScreen::normPPsNeededToBuySkill(const Skill* skill)
+    void PrepScreen::normPPsNeededToBuySkill(const PrepSkill* skill)
     {
         if(skill != _dimedPPsSkill) return;
 
