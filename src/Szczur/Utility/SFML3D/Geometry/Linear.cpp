@@ -17,12 +17,22 @@ bool sf3d::Linear::contains(const glm::vec3& pos, const glm::vec3& size) const {
 
 }
 
-glm::vec3 sf3d::Linear::getProjectionY(const glm::vec3& pos) {
-	glm::vec3 deltaPosition = pos - _position;
-	return _direction * (deltaPosition.y / _direction.y);
+glm::vec3 sf3d::Linear::getProjectionY(float height) {
+	float delta = height - _position.y;
+	return _direction * (delta / _direction.y);
 }
 
-glm::vec3 sf3d::Linear::getProjectionZ(const glm::vec3& pos) {
-	glm::vec3 deltaPosition = pos - _position;
-	return _direction * (deltaPosition.z / _direction.z);
+glm::vec3 sf3d::Linear::getProjectionZ(float depth) {
+	float delta = depth - _position.z;
+	return _direction * (delta / _direction.z);
+}
+
+glm::vec3 sf3d::Linear::getCameraProjectionY(float height) {
+	float delta = height - _position.y;
+	return _direction * (delta / _direction.y) + _position;
+}
+
+glm::vec3 sf3d::Linear::getCameraProjectionZ(float depth) {
+	float delta = depth - _position.z;
+	return _direction * (delta / _direction.z) + _position;
 }

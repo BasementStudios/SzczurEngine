@@ -136,6 +136,16 @@ namespace rat {
 			}
 		}
 
+		// Render origins for foreground group
+		for(auto& entity : _scenes.getCurrentScene()->getEntities("foreground")) {			
+			if(_objectsList.getSelectedID() == entity->getID()) {
+				_renderOriginRectangle(entity->getPosition(), true, target);
+			}
+			else {
+				_renderOriginRectangle(entity->getPosition(), false, target);
+			}
+		}
+
 		sf3d::CircleShape circ;
 		sf3d::CircleShape circ2;
 		circ.rotate({-90.f, 0.f, 0.f});

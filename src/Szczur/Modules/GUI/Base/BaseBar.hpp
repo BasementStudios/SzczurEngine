@@ -10,7 +10,7 @@ namespace rat
 {
     class GUI;
     class Widget; class ImageWidget; class WindowWidget; class TextWidget;
-    class TextAreaWidget;
+    class TextAreaWidget; class ListWidget; class ScrollAreaWidget;
 
     class BaseBar
     {
@@ -29,6 +29,9 @@ namespace rat
         void deactivate();
         void activate();
         bool isActivate() const;
+
+        void fullyActivate();
+        void fullyDeactivate();
 
         void setPropOrigin(const sf::Vector2f& propOrigin);
         void setPropOrigin(float x, float y);

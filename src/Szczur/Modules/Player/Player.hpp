@@ -3,57 +3,23 @@
 #include <string>
 #include <vector>
 
-#include "Szczur/Utility/Modules/Module.hpp"
+#include "Skill.hpp"
 
+#include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Modules/GUI/GUI.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat {
-	struct Skill {
-	public:
-		static void initScript(Script& script);
-
-		const std::string& getNameID();
-		void setNameID(const std::string& nameID);
-
-		const std::string& getName();
-		void setName(const std::string& name);
-
-		const std::string& getDescription();
-		void setDescription(const std::string& description);
-
-		void setPPCost(int cost);
-		int getPPcost();
-
-		void setEssenceCost(size_t index, int value);
-		int getEssenceCost(size_t index);
-
-		void setSkillType(int type);
-		int getSkillType();
-
-		void setIsKnown(bool isKnown);
-		bool getIsKnown();
-	private:
-		std::string nameID;
-
-		std::string name;
-		std::string description;
-
-		int PPCost;
-
-		int essenceContainer [4];
-
-		int type;
-
-		bool isKnown;
-	};
-
-	class Player : public Module<Script>
+	class InterfaceWidget; class HPBar; class ImageWidget; class TimeBar; class PPCount; class SkillSlots; class ItemSlots;
+	class Player : public Module<Script, GUI>
 	{
 	public:
 		Player();
 		~Player();
 
 		void initJson();
+		void initGUI();
+
 		const std::string& getPathToJson();
 		void reloadJson();
 
@@ -75,9 +41,50 @@ namespace rat {
 
 		bool addSkill(const std::string& nameID);
 		bool removeSkill(const std::string& nameID);
-		Skill getSkill(const std::string& nameID); // @todo ? const? nie?
+		const Skill& getSkill(const std::string& nameID); // @todo ? const? nie?
 
+		void setHPBarIndex(int);
+
+		void setTimeBarIndex(int);
+		void setCurrentTime(int);
+		void setMaxTime(int);
+
+		/*void setBrokenPPAmount(int);
+		void setGoodPPAmount(int);*/
+		void setPPSlotsAmount(int good, int broken);
+		void setHighlightedPPAmount(int newAmount);
+
+		void addSkillToSlot(const std::string&);
+		void chooseSkill(const std::string&);
+		void unChooseSkill(const std::string&);
+		void setCounter(const std::string&, const std::string& number);
+		void setPPCost(const std::string&, int number);
+
+		void addItem(const std::string&, sf::Texture*);
+		void removeItem(const std::string&);
+
+		void start();
+		void stop();
+
+		void clearSkillSlots();
+
+		void setHPbarStatus(const std::string&);
+		void removeHPbarStatus(const std::string&);
 	private:
+		InterfaceWidget* _base = nullptr;
+		ImageWidget* _background = nullptr;
+
+		ImageWidget* _HPBack;
+		HPBar* _HPBar;
+		TimeBar* _TimeBar;
+
+		ImageWidget* _PPBack;
+		PPCount* _PPCount;
+		SkillSlots* _skillSlots;
+
+		ImageWidget* _itemBack;
+		ItemSlots* _itemSlots;
+
 		std::string _pathToJson;
 
 		int _currentHP;

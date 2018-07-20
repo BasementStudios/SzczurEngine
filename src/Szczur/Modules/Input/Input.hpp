@@ -2,12 +2,13 @@
 
 #include "InputManager.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
 
-class Input : public Module<Script>
+class Input : public Module<Window, Script>
 {
 public:
 

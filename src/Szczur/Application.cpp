@@ -23,16 +23,23 @@ void Application::init()
 	initModule<AudioEffects>();
 	initModule<DragonBones>();
 	initModule<World>();
-	initModule<GUI>();
-	initModule<Dialog>();
-	initModule<DialogEditor>();
 	initModule<Cinematics>();
 	initModule<AudioEditor>();
 	initModule<Listener>();
+	initModule<GUI>();
+	initModule<Dialog>();
+	initModule<DialogEditor>();
 	initModule<Equipment>();
 	initModule<Player>();
+	initModule<Battle>();
 
+	#ifdef GUI_TEST
+	{
+		initModule<GUITest>();
+	}
+	#endif
 
+	initModule<PrepScreen>();
 	LOG_INFO("Modules initialized");
 
 	#ifdef EDITOR
@@ -57,7 +64,6 @@ void Application::input()
 
 	while (getModule<Window>().getWindow().pollEvent(event)) {
 		getModule<Input>().getManager().processEvent(event);
-		getModule<GUI>().input(event);
 
 		getModule<World>().processEvent(event);
 
@@ -66,6 +72,16 @@ void Application::input()
 			ImGui::SFML::ProcessEvent(event);
 		}
 		#endif
+
+		/*
+			Put other inputs here
+		*/		
+		// getModule<Battle>().input(event);
+
+		// if (event.type == sf::Event::Resized) {
+		// 	auto windowSize = getModule<Window>().getWindow().getSize();
+		// 	getModule<Window>().setVideoMode(sf::VideoMode(event.size.width, event.size.height));
+		// }
 
 		if (event.type == sf::Event::Closed) {
 			auto result = MsgBox::show(
@@ -92,6 +108,29 @@ void Application::input()
 		else {
 			getModule<Window>().processEvent(event);
 		}
+
+
+		//////////////////////
+		switch(event.type)
+        {
+            case sf::Event::KeyPressed:
+            {
+                switch(event.key.code)
+                {
+                    case sf::Keyboard::P:
+                        getModule<PrepScreen>().show();
+                    break; 
+
+                    default: break;
+                }
+            } 
+            break;
+
+            default: break;
+        }
+		//////////////////////
+
+
 	}
 }
 
@@ -102,10 +141,21 @@ void Application::update()
 	auto deltaTime = _mainClock.restart().asFSeconds();
 	
 	getModule<GUI>().update(deltaTime);
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().update(deltaTime);
+	}
+	#endif
+
 	getModule<Dialog>().update();
 	getModule<Music>().update(deltaTime);
 	getModule<Equipment>().update(deltaTime);
 
+
+	/*
+		Put other updates here
+	*/
+	
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -125,10 +175,13 @@ void Application::render()
 	
 	getModule<Window>().pushGLStates();
 	getModule<GUI>().render();
+	#ifdef GUI_TEST
+	{
+		getModule<GUITest>().render();
+	}
+	#endif
 	getModule<Window>().popGLStates();
 	getModule<Cinematics>().render();
-
-	// getModule<World>().render();
 
 	#ifdef EDITOR
 	{

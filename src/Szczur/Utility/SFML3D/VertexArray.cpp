@@ -2,6 +2,9 @@
 
 #include <vector>
 #include <algorithm>
+#include <stdexcept> // out_of_range
+
+#include <glad/glad.h>
 
 #include "RenderTarget.hpp"
 #include "RenderStates.hpp"

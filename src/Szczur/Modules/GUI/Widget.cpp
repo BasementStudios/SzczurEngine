@@ -200,8 +200,7 @@ namespace rat
             _input(event);
             for(auto child : _children) child->input(event);
         }
-    }
-    
+    }   
 
     void Widget::update(float deltaTime) {
         if(isActivated()) {

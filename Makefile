@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.5.3 ])
+$(info [ PsychoX' Makefile - version 2.4.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -24,20 +24,16 @@ SETTINGS_FILE := ./settings.mk
 # Platform detection
 PLATFORM_DETECT := $(shell uname -o | tr A-Z a-z)
 ifeq ($(findstring linux,$(PLATFORM_DETECT)),)
-    SYSTEM_PLATFORM := win
     PLATFORM := win
 else
-    SYSTEM_PLATFORM := lin
     PLATFORM := lin
 endif
 
 # Architecture detection
 ARCH_DETECT := $(shell uname -m)
 ifeq ($(findstring 64,$(ARCH_DETECT)),)
-    SYSTEM_ARCH := 32
     ARCH := 32
 else
-    SYSTEM_ARCH := 64
     ARCH := 64
 endif
 
@@ -112,9 +108,6 @@ LDFLAGS  :=
 MXE := no
 MXE_DIR := /usr/lib/mxe
 
-# Packages
-PKG_CONFIG := pkg-config
-
 # Arch tags
 ARCH_32 := i686
 ARCH_64 := x86_64
@@ -125,9 +118,6 @@ CXXFLAGS_STATIC  := -static
 CXXFLAGS_DYNAMIC :=
  LDFLAGS_STATIC  := -static
  LDFLAGS_DYNAMIC :=
-
-# Threads model
-THREADS := posix
 
 # Optimalization
 OPTIMALIZE := no
@@ -150,18 +140,26 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := BOOST IMGUI GLAD SFML LUA SOL2 JSON GLM OPENAL FFMPEG_AV
-ifeq ($(TARGET_PLATFORM),win)
-    LIB_LIST += WINDOWS
-endif
+LIB_LIST := IMGUI SFML BOOST LUA
+#   SFML
+ CXXFLAGS_STATIC_SFML   := -DSFML_STATIC
+  LDFLAGS_STATIC_SFML   := -lsfml-audio-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm -DSFML_STATIC
+CXXFLAGS_DYNAMIC_SFML   :=
+ LDFLAGS_DYNAMIC_SFML   := -lsfml-audio   -lsfml-graphics   -lsfml-window   -lsfml-system   -lopengl32 -lfreetype -ljpeg -lopengl32 -lwinmm -lgdi32 -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32 -lwinmm
+ MXE_PACKAGENAME_SFML   := sfml
 #   Boost
- PKG_CONFIG_NAME_BOOST  := boost
  CXXFLAGS_STATIC_BOOST  :=
   LDFLAGS_STATIC_BOOST  :=
 CXXFLAGS_DYNAMIC_BOOST  :=
  LDFLAGS_DYNAMIC_BOOST  :=
+ MXE_PACKAGENAME_BOOST  := boost
+#  Lua
+ CXXFLAGS_STATIC_LUA    :=
+  LDFLAGS_STATIC_LUA    := -llua
+CXXFLAGS_DYNAMIC_LUA    :=
+ LDFLAGS_DYNAMIC_LUA    := -llua
+ MXE_PACKAGENAME_LUA    := lua
 #   ImGUI 
- PKG_CONFIG_NAME_IMGUI  := imgui
  CXXFLAGS_STATIC_IMGUI  := 
   LDFLAGS_STATIC_IMGUI  := -limgui 
 CXXFLAGS_DYNAMIC_IMGUI  := 
@@ -201,7 +199,14 @@ CXXFLAGS_DYNAMIC_LUA    :=
  LDFLAGS_STATIC_WINDOWS := -lcomdlg32
  LDFLAGS_SHARED_WINDOWS := -lcomdlg32
 
-LIB_SUPPRESS_WARNING := yes
+# Dynamic libraries (.so/.dll) @todo kiedyś może to zrobię :D zeby COPY_BIN kopiowalo dll/so ;)
+FILES_DYNAMIC_SFML := openal32.dll sfml*
+
+# Header-only libs
+HEADER_LIB_LIST := SOL2 JSON GLM
+HEADER_INC_SOL2 := 3rd-party/sol2
+HEADER_INC_JSON := 3rd-party/json
+HEADER_INC_SOL2 := 3rd-party/glm
 
 # Print definitions
 COLORS := no
@@ -267,9 +272,6 @@ override LINKING := $(shell echo $(LINKING) | tr a-z A-Z)
 CXXFLAGS += $(CXXFLAGS_$(LINKING))
 LDFLAGS  += $( LDFLAGS_$(LINKING))
 
-# Threads mode
-override THREADS := $(shell echo $(THREADS) | tr a-z A-Z)
-
 # Default cross compiler
 ifeq ($(CROSS),)
     CROSS := yes
@@ -293,15 +295,11 @@ ifeq ($(CROSS),yes)
             PATH := $(PATH):$(MXE_BIN_DIR)
             # Make shell use the specified in the makefile path
             SHELL = env PATH='$(PATH)' /bin/bash
-            # Select static/shared compilator
+            # Select static/shared compilator.
             ifeq ($(LINKING),STATIC)
                 CROSS := $(CROSS).static
             else
                 CROSS := $(CROSS).shared
-            endif
-            # Select threads mode
-            ifeq ($(THREADS),POSIX)
-                CROSS := $(CROSS).posix
             endif
         endif
     # -> Linux...
@@ -335,18 +333,9 @@ ifeq ($(CROSS),none)
     CROSS :=
 endif
 
-# Disabling pkg-config to force use stupid basic system
-ifeq ($(PKG_CONFIG),no)
-    PKG_CONFIG :=
-endif
-ifeq ($(shell bash -c "command -v $(PKG_CONFIG)"),)
-    PKG_CONFIG :=
-endif
-
-# Select compiler, linker and other tools
+# Finally select compiler and linker
 CXX := $(CROSS)$(CXX)
 LD  := $(CROSS)$(LD)
-PKG_CONFIG := $(CROSS)$(PKG_CONFIG)
 
 
 
@@ -354,38 +343,34 @@ PKG_CONFIG := $(CROSS)$(PKG_CONFIG)
 # Library flags selection
 #
 
-ifeq ($(LIB_SUPPRESS_WARNING),yes)
-    LIB_INCLUDE_PREFIX := -isystem${ }
-else
-    LIB_INCLUDE_PREFIX := -I
-endif
+# Compiled libs
 define add_lib
-    $(eval TMP_CXXFLAGS :=)
-    $(eval TMP_LDFLAGS  :=)
-    
-    # Detect pkg-config package
-    $(if $(PKG_CONFIG),
-        $(eval TMP_CXXFLAGS := $(shell $(PKG_CONFIG) --cflags $(PKG_CONFIG_NAME_$(1)) 2>/dev/null))
-        $(eval TMP_LDFLAGS  := $(shell $(PKG_CONFIG) --libs   $(PKG_CONFIG_NAME_$(1)) 2>/dev/null))
-    )
-    
-    $(if $(TMP_CXXFLAGS)$(TMP_LDFLAGS),
-        # Use package flags
-        $(eval CXXFLAGS += $(TMP_CXXFLAGS))
-        $(eval LDFLAGS  += $(TMP_LDFLAGS))
-    ,
-        # Use primitive method...
-        $(eval CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1)))
-        $(eval LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1)))
-        $(if $(INC_DIR_$(1)_$(TARGET_ARCH)),
-            $(eval CXXFLAGS += $(LIB_INCLUDE_PREFIX)$(INC_DIR_$(1)_$(TARGET_ARCH)))
-        )
-        $(if $(LIB_DIR_$(1)_$(TARGET_ARCH)),
-            $(eval LDFLAGS  += -L$(LIB_DIR_$(1)_$(TARGET_ARCH)))
-        )
-    )
+    ifeq ($(and $(findstring $(TARGET_PLATFORM),win),$(findstring $(MXE),yes),$(MXE_PACKAGENAME_$(1)),1),1)
+        # Use MXE packages
+        MXE_PKGS += $(MXE_PACKAGENAME_$(1))
+    else
+        # Add linking dependent flags
+        CXXFLAGS += $(CXXFLAGS_$(LINKING)_$(1))
+        LDFLAGS  +=  $(LDFLAGS_$(LINKING)_$(1))
+        # Add includes/libraries object directories
+        ifneq ($(INC_DIR_$(1)_$(TARGET_ARCH)),)
+            CXXFLAGS += -I$(INC_DIR_$(1)_$(TARGET_ARCH))
+        endif
+        ifneq ($(LIB_DIR_$(1)_$(TARGET_ARCH)),)
+            LDFLAGS  += -L$(LIB_DIR_$(1)_$(TARGET_ARCH))
+        endif
+    endif
 endef
-Q := $(foreach LIB_NAME, $(LIB_LIST), $(call add_lib,$(LIB_NAME)))
+$(foreach LIB_NAME, $(LIB_LIST), $(eval $(call add_lib,$(LIB_NAME))))
+
+# MXE uses pkg-config
+ifeq ($(and $(findstring $(TARGET_PLATFORM),win),$(findstring $(MXE),yes),$(LIB_LIST),1),1)
+    CXXFLAGS += $(shell $(CROSS)pkg-config --cflags $(MXE_PKGS))
+    LDFLAGS  += $(shell $(CROSS)pkg-config --libs $(MXE_PKGS))
+endif
+
+# Header-only libs
+$(foreach LIB_NAME, $(HEADER_LIB_LIST), $(eval CXXFLAGS += -I$(HEADER_INC_$(LIB_NAME))))
 
 
 
@@ -393,9 +378,8 @@ Q := $(foreach LIB_NAME, $(LIB_LIST), $(call add_lib,$(LIB_NAME)))
 # Other 
 #
 
-# Replacements for illegal path characters
+# Colon replacement
 COLON_REPLACEMENT := _c0loN
-PATHBACK_REPLACEMENT := _B4ckP4th
 
 # Selecting target machine architecture
 CXXFLAGS += -m$(TARGET_ARCH)
@@ -415,6 +399,17 @@ endif
 ifeq (DEBUGGER,ggdb)
     CXXFLAGS += -ggdb
      LDFLAGS += -ggdb
+endif
+
+# Normalize paths 
+ifeq ($(PLATFORM),win)
+    SRC_DIRS := $(shell echo $(SRC_DIRS) | grep -v '\.\.') $(shell echo $(SRC_DIRS) | grep '\.\.' | xargs -r -L1 realpath | sed -e 's/./:\//3' -e 's/^.//') 
+    INC_DIRS := $(shell echo $(INC_DIRS) | grep -v '\.\.') $(shell echo $(INC_DIRS) | grep '\.\.' | xargs -r -L1 realpath | sed -e 's/./:\//3' -e 's/^.//')
+    TEP_DIRS := $(shell echo $(TEP_DIRS) | grep -v '\.\.') $(shell echo $(TEP_DIRS) | grep '\.\.' | xargs -r -L1 realpath | sed -e 's/./:\//3' -e 's/^.//')
+else
+    SRC_DIRS := $(shell echo $(SRC_DIRS) | grep -v '\.\.') $(shell echo $(SRC_DIRS) | grep '\.\.' | xargs -r -L1 realpath) 
+    INC_DIRS := $(shell echo $(INC_DIRS) | grep -v '\.\.') $(shell echo $(INC_DIRS) | grep '\.\.' | xargs -r -L1 realpath)
+    TEP_DIRS := $(shell echo $(TEP_DIRS) | grep -v '\.\.') $(shell echo $(TEP_DIRS) | grep '\.\.' | xargs -r -L1 realpath)
 endif
 
 
@@ -505,7 +500,7 @@ HEADERS   := $(shell find $(INC_DIRS) -type f -name '*$(subst $(SPACE),' -or -na
 TEMPLATES := $(shell find $(TEP_DIRS) -type f -name '*$(subst $(SPACE),' -or -name '*,$(TEP_EXTS))')
 
 # List of objects to be linked
-OBJECTS := $(subst ..,$(PATHBACK_REPLACEMENT),$(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES))))
+OBJECTS := $(subst :,$(COLON_REPLACEMENT),$(patsubst %,$(OBJ_DIR)/%$(OBJ_EXT),$(SOURCES)))
 
 # List of dependencies files
 DEPENDENCIES := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECTS))
@@ -536,7 +531,7 @@ $(OUT_FILE): $(OBJECTS)
 obj: $(OBJECTS)
 define recipe
 $(eval OBJECT := $(1))
-$(eval SOURCE := $(subst $(COLON_REPLACEMENT),:,$(subst $(PATHBACK_REPLACEMENT),..,$(patsubst $(OBJ_DIR)/%$(OBJ_EXT),%,$(OBJECT)))))
+$(eval SOURCE := $(subst $(COLON_REPLACEMENT),:,$(patsubst $(OBJ_DIR)/%$(OBJ_EXT),%,$(OBJECT))))
 $(eval DEPENDENT := $(patsubst %$(OBJ_EXT),%$(DEP_EXT),$(OBJECT)))
 $(OBJECT): $(SOURCE) $(DEPENDENT)
 	$(inform_object) $$@
@@ -619,9 +614,7 @@ run: all
 info: echo 
 echo:
 	@echo ""
-	@echo "SYSTEM_PLATFORM=$(SYSTEM_PLATFORM) SYSTEM_ARCH=$(SYSTEM_ARCH)"
-	@echo "TARGET_PLATFORM=$(TARGET_PLATFORM) TARGET_ARCH=$(TARGET_ARCH)"
-	@echo "MXE=$(MXE) MXE_DIR=$(MXE_DIR)"
+	@echo "PLATFORM=$(PLATFORM), ARCH=$(ARCH), TARGET=$(TARGET), MXE=$(MXE)"
 	@echo ""
 	@echo "PATH=$(PATH)"
 	@echo ""

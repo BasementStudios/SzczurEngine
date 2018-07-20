@@ -2,80 +2,179 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
+#include "Szczur/Modules/GUI/InterfaceWidget.hpp"
+#include "Szczur/Modules/GUI/Widget.hpp"
+#include "Szczur/Modules/GUI/ImageWidget.hpp"
+
+#include "HPBar.hpp"
+#include "TimeBar.hpp"
+#include "PPCount.hpp"
+#include "SkillSlots.hpp"
+#include "ItemSlots.hpp"
+
 namespace rat {
-	//skill methods
-	void Skill::initScript(Script& script) {
-		auto object = script.newClass<Skill>("Skill", "Player");
-		object.set("getName", &Skill::getName);
-		object.set("getDescription", &Skill::getDescription);
-		object.set("getPPCost", &Skill::getPPcost);
-		object.set("getEssenceCost", &Skill::getEssenceCost);
-		object.set("getSkillType", &Skill::getSkillType);
-		object.set("getIsKnown", &Skill::getIsKnown);
-		object.init();
-	}
-
-	void Skill::setNameID(const std::string& _nameID) {
-		nameID = _nameID;
-	}
-	const std::string& Skill::getNameID() {
-		return nameID;
-	}
-
-	void Skill::setName(const std::string& _name) {
-		name = _name;
-	}
-	const std::string& Skill::getName() {
-		return name;
-	}
-
-	void Skill::setDescription(const std::string& _description) {
-		description = _description;
-	}
-	const std::string& Skill::getDescription() {
-		return description;
-	}
-
-	void Skill::setPPCost(int cost) {
-		PPCost = cost;
-	}
-	int Skill::getPPcost() {
-		return PPCost;
-	}
-
-	void Skill::setEssenceCost(size_t index, int value) {
-		essenceContainer[index] = value;
-	}
-	int Skill::getEssenceCost(size_t index) {
-		return essenceContainer[index];
-	}
-
-	void Skill::setSkillType(int path) {
-		type = path;
-	}
-	int Skill::getSkillType() {
-		return type;
-	}
-
-	void Skill::setIsKnown(bool _isKnown) {
-		isKnown = _isKnown;
-	}
-	bool Skill::getIsKnown() {
-		return isKnown;
-	}
-
 	Player::Player() {
 		LOG_INFO("Initializing Player module");
-		_pathToJson = "Assets/Skills/skills.json";
-
+		_pathToJson = "Assets/Player/skills.json";
+		
+		LOG_INFO("A")
 		initScript();
+		LOG_INFO("B")
 		initJson();
+		LOG_INFO("C")
+		initGUI();
+		LOG_INFO("D")
 
 		LOG_INFO("Player module initialized");
 	}
 
 	Player::~Player() {
 		LOG_INFO("Player module destructed");
+	}
+
+	void Player::initGUI() {
+		auto& gui = getModule<GUI>();
+
+		LOG_INFO("T1")
+
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_1.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_2.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_3.png");
+
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_1.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_2.png");
+		gui.addTexture("Assets/Player/bars/hp_bar/hp_bar_back_3.png");
+
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_1.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_2.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_3.png");
+
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_back_1.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_back_2.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_back_3.png");
+
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_1.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_2.png");
+		gui.addTexture("Assets/Player/bars/time_bar/time_bar_full_3.png");
+
+		gui.addTexture("Assets/Player/pp.png");
+		gui.addTexture("Assets/Player/pp_back.png");
+		gui.addTexture("Assets/Player/pp_light.png");
+		gui.addTexture("Assets/Player/pp_broken.png");
+
+		gui.addTexture("Assets/Player/skills/skill_back.png");
+		gui.addTexture("Assets/Player/skills/selected_skill_back.png");
+
+		gui.addTexture("Assets/Player/1pp.png");
+		gui.addTexture("Assets/Player/2pp.png");
+		gui.addTexture("Assets/Player/3pp.png");
+		gui.addTexture("Assets/Player/4pp.png");
+		gui.addFont("Assets/Player/SourceSansPro-SemiBold.ttf");
+
+		gui.addTexture("Assets/Player/item_slot.png");
+
+		gui.addTexture("Assets/Player/poisoning.png");
+		gui.addTexture("Assets/Player/bleeding.png");
+
+		gui.addTexture("Assets/Player/background.png");
+		gui.addTexture("Assets/Player/gui_back.png");
+
+		LOG_INFO("T2")
+
+		_base = gui.addInterface();
+		_base->setSizingWidthToHeightProportion(1.f);
+
+		// _background = new ImageWidget;
+		// _base->add(_background);
+		// _background->setTexture(gui.getTexture("Assets/Player/background.png"));
+		// _background->setPropSize({1.77f, 1.f});
+
+		LOG_INFO("T3")
+		_HPBack = new ImageWidget;
+		_base->add(_HPBack);
+		_HPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
+		_HPBack->setPropPosition(0.f, 0.f);
+		_HPBack->setPropSize(0.37f, 0.08f);
+
+		LOG_INFO("T4")
+		_HPBar = new HPBar();
+		_HPBar->setParent(_base);
+		_HPBar->initGUI(gui);
+		_HPBar->setPropSize({0.46f, 0.125f});
+		_HPBar->setPropPosition({0.03f, 0.01f});	
+		_HPBar->setMaxHP(100);
+		_HPBar->setCurrentHP(95);
+		_HPBar->setHPBarIndex(1);
+
+		LOG_INFO("T5")
+		_TimeBar = new TimeBar();
+		_TimeBar->setParent(_base);
+		_TimeBar->initGUI(gui);
+		_TimeBar->setPropSize({ 0.384f, 0.057f });
+		_TimeBar->setPropPosition({ 0.09f, 0.073f });
+		_TimeBar->setMaxTime(100);
+		_TimeBar->setCurrentTime(95);
+		_TimeBar->setTimeBarIndex(1);
+
+		LOG_INFO("T6")
+		_PPBack = new ImageWidget;
+		_base->add(_PPBack);
+		_PPBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
+		_PPBack->setPropPosition(0.5f, 0.f);
+		_PPBack->setPropSize(0.6f, 0.1f);
+
+		_PPCount = new PPCount;
+	    _PPCount->setParent(_base);
+	    _PPCount->initGUI(gui);
+	    _PPCount->setPropPosition({0.5f, 0.f});
+	    _PPCount->setSlotsAmount(7, 5);
+	    _PPCount->setSlotsAmount(5, 5);  
+	    //_PPCount->setGoodSlotAmount(5);
+	    //_PPCount->setBrokenSlotAmount(5);
+	    _PPCount->setPPCount(5);
+	    _PPCount->setHighlightedPPAmount(2);
+	    _PPCount->setPPCount(4);
+
+		LOG_INFO("T8")
+		_skillSlots = new SkillSlots(gui);
+		_skillSlots->setParent(_base);
+		_skillSlots->setPropPosition({0.5f, 0.05f});
+		_skillSlots->addSkill(&_skillsList[0]);
+		_skillSlots->addSkill(&_skillsList[1]);
+		// setPPCost(_skillsList[0].getNameID(), 0);
+
+		LOG_INFO("T9")
+		_itemBack = new ImageWidget;
+		_base->add(_itemBack);
+		_itemBack->setTexture(gui.getTexture("Assets/Player/gui_back.png"));
+		_itemBack->setPropPosition(1.f, 0.f);
+		_itemBack->setPropSize(0.4f, 0.08f);
+
+		LOG_INFO("T10")
+		_itemSlots = new ItemSlots(gui);
+		_itemSlots->setParent(_base);
+		_itemSlots->setPropPosition({ .97f, 0.03f });
+		//stop();
+		LOG_INFO("T11")
+	}
+
+	void Player::start() {
+		_base->fullyActivate();
+	}
+
+	void Player::stop() {
+		_base->fullyDeactivate();
+	}
+
+	void Player::clearSkillSlots() {
+		_skillSlots->clear();
+	}
+
+	void Player::setHPbarStatus(const std::string& name) {
+		_HPBar->setStatus(name);
+	}
+	void Player::removeHPbarStatus(const std::string& name) {
+		_HPBar->removeStatus(name);
 	}
 
 	void Player::initJson() {
@@ -115,6 +214,10 @@ namespace rat {
 
 					if (auto& type = skill["type"]; !skill["type"].is_null()) {
 						temp.setSkillType(type);
+					}
+
+					if (auto& icon = skill["iconPath"]; !skill["iconPath"].is_null()) {
+						temp.setIcon(icon);
 					}
 
 					_skillsList.push_back(temp);
@@ -178,7 +281,7 @@ namespace rat {
 		return false;
 	}
 
-	Skill Player::getSkill(const std::string& nameID) {
+	const Skill& Player::getSkill(const std::string& nameID) {
 		for (auto& i : _skillsList) {
 			if (i.getNameID() == nameID) {
 				return i;
@@ -193,12 +296,14 @@ namespace rat {
 
 	void Player::addHP(int HP) {
 		_currentHP += HP;
-		std::clamp(_currentHP, 0, _maxHP);
+		_currentHP = std::clamp(_currentHP, 0, _maxHP);
+		_HPBar->setCurrentHP(_currentHP);
 	}
 
 	void Player::setHP(int newHP) {
 		_currentHP = newHP;
-		std::clamp(_currentHP, 0, _maxHP);
+		_currentHP = std::clamp(_currentHP, 0, _maxHP);
+		_HPBar->setCurrentHP(_currentHP);
 	}
 
 	int Player::getMaxHP() {
@@ -207,6 +312,7 @@ namespace rat {
 
 	void Player::setMaxHP(int newMaxHP) {
 		_maxHP = newMaxHP;
+		_HPBar->setMaxHP(_maxHP);
 	}
 
 	//PP section
@@ -216,12 +322,14 @@ namespace rat {
 
 	void Player::addPP(int PP) {
 		_currentPP += PP;
-		std::clamp(_currentPP, 0, _maxPP);
+		_currentPP = std::clamp(_currentPP, 0, _maxPP);
+		_PPCount->setPPCount(_currentPP);
 	}
 
 	void Player::setPP(int PP) {
 		_currentPP = PP;
-		std::clamp(_currentPP, 0, _maxPP);
+		_currentPP = std::clamp(_currentPP, 0, _maxPP);
+		_PPCount->setPPCount(_currentPP);
 	}
 
 	int Player::getMaxPP() {
@@ -231,9 +339,64 @@ namespace rat {
 	void Player::setMaxPP(int newMaxPP) {
 		_maxPP = newMaxPP;
 	}
-	/*
-	void addSkill(std::string& nameID);
-	void removeSkill(std::string& nameID);
-	Skill getSkill(std::string& nameID);
-	*/
+	
+	void Player::setHPBarIndex(int i) {
+		_HPBar->setHPBarIndex(i);
+	}
+
+	void Player::setTimeBarIndex(int i) {
+		_TimeBar->setTimeBarIndex(i);
+	}
+	void Player::setCurrentTime(int time) {
+		_TimeBar->setCurrentTime(time);
+	}
+	void Player::setMaxTime(int time) {
+		_TimeBar->setMaxTime(time);
+	}
+
+	void Player::setPPSlotsAmount(int good, int broken) {
+		_PPCount->setSlotsAmount(good, broken);
+	}
+
+	void Player::setHighlightedPPAmount(int newAmount) {
+		_PPCount->setHighlightedPPAmount(newAmount);
+	}
+
+
+	/*void Player::setBrokenPPAmount(int amount) {
+		_PPCount->setBrokenSlotAmount(amount);
+	}
+	void Player::setGoodPPAmount(int amount) {
+		_PPCount->setGoodSlotAmount(amount);
+	}*/
+
+	void Player::addSkillToSlot(const std::string& nameID) {
+		for (size_t i = 0; i < _skillsList.size(); i++)
+		{
+			if (nameID == _skillsList[i].getNameID()) {
+				_skillSlots->addSkill(&_skillsList[i]);
+			}
+		}
+	}
+	void Player::chooseSkill(const std::string& nameID) {
+		_skillSlots->chooseSkill(nameID);
+	}
+	void Player::unChooseSkill(const std::string& nameID) {
+		_skillSlots->unChooseSkill(nameID);
+	}
+	void Player::setCounter(const std::string& nameID, const std::string& number) {
+		//if number = "0" skill resets (number is no longer visible)
+		_skillSlots->setCounter(nameID, number);
+	}
+
+	void Player::setPPCost(const std::string& nameID, int number) {
+		_skillSlots->setPPCost(nameID, number);
+	}
+
+	void Player::addItem(const std::string& nameID, sf::Texture* text) {
+		_itemSlots->setItem(text, nameID);
+	}
+	void Player::removeItem(const std::string& nameID) {
+		_itemSlots->removeItem(nameID);
+	}
 }
