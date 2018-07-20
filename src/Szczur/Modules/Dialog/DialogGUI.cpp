@@ -61,7 +61,6 @@ namespace rat {
 
     void DialogGUI::interpretOptions(TextManager& textManager, Options& options, std::function<void(size_t, size_t, bool)> callback) {
         size_t i = 0u;
-		_dialogText->fullyDeactivate();
         bool skipped{false};
         options.forEach([&i, this, callback, &textManager, &skipped](Options::Option* option){
             if(!skipped) {
@@ -90,5 +89,7 @@ namespace rat {
                 }
             }
         });
+
+        if(i == 0) _dialogText->fullyDeactivate();
     }
 }
