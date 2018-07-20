@@ -68,7 +68,7 @@ void World::init()
 			sf3d::Shader {sf3d::Shader::Vertex, 	"Assets/Shaders/assemble.vert"},
 			sf3d::Shader {sf3d::Shader::Fragment, 	"Assets/Shaders/fuck.frag"}
 		);
-		_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.loadConfig("Assets/Shaders/Tests/001/config.json");
+		_thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit.loadConfig("Assets/Shaders/Configs/none.json");
 	}
 	catch (...) {
 		std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
@@ -219,6 +219,8 @@ void World::initScript() {
 	));
 
 	module.set_function("getTextureDataHolder", [&](){return std::ref(getScenes().getTextureDataHolder());});
+
+	module.set_function("loadFuckingShaderConfig", &World::loadFuckingShaderConfig, this);
 
 	script.initClasses<Entity, Scene, TextureDataHolder>();
 }

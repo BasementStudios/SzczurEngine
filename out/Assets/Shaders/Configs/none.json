@@ -1,0 +1,80 @@
+{
+    "brightness": {
+        "type": "float",
+        "value": -0.04500000178813934
+    },
+    "colorMod": {
+        "type": "vec3",
+        "value": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    "contrast": {
+        "type": "float",
+        "value": 0.07500000298023224
+    },
+    "fog.isVisible": {
+        "type": "bool",
+        "value": false
+    },
+    "gamma": {
+        "type": "float",
+        "value": 1.25
+    },
+    "resolution": {
+        "type": "vec2",
+        "value": [
+            1920.0,
+            1028.0
+        ]
+    },
+    "saturation": {
+        "type": "float",
+        "value": 0.2529999911785126
+    },
+    "saturationType": {
+        "type": "int",
+        "value": 0
+    },
+    "tex": {
+        "type": "int",
+        "value": 0
+    },
+    "time": {
+        "type": "float",
+        "value": 552.8575439453125
+    },
+    "vignette.isCircular": {
+        "type": "bool",
+        "value": true
+    },
+    "vignette.isVisible": {
+        "type": "bool",
+        "value": true
+    },
+    "vignette.offset": {
+        "type": "vec2",
+        "value": [
+            0.0,
+            400.0
+        ]
+    },
+    "vignette.opacity": {
+        "type": "float",
+        "value": 0.6499999761581421
+    },
+    "vignette.radius": {
+        "type": "float",
+        "value": 1.3300000429153442
+    },
+    "vignette.softness": {
+        "type": "float",
+        "value": 0.5199999809265137
+    },
+    "weather.isVisible": {
+        "type": "bool",
+        "value": false
+    }
+}
