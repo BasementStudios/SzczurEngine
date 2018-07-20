@@ -179,7 +179,7 @@ bool ScenesManager::setCurrentScene(size_t id)
 		_currentSceneID = id;
 
 		if (isGameRunning()) {
-			auto* scene = getCurrentScene();		
+			auto scene = getCurrentScene();
 		
 			scene->forEach([](const std::string& group, Entity& entity) {
 					if (auto* comp = entity.getComponentAs<ScriptableComponent>()) comp->sceneChanged();
@@ -188,7 +188,13 @@ bool ScenesManager::setCurrentScene(size_t id)
 		}
 
 		Window* window = detail::globalPtr<Window>;
-		window->getWindow().setCamera(getCurrentScene()->getCamera()->getComponentAs<CameraComponent>());
+
+		auto camera = getCurrentScene()->getCamera();
+		auto comp = camera->getComponentAs<CameraComponent>();
+
+		comp->setPosition(camera->getPosition());
+
+		window->getWindow().setCamera(comp);
 
 		return true;
 	}
