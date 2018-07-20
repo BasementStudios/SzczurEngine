@@ -6,7 +6,7 @@
 #include "Szczur/Modules/GUI/TextWidget.hpp"
 
 #include "Szczur/Modules/PrepScreen/PrepSkill/PrepSkill.hpp"
-#include "Szczur/Modules/PrepScreen/Prepscreen.hpp"
+#include "Szczur/Modules/PrepScreen/PrepScreen.hpp"
 
 namespace rat
 {
