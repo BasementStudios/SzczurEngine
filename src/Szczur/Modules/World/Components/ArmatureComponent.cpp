@@ -154,6 +154,9 @@ void ArmatureComponent::loadFromConfig(nlohmann::json& config)
 
 			if (config.find("speed") != config.end())
 				_armature->getAnimation()->timeScale = config["speed"];
+
+			if (config.find("flipX") != config.end())
+				setFlipX(config["flipX"]);
 		}
 	}
 }
@@ -166,6 +169,7 @@ void ArmatureComponent::saveToConfig(nlohmann::json& config) const
 	if (_armature)
 	{
 		config["speed"] = _armature->getAnimation()->timeScale;
+		config["flipX"] = getFlipX();
 
 		if (_armature->getAnimation()->isPlaying())
 		{
@@ -312,7 +316,7 @@ void ArmatureComponent::setFlipX(bool flipX)
 	}
 }
 
-bool ArmatureComponent::getFlipX()
+bool ArmatureComponent::getFlipX() const
 {
 	if (_armature && _armature->getArmature())
 	{
@@ -509,10 +513,10 @@ void ArmatureComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			ImGui::DragFloat<ImGui::CopyPaste>("Animation speed##armature_component", arm->getAnimation()->timeScale, 0.01f);
 
 
-			bool flipX = arm->getArmature()->getFlipX();
+			bool flipX = getFlipX();
 			if (ImGui::Checkbox("Flip X##armature_component", &flipX))
 			{
-				arm->getArmature()->setFlipX(flipX);
+				setFlipX(flipX);
 			}
 
 		}
