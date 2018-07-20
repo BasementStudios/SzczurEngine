@@ -29,7 +29,7 @@ public:
 	void setTexture(const Texture& texture);
 
 	/// Set part of given texture for sprite
-	void setTextureRect(const glm::vec2& position, const glm::vec2& size);
+	void setTextureRect(const glm::uvec2& position, const glm::uvec2& size);
 
 
 
