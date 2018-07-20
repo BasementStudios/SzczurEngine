@@ -267,6 +267,8 @@ namespace rat
     void PrepScreen::initGUI()
     {
         auto& gui = getModule<GUI>();
+
+        _loadAssetsFromGUI();
         
         _base = gui.addInterface();
         _base->setPadding(20.f, 20.f);
