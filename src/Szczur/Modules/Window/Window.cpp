@@ -1,4 +1,5 @@
 #include "Window.hpp"
+#include <fstream>
 
 /** @file Window.cpp
  ** @description Implementation file with main class of the Window module.
@@ -141,9 +142,19 @@ void Window::init()
 {
 	try {
 		// Just for now...
-		this->videoMode.width = 1920u;
-		this->videoMode.height = 1080u;
-		this->windowStyle = sf::Style::Fullscreen;
+		{
+			std::ifstream file("kurwa.txt");
+			file >> this->videoMode.width;
+			file >> this->videoMode.height;
+			bool fulsc;
+			file >> fulsc;
+			if (fulsc) {
+				this->windowStyle = sf::Style::Fullscreen; 
+			}
+			else {
+				this->windowStyle = sf::Style::Default;
+			}
+		}
 		
 		// Set video mode, also creates window
 		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,
