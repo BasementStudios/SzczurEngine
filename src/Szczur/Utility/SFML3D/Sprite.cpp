@@ -33,8 +33,8 @@ void Sprite::setTextureRect(const glm::uvec2& position, const glm::uvec2& size)
 	const glm::vec2 textureSize = _texture.getSize();
 	const float startX = static_cast<float>(position.x) / textureSize.x;
 	const float startY = static_cast<float>(position.y) / textureSize.y;
-	const float endX = startX + static_cast<float>(size.x);
-	const float endY = startY + static_cast<float>(size.y);
+	const float endX = startX + static_cast<float>(size.x) / textureSize.x;
+	const float endY = startY + static_cast<float>(size.y) / textureSize.y;
 
 	_vertices[0].position = {0.f, 0.f, 0.f};
 	_vertices[0].texCoord = {startX, startY};
