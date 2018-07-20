@@ -8,6 +8,7 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "ScenesManager.hpp"
+#include "Szczur/Modules/Battle/Battle.hpp"
 
 #ifdef EDITOR
 	#include "LevelEditor/LevelEditor.hpp"

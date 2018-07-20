@@ -1,0 +1,54 @@
+{
+    "iconsPath": "Assets/PrepScreen/Skills/",
+
+    "skills": {
+        "Magic bomb": {
+            "name": "Magiczna bomba",
+            "ppCost": 2,
+            "profession": "Range",
+            "iconPath": "skill_1.png",
+            "glyphes": {
+                "Wrath": 1
+            }
+        },
+        "Move": {
+            "name": "Przemieszczenie",
+            "ppCost": 2,
+            "profession": "Aura",
+            "iconPath": "skill_2.png",
+            "glyphes": {
+                "Wrath": 1
+            }
+        },
+		"Stun hit": {
+            "name": "Uderzenie rękojeścią",
+            "ppCost": 2,
+            "profession": "Mele",
+            "iconPath": "skill_3.png",
+            "glyphes": {
+                "Wrath": 1
+            }
+        },
+		"Explosion": {
+            "name": "Erupcja gniewu",
+            "ppCost": 1,
+            "profession": "Mele",
+            "iconPath": "skill_4.png",
+            "glyphes": {
+                "Wrath": 2,
+                "Fear": 1
+            }
+        },
+		"Dash and hit": {
+            "name": "Krok cienia",
+            "ppCost": 3,
+            "profession": "Mele",
+            "iconPath": "skill_5.png",
+            "glyphes": {
+                "Wrath": 1,
+                "Fear": 1,
+                "Wearines": 1
+            }
+        }
+    } 
+}

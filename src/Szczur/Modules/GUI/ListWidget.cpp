@@ -90,6 +90,8 @@ namespace rat
         for(; i != iEnd; i += iAddon)
         {
             auto* child = _children[i];
+             
+            if(child->isFullyDeactivated()) continue;
             child->applyFamilyTrans(basePos, drawPos);
 
 
@@ -147,6 +149,8 @@ namespace rat
         bool isHorizontal = _positioning == Positioning::Horizontal;        
         for(auto* child : _children)
         {
+            if(child->isFullyDeactivated()) continue;
+
             float addon = isHorizontal ? 
             child->getPosition().x + child->getSize().x - child->getOrigin().x + _betweenWidgetsPadding : 
             child->getPosition().y + child->getSize().y - child->getOrigin().y + _betweenWidgetsPadding;
@@ -207,13 +211,16 @@ namespace rat
     {
         _isPosChanged = true;
     }
-	sf::Vector2f ListWidget::_getInnerSize() const {
-		const auto size = getSize();
-		if(_positioning == Positioning::Vertical) {
-			return {size.x, 0.f};
-		}
-		else {
-			return {0.f, size.y};
-		}
-	}
+    sf::Vector2f ListWidget::_getInnerSize() const
+    {
+        const auto size = getSize();
+        if(_positioning == Positioning::Horizontal)
+        {
+            return { 0.f, size.y };
+        }
+        else
+        {
+            return { size.x, 0.f };
+        }
+    }
 }

@@ -14,6 +14,7 @@
 #include "Components/PointLightComponent.hpp"
 #include "Components/AnimatedSpriteComponent.hpp"
 #include "Components/AudioComponent.hpp"
+#include "Components/BattleComponent.hpp"
 
 #include <memory>
 
@@ -41,6 +42,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("TraceComponent")) return std::make_unique<TraceComponent>(parent);
 		if (id == fnv1a_64("PointLightComponent")) return std::make_unique<PointLightComponent>(parent);
 		if (id == fnv1a_64("AudioComponent")) return std::make_unique<AudioComponent>(parent);
+		if (id == fnv1a_64("BattleComponent")) return std::make_unique<BattleComponent>(parent);
 
 		return nullptr;
 	}
@@ -60,6 +62,7 @@ struct ComponentTraits
 		if (name == "TraceComponent") return std::make_unique<TraceComponent>(parent);
 		if (name == "PointLightComponent") return std::make_unique<PointLightComponent>(parent);
 		if (name == "AudioComponent") return std::make_unique<AudioComponent>(parent);
+		if (name == "BattleComponent") return std::make_unique<BattleComponent>(parent);
 
 		return nullptr;
 	}
@@ -86,6 +89,7 @@ struct ComponentTraits
 		if (name == "TraceComponent") return fnv1a_64("TraceComponent");
 		if (name == "PointLightComponent") return fnv1a_64("PointLightComponent");
 		if (name == "AudioComponent") return fnv1a_64("AudioComponent");
+		if (name == "BattleComponent") return fnv1a_64("BattleComponent");
 
 		return 0;
 	}
@@ -105,6 +109,7 @@ struct ComponentTraits
 		if (id == fnv1a_64("TraceComponent")) return "TraceComponent";
 		if (id == fnv1a_64("PointLightComponent")) return "PointLightComponent";
 		if (id == fnv1a_64("AudioComponent")) return "AudioComponent";
+		if (id == fnv1a_64("BattleComponent")) return "BattleComponent";
 
 		return "";
 	}
@@ -125,6 +130,7 @@ struct ComponentTraits
 		if (std::is_same_v<T, TraceComponent>) return fnv1a_64("TraceComponent");
 		if (std::is_same_v<T, PointLightComponent>) return fnv1a_64("PointLightComponent");
 		if (std::is_same_v<T, AudioComponent>) return fnv1a_64("AudioComponent");
+		if (std::is_same_v<T, BattleComponent>) return fnv1a_64("BattleComponent");
 
 		return 0;
 	}
@@ -151,6 +157,7 @@ struct ComponentTraits
 		TraceComponent::initScript(entity, script);
 		PointLightComponent::initScript(entity, script);
 		AudioComponent::initScript(entity, script);
+		BattleComponent::initScript(entity, script);
 	}
 };
 

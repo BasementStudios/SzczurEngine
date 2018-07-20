@@ -61,19 +61,18 @@ Entity& Entity::operator = (const Entity& rhs)
 
 void Entity::update(ScenesManager& scenes, float deltaTime)
 {
-	if (_isActive) {
-		if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
-		if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
-		if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
-		if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
-		if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
-		if(auto* comp = getComponentAs<AnimatedSpriteComponent>()) comp->update(scenes, deltaTime);
-		if(auto* comp = getComponentAs<SpriteComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<InteractableComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<TraceComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<CameraComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<TriggerComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<ArmatureComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<AnimatedSpriteComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<SpriteComponent>()) comp->update(scenes, deltaTime);
+	if(auto* comp = getComponentAs<BattleComponent>()) comp->update(scenes, deltaTime);
 
-		if(auto* comp = getComponentAs<ScriptableComponent>()) {  
-			if(getScene()->getScenes()->isGameRunning()) { 
-				comp->update(scenes, deltaTime); 
-			} 
+	if(auto* comp = getComponentAs<ScriptableComponent>()) {  
+		if(scenes.isGameRunning()) { 
+			comp->update(scenes, deltaTime); 
 		} 
 	}
 }
@@ -89,6 +88,7 @@ void Entity::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 			comp->render(target);
 		}
 	}
+	if (auto* comp = getComponentAs<BattleComponent>()) comp->render(target);
 }
 
 void Entity::destroy()

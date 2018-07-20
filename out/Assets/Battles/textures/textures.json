@@ -1,0 +1,7 @@
+{
+	"textures": {
+		"fireBomb": "Assets/Battles/textures/Kula gniewu.png",
+		"smallExplosion": "Assets/Battles/textures/Mala eksplozja.png",
+		"bigExplosion": "Assets/Battles/textures/Duza eksplozja.png"
+	}
+}

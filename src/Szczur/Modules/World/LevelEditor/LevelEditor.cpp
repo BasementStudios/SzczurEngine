@@ -135,7 +135,7 @@ namespace rat {
 	void LevelEditor::update(InputManager& input, Window& windowModule, sf3d::RenderTarget& target) {
 		auto* scene = _scenes.getCurrentScene();
 		auto& window = windowModule.getWindow();
-		auto mouse = _getFixedMousePos(input.getMousePosition());
+		auto mouse = input.getScreenMousePosition();
 		Entity* cameraEntity = nullptr;
 		
 		// Find selected camera
@@ -159,7 +159,7 @@ namespace rat {
 		// Object selection
 		if (!ImGui::IsAnyWindowHovered()) {
 			if (input.isPressed(Mouse::Left)) {
-				auto mouse = _getFixedMousePos(input.getMousePosition());
+				auto mouse = input.getScreenMousePosition();
 				
 				auto linear = window.getLinearByScreenPosition({ mouse.x, mouse.y });
 
@@ -196,9 +196,9 @@ namespace rat {
 							glm::vec3 projection;
 
 							if (_isDepthDragging)
-								projection = linear.getProjectionY(_draggingEntity->getPosition());
+								projection = linear.getProjectionY(_draggingEntity->getPosition().y);
 							else
-								projection = linear.getProjectionZ(_draggingEntity->getPosition());
+								projection = linear.getProjectionZ(_draggingEntity->getPosition().z);
 
 							_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
 						}
@@ -228,7 +228,7 @@ namespace rat {
 
 				// if is group selection
 				if (_isGroupSelecting) {
-					auto mouse = _getFixedMousePos(input.getMousePosition());
+					auto mouse = input.getScreenMousePosition();
 
 					// calc offset
 					auto offset = mouse - _selectionStartPos;
@@ -251,7 +251,7 @@ namespace rat {
 
 					scene->forEach([&] (const std::string&, Entity& entity) {
 						// get size of rect in 3d
-						auto size = linearEnd.getProjectionZ(entity.getPosition()) - linearStart.getProjectionZ(entity.getPosition());
+						auto size = linearEnd.getProjectionZ(entity.getPosition().z) - linearStart.getProjectionZ(entity.getPosition().z);
 
 						// check if object is in rect
 						if (linearEnd.contains(entity.getPosition() - glm::vec3{ 50.f, -50.f, 0.f }, { std::abs(size.x), std::abs(size.y), 0.f })) {
@@ -283,20 +283,20 @@ namespace rat {
 
 			if (input.isKept(Mouse::Left)) {
 				if (_isDragging && _dragAndDropObjects) {
-					auto mouse = _getFixedMousePos(input.getMousePosition());
+					auto mouse = input.getScreenMousePosition();
 					auto linear = window.getLinearByScreenPosition(mouse);
 
 					glm::vec3 projection;
 					glm::vec3 offset;
 
 					if (_isDepthDragging) {
-						projection = linear.getProjectionY(_draggingEntity->getPosition());
+						projection = linear.getProjectionY(_draggingEntity->getPosition().y);
 						offset = glm::vec3(projection.x - _dragLastPos.x, 0.f, projection.z - _dragLastPos.y);
 						_dragLastPos = glm::vec2(projection.x, projection.z);
 
 					}
 					else {
-						projection = linear.getProjectionZ(_draggingEntity->getPosition());
+						projection = linear.getProjectionZ(_draggingEntity->getPosition().z);
 						offset = glm::vec3(projection.x - _dragLastPos.x, projection.y - _dragLastPos.y, 0.f);
 						_dragLastPos = glm::vec2(projection.x, projection.y);
 					}
@@ -321,7 +321,7 @@ namespace rat {
 
 				// update group selection's size
 				if (_isGroupSelecting) {
-					auto size = _getFixedMousePos(input.getMousePosition()) - _selectionStartPos;
+					auto size = input.getScreenMousePosition() - _selectionStartPos;
 
 					_selectionRect.setSize({ size.x, size.y });
 				}
@@ -331,16 +331,16 @@ namespace rat {
 				_isDepthDragging = !_isDepthDragging;
 
 				if (_draggingEntity != nullptr) {
-					auto mouse = _getFixedMousePos(input.getMousePosition());
+					auto mouse = input.getScreenMousePosition();
 
 					auto linear = window.getLinearByScreenPosition(mouse);
 
 					glm::vec3 projection;
 
 					if (_isDepthDragging)
-						projection = linear.getProjectionY(_draggingEntity->getPosition());
+						projection = linear.getProjectionY(_draggingEntity->getPosition().y);
 					else
-						projection = linear.getProjectionZ(_draggingEntity->getPosition());
+						projection = linear.getProjectionZ(_draggingEntity->getPosition().z);
 
 					_dragLastPos = glm::vec2(projection.x, _isDepthDragging ? projection.z : projection.y);
 
@@ -371,7 +371,7 @@ namespace rat {
 
 	void LevelEditor::updateCameraMovement(Entity* cameraEntity, InputManager& input)
 	{
-		auto mouse = input.getMousePosition();
+		auto mouse = input.getWindowMousePosition();
 
 		// Camera movement
 		sf3d::Camera* camera;
@@ -458,14 +458,14 @@ namespace rat {
 				-(mouse.x - _cameraPreviousMouseOffset.x) / 10.f, // @todo , should be const in class
 				0.f
 			});
-			_cameraPreviousMouseOffset = sf::Vector2i(mouse.x, mouse.y);
+			_cameraPreviousMouseOffset = mouse;
 		}
 		if (!ax::NodeEditor::IsActive()) {
 			if (input.isPressed(Mouse::Right)) {
 				_cameraRotating = true;
-				_cameraPreviousMouseOffset = input.getMousePosition();
+				_cameraPreviousMouseOffset = input.getWindowMousePosition();
 			}
-		}
+			}
 		if (input.isReleased(Mouse::Right)) {
 			_cameraRotating = false;
 		}

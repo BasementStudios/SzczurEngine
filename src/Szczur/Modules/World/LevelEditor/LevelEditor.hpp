@@ -128,9 +128,6 @@ private:
 	void _render();
 
 	///
-	glm::vec2 _getFixedMousePos(const sf::Vector2i& pos);
-
-	///
 	void _setupGroup();
 
 	///
@@ -174,7 +171,7 @@ private:
 
 	sf3d::Camera _freeCamera;
 	bool _cameraRotating {false};
-	sf::Vector2i _cameraPreviousMouseOffset {0, 0};
+	glm::vec2 _cameraPreviousMouseOffset {0, 0};
 
 	bool _isMCCameraMovement = false;
 

@@ -30,6 +30,9 @@ Scene::Scene(ScenesManager* parent)
 	, _name { "unnamed_" + std::to_string(_id) }
 	, _parent { parent }
 {
+
+	_battleModule = detail::globalPtr<Battle>; 
+
 	_collectingHolder.emplace_back("background", EntitiesHolder_t{}); 
 	_collectingHolder.emplace_back("single", EntitiesHolder_t{});
 	_collectingHolder.emplace_back("path", EntitiesHolder_t{});
@@ -49,7 +52,7 @@ void Scene::update(float deltaTime)
 {
 	_parent->getTextureDataHolder().loadAll();
 	for (auto& holder : getAllEntities())
-	{
+	{		
 		for (auto& entity : holder.second)
 		{
 			if (entity->exists())
@@ -60,6 +63,9 @@ void Scene::update(float deltaTime)
 			{
 				removeEntity(holder.first, entity->getID());
 			}
+		}
+		if(holder.first == "battles") {
+			_battleModule->update(deltaTime);
 		}
 	}
 
@@ -94,11 +100,14 @@ void Scene::render(sf3d::RenderTarget& target)
 	// glDisable(GL_DEPTH_TEST);
 	// target.draw(layer);
 	
-	// Path & single
-	// glEnable(GL_DEPTH_TEST);
-	// layer.clear({0.f, 0.f, 0.f, 0.f}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	for (auto& entity : this->getEntities("path")) {
-		entity->draw(layer);
+	// Draw the entites
+	for (auto& holder : this->getAllEntities()) {
+		for (auto& entity : holder.second) {
+			entity->draw(target, states);
+		}
+		if(holder.first == "battles") {
+			_battleModule->render(target);
+		}
 	}
 	for (auto& entity : this->getEntities("single")) {
 		entity->draw(layer);
@@ -149,6 +158,10 @@ Entity* Scene::addEntity(const std::string& group)
 	auto* base = entity->addComponent<BaseComponent>();
 	if(group == "entries") {
 		dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+	}
+	else if(group == "battles") {
+		dynamic_cast<BaseComponent*>(base)->positionOnly(true);
+		auto* battle = entity->addComponent<BattleComponent>();
 	}
 	#endif //EDITOR
 
