@@ -238,9 +238,9 @@ void Battle::update(float deltaTime)
 	if(isActiveScene()) {
 
 		// TEST
-		if(detail::globalPtr<Input>->getManager().isPressed(Keyboard::Escape)) {
-			deactivateScene();
-		}
+		//if(detail::globalptr<input>->getmanager().ispressed(keyboard::escape)) {
+		//	deactivatescene();
+		//}
 		// --TEST
 
 		if(_battleActive == false) {
