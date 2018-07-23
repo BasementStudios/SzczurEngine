@@ -190,9 +190,19 @@ void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
 
 			if (anim->isCompleted())
 			{
-				anim->fadeIn(_playOnceAnimationName, _playOnceAnimationFadeInTime, 1);
-				anim->timeScale = _playOnceAnimationSpeed;
-				_onceAnimStatus = OnceAnimStatus::IsPlaying;
+				try
+				{
+					anim->fadeIn(_playOnceAnimationName, _playOnceAnimationFadeInTime, 1);
+					anim->timeScale = _playOnceAnimationSpeed;
+					_onceAnimStatus = OnceAnimStatus::IsPlaying;
+				}
+				catch (const std::exception& ex)
+				{
+					LOG_EXCEPTION(ex);
+					_onceAnimStatus = OnceAnimStatus::None;
+					anim->timeScale = _lastAnimationSpeed;
+					playAnim(_lastAnimationName, 0);
+				}
 			}
 		}
 
@@ -202,10 +212,8 @@ void ArmatureComponent::update(ScenesManager& scenes, float deltaTime)
 
 			if (anim->isCompleted())
 			{
-				fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
 				anim->timeScale = _lastAnimationSpeed;
-
-				_onceAnimStatus = OnceAnimStatus::None;
+				fadeIn(_lastAnimationName, _lastAnimationFadeInTime);
 			}
 		}
 	}
@@ -265,7 +273,15 @@ void ArmatureComponent::fadeIn(const std::string& animationName, float fadeInTim
 		}
 
 		_onceAnimStatus = OnceAnimStatus::None;
-		_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
+
+		try
+		{
+			_armature->getAnimation()->fadeIn(animationName, fadeInTime, playTimes);
+		}
+		catch (const std::exception& ex)
+		{
+			LOG_EXCEPTION(ex);
+		}
 	}
 }
 
@@ -294,14 +310,31 @@ void ArmatureComponent::playOnce(const std::string& animationName, float fadeInT
 					_playOnceAnimationFadeInTime = fadeInTime;
 					_playOnceAnimationSpeed = animationSpeed;
 
-					auto time = lastAnimation->getCurrentTime();
-					anim->gotoAndPlayByTime(lastAnimation->getName(), time, 1);
+					try
+					{
+						auto time = lastAnimation->getCurrentTime();
+						anim->gotoAndPlayByTime(lastAnimation->getName(), time, 1);
+					}
+					catch (const std::exception& ex)
+					{
+						LOG_EXCEPTION(ex);
+						_onceAnimStatus = OnceAnimStatus::None;
+					}
 				}
 				else
 				{
 					_onceAnimStatus = OnceAnimStatus::IsPlaying;
-					anim->fadeIn(animationName, fadeInTime, 1);
-					anim->timeScale = animationSpeed;
+
+					try
+					{
+						anim->fadeIn(animationName, fadeInTime, 1);
+						anim->timeScale = animationSpeed;
+					}
+					catch (const std::exception& ex)
+					{
+						LOG_EXCEPTION(ex);
+						_onceAnimStatus = OnceAnimStatus::None;
+					}
 				}
 			}
 		}

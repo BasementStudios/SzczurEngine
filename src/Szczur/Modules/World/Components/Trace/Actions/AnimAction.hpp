@@ -58,10 +58,18 @@ public:
 	{
 		Action::start();
 
-		_entity->getComponentAs<ArmatureComponent>()->fadeIn(AnimationName, FadeInTime, PlayOnce ? 1 : 0);
+		try
+		{
+			_entity->getComponentAs<ArmatureComponent>()->fadeIn(AnimationName, FadeInTime, PlayOnce ? 1 : 0);
 
-		if (!WaitToEnd)
+			if (!WaitToEnd)
+				_finished = true;
+		}
+		catch (const std::exception& ex)
+		{
+			LOG_EXCEPTION(ex);
 			_finished = true;
+		}
 	}
 };
 
