@@ -81,9 +81,10 @@ public:
 
 private:
 
-	sol::safe_function _updateCallback;
-	sol::safe_function _initCallback;
-	sol::safe_function _sceneChangeCallback;
+	sol::function _updateCallback;
+	sol::function _initCallback;
+	sol::function _sceneChangeCallback;
+
 	bool _inited = false;
 	std::string _scriptPath;
 };

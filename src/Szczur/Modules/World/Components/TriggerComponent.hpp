@@ -112,9 +112,9 @@ private:
 	float _fadeTime = 1.f;
 
 	bool _isPlayerInside = false;
-	sol::safe_function _enterCallback;
-	sol::safe_function _insideCallback;
-	sol::safe_function _leaveCallback;
+	sol::function _enterCallback;
+	sol::function _insideCallback;
+	sol::function _leaveCallback;
 
 };
 

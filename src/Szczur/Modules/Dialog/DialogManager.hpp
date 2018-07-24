@@ -67,8 +67,8 @@ namespace rat {
 
 		bool _isDialogPlaying = false;
 
-		sol::safe_function _onChange;
-		sol::safe_function _onEnd;
+		sol::function _onChange;
+		sol::function _onEnd;
 
         //bool _nextMinor();
 
