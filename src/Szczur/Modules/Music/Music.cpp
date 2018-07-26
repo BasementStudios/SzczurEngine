@@ -148,7 +148,7 @@ namespace rat
 		auto hashKey      = fnv1a_32(key.c_str());
 		auto samePlaylist = (_currentPlaylistKeys[musicTrack] == hashKey);
 
-		for (unsigned int i = 0; i <= 3; ++i) {
+		for (unsigned int i = 0; i < 3; ++i) {
 			if (_currentPlaylistKeys[i] == hashKey && musicTrack != i) {
 				LOG_INFO("Can't play the same playlist on several tracks at the same time!");
 				return; 
