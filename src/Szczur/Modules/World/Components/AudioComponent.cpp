@@ -137,7 +137,7 @@ namespace rat {
     void AudioComponent::play()
     {
         for (auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
-            //it->second.play();
+            it->second.play();
         }
     }
 
