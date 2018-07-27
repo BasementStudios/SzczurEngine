@@ -201,7 +201,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 		auto& style = ImGui::GetStyle();
 
 		// Show all timelines
-		ImGui::BeginChild("Timelines", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + 12.f), true);
+		ImGui::BeginChild("Timelines", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + 12.f), true, ImGuiWindowFlags_NoScrollWithMouse);
 		{
 			for (auto& timeline : _trace->getTimelines())
 			{
@@ -280,7 +280,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			
 			ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 10.f);
 
-			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar);
+			ImGui::BeginChild("Actions", ImVec2(0.f, ImGui::GetFrameHeightWithSpacing() + style.ScrollbarSize + 12.f), true, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 			{
 				for (std::size_t aId = 0; aId < actions.size(); ++aId)
 				{
