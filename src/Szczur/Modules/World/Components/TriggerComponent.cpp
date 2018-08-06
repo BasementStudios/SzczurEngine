@@ -51,7 +51,7 @@ namespace rat {
 
 	void TriggerComponent::setRadius(float radius) {
 		_radius = radius;
-	}  
+	}
 
 	float TriggerComponent::getRadius() const {
 		return _radius;
@@ -98,9 +98,9 @@ namespace rat {
 		if (auto scene = getEntity()->getScene()->getScenes()->getScene(sceneId); scene != nullptr) {
 			auto& entries = scene->getEntities("entries");
 
-			auto entry = std::find_if(entries.begin(), entries.end(), 
-				[&] (std::unique_ptr<Entity>& entity) { 
-					return name == entity->getName(); 
+			auto entry = std::find_if(entries.begin(), entries.end(),
+				[&] (std::unique_ptr<Entity>& entity) {
+					return name == entity->getName();
 				}
 			);
 
@@ -140,7 +140,7 @@ namespace rat {
 
 	void TriggerComponent::loadFromConfig(nlohmann::json& config) {
 		Component::loadFromConfig(config);
-		
+
 		if (config.find("shapeType") != config.end()) {
 			_triggerShape = static_cast<Shape>(config["shapeType"]);
 		}
@@ -200,11 +200,11 @@ namespace rat {
 	}
 
     void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
-    	
-    	if(!scenes.isGameRunning()) return; 
+
+    	if(!scenes.isGameRunning()) return;
 
         auto* player = getEntity()->getScene()->getPlayer();
-        if(player == nullptr) 
+        if(player == nullptr)
 			return;
 
 		if (type == TriggerComponent::Overlaping) {
@@ -236,14 +236,14 @@ namespace rat {
 						LOG_EXCEPTION(err);
 					}
 
-				
+
 
 					_isPlayerInside = false;
 				}
 			}
 		}
-        // Active trigger after [Space]
-        else if(_input.isPressed(Keyboard::Space)) {
+        // Active trigger after [Shift]
+        else if(_input.isPressed(Keyboard::Shift)) {
             // Is player inside trigger
             if(checkForTrigger(player->getPosition())) {
                 // Action for ChangeScene trigger
@@ -259,7 +259,7 @@ namespace rat {
                     //auto* scene = scenes.getCurrentScene();
 					auto* scene = scenes.getScene(sceneId);
                     if(auto* entry = scene->getEntity("entries", entranceId)) {
-                        scene->getPlayer()->setPosition(entry->getPosition());                        
+                        scene->getPlayer()->setPosition(entry->getPosition());
                     }
                 }
             }
@@ -285,7 +285,7 @@ namespace rat {
 		// shape
 		object.set("setShapeType", &TriggerComponent::setShapeType);
 		object.set("getShapeType", &TriggerComponent::getShapeType);
-		
+
 		object.set("setRadius", &TriggerComponent::setRadius);
 		object.set("getRadius", &TriggerComponent::getRadius);
 
@@ -325,7 +325,7 @@ namespace rat {
 			{
 				_triggerShape = Shape::Circle;
 			}
-			
+
 			ImGui::SameLine();
 
 			if (ImGui::RadioButton("Rectangle", _triggerShape == Shape::Rectangle))
@@ -371,7 +371,7 @@ namespace rat {
             if (type == Type::ChangeScene)
             {
 				ImGui::Checkbox("Change scene with fade", &_changingSceneWithFade);
-				
+
 				if (_changingSceneWithFade)
 				{
 					ImGui::SliderFloat("Fade time", &_fadeTime, 0.1f, 2.f, "%.2f sec");
@@ -395,7 +395,7 @@ namespace rat {
 
                 // If scene is selected
                 if (sceneId)
-                {                    
+                {
                     // Find name of selected entry
                     scene = scenes.getScene(sceneId);
                     std::string name = "None";
@@ -403,7 +403,7 @@ namespace rat {
                     if(auto* entry = scene->getEntity("entries", entranceId)) {
                         name = entry->getName();
                     }
-                    
+
                     // Combo box with available entries in selected scene
                     if (ImGui::BeginCombo("Entry", name.c_str()))
                     {
