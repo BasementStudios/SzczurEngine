@@ -242,8 +242,8 @@ namespace rat {
 				}
 			}
 		}
-        // Active trigger after [Shift]
-        else if(_input.isPressed(Keyboard::Shift)) {
+        // Active trigger after [LShift]
+        else if(_input.isPressed(Keyboard::LShift)) {
             // Is player inside trigger
             if(checkForTrigger(player->getPosition())) {
                 // Action for ChangeScene trigger
