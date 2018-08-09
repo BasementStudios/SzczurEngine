@@ -10,7 +10,6 @@ namespace rat {
 		_dialogGUI.init();
     }
 
-
     Dialog::~Dialog() {
         LOG_INFO(this, "Module Dialog destructed")
         delete _dialogManager;
@@ -22,12 +21,9 @@ namespace rat {
 
 		module.set_function("load", &Dialog::load, this);
         module.set("GUI", &_dialogGUI);
-
 		
         script.initClasses<DialogManager, Options, DialogGUI>();
     }
-
-
 
     void Dialog::update(float deltaTime) {
         if(_dialogManager) {
@@ -39,8 +35,8 @@ namespace rat {
     }
 
     DialogManager* Dialog::load(const std::string& path) {
-        _dialogManager = new DialogManager(path, _dialogGUI);
-        return _dialogManager;
+		_dialogManager = new DialogManager(path, _dialogGUI);
+		return _dialogManager;
     }
 
     void Dialog::unload() {
@@ -48,10 +44,9 @@ namespace rat {
         _dialogManager = nullptr;
         _dialogGUI.hide();
     }
-	bool Dialog::isDialogPlaying()
-	{
-		if (_dialogManager)
-		{
+
+	bool Dialog::isDialogPlaying() {
+		if (_dialogManager) {
 			return _dialogManager->isDialogPlaying();
 		}
 
