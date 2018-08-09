@@ -152,7 +152,7 @@ void Window::init()
 				this->windowStyle = sf::Style::Fullscreen; 
 			}
 			else {
-				this->windowStyle = sf::Style::Default;
+				this->windowStyle = sf::Style::Close;
 			}
 		}
 		
