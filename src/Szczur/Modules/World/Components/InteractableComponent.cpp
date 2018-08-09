@@ -5,6 +5,8 @@
 #include "Szczur/Utility/ImGuiTweaks.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 #include "Szczur/Modules/Input/Input.hpp"
+#include "Szczur/Modules/Dialog/Dialog.hpp"
+
 #include "../Scene.hpp"
 #include "../Entity.hpp"
 #include "../ScenesManager.hpp"
@@ -103,7 +105,15 @@ namespace rat {
 
 	void InteractableComponent::update(ScenesManager& scenes, float deltaTime) {
 		auto* player = getEntity()->getScene()->getPlayer();
-		if(player == nullptr) return;
+
+		if (player == nullptr) 
+			return;
+
+		if (!getEntity()->isActive())
+			return;
+
+		if (detail::globalPtr<Dialog>->isDialogPlaying())
+			return;
 
 		if(_input.isReleased(Keyboard::LShift)) {
 			if(checkForInteraction(player->getPosition())) {
