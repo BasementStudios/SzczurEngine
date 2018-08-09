@@ -329,8 +329,8 @@ ifeq ($(CROSS),yes)
     # -> Clang
     ifeq ($(findstring clang,$(CXX)),clang)
         # Passing target information via argument instead of whole toolchain prefix
-        CXXFLAGS := -target $(CROSS)
-         LDFLAGS := -target $(CROSS)
+        CXXFLAGS += -target $(CROSS)
+         LDFLAGS += -target $(CROSS)
         CROSS :=
     else
     # -> Other 
