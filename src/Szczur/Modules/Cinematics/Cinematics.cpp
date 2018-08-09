@@ -490,15 +490,20 @@ void Cinematics::stop()
 {
     if(m_play)
     {
-        for(auto p : m_sound->g_videoPkts)
-        {
-            av_free_packet(p);
-        }
-        for(auto p : m_sound->g_audioPkts)
-        {
-            av_free_packet(p);
-            av_free(p);
-        }
+		/* ================ M E M O R Y  L E A K ================ */
+		// @info: MEMORY LEAK
+		// Ale przynajmniej nie crashuje edytor XD
+		//for(auto p : m_sound->g_videoPkts)
+		//{
+		//	av_free_packet(p);
+		//}
+		//for(auto p : m_sound->g_audioPkts)
+		//{
+		//	av_free_packet(p);
+		//	av_free(p);
+		//}
+		/* ================ M E M O R Y  L E A K ================ */
+
         //m_sound->stop();
         sws_freeContext(m_sws_ctx);
         av_free(m_buffer);
