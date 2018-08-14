@@ -92,7 +92,7 @@ public:
 /*
     Wrong! wrong! wrong! Absolutely stop everything!
 */
-    void stop();
+    void skip();
 
 /*
     If you want to reduce the volume call this function
@@ -110,6 +110,7 @@ public:
     void setCallbackFinish(callme t);
 
 private:
+    void endVideo();
 
     void initScript();
     MovieSound          *m_sound;
@@ -158,7 +159,7 @@ private:
     sf::Clock           *m_VClock;
     sf::RenderTexture   canvas;
 
-    std::vector<AVPacket*> m_audioSyncBuffer;
+    std::vector<MyPacket*> m_audioSyncBuffer;
     std::vector<std::shared_ptr<VideoLoop> > m_loops;
 
 };

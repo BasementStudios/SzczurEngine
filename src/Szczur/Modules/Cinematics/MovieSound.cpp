@@ -50,22 +50,26 @@ void MovieSound::initResampler()
     m_dstNbChannels = av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO);
     err = av_samples_alloc_array_and_samples(&m_dstData, &m_dstLinesize, m_dstNbChannels, m_dstNbSamples, AV_SAMPLE_FMT_S16, 0);
 }
-bool MovieSound::decodePacket(AVPacket* packet, AVFrame* outputFrame, bool& gotFrame)
+bool MovieSound::decodePacket(MyPacket* packet, AVFrame* outputFrame, bool& gotFrame)
 {
-    bool needsMoreDecoding = false;
-    int igotFrame = 0;
-    
-    int decodedLength = avcodec_decode_audio4(m_codecCtx, outputFrame, &igotFrame, packet);
-    gotFrame = (igotFrame != 0);
-    
-    if(decodedLength < packet->size)
+    if(m_play)
     {
-        needsMoreDecoding = true;
-        packet->data += decodedLength;
-        packet->size -= decodedLength;
+        bool needsMoreDecoding = false;
+        int igotFrame = 0;
+        
+        int decodedLength = avcodec_decode_audio4(m_codecCtx, outputFrame, &igotFrame, packet);
+        gotFrame = (igotFrame != 0);
+        
+        if(decodedLength < packet->size)
+        {
+            needsMoreDecoding = true;
+            packet->data += decodedLength;
+            packet->size -= decodedLength;
+        }
+        
+        return needsMoreDecoding;
     }
-    
-    return needsMoreDecoding;
+    else return false;
 }
 
 void MovieSound::resampleFrame(AVFrame *frame, uint8_t *&outSamples, int &outNbSamples, int &outSamplesLength)
@@ -95,7 +99,7 @@ void MovieSound::resampleFrame(AVFrame *frame, uint8_t *&outSamples, int &outNbS
 bool MovieSound::onGetData(sf::SoundStream::Chunk &data)
 {
     data.samples = m_samplesBuffer;
-    std::deque<AVPacket*> *pack;
+    std::deque<MyPacket*> *pack;
     pack = &g_audioPkts;
 
     auto func = [pack]  {
@@ -104,7 +108,7 @@ bool MovieSound::onGetData(sf::SoundStream::Chunk &data)
      
     while (data.sampleCount < av_get_channel_layout_nb_channels(AV_CH_LAYOUT_STEREO) * m_sampleRate)
     {
-        
+        if(!m_play) return false;
         bool needsMoreDecoding = false;
         bool gotFrame = false;
         
@@ -112,7 +116,7 @@ bool MovieSound::onGetData(sf::SoundStream::Chunk &data)
 
         g_newPktCondition.wait(lk,func);
 
-        AVPacket* packet = g_audioPkts.front();
+        MyPacket* packet = g_audioPkts.front();
         
         g_audioPkts.pop_front();
       
@@ -135,8 +139,10 @@ bool MovieSound::onGetData(sf::SoundStream::Chunk &data)
         
         lk.unlock();
         
-        av_free_packet(packet);
-        av_free(packet);
+        //av_free_packet(packet);
+        //av_free(packet);
+        packet->freePacket();
+        packet->free();
     }
     return true;
 }
@@ -146,10 +152,16 @@ void MovieSound::onSeek(sf::Time timeOffset)
     std::lock_guard<std::mutex> lk(g_mut);
     for (auto p : g_audioPkts)
     {
-        av_free_packet(p);
-        av_free(p);
+        p->freePacket();
+        p->free();
     }
     g_audioPkts.clear();
     avcodec_flush_buffers(m_codecCtx);
+}
+
+void MovieSound::stop()
+{
+    m_play = false;
+   //sf::SoundStream::stop(); <---- crash
 }
 }

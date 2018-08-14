@@ -19,7 +19,7 @@ Cinematics::~Cinematics()
 }
 bool Cinematics::loadFromFile(const char * filename)
 {
-    stop();
+    endVideo();
 
     m_pFormatCtx = nullptr;
     m_pCodecCtx = nullptr;
@@ -175,6 +175,7 @@ void Cinematics::play()
     if(m_isMusic)
     {
         m_sound = new MovieSound(m_pFormatCtx,m_audioStream);
+        m_sound->setVolume(100);
         m_sound->play();
     }
     else m_sound = new MovieSound();
@@ -236,7 +237,7 @@ void Cinematics::initScript()
     module.set_function("play", &Cinematics::play, this);
     module.set_function("loadFromFile", &Cinematics::loadFromFile, this);
     module.set_function("setFontPath", &Cinematics::setFontPath, this);
-    module.set_function("stop", &Cinematics::stop, this);
+    module.set_function("skip", &Cinematics::skip, this);
     module.set_function("setVolume",&Cinematics::setVolume,this);
     module.set_function("isPlaying",&Cinematics::isPlaying,this);
     module.set_function("setCallbackFinish",&Cinematics::setCallbackFinish,this);
@@ -253,6 +254,15 @@ void Cinematics::update()
 
     bool isDraw = false;
 
+
+    /* Skipping video */
+   /* if(getModule<Input>().getManager().isPressed(Keyboard::T))
+    {
+        skip();
+        return;
+    } */
+
+
     if(m_VClock->getElapsedTime().asMicroseconds()>m_duration-500000 && m_alfa>0)
     {
         m_alfa-=5;
@@ -264,19 +274,17 @@ void Cinematics::update()
     for(int i=0;i<7;i++)
     {
         m_IstartTime = m_VClock->getElapsedTime().asMilliseconds();
-
         if((m_ISmax>m_sound->timeElapsed()*1000 && !m_syncAV&& m_ISmax>m_duration-4000000)||(m_sound->g_audioPkts.empty()&&m_ISmax>m_duration-4000000))
         {
             if(!m_sound->g_videoPkts.empty())
             {
-
-                AVPacket *packet_ptr = m_sound->g_videoPkts.front();
+                MyPacket *packet_ptr = m_sound->g_videoPkts.front();
 
                 auto decodedLength = avcodec_decode_video2(m_pCodecCtx, m_pFrame, &m_frameFinished, packet_ptr);
 
                 if(!sws_scale(m_sws_ctx, (uint8_t const * const *)m_pFrame->data, m_pFrame->linesize, 0, m_pCodecCtx->height, m_pFrameRGB->data, m_pFrameRGB->linesize))
                 {
-                    stop();
+                    endVideo();
                     return;
                 }
 
@@ -292,12 +300,17 @@ void Cinematics::update()
 
                 m_IdeltaTime = m_VClock->getElapsedTime().asMilliseconds() - m_IstartTime;
                 if(!m_isMusic) sf::sleep((sf::milliseconds(((1000.f/av_q2d(m_pFormatCtx->streams[m_videoStream]->avg_frame_rate))-m_IdeltaTime))));
+
+                packet_ptr->freePacket();
+                packet_ptr->free();
                 m_sound->g_videoPkts.erase(m_sound->g_videoPkts.begin());
+
+
                 return;
             }
             else
             {
-                stop();
+                endVideo();
                 return;
             }
         }
@@ -336,27 +349,31 @@ void Cinematics::update()
 
         }
 
-        AVPacket* packet_ptr = nullptr;
+        MyPacket* packet_ptr = nullptr;
 
         if(m_sound->g_videoPkts.size() < 500)
         {
-            packet_ptr = (AVPacket*)av_malloc(sizeof(AVPacket));
+            packet_ptr = (MyPacket*)av_malloc(sizeof(MyPacket));
             av_init_packet(packet_ptr);
 
             if(av_read_frame(m_pFormatCtx, packet_ptr) < 0)
             {
                 if(m_sound->g_videoPkts.empty() || m_sound->g_audioPkts.empty())
                 {
-                    av_free_packet(packet_ptr);
-                    av_free(packet_ptr);
+                    //av_free_packet(packet_ptr);
+                    //av_free(packet_ptr);
+                   // packet_ptr->freePacket();
+                   // packet_ptr->free();
                     packet_ptr = nullptr;
                 }
-                av_free_packet(packet_ptr);
-                av_free(packet_ptr);
+                //av_free_packet(packet_ptr);
+                //av_free(packet_ptr);
+                //packet_ptr->freePacket();
+                //packet_ptr->free();
             }
             if(packet_ptr)
             {
-                AVPacket& packet = *packet_ptr;
+                MyPacket& packet = *packet_ptr;
                 if(packet.stream_index == m_videoStream)
                 {
                     m_sound->g_videoPkts.push_back(packet_ptr);
@@ -374,8 +391,10 @@ void Cinematics::update()
                             }
                             else
                             {
-                                av_free_packet(p);
-                                av_free(p);
+                               // av_free_packet(p);
+                                //av_free(p);
+                                p->freePacket();
+                                p->free();
                             }
                         }
 
@@ -397,7 +416,7 @@ void Cinematics::update()
         const auto pStream = m_pFormatCtx->streams[m_videoStream];
         if(m_sound->g_videoPkts.empty()&&m_VClock->getElapsedTime().asSeconds()>1)
         {
-            stop();
+            endVideo();
             return;
         }
         if(!isDraw &&((m_sound->timeElapsed() > m_lastDecodedTimeStamp && m_sound->isAudioReady())||!m_isMusic) && !m_sound->g_videoPkts.empty())
@@ -449,8 +468,10 @@ void Cinematics::update()
             }
             else
             {
-                av_free_packet(packet_ptr);
-                av_free(packet_ptr);
+               // av_free_packet(packet_ptr);
+               // av_free(packet_ptr);
+                packet_ptr->freePacket();
+                packet_ptr->free();
             }
         }
 
@@ -473,6 +494,7 @@ void Cinematics::render()
 {
     if(m_play)
     {
+
         auto& w = getModule<Window>();
         w.pushGLStates();
         canvas.clear({0,0,0,0});
@@ -486,28 +508,27 @@ void Cinematics::render()
     }
 }
 
-void Cinematics::stop()
+void Cinematics::skip()
 {
     if(m_play)
     {
+        m_sound->setVolume(0);
         for(auto p : m_sound->g_videoPkts)
         {
-            av_free_packet(p);
+            p->freePacket();
+            p->free();
         }
-        for(auto p : m_sound->g_audioPkts)
+        m_sound->g_videoPkts.clear();
+        if(m_isMusic)
         {
-            av_free_packet(p);
-            av_free(p);
+            m_sound->stop();
+            avcodec_close(m_paCodecCtx);
         }
-        //m_sound->stop();
         sws_freeContext(m_sws_ctx);
         av_free(m_buffer);
         av_free(m_pFrameRGB);
         av_free(m_pFrame);
         avcodec_close(m_pCodecCtx);
-
-        if(m_isMusic)
-            avcodec_close(m_paCodecCtx);
 
         avformat_close_input(&m_pFormatCtx);
 
@@ -519,8 +540,43 @@ void Cinematics::stop()
             m_callbackFinish();
             m_isCallbackSet = false;
         }
-        
-        
+    }
+}
+
+
+void Cinematics::endVideo()
+{
+    if(m_play)
+    {
+        for(auto p : m_sound->g_videoPkts)
+        {
+            p->freePacket();
+            p->free();
+        }
+        m_sound->g_videoPkts.clear();
+
+        if(m_isMusic)
+        { 
+            m_sound->stop();
+            avcodec_close(m_paCodecCtx);
+        }
+               
+        sws_freeContext(m_sws_ctx);
+        av_free(m_buffer);
+        av_free(m_pFrameRGB);
+        av_free(m_pFrame);
+        avcodec_close(m_pCodecCtx);
+
+        avformat_close_input(&m_pFormatCtx);
+
+        delete [] m_data;
+        m_play = false;
+
+        if(m_callbackFinish.valid() && m_isCallbackSet)
+        {
+            m_callbackFinish();
+            m_isCallbackSet = false;
+        }
     }
 }
 
