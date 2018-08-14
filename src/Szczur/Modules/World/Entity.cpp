@@ -215,6 +215,16 @@ void Entity::loadFromConfig(nlohmann::json& config, bool withNewID)
 	_id = withNewID ? getUniqueID<Entity>() : config["id"].get<size_t>();
 	_name = config["name"].get<std::string>();
 
+	if (auto isActive = config.find("isActive"); isActive != config.end())
+	{
+		_isActive = isActive.value();
+	}
+
+	if (auto isVisible = config.find("isVisible"); isVisible != config.end())
+	{
+		_isVisible = isVisible.value();
+	}
+
 	setPosition({
 		config["position"]["x"].get<float>(),
 		config["position"]["y"].get<float>(),
@@ -257,6 +267,9 @@ void Entity::saveToConfig(nlohmann::json& config) const
 	config["id"] = getID();
 	config["name"] = getName();
 	config["components"] = nlohmann::json::array();
+
+	config["isActive"] = this->_isActive;
+	config["isVisible"] = this->_isVisible;
 
 	config["position"]["x"] = getPosition().x;
 	config["position"]["y"] = getPosition().y;
