@@ -10,18 +10,24 @@
 
 #include <Szczur/Modules/Script/Script.hpp>
 
+namespace fs = std::experimental::filesystem;
+
 namespace rat {
 
 TextureDataHolder::TextureData::TextureData(SpriteDisplayData* data)
 	: data(data), reloaded(false) {
 #ifndef PSYCHOX
-	lastWriten = std::experimental::filesystem::last_write_time(data->getName());	
+	lastWriten = fs::last_write_time(data->getName());
 #endif
 }
 
 bool TextureDataHolder::TextureData::checkTime() {
 #ifndef PSYCHOX
-	return lastWriten == std::experimental::filesystem::last_write_time(data->getName());	
+	if (fs::exists(data->getName())) {
+		return lastWriten == fs::last_write_time(data->getName());
+	}
+
+	return false;
 #else
 	return false;
 #endif
@@ -29,7 +35,9 @@ bool TextureDataHolder::TextureData::checkTime() {
 
 void TextureDataHolder::TextureData::updateTime() {
 #ifndef PSYCHOX
-	lastWriten = std::experimental::filesystem::last_write_time(data->getName());
+	if (fs::exists(data->getName())) {
+		lastWriten = fs::last_write_time(data->getName());
+	}
 #endif
 }
 
@@ -53,18 +61,26 @@ const sf3d::Texture& TextureDataHolder::getTexture(const std::string& filePath, 
 SpriteDisplayData* TextureDataHolder::getData(const std::string& filePath, bool reload) {
 	
 	// If same texture is loaded
-	if(auto* data = find(filePath)) {
-		if(reload && !data->checkTime()) {
+	if (auto* data = find(filePath)) {
+		if (reload && !data->checkTime()) {
 			data->reloaded = false;
 			_allLoaded = false;
 		}
 		return data->data.get();
 	}
 
-	auto& data = _data.emplace_back(new SpriteDisplayData(filePath));
-	_allLoaded = false;
+	// check if file exists
+	if (fs::exists(filePath)) {
+		auto& data = _data.emplace_back(new SpriteDisplayData(filePath));
+		_allLoaded = false;
 
-	return data.data.get();
+		return data.data.get();
+	}
+	
+	LOG_ERROR("Cannot find '", filePath, "'!");
+
+	// if no then return nullptr
+	return nullptr;
 }
 
 void TextureDataHolder::loadAll() {

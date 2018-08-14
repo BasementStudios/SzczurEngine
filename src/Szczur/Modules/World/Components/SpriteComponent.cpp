@@ -78,13 +78,13 @@ namespace rat
 		// auto& spriteDisplayDataHolder = getEntity()->getScene()->getSpriteDisplayDataHolder();
 		auto name = mapUtf8ToWindows1250(config["spriteDisplayData"].get<std::string>());
 		if(name != "") {
-			// LOG_INFO("A")
 			auto& textureDataHolder = getEntity()->getScene()->getScenes()->getTextureDataHolder();
-			// LOG_INFO("B")
 			auto* data = textureDataHolder.getData(name);
-			// LOG_INFO("C")
-			setSpriteDisplayData(data);
-			// LOG_INFO("D")
+			
+			if (data)
+			{
+				setSpriteDisplayData(data);
+			}
 
 			// bool found{false};
 			// for(auto& it : spriteDisplayDataHolder) {
