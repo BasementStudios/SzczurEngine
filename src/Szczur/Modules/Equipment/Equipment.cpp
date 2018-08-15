@@ -175,7 +175,6 @@ namespace rat {
 			_isPreviewMaximized = true;
 			if (_isLetterOn) {
 				_letter->fullyActivate();
-				_isLetterOn = false;
 			}
 		}
 		if (_isPreviewOn) {
@@ -205,7 +204,7 @@ namespace rat {
 			_timeFromStartingPreview = 0.f;
 			_isPreviewOn = true;
 			_isPreviewMaximized = false;
-			if (!_letter->isFullyDeactivated()) {
+			if (_isLetterOn) {
 				_letter->fullyDeactivate();
 			}
 			if (item->getNameId() == "letter") {
@@ -220,8 +219,9 @@ namespace rat {
 	void Equipment::disableItemPreview() {
 		_itemPreview->minimalize();
 		_isPreviewOn = false;
-		if (!_letter->isFullyDeactivated()) {
+		if (_isLetterOn) {
 			_letter->fullyDeactivate();
+			_isLetterOn = false;
 		}
 		/*if (_isReplacing) {
 			_replaceItem->lowerPosition();
