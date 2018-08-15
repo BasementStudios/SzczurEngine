@@ -8,11 +8,14 @@
 #   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
 #endif
 
+#include "Szczur/Utility/Debug/ExceptionHandler.hpp"
 namespace rat
 {
 
 void Application::init()
 {
+	exc::init();
+
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
