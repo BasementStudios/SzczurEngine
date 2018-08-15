@@ -92,7 +92,7 @@ public:
 /*
     Wrong! wrong! wrong! Absolutely stop everything!
 */
-    void stop();
+    void skip();
 
 /*
     If you want to reduce the volume call this function
@@ -110,56 +110,57 @@ public:
     void setCallbackFinish(callme t);
 
 private:
+    void endVideo();
 
     void initScript();
-    MovieSound          *m_sound;
+    MovieSound          *_sound;
 
-    AVFormatContext     *m_pFormatCtx;
-    AVCodecContext      *m_pCodecCtx;
-    AVCodecContext      *m_paCodecCtx;
-    AVCodec             *m_pCodec;
-    AVCodec             *m_paCodec;
-    AVFrame             *m_pFrame;
-    AVFrame             *m_pFrameRGB;
-    AVDictionary        *m_optionsDict;
-    AVDictionary        *m_optionsDictA;
-    SwsContext          *m_sws_ctx;
+    AVFormatContext     *_pFormatCtx;
+    AVCodecContext      *_pCodecCtx;
+    AVCodecContext      *_paCodecCtx;
+    AVCodec             *_pCodec;
+    AVCodec             *_paCodec;
+    AVFrame             *_pFrame;
+    AVFrame             *_pFrameRGB;
+    AVDictionary        *_optionsDict;
+    AVDictionary        *_optionsDictA;
+    SwsContext          *_sws_ctx;
 
-    uint8_t             *m_buffer;
-    size_t              m_count;
-    int64_t             m_duration;
-    int64_t             m_blockPts = 0;
+    uint8_t             *_buffer;
+    size_t              _count;
+    int64_t             _duration;
+    int64_t             _blockPts = 0;
 
-    bool                m_syncAV = false;
-    bool                m_isInit = false;
-    bool                m_play = false;
-    bool                m_isMusic = false;
-    bool                m_isCallbackSet = false;
+    bool                _syncAV = false;
+    bool                _isInit = false;
+    bool                _play = false;
+    bool                _isMusic = false;
+    bool                _isCallbackSet = false;
 
-    int                 m_ICurrentLoop;
-    int                 m_frameFinished;
-    int                 m_numBytes;
-    int                 m_videoStream;
-    int                 m_audioStream;
-    int                 m_ISmax;
-    int                 m_jump =0;
-    int                 m_lastDecodedTimeStamp=0;
-    int                 m_IdeltaTime;
-    int                 m_IstartTime;
-    int                 m_FrameSize;
-    unsigned int        m_alfa;
+    int                 _ICurrentLoop;
+    int                 _frameFinished;
+    int                 _numBytes;
+    int                 _videoStream;
+    int                 _audioStream;
+    int                 _ISmax;
+    int                 _jump =0;
+    int                 _lastDecodedTimeStamp=0;
+    int                 _IdeltaTime;
+    int                 _IstartTime;
+    int                 _FrameSize;
+    unsigned int        _alfa;
 
-    callme              m_callbackFinish;
+    callme              _callbackFinish;
 
-    sf::Uint8*          m_data;
-    sf::Sprite          m_sprite;
-    sf::Font            m_font;
-    sf::Texture         m_im_video;
-    sf::Clock           *m_VClock;
+    sf::Uint8*          _data;
+    sf::Sprite          _sprite;
+    sf::Font            _font;
+    sf::Texture         _im_video;
+    sf::Clock           *_VClock;
     sf::RenderTexture   canvas;
 
-    std::vector<AVPacket*> m_audioSyncBuffer;
-    std::vector<std::shared_ptr<VideoLoop> > m_loops;
+    std::vector<MyPacket*> _audioSyncBuffer;
+    std::vector<std::shared_ptr<VideoLoop> > _loops;
 
 };
 }
