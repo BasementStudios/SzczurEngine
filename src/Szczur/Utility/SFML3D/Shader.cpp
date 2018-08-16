@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <memory>
-#include <iostream>
 #include <stdexcept>
 
 std::unique_ptr<const char[]> getFileContents(const char* filePath)
@@ -60,7 +59,18 @@ Shader::~Shader()
 	_destroy();
 }
 
-bool Shader::loadFromFile(ShaderType type, const char* filePath)
+// Constructing by type and path
+Shader::Shader(ShaderType type, const char* filePath)
+{
+	loadFromFile(type, filePath);
+}
+Shader::Shader(ShaderType type, const std::string& filePath)
+{
+	loadFromFile(type, filePath);
+}
+
+// Loading from files
+void Shader::loadFromFile(ShaderType type, const char* filePath)
 {
 	#ifdef EDITOR
 	{
@@ -72,15 +82,21 @@ bool Shader::loadFromFile(ShaderType type, const char* filePath)
 	#endif // EDITOR
 
 	auto ptr = getFileContents(filePath);
-	if (!ptr) {
+
+	if (!ptr)
+	{
 		throw std::runtime_error(std::string("Cannot load shader from ") + filePath);
-		return false;
 	}
 
-	return ptr && _compile(type, ptr.get(), -1);
+	_compile(type, ptr.get(), -1);
+}
+void Shader::loadFromFile(ShaderType type, const std::string& filePath)
+{
+	this->loadFromFile(type, filePath.c_str());
 }
 
-bool Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
+// Loading from memory
+void Shader::loadFromMemory(ShaderType type, const char* data, GLint size)
 {
 	#ifdef EDITOR
 	{
@@ -91,50 +107,48 @@ bool Shader::loadFromMemory(ShaderType type, const void* data, GLint size)
 	}
 	#endif // EDITOR
 
-	return _compile(type, reinterpret_cast<const char*>(data), size);
+	_compile(type, data, size);
+}
+void Shader::loadFromMemory(ShaderType type, const std::string& data)
+{
+	this->loadFromMemory(type, data.c_str(), -1);
 }
 
 bool Shader::isValid() const
 {
-	return _shader != 0;
+	return _shader;
 }
 
-GLuint Shader::getNativeHandle() const
+Shader::NativeHandle_t Shader::getNativeHandle() const
 {
 	return _shader;
 }
 
 #ifdef EDITOR
 
-bool Shader::_reload()
+void Shader::_reload()
 {
 	if (!_filePath.empty())
 	{
-		auto ptr = getFileContents(_filePath.data());
-
-		return ptr && _compile(_type, ptr.get(), -1);
+		loadFromFile(_type, _filePath);
 	}
 	else if (_dataPtr != nullptr)
 	{
-		return _compile(_type, reinterpret_cast<const char*>(_dataPtr), _dataSize);
+		loadFromMemory(_type, _dataPtr, _dataSize);
 	}
-
-	return false;
 }
 
 #endif // EDITOR
 
 void Shader::_destroy()
 {
-	if (isValid())
+	if (_shader)
 	{
 		glDeleteShader(_shader);
-
-		_shader = 0;
 	}
 }
 
-bool Shader::_compile(ShaderType type, const char* data, GLint size)
+void Shader::_compile(ShaderType type, const char* data, GLint size)
 {
 	_destroy();
 
@@ -151,18 +165,16 @@ bool Shader::_compile(ShaderType type, const char* data, GLint size)
 		glGetShaderInfoLog(_shader, sizeof(infoLog), nullptr, infoLog);
 
 		_destroy();
-		
+
+		_shader = 0;
+
 		throw std::runtime_error(
 			std::string(infoLog)
 			#ifdef EDITOR
 			+ "Cannot compile shader from " + _filePath + "\n"
 			#endif
 		);
-
-		return false;
 	}
-
-	return true;
 }
 
 }

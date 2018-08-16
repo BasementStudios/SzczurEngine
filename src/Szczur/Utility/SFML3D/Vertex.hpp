@@ -9,10 +9,21 @@ namespace sf3d
 
 struct Vertex
 {
-	glm::vec3 position;
-	glm::vec4 color;
-	glm::vec2 texCoord;
+	/* Variables */
+	glm::vec3 position	{0.f, 0.f, 0.f};
+	glm::vec4 color		{1.f, 1.f, 1.f, 1.f};
+	glm::vec2 texCoord	{0.f, 0.f};
 
+
+
+	/* Operators */
+	Vertex() = default;	
+
+	// Copyable
+	Vertex(const Vertex& other);
+	Vertex& operator = (const Vertex& other);
+
+	Vertex(const glm::vec3& position, const glm::vec4& color, const glm::vec2& texCoord);
 };
 
 }

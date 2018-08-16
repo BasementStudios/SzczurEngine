@@ -15,6 +15,8 @@ class Shader
 {
 public:
 
+	using NativeHandle_t = GLuint;
+
 	enum ShaderType
 	{
 		Vertex = GL_VERTEX_SHADER,
@@ -28,44 +30,44 @@ public:
 	///
 	Shader() = default;
 
-	///
+	// Non-copyable
 	Shader(const Shader&) = delete;
-
-	///
 	Shader& operator = (const Shader&) = delete;
 
-	///
+	// Movable
 	Shader(Shader&& rhs) noexcept;
-
-	///
 	Shader& operator = (Shader&& rhs) noexcept;
 
 	///
 	~Shader();
 
-	///
-	bool loadFromFile(ShaderType type, const char* filePath);
+	/// Constructs, loads and compiles from type and path 
+	Shader(ShaderType type, const char* filePath);
+	Shader(ShaderType type, const std::string& filePath);
 
-	///
-	bool loadFromMemory(ShaderType type, const void* data, GLint size = -1);
+	/// Loads and compiles from type and path
+	void loadFromFile(ShaderType type, const char* filePath);
+	void loadFromFile(ShaderType type, const std::string& filePath);
 
-	///
+	/// Loads and compiles from memory 
+	void loadFromMemory(ShaderType type, const char* data, GLint size = -1);
+	void loadFromMemory(ShaderType type, const std::string& data);
+
+	/// Checks whether shader is vaild
 	bool isValid() const;
 
-	///
-	GLuint getNativeHandle() const;
+	/// Return native handler of shader
+	NativeHandle_t getNativeHandle() const;
 
-	#ifdef EDITOR
-
+#ifdef EDITOR
 	ShaderType _type;
 	std::string _filePath;
-	const void* _dataPtr = nullptr;
+	const char* _dataPtr = nullptr;
 	GLint _dataSize = 0;
 
 	///
-	bool _reload();
-
-	#endif // EDITOR
+	void _reload();
+#endif // EDITOR
 
 private:
 
@@ -73,9 +75,9 @@ private:
 	void _destroy();
 
 	///
-	bool _compile(ShaderType type, const char* data, GLint size);
+	void _compile(ShaderType type, const char* data, GLint size);
 
-	GLuint _shader = 0;
+	NativeHandle_t _shader = 0;
 
 };
 

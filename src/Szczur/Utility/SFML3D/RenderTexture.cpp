@@ -17,9 +17,13 @@ namespace sf3d
 {
 
 /* Properties */
-Texture* RenderTexture::getTexture()
+const Texture& RenderTexture::getTexture() const
 {
-	return &(this->texture);
+	return this->texture;
+}
+Texture& RenderTexture::getTexture()
+{
+	return this->texture;
 }
 
 
@@ -68,7 +72,7 @@ void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
 	glGenRenderbuffers(1, &(this->RBO));
 
 	// FrameBuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, (this->FBO));
+	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
 	{
 		// Texture
 		this->texture.create(size);
@@ -82,16 +86,9 @@ void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->RBO);
 
-		// Setup RAII guard for FBO
-		[[maybe_unused]] 
-		struct FBORAIIGuard {
-			~FBORAIIGuard() {
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			}
-		} guard;
-
 		// Checks
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			throw std::runtime_error("Framebuffer creation error.");
 		}
 	}

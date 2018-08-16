@@ -1,49 +1,95 @@
 #include "Transformable.hpp"
 
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <glm/trigonometric.hpp> // radians
 
 #include "Transform.hpp"
 
-namespace sf3d {
+namespace sf3d
+{
 
-
-void Transformable::setPosition(const glm::vec3& position) {
+/* Properties */
+// Position
+void Transformable::setPosition(const glm::vec3& position)
+{
 	_position = position;
 }
-const glm::vec3& Transformable::getPosition() const {
+const glm::vec3& Transformable::getPosition() const
+{
 	return _position;
 }
 
-
-void Transformable::setRotation(const glm::vec3& direction) {
+// Rotation
+void Transformable::setRotation(const glm::vec3& direction)
+{
 	_rotation = direction;
 }
-const glm::vec3& Transformable::getRotation() const {
+const glm::vec3& Transformable::getRotation() const
+{
 	return _rotation;
 }
 
-
-void Transformable::setScale(const glm::vec3& value) {
+// Scale
+void Transformable::setScale(const glm::vec3& value)
+{
 	_scale = value;
 }
-const glm::vec3& Transformable::getScale() const {
+const glm::vec3& Transformable::getScale() const
+{
 	return _scale;
 }
 
-
-void Transformable::setOrigin(const glm::vec3& position) {
+// Origin
+void Transformable::setOrigin(const glm::vec3& position)
+{
 	_origin.x = position.x;
-	_origin.y = -position.y;
+	_origin.y = -position.y; // @warn To chyba nie powinno być na tym etapie, bo set(x) =/= x=gett()...
 	_origin.z = position.z;
 }
-const glm::vec3& Transformable::getOrigin() const {
+const glm::vec3& Transformable::getOrigin() const
+{
 	return _origin;
 }
 
 
 
+/* Operators */
+Transformable::Transformable(
+	const glm::vec3& position,
+	const glm::vec3& rotation,
+	const glm::vec3& scale,
+	const glm::vec3& origin
+)
+:	_position(position),
+	_rotation(rotation),
+	_scale(scale),
+	_origin(origin)
+{
+	;
+}
 
-Transform Transformable::getTransform() const {
+
+
+/* Methods */
+void Transformable::move(const glm::vec3& offset)
+{
+	_position += offset;
+}
+
+
+void Transformable::rotate(const glm::vec3& direction)
+{
+	_rotation += direction;
+}
+
+
+void Transformable::scale(const glm::vec3& value)
+{
+	_scale *= value;
+}
+
+Transform Transformable::getTransform() const
+{
 	Transform transform;
 	transform.translate(_position);
 	transform.rotate(glm::radians(_rotation.x), {1.f, 0.f, 0.f});
@@ -53,21 +99,6 @@ Transform Transformable::getTransform() const {
 	transform.scale(_scale);
 
 	return transform;
-}
-
-
-void Transformable::move(const glm::vec3& offset) {
-	_position += offset;
-}
-
-
-void Transformable::rotate(const glm::vec3& direction) {
-	_rotation += direction;
-}
-
-
-void Transformable::scale(const glm::vec3& value) {
-	_scale *= value;
 }
 
 }
