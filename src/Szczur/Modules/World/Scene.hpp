@@ -193,6 +193,8 @@ private:
 	ScenesManager* _parent;
 	CollectingHolder_t _collectingHolder;
 	SpriteDisplayDataHolder_t _spriteDisplayDataHolder;
+
+	std::vector<Entity*> _entitiesToDelete;
 	
 	size_t _playerID {0u};
 	Entity* _player {nullptr};

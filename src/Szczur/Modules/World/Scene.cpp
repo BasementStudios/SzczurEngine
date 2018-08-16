@@ -51,6 +51,17 @@ Scene::Scene(ScenesManager* parent)
 void Scene::update(float deltaTime)
 {
 	_parent->getTextureDataHolder().loadAll();
+
+	if (!_entitiesToDelete.empty())
+	{
+		for (auto& entity : _entitiesToDelete)
+		{
+			removeEntity(entity->getGroup(), entity->getID());
+		}
+
+		_entitiesToDelete.clear();
+	}
+
 	for (auto& holder : getAllEntities())
 	{		
 		for (auto& entity : holder.second)
@@ -61,7 +72,7 @@ void Scene::update(float deltaTime)
 			}
 			else
 			{
-				removeEntity(holder.first, entity->getID());
+				_entitiesToDelete.push_back(entity.get());
 			}
 		}
 		if(holder.first == "battles") {
