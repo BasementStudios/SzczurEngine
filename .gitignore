@@ -15,4 +15,6 @@ settings.mk
 .clang_complete
 .vscode/
 *.npp
+
+# Other
 3rdParty/

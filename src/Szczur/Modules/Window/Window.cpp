@@ -111,7 +111,7 @@ void Window::setFullscreen(bool state)
 		this->windowStyle = sf::Style::Fullscreen;
 	}
 	else {
-		this->windowStyle = sf::Style::Default;
+		this->windowStyle = sf::Style::Close;
 	}
 	this->recreateWindow();
 }

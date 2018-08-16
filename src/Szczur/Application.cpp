@@ -1,15 +1,16 @@
 #include "Application.hpp"
 #include "Szczur/Utility/Tests.hpp"
 
+#include "Utility/MsgBox.hpp"
+
+#include "Szczur/Utility/Debug/ExceptionHandler.hpp"
 namespace rat
 {
 
-#ifdef EDITOR
-#   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
-#endif
-
 void Application::init()
 {
+	exc::init();
+
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
@@ -19,10 +20,12 @@ void Application::init()
 
 	#ifdef EDITOR
 	{
-		ImGui::CreateContext();
-		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
-		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(builtinFontData, builtinFontSize, 16.0f, nullptr, ranges);
+		_imGuiStyler.setPath("Editor/Gui/style.json");
+		_imGuiStyler.setupFont();
 		ImGui::SFML::Init(getModule<Window>().getWindow());
+		_imGuiStyler.reload();
+
+		LOG_INFO("ImGui initialized");
 	}
 	#endif
 	
@@ -31,7 +34,7 @@ void Application::init()
 #endif
 }
 
-void Application::input()
+bool Application::input()
 {
 	sf::Event event;
 
@@ -46,10 +49,14 @@ void Application::input()
 
 		getModule<Window>().processEvent(event);
 	}
+
+	return true;
 }
 
 void Application::update()
 {
+	_imGuiStyler.update();
+
 	auto deltaTime = _mainClock.restart().asFSeconds();
 
 

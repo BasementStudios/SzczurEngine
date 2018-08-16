@@ -15,23 +15,34 @@ class Logger
 {
 public:
 
+	///
 	Logger();
 
+	///
 	Logger(const Logger&) = delete;
+
+	///
 	Logger& operator = (const Logger&) = delete;
 
+	///
 	Logger(Logger&&) = delete;
+
+	///
 	Logger& operator = (Logger&&) = delete;
 
+	///
 	~Logger();
 
+	///
 	template <typename... Us>
 	void log(const char* file, int line, const char* levelName, Us&&... args);
 
+	///
 	void logException(const char* file, int line, const std::exception& exception, int level = 0);
 
 private:
 
+	///
 	void _formatTime(const char* format);
 
 	char _buffer[128];
