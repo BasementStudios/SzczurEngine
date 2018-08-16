@@ -1,52 +1,149 @@
 #pragma once
 
-#include "Vertex.hpp"
-#include "Drawable.hpp"
+#include <vector>
+
 namespace sf3d {
+    class RenderTarget;
+}
+#include "RenderStates.hpp"
+#include "Drawable.hpp"
+#include "PrimitiveType.hpp"
+#include "Vertex.hpp"
 
-	class VertexArray : public Drawable {
-	public:
-		VertexArray() = delete;
-		VertexArray(size_t size, unsigned int storageUsage = GL_STREAM_DRAW);
-		VertexArray(VertexArray&& other);
-		~VertexArray();
+namespace sf3d
+{
 
+class VertexArray : public Drawable
+{
+public:
 
+    using Vertices_t = std::vector<Vertex>;
 
-		unsigned int getPrimitiveType() const;
-		unsigned int getStorageUsage() const;
+    ///
+    VertexArray() = delete;
 
-		void setPrimitveType(unsigned int type);
+    ///
+    VertexArray(PrimitiveType type = TriangleFan);
 
-		size_t getSize() const;
+    ///
+    VertexArray(size_t size, PrimitiveType type = TriangleFan);
 
-		Vertex& add();
-		Vertex& add(const Vertex& vertex);
+    ///
+    VertexArray(size_t size, const Vertex& value, PrimitiveType type = TriangleFan);
 
-		void resize(size_t newSize);
+    ///
+    VertexArray(const Vertex* vertices, size_t size, PrimitiveType type = TriangleFan);
 
-		void bind() const;
+    ///
+    VertexArray(const Vertex* begin, const Vertex* end, PrimitiveType type = TriangleFan);
 
-		virtual void draw(RenderTarget& target, RenderStates states) const override;
+    ///
+    VertexArray(const VertexArray& rhs);
 
-		void update() const;
+    ///
+    VertexArray& operator = (const VertexArray& rhs);
 
-		Vertex& operator[](size_t index);
-	private:
-		unsigned int _VAO;
-		unsigned int _VBO;
+    ///
+    VertexArray(VertexArray&& rhs) noexcept;
 
-		std::vector<Vertex> _vertices;
+    ///
+    VertexArray& operator = (VertexArray&& rhs) noexcept;
 
-		unsigned int _primitveType{GL_TRIANGLE_FAN};
-		const unsigned int _storageUsage;
+    ///
+    ~VertexArray();
 
-		void _update() const;
-		mutable bool _toUpdate{false};
-		mutable bool _toResize{false};
+    ///
+    void clear();
 
-		mutable size_t _min{static_cast<size_t>(-1)};
-		mutable size_t _max{0u};
+    ///
+    VertexArray& assign(size_t size, PrimitiveType type = TriangleFan);
 
-	};
+    ///
+    VertexArray& assign(size_t size, const Vertex& value, PrimitiveType type = TriangleFan);
+
+    ///
+    VertexArray& assign(const Vertex* vertices, size_t size, PrimitiveType type = TriangleFan);
+
+    ///
+    VertexArray& assign(const Vertex* begin, const Vertex* end, PrimitiveType type = TriangleFan);
+
+    ///
+    void resize(size_t size);
+
+    ///
+    void resize(size_t size, const Vertex& value);
+
+    ///
+    void setVertex(size_t index, const Vertex& vertex);
+
+    ///
+    Vertex& getVertex(size_t index);
+
+    ///
+    const Vertex& getVertex(size_t index) const;
+
+    ///
+    Vertex& operator [] (size_t index);
+
+    ///
+    const Vertex& operator [] (size_t index) const;
+
+    ///
+    void setPrimitiveType(PrimitiveType type);
+
+    ///
+    PrimitiveType getPrimitiveType() const;
+
+    ///
+    Vertex* getData();
+
+    ///
+    const Vertex* getData() const;
+
+    ///
+    size_t getSize() const;
+
+    ///
+    size_t getBytesCount() const;
+
+    ///
+    bool isEmpty() const;
+
+    ///
+    bool isValid() const;
+
+    /// Returns { left, top, width, height } 2D bounds of vertices
+    glm::vec4 getBounds() const;
+
+    ///
+    void bind() const;
+
+    ///
+    void unbind() const;
+
+	///
+	void update() const;
+
+    ///
+    virtual void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const override;
+
+private:
+
+    ///
+    void _init();
+
+    ///
+    void _destroy();
+
+    Vertices_t _vertices;
+    PrimitiveType _type;
+    GLuint _vao;
+    GLuint _vbo;
+    mutable size_t _lowerIndex;
+    mutable size_t _upperIndex;
+    mutable bool _needsUpdate;
+    mutable bool _needsReallocate;
+
+};
+
 }

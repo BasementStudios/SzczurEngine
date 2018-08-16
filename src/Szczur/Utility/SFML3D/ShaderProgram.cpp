@@ -5,6 +5,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #ifdef EDITOR
@@ -126,10 +127,10 @@ public:
 	UniformBinder& operator = (const UniformBinder&) = delete;
 
 	///
-	UniformBinder(UniformBinder&& rhs)  = delete;
+	UniformBinder(UniformBinder&& rhs) = delete;
 
 	///
-	UniformBinder& operator = (UniformBinder&& rhs)  = delete;
+	UniformBinder& operator = (UniformBinder&& rhs) = delete;
 
 	///
 	~UniformBinder()
@@ -192,7 +193,7 @@ bool ShaderProgram::setUniform(const char* name, bool value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -212,7 +213,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::bvec2& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -232,7 +233,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::bvec3& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -252,7 +253,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::bvec4& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -272,7 +273,7 @@ bool ShaderProgram::setUniform(const char* name, int value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -292,7 +293,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::ivec2& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -312,7 +313,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::ivec3& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -332,7 +333,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::ivec4& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -352,7 +353,7 @@ bool ShaderProgram::setUniform(const char* name, unsigned int value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -372,7 +373,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::uvec2& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -392,7 +393,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::uvec3& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -412,7 +413,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::uvec4& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -432,7 +433,7 @@ bool ShaderProgram::setUniform(const char* name, float value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -452,7 +453,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::vec2& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -472,7 +473,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::vec3& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -492,7 +493,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::vec4& value)
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -512,7 +513,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::mat2x2& value, bool 
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -532,7 +533,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::mat3x3& value, bool 
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -552,7 +553,7 @@ bool ShaderProgram::setUniform(const char* name, const glm::mat4x4& value, bool 
 	{
 		#ifdef EDITOR
 		{
-			uniforms[name] = value;
+			_uniforms[name] = value;
 		}
 		#endif // EDITOR
 
@@ -570,105 +571,104 @@ void ShaderProgram::loadConfig(const nlohmann::json& config)
 
 	for (auto it = config.begin(); it != config.end(); ++it)
 	{
-		const char* name = it.key().data();
 		const std::string type = it.value()["type"];
-		const nlohmann::json& value = it.value()["value"];
+		const nlohmann::json value = it.value()["value"];
 
 		switch (rat::fnv1a_32(type.begin(), type.end()))
 		{
 			case_str("bool"):
 			{
-				setUniform(name, value.get<bool>());
+				setUniform(it.key().data(), value.get<bool>());
 			}
 			break;
 			case_str("bvec2"):
 			{
-				setUniform(name, value.get<glm::bvec2>());
+				setUniform(it.key().data(), value.get<glm::bvec2>());
 			}
 			break;
 			case_str("bvec3"):
 			{
-				setUniform(name, value.get<glm::bvec3>());
+				setUniform(it.key().data(), value.get<glm::bvec3>());
 			}
 			break;
 			case_str("bvec4"):
 			{
-				setUniform(name, value.get<glm::bvec4>());
+				setUniform(it.key().data(), value.get<glm::bvec4>());
 			}
 			break;
 			case_str("int"):
 			{
-				setUniform(name, value.get<int>());
+				setUniform(it.key().data(), value.get<int>());
 			}
 			break;
 			case_str("ivec2"):
 			{
-				setUniform(name, value.get<glm::ivec2>());
+				setUniform(it.key().data(), value.get<glm::ivec2>());
 			}
 			break;
 			case_str("ivec3"):
 			{
-				setUniform(name, value.get<glm::ivec3>());
+				setUniform(it.key().data(), value.get<glm::ivec3>());
 			}
 			break;
 			case_str("ivec4"):
 			{
-				setUniform(name, value.get<glm::ivec4>());
+				setUniform(it.key().data(), value.get<glm::ivec4>());
 			}
 			break;
 			case_str("uint"):
 			{
-				setUniform(name, value.get<unsigned int>());
+				setUniform(it.key().data(), value.get<unsigned int>());
 			}
 			break;
 			case_str("uvec2"):
 			{
-				setUniform(name, value.get<glm::uvec2>());
+				setUniform(it.key().data(), value.get<glm::uvec2>());
 			}
 			break;
 			case_str("uvec3"):
 			{
-				setUniform(name, value.get<glm::uvec3>());
+				setUniform(it.key().data(), value.get<glm::uvec3>());
 			}
 			break;
 			case_str("uvec4"):
 			{
-				setUniform(name, value.get<glm::uvec4>());
+				setUniform(it.key().data(), value.get<glm::uvec4>());
 			}
 			break;
 			case_str("float"):
 			{
-				setUniform(name, value.get<float>());
+				setUniform(it.key().data(), value.get<float>());
 			}
 			break;
 			case_str("vec2"):
 			{
-				setUniform(name, value.get<glm::vec2>());
+				setUniform(it.key().data(), value.get<glm::vec2>());
 			}
 			break;
 			case_str("vec3"):
 			{
-				setUniform(name, value.get<glm::vec3>());
+				setUniform(it.key().data(), value.get<glm::vec3>());
 			}
 			break;
 			case_str("vec4"):
 			{
-				setUniform(name, value.get<glm::vec4>());
+				setUniform(it.key().data(), value.get<glm::vec4>());
 			}
 			break;
 			case_str("mat2x2"):
 			{
-				setUniform(name, value.get<glm::mat2x2>());
+				setUniform(it.key().data(), value.get<glm::mat2x2>());
 			}
 			break;
 			case_str("mat3x3"):
 			{
-				setUniform(name, value.get<glm::mat3x3>());
+				setUniform(it.key().data(), value.get<glm::mat3x3>());
 			}
 			break;
 			case_str("mat4x4"):
 			{
-				setUniform(name, value.get<glm::mat4x4>());
+				setUniform(it.key().data(), value.get<glm::mat4x4>());
 			}
 			break;
 		}
@@ -688,25 +688,15 @@ void ShaderProgram::loadConfig(const char* path)
 
 bool ShaderProgram::isValid() const
 {
-	return _program != 0;
+	return _program;
 }
 
-GLuint ShaderProgram::getNativeHandle() const
+ShaderProgram::NativeHandle_t ShaderProgram::getNativeHandle() const
 {
 	return _program;
 }
 
 #ifdef EDITOR
-
-void ShaderProgram::_setAllUniforms()
-{
-	for (const auto& [ k, v ] : uniforms)
-	{
-		std::visit([this, &k](const auto& value) {
-			setUniform(k.data(), value);
-		}, v);
-	}
-}
 
 ///
 class ImGuiID
@@ -728,10 +718,10 @@ public:
 	ImGuiID& operator = (const ImGuiID&) = delete;
 
 	///
-	ImGuiID(ImGuiID&& rhs)  = delete;
+	ImGuiID(ImGuiID&& rhs) = delete;
 
 	///
-	ImGuiID& operator = (ImGuiID&& rhs)  = delete;
+	ImGuiID& operator = (ImGuiID&& rhs) = delete;
 
 	///
 	~ImGuiID() = default;
@@ -777,21 +767,21 @@ void ShaderProgram::_showEditor(bool* open)
 		ImGui::SameLine();
 		if (ImGui::Button("Load"))
 		{
-			_loadConfig(path);
+			loadConfig(path);
 		}
 
 		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
-		if (ImGui::BeginChild("##uniformsSelectPane", ImVec2(160, 0), true))
+		if (ImGui::BeginChild("##_uniformsSelectPane", ImVec2(160, 0), true))
 		{
 			static int selected = -1;
 			int i = 0;
 
-			for (auto it = uniforms.begin(); it != uniforms.end(); ++it)
+			for (auto it = _uniforms.begin(); it != _uniforms.end(); ++it)
 			{
 				if (ImGui::Selectable(it->first.data(), selected == i))
 				{
-					currentElem = it;
+					_currentElem = it;
 					selected = i;
 				}
 
@@ -802,28 +792,28 @@ void ShaderProgram::_showEditor(bool* open)
 
 		ImGui::SameLine();
 
-		if (ImGui::BeginChild("##uniformsEditPane", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())))
+		if (ImGui::BeginChild("##_uniformsEditPane", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())))
 		{
-			if (currentElem != uniforms.end())
+			if (_currentElem != _uniforms.end())
 			{
 				std::visit(Overloaded {
 					[this](bool& value) {
 						ImGui::Text("Checkbox");
 						ImGui::Checkbox(imID.get(), &value);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::bvec2& value) {
 						ImGui::Text("Checkboxes");
 						ImGui::Checkbox(imID.get(), &value[0]); ImGui::SameLine();
 						ImGui::Checkbox(imID.get(), &value[1]);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::bvec3& value) {
 						ImGui::Text("Checkboxes");
 						ImGui::Checkbox(imID.get(), &value[0]); ImGui::SameLine();
 						ImGui::Checkbox(imID.get(), &value[1]); ImGui::SameLine();
 						ImGui::Checkbox(imID.get(), &value[2]);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::bvec4& value) {
 						ImGui::Text("Checkboxes");
@@ -831,57 +821,57 @@ void ShaderProgram::_showEditor(bool* open)
 						ImGui::Checkbox(imID.get(), &value[1]); ImGui::SameLine();
 						ImGui::Checkbox(imID.get(), &value[2]); ImGui::SameLine();
 						ImGui::Checkbox(imID.get(), &value[3]);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](int& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputInt(imID.get(), &value);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::ivec2& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputInt2(imID.get(), glm::value_ptr(value));
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::ivec3& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputInt3(imID.get(), glm::value_ptr(value));
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::ivec4& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputInt4(imID.get(), glm::value_ptr(value));
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](unsigned& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputScalar(imID.get(), ImGuiDataType_U32, &value);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::uvec2& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputScalarN(imID.get(), ImGuiDataType_U32, glm::value_ptr(value), 2);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::uvec3& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputScalarN(imID.get(), ImGuiDataType_U32, glm::value_ptr(value), 3);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::uvec4& value) {
 						ImGui::Text("Input"); ImGui::Spacing();
 						ImGui::InputScalarN(imID.get(), ImGuiDataType_U32, glm::value_ptr(value), 4);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](float& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
 						ImGui::DragFloat(imID.get(), &value, 0.01f);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::vec2& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
 						ImGui::DragFloat2(imID.get(), glm::value_ptr(value), 0.01f);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::vec3& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
@@ -889,7 +879,7 @@ void ShaderProgram::_showEditor(bool* open)
 						ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 						ImGui::Text("ColorEdit"); ImGui::Spacing();
 						ImGui::ColorEdit3(imID.get(), glm::value_ptr(value));
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::vec4& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
@@ -897,20 +887,20 @@ void ShaderProgram::_showEditor(bool* open)
 						ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 						ImGui::Text("ColorEdit"); ImGui::Spacing();
 						ImGui::ColorEdit4(imID.get(), glm::value_ptr(value));
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::mat2x2& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
 						ImGui::DragFloat2(imID.get(), glm::value_ptr(value[0]), 0.01f);
 						ImGui::DragFloat2(imID.get(), glm::value_ptr(value[1]), 0.01f);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::mat3x3& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
 						ImGui::DragFloat3(imID.get(), glm::value_ptr(value[0]), 0.01f);
 						ImGui::DragFloat3(imID.get(), glm::value_ptr(value[1]), 0.01f);
 						ImGui::DragFloat3(imID.get(), glm::value_ptr(value[2]), 0.01f);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
 					[this](glm::mat4x4& value) {
 						ImGui::Text("DragInput"); ImGui::Spacing();
@@ -918,9 +908,9 @@ void ShaderProgram::_showEditor(bool* open)
 						ImGui::DragFloat4(imID.get(), glm::value_ptr(value[1]), 0.01f);
 						ImGui::DragFloat4(imID.get(), glm::value_ptr(value[2]), 0.01f);
 						ImGui::DragFloat4(imID.get(), glm::value_ptr(value[3]), 0.01f);
-						setUniform(currentElem->first.data(), value);
+						setUniform(_currentElem->first.data(), value);
 					},
-				}, currentElem->second);
+				}, _currentElem->second);
 
 				imID.reset();
 			}
@@ -932,11 +922,11 @@ void ShaderProgram::_showEditor(bool* open)
 
 void ShaderProgram::_saveConfig(nlohmann::json& config) const
 {
-	for (const auto& [ k, v ] : uniforms)
+	for (const auto& [ k, v ] : _uniforms)
 	{
 		nlohmann::json& j = config[k];
 
-		std::visit([&j, type = uniTypeNames[v.index()]](const auto& value) {
+		std::visit([&j, type = _uniTypeNames[v.index()]](const auto& value) {
 			j["value"] = value;
 			j["type"] = type;
 		}, v);
@@ -952,43 +942,24 @@ void ShaderProgram::_saveConfig(const char* path) const
 	std::ofstream{ path } << std::setw(4) << config;
 }
 
-void ShaderProgram::_loadConfig(const nlohmann::json& config)
-{
-	for (auto& [ k, v ] : uniforms)
-	{
-		if (auto it = config.find(k); it != config.end())
-		{
-			std::visit([it](auto& value) {
-				value = it.value()["value"];
-			}, v);
-		}
-	}
-
-	_setAllUniforms();
-}
-
-void ShaderProgram::_loadConfig(const char* path)
-{
-	nlohmann::json config;
-
-	std::ifstream{ path } >> config;
-
-	_loadConfig(config);
-}
-
 #endif // EDITOR
 
 void ShaderProgram::_destroy()
 {
-	if (isValid())
+	if (_program)
 	{
 		glDeleteProgram(_program);
 
-		_program = 0;
+		#ifdef EDITOR
+        {
+            _uniforms.clear();
+        	_currentElem = _uniforms.end();
+        }
+        #endif // EDITOR
 	}
 }
 
-bool ShaderProgram::_finishLinking()
+void ShaderProgram::_finishLinking()
 {
 	GLint success;
 	glGetProgramiv(_program, GL_LINK_STATUS, &success);
@@ -998,11 +969,11 @@ bool ShaderProgram::_finishLinking()
 		GLchar infoLog[512];
 		glGetProgramInfoLog(_program, sizeof(infoLog), nullptr, infoLog);
 
-		throw std::runtime_error(std::string("Unable to link shader program:\n") + infoLog);
-
 		_destroy();
 
-		return false;
+		_program = 0;
+
+		throw std::runtime_error(std::string("Unable to link shader program:\n") + infoLog);
 	}
 
 	#ifdef EDITOR
@@ -1024,141 +995,139 @@ bool ShaderProgram::_finishLinking()
 				{
 					int value;
 					glGetUniformiv(_program, i, &value);
-					uniforms.emplace(name, static_cast<bool>(value));
+					_uniforms.emplace(name, static_cast<bool>(value));
 				}
 				break;
 				case GL_BOOL_VEC2:
 				{
 					glm::ivec2 value;
 					glGetUniformiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, glm::bvec2{ value });
+					_uniforms.emplace(name, glm::bvec2{ value });
 				}
 				break;
 				case GL_BOOL_VEC3:
 				{
 					glm::ivec3 value;
 					glGetUniformiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, glm::bvec3{ value });
+					_uniforms.emplace(name, glm::bvec3{ value });
 				}
 				break;
 				case GL_BOOL_VEC4:
 				{
 					glm::ivec4 value;
 					glGetUniformiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, glm::bvec4{ value });
+					_uniforms.emplace(name, glm::bvec4{ value });
 				}
 				break;
 				case GL_INT:
 				{
 					int value;
 					glGetUniformiv(_program, i, &value);
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_INT_VEC2:
 				{
 					glm::ivec2 value;
 					glGetUniformiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_INT_VEC3:
 				{
 					glm::ivec3 value;
 					glGetUniformiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_INT_VEC4:
 				{
 					glm::ivec4 value;
 					glGetUniformiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_UNSIGNED_INT:
 				{
 					unsigned value;
 					glGetUniformuiv(_program, i, &value);
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_UNSIGNED_INT_VEC2:
 				{
 					glm::uvec2 value;
 					glGetUniformuiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_UNSIGNED_INT_VEC3:
 				{
 					glm::uvec3 value;
 					glGetUniformuiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_UNSIGNED_INT_VEC4:
 				{
 					glm::uvec4 value;
 					glGetUniformuiv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT:
 				{
 					float value;
 					glGetUniformfv(_program, i, &value);
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT_VEC2:
 				{
 					glm::vec2 value;
 					glGetUniformfv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT_VEC3:
 				{
 					glm::vec3 value;
 					glGetUniformfv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT_VEC4:
 				{
 					glm::vec4 value;
 					glGetUniformfv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT_MAT2:
 				{
 					glm::mat2x2 value;
 					glGetUniformfv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT_MAT3:
 				{
 					glm::mat3x3 value;
 					glGetUniformfv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 				case GL_FLOAT_MAT4:
 				{
 					glm::mat4x4 value;
 					glGetUniformfv(_program, i, glm::value_ptr(value));
-					uniforms.emplace(name, value);
+					_uniforms.emplace(name, value);
 				}
 				break;
 			}
 		}
 	}
 	#endif // EDITOR
-
-	return true;
 }
 
 }

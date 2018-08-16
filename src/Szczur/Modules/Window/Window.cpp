@@ -10,6 +10,9 @@
 #include <memory> // unique_ptr
 #include <stdexcept>
 
+#include <glm/vec4.hpp>
+#include <glad/glad.h>
+
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <SFML/Window/Event.hpp>
@@ -20,10 +23,13 @@
 #include <SFML/Graphics/Vertex.hpp>
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
+#include "Szczur/Utility/SFML3D/RenderWindow.hpp"
+#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "Szczur/Utility/SFML3D/Vertex.hpp"
-#include "Szczur/Utility/SFML3D/Shader.hpp"
 #include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
+#include "Szczur/Utility/SFML3D/Shader.hpp"
+#include "Szczur/Utility/SFML3D/Vertex.hpp"
+#include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -53,15 +59,19 @@ void Window::setVideoMode(const sf::VideoMode& mode)
 	this->recreateWindow();
 }
 
-sf::Vector2u Window::getSize() const noexcept
+// Size
+glm::uvec2 Window::getSize() const noexcept
 {
 	return {this->videoMode.width, this->videoMode.height};
 }
-void Window::setSize(sf::Vector2u size)
+void Window::setSize(glm::uvec2 size)
 {
 	this->videoMode.width = size.x;
 	this->videoMode.height = size.y;
+
 	this->setVideoMode(this->videoMode);
+	//this->getWindow().setSize(size);
+	// @todo . dobra :/ mam jeszcze jeden pomysł ale to kiedyś... 
 }
 
 // FrameRate
@@ -113,14 +123,14 @@ void Window::setFullscreen(bool state)
 Window::Window()
 :	window(this->videoMode, this->title)
 {
-	LOG_INFO("Initializing Window module");
+	LOG_INFO("Window module initializing");
 	this->init();
-	LOG_INFO("Module Window initialized");
+	LOG_INFO("Window module initialized");
 }
 // Destructor
 Window::~Window()
 {
-	LOG_INFO("Module Window destructed");
+	LOG_INFO("Window module destructed");
 }
 
 
@@ -130,35 +140,26 @@ Window::~Window()
 void Window::init()
 {
 	try {
-		// Create
-		// @todo ? load videomode from settings
-		this->setVideoMode(sf::VideoMode::getDesktopMode());
+		// Set video mode, also creates window
+		//  Create window MUST be first, before messing around with GL because of dynamic GL/GLAD functions binding,
+		//  which require some rendering context which is created in SFML `sf::RenderWindow::create`.
+		this->setVideoMode(this->videoMode); // @todo ? load videomode from settings
 
 		// Print OpenGL version
 		LOG_INFO("OpenGL version: ", GLVersion.major, ".", GLVersion.minor);
 
-		// GL flags
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		glFrontFace(GL_CCW);
-
 		// Shader
 		try {
-			sf3d::Shader VShader;
-			VShader.loadFromFile(sf3d::Shader::Vertex, "Assets/Shaders/assemble.vert");
-			sf3d::Shader FShader;
-			FShader.loadFromFile(sf3d::Shader::Fragment, "Assets/Shaders/assemble.frag");
-
-			this->shaderProgram = std::make_unique<sf3d::ShaderProgram>();
-			this->shaderProgram->linkShaders(VShader, FShader);
+			this->shaderProgram.linkShaders(
+				sf3d::Shader {sf3d::Shader::Vertex,		"Assets/Shaders/assemble.vert"},
+				sf3d::Shader {sf3d::Shader::Fragment,	"Assets/Shaders/assemble.frag"}
+			);
 			LOG_INFO("Shader loaded, compiled and linked.");
 		}
 		catch (...) {
 			std::throw_with_nested(std::runtime_error("Shader couldn't been loaded."));
 		}
-
-		this->getWindow().setDefaultShaderProgram(this->shaderProgram.get());
+		this->getWindow().setDefaultShaderProgram(this->shaderProgram);
 	}
 	catch (...) {
 		std::throw_with_nested(std::runtime_error("Cannot initialized Window module."));
@@ -177,12 +178,20 @@ void Window::processEvent(sf::Event event)
 	switch (event.type) {
 		case sf::Event::Resized:
 		{
+			// Update video mode
 			this->setSize({event.size.width, event.size.height});
 		}
 		break;
+		
 		case sf::Event::Closed:
 		{
-			getModule<Window>().getWindow().close();
+			this->getWindow().close();
+		}
+		break;
+		
+		default:
+		{
+			// Do nothing.
 		}
 		break;
 	}
@@ -191,15 +200,32 @@ void Window::processEvent(sf::Event event)
 // Window recreate
 void Window::recreateWindow()
 {
-	this->getWindow().create(this->videoMode, this->title, this->shaderProgram.get(), this->windowStyle);
+	// Setup window
+	// `ShaderProgram* = nullptr`, so it will not change it from the one from `init`.
+	this->getWindow().create(this->videoMode, this->title, nullptr, this->windowStyle);
 	this->setFramerateLimit(this->framerateLimit);
+
+	// Overall GL flags
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CCW);
+	
+	glDisable(GL_DEPTH_TEST);
 }
 
 // clear
-void Window::clear(const sf::Color& color)
+void Window::clear(const glm::vec4& color)
 {
 	this->getWindow().clear(color, GL_COLOR_BUFFER_BIT);
-	//this->getWindow().clear(color, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+void Window::clearSFML(const sf::Color& color)
+{
+	this->getWindow().clear({
+		static_cast<float>(color.r) / 255.f, 
+		static_cast<float>(color.g) / 255.f, 
+		static_cast<float>(color.b) / 255.f, 
+		static_cast<float>(color.a) / 255.f
+	}, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL states
@@ -225,19 +251,19 @@ void Window::draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::Primi
 // 3D
 void Window::draw(const sf3d::Drawable& drawable, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(drawable, states);
+	drawable.draw(this->getWindow(), states);
 }
 void Window::draw(const sf3d::Drawable& drawable)
 {
-	this->getWindow().draw(drawable);
+	drawable.draw(this->getWindow());
 }
 void Window::draw(const sf3d::VertexArray& vertices, const sf3d::RenderStates& states)
 {
-	this->getWindow().draw(vertices, states);
+	vertices.draw(this->getWindow(), states);
 }
 void Window::draw(const sf3d::VertexArray& vertices)
 {
-	this->getWindow().draw(vertices);
+	vertices.draw(this->getWindow());
 }
 
 }

@@ -43,7 +43,7 @@ struct Material
 
 
 
-// Vertex
+// Fragment
 in vec3 fragmentPosition;
 in vec4 fragmentColor;
 in vec2 fragmentTexCoord;
@@ -75,7 +75,7 @@ void main()
         vec3 normal = normalize(vec3(0, 0, 0));
         vec3 cameraDirection = normalize(cameraPosition - fragmentPosition);
 
-        vec4 pixel = texture(material.diffuseTexture, fragmentTexCoord);
+        vec4 pixel = texture2D(material.diffuseTexture, fragmentTexCoord);
         
         if (pixel.a == 0) {
             // Do nothing, when fully transparent
@@ -137,12 +137,12 @@ vec3 calucaltePointLight(PointLight light, vec3 normal, vec3 fragmentPosition, v
     result = (
         light.ambientFactor +
         light.diffuseFactor * diffusePositionFactor
-    ) * texture(material.diffuseTexture, fragmentTexCoord).rgb;
+    ) * texture2D(material.diffuseTexture, fragmentTexCoord).rgb;
 
 #ifdef ENABLE_SPECULAR
     result += (
         light.specularFactor * specularPositionFactor
-    ) * texture(material.specularTexture, fragmentTexCoord).rgb;
+    ) * texture2D(material.specularTexture, fragmentTexCoord).rgb;
 #endif
 
 #ifdef ENABLE_ATTENUATION

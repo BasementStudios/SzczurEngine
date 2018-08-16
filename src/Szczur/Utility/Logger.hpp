@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Szczur/Config.hpp"
+#include "Szczur/Utility/Convert/GLMStreams.hpp"
 
 #include <fstream>
 #ifdef DEBUG

@@ -8,13 +8,11 @@
 #include <vector>
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
-
 #include <glad/glad.h> // GLbitfield
+#include <SFML/Graphics/Color.hpp>
 
-namespace sf {
-	class Color;
-}
 #include "RenderStates.hpp"
 #include "Camera.hpp"
 namespace sf3d {
@@ -38,10 +36,12 @@ protected:
 	RenderStates defaultStates;
 	
 	Camera* camera {nullptr};
-	Camera* defaultCamera;
+	Camera* defaultCamera {nullptr};
 
+public:
 	float positionFactor;
 
+protected:
 	std::vector<LightPoint*> lightPoints;
 
 private:
@@ -55,6 +55,7 @@ public:
 	RenderStates getDefaultRenderStates() const;
 	void setDefaultRenderStates(const RenderStates& states);
 	void setDefaultShaderProgram(ShaderProgram* program);
+	void setDefaultShaderProgram(ShaderProgram& program);
 
 	/// Current camera object which define what to render
 	Camera* getCamera();
@@ -78,15 +79,16 @@ protected:
 protected:
 	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
 
-public:
-	virtual bool _setActive(bool state = true);
+	virtual bool _setActive(bool state = true) = 0;
 
+public:
 	/// Helper function to scale matrix coords propertly
 	glm::mat4 scaleMatrixCoords(glm::mat4 matrix);
 
 	// Clearing
-	void clear(float r, float g, float b, float a, GLbitfield flags);
-	void clear(const sf::Color& color, GLbitfield flags);
+	void clear(const glm::vec4& color, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	[[deprecated("SF3D should operate on its own color class in the future, but at now it is `glm::vec4`.")]]
+	void clearSFML(const sf::Color& color = sf::Color::Transparent, GLbitfield flags = (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 	// Drawing drawables
 	void draw(const Drawable& drawable, const RenderStates& states);
@@ -95,10 +97,6 @@ public:
 	// Drawing vertices
 	void draw(const VertexArray& vertices, const RenderStates& states);
 	void draw(const VertexArray& vertices);
-
-    // "Simple draw" 
-    void simpleDraw(const VertexArray& vertices, RenderStates states); 
-    void simpleDraw(const VertexArray& vertices); 
 	
 	// Interaction
 	Linear getLinearByScreenPosition(glm::vec2 pos) const;

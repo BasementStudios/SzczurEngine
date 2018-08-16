@@ -9,6 +9,8 @@
 #include <string>
 #include <memory> // unique_ptr
 
+#include <glm/vec4.hpp>
+
 namespace sf {
 	class Drawable;
 	class Vertex;
@@ -20,13 +22,15 @@ namespace sf {
 #include <SFML/Graphics/PrimitiveType.hpp>
 
 namespace sf3d {
+	class Event;
 	class Drawable;
 	class Vertex;
-	class Event;
+	class VertexArray;
 }
 #include "Szczur/Utility/SFML3D/RenderWindow.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderTexture.hpp"
+#include "Szczur/Utility/SFML3D/RenderStates.hpp"
+#include "Szczur/Utility/SFML3D/ShaderProgram.hpp"
 #include "Szczur/Utility/Modules/Module.hpp"
 
 namespace rat {
@@ -53,10 +57,10 @@ private:
 	sf::Uint32		windowStyle		{sf::Style::Default};
 
 	// Elmenents for render
-	Window_t	window;
+	Window_t window;
 	
 	// Shader programs
-	std::unique_ptr<sf3d::ShaderProgram> shaderProgram;
+	sf3d::ShaderProgram shaderProgram;
 
 
 
@@ -71,8 +75,8 @@ public:
 	void setVideoMode(const sf::VideoMode& mode);
 
 	/// Size of window. Related to video mode.
-	sf::Vector2u getSize() const noexcept;
-	void setSize(sf::Vector2u size);
+	glm::uvec2 getSize() const noexcept;
+	void setSize(glm::uvec2 size);
 
 	/// Limit of updated and rendered frames per second.
 	unsigned int getFramerateLimit() const noexcept;
@@ -116,7 +120,8 @@ protected:
 
 public:
 	// Cleaning
-	void clear(const sf::Color& color = sf::Color::Transparent);
+	void clear(const glm::vec4& color = {0.f, 0.f, 0.f, 0.f});
+	void clearSFML(const sf::Color& color = sf::Color::Transparent);
 
 	// GL states
 	void pushGLStates();
