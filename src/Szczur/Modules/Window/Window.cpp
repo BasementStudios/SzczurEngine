@@ -185,6 +185,11 @@ void Window::processEvent(sf::Event event)
 			getModule<Window>().getWindow().close();
 		}
 		break;
+		default:
+		{
+			// Do nothing
+		}
+		break;
 	}
 }
 
