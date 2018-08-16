@@ -6,6 +6,7 @@
 #include <experimental/filesystem>
 #include <sstream>
 #include <iomanip>
+#include <chrono>
 
 #include <boost/stacktrace.hpp>
 
@@ -16,7 +17,7 @@
 
 
 #ifdef OS_WINDOWS
-#include <Windows.h>
+#include <windows.h>
 #include <tlhelp32.h>
 #endif
 

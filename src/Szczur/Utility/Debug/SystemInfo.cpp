@@ -8,7 +8,7 @@
 #include <glad/glad.h>
 
 #ifdef OS_WINDOWS
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 namespace rat::system_info
