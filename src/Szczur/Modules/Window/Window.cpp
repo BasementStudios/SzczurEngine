@@ -182,7 +182,7 @@ void Window::processEvent(sf::Event event)
 		break;
 		case sf::Event::Closed:
 		{
-			getModule<Window>().getWindow().close();
+			this->getWindow().close();
 		}
 		break;
 		default:
