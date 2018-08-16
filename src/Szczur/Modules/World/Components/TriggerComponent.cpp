@@ -201,7 +201,11 @@ namespace rat {
 
     void TriggerComponent::update(ScenesManager& scenes, float deltaTime) {
 
-    	if(!scenes.isGameRunning()) return;
+    	if (!scenes.isGameRunning())
+			return;
+
+		if (!getEntity()->isActive())
+			return;
 
         auto* player = getEntity()->getScene()->getPlayer();
         if(player == nullptr)

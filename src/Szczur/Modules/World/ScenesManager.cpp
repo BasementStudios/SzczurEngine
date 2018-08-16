@@ -430,7 +430,7 @@ void ScenesManager::runGame() {
 void ScenesManager::stopGame() {
 	if(_gameIsRunning) {
  
-	    detail::globalPtr<Cinematics>->stop(); 
+	    detail::globalPtr<Cinematics>->skip(); 
 	    detail::globalPtr<Music>->stop(); 
 	    detail::globalPtr<Sound>->stop(); 
 		detail::globalPtr<Equipment>->stopEquipment();
