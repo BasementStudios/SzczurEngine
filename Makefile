@@ -430,9 +430,14 @@ ifeq ($(OPTIMALIZE),yes)
 endif
 
 # Adding debugger flags
-ifeq (DEBUGGER,ggdb)
-    CXXFLAGS += -ggdb
-     LDFLAGS += -ggdb
+ifneq ($(DEBUGGER),none)
+    ifeq ($(DEBUGGER),gdb)
+        CXXFLAGS += -ggdb
+         LDFLAGS += -ggdb
+    else
+        CXXFLAGS += -g
+         LDFLAGS += -g
+    endif
 endif
 
 
@@ -654,13 +659,13 @@ echo:
 	@echo "$(LDFLAGS)"
 	@echo ""
 	@echo "Sources:"
-	@echo "$(subst $(SPACE),\n,$(SOURCES))"
+	@echo -e "$(subst $(SPACE),\n,$(SOURCES))"
 	@echo ""
 	@echo "Headers:"
-	@echo "$(subst $(SPACE),\n,$(HEADERS))"
+	@echo -e "$(subst $(SPACE),\n,$(HEADERS))"
 	@echo ""
 	@echo "Templates:"
-	@echo "$(subst $(SPACE),\n,$(TEMPLATES))"
+	@echo -e "$(subst $(SPACE),\n,$(TEMPLATES))"
 	@echo ""
 
 
