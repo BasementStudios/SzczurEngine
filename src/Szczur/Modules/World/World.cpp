@@ -99,11 +99,12 @@ void World::update(float deltaTime)
 	}
 #endif
 
-	// Changing scene fade update
-	if (_isChangingScene) {
+	if (_fadeStage != FadeStage::None)
+	{
 		float progress = _fadeStart.getElapsedTime().asSeconds() / _fadeTime;
 
-		if (_fadeStage == 1) {
+		if (_fadeStage == FadeStage::FadingIn)
+		{
 			if (progress < 1.f)
 			{
 				progress = 1.f - progress;
@@ -111,16 +112,17 @@ void World::update(float deltaTime)
 			else if (progress >= 1.f)
 			{
 				progress = 0.f;
-				_scenes.setCurrentScene(_sceneToChange);
-				_fadeStage = 2;
-				_fadeStart.restart();
+				_fadeStage = FadeStage::None;
+				onFade(FadeStage::FadingIn);
 			}
 		}
-		else if (_fadeStage == 2) {
+		else if (_fadeStage == FadeStage::FadingOut)
+		{
 			if (progress >= 1.f)
 			{
 				progress = 1.f;
-				_isChangingScene = false;
+				_fadeStage = FadeStage::None;
+				onFade(FadeStage::FadingOut);
 			}
 		}
 
@@ -188,11 +190,43 @@ void World::setEditor(bool flag)
 
 void World::fadeIntoScene(size_t id, float fadeTime)
 {
-	_fadeStage = 1;
+	fadeIn(fadeTime / 2.f);
 	_isChangingScene = true;
 	_sceneToChange = id;
-	_fadeTime = fadeTime;
+}
+
+void World::fadeIn(float time)
+{
+	_fadeStage = FadeStage::FadingIn;
+	_fadeTime = time;
 	_fadeStart.restart();
+}
+
+void World::fadeOut(float time)
+{
+	_fadeStage = FadeStage::FadingOut;
+	_fadeTime = time;
+	_fadeStart.restart();
+}
+
+void World::onFade(FadeStage endedFadeStage)
+{
+	if (_isChangingScene && endedFadeStage == FadeStage::FadingIn)
+	{
+		_isChangingScene = false;
+		_scenes.setCurrentScene(_sceneToChange);
+		fadeOut(_fadeTime);
+	}
+
+	if (_fadeCallback.valid())
+	{
+		auto callback = _fadeCallback;
+
+		// reset callback before setting new (in callback it may be fadeOut call)
+		_fadeCallback = { };
+
+		callback();
+	}
 }
 
 void World::initScript() {
@@ -212,6 +246,16 @@ void World::initScript() {
 		[&] (Scene* scene, float fadeTime = 1.f) {fadeIntoScene(scene->getID(), fadeTime); },
 		[&] (const std::string& name, float fadeTime = 1.f) {fadeIntoScene(_scenes.getScene(name)->getID(), fadeTime); }
 	));
+
+	module.set_function("fadeIn", [&] (float fadeTime, sol::function callback) {
+		_fadeCallback = callback;
+		fadeIn(fadeTime);
+	});
+
+	module.set_function("fadeOut", [&] (float fadeTime, sol::function callback) {
+		_fadeCallback = callback;
+		fadeOut(fadeTime);
+	});
 
 	module.set_function("getTextureDataHolder", [&](){return std::ref(getScenes().getTextureDataHolder());});
 

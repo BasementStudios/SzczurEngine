@@ -17,6 +17,13 @@
 namespace rat
 {
 
+enum class FadeStage
+{
+	FadingIn = 0,
+	FadingOut,
+	None
+};
+
 class World : public Module<Window, Input, Script>
 {
 public:
@@ -73,6 +80,15 @@ public:
 	///
 	void fadeIntoScene(size_t id, float fadeTime = 1.f);
 
+	///
+	void fadeIn(float time);
+	
+	///
+	void fadeOut(float time);
+
+private:
+	void onFade(FadeStage endedFadeStage);
+
 private:
 
 	bool _doEditor{true};
@@ -83,12 +99,15 @@ private:
 	LevelEditor _levelEditor;
 	#endif
 
-// Fade into scene
-	int _fadeStage = 0;
-	bool _isChangingScene = false;
-	size_t _sceneToChange = 0;
+// Fade
+	FadeStage _fadeStage = FadeStage::None;
 	float _fadeTime = 1.f;
 	sf::Clock _fadeStart;
+	sol::function _fadeCallback;
+
+// Changing scene with fade
+	bool _isChangingScene = false;
+	size_t _sceneToChange = 0;
 
 	sf3d::ShaderProgram _thisWholeCodeWillBeDeletedAndReplacedWithBetterCodeWhichWouldIncludePlanningAndTestingInsteadOfJustWritingShit;
 	float _elapsedTime = 0.f;
