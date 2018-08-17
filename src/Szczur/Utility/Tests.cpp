@@ -1,6 +1,11 @@
 #include "Tests.hpp"
 #ifdef TESTING
 
+/** @file Tests.cpp
+ ** @description Implementation file for testing utilities, based on GoogleTest, modified for this project (visual tests).
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
 namespace testing
 {
 

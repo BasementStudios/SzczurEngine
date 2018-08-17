@@ -1,6 +1,11 @@
 #pragma once
 #ifdef TESTING
 
+/** @file Tests.hpp
+ ** @description Header file for testing utilities, based on GoogleTest, modified for this project (visual tests).
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
 #include <vector>
 #include <string>
 #include <stdexcept>
@@ -62,18 +67,17 @@ struct Tester : public TesterInvoker
 #define LOG_TEST(TEXT) \
 	{ 															\
 		rat::logger->log(filename, line, "TEST", TEXT);			\
-		rat::detail::globalPtr_v<rat::Window>->getWindow().setTitle(TEXT); \
+		rat::detail::globalPtr<rat::Window>->getWindow().setTitle(TEXT); \
 	}															
 	void operator()()
 	{
 		try {
 			LOG_TEST(std::string("Testing case ") + testCase + " in " + testName + "...");
 			{
-				TTestClass* test = new TTestClass();
-				test->SetUp();
-				test->Run();
-				test->TearDown();
-				delete test;
+				TTestClass test;
+				test.SetUp();
+				test.Run();
+				test.TearDown();
 			}
 			LOG_TEST(std::string("[+] Test case ") + testCase + " in " + testName + " succeeded!");
 		}
@@ -123,7 +127,7 @@ struct Test
 		sf::Event event;								\
 		rat::Clock clock;								\
 		bool testing = true;							\
-		sf3d::RenderWindow& window = rat::detail::globalPtr_v<rat::Window>->getWindow(); \
+		sf3d::RenderWindow& window = rat::detail::globalPtr<rat::Window>->getWindow(); \
 		while (testing) {								\
 			UPDATE;										\
 			RENDER;										\
