@@ -13,7 +13,7 @@ class Texture
 	/* Variables */
 protected:
 	GLuint textureID {0u};
-	glm::uvec2 size {0.f, 0.f};
+	glm::uvec2 size {0u, 0u};
 
 	
 
@@ -37,17 +37,21 @@ public:
 
 	Texture(const Texture&) = delete;
 	Texture& operator = (const Texture&) = delete;
-
+	
 	Texture(glm::uvec2 size);
+	
+	/// Constructs texture by loading from file
+	Texture(const char* path);
+	Texture(const std::string& path);
 
 
 
 	/* Methods */
 public:
-	void create(glm::vec2 size);
+	void create(glm::uvec2 size);
 
-	bool loadFromFile(const char* path);
-	bool loadFromFile(const std::string& path);
+	void loadFromFile(const char* path);
+	void loadFromFile(const std::string& path);
 
 	void bind() const noexcept;
 	void unbind() const noexcept;

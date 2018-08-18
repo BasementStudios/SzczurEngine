@@ -11,11 +11,11 @@ namespace sf3d
 
 class RenderStates {
 public:
-	RenderStates(ShaderProgram* shader = nullptr, Transform transform = Transform(), Texture* texture = nullptr);
+	RenderStates(Transform transform = Transform(), ShaderProgram* shader = nullptr, Texture* texture = nullptr);
 	RenderStates(const RenderStates&) = default;
 
-	ShaderProgram* shader;
 	Transform transform;
+	ShaderProgram* shader;
 	const Texture* texture;
 
 	static const RenderStates Default;

@@ -3,7 +3,7 @@
 # Intro
 #
 
-$(info [ PsychoX' Makefile - version 2.5.3 ])
+$(info [ PsychoX' Makefile - version 2.6.0 ])
 
 # Special variables
 .SUFFIXES:
@@ -104,9 +104,12 @@ RUN_EXT := .exe
 
 # Compiler and linker 
 CXX      := g++ 
-CXXFLAGS := -std=c++17 -Wall
+CXXFLAGS := -Wall
 LD       := g++
-LDFLAGS  :=
+LDFLAGS  := -Wall
+
+# Language
+CXXFLAGS += -std=c++17 
 
 # Using MXE? and its options
 MXE := no
@@ -270,9 +273,15 @@ LDFLAGS  += $( LDFLAGS_$(LINKING))
 # Threads mode
 override THREADS := $(shell echo $(THREADS) | tr a-z A-Z)
 
-# Default cross compiler
+# Cross-compilling
 ifeq ($(CROSS),)
-    CROSS := yes
+    # Detect cross-compilation
+    ifneq ($(TARGET_PLATFORM),$(SYSTEM_PLATFORM))
+        CROSS := yes
+    endif
+    ifneq ($(TARGET_ARCH),$(SYSTEM_ARCH))
+        CROSS := yes
+    endif
 endif
 ifeq ($(CROSS),yes)
     # Architecture 
@@ -280,13 +289,23 @@ ifeq ($(CROSS),yes)
     ifeq ($(CROSS),)
         $(error "Target architecture not selected propertly... TARGET_ARCH=$(TARGET_ARCH)")
     endif
-
+    
     # Platform
     # -> Windows...
     ifeq ($(TARGET_PLATFORM),win)
         # Select MINGW-W64
         CROSS := $(CROSS)-w64-mingw32
-        # MXE support
+    # -> Linux...
+    else ifeq ($(TARGET_PLATFORM),lin)
+        # Select Linux GNU
+        CROSS := $(CROSS)-linux-gnu
+    # -> Invaild platform
+    else
+        $(error "Target platform not selected propertly... TARGET_PLATFORM=$(TARGET_PLATFORM)")
+    endif
+    
+    # MXE support
+    ifeq ($(TARGET_PLATFORM),win)
         ifeq ($(MXE),yes)
             # Add MXE as cross-target compiling env
             MXE_BIN_DIR := $(MXE_DIR)/usr/bin
@@ -304,16 +323,20 @@ ifeq ($(CROSS),yes)
                 CROSS := $(CROSS).posix
             endif
         endif
-    # -> Linux...
-    else ifeq ($(TARGET_PLATFORM),lin)
-        # Select Linux GNU
-        CROSS := $(CROSS)-linux-gnu
-    # -> Invaild platform
-    else
-        $(error "Target platform not selected propertly... TARGET_PLATFORM=$(TARGET_PLATFORM)")
     endif
-    CROSS := $(CROSS)-
-
+    
+    # Compiler 
+    # -> Clang
+    ifeq ($(findstring clang,$(CXX)),clang)
+        # Passing target information via argument instead of whole toolchain prefix
+        CXXFLAGS += -target $(CROSS)
+         LDFLAGS += -target $(CROSS)
+        CROSS :=
+    else
+    # -> Other 
+        CROSS := $(CROSS)-
+    endif
+    
     # If true 32 bit compiler not present, use universal
     ifeq ($(shell bash -c "command -v $(CROSS)$(CXX)"),)
         CROSS := $(subst i686,x86_64,$(CROSS))
@@ -323,15 +346,9 @@ ifeq ($(CROSS),yes)
     # If no selective compiler, just try use 'g++'...
     ifeq ($(shell bash -c "command -v $(CROSS)$(CXX)"),)
         CROSS :=
-        $(warning "Using standard system compiler... (i.e. g++)")
+        $(warning "Using standard system compiler... ($(CXX))")
     endif
-endif
-
-# Use default system compiler
-ifeq ($(CROSS),no)
-    CROSS :=
-endif
-ifeq ($(CROSS),none)
+else
     CROSS :=
 endif
 
@@ -339,8 +356,9 @@ endif
 ifeq ($(PKG_CONFIG),no)
     PKG_CONFIG :=
 endif
-ifeq ($(shell bash -c "command -v $(PKG_CONFIG)"),)
+ifeq ($(shell bash -c "command -v $(CROSS)$(PKG_CONFIG)"),)
     PKG_CONFIG :=
+    #$(warning "A pkg-config not found, using only basic method to provide libraries...")
 endif
 
 # Select compiler, linker and other tools
@@ -412,9 +430,14 @@ ifeq ($(OPTIMALIZE),yes)
 endif
 
 # Adding debugger flags
-ifeq (DEBUGGER,ggdb)
-    CXXFLAGS += -ggdb
-     LDFLAGS += -ggdb
+ifneq ($(DEBUGGER),none)
+    ifeq ($(DEBUGGER),gdb)
+        CXXFLAGS += -ggdb
+         LDFLAGS += -ggdb
+    else
+        CXXFLAGS += -g
+         LDFLAGS += -g
+    endif
 endif
 
 

@@ -9,6 +9,8 @@
 
 #include "ImGuiStyler.hpp"
 
+#include "ImGuiStyler.hpp"
+
 namespace rat
 {
 

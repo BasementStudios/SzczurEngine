@@ -12,7 +12,7 @@ namespace sf3d {
 }
 #include "Drawable.hpp"
 #include "RenderTexture.hpp"
-#include "SimpleSprite.hpp"
+#include "VertexArray.hpp"
 #include "RenderStates.hpp"
 
 namespace sf3d
@@ -22,7 +22,7 @@ class RenderLayer : public RenderTexture, public Drawable
 {
 	/* Variables */
 protected:
-	sf3d::SimpleSprite sprite; // @todo . use directly rendering
+	sf3d::VertexArray vertices {4u};
 
 
 
@@ -40,6 +40,7 @@ public:
 	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
 
 	void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const override;
+	using sf3d::RenderTarget::draw;
 };
 
 }

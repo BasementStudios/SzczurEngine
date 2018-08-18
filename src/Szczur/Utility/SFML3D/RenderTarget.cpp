@@ -1,4 +1,5 @@
 #include "RenderTarget.hpp"
+#include "Szczur/Utility/Logger.hpp"
 
 /** @file RenderTarget.cpp
  ** @author Tomasz (Knayder) Jatkowski
@@ -9,7 +10,9 @@
 #include <stdexcept>
 
 #define GLM_ENABLE_EXPERIMENTAL
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -23,7 +26,7 @@
 #include "VertexArray.hpp"
 #include "Drawable.hpp"
 #include "LightPoint.hpp"
-#include "Linear.hpp"
+#include "Geometry/Linear.hpp"
 #include "ShaderProgram.hpp"
 
 namespace sf3d
@@ -43,6 +46,10 @@ void RenderTarget::setDefaultRenderStates(const RenderStates& states)
 void RenderTarget::setDefaultShaderProgram(ShaderProgram* program)
 {
 	this->defaultStates.shader = program;
+}
+void RenderTarget::setDefaultShaderProgram(ShaderProgram& program)
+{
+	this->defaultStates.shader = &program;
 }
 
 // Camera
@@ -105,13 +112,15 @@ void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
 		);
 	}
 
+	// @warn @todo . It shouldn't be here...
 	this->positionFactor = 2.f / static_cast<float>(this->size.y);
 }
 
 bool RenderTarget::_setActive([[maybe_unused]] bool state)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return true;
+	throw std::runtime_error("RenderTarget::_setActive not overloaded!"); 
+	return false;
 }
 
 /// Helper function to scale matrix coords propertly
@@ -124,18 +133,23 @@ glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
 }
 
 // Clearing
-void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags)
+void RenderTarget::clear(const glm::vec4& color, GLbitfield flags)
 {
 	if (this->_setActive()) {
-		glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
+		glClearColor(color.r, color.g, color.b, color.a);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
-void RenderTarget::clear(const sf::Color& color, GLbitfield flags)
+void RenderTarget::clearSFML(const sf::Color& color, GLbitfield flags)
 {
 	if (this->_setActive()) {
-		glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
+		glClearColor(
+			static_cast<float>(color.r) / 255.f, 
+			static_cast<float>(color.g) / 255.f, 
+			static_cast<float>(color.b) / 255.f, 
+			static_cast<float>(color.a) / 255.f
+		);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
@@ -167,6 +181,16 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		{
 			glUseProgram(shaderProgram->getNativeHandle());
 
+			// For futher testing...
+			// LOG_INFO("vertices[0] = ", vertices[0].position, " ", vertices[0].color, " ", vertices[0].texCoord);
+			// LOG_INFO("vertices[1] = ", vertices[1].position, " ", vertices[1].color, " ", vertices[1].texCoord);
+			// LOG_INFO("vertices[2] = ", vertices[2].position, " ", vertices[2].color, " ", vertices[2].texCoord);
+			// LOG_INFO("vertices[3] = ", vertices[3].position, " ", vertices[3].color, " ", vertices[3].texCoord);
+			// LOG_INFO("model       = ", scaleMatrixCoords(states.transform.getMatrix()));
+			// LOG_INFO("view        = ", scaleMatrixCoords(camera->getViewMatrix()));
+			// LOG_INFO("projection  = ", camera->getProjectionMatrix());
+			// LOG_INFO("texture ID  = ", (states.texture ? states.texture->getID() : -1));
+
 			// Model, view. projection matrixes
 			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
 			shaderProgram->setUniform("view",			scaleMatrixCoords(camera->getViewMatrix()));
@@ -174,6 +198,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 			shaderProgram->setUniform("positionFactor", this->positionFactor);
 
 			if (states.texture) { // @todo ? Może dodać `Lightable`, a nie oświetlać tylko oteksturowane...
+				shaderProgram->setUniform("hasTexture", true);
 				shaderProgram->setUniform("isObject", true);
 
 				// Material
@@ -182,6 +207,7 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 					glActiveTexture(GL_TEXTURE0);
 					states.texture->bind();
 					shaderProgram->setUniform("material.diffuseTexture", 0);
+					shaderProgram->setUniform("texture", 0);
 
 					// Specular // @todo . specular
 					//aderProgram->setUniform("material.specularTexture", ???.texture->getID());
@@ -193,60 +219,28 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 				shaderProgram->setUniform("basicAmbient", glm::vec3{0.1f, 0.1f, 0.1f});
 				applyLightPoints(shaderProgram);
 			}
+			else {
+				shaderProgram->setUniform("hasTexture", false);
+				shaderProgram->setUniform("isObject", false);
+			}
 		}
 
 		// Pass the vertices
 		vertices.bind();
 		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
-		glBindVertexArray(0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		vertices.unbind();
 
 		// Unbind testures if any
 		if (states.texture) {
 			states.texture->unbind();
 		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
 void RenderTarget::draw(const VertexArray& vertices)
 {
 	this->draw(vertices, this->defaultStates);
-}
-
-// "Simple draw"
-void RenderTarget::simpleDraw(const VertexArray& vertices, RenderStates states)
-{
-    if (vertices.getSize() > 0 && this->_setActive()) {
-		vertices.update();
-
-		// Shader selection
-		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
-        if (!(shaderProgram && shaderProgram->isValid())) {
-            throw std::runtime_error("No shader available for rendering!");
-            return;
-        }
-
-        glUseProgram(shaderProgram->getNativeHandle());
-
-        // Shader configuration
-		if (states.texture) {
-            glActiveTexture(GL_TEXTURE0);
-            states.texture->bind();
-        }
-
-        // Pass the vertices
-		vertices.bind();
-        glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
-        glBindVertexArray(0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		// Unbind testures if any
-        if (states.texture) {
-			states.texture->unbind();
-		}
-    }
-}
-void RenderTarget::simpleDraw(const VertexArray& vertices) {
-    this->simpleDraw(vertices, this->defaultStates);
 }
 
 // Interaction

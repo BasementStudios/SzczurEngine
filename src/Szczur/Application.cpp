@@ -1,12 +1,16 @@
 #include "Application.hpp"
+#include "Szczur/Utility/Tests.hpp"
 
 #include "Utility/MsgBox.hpp"
 
+#include "Szczur/Utility/Debug/ExceptionHandler.hpp"
 namespace rat
 {
 
 void Application::init()
 {
+	exc::init();
+
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
@@ -26,6 +30,10 @@ void Application::init()
 		LOG_INFO("ImGui initialized");
 	}
 	#endif
+	
+#ifdef TESTING
+	runTests();
+#endif
 }
 
 void Application::input()
@@ -64,9 +72,9 @@ void Application::update()
 
 void Application::render()
 {
-	getModule<Window>().clear();
+	getModule<Window>().clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
 
-	getModule<World>().render();
+	// getModule<World>().render();
 
 	#ifdef EDITOR
 	{
@@ -91,21 +99,21 @@ int Application::run()
 			render();
 			input();
 		}
-		
+
 		// Exiting
 		#ifdef EDITOR
 		{
 			ImGui::SFML::Shutdown();
 		}
 		#endif
-		
+
 		LOG_INFO("Shutdowning application in normal way");
 	}
 	catch (const std::exception& exception) {
 		LOG_EXCEPTION(exception);
 		return 1;
 	}
-	
+
 	return 0;
 }
 
