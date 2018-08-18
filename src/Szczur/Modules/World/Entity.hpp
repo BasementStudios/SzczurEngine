@@ -16,7 +16,7 @@ class Entity
 public:
 
     ///
-    Entity(Scene& scene, Registry_t& registry, const EntityID_t id);
+    Entity(Scene& scene, const EntityID_t id);
 
     ///
     Entity(const Entity&) = delete;
@@ -37,19 +37,25 @@ public:
     Scene& getScene() const;
 
     ///
-    Registry_t& getRegistry() const;
-
-    ///
     EntityID_t getID() const;
 
     ///
-    void addComponent(HashedID hid) const;
+    bool addComponent(HashedID hid) const;
 
     ///
-    void removeComponent(HashedID hid) const;
+    bool hasComponent(HashedID hid) const;
 
     ///
-    Entity clone() const; // TODO how to do it
+    bool removeComponent(HashedID hid) const;
+
+    ///
+    bool addTag(HashedID hid) const;
+
+    ///
+    bool hasTag(HashedID hid) const;
+
+    ///
+    bool destroy() const;
 
     ///
     bool isValid() const;
@@ -57,7 +63,6 @@ public:
 private:
 
     Scene& _scene;
-    Registry_t& _registry;
     const EntityID_t _id;
 
 };

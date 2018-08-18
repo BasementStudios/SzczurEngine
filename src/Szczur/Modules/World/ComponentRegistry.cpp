@@ -3,24 +3,29 @@
 namespace rat::wrd
 {
 
-void ComponentRegistry::assign(const Entity& entity, HashedID hid) const
+bool ComponentRegistry::assignComponent(const Entity& entity, HashedID hid) const
 {
-    _call(_assign, entity, hid);
+    return _call(_assignComponent, entity, hid);
 }
 
-void ComponentRegistry::remove(const Entity& entity, HashedID hid) const
+bool ComponentRegistry::hasComponent(const Entity& entity, HashedID hid) const
 {
-    _call(_remove, entity, hid);
+    return _call(_hasComponent, entity, hid);
 }
 
-void ComponentRegistry::_call(const FunctorMap_t& _map, const Entity& entity, HashedID hid) const
+bool ComponentRegistry::removeComponent(const Entity& entity, HashedID hid) const
 {
-    const auto it = _map.find(hid.hash);
+    return _call(_removeComponent, entity, hid);
+}
 
-    if (it != _map.end())
-    {
-        std::invoke(it->second, entity.getRegistry(), entity.getID());
-    }
+bool ComponentRegistry::assignTag(const Entity& entity, HashedID hid) const
+{
+    return _call(_assignTag, entity, hid);
+}
+
+bool ComponentRegistry::hasTag(const Entity& entity, HashedID hid) const
+{
+    return _call(_hasTag, entity, hid);
 }
 
 }

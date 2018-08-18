@@ -46,7 +46,7 @@ const Registry_t& Scene::getRegistry() const
 
 Entity Scene::addEntity()
 {
-    return { *this, _registry, _registry.create() };
+    return { *this, _registry.create() };
 }
 
 bool Scene::removeEntity(EntityID_t id)

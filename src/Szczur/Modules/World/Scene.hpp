@@ -116,7 +116,7 @@ struct Caller<std::index_sequence<Is...>>
     void call(Callable&& callable)
     {
         registry.view<Ts...>().each([&](const EntityID_t id, auto&&... components) {
-            std::invoke(std::forward<Callable>(callable), Entity{ scene, registry, id }, std::forward<decltype(components)>(components)...);
+            std::invoke(std::forward<Callable>(callable), Entity{ scene, id }, std::forward<decltype(components)>(components)...);
         });
     }
 
@@ -140,7 +140,16 @@ void Scene::forEach(Callable&& callable)
 {
     using Traits_t = detail::FunctionTraits<Callable>;
 
-    detail::Caller<typename Traits_t::IndexSeq_t>{ *this, _registry }(std::forward<Callable>(callable));
+    if constexpr (Traits_t::arity == 0u)
+    {
+        _registry.each([&](const EntityID_t id) {
+            std::invoke(std::forward<Callable>(callable), Entity{ *this, id });
+        });
+    }
+    else
+    {
+        detail::Caller<typename Traits_t::IndexSeq_t>{ *this, _registry }(std::forward<Callable>(callable));
+    }
 }
 
 }
