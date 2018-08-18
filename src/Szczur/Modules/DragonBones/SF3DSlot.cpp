@@ -234,6 +234,8 @@ void SF3DSlot::_updateFrame()
 			_blendModeDirty = true;
 			_colorDirty = true;
 
+			_slotZOffset = _zOrder * 0.1f;
+
 			return;
 		}
 	}
@@ -304,7 +306,7 @@ void SF3DSlot::_updateMesh()
 
 				for (const auto& vert : verticesInTriagles[i])
 				{
-					verticesDisplay[vert].position = { xG, yG,  static_cast<float>(_zOrder) };
+					verticesDisplay[vert].position = { xG, yG,  _slotZOffset };
 				}
 			}
 		}
@@ -354,7 +356,7 @@ void SF3DSlot::_updateTransform()
 	glm::vec3 pos (
 		globalTransformMatrix.tx,
 		globalTransformMatrix.ty,
-		(float)_zOrder
+		_slotZOffset
 	);
 
 	if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
