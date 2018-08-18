@@ -256,11 +256,11 @@ void Cinematics::update()
 
 
     /* Skipping video */
-   /* if(getModule<Input>().getManager().isPressed(Keyboard::T))
+    if(getModule<Input>().getManager().isPressed(Keyboard::Space))
     {
         skip();
         return;
-    } */
+    } 
 
 
     if(_VClock->getElapsedTime().asMicroseconds()>_duration-500000 && _alfa>0)
