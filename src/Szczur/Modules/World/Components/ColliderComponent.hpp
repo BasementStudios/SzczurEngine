@@ -1,11 +1,13 @@
 #pragma once
 
+#include <glm/vec2.hpp>
+
 #include "Szczur/Modules/World/Component.hpp"
 #include "Szczur/Modules/Script/Script.hpp"
 
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 
-#include <glm/glm.hpp>
+#include "Szczur/Utility/Collision/AABB.hpp"
 
 namespace rat
 {
@@ -81,7 +83,7 @@ public:
 
 private:
 	///
-	static sf::FloatRect _getRect(const glm::vec3& pos, const glm::vec2& size);
+	static AABB getAABB(const glm::vec3& pos, const glm::vec2& size);
 
 private:
 	bool _isDynamic = false;

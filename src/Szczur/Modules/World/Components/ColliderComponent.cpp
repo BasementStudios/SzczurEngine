@@ -119,15 +119,12 @@ void ColliderComponent::move(float x, float y, float z)
 	glm::vec3 velocity = { x, y, z };
 
 	auto thisPos = getEntity()->getPosition() + glm::vec3(x, 0, z);
-	auto thisRectX = _getRect(getEntity()->getPosition() + glm::vec3(x, 0, 0), _boxSize);
-	auto thisRectZ = _getRect(getEntity()->getPosition() + glm::vec3(0, 0, z), _boxSize);
+	auto thisAABB = getAABB(getEntity()->getPosition() + glm::vec3(x, 0, z), _boxSize);
 
 	auto collisionCheck = [&] (Entity* entity) {
 
 		if (entity == getEntity())
-		{
 			return;
-		}
 
 		if (!entity->isActive())
 			return;
@@ -139,24 +136,21 @@ void ColliderComponent::move(float x, float y, float z)
 
 			if (this->_boxCollider && comp->isBoxCollider())// if both have box collider
 			{
-				auto entityRect = _getRect(entity->getPosition(), comp->getBoxSize());
+				auto entityRect = getAABB(entity->getPosition(), comp->getBoxSize());
 
-				// if move to left/right will be collsion
-				if (thisRectX.intersects(entityRect))
-				{
-					if (comp->isDynamic())
-						entity->move({ velocity.x, 0, 0 }); // move the other
-					else
-						velocity.x = 0.f; // stop
-				}
+				AABB md;
 
-				// if move to up/down will be collsion
-				if (thisRectZ.intersects(entityRect))
+				// calc Minkowiski's difference
+				entityRect.minkowskiDifference(thisAABB, md);
+
+				// check if is collision
+				if (md.isCollision())
 				{
-					if (comp->isDynamic())
-						entity->move({ 0, 0, velocity.z }); // move the other
-					else
-						velocity.z = 0.f; // stop
+					// get closest point on `other`
+					auto newPos = md.closestPointOnBoundsToPoint(glm::vec2());
+
+					velocity.x += newPos.x;
+					velocity.z += newPos.y;
 				}
 			}
 			else if (this->_circleCollider && comp->isCircleCollider()) // if both have circle collider
@@ -204,9 +198,9 @@ void ColliderComponent::move(float x, float y, float z)
 	getEntity()->move(velocity);
 }
 
-sf::FloatRect ColliderComponent::_getRect(const glm::vec3& pos, const glm::vec2& size)
+AABB ColliderComponent::getAABB(const glm::vec3& pos, const glm::vec2& size)
 {
-	return sf::FloatRect(pos.x - size.x / 2.f, pos.z - size.y / 2.f, size.x, size.y);
+	return AABB(glm::vec2(pos.x, pos.z), glm::vec2(size.x, size.y) / 2.f);
 }
 
 }
