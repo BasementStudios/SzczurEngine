@@ -20,6 +20,8 @@ private:
 	float _textureScale;
 	std::unique_ptr<SF3DDisplay> _renderDisplay;
 
+	float _slotZOffset;
+
 public:
 	virtual void _updateVisible() override;
 	virtual void _updateBlendMode() override;
