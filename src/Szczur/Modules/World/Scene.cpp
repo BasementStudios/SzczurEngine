@@ -1,338 +1,68 @@
 #include "Scene.hpp"
 
-#include <string>
-#include <functional> // find_if
+#include "WorldManager.hpp"
 
-#include <nlohmann/json.hpp>
-
-#include "Szczur/Utility/Logger.hpp"
-#include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Utility/SFML3D/Sprite.hpp"
-#include "Szczur/Utility/SFML3D/Texture.hpp"
-#include "Szczur/Utility/SFML3D/RectangleShape.hpp"
-
-namespace rat
+namespace rat::wrd
 {
 
-Scene::Scene()
-	: _id { getUniqueID<Scene>() }
-	, _name { "unnamed_" + std::to_string(_id) }
-	, _collectingHolder { { "background", {} }, { "foreground", {} }, { "path", {} }, { "single", {} } }
+Scene::Scene(WorldManager_t& manager, ID_t id, NameView_t name)
+    : _manager { manager }
+    , _id { id }
+    , _name { name }
+    , _registry {}
 {
-	for (auto& holder : getAllEntities())
-	{
-		holder.second.reserve(100);
-	}
 
-	_spriteDisplayDataHolder.reserve(100);
-	_armatureDisplayDataHolder.reserve(100);
 }
 
-void Scene::update(float deltaTime)
+Scene::WorldManager_t& Scene::getManager() const
 {
-	for (auto& holder : getAllEntities())
-	{
-		for (auto& entity : holder.second)
-		{
-			entity.update(deltaTime);
-		}
-	}
+    return _manager;
 }
 
-void Scene::render()
+ID_t Scene::getID() const
 {
-	for (auto& holder : getAllEntities())
-	{
-		for (auto& entity : holder.second)
-		{
-			entity.render();
-		}
-	}
+    return _id;
 }
 
-size_t Scene::getID() const
+void Scene::setName(const Name_t& name)
 {
-	return _id;
+    _name = name;
 }
 
-void Scene::setName(const std::string& name)
+const Name_t& Scene::getName() const
 {
-	_name = name;
+    return _name;
 }
 
-const std::string& Scene::getName() const
+Registry_t& Scene::getRegistry()
 {
-	return _name;
+    return _registry;
 }
 
-Entity* Scene::addEntity(const std::string& group)
+const Registry_t& Scene::getRegistry() const
 {
-	return &getEntities(group).emplace_back(this, group);
+    return _registry;
 }
 
-Entity* Scene::duplicateEntity(size_t id)
+Entity Scene::addEntity()
 {
-	if (auto ptr = getEntity(id); ptr != nullptr)
-	{
-		return &getEntities(ptr->getGroup()).emplace_back(*ptr);
-	}
-
-	return nullptr;
+    return { *this, _registry, _registry.create() };
 }
 
-bool Scene::removeEntity(const std::string& group, size_t id)
+bool Scene::removeEntity(EntityID_t id)
 {
-	if (auto it = _find(group, id); it != getEntities(group).end())
-	{
-		getEntities(group).erase(it);
+    if (_registry.valid(id))
+    {
+        _registry.destroy(id);
 
-		return true;
-	}
+        return true;
+    }
+    else
+    {
+        // TODO log attempt of deleting invalid entity
 
-	return false;
-}
-
-bool Scene::removeEntity(size_t id)
-{
-	if (auto it = _find("single", id); it != getEntities("single").end())
-	{
-		getEntities("single").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("path", id); it != getEntities("path").end())
-	{
-		getEntities("path").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
-	{
-		getEntities("foreground").erase(it);
-
-		return true;
-	}
-
-	if (auto it = _find("background", id); it != getEntities("background").end())
-	{
-		getEntities("background").erase(it);
-
-		return true;
-	}
-
-	return false;
-}
-
-void Scene::removeAllEntities(const std::string& group)
-{
-	getEntities(group).clear();
-}
-
-void Scene::removeAllEntities()
-{
-	for (auto& holder : getAllEntities())
-	{
-		holder.second.clear();
-	}
-}
-
-Entity* Scene::getEntity(size_t id)
-{
-	if (auto it = _find("single", id); it != getEntities("single").end())
-	{
-		return &(*it);
-	}
-
-	if (auto it = _find("path", id); it != getEntities("path").end())
-	{
-		return &(*it);
-	}
-
-	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
-	{
-		return &(*it);
-	}
-
-	if (auto it = _find("background", id); it != getEntities("background").end())
-	{
-		return &(*it);
-	}
-
-	return nullptr;
-}
-
-const Entity* Scene::getEntity(size_t id) const
-{
-	if (auto it = _find("single", id); it != getEntities("single").end())
-	{
-		return &(*it);
-	}
-
-	if (auto it = _find("path", id); it != getEntities("path").end())
-	{
-		return &(*it);
-	}
-
-	if (auto it = _find("foreground", id); it != getEntities("foreground").end())
-	{
-		return &(*it);
-	}
-
-	if (auto it = _find("background", id); it != getEntities("background").end())
-	{
-		return &(*it);
-	}
-
-	return nullptr;
-}
-
-Entity* Scene::getEntity(const std::string& group, size_t id)
-{
-	if (auto it = _find(group, id); it != getEntities(group).end())
-	{
-		return &(*it);
-	}
-
-	return nullptr;
-}
-
-const Entity* Scene::getEntity(const std::string& group, size_t id) const
-{
-	if (auto it = _find(group, id); it != getEntities(group).end())
-	{
-		return &(*it);
-	}
-
-	return nullptr;
-}
-
-bool Scene::hasEntity(size_t id)
-{
-	if (_find("single", id) != getEntities("single").end())
-	{
-		return true;
-	}
-
-	if (_find("path", id) != getEntities("path").end())
-	{
-		return true;
-	}
-
-	if (_find("foreground", id) != getEntities("foreground").end())
-	{
-		return true;
-	}
-
-	if (_find("background", id) != getEntities("background").end())
-	{
-		return true;
-	}
-
-	return false;
-}
-
-bool Scene::hasEntity(const std::string& group, size_t id)
-{
-	return _find(group, id) != getEntities(group).end();
-}
-
-Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group)
-{
-	return getAllEntities().at(group);
-}
-
-const Scene::EntitiesHolder_t& Scene::getEntities(const std::string& group) const
-{
-	return getAllEntities().at(group);
-}
-
-Scene::CollectingHolder_t& Scene::getAllEntities()
-{
-	return _collectingHolder;
-}
-
-const Scene::CollectingHolder_t& Scene::getAllEntities() const
-{
-	return _collectingHolder;
-}
-
-Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder()
-{
-	return _spriteDisplayDataHolder;
-}
-
-const Scene::SpriteDisplayDataHolder_t& Scene::getSpriteDisplayDataHolder() const
-{
-	return _spriteDisplayDataHolder;
-}
-
-Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder()
-{
-	return _armatureDisplayDataHolder;
-}
-
-const Scene::ArmatureDisplayDataHolder_t& Scene::getArmatureDisplayDataHolder() const
-{
-	return _armatureDisplayDataHolder;
-}
-
-void Scene::loadFromConfig(nlohmann::json& config, bool withNewID)
-{
-	_id = withNewID ? getUniqueID<Scene>() : config["id"].get<size_t>();
-	_name = config["name"].get<std::string>();
-
-	nlohmann::json& groups = config["groups"];
-
-	for (auto it = groups.begin(); it != groups.end(); ++it)
-	{
-		for (nlohmann::json& current : it.value())
-		{
-			addEntity(it.key())->loadFromConfig(current, true);
-		}
-	}
-
-	trySettingInitialUniqueID<Scene>(_id);
-}
-
-void Scene::saveToConfig(nlohmann::json& config) const
-{
-	config["id"] = getID();
-	config["name"] = getName();
-
-	nlohmann::json& groups = config["groups"] = nlohmann::json::object();
-
-	for (auto& holder : getAllEntities())
-	{
-		nlohmann::json& group = groups[holder.first] = nlohmann::json::array();
-
-		for (auto& entity : holder.second)
-		{
-			group.push_back(nlohmann::json::object());
-			nlohmann::json& current = group.back();
-
-			entity.saveToConfig(current);
-		}
-	}
-}
-
-typename Scene::EntitiesHolder_t::iterator Scene::_find(const std::string& group, size_t id)
-{
-	auto& subHolder = getEntities(group);
-
-	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
-		return arg.getID() == id;
-	});
-}
-
-typename Scene::EntitiesHolder_t::const_iterator Scene::_find(const std::string& group, size_t id) const
-{
-	const auto& subHolder = getEntities(group);
-
-	return std::find_if(subHolder.begin(), subHolder.end(), [=](const auto& arg) {
-		return arg.getID() == id;
-	});
+        return false;
+    }
 }
 
 }

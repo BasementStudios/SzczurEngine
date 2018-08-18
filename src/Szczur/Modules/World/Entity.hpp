@@ -1,183 +1,64 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
-#include <string>
-#include <memory> // unique_ptr
-#include <vector>
+#include <entt/entt.hpp>
 
-namespace rat 
-{
-	class Scene;
-}
-#include "Szczur/Utility/SFML3D/Transformable.hpp"
-#include "Components.hpp"
+#include "Config.hpp"
 
-namespace rat
+namespace rat::wrd
 {
 
-class Entity : public sf3d::Transformable
+// fwd decl
+class Scene;
+
+/// Practical wrapper around entity id, use 'as is', do not store anywhere
+class Entity
 {
 public:
 
-	using ComponentsHolder_t = std::vector<std::unique_ptr<Component>>;
+    ///
+    Entity(Scene& scene, Registry_t& registry, const EntityID_t id);
 
-	///
-	Entity(Scene* parent, const std::string& group);
+    ///
+    Entity(const Entity&) = delete;
 
-	///
-	Entity(const Entity& rhs);
+    ///
+    Entity& operator = (const Entity&) = delete;
 
-	///
-	Entity& operator = (const Entity& rhs);
+    ///
+    Entity(Entity&&) = delete;
 
-	///
-	Entity(Entity&&) = default;
+    ///
+    Entity& operator = (Entity&&) = delete;
 
-	///
-	Entity& operator = (Entity&&) = default;
+    ///
+    ~Entity() = default;
 
-	///
-	virtual ~Entity() = default;
+    ///
+    Scene& getScene() const;
 
-	///
-	void update(float deltaTime);
+    ///
+    Registry_t& getRegistry() const;
 
-	///
-	void render();
+    ///
+    EntityID_t getID() const;
 
-	///
-	size_t getID() const;
+    ///
+    void addComponent(HashedID hid) const;
 
-	///
-	void setGroup(const std::string& group);
+    ///
+    void removeComponent(HashedID hid) const;
 
-	///
-	const std::string& getGroup() const;
+    ///
+    Entity clone() const; // TODO how to do it
 
-	///
-	void setName(const std::string& name);
-
-	///
-	const std::string& getName() const;
-
-	///
-	Scene* getScene();
-
-	///
-	const Scene* getScene() const;
-
-	///
-	Component* addComponent(std::unique_ptr<Component> component);
-
-	///
-	Component* addComponent(Hash64_t componentID);
-
-	///
-	template <typename T>
-	Component* addComponent()
-	{
-		return addComponent(ComponentTraits::getIdentifierFromType<T>());
-	}
-
-	///
-	bool removeComponent(Hash64_t componentID);
-
-	///
-	void removeAllComponents();
-
-	///
-	template <typename T>
-	bool removeComponent()
-	{
-		return removeComponent(ComponentTraits::getIdentifierFromType<T>());
-	}
-
-	///
-	Component* getComponent(Hash64_t componentID) const;
-
-	///
-	template <typename T>
-	Component* getComponent() const
-	{
-		return getComponent(ComponentTraits::getIdentifierFromType<T>());
-	}
-
-	///
-	template <typename T>
-	T* getComponentAs() const
-	{
-		return static_cast<T*>(getComponent(ComponentTraits::getIdentifierFromType<T>()));
-	}
-
-	///
-	template <typename T>
-	T* getFeature()
-	{
-		auto feature = ComponentTraits::getFeatureFromType<T>();
-
-		if (auto it = _findByFeature(feature); it != _holder.end())
-		{
-			return static_cast<T*>(it->get()->getFeature(feature));
-		}
-
-		return nullptr;
-	}
-
-	///
-	template <typename T>
-	const T* getFeature() const
-	{
-		auto feature = ComponentTraits::getFeatureFromType<T>();
-
-		if (auto it = _findByFeature(feature); it != _holder.end())
-		{
-			return static_cast<const T*>(it->get()->getFeature(feature));
-		}
-
-		return nullptr;
-	}
-
-	///
-	bool hasComponent(Hash64_t componentID) const;
-
-	///
-	template <typename T>
-	bool hasComponent() const
-	{
-		return hasComponent(ComponentTraits::getIdentifierFromType<T>());
-	}
-
-	///
-	ComponentsHolder_t& getComponents();
-
-	///
-	const ComponentsHolder_t& getComponents() const;
-
-	///
-	virtual void loadFromConfig(nlohmann::json& config, bool withNewID = false);
-
-	///
-	virtual void saveToConfig(nlohmann::json& config) const;
+    ///
+    bool isValid() const;
 
 private:
 
-	///
-	typename ComponentsHolder_t::iterator _findByComponentID(size_t id);
-
-	///
-	typename ComponentsHolder_t::const_iterator _findByComponentID(size_t id) const;
-
-	///
-	typename ComponentsHolder_t::iterator _findByFeature(Component::Feature_e feature);
-
-	///
-	typename ComponentsHolder_t::const_iterator _findByFeature(Component::Feature_e feature) const;
-
-	size_t _id;
-	std::string _group;
-	std::string _name;
-	Scene* _parent;
-	ComponentsHolder_t _holder;
+    Scene& _scene;
+    Registry_t& _registry;
+    const EntityID_t _id;
 
 };
 
