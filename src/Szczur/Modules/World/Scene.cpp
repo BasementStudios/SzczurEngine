@@ -256,16 +256,20 @@ bool Scene::removeEntity(const std::string& group, size_t id)
 
 bool Scene::removeEntity(size_t id)
 {
-	bool deleted = false;
+	if (removeEntity("single", id))
+		return true;
+	else if (removeEntity("path", id))
+		return true;
+	else if (removeEntity("foreground", id))
+		return true;
+	else if (removeEntity("background", id))
+		return true;
+	else if (removeEntity("entries", id))
+		return true;
+	else if (removeEntity("battles", id))
+		return true;
 
-	deleted += removeEntity("single", id);
-	deleted += removeEntity("path", id);
-	deleted += removeEntity("foreground", id);
-	deleted += removeEntity("background", id);
-	deleted += removeEntity("entries", id);
-	deleted += removeEntity("battles", id);
-
-	return deleted;
+	return false;
 }
 
 void Scene::removeAllEntities(const std::string& group)

@@ -41,7 +41,7 @@ public:
 		auto min = getMin();
 		auto max = getMax();
 
-		return (min.x <= 0 & max.x >= 0 && min.y <= 0 && max.y >= 0);
+		return (min.x <= 0 && max.x >= 0 && min.y <= 0 && max.y >= 0);
 	}
 
 	void minkowskiDifference(const AABB& other, AABB& result)
