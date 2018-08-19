@@ -27,17 +27,17 @@ void ColliderComponent::loadFromConfig(nlohmann::json& config)
 
 	_isDynamic = config["dynamic"];
 
-	if (config.find("circleRadius") != config.end())
+	if (auto it = config.find("circleRadius"); it != config.end())
 	{
 		_circleCollider = true;
-		_circleRadius = config["circleRadius"];
+		_circleRadius = it.value();
 	}
 
-	if (config.find("boxSize") != config.end())
+	if (auto it = config.find("boxSize"); it != config.end())
 	{
 		_boxCollider = true;
-		_boxSize.x = config["boxSize"]["x"];
-		_boxSize.y = config["boxSize"]["y"];
+		_boxSize.x = it.value()["x"];
+		_boxSize.y = it.value()["y"];
 	}
 }
 

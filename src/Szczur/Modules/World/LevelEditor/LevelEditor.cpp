@@ -514,14 +514,14 @@ namespace rat {
 
 			file >> config;
 
-			if (config.find("mcCameraMovement") != config.end())
-				_isMCCameraMovement = config["mcCameraMovement"];
+			if (auto it = config.find("mcCameraMovement"); it != config.end())
+				_isMCCameraMovement = it.value();
 
-			if (config.find("dragAndDropObjects") != config.end())
-				_dragAndDropObjects = config["dragAndDropObjects"];
+			if (auto it = config.find("dragAndDropObjects"); it != config.end())
+				_dragAndDropObjects = it.value();
 
-			if (config.find("reloadArmatureOnStart") != config.end())
-				_reloadArmatureAtStart = config["reloadArmatureOnStart"];
+			if (auto it = config.find("reloadArmatureOnStart"); it != config.end())
+				_reloadArmatureAtStart = it.value();
 		}
 	}
 

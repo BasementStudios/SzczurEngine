@@ -149,14 +149,14 @@ void ArmatureComponent::loadFromConfig(nlohmann::json& config)
 
 		if (_armature && _armature->getAnimation())
 		{
-			if (config.find("animationMame") != config.end())
-				_armature->getAnimation()->play(config["animationMame"].get<std::string>());
+			if (auto it = config.find("animationMame"); it != config.end())
+				_armature->getAnimation()->play(it.value().get<std::string>());
 
-			if (config.find("speed") != config.end())
-				_armature->getAnimation()->timeScale = config["speed"];
+			if (auto it = config.find("speed"); it != config.end())
+				_armature->getAnimation()->timeScale = it.value();
 
-			if (config.find("flipX") != config.end())
-				setFlipX(config["flipX"]);
+			if (auto it = config.find("flipX"); it != config.end())
+				setFlipX(it.value());
 		}
 	}
 }

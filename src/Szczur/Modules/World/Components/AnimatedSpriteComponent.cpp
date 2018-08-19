@@ -73,8 +73,8 @@ namespace rat {
 			setSpriteDisplayData(data);
 		}
 
-		if (config.find("loop") != config.end())
-			_loop = config["loop"];
+		if (auto it = config.find("loop"); it != config.end())
+			_loop = it.value();
 
 		_frames = config["frames"];
 

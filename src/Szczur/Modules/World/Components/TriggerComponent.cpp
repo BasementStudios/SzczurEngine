@@ -141,8 +141,8 @@ namespace rat {
 	void TriggerComponent::loadFromConfig(nlohmann::json& config) {
 		Component::loadFromConfig(config);
 
-		if (config.find("shapeType") != config.end()) {
-			_triggerShape = static_cast<Shape>(config["shapeType"]);
+		if (auto it = config.find("shapeType"); it != config.end()) {
+			_triggerShape = static_cast<Shape>(it.value());
 		}
 
 		if (_triggerShape == Shape::Circle) {
@@ -159,8 +159,8 @@ namespace rat {
 			sceneId = config["sceneId"];
 			entranceId = config["enranceId"];
 
-			if (config.find("fadeTime") != config.end()) {
-				_fadeTime = config["fadeTime"];
+			if (auto it = config.find("fadeTime"); it != config.end()) {
+				_fadeTime = it.value();
 				_changingSceneWithFade = true;
 			}
 		}
