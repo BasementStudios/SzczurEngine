@@ -84,39 +84,63 @@ void Timeline::updateVertexArray()
 
 	glm::vec3 lastPosition = _entity->getPosition();
 
+	auto setVertex = [&](int idx, const glm::vec3& pos, const glm::vec4& color) {
+		sf3d::Vertex& vert = _vertexArray.getVertex(idx);
+		vert.position = pos;
+		vert.color = color;
+	};
+
+	auto renderRange = [&] (MovePosition& pos, const glm::vec3& offset) {
+		setVertex(i++, pos.RangeStart + offset, glm::vec4(0.36f, 0.42f, 0.75f, 1.0f));
+		setVertex(i++, pos.RangeEnd + offset, glm::vec4(0.36f, 0.42f, 0.75f, 1.0f));
+	};
+
 	for (auto& action : _actions)
 	{
 		if (action->getType() == Action::Move)
 		{
 			auto moveAction = static_cast<MoveAction*>(action.get());
 
-			glm::vec3 start = moveAction->Start;
+			glm::vec3 start;
 
-			if (moveAction->UseCurrentPosition)
+			if (moveAction->Start.Random)
 			{
-				start = lastPosition;
+				auto& startPos = moveAction->Start;
+
+				renderRange(startPos, lastPosition);
+				start = (startPos.RangeStart + startPos.RangeEnd) / 2.f;
+			}
+			else
+			{
+				start = moveAction->Start.Value;
 			}
 
-			sf3d::Vertex vertex;
-			vertex.position = start;
-			vertex.color = glm::vec4(action->Color, 1.f);
-			_vertexArray[i] = vertex;
+			if (moveAction->Start.Relative)
+				start += lastPosition;
 
-			i++;
+			setVertex(i++, start, glm::vec4(action->Color, 1.f));
 
 
-			glm::vec3 end = moveAction->End;
+			glm::vec3 end;
 
-			if (moveAction->EndRelativeToStart)
+			if (moveAction->End.Random)
+			{
+				end = (moveAction->End.RangeStart + moveAction->End.RangeEnd) / 2.f;
+			}
+			else
+			{
+				end = moveAction->End.Value;
+			}
+
+			if (moveAction->End.Relative)
 				end += start;
 
-			vertex.position = end;
-			vertex.color = glm::vec4(action->Color, 1.f);
-			_vertexArray[i] = vertex;
+			setVertex(i++, end, glm::vec4(action->Color, 1.f));
 
 			lastPosition = end;
 
-			i++;
+			if (moveAction->End.Random)
+				renderRange(moveAction->End, start);
 		}
 	}
 }

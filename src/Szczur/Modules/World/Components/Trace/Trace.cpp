@@ -47,6 +47,39 @@ void Trace::setCurrentTimeline(Timeline* timeline)
 
 void Trace::loadFromConfig(nlohmann::json& config)
 {
+	auto loadMoveActionPos = [&] (nlohmann::json::object_t jsonAction, Timeline* timeline) {
+		MovePosition pos;
+
+		// if json don't have this then don't have others
+		if (auto it = jsonAction.find("relative"); it == jsonAction.end())
+			return pos;
+
+		pos.Relative = jsonAction["relative"];
+
+		pos.Random = jsonAction["random"];
+
+		if (pos.Random)
+		{
+			pos.RangeStart.x = jsonAction["rangeStart"]["x"];
+			pos.RangeStart.y = jsonAction["rangeStart"]["y"];
+			pos.RangeStart.z = jsonAction["rangeStart"]["z"];
+
+			pos.RangeEnd.x = jsonAction["rangeEnd"]["x"];
+			pos.RangeEnd.y = jsonAction["rangeEnd"]["y"];
+			pos.RangeEnd.z = jsonAction["rangeEnd"]["z"];
+
+			timeline->changeVertexArraySize(timeline->getVertexArraySize() + 2);
+		}
+		else
+		{
+			pos.Value.x = jsonAction["value"]["x"];
+			pos.Value.y = jsonAction["value"]["y"];
+			pos.Value.z = jsonAction["value"]["z"];
+		}
+
+		return pos;
+	};
+
 	nlohmann::json::array_t jsonTimelines = config["timelines"];
 
 	_lastId = config["lastId"];
@@ -56,14 +89,14 @@ void Trace::loadFromConfig(nlohmann::json& config)
 		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>(), _entity);
 		timeline->Loop = jsonTimeline["loop"];
 
-		if (jsonTimeline.find("speedMultiplier") != jsonTimeline.end())
+		if (auto it = jsonTimeline.find("speedMultiplier"); it != jsonTimeline.end())
 		{
-			timeline->SpeedMultiplier = jsonTimeline["speedMultiplier"];
+			timeline->SpeedMultiplier = it.value();
 		}
 
-		if (jsonTimeline.find("showLines") != jsonTimeline.end())
+		if (auto it = jsonTimeline.find("showLines"); it != jsonTimeline.end())
 		{
-			timeline->ShowLines = jsonTimeline["showLines"];
+			timeline->ShowLines = it.value();
 		}
 
 		nlohmann::json::array_t jsonActions = jsonTimeline["actions"];
@@ -76,15 +109,11 @@ void Trace::loadFromConfig(nlohmann::json& config)
 				{
 					auto moveAction = new MoveAction(_entity);
 
-					moveAction->UseCurrentPosition = jsonAction["useCurrentPosition"];
-					moveAction->Start.x = jsonAction["start"]["x"];
-					moveAction->Start.y = jsonAction["start"]["y"];
-					moveAction->Start.z = jsonAction["start"]["z"];
-
-					moveAction->EndRelativeToStart = jsonAction["endRelativeToStart"];
-					moveAction->End.x = jsonAction["end"]["x"];
-					moveAction->End.y = jsonAction["end"]["y"];
-					moveAction->End.z = jsonAction["end"]["z"];
+					if (auto start = jsonAction.find("start"); start != jsonAction.end())
+						moveAction->Start = loadMoveActionPos(start.value(), timeline.get());
+					
+					if (auto end = jsonAction.find("end"); end != jsonAction.end())
+						moveAction->End = loadMoveActionPos(end.value(), timeline.get());
 
 					moveAction->Speed = jsonAction["speed"];
 					moveAction->Teleport = jsonAction["teleport"];
@@ -124,9 +153,9 @@ void Trace::loadFromConfig(nlohmann::json& config)
 		_timelines.push_back(std::move(timeline));
 	}
 
-	if (config.find("currentTimeline") != config.end())
+	if (auto it = config.find("currentTimeline"); it != config.end())
 	{
-		int currentTimelineId = config["currentTimeline"];
+		int currentTimelineId = it.value();
 
 		auto timeline = std::find_if(_timelines.begin(), _timelines.end(), [&] (auto& timeline) { return currentTimelineId == timeline->getId(); });
 
@@ -142,6 +171,33 @@ void Trace::loadFromConfig(nlohmann::json& config)
 
 void Trace::saveToConfig(nlohmann::json& config) const
 {
+	auto saveMoveActionPos = [&](const MovePosition& pos) {
+		auto jsonAction = nlohmann::json::object();
+
+		jsonAction["relative"] = pos.Relative;
+
+		jsonAction["random"] = pos.Random;
+
+		if (pos.Random)
+		{
+			jsonAction["rangeStart"]["x"] = pos.RangeStart.x;
+			jsonAction["rangeStart"]["y"] = pos.RangeStart.y;
+			jsonAction["rangeStart"]["z"] = pos.RangeStart.z;
+
+			jsonAction["rangeEnd"]["x"] = pos.RangeEnd.x;
+			jsonAction["rangeEnd"]["y"] = pos.RangeEnd.y;
+			jsonAction["rangeEnd"]["z"] = pos.RangeEnd.z;
+		}
+		else
+		{
+			jsonAction["value"]["x"] = pos.Value.x;
+			jsonAction["value"]["y"] = pos.Value.y;
+			jsonAction["value"]["z"] = pos.Value.z;
+		}
+		
+		return jsonAction;
+	};
+
 	if (_currentTimeline)
 		config["currentTimeline"] = _currentTimeline->getId();
 
@@ -153,10 +209,10 @@ void Trace::saveToConfig(nlohmann::json& config) const
 	{
 		auto jsonTimeline = nlohmann::json::object();
 
-		jsonTimeline["id"] = timeline->getId();
-		jsonTimeline["loop"] = timeline->Loop;
+		jsonTimeline["id"]              = timeline->getId();
+		jsonTimeline["loop"]            = timeline->Loop;
 		jsonTimeline["speedMultiplier"] = timeline->SpeedMultiplier;
-		jsonTimeline["showLines"] = timeline->ShowLines;
+		jsonTimeline["showLines"]       = timeline->ShowLines;
 
 		auto jsonActions = nlohmann::json::array();
 
@@ -170,18 +226,11 @@ void Trace::saveToConfig(nlohmann::json& config) const
 				case Action::Move:
 				{
 					auto moveAction = static_cast<MoveAction*>(action.get());
-					
-					jsonAction["useCurrentPosition"] = moveAction->UseCurrentPosition;
-					jsonAction["start"]["x"] = moveAction->Start.x;
-					jsonAction["start"]["y"] = moveAction->Start.y;
-					jsonAction["start"]["z"] = moveAction->Start.z;
 
-					jsonAction["endRelativeToStart"] = moveAction->EndRelativeToStart;
-					jsonAction["end"]["x"] = moveAction->End.x;
-					jsonAction["end"]["y"] = moveAction->End.y;
-					jsonAction["end"]["z"] = moveAction->End.z;
+					jsonAction["start"] = saveMoveActionPos(moveAction->Start);
+					jsonAction["end"]   = saveMoveActionPos(moveAction->End);
 
-					jsonAction["speed"] = moveAction->Speed;
+					jsonAction["speed"]    = moveAction->Speed;
 					jsonAction["teleport"] = moveAction->Teleport;
 				} break;
 				case Action::Anim:
@@ -189,9 +238,9 @@ void Trace::saveToConfig(nlohmann::json& config) const
 					auto animAction = static_cast<AnimAction*>(action.get());
 
 					jsonAction["animationName"] = animAction->AnimationName;
-					jsonAction["FadeInTime"] = animAction->FadeInTime;
-					jsonAction["playOnce"] = animAction->PlayOnce;
-					jsonAction["FlipX"] = animAction->FlipX;
+					jsonAction["FadeInTime"]    = animAction->FadeInTime;
+					jsonAction["playOnce"]      = animAction->PlayOnce;
+					jsonAction["FlipX"]         = animAction->FlipX;
 				} break;
 				case Action::Wait:
 				{

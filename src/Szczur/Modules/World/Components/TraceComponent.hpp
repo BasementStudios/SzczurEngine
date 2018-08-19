@@ -78,6 +78,10 @@ public:
 
 private:
 
+	void ImGuiGetCurrentPosPopup(const std::string& name, glm::vec3& value);
+
+private:
+
 	std::shared_ptr<Trace> _trace;
 
 	Timeline*	_currentTimeline = nullptr;

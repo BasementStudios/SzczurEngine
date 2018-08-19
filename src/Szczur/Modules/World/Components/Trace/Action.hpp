@@ -4,13 +4,12 @@
 
 #include <glm/vec3.hpp>
 
-namespace rat {
-	class Entity;
-	class Timeline;
-}
-
 namespace rat
 {
+
+class Entity;
+class Timeline;
+
 
 class Action
 {

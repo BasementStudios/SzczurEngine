@@ -1,28 +1,52 @@
 #pragma once
 
-#include <cmath>
-
 #include "../Action.hpp"
-
-#include "Szczur/Modules/World/Entity.hpp"
 
 namespace rat
 {
 
+struct MovePosition
+{
+public:
+	// relative to current position
+	bool Relative = true;
+
+	// Determines whether the value is random
+	bool Random = false;
+
+	union
+	{
+		// if Random == false
+
+		// if Relative == false: Position in world
+		// if Relative ==  true: Relative to current position
+		glm::vec3 Value = { };
+
+		// if Random == true
+		struct
+		{
+			// Start range for random
+			glm::vec3 RangeStart;
+			
+			// End range for random
+			glm::vec3 RangeEnd;
+		};
+	};
+};
+
 class MoveAction : public Action
 {
 public:
-	bool UseCurrentPosition = true;
-	glm::vec3 Start;
+	MovePosition Start;
 
-	bool EndRelativeToStart = true;
-	glm::vec3 End;
+	MovePosition End;
 
 	float Speed = 1.f;
 
 	bool Teleport = false;
 
 private:
+	glm::vec3 _startPos;
 	glm::vec3 _endPos;
 
 	float _progress;
@@ -31,79 +55,16 @@ private:
 	glm::vec3 _delta;
 
 public:
-	MoveAction(Entity* entity)
-		: Action(entity, Action::Type::Move)
-	{
+	MoveAction(Entity* entity);
 
-	}
+	~MoveAction() = default;
 
-	virtual ~MoveAction()
-	{
+	void update(float deltaTime, Timeline* timeline) override;
 
-	}
+	void start() override;
 
-	virtual void update(float deltaTime, Timeline* timeline) override
-	{
-		if (Teleport)
-		{
-			_entity->setPosition(_endPos);
-			_finished = true;
-		}
-		else
-		{
-			_progress += _progressSpeed * timeline->SpeedMultiplier * deltaTime * 60.f;
-
-			if (_progress >= 1.f)
-			{
-				_finished = true;
-				_progress = 1.f;
-			}
-
-			auto velocity = (Start + _delta * _progress) - _entity->getPosition();
-
-			// if entity has collider then move with it
-			if (_entity->hasComponent<ColliderComponent>())
-				_entity->getComponentAs<ColliderComponent>()->move(velocity.x, velocity.y, velocity.z);
-			else
-				_entity->move(velocity);
-		}
-	}
-
-	virtual void start() override
-	{
-		Action::start();
-
-		// reset progress speed
-		_progressSpeed = 0.f;
-
-		// reset progress
-		_progress = 0.f;
-
-		// calc start pos
-		if (UseCurrentPosition)
-		{
-			Start = _entity->getPosition();
-		}
-
-		// calc end pos
-		if (EndRelativeToStart)
-		{
-			_endPos = Start + End;
-		}
-		else
-		{
-			_endPos = End;
-		}
-
-		// calc delta
-		_delta = _endPos - Start;
-
-		// calc distance
-		float d = sqrt(pow(_delta.x, 2) + pow(_delta.y, 2) + pow(_delta.z, 2));
-
-		// calc speed
-		_progressSpeed = Speed / d;
-	}
+private:
+	void calcPosition(const MovePosition& position, const glm::vec3& relativeValue, glm::vec3& outPosition);
 };
 
 }

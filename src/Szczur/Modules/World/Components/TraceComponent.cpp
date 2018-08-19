@@ -116,6 +116,19 @@ void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	object.init();
 }
 
+void TraceComponent::ImGuiGetCurrentPosPopup(const std::string& name, glm::vec3& value)
+{
+	if (ImGui::BeginPopupContextItem((name + "##popup").c_str()))
+	{
+		if (ImGui::Selectable(("Get current position##" + name).c_str()))
+		{
+			value = getEntity()->getPosition();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
 std::unique_ptr<Component> TraceComponent::copy(Entity* newParent) const
 {
 	auto ptr = std::make_unique<TraceComponent>(*this);
@@ -422,50 +435,71 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 						ImGui::Text("Action: Move");
 						ImGui::Separator();
 
-						ImGui::Text("Start position");
+						auto positionEdit = [&] (const std::string& name, MovePosition& pos) {
+							ImGui::Text((name + " position").c_str());
 
-						ImGui::Checkbox("Use current position as start position", &moveAction->UseCurrentPosition);
+							ImGui::PushID(name.c_str());
 
-						if (!moveAction->UseCurrentPosition)
-						{
-							if (ImGui::Button("C##Start"))
+							ImGui::Checkbox("Relative to last position", &pos.Relative);
+
+							if (ImGui::Checkbox("Random", &pos.Random))
 							{
-								moveAction->Start = object->getPosition();
+								pos.Value = glm::vec3();
+
+								auto vertexArraySize = _currentTimeline->getVertexArraySize();
+
+								if (pos.Random) // add one more line
+									_currentTimeline->changeVertexArraySize(vertexArraySize + 2);
+								else // remove line
+									_currentTimeline->changeVertexArraySize(vertexArraySize - 2);
 							}
 
-							if (ImGui::IsItemHovered())
+							if (pos.Random)
 							{
-								ImGui::BeginTooltip();
-								ImGui::Text("Set current position");
-								ImGui::EndTooltip();
+								if (ImGui::DragVec3<ImGui::CopyPaste>("Range start", pos.RangeStart))
+								{
+									// check if any value in RangeStart is greater or equal to any value in RangeEnd
+									auto greater = glm::greaterThan(pos.RangeStart, pos.RangeEnd);
+
+									for (auto i = 0; i < 3; i++)
+									{
+										// find these values
+										if (greater[i])
+											pos.RangeEnd[i] = pos.RangeStart[i] + 1.f; // set same value for end
+									}
+								}
+
+								ImGuiGetCurrentPosPopup("Range start", pos.RangeStart);
+
+								if (ImGui::DragVec3<ImGui::CopyPaste>("Range end", pos.RangeEnd))
+								{
+									// check if any value in RangeEnd is less or equal to any value in RangeStart
+									auto less = glm::lessThan(pos.RangeEnd, pos.RangeStart);
+
+									for (auto i = 0; i < 3; i++)
+									{
+										// find these values
+										if (less[i])
+											pos.RangeStart[i] = pos.RangeEnd[i]; // set same value for start
+									}
+								}
+								ImGuiGetCurrentPosPopup("Range end", pos.RangeEnd);
+							}
+							else
+							{
+								ImGui::DragVec3<ImGui::CopyPaste>(name.c_str(), pos.Value);
+								ImGuiGetCurrentPosPopup(name.c_str(), pos.Value);
 							}
 
-							ImGui::SameLine();
+							ImGui::PopID();
+						};
 
-							ImGui::DragVec3<ImGui::CopyPaste>("Start##", moveAction->Start);
-						}
+						positionEdit("Start", moveAction->Start);
 
 						ImGui::Spacing();
 
-						ImGui::Text("End position");
+						positionEdit("End", moveAction->End);
 
-						ImGui::Checkbox("Relative to Start", &moveAction->EndRelativeToStart);
-
-						if (ImGui::Button("C##End"))
-						{
-							moveAction->End = object->getPosition();
-						}
-
-						if (ImGui::IsItemHovered())
-						{
-							ImGui::BeginTooltip();
-							ImGui::Text("Set current position");
-							ImGui::EndTooltip();
-						}
-
-						ImGui::SameLine();
-
-						ImGui::DragVec3<ImGui::CopyPaste>("End", moveAction->End);
 						ImGui::Spacing();
 
 						ImGui::DragFloat<ImGui::CopyPaste>("Speed", moveAction->Speed, 0.01f, 0.f, 50.f);

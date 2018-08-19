@@ -26,7 +26,7 @@ public:
 
 	bool Loop = false;
 
-	bool ShowLines = false;
+	bool ShowLines = true;
 
 	float SpeedMultiplier = 1.f;
 
@@ -39,9 +39,9 @@ private:
 
 	int _currentActionIndex = 0;
 
-	Status _status = Playing;
+	Status _status = Stopped;
 
-	sf3d::VertexArray _vertexArray{ 1 };
+	sf3d::VertexArray _vertexArray{ 0 };
 
 public:
 	Timeline(int id, Entity* entity);
@@ -63,6 +63,10 @@ public:
 	auto& getActions() { return _actions; }
 
 	const auto getId() { return _id; }
+
+	void changeVertexArraySize(size_t newSize) { _vertexArray.resize(newSize); }
+
+	size_t getVertexArraySize() { return _vertexArray.getSize(); }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
 };
