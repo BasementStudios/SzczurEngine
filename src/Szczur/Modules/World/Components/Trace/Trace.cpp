@@ -282,10 +282,9 @@ void Trace::update(float deltaTime)
 
 void Trace::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	for (auto& timeline : _timelines)
+	if (_currentTimeline)
 	{
-		if (timeline->ShowLines)
-			timeline->draw(target, states);
+		_currentTimeline->draw(target, states);
 	}
 }
 
