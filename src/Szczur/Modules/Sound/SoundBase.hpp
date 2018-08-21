@@ -1,18 +1,25 @@
 #pragma once
 
-#include <SFML/Audio/SoundBuffer.hpp>
+#include <glm/glm.hpp>
 
 #include "RatSound.hpp"
+#include "SoundAssets.hpp"
 
 namespace rat
 {
     class SoundBase
     {
         using Second_t = float;
+
+    public:
+    
+		using Status = sf::SoundSource::Status;
     
     private:
 
         inline static float SoundVolume {100};
+        
+        SoundAssets& _assets;
             
         struct
         {
@@ -29,20 +36,24 @@ namespace rat
         float _volume {100};
         float _pitch  {1};
             
-        sf::SoundBuffer* _buffer {nullptr};
+        SoundBuffer* _buffer {nullptr};
         RatSound _sound;
 
     public:
 
-        SoundBase();
-        SoundBase(const std::string& name);
+        SoundBase(SoundAssets& assets);
+        SoundBase(SoundAssets& assets, const std::string& name);
+        
+        ~SoundBase();
 
         void init();
-        void load();
+        bool load();
         
-        void setBuffer(sf::SoundBuffer* buffer);
+        bool setBuffer(SoundBuffer* buffer);
 
         static void initScript(Script& script);
+
+        void update();
 
         void play();
         void stop();
@@ -67,11 +78,14 @@ namespace rat
         void setMinDistance(float minDistance);
 
         void setPosition(float x, float y, float z);
-        sf::Vector3f getPosition() const;
+        glm::vec3 getPosition() const;
 
         bool getLoop() const;
         void setLoop(bool loop);
 
+        Status getStatus() const;
+
+        float getPlayingOffset();
         void setOffset(Second_t beginT, Second_t endT);
         Second_t getLength() const;
 

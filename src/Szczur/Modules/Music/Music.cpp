@@ -2,7 +2,7 @@
 
 #include <nlohmann/json.hpp>
 
-namespace rat 
+namespace rat
 {
 
 	Music::Music()
@@ -16,7 +16,7 @@ namespace rat
 		LOG_INFO(this, " : Module Music destructed");
 	}
 
-	void Music::initScript() 
+	void Music::initScript()
 	{
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
@@ -27,54 +27,85 @@ namespace rat
 		module.set_function("includes", &Music::includes, this);
 		module.set_function("cleanEffects", &Music::cleanEffects, this);
 		module.set_function("setPlayingMode", &Music::setPlayingMode, this);
+
 		module.set_function("setVolume", &Music::setVolume, this);
-		module.set_function("getVolume", &Music::getVolume, this);
-		module.set_function("get", &Music::get, this);
-		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+		module.set_function("getVolume", sol::overload(
+			[&](int a, const std::string& b) { return getVolume(a, b); },
+			[&](const std::string& a, const std::string& b) { return getVolume(a, b); },
+			[&](const std::string& a) { return getVolume(a, ""); },
+			[&](int a) { return getVolume(a, ""); },
+			[&]() { return getVolume(-1, ""); }
+		));
+
 		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
 		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
+		module.set_function("getStatus", sol::overload(
+			[&](unsigned int a, const std::string& b) { return getStatus(a, b); },
+			[&](const std::string& a, const std::string& b) { return getStatus(a, b); },
+			[&](unsigned int a) { return getStatus(a, ""); },
+			[&](const std::string& a) { return getStatus(a, ""); }
+		));
+
 		module.set_function("addPlaylist",
-			[owner = this](const std::string& key, sol::variadic_args newPlaylist){
-				owner->_playlists[fnv1a_32(key.c_str())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
-				for (auto it : newPlaylist){
-					owner->addToPlaylist(key, it);
-				}
+			[owner = this](const std::string& key, sol::variadic_args newPlaylist) {
+			owner->_playlists[fnv1a_32(key.c_str())] = std::make_unique<Playlist>(owner->getModule<AudioEffects>());
+			for (auto it : newPlaylist) {
+				owner->addToPlaylist(key, it);
 			}
+		}
 		);
 
 		module.set_function("addToPlaylist",
-			[owner = this](const std::string& key, sol::variadic_args musics){
-				for (auto it : musics){
-					owner->addToPlaylist(key, it);
-				}
+			[owner = this](const std::string& key, sol::variadic_args musics) {
+			for (auto it : musics) {
+				owner->addToPlaylist(key, it);
 			}
+		}
 		);
 
-		module.set_function("removeFromPlaylist",
-			[owner = this](const std::string& key, sol::variadic_args musics){
-				for (auto it : musics){
-					owner->removeFromPlaylist(key, it);
-				}
+		module.set_function("removeFromPlaylist", sol::overload(
+			[&](const std::string& key) { removeFromPlaylist(key, ""); },
+			[owner = this](const std::string& key, sol::variadic_args musics) {
+			for (auto it : musics) {
+				owner->removeFromPlaylist(key, it);
 			}
-		);
+		}
+		));
 
-		module.set_function("getEqualizer", &Music::getEffect<Equalizer>, this);
-		module.set_function("getReverb", &Music::getEffect<Reverb>, this);
-		module.set_function("getEcho", &Music::getEffect<Echo>, this);
+		module.set_function("getEqualizer", sol::overload(
+			[&](unsigned int a, const std::string& b) { return getEffect<Equalizer>(a, b); },
+			[&](const std::string& a, const std::string& b) { return getEffect<Equalizer>(a, b); }
+		));
+		module.set_function("getReverb", sol::overload(
+			[&](unsigned int a, const std::string& b) { return getEffect<Reverb>(a, b); },
+			[&](const std::string& a, const std::string& b) { return getEffect<Reverb>(a, b); }
+		));
+		module.set_function("getEcho", sol::overload(
+			[&](unsigned int a, const std::string& b) { return getEffect<Echo>(a, b); },
+			[&](const std::string& a, const std::string& b) { return getEffect<Echo>(a, b); }
+		));
 
-		module.set_function("cleanEqualizer", &Music::cleanEffect<Equalizer>, this);
-		module.set_function("cleanReverb", &Music::cleanEffect<Reverb>, this);
-		module.set_function("cleanEcho", &Music::cleanEffect<Echo>, this);
+		module.set_function("cleanEqualizer", sol::overload(
+			[&](unsigned int a, const std::string& b) { cleanEffect<Equalizer>(a, b); },
+			[&](const std::string& a, const std::string& b) { cleanEffect<Equalizer>(a, b); }
+		));
+		module.set_function("cleanReverb", sol::overload(
+			[&](unsigned int a, const std::string& b) { cleanEffect<Reverb>(a, b); },
+			[&](const std::string& a, const std::string& b) { cleanEffect<Reverb>(a, b); }
+		));
+		module.set_function("cleanEcho", sol::overload(
+			[&](unsigned int a, const std::string& b) { cleanEffect<Echo>(a, b); },
+			[&](const std::string& a, const std::string& b) { cleanEffect<Echo>(a, b); }
+		));
 
 		module.set("Random", PlayingMode::Random);
 		module.set("Orderly", PlayingMode::Orderly);
 		module.set("Single", PlayingMode::Single);
-	}
 
-	MusicAssets* Music::getAssetsManager()
-	{
-		return &_assets;
+		module.set("Stopped", Status::Stopped);
+		module.set("Paused", Status::Paused);
+		module.set("Playing", Status::Playing);
 	}
 
 	const Playlist::Container_t& Music::getPlaylist(const std::string& key)
@@ -87,24 +118,24 @@ namespace rat
 		nlohmann::json j;
 
 		std::ifstream file(filePath);
-        if (file.is_open()) {
-            file >> j;
-        }
-        file.close();
+		if (file.is_open()) {
+			file >> j;
+		}
+		file.close();
 
-        for (auto it = j.begin(); it != j.end(); ++it)
-            addPlaylist(it.key(), it.value());
+		for (auto it = j.begin(); it != j.end(); ++it)
+			addPlaylist(it.key(), it.value());
 	}
 
 	void Music::update(float deltaTime)
 	{
-		for(auto& it : _currentPlaylistKeys) {
+		for (auto& it : _currentPlaylistKeys) {
 			if (it != 0)
 				_playlists[it]->update(deltaTime);
 		}
 	}
 
-	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist) 
+	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist)
 	{
 		_playlists[fnv1a_32(key.c_str())] = std::make_unique<Playlist>(getModule<AudioEffects>());
 
@@ -114,44 +145,57 @@ namespace rat
 
 	void Music::addToPlaylist(const std::string& key, const std::string& name)
 	{
-		_assets.load(name);
-		auto&& base = MusicBase(_assets.get(name));
-		_playlists[fnv1a_32(key.c_str())]->add(std::move(base));
+		auto ratMusic = _assets.load(name);
 
-		LOG_INFO("Added ", name, " to playlist ", key);
+		if (ratMusic != nullptr) {
+			auto&& base = MusicBase(ratMusic);
+			_playlists[fnv1a_32(key.c_str())]->add(std::move(base));
+
+			LOG_INFO("Added ", name, " to playlist ", key);
+		}
 	}
 
-	void Music::removeFromPlaylist(const std::string& key, const std::string& name) 
+	void Music::removeFromPlaylist(const std::string& key, const std::string& name)
 	{
-		auto hashKey = fnv1a_32(key.c_str()); 
+		auto hashKey = fnv1a_32(key.c_str());
 
-		for(auto& it : _currentPlaylistKeys) {
-			if (it == hashKey) 
+		for (auto& it : _currentPlaylistKeys) {
+			if (it == hashKey)
 				it = 0;
 		}
 
-		if (name.empty()) {
+		auto log = [&](const std::string& name) {
+			LOG_INFO("Removed ", name, " form playlist ", key);
+		};
 
-			for (auto& it : _playlists[hashKey]->getContainerRef())
-				unLoad(it->getName());
+		if (name.empty()) {
+			for (auto& it : _playlists[hashKey]->getContainerRef()) {
+				auto name = it->getName();
+				_assets.unload(it->getSource());
+				log(name);
+			}
 
 			_playlists.erase(hashKey);
 		}
 		else {
+			auto& playlist = _playlists[hashKey]->getContainerRef();
+			auto& music = playlist[_playlists[hashKey]->getID(name)];
+			auto source = music->getSource();
 			_playlists[hashKey]->remove(name);
-			unLoad(name);
+			_assets.unload(source);
+			log(name);
 		}
 	}
 
 	void Music::play(unsigned int musicTrack, const std::string& key, const std::string& name)
 	{
-		auto hashKey      = fnv1a_32(key.c_str());
+		auto hashKey = fnv1a_32(key.c_str());
 		auto samePlaylist = (_currentPlaylistKeys[musicTrack] == hashKey);
 
 		for (unsigned int i = 0; i < 3; ++i) {
 			if (_currentPlaylistKeys[i] == hashKey && musicTrack != i) {
 				LOG_INFO("Can't play the same playlist on several tracks at the same time!");
-				return; 
+				return;
 			}
 		}
 
@@ -160,11 +204,11 @@ namespace rat
 		else {
 			auto currentPlaying = _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying();
 
-			if (currentPlaying->getName() != name || (_playlists[_currentPlaylistKeys[musicTrack]]->getStatus() == Playlist::Status::Stopped && samePlaylist))
+			if (currentPlaying->getName() != name || (_playlists[_currentPlaylistKeys[musicTrack]]->getStatus() == Status::Stopped && samePlaylist))
 				_playlists[hashKey]->play(currentPlaying, name);
 			else if (!samePlaylist)
 				_playlists[hashKey]->play(_playlists[hashKey]->getID(name), currentPlaying->getTimeLeft());
-			
+
 			if (!samePlaylist)
 				_playlists[_currentPlaylistKeys[musicTrack]]->stopUpdates();
 		}
@@ -174,12 +218,12 @@ namespace rat
 	void Music::pause(int musicTrack)
 	{
 		if (musicTrack == -1) {
-			for(auto& it : _currentPlaylistKeys) {
+			for (auto& it : _currentPlaylistKeys) {
 				if (it != 0)
 					_playlists[it]->pause();
 			}
 		}
-		else if (musicTrack <= 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
+		else if (musicTrack < 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
 			_playlists[_currentPlaylistKeys[musicTrack]]->pause();
 		}
 	}
@@ -187,27 +231,32 @@ namespace rat
 	void Music::stop(int musicTrack)
 	{
 		if (musicTrack == -1) {
-			for(auto& it : _currentPlaylistKeys) {
+			for (auto& it : _currentPlaylistKeys) {
 				if (it != 0)
 					_playlists[it]->stop();
 			}
 		}
-		else if (musicTrack <= 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
+		else if (musicTrack < 3 && musicTrack >= 0 && _currentPlaylistKeys[musicTrack] != 0) {
 			_playlists[_currentPlaylistKeys[musicTrack]]->stop();
 		}
 	}
 
-	RatMusic* Music::getCurrentPlaying(unsigned int musicTrack)
+	Music::Status Music::getStatus(unsigned int musicTrack, const std::string& name)
 	{
-		if (musicTrack <= 3 && _currentPlaylistKeys[musicTrack] != 0) {
-			return &(_playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource());
-		}
-		return nullptr;
+		return _playlists[_currentPlaylistKeys[musicTrack]]->getStatus(name);
 	}
 
-	RatMusic& Music::get(const std::string& name) 
+	Music::Status Music::getStatus(const std::string& key, const std::string& name)
 	{
-		return _assets.get(name);
+		return _playlists[fnv1a_32(key.c_str())]->getStatus(name);
+	}
+
+	RatMusic* Music::getCurrentPlaying(unsigned int musicTrack)
+	{
+		if (musicTrack < 3 && _currentPlaylistKeys[musicTrack] != 0) {
+			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource();
+		}
+		return nullptr;
 	}
 
 	bool Music::includes(const std::string& key, const std::string& name)
@@ -217,10 +266,10 @@ namespace rat
 
 	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
 	{
-		switch(mode) {
-			case PlayingMode::Orderly: LOG_INFO("Playing Mode in playlist ", key, " changed to Orderly"); break;
-			case PlayingMode::Random: LOG_INFO("Playing Mode in playlist ", key, " changed to Random"); break;
-			case PlayingMode::Single: LOG_INFO("Playing Mode in playlist ", key, " changed to Single"); break;
+		switch (mode) {
+		case PlayingMode::Orderly: LOG_INFO("Playing Mode in playlist ", key, " changed to Orderly"); break;
+		case PlayingMode::Random: LOG_INFO("Playing Mode in playlist ", key, " changed to Random"); break;
+		case PlayingMode::Single: LOG_INFO("Playing Mode in playlist ", key, " changed to Single"); break;
 		}
 
 		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);
@@ -241,26 +290,26 @@ namespace rat
 			_playlists[fnv1a_32(key.c_str())]->setVolume(volume, name);
 	}
 
-	float Music::getVolume(const std::string& name)
+
+	float Music::getVolume(const std::string& key, const std::string& name)
 	{
-		if (name.empty())
-			return RatMusic::GetMusicVolume(); 
-			
-		return _assets.get(name).getVolume();
+		if (name.empty() && key.empty())
+			return RatMusic::GetMusicVolume();
+
+		return _playlists[fnv1a_32(key.c_str())]->getVolume(name);
 	}
 
-	void Music::unLoad(const std::string& name)
+	float Music::getVolume(int musicTrack, const std::string& name)
 	{
-		auto& music = _assets.get(name);
-		music.decrementCounter();
+		if (name.empty() && musicTrack == -1)
+			return RatMusic::GetMusicVolume();
 
-		if (!music.getCounterValue())
-			_assets.unload(name);
+		return _playlists[_currentPlaylistKeys[musicTrack]]->getVolume(name);
 	}
 
 	void Music::setGlobalEffects()
 	{
-		for(auto& it : _currentPlaylistKeys) {
+		for (auto& it : _currentPlaylistKeys) {
 			if (it != 0)
 				_playlists[it]->setGlobalEffects();
 		}
@@ -268,7 +317,7 @@ namespace rat
 
 	void Music::cleanEffects()
 	{
-		for(auto i = 0; i <= 3; ++i) {
+		for (auto i = 0; i <= 3; ++i) {
 			if (_currentPlaylistKeys[i] != 0)
 				getCurrentPlaying(i)->cleanAllEffects();
 		}

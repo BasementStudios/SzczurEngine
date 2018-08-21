@@ -11,7 +11,7 @@ namespace rat
 
 	private:
 
-		RatMusic& _base;
+		RatMusic* _base;
 		
 		float _timeLeft;
 		float _baseVolume;
@@ -24,7 +24,7 @@ namespace rat
 
 	public:
 
-		MusicBase(RatMusic& source);
+		MusicBase(RatMusic* source);
 
 		void update(float deltaTime);
 
@@ -52,7 +52,7 @@ namespace rat
 
 		const std::string& getName() const;
 
-		RatMusic& getSource() const;
+		RatMusic* getSource() const;
 		
 		void reset();
 

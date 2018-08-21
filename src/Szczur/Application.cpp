@@ -145,6 +145,7 @@ void Application::update()
 
 	getModule<Input>().getManager().finishLogic();
 	_modules.getModule<Music>().update(deltaTime);
+	_modules.getModule<Sound>().update();
 }
 
 void Application::render()

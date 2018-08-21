@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Szczur/Modules/Script/Script.hpp"
-
 #include <SFML/Audio/Listener.hpp>
+#include <glm/glm.hpp>
+
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat 
 {
@@ -19,19 +20,19 @@ namespace rat
         void initScript();
 
         void setGlobalVolume(float volume);
-        float getGlobalVolume();
+        float getGlobalVolume() const;
 
         void setPosition(float x, float y, float z);
-        sf::Vector3f getPosition();
+        glm::vec3 getPosition() const;
 
         void setDirection(float x, float y, float z);
-        sf::Vector3f getDirection();
+        glm::vec3 getDirection() const;
 
         void setUpVector(float x, float y, float z);
-        sf::Vector3f getUpVector();
+        glm::vec3 getUpVector() const;
 
-        float getOffsetZ() const;
         void setOffsetZ(float offsetZ);
+        float getOffsetZ() const;
 
 	};
 }

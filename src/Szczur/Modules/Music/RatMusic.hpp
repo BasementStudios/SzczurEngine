@@ -17,8 +17,6 @@ namespace rat
 
 		inline static float MusicVolume {100};
 
-		unsigned int _counter {0};
-
 		std::string _filePath {""};
 		std::string _name	  {""};
 
@@ -31,11 +29,6 @@ namespace rat
 		RatMusic();
 
 		bool load(const std::string& name);
-
-		void incrementCounter();
-		void decrementCounter();
-
-		unsigned int getCounterValue() const;
 
 		void saveToJson(); //Only for editor
 

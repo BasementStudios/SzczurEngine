@@ -7,7 +7,6 @@
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
  
 #include "MusicBase.hpp"
-#include "MusicAssets.hpp"
 
 namespace rat 
 {
@@ -18,17 +17,12 @@ namespace rat
 
 		using BasePointer_t = std::shared_ptr<MusicBase>;
 		using Container_t = std::vector<BasePointer_t>;
+		using Status = sf::SoundSource::Status;
 
 		enum class PlayingMode {
 			Random,
 			Orderly,
 			Single
-		};
-
-		enum class Status {
-			Playing, 
-			Paused,
-			Stopped
 		};
 
 	private:
@@ -44,6 +38,8 @@ namespace rat
 
 		PlayingMode _playingMode = PlayingMode::Random;
 		Status      _status      = Status::Stopped;
+
+		float _playlistVolume = 100;
 
 		AudioEffects& _effects;
 
@@ -72,7 +68,7 @@ namespace rat
 
 		void setPlayingMode(PlayingMode mode);
 
-		Status getStatus() const;
+		Status getStatus(const std::string& name = "") const;
 
 		void setVolume(float volume, const std::string& name = "");
 		float getVolume(const std::string& name) const;

@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "SFML/Audio/SoundBuffer.hpp"
+#include "SoundBuffer.hpp"
 
 namespace rat
 {
@@ -10,7 +10,7 @@ namespace rat
     class SoundAssets
     {
         
-        using Container_t = std::unordered_map<std::string, sf::SoundBuffer>;
+        using Container_t = std::unordered_map<std::string, SoundBuffer>;
 
     private:
 
@@ -18,10 +18,10 @@ namespace rat
 
     public:
 
-        void load(const std::string& fileName);
-        void unload(const std::string& fileName);
+        bool load(const std::string& fileName);
+        void unload(SoundBuffer* buffer);
 
-        sf::SoundBuffer* get(const std::string& fileName);
+        SoundBuffer* get(const std::string& fileName);
 
     };
 

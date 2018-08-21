@@ -23,6 +23,7 @@ namespace rat
 	public:
 
 		using PlayingMode = Playlist::PlayingMode;
+		using Status = Playlist::Status;
 
 	private:
 
@@ -38,8 +39,6 @@ namespace rat
 
 		void initScript();
 
-		MusicAssets* getAssetsManager();
-
 		void update(float deltaTime);
 
 		void loadPlaylistFromJson(const std::string& fileName);
@@ -54,21 +53,28 @@ namespace rat
 		void pause(int musicTrack = -1);
 		void stop(int musicTrack = -1);
 
+		Status getStatus(unsigned int musicTrack, const std::string& name = "");
+		Status getStatus(const std::string& key, const std::string& name = "");
+
 		RatMusic* getCurrentPlaying(unsigned int musicTrack);
-		RatMusic& get(const std::string& name);
 
 		bool includes(const std::string& key, const std::string& name);
 
 		void setPlayingMode(const std::string& key, PlayingMode mode);
 
 		void setVolume(float volume, const std::string& key = "", const std::string& name = "");
-		float getVolume(const std::string& name = "");
+		float getVolume(const std::string& key = "", const std::string& name = "");
+		float getVolume(int musicTrack = -1, const std::string& name = "");
 
 		template <typename T>
-		T& getEffect(const std::string& name);
+		T& getEffect(unsigned int musicTrack, const std::string& name);
+		template <typename T>
+		T& getEffect(const std::string& key, const std::string& name);
 
 		template <typename T>
-    	void cleanEffect(const std::string& name);
+    	void cleanEffect(unsigned int musicTrack, const std::string& name);
+		template <typename T>
+    	void cleanEffect(const std::string& key, const std::string& name);
 		void cleanEffects();
 
 		void setGlobalEffects();
@@ -80,15 +86,35 @@ namespace rat
 	};
 
 	template <typename T>
-	T& Music::getEffect(const std::string& name)
+	T& Music::getEffect(const std::string& key, const std::string& name)
 	{
-		return _assets.get(name).getEffect<T>();
+		auto& playlist = _playlists[fnv1a_32(key.c_str())];
+		auto containerRef = playlist->getContainerRef();
+		return containerRef[playlist->getID(name)]->getSource()->getEffect<T>();
+	}
+
+	template <typename T>
+	T& Music::getEffect(unsigned int musicTrack, const std::string& name)
+	{
+		auto& playlist = _playlists[_currentPlaylistKeys[musicTrack]];
+		auto containerRef = playlist->getContainerRef();
+		return containerRef[playlist->getID(name)]->getSource()->getEffect<T>();
 	}
 
     template <typename T>
-    void Music::cleanEffect(const std::string& name)
+    void Music::cleanEffect(const std::string& key, const std::string& name)
     {
-        _assets.get(name).cleanEffect<T>();
+		auto& playlist = _playlists[fnv1a_32(key.c_str())];
+		auto containerRef = playlist->getContainerRef();
+        containerRef[playlist->getID(name)]->getSource()->cleanEffect<T>();
+    }
+
+	template <typename T>
+    void Music::cleanEffect(unsigned int musicTrack, const std::string& name)
+    {
+		auto& playlist = _playlists[_currentPlaylistKeys[musicTrack]];
+		auto containerRef = playlist->getContainerRef();
+        containerRef[playlist->getID(name)]->getSource()->cleanEffect<T>();
     }
 
 }
