@@ -135,7 +135,7 @@ namespace rat
 		if (file.is_open()) {
 			file >> j;
 			file.close();
-			_filePath = static_cast<std::string>(j[_name]["Path"]);
+			_filePath = j[_name]["Path"].get<std::string>();
 			_bpm = j[_name]["BPM"];
 			numberOfBars = j[_name]["FadeTime"];
 			setVolume(j[_name]["Volume"]);

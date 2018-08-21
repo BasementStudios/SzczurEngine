@@ -18,7 +18,8 @@ namespace rat
         Script& script = getModule<Script>();
 		auto module = script.newModule("AudioEffects");
 
-        SCRIPT_SET_MODULE(AudioEffects, getGlobalEffects, cleanGlobalEffects);
+		module.set_function("getGlobalEffects", &AudioEffects::getGlobalEffects, this);
+		module.set_function("cleanGlobalEffects", &AudioEffects::cleanGlobalEffects, this);
 
         script.initClasses<Effect, Equalizer, Reverb, Echo>();
     }

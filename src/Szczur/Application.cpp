@@ -188,9 +188,9 @@ void Application::setupImGuiStyle() {
 	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.25f, 0.10f, 0.21f, 1.00f);
 	style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.10f, 0.05f, 0.10f, 1.00f);
 
-	style.Colors[ImGuiCol_CloseButton] = ImVec4(0.17f, 0.08f, 0.13f, 1.00f);
+	/*style.Colors[ImGuiCol_CloseButton] = ImVec4(0.17f, 0.08f, 0.13f, 1.00f);
 	style.Colors[ImGuiCol_CloseButtonHovered] = ImVec4(0.25f, 0.10f, 0.21f, 1.00f);
-	style.Colors[ImGuiCol_CloseButtonActive] = ImVec4(0.10f, 0.05f, 0.10f, 1.00f);
+	style.Colors[ImGuiCol_CloseButtonActive] = ImVec4(0.10f, 0.05f, 0.10f, 1.00f);*/
 
 	style.Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
 	style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);

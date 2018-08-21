@@ -234,7 +234,7 @@ namespace rat
                 return;
             }
 
-            _fileName = static_cast<std::string>(j[_name]["Path"]);
+            _fileName = j[_name]["Path"].get<std::string>();
 
             setVolume(j[_name]["Volume"]);
             setPitch(j[_name]["Pitch"]);

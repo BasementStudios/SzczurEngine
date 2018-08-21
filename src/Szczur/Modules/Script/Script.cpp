@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <sol2/sol.hpp>
+#include <sol.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <SFML/Graphics/Color.hpp>
