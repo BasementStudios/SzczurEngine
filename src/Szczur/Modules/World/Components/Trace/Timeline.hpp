@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 
+#include <sol.hpp>
+
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
@@ -45,8 +47,14 @@ private:
 
 	sf3d::VertexArray _vertexArray{ 0 };
 
+	// lua callbacks
+	sol::function _onPlayCallback;
+	sol::function _onPauseCallback;
+	sol::function _onResumeCallback;
+	sol::function _onStopCallback;
+
 public:
-	Timeline(int id, Entity* entity);
+	Timeline(int id, const std::string& name, Entity* entity);
 	~Timeline();
 
 	void addAction(Action* action);
@@ -58,13 +66,19 @@ public:
 
 	void start();
 
-	void setStatus(Status status) { _status = status; }
+	void pause();
+	
+	void resume();
+	
+	void stop();
 
 	const Status& getStatus() const { return _status; }
 
 	auto& getActions() { return _actions; }
 
-	const auto getId() { return _id; }
+	const auto& getId() const { return _id; }
+
+	const auto& getName() const { return _name; }
 
 	void changeVertexArraySize(size_t newSize) { _vertexArray.resize(newSize); }
 

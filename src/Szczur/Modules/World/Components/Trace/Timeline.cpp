@@ -81,7 +81,7 @@ void Timeline::update(float deltaTime)
 				}
 				else
 				{
-					_status = Status::Stopped;
+					stop();
 				}
 			}
 		}
@@ -160,12 +160,40 @@ void Timeline::start()
 	if (_actions.size() == 0)
 		return;
 
-	_status = Playing;
+	_status = Status::Playing;
+
+	if (_onPlayCallback.valid())
+		_onPlayCallback();
+
 	_currentActionIndex = 0;
 	auto& currentAction = _actions[_currentActionIndex];
 	currentAction->start();
 
 	//LOG_INFO("Current action index: ", _currentActionIndex);
+}
+
+void Timeline::pause()
+{
+	if (_onPauseCallback.valid())
+		_onPauseCallback();
+
+	_status = Status::Paused;
+}
+
+void Timeline::resume()
+{
+	if (_onResumeCallback.valid())
+		_onResumeCallback();
+
+	_status = Status::Playing;
+}
+
+void Timeline::stop()
+{
+	if (_onStopCallback.valid())
+		_onStopCallback();
+
+	_status = Status::Stopped;
 }
 
 void Timeline::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
@@ -292,6 +320,22 @@ void Timeline::initScript(Script& script)
 		thisa->addAction(animAction);
 	});
 
+	// calllback
+	object.setProperty("onPlay", []{}, [&] (Timeline& thisa, sol::function callback) {
+		thisa._onPlayCallback = callback;
+	});
+
+	object.setProperty("onPause", []{}, [&] (Timeline& thisa, sol::function callback) {
+		thisa._onPauseCallback = callback;
+	});
+
+	object.setProperty("onResume", []{}, [&] (Timeline& thisa, sol::function callback) {
+		thisa._onResumeCallback = callback;
+	});
+
+	object.setProperty("onStop", [] {}, [&] (Timeline& thisa, sol::function callback) {
+		thisa._onStopCallback = callback;
+	});
 
 	object.init();
 }

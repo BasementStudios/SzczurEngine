@@ -55,7 +55,7 @@ void TraceComponent::stop()
 {
 	if (auto tm = _trace->getCurrentTimeline())
 	{
-		tm->setStatus(Timeline::Stopped);
+		tm->stop();
 	}
 }
 
@@ -63,7 +63,7 @@ void TraceComponent::pause()
 {
 	if (auto tm = _trace->getCurrentTimeline())
 	{
-		tm->setStatus(Timeline::Paused);
+		tm->stop();
 	}
 }
 
@@ -71,7 +71,7 @@ void TraceComponent::resume()
 {
 	if (auto tm = _trace->getCurrentTimeline())
 	{
-		tm->setStatus(Timeline::Playing);
+		tm->resume();
 	}
 }
 
