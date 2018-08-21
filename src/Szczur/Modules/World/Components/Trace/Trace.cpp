@@ -25,9 +25,9 @@ Trace::~Trace()
 
 }
 
-Timeline* Trace::addTimeline()
+Timeline* Trace::addTimeline(const std::string& name)
 {
-	return _timelines.emplace_back(std::make_unique<Timeline>(++_lastId, _entity)).get();
+	return _timelines.emplace_back(std::make_unique<Timeline>(++_lastId, name, _entity)).get();
 }
 
 void Trace::removeTimeline(Timeline* timeline)
@@ -86,7 +86,7 @@ void Trace::loadFromConfig(nlohmann::json& config)
 
 	for (auto& jsonTimeline : jsonTimelines)
 	{
-		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>(), _entity);
+		auto timeline = std::make_unique<Timeline>(jsonTimeline["id"].get<int>(), "", _entity);
 		timeline->Loop = jsonTimeline["loop"];
 
 		if (auto it = jsonTimeline.find("speedMultiplier"); it != jsonTimeline.end())

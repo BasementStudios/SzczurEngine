@@ -32,7 +32,7 @@ public:
 	Trace(Entity* entity);
 	~Trace();
 
-	Timeline* addTimeline();
+	Timeline* addTimeline(const std::string& name = "");
 	void removeTimeline(Timeline* timeline);
 
 	void setCurrentTimeline(Timeline* timeline);

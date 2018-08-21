@@ -41,6 +41,9 @@ public:
 	void play(Timeline* tm);
 
 	///
+	void play(const std::string& name);
+
+	///
 	void stop();
 
 	///

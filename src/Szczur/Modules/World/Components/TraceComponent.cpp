@@ -40,6 +40,10 @@ void TraceComponent::play()
 	{
 		tm->start();
 	}
+	else
+	{
+		LOG_ERROR("Not selected timeline!");
+	}
 }
 
 void TraceComponent::play(Timeline* tm)
@@ -49,6 +53,31 @@ void TraceComponent::play(Timeline* tm)
 		_trace->setCurrentTimeline(tm);
 		tm->start();
 	}
+	else
+	{
+		LOG_ERROR("Timeline is nullptr");
+	}
+}
+
+void TraceComponent::play(const std::string& name)
+{
+	if (name.empty())
+		return;
+
+	auto& timelines = _trace->getTimelines();
+
+	auto timeline = std::find_if(timelines.begin(), timelines.end(), [&] (auto& timeline) {
+		return timeline->getName() == name;
+	});
+
+	if (timeline != timelines.end())
+	{
+		play((*timeline).get());
+	}
+	else
+	{
+		LOG_ERROR("Cannot find timeline with name: ", name);
+	}
 }
 
 void TraceComponent::stop()
@@ -56,6 +85,10 @@ void TraceComponent::stop()
 	if (auto tm = _trace->getCurrentTimeline())
 	{
 		tm->stop();
+	}
+	else
+	{
+		LOG_WARNING("There is no timeline selected");
 	}
 }
 
@@ -65,6 +98,10 @@ void TraceComponent::pause()
 	{
 		tm->stop();
 	}
+	else
+	{
+		LOG_WARNING("There is no timeline selected");
+	}
 }
 
 void TraceComponent::resume()
@@ -72,6 +109,10 @@ void TraceComponent::resume()
 	if (auto tm = _trace->getCurrentTimeline())
 	{
 		tm->resume();
+	}
+	else
+	{
+		LOG_WARNING("There is no timeline selected");
 	}
 }
 
@@ -108,7 +149,7 @@ void TraceComponent::render(sf3d::RenderTarget& target)
 
 Timeline* TraceComponent::createTimeline(const std::string& name)
 {
-	return _trace->addTimeline();
+	return _trace->addTimeline(name);
 }
 
 void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
@@ -118,7 +159,8 @@ void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	// Main
 	object.setOverload("play",
 		[&] (TraceComponent* thisa) { thisa->play(); },
-		[&] (TraceComponent* thisa, Timeline* tm) { thisa->play(tm); }
+		[&] (TraceComponent* thisa, Timeline* tm) { thisa->play(tm); },
+		[&] (TraceComponent* thisa, const std::string& name) { thisa->play(name); }
 	);
 
 	object.set("stop", &TraceComponent::stop);

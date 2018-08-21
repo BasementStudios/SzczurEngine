@@ -39,6 +39,8 @@ private:
 
 	int _id;
 
+	std::string _name;
+
 	Container_t _actions;
 
 	int _currentActionIndex = 0;

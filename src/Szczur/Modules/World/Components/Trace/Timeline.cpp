@@ -10,8 +10,8 @@
 namespace rat
 {
 
-Timeline::Timeline(int id, Entity* entity)
-	: _id(id), _entity(entity)
+Timeline::Timeline(int id, const std::string& name, Entity* entity)
+	: _id(id), _name(name), _entity(entity)
 {
 	_vertexArray.setPrimitiveType(sf3d::PrimitiveType::Lines);
 
