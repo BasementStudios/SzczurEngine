@@ -42,6 +42,15 @@ void TraceComponent::play()
 	}
 }
 
+void TraceComponent::play(Timeline* tm)
+{
+	if (tm)
+	{
+		_trace->setCurrentTimeline(tm);
+		tm->start();
+	}
+}
+
 void TraceComponent::stop()
 {
 	if (auto tm = _trace->getCurrentTimeline())
@@ -97,16 +106,27 @@ void TraceComponent::render(sf3d::RenderTarget& target)
 		_trace->draw(target, sf3d::RenderStates());
 }
 
+Timeline* TraceComponent::createTimeline(const std::string& name)
+{
+	return _trace->addTimeline();
+}
+
 void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 {
 	auto object = script.newClass<TraceComponent>("TraceComponent", "World");
 
 	// Main
-	object.set("play", &TraceComponent::play);
+	object.setOverload("play",
+		[&] (TraceComponent* thisa) { thisa->play(); },
+		[&] (TraceComponent* thisa, Timeline* tm) { thisa->play(tm); }
+	);
+
 	object.set("stop", &TraceComponent::stop);
 	object.set("pause", &TraceComponent::pause);
 	object.set("resume", &TraceComponent::resume);
 	object.set("setTimeline", &TraceComponent::setTimeline);
+
+	object.set("createTimeline", &TraceComponent::createTimeline);
 	object.set("getEntity", sol::resolve<Entity*()>(&Component::getEntity));
 
 	// Entity
@@ -114,6 +134,8 @@ void TraceComponent::initScript(ScriptClass<Entity>& entity, Script& script)
 	entity.set("trace", &Entity::getComponentAs<TraceComponent>);
 
 	object.init();
+
+	script.initClasses<Timeline>();
 }
 
 void TraceComponent::ImGuiGetCurrentPosPopup(const std::string& name, glm::vec3& value)
@@ -265,7 +287,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 
 			if (ImGui::Button("+Move"))
 			{
-				_currentTimeline->addAction(new MoveAction(object));
+				_currentTimeline->addAction(new MoveAction());
 			}
 
 			ImGui::SameLine();
@@ -273,14 +295,14 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			if (ImGui::Button("+Anim"))
 			{
 				if (object->hasComponent<ArmatureComponent>())
-					_currentTimeline->addAction(new AnimAction(object));
+					_currentTimeline->addAction(new AnimAction());
 			}
 
 			ImGui::SameLine();
 
 			if (ImGui::Button("+Wait"))
 			{
-				_currentTimeline->addAction(new WaitAction(object));
+				_currentTimeline->addAction(new WaitAction());
 			}
 
 			ImGui::SameLine();
@@ -288,7 +310,7 @@ void TraceComponent::renderHeader(ScenesManager& scenes, Entity* object)
 			if (ImGui::Button("+Script"))
 			{
 				if (object->hasComponent<ScriptableComponent>())
-					_currentTimeline->addAction(new ScriptAction(object));
+					_currentTimeline->addAction(new ScriptAction());
 			}
 			
 			ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, 10.f);

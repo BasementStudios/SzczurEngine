@@ -11,9 +11,11 @@
 
 namespace rat
 {
+class Script;
 
 class Timeline
 {
+
 	using Container_t = std::vector<std::unique_ptr<Action>>;
 
 public:
@@ -68,7 +70,19 @@ public:
 
 	size_t getVertexArraySize() { return _vertexArray.getSize(); }
 
+	Entity* getEntity() { return _entity; }
+
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
+
+	static void initScript(Script& script);
+
+// Scripts helper
+protected:
+	// Move to pos
+	void addMoveAction(const glm::vec3& pos, float speed, bool relative);
+
+	// Move to random pos
+	void addMoveAction(const glm::vec3& rangeStart, const glm::vec3& rangeEnd, float speed, bool relative);
 };
 
 }

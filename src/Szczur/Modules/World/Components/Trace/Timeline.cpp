@@ -1,7 +1,9 @@
 #include "Timeline.hpp"
 
-#include "Actions/AnimAction.hpp"
 #include "Actions/MoveAction.hpp"
+#include "Actions/WaitAction.hpp"
+#include "Actions/ScriptAction.hpp"
+#include "Actions/AnimAction.hpp"
 
 #include "Szczur/Utility/Random.hpp"
 
@@ -12,6 +14,12 @@ Timeline::Timeline(int id, Entity* entity)
 	: _id(id), _entity(entity)
 {
 	_vertexArray.setPrimitiveType(sf3d::PrimitiveType::Lines);
+
+	{
+		auto moveAction = new MoveAction();
+		moveAction->Start.Relative = false;
+		addAction(moveAction);
+	}
 }
 
 Timeline::~Timeline()
@@ -24,6 +32,8 @@ void Timeline::addAction(Action* action)
 	{
 		_vertexArray.resize(_vertexArray.getSize() + 2);
 	}
+
+	action->_entity = _entity;
 
 	Random random;
 
@@ -165,6 +175,125 @@ void Timeline::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 		glLineWidth(2.f);
 		target.draw(_vertexArray, states);
 	}
+}
+
+void Timeline::addMoveAction(const glm::vec3& pos, float speed, bool relative)
+{
+	if (speed <= 0.f) 
+		speed = 1.f;
+
+	auto action = new MoveAction();
+	action->End.Value = pos;
+	action->End.Relative = relative;
+	action->Speed = speed;
+	addAction(action);
+}
+
+void Timeline::addMoveAction(const glm::vec3& rangeStart, const glm::vec3& rangeEnd, float speed, bool relative)
+{
+	if (speed <= 0.f) 
+		speed = 1.f;
+
+	auto action = new MoveAction();
+	action->End.Random = true;
+	action->End.RangeStart = rangeStart;
+	action->End.RangeEnd = rangeEnd;
+	action->End.Relative = relative;
+	action->Speed = speed;
+	addAction(action);
+}
+
+void Timeline::initScript(Script& script)
+{
+	auto object = script.newClass<Timeline>("Timeline", "World");
+
+	object.set("relativeStart", [&] (Timeline* thisa, bool relativeStart) {
+		static_cast<MoveAction*>(thisa->getActions().front().get())->Start.Relative = relativeStart;
+	});
+
+	object.set("setLoop", [&] (Timeline* thisa, bool loop) {
+		thisa->Loop = loop;
+	});
+
+	object.set("setSpeedMultipler", [&] (Timeline* thisa, float speed) {
+		thisa->SpeedMultiplier = speed;
+	});
+
+	object.set("move", sol::overload(
+		[&] (Timeline* thisa, float x, float y, float z) { // move with offset
+		thisa->addMoveAction({ x, y, z }, 1.f, true);
+		},
+		[&](Timeline* thisa, float x, float y, float z, float speed = 1.f) { // move with offset with speed
+			thisa->addMoveAction({ x, y, z }, speed, true);
+		},
+		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ) { // move with random offset
+			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, 1.f, true);
+		},
+		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ, float speed) { // move with random offset with speed
+			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, speed, true);
+		}
+	));
+
+	object.set("moveTo", sol::overload(
+		[&] (Timeline* thisa, float x, float y, float z) { // move to point
+		thisa->addMoveAction({ x, y, z }, 1.f, false);
+		},
+		[&] (Timeline* thisa, float x, float y, float z, float speed) { // move to point with speed
+			thisa->addMoveAction({ x, y, z }, speed, false);
+		},
+		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ) { // move to random point
+			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, 1.f, false);
+		},
+		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ, float speed) { // move to random point with speed
+			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, speed, false);
+		}
+	));
+
+	object.set("wait", sol::overload(
+		[&] (Timeline* thisa, float timeToWait) {
+			auto waitAction = new WaitAction();
+			waitAction->TimeToWait = timeToWait;
+			thisa->addAction(waitAction);
+		},
+		[&] (Timeline* thisa, float start, float end) {
+			auto waitAction = new WaitAction();
+			waitAction->RangeStart = start;
+			waitAction->RangeEnd = end;
+			thisa->addAction(waitAction);
+		}
+	));
+
+	object.set("call", sol::overload(
+		[&] (Timeline* thisa, sol::function& func) {
+			auto scriptAction = new ScriptAction();
+			scriptAction->FunctionToCall = func;
+			thisa->addAction(scriptAction);
+		},
+		[&] (Timeline* thisa, const std::string& scriptFile) {
+			auto scriptAction = new ScriptAction();
+			scriptAction->ScriptFilePath = scriptFile;
+			thisa->addAction(scriptAction);
+		}
+	));
+
+	object.set("playAnim", [&] (Timeline* thisa, const std::string& animationName, float fadeInTime) {
+		auto animAction = new AnimAction();
+		animAction->AnimationName = animationName;
+		animAction->FadeInTime = fadeInTime;
+		thisa->addAction(animAction);
+	});
+
+	object.set("playOnce", [&] (Timeline* thisa, const std::string& animationName, float fadeInTime, bool waitToEnd) {
+		auto animAction = new AnimAction();
+		animAction->AnimationName = animationName;
+		animAction->FadeInTime = fadeInTime;
+		animAction->PlayOnce = true;
+		animAction->WaitToEnd = waitToEnd;
+		thisa->addAction(animAction);
+	});
+
+
+	object.init();
 }
 
 }

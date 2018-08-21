@@ -13,6 +13,8 @@ class Timeline;
 
 class Action
 {
+	friend Timeline;
+
 public:
 	enum Type
 	{
@@ -34,8 +36,8 @@ protected:
 	bool _finished = false;
 
 public:
-	Action(Entity* entity, Type type)
-		: _entity(entity), _type(type)
+	Action(Type type)
+		: _type(type)
 	{
 	}
 

@@ -13,9 +13,11 @@ class ScriptAction : public Action
 public:
 	std::string ScriptFilePath;
 
+	sol::function FunctionToCall;
+
 public:
-	ScriptAction(Entity* entity)
-		: Action(entity, Action::Type::Script)
+	ScriptAction()
+		: Action(Action::Type::Script)
 	{
 	}
 
@@ -37,7 +39,10 @@ public:
 		{
 			try
 			{
-				script->runScript(ScriptFilePath);
+				if (!ScriptFilePath.empty())
+					script->runScript(ScriptFilePath);
+				else if (FunctionToCall.valid())
+					FunctionToCall();
 			}
 			catch (sol::error ex)
 			{

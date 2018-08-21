@@ -32,7 +32,7 @@ public:
 	Trace(Entity* entity);
 	~Trace();
 
-	void addTimeline();
+	Timeline* addTimeline();
 	void removeTimeline(Timeline* timeline);
 
 	void setCurrentTimeline(Timeline* timeline);

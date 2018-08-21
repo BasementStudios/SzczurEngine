@@ -38,6 +38,9 @@ public:
 	void play();
 
 	///
+	void play(Timeline* tm);
+
+	///
 	void stop();
 
 	///
@@ -72,6 +75,8 @@ public:
 	virtual void renderHeader(ScenesManager& scenes, Entity* object) override;
 
 // Script
+
+	Timeline* createTimeline(const std::string& name);
 
 	///
     static void initScript(ScriptClass<Entity>& entity, Script& script);

@@ -25,9 +25,9 @@ Trace::~Trace()
 
 }
 
-void Trace::addTimeline()
+Timeline* Trace::addTimeline()
 {
-	_timelines.emplace_back(std::make_unique<Timeline>(++_lastId, _entity));
+	return _timelines.emplace_back(std::make_unique<Timeline>(++_lastId, _entity)).get();
 }
 
 void Trace::removeTimeline(Timeline* timeline)
@@ -107,7 +107,7 @@ void Trace::loadFromConfig(nlohmann::json& config)
 			{
 				case Action::Move:
 				{
-					auto moveAction = new MoveAction(_entity);
+					auto moveAction = new MoveAction();
 
 					if (auto start = jsonAction.find("start"); start != jsonAction.end())
 						moveAction->Start = loadMoveActionPos(start.value(), timeline.get());
@@ -122,7 +122,7 @@ void Trace::loadFromConfig(nlohmann::json& config)
 				} break;
 				case Action::Anim:
 				{
-					auto animAction = new AnimAction(_entity);
+					auto animAction = new AnimAction();
 
 					animAction->AnimationName = jsonAction["animationName"].get<std::string>();
 					animAction->FadeInTime = jsonAction["FadeInTime"];
@@ -133,7 +133,7 @@ void Trace::loadFromConfig(nlohmann::json& config)
 				} break;
 				case Action::Wait:
 				{
-					auto waitAction = new WaitAction(_entity);
+					auto waitAction = new WaitAction();
 
 					waitAction->TimeToWait = jsonAction["timeToWait"];
 
@@ -141,7 +141,7 @@ void Trace::loadFromConfig(nlohmann::json& config)
 				} break;
 				case Action::Script:
 				{
-					auto scriptAction = new ScriptAction(_entity);
+					auto scriptAction = new ScriptAction();
 
 					scriptAction->ScriptFilePath = jsonAction["filePath"].get<std::string>();
 

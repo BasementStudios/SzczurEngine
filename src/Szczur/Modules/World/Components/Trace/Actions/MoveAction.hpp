@@ -55,7 +55,7 @@ private:
 	glm::vec3 _delta;
 
 public:
-	MoveAction(Entity* entity);
+	MoveAction();
 
 	~MoveAction() = default;
 

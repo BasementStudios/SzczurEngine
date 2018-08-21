@@ -1,9 +1,10 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <SFML/System/Clock.hpp>
 
 #include "../Action.hpp"
+
+#include "Szczur/Utility/Random.hpp"
 
 namespace rat
 {
@@ -11,14 +12,27 @@ namespace rat
 class WaitAction : public Action
 {
 public:
-	float TimeToWait = 0.f;
+	bool Random;
 
+	union
+	{
+		// if Random is false
+		float TimeToWait = 0.f;
+
+		// if Random is true
+		struct
+		{
+			float RangeStart;
+			float RangeEnd;
+		};
+	};
 private:
+	float _timeToWait = 0.f;
 	sf::Clock _clock;
 
 public:
-	WaitAction(Entity* entity)
-		: Action(entity, Action::Type::Wait)
+	WaitAction()
+		: Action(Action::Type::Wait)
 	{
 
 	}
@@ -38,6 +52,17 @@ public:
 	virtual void start() override
 	{
 		Action::start();
+
+		rat::Random random;
+
+		if (Random)
+		{
+			_timeToWait = random.get(RangeStart, RangeEnd);
+		}
+		else
+		{
+			_timeToWait = TimeToWait;
+		}
 
 		_clock.restart();
 	}

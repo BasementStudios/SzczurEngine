@@ -9,8 +9,8 @@
 
 namespace rat
 {
-MoveAction::MoveAction(Entity* entity)
-	: Action(entity, Action::Type::Move)
+MoveAction::MoveAction()
+	: Action(Action::Type::Move)
 {
 }
 void MoveAction::update(float deltaTime, Timeline* timeline)

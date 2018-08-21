@@ -24,8 +24,8 @@ public:
 	bool FlipX = false;
 
 public:
-	AnimAction(Entity* entity)
-		: Action(entity, Action::Type::Anim)
+	AnimAction()
+		: Action(Action::Type::Anim)
 	{
 
 	}
