@@ -21,56 +21,74 @@ namespace rat
 
     void SoundEditor::render()
     { 
-        if(_loadingSound)
-            load();
+		if (_loadingSound)
+			load();
 
-        ImGui::Begin("Sounds List", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+		ImGui::Begin("Sounds List");
 
-            if (ImGui::Button("Save##SoundLists")) {
-               for(auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
-                    save(it);
-                }
-            }
+		float width = ImGui::GetWindowContentRegionWidth() * 0.33;
 
-            ImGui::Separator();
+		if (ImGui::Button("Save##SoundLists", { width,0 })) {
+			for (auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
+				save(it);
+			}
+		}
 
-            if (ImGui::Button("Load##SoundLists")) {
-                _loadingSound = true;
-            }
+		ImGui::SameLine();
 
-            ImGui::SameLine();
+		if (ImGui::Button("Load##SoundLists", { width,0 })) {
+			_loadingSound = true;
+		}
 
-            if (ImGui::Button("Add##SoundLists")) {
-                add();
-            }
+		ImGui::SameLine();
 
-            ImGui::Separator();
+		if (ImGui::Button("Add##SoundLists", { width ,0 })) {
+			add();
+		}
 
-            if (ImGui::TreeNode("Sounds List")) { 
-                for(auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
-                    auto name = it->getName();
-                    if (ImGui::Button((name).c_str())) {
-                        if (_currentEditing != _soundHolder.end() && _currentEditing->getName() != name)
-                            _sound.stop();
-                        _currentEditing = it;
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::Button("Save")) {
-                        save(it);
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::Button("-")) {
-                        _soundHolder.erase(it);
-                        if (_currentEditing->getName() == name)
-                            _currentEditing = _soundHolder.end();
-                        break;
-                    }
-                }
-                ImGui::TreePop();   
-            }
+		if (ImGui::CollapsingHeader("Sounds list"))
+		{
+			for (auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
+				std::string name = it->getName();
 
+				ImGui::Separator();
 
-        ImGui::End();
+				ImGui::Bullet();
+
+				ImGui::SameLine();
+				ImGui::Text(name.c_str());
+				
+				ImGui::SameLine();
+				if (ImGui::SmallButton("Open editor")) {
+					if (_currentEditing != _soundHolder.end() && _currentEditing->getName() != name)
+						_sound.stop();
+					_currentEditing = it;
+				}
+				
+				ImGui::SameLine();
+				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV( 2.f / 7.f, 0.6f, 0.5f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(2.f / 7.f, 0.7f, 0.6f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(2.f / 7.f, 0.8f, 0.7f));
+				if (ImGui::SmallButton("Save")) {
+					save(it);
+				}
+				ImGui::PopStyleColor(3);
+
+				ImGui::SameLine();
+				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.6f, 0.5f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.7f, 0.6f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.7f));
+				if (ImGui::SmallButton("Delete")) {
+					_soundHolder.erase(it);
+					if (_currentEditing->getName() == name)
+						_currentEditing = _soundHolder.end();
+					break;
+				}
+				ImGui::PopStyleColor(3);
+			}
+		}
+
+		ImGui::End();
 
         if (_currentEditing != _soundHolder.end()) {
             ImGui::Begin("Sound Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
@@ -216,57 +234,61 @@ namespace rat
     {
         static std::string loadingSoundName = "";
 
-        ImGui::Begin("Load Sound", NULL);
+		if (!ImGui::Begin("Load Sound", &_loadingSound))
+		{
+			ImGui::End();
+		}
+		else {
+			ImGui::Text("Name: ");
+			ImGui::SameLine();
 
-            ImGui::Text("Name: "); 
-            ImGui::SameLine();
+			size_t size = loadingSoundName.length() + 100;
+			char *newText = new char[size] {};
+			strncpy(newText, loadingSoundName.c_str(), size);
 
-            size_t size = loadingSoundName.length() + 100;
-            char *newText = new char[size] {};
-            strncpy(newText, loadingSoundName.c_str(), size);
+			ImGui::PushItemWidth(300);
+			if (ImGui::InputText("##LoadingSoundNameInput", newText, size)) {
+				loadingSoundName = newText;
+			}
+			if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
+				ImGui::SetKeyboardFocusHere(0);
+			}
+			ImGui::PopItemWidth();
 
-            ImGui::PushItemWidth(300);
-                if (ImGui::InputText("##LoadingSoundNameInput", newText, size)) {
-                    loadingSoundName = newText;
-                }
-                if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
-                    ImGui::SetKeyboardFocusHere(0);
-                }
-            ImGui::PopItemWidth();
+			delete[] newText;
 
-            delete[] newText;
-            
-            ImGui::SetCursorPosX(260);
+			ImGui::SetCursorPosX(260);
 
-            if (ImGui::Button("CANCEL##LoadSound")) {
-                loadingSoundName = "";
-                _loadingSound = false;
-            }
+			if (ImGui::Button("CANCEL##LoadSound")) {
+				loadingSoundName = "";
+				_loadingSound = false;
+			}
 
-            ImGui::SameLine(); 
+			ImGui::SameLine();
 
-            if (ImGui::Button(" OK ##LoadSound")) {
+			if (ImGui::Button(" OK ##LoadSound")) {
 
-                _soundHolder.push_back(SoundBase(loadingSoundName));
-                _soundHolder.back().load();
+				_soundHolder.push_back(SoundBase(loadingSoundName));
+				_soundHolder.back().load();
 
-                auto fileName = _soundHolder.back().getFileName();
+				auto fileName = _soundHolder.back().getFileName();
 
-                if(fileName.empty()) {
-                    _soundHolder.pop_back();
-                } 
-                else {
-                    _assets.load(fileName);
-                    _soundHolder.back().setBuffer(_assets.get(fileName));
-                    _soundHolder.back().init();
-                }
+				if (fileName.empty()) {
+					_soundHolder.pop_back();
+				}
+				else {
+					_assets.load(fileName);
+					_soundHolder.back().setBuffer(_assets.get(fileName));
+					_soundHolder.back().init();
+				}
 
-                
-                loadingSoundName = "";
-                _loadingSound = false;
-            }
 
-        ImGui::End();
+				loadingSoundName = "";
+				_loadingSound = false;
+			}
+
+			ImGui::End();
+		}
     
     }
 
