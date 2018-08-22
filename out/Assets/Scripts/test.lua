@@ -15,7 +15,7 @@ tests["[M] Getting music playlist from JSON"] = function()
     end
 
     function self.clean()
-        Music.removeFromPlaylist("Test Playlist")
+        Music.removeFromPlaylist("Test Playlist") -- funkcja removeFromPlaylist wywołana tylko z 1 argumentem (nazwa playlisty) usuwa całą podaną playliste
     end
 
     return self
@@ -27,11 +27,11 @@ tests["[M] Creating music playlist"] = function()
     local self  = {}
 
     function self.run()
-        Music.addPlaylist("Playlist", "Rozpierdalacz")        
+        Music.addPlaylist("Playlist", "Rozpierdalacz") -- Tworzenie nowiej playlisty        
         if not Music.includes("Playlist", "Rozpierdalacz") or Music.includes("Playlist", "Slowianski") then
             return false
         end
-        Music.addToPlaylist("Playlist", "Slowianski")
+        Music.addToPlaylist("Playlist", "Slowianski") -- Dodawanie utworu do juz utworzonej wcześniej playlisty
         if not Music.includes("Playlist", "Rozpierdalacz") or not Music.includes("Playlist", "Slowianski") then
             return false
         end
@@ -59,7 +59,7 @@ tests["[M] Getting music Status"] = function()
         if not Music.getStatus("Test Playlist") == Music.Stopped then 
             return false
         end
-        Music.play(0, "Test Playlist")
+        Music.play(0, "Test Playlist") -- 1 argument oznacza ścieszkę na ktorej dana playlista jest odtwarzana, 2 to playlista, mozliwy jest jeszcze 1 czyli nazwa konkretnego utwóru z playlisty
         if not Music.getStatus("Test Playlist") == Music.Playing then 
             return false
         end
@@ -352,7 +352,7 @@ tests["[S] Sound division"] = function()
             return false
         end
         local length = self.testSound:getLength() -- ok 420ms -- {Pobranie długosci całego dzwięku}
-        self.testSound:setOffset(0, 0.20) -- 100ms - ok 420ms
+        self.testSound:setOffset(0.10, length) -- 100ms - ok 420ms
         local duration = self.testSound:getEndTime() - self.testSound:getBeginTime() -- {Pobranie długosci aktualnego sampla}
         if not Math.floor(duration * 100) == 32 then -- Dzwięk powinien twać około 320ms
             return false
