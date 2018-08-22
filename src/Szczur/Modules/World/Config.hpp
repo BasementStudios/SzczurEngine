@@ -7,9 +7,7 @@
 namespace rat::wrd
 {
 
-using ID_t       = size_t;
 using Name_t     = std::string;
-using NameView_t = std::string_view;
 using Registry_t = entt::DefaultRegistry;
 using EntityID_t = entt::DefaultRegistry::entity_type;
 using Hash_t     = uint64_t;
@@ -41,6 +39,9 @@ struct HashedID
 
     ///
     HashedID(const char* src) : hash { detail::fnv1a_64(src) } {}
+
+    ///
+    HashedID(const Name_t& str) : hash { detail::fnv1a_64(str.data()) } {}
 
     const Hash_t hash;
 

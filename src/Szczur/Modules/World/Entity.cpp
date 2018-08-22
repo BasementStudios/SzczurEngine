@@ -1,7 +1,7 @@
 #include "Entity.hpp"
 
+#include "EntityManager.hpp"
 #include "Scene.hpp"
-#include "WorldManager.hpp"
 
 namespace rat::wrd
 {
@@ -18,6 +18,11 @@ Scene& Entity::getScene() const
     return _scene;
 }
 
+EntityManager& Entity::getEntityManager() const
+{
+    return _scene.getEntityManager();
+}
+
 EntityID_t Entity::getID() const
 {
     return _id;
@@ -25,34 +30,24 @@ EntityID_t Entity::getID() const
 
 bool Entity::addComponent(HashedID hid) const
 {
-    return getScene().getManager().getComponentRegistry().assignComponent(*this, hid);
+    return getEntityManager().addComponent(_id, hid);
 }
 
 bool Entity::hasComponent(HashedID hid) const
 {
-    return getScene().getManager().getComponentRegistry().hasComponent(*this, hid);
+    return getEntityManager().hasComponent(_id, hid);
 }
 
 bool Entity::removeComponent(HashedID hid) const
 {
-    return getScene().getManager().getComponentRegistry().removeComponent(*this, hid);
-}
-
-bool Entity::addTag(HashedID hid) const
-{
-    return getScene().getManager().getComponentRegistry().assignTag(*this, hid);
-}
-
-bool Entity::hasTag(HashedID hid) const
-{
-    return getScene().getManager().getComponentRegistry().hasTag(*this, hid);
+    return getEntityManager().removeComponent(_id, hid);
 }
 
 bool Entity::destroy() const
 {
-    if (getScene().getRegistry().valid(_id))
+    if (getEntityManager().getRegistry().valid(_id))
     {
-        getScene().getRegistry().destroy(_id);
+        getEntityManager().getRegistry().destroy(_id);
 
         return true;
     }
@@ -66,7 +61,7 @@ bool Entity::destroy() const
 
 bool Entity::isValid() const
 {
-    return getScene().getRegistry().valid(_id);
+    return getEntityManager().getRegistry().valid(_id);
 }
 
 }

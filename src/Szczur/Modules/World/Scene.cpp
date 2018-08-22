@@ -5,21 +5,31 @@
 namespace rat::wrd
 {
 
-Scene::Scene(WorldManager_t& manager, ID_t id, NameView_t name)
-    : _manager { manager }
+Scene::Scene(WorldManager& worldManager, Hash_t id, const Name_t& name)
+    : _worldManager { worldManager }
+    , _entityManager { *this }
     , _id { id }
     , _name { name }
-    , _registry {}
 {
 
 }
 
-Scene::WorldManager_t& Scene::getManager() const
+WorldManager& Scene::getWorldManager() const
 {
-    return _manager;
+    return _worldManager;
 }
 
-ID_t Scene::getID() const
+EntityManager& Scene::getEntityManager()
+{
+    return _entityManager;
+}
+
+const EntityManager& Scene::getEntityManager() const
+{
+    return _entityManager;
+}
+
+Hash_t Scene::getID() const
 {
     return _id;
 }
@@ -34,35 +44,9 @@ const Name_t& Scene::getName() const
     return _name;
 }
 
-Registry_t& Scene::getRegistry()
+bool Scene::isValid() const
 {
-    return _registry;
-}
-
-const Registry_t& Scene::getRegistry() const
-{
-    return _registry;
-}
-
-Entity Scene::addEntity()
-{
-    return { *this, _registry.create() };
-}
-
-bool Scene::removeEntity(EntityID_t id)
-{
-    if (_registry.valid(id))
-    {
-        _registry.destroy(id);
-
-        return true;
-    }
-    else
-    {
-        // TODO log attempt of deleting invalid entity
-
-        return false;
-    }
+    return _id != 0;
 }
 
 }

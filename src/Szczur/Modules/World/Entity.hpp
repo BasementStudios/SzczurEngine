@@ -8,6 +8,7 @@ namespace rat::wrd
 {
 
 // fwd decl
+class EntityManager;
 class Scene;
 
 /// Practical wrapper around entity id, use 'as is', do not store anywhere
@@ -16,25 +17,28 @@ class Entity
 public:
 
     ///
-    Entity(Scene& scene, const EntityID_t id);
+    Entity(Scene& scene, EntityID_t id);
 
     ///
-    Entity(const Entity&) = delete;
+    Entity(const Entity&) = default;
 
     ///
-    Entity& operator = (const Entity&) = delete;
+    Entity& operator = (const Entity&) = default;
 
     ///
-    Entity(Entity&&) = delete;
+    Entity(Entity&&) = default;
 
     ///
-    Entity& operator = (Entity&&) = delete;
+    Entity& operator = (Entity&&) = default;
 
     ///
     ~Entity() = default;
 
     ///
     Scene& getScene() const;
+
+    ///
+    EntityManager& getEntityManager() const;
 
     ///
     EntityID_t getID() const;
@@ -49,12 +53,6 @@ public:
     bool removeComponent(HashedID hid) const;
 
     ///
-    bool addTag(HashedID hid) const;
-
-    ///
-    bool hasTag(HashedID hid) const;
-
-    ///
     bool destroy() const;
 
     ///
@@ -63,7 +61,7 @@ public:
 private:
 
     Scene& _scene;
-    const EntityID_t _id;
+    EntityID_t _id;
 
 };
 

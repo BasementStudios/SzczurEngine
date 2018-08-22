@@ -2,19 +2,19 @@
 
 #include <entt/entt.hpp>
 
-#include "ComponentRegistry.hpp"
+#include "Config.hpp"
 
 namespace rat::wrd
 {
 
+// fwd decl
 class Scene;
 
 class WorldManager
 {
 public:
 
-    using ScenesHolder_t      = std::vector<std::unique_ptr<Scene>>;
-    using ComponentRegistry_t = ComponentRegistry;
+    using ScenesHolder_t = std::vector<std::unique_ptr<Scene>>;
 
     ///
     WorldManager();
@@ -41,61 +41,36 @@ public:
     Scene* addScene(const Name_t& name = "anonymous_scene");
 
     ///
-    bool hasScene(ID_t id);
+    bool hasScene(HashedID hid);
 
     ///
-    bool hasScene(const Name_t& name);
+    bool removeScene(HashedID hid);
 
     ///
-    bool removeScene(ID_t id);
+    Scene* getScene(HashedID hid) const;
 
     ///
-    bool removeScene(const Name_t& name);
-
-    ///
-    Scene* getScene(ID_t id) const;
-
-    ///
-    Scene* getScene(const Name_t& name) const;
-
-    ///
-    bool setCurrentScene(ID_t id);
-
-    ///
-    bool setCurrentScene(const Name_t& name);
+    bool setCurrentScene(HashedID hid);
 
     ///
     Scene* getCurrentScene() const;
 
     ///
-    ID_t getCurrentSceneID() const;
+    Hash_t getCurrentSceneID() const;
 
     ///
     bool isCurrentSceneValid() const;
 
-    ///
-    ComponentRegistry_t& getComponentRegistry();
-
-    ///
-    const ComponentRegistry_t& getComponentRegistry() const;
-
 private:
 
     ///
-    typename ScenesHolder_t::iterator _find(ID_t id);
+    typename ScenesHolder_t::iterator _find(HashedID hid);
 
     ///
-    typename ScenesHolder_t::const_iterator _find(ID_t id) const;
-
-    ///
-    typename ScenesHolder_t::iterator _find(const Name_t& name);
-
-    ///
-    typename ScenesHolder_t::const_iterator _find(const Name_t& name) const;
+    typename ScenesHolder_t::const_iterator _find(HashedID hid) const;
 
     ScenesHolder_t _scenes;
-    ID_t _currentSceneID;
-    ComponentRegistry_t _componentRegistry;
+    Hash_t _currentSceneID;
 
 };
 

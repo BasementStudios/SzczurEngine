@@ -3,29 +3,26 @@
 namespace rat::wrd
 {
 
-bool ComponentRegistry::assignComponent(const Entity& entity, HashedID hid) const
+bool ComponentRegistry::assignComponent(Registry_t& registry, EntityID_t id, HashedID hid)
 {
-    return _call(_assignComponent, entity, hid);
+    return _call(_assignComponent, registry, id, hid);
 }
 
-bool ComponentRegistry::hasComponent(const Entity& entity, HashedID hid) const
+bool ComponentRegistry::hasComponent(Registry_t& registry, EntityID_t id, HashedID hid)
 {
-    return _call(_hasComponent, entity, hid);
+    return _call(_hasComponent, registry, id, hid);
 }
 
-bool ComponentRegistry::removeComponent(const Entity& entity, HashedID hid) const
+bool ComponentRegistry::removeComponent(Registry_t& registry, EntityID_t id, HashedID hid)
 {
-    return _call(_removeComponent, entity, hid);
+    return _call(_removeComponent, registry, id, hid);
 }
 
-bool ComponentRegistry::assignTag(const Entity& entity, HashedID hid) const
+bool ComponentRegistry::_call(const FunctorMap_t& map, Registry_t& registry, EntityID_t id, HashedID hid)
 {
-    return _call(_assignTag, entity, hid);
-}
+    // TODO log attempt of invoking nor-registered component/tag function, 99% probability to crash if so
 
-bool ComponentRegistry::hasTag(const Entity& entity, HashedID hid) const
-{
-    return _call(_hasTag, entity, hid);
+    return std::invoke(map.at(hid.hash), registry, id);
 }
 
 }
