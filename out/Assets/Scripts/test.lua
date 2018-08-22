@@ -368,6 +368,41 @@ tests["[S] Sound division"] = function()
 
 end
 
+tests["[S] Sound Callbacks"] = function()
+
+    local self = {
+        testSound = nil
+    }
+
+    function self.run()
+        local started = false
+        local finished = false
+        self.testSound = Sound.addNewSound("Button");
+        if self.testSound == nil then
+            return false
+        end
+        function self.testSound.onStart()
+            started = true
+        end
+        function self.testSound.onFinish()
+            finished = true
+        end
+        self.testSound:play()
+        self.testSound:stop()
+        if not started or not finished then
+            return false
+        end
+        return true
+    end
+    
+    function self.clean()
+        Sound.removeSound(self.testSound);
+    end
+
+    return self
+
+end
+
 ------------------------------------------------------------------------------------------
 
 local counter = {

@@ -69,6 +69,16 @@ namespace rat
 		object.set("cleanReverb", &SoundBase::cleanEffect<Reverb>);
 		object.set("cleanEcho", &SoundBase::cleanEffect<Echo>);
 
+        object.setProperty("onStart", 
+            [](){}, 
+            [](SoundBase& obj, SoundBase::SolFunction_t callback){ obj.setCallback(SoundBase::CallbackType::onStart, callback); }
+        );
+        object.setProperty("onFinish", 
+            [](){}, 
+            [](SoundBase& obj, SoundBase::SolFunction_t callback){ obj.setCallback(SoundBase::CallbackType::onFinish, callback); }
+        );
+
+
 		object.init();
     }
 
@@ -76,6 +86,11 @@ namespace rat
     {
         if (getPlayingOffset() >= offset.endTime)
             stop();
+    }
+
+    void SoundBase::setCallback(SoundBase::CallbackType type, SoundBase::SolFunction_t callback)
+    {
+        _callbacks.insert_or_assign(type, callback);
     }
 
     bool SoundBase::setBuffer(SoundBuffer* buffer)
@@ -182,6 +197,8 @@ namespace rat
     {
         _sound.play();
 
+        callback(CallbackType::onStart);
+
         if (_playingTime > offset.beginTime && _playingTime < offset.endTime)
             _sound.setPlayingOffset(sf::seconds(_playingTime));
         else
@@ -196,6 +213,8 @@ namespace rat
 
     void SoundBase::stop()
     {
+        callback(CallbackType::onFinish);
+
         _playingTime = 0;
         _sound.stop();
     }
@@ -292,5 +311,11 @@ namespace rat
         }
         
         return false;
+    }
+
+    void SoundBase::callback(SoundBase::CallbackType type)
+    {
+        if (auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
     }
 }

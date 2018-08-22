@@ -1,9 +1,12 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <boost/container/flat_map.hpp>
 
 #include "RatSound.hpp"
 #include "SoundAssets.hpp"
+
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
@@ -11,9 +14,17 @@ namespace rat
     {
         using Second_t = float;
 
+        enum class CallbackType 
+        {
+            onStart,
+            onFinish
+        };
+
     public:
     
 		using Status = sf::SoundSource::Status;
+        using SolFunction_t = sol::function;
+        using CallbacksContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
     
     private:
 
@@ -39,6 +50,8 @@ namespace rat
         SoundBuffer* _buffer {nullptr};
         RatSound _sound;
 
+        CallbacksContainer_t _callbacks;
+
     public:
 
         SoundBase(SoundAssets& assets);
@@ -58,6 +71,8 @@ namespace rat
         void play();
         void stop();
         void pause();
+
+        void setCallback(CallbackType type, SolFunction_t callback);
 
         float getVolume() const;
         void setVolume(float volume);
@@ -111,6 +126,8 @@ namespace rat
 
         bool loadBuffer();
         std::string getPath() const;
+
+        void callback(CallbackType type);
 
     };
 }
