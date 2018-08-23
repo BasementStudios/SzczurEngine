@@ -7,12 +7,13 @@
 #include "Szczur/Modules/AudioEffects/AudioEffects.hpp"
 
 #include "SoundBase.hpp"
-#include "SoundAssets.hpp"
 
 namespace rat 
 {
 	class Sound : public Module<Script, AudioEffects>
 	{ 
+
+		using Status = SoundBase::Status;
 
     private:
 
@@ -27,6 +28,8 @@ namespace rat
 
 		void initScript();
 
+		void update();
+
         void addSound(SoundBase* sound);
         void removeSound(SoundBase* sound);
 
@@ -36,6 +39,8 @@ namespace rat
 
 		void setVolume(float volume);
 		float getVolume() const;
+
+		SoundBase* addNewSound(const std::string& name);
 
         SoundAssets& getAssetsManager();
 

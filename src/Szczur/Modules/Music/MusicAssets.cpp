@@ -4,30 +4,35 @@
 
 namespace rat
 {
-
-    void MusicAssets::load(const std::string& name) 
-	{
-        if (!_musicHolder.count(name)) {
-            if (_musicHolder[name].load(name)) {
-                LOG_INFO("Music Assets: ", name, " loaded");
-            }
-            else {
-                LOG_INFO("[Music Assets Error] Problem with loading asset: ", name);
-            }    
+    MusicAssets::~MusicAssets()
+    {
+        for(auto it : _musicHolder) {
+            delete it;
         }
-
-        _musicHolder[name].incrementCounter();
-	}
-
-    void MusicAssets::unload(const std::string& name) 
-	{
-        LOG_INFO("Music Assets: ", name, " unloaded");
-		_musicHolder.erase(name);
     }
 
-    RatMusic& MusicAssets::get(const std::string& name)
+    RatMusic* MusicAssets::load(const std::string& name) 
 	{
-		return _musicHolder[name];
+        _musicHolder.emplace_back(new RatMusic());
+        
+        if(_musicHolder.back()->load(name)) {
+            LOG_INFO("Music Assets: ", name, " loaded");
+            return _musicHolder.back();
+        }
+        else {
+            LOG_INFO("[Music Assets Error] Problem with loading asset: ", name);
+            return nullptr;
+        }  
 	}
 
+    void MusicAssets::unload(RatMusic* music) 
+	{
+        _musicHolder.remove_if([=](auto it){
+            auto same = (it == music);
+            if (same) {
+               delete music;
+            }
+            return same; 
+        });
+    }
 }

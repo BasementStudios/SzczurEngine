@@ -15,24 +15,20 @@ namespace rat
 
 	private:
 
-		unsigned int _counter {0};
+		inline static float MusicVolume {100};
 
 		std::string _filePath {""};
 		std::string _name	  {""};
 
 		float _bpm 		{60};
 		float _fadeTime {0};
+		float _volume   {100};
 
 	public:
 
 		RatMusic();
 
 		bool load(const std::string& name);
-
-		void incrementCounter();
-		void decrementCounter();
-
-		unsigned int getCounterValue() const;
 
 		void saveToJson(); //Only for editor
 
@@ -44,6 +40,12 @@ namespace rat
 
 		float getFadeTime() const;
 		void setFadeTime(float fadeTime);
+
+		static float GetMusicVolume();
+        static void SetMusicVolume(float volume);
+
+		float getVolume() const;
+		void setVolume(float volume);
 
 	private:
 

@@ -1,24 +1,11 @@
 {
-    "Rozpierdalacz": {
-        "BPM": 115.0,
-        "Effects": [
-            [],
-            [],
-            []
-        ],
-        "FadeTime": 4.0,
-        "Path": "Assets/Music/Szczur Rozpierdalacz.flac",
-        "Volume": 100.0
-    },
     "Slowianski": {
-        "BPM": 125.0,
-        "Effects": [
-            [],
-            [],
-            []
-        ],
-        "FadeTime": 2.0,
-        "Path": "Assets/Music/Szczur Slowianski.flac",
-        "Volume": 100.0
+        "Path":"Assets/Music/Szczur Slowianski.flac", "BPM":125.0, "Effects":[[],[],[]], "FadeTime":2.0, "Volume":100.0
+    },
+    "Rozpierdalacz": {
+        "Path":"Assets/Music/Szczur Rozpierdalacz.flac", "BPM":115.0, "Effects":[[],[],[]], "FadeTime":2.0, "Volume":100.0
+    },
+    "Zeldowy": {
+        "Path":"Assets/Music/Szczur Zeldowy.wav", "BPM":60.0, "Effects":[[],[],[]], "FadeTime":0.0, "Volume":100.0
     }
 }

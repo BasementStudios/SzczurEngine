@@ -21,12 +21,12 @@ namespace rat
         unsigned int getAuxiliaryEffect();
 
         template <typename T>
-        void sendAuxiliaryEffectsTo(T& ratAudio);
+        void sendAuxiliaryEffectsTo(T* ratAudio);
 
     private:
 
         template <typename Effect_t, typename RatAudio_t>
-        void sendAuxIfCreated(RatAudio_t& ratAudio);
+        void sendAuxIfCreated(RatAudio_t* ratAudio);
 
     };
 }

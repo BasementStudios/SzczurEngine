@@ -15,7 +15,7 @@ namespace rat
 	RatMusic::RatMusic()
 		: AudioEffect(m_source)
 	{
-		LOG_INFO("RatMusic created");	
+			
 	}
 
 	bool RatMusic::load(const std::string& name)
@@ -23,21 +23,6 @@ namespace rat
 		_name = name;
 		getJsonData();
 		return openFromFile(_filePath);
-	}
-
-	void RatMusic::incrementCounter()
-	{
-		++_counter;
-	}
-
-	void RatMusic::decrementCounter()
-	{
-		--_counter;
-	}
-
-	unsigned int RatMusic::getCounterValue() const
-	{
-		return _counter;
 	}
 
 	const std::string& RatMusic::getFilePath() const
@@ -68,6 +53,27 @@ namespace rat
 	void RatMusic::setFadeTime(float fadeTime)
 	{
 		_fadeTime = fadeTime;
+	}
+
+	float RatMusic::GetMusicVolume()
+	{
+		return MusicVolume;
+	}
+
+    void RatMusic::SetMusicVolume(float volume)
+	{
+		MusicVolume = volume;
+	}
+
+	float RatMusic::getVolume() const
+	{
+		return _volume;
+	}
+
+	void RatMusic::setVolume(float volume)
+	{
+		_volume = volume;
+		sf::Music::setVolume(volume * (MusicVolume / 100));
 	}
 
 	//Only for editor

@@ -36,7 +36,7 @@ namespace rat
         sf::Listener::setGlobalVolume(volume);
     }
 
-    float Listener::getGlobalVolume()
+    float Listener::getGlobalVolume() const
     {
         return sf::Listener::getGlobalVolume();
     }
@@ -46,9 +46,10 @@ namespace rat
         sf::Listener::setPosition(x, y, z + _offsetZ);
     }
 
-    sf::Vector3f Listener::getPosition()
+    glm::vec3 Listener::getPosition() const
     {
-        return sf::Listener::getPosition();
+        auto vec = sf::Listener::getPosition();
+        return glm::vec3(vec.x, vec.y, vec.z);
     }
 
     void Listener::setDirection(float x, float y, float z)
@@ -56,9 +57,10 @@ namespace rat
         sf::Listener::setDirection(x, y, z);    
     }
 
-    sf::Vector3f Listener::getDirection()
+    glm::vec3 Listener::getDirection() const
     {
-        return sf::Listener::getDirection();
+        auto vec = sf::Listener::getDirection();
+        return glm::vec3(vec.x, vec.y, vec.z);
     }
 
     void Listener::setUpVector(float x, float y, float z)
@@ -66,9 +68,10 @@ namespace rat
         sf::Listener::setUpVector(x, y, z);
     }
 
-    sf::Vector3f Listener::getUpVector()
+    glm::vec3 Listener::getUpVector() const
     {
-        return sf::Listener::getUpVector();
+        auto vec = sf::Listener::getUpVector();
+        return glm::vec3(vec.x, vec.y, vec.z);
     }
 
     void Listener::setOffsetZ(float offsetZ)

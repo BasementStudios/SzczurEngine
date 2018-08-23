@@ -1,18 +1,36 @@
 #pragma once
 
-#include <SFML/Audio/SoundBuffer.hpp>
+#include <glm/glm.hpp>
+#include <boost/container/flat_map.hpp>
 
 #include "RatSound.hpp"
+#include "SoundAssets.hpp"
+
+#include "Szczur/Modules/Script/Script.hpp"
 
 namespace rat
 {
     class SoundBase
     {
         using Second_t = float;
+
+        enum class CallbackType 
+        {
+            onStart,
+            onFinish
+        };
+
+    public:
+    
+		using Status = sf::SoundSource::Status;
+        using SolFunction_t = sol::function;
+        using CallbacksContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
     
     private:
 
         inline static float SoundVolume {100};
+        
+        SoundAssets& _assets;
             
         struct
         {
@@ -29,23 +47,32 @@ namespace rat
         float _volume {100};
         float _pitch  {1};
             
-        sf::SoundBuffer* _buffer {nullptr};
+        SoundBuffer* _buffer {nullptr};
         RatSound _sound;
+
+        CallbacksContainer_t _callbacks;
 
     public:
 
-        SoundBase(const std::string& name);
+        SoundBase(SoundAssets& assets);
+        SoundBase(SoundAssets& assets, const std::string& name);
+        
+        ~SoundBase();
 
         void init();
-        void load();
+        bool load();
         
-        void setBuffer(sf::SoundBuffer* buffer);
+        bool setBuffer(SoundBuffer* buffer);
 
         static void initScript(Script& script);
+
+        void update();
 
         void play();
         void stop();
         void pause();
+
+        void setCallback(CallbackType type, SolFunction_t callback);
 
         float getVolume() const;
         void setVolume(float volume);
@@ -66,11 +93,14 @@ namespace rat
         void setMinDistance(float minDistance);
 
         void setPosition(float x, float y, float z);
-        sf::Vector3f getPosition() const;
+        glm::vec3 getPosition() const;
 
         bool getLoop() const;
         void setLoop(bool loop);
 
+        Status getStatus() const;
+
+        float getPlayingOffset();
         void setOffset(Second_t beginT, Second_t endT);
         Second_t getLength() const;
 
@@ -79,6 +109,7 @@ namespace rat
 
         void setName(const std::string& name);
         const std::string getName() const;
+        void setFileName(const std::string& fileName);
         std::string getFileName() const;
 
         template <typename T>
@@ -95,6 +126,8 @@ namespace rat
 
         bool loadBuffer();
         std::string getPath() const;
+
+        void callback(CallbackType type);
 
     };
 }

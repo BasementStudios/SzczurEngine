@@ -7,18 +7,18 @@
 namespace rat
 { 
 
-	MusicBase::MusicBase(RatMusic& source)
+	MusicBase::MusicBase(RatMusic* source)
 		: _base(source)
 	{
 		_timeLeft = getDuration();
-		setVolume(source.getVolume());
+		setVolume(_base->getVolume());
 	}
 
 	void MusicBase::update(float deltaTime) 
 	{
 		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
 			_timeLeft -= deltaTime;
-			if (_timeLeft <= _base.getFadeTime())
+			if (_timeLeft <= _base->getFadeTime())
 				_isEnding = true;
 		}
 	}
@@ -33,7 +33,7 @@ namespace rat
 
 		if (_finishInit) { 	
 			_finishInit = false;
-			_timeLeft = _base.getFadeTime();
+			_timeLeft = _base->getFadeTime();
 			_finishing = true;
 			_isEnding = false;
 		}
@@ -41,7 +41,7 @@ namespace rat
 		_timeLeft -= deltaTime;
 
 		if (_timeLeft >= 0) {
-			_base.setVolume((_timeLeft / _base.getFadeTime()) * _baseVolume);
+			_base->setVolume((_timeLeft / _base->getFadeTime()) * _baseVolume);
 			return false;
 		}
 		
@@ -54,7 +54,7 @@ namespace rat
 	{
 		if (_startInit) {
 			_timeLeft = getDuration();
-			_base.setVolume(0);
+			_base->setVolume(0);
 			_startInit = false;
 		}
 		
@@ -62,47 +62,47 @@ namespace rat
 
 		auto vol = (_baseVolume * (getDuration() - _timeLeft)) / introTime;
 		if (vol > 100) vol = 100;
-		_base.setVolume(vol);
+		_base->setVolume(vol);
 	}
 
 	void MusicBase::play() 
 	{
-		_base.play();
+		_base->play();
 	}
 
 	void MusicBase::pause() 
 	{
-		_base.pause();
+		_base->pause();
 	}
 
 	void MusicBase::stop() 
 	{
-		_base.stop();
+		_base->stop();
 	}
 
 	void MusicBase::setLoop(bool loop)
 	{
-		_base.setLoop(loop);
+		_base->setLoop(loop);
 	}
 
 	bool MusicBase::getLoop() const
 	{
-		return _base.getLoop();
+		return _base->getLoop();
 	}
 
 	sf::SoundSource::Status MusicBase::getStatus() const 
 	{
-		return _base.getStatus();
+		return _base->getStatus();
 	}
 
 	float MusicBase::getFadeTime() const 
 	{
-		return _base.getFadeTime();
+		return _base->getFadeTime();
 	}
 
 	float MusicBase::getDuration() const 
 	{
-		return _base.getDuration().asSeconds();
+		return _base->getDuration().asSeconds();
 	}
 
 	float MusicBase::getTimeLeft() const
@@ -126,7 +126,7 @@ namespace rat
 		else if (volume < 0) volume = 0;
 
 		_baseVolume = volume;
-		_base.setVolume(_baseVolume);
+		_base->setVolume(_baseVolume);
 	}
 	
 	void MusicBase::reset() 
@@ -139,10 +139,10 @@ namespace rat
 
 	const std::string& MusicBase::getName() const
 	{
-		return _base.getName();
+		return _base->getName();
 	}
 
-	RatMusic& MusicBase::getSource() const
+	RatMusic* MusicBase::getSource() const
 	{
 		return _base;
 	}

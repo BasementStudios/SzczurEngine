@@ -11,22 +11,9 @@ namespace rat
     {
 
         using Container_t = std::list<SoundBase>;
-    
-    private:
-
-        Sound& _sound;
-        SoundAssets _assets;
-        
-        bool _editor       {false};
-        bool _loadingSound {false};
-
-        Container_t _soundHolder;
-
-        Container_t::iterator _currentEditing;
- 
     public:
 
-        SoundEditor(Sound& sound);
+        SoundEditor(Sound& sound, bool& showingEditor);
 
         void render();
 
@@ -40,6 +27,19 @@ namespace rat
         std::string toTime(float secF);
         float toFloatSeconds(const std::string& timeString) const;
         void checkTimeString(std::string& timeString);
+
+		void showEditor();
+
+		Sound& _sound;
+		SoundAssets _assets;
+
+		bool& _isListDisplayed;
+		bool _isLoadingDisplayed{ false };
+		bool _isEditorDisplayed{ false };
+
+		Container_t _soundHolder;
+
+		Container_t::iterator _currentEditing;
     
     };
 }

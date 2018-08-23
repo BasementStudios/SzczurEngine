@@ -82,7 +82,7 @@ namespace rat
         : _music(music)
 	{
         _playlistHolder.music = &_music;
-        _musicAssets = _playlistHolder.music->getAssetsManager();
+        //_musicAssets = _playlistHolder.music->getAssetsManager();
 	}
 
 	void MusicEditor::render()
@@ -109,93 +109,93 @@ namespace rat
 
             ImGui::Separator();
 
-            if (ImGui::TreeNode("Playlists")) {
-                for(auto playlist : _playlistHolder.playlistsNames) {
-                    if (ImGui::SmallButton((" - ##RemovePlaylist" + playlist).c_str())) {
-                        //TODO
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::TreeNode(playlist.c_str())) {
-                        for(auto it : _playlistHolder.music->getPlaylist(playlist)) {
-                            if (ImGui::Button(it->getName().c_str())){
-                                currentEditingMusicFile = it->getName();
-                                currentPlaylist = playlist;
-                            }
-                            ImGui::SameLine();
-                            auto name = "PLAY##" + playlist + it->getName();
-                            if (ImGui::Button(name.c_str())){
-                                currentEditingMusicFile = it->getName();
-                                currentPlaylist = playlist;
-                                _music.setPlayingMode(currentPlaylist, Music::PlayingMode::Random);
-                                _music.play(0, currentPlaylist, currentEditingMusicFile);
-                                auto& song = _musicAssets->get(currentEditingMusicFile);
-                                for (unsigned int i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {
-                                    if (song.effectsTypes[i] != AudioEffect::EffectType::None) {
-                                        switch(song.effectsTypes[i]) {
-                                            case AudioEffect::EffectType::Reverb:
-                                                song.getEffect<Reverb>().density(song.reverbData.density);
-                                                song.getEffect<Reverb>().diffusion(song.reverbData.diffusion);
-                                                song.getEffect<Reverb>().gain(song.reverbData.gain);
-                                                song.getEffect<Reverb>().gainHf(song.reverbData.gainHf);
-                                                song.getEffect<Reverb>().decayTime(song.reverbData.decayTime);
-                                                song.getEffect<Reverb>().decayHfRatio(song.reverbData.decayHfRatio);
-                                                song.getEffect<Reverb>().reflectionsGain(song.reverbData.reflectionsGain);
-                                                song.getEffect<Reverb>().reflectionsDelay(song.reverbData.reflectionsDelay);
-                                                song.getEffect<Reverb>().lateReverbGain(song.reverbData.lateReverbGain);
-                                                song.getEffect<Reverb>().lateReverbDelay(song.reverbData.lateReverbDelay);
-                                                song.getEffect<Reverb>().airAbsorptionGainHf(song.reverbData.airAbsorptionGainHf);
-                                                song.getEffect<Reverb>().roomRolloffFactor(song.reverbData.roomRolloffFactor);
-                                                song.getEffect<Reverb>().decayHfLimit(song.reverbData.decayHfLimit);
-                                                break;
-                                            case AudioEffect::EffectType::Echo:
-                                                song.getEffect<Echo>().delay(song.echoData.delay);
-                                                song.getEffect<Echo>().lrDelay(song.echoData.lrDelay);
-                                                song.getEffect<Echo>().damping(song.echoData.damping);
-                                                song.getEffect<Echo>().feedback(song.echoData.feedback);
-                                                song.getEffect<Echo>().spread(song.echoData.spread);
-                                                break;
-                                            case AudioEffect::EffectType::Equalizer: 
-                                                song.getEffect<Equalizer>().lowGain(song.eqData.lowGain);
-                                                song.getEffect<Equalizer>().lowCutoff(song.eqData.lowCutoff);
-                                                song.getEffect<Equalizer>().lowMidGain(song.eqData.lowMidGain);
-                                                song.getEffect<Equalizer>().lowMidCenter(song.eqData.lowMidCenter);
-                                                song.getEffect<Equalizer>().lowMidWidth(song.eqData.lowMidWidth);
-                                                song.getEffect<Equalizer>().highMidGain(song.eqData.highMidGain);
-                                                song.getEffect<Equalizer>().highMidCenter(song.eqData.highMidCenter);
-                                                song.getEffect<Equalizer>().highMidWidth(song.eqData.highMidWidth);
-                                                song.getEffect<Equalizer>().highGain(song.eqData.highGain);
-                                                song.getEffect<Equalizer>().highCutoff(song.eqData.highCutoff);
-                                                break;
-                                            default: 
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                            ImGui::SameLine();
-                            name = " - ##" + playlist + it->getName();
-                            if (ImGui::Button(name.c_str())) {
-                                if (it->getName() == currentEditingMusicFile)
-                                    currentEditingMusicFile = "";
-                                _playlistHolder.music->removeFromPlaylist(playlist, it->getName());
-                                ImGui::TreePop();
-                                ImGui::TreePop();
-                                ImGui::End();
-                                return;
-                            }
-                        }
-                        if (ImGui::Button(" + ")) {
-                            _playlistHolder.addMusic(playlist);
-                        }
-                        ImGui::TreePop();
-                    }
-                }
-                ImGui::TreePop();
-            }
+            //if (ImGui::TreeNode("Playlists")) {
+            //    for(auto playlist : _playlistHolder.playlistsNames) {
+            //        if (ImGui::SmallButton((" - ##RemovePlaylist" + playlist).c_str())) {
+            //            //TODO
+            //        }
+            //        ImGui::SameLine();
+            //        if (ImGui::TreeNode(playlist.c_str())) {
+            //            for(auto it : _playlistHolder.music->getPlaylist(playlist)) {
+            //                if (ImGui::Button(it->getName().c_str())){
+            //                    currentEditingMusicFile = it->getName();
+            //                    currentPlaylist = playlist;
+            //                }
+            //                ImGui::SameLine();
+            //                auto name = "PLAY##" + playlist + it->getName();
+            //                if (ImGui::Button(name.c_str())){
+            //                    currentEditingMusicFile = it->getName();
+            //                    currentPlaylist = playlist;
+            //                    _music.setPlayingMode(currentPlaylist, Music::PlayingMode::Random);
+            //                    _music.play(0, currentPlaylist, currentEditingMusicFile);
+            //                    auto& song = _musicAssets->get(currentEditingMusicFile);
+            //                    for (unsigned int i = 0; i < MAX_AUX_FOR_SOURCE; ++i) {
+            //                        if (song.effectsTypes[i] != AudioEffect::EffectType::None) {
+            //                            switch(song.effectsTypes[i]) {
+            //                                case AudioEffect::EffectType::Reverb:
+            //                                    song.getEffect<Reverb>().density(song.reverbData.density);
+            //                                    song.getEffect<Reverb>().diffusion(song.reverbData.diffusion);
+            //                                    song.getEffect<Reverb>().gain(song.reverbData.gain);
+            //                                    song.getEffect<Reverb>().gainHf(song.reverbData.gainHf);
+            //                                    song.getEffect<Reverb>().decayTime(song.reverbData.decayTime);
+            //                                    song.getEffect<Reverb>().decayHfRatio(song.reverbData.decayHfRatio);
+            //                                    song.getEffect<Reverb>().reflectionsGain(song.reverbData.reflectionsGain);
+            //                                    song.getEffect<Reverb>().reflectionsDelay(song.reverbData.reflectionsDelay);
+            //                                    song.getEffect<Reverb>().lateReverbGain(song.reverbData.lateReverbGain);
+            //                                    song.getEffect<Reverb>().lateReverbDelay(song.reverbData.lateReverbDelay);
+            //                                    song.getEffect<Reverb>().airAbsorptionGainHf(song.reverbData.airAbsorptionGainHf);
+            //                                    song.getEffect<Reverb>().roomRolloffFactor(song.reverbData.roomRolloffFactor);
+            //                                    song.getEffect<Reverb>().decayHfLimit(song.reverbData.decayHfLimit);
+            //                                    break;
+            //                                case AudioEffect::EffectType::Echo:
+            //                                    song.getEffect<Echo>().delay(song.echoData.delay);
+            //                                    song.getEffect<Echo>().lrDelay(song.echoData.lrDelay);
+            //                                    song.getEffect<Echo>().damping(song.echoData.damping);
+            //                                    song.getEffect<Echo>().feedback(song.echoData.feedback);
+            //                                    song.getEffect<Echo>().spread(song.echoData.spread);
+            //                                    break;
+            //                                case AudioEffect::EffectType::Equalizer: 
+            //                                    song.getEffect<Equalizer>().lowGain(song.eqData.lowGain);
+            //                                    song.getEffect<Equalizer>().lowCutoff(song.eqData.lowCutoff);
+            //                                    song.getEffect<Equalizer>().lowMidGain(song.eqData.lowMidGain);
+            //                                    song.getEffect<Equalizer>().lowMidCenter(song.eqData.lowMidCenter);
+            //                                    song.getEffect<Equalizer>().lowMidWidth(song.eqData.lowMidWidth);
+            //                                    song.getEffect<Equalizer>().highMidGain(song.eqData.highMidGain);
+            //                                    song.getEffect<Equalizer>().highMidCenter(song.eqData.highMidCenter);
+            //                                    song.getEffect<Equalizer>().highMidWidth(song.eqData.highMidWidth);
+            //                                    song.getEffect<Equalizer>().highGain(song.eqData.highGain);
+            //                                    song.getEffect<Equalizer>().highCutoff(song.eqData.highCutoff);
+            //                                    break;
+            //                                default: 
+            //                                    break;
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //                ImGui::SameLine();
+            //                name = " - ##" + playlist + it->getName();
+            //                if (ImGui::Button(name.c_str())) {
+            //                    if (it->getName() == currentEditingMusicFile)
+            //                        currentEditingMusicFile = "";
+            //                    _playlistHolder.music->removeFromPlaylist(playlist, it->getName());
+            //                    ImGui::TreePop();
+            //                    ImGui::TreePop();
+            //                    ImGui::End();
+            //                    return;
+            //                }
+            //            }
+            //            if (ImGui::Button(" + ")) {
+            //                _playlistHolder.addMusic(playlist);
+            //            }
+            //            ImGui::TreePop();
+            //        }
+            //    }
+            //    ImGui::TreePop();
+            //}
         
         ImGui::End();
 
-        if (!currentEditingMusicFile.empty()) {
+        /*if (!currentEditingMusicFile.empty()) {
             ImGui::Begin("Music Editor ##Song", NULL);
 
                 EqualizerData eqData;
@@ -379,7 +379,7 @@ namespace rat
                 }
 
             ImGui::End();
-        }
+        }*/
 
         if (_addingPlaylist) {
             ImGui::Begin("AddPlaylist", NULL);
@@ -436,7 +436,7 @@ namespace rat
 
                 ImGui::SameLine(); 
 
-                if (ImGui::Button(" OK ##AddEffect")) {
+                /*if (ImGui::Button(" OK ##AddEffect")) {
                     auto& song = _musicAssets->get(currentEditingMusicFile);
 
                     auto isUsing = [&](AudioEffect::EffectType type) -> bool {
@@ -469,7 +469,7 @@ namespace rat
                     }
                     _addingEffect = false;
                     element = 0;
-                }
+                }*/
 
             ImGui::End();
         }

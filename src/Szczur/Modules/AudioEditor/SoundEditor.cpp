@@ -13,18 +13,18 @@
 
 namespace rat
 {
-    SoundEditor::SoundEditor(Sound& sound)
-        : _sound(sound), _assets(sound.getAssetsManager())
+    SoundEditor::SoundEditor(Sound& sound, bool& showingEditor)
+        : _sound(sound), _assets(sound.getAssetsManager()), _isListDisplayed(showingEditor)
     {
         _currentEditing = _soundHolder.end();
     }
 
     void SoundEditor::render()
     { 
-		if (_loadingSound)
+		if (_isLoadingDisplayed)
 			load();
 
-		ImGui::Begin("Sounds List");
+		ImGui::Begin("Sounds List", &_isListDisplayed);
 
 		float width = ImGui::GetWindowContentRegionWidth() * 0.33;
 
@@ -37,7 +37,7 @@ namespace rat
 		ImGui::SameLine();
 
 		if (ImGui::Button("Load##SoundLists", { width,0 })) {
-			_loadingSound = true;
+			_isLoadingDisplayed = true;
 		}
 
 		ImGui::SameLine();
@@ -48,7 +48,7 @@ namespace rat
 
 		if (ImGui::CollapsingHeader("Sounds list"))
 		{
-			for (auto it = _soundHolder.begin(); it != _soundHolder.end(); ++it) {
+			for (auto it = _soundHolder.begin(); it != _soundHolder.end();) {
 				std::string name = it->getName();
 
 				ImGui::Separator();
@@ -63,6 +63,7 @@ namespace rat
 					if (_currentEditing != _soundHolder.end() && _currentEditing->getName() != name)
 						_sound.stop();
 					_currentEditing = it;
+					_isEditorDisplayed = true;
 				}
 				
 				ImGui::SameLine();
@@ -79,10 +80,14 @@ namespace rat
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.7f, 0.6f));
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.7f));
 				if (ImGui::SmallButton("Delete")) {
-					_soundHolder.erase(it);
-					if (_currentEditing->getName() == name)
+					if (_currentEditing->getName() == name) {
 						_currentEditing = _soundHolder.end();
-					break;
+						_isEditorDisplayed = false;
+					}
+					_soundHolder.erase(it++);	
+				}
+				else{
+					++it; //dealing with skiping iterator if we delete element from list
 				}
 				ImGui::PopStyleColor(3);
 			}
@@ -90,117 +95,120 @@ namespace rat
 
 		ImGui::End();
 
-        if (_currentEditing != _soundHolder.end()) {
-            ImGui::Begin("Sound Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-
-                ImGui::Text(("Path: " + _currentEditing->getFileName()).c_str());
-
-                ImGui::Separator();
-
-                auto currName = _currentEditing->getName();
-
-                ImGui::Text("Name: "); 
-                ImGui::SameLine();
-
-                size_t size = currName.length() + 100;
-                char *newText = new char[size] {};
-                strncpy(newText, currName.c_str(), size);
-
-                ImGui::PushItemWidth(300);
-                    if (ImGui::InputText("##SoundNameInput", newText, size)) {
-                        currName = newText;
-                        _currentEditing->setName(currName);
-                    }
-                ImGui::PopItemWidth();
-
-                delete[] newText;
-
-                ImGui::Separator();
-
-                bool relative = _currentEditing->isRelativeToListener();
-                ImGui::Checkbox("Relative To Listener", &relative);
-                _currentEditing->setRelativeToListener(relative);
-
-                ImGui::Separator();
-
-                if (ImGui::Button("PLAY##SoundEditor")) {
-                    _currentEditing->play();
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("PAUSE##SoundEditor")) {
-                    _sound.pause();
-                }
-                
-                ImGui::SameLine();
-                if (ImGui::Button("STOP##SoundEditor")) {
-                    _sound.stop();
-                }   
-
-                ImGui::Separator();
-
-                char beginTime[6] = "00:00"; 
-                char endTime[6] = "00:00";
-
-                strncpy(beginTime, toTime(_currentEditing->getBeginTime()).c_str(), 6);
-                strncpy(endTime, toTime(_currentEditing->getEndTime()).c_str(), 6);
-
-                ImGui::PushItemWidth(50); 
-                if (ImGui::InputText("##SongBeginTimeSelector", beginTime, 6, 1)) {
-                    std::string timeString = beginTime;
-                    checkTimeString(timeString);
-                    _currentEditing->setOffset(toFloatSeconds(timeString), _currentEditing->getEndTime());
-                }
-                ImGui::PopItemWidth();
-                ImGui::SameLine();
-                ImGui::Text("-");
-                ImGui::SameLine();
-                ImGui::PushItemWidth(50);
-                if (ImGui::InputText("##SongEndTimeSelector", endTime, 6, 1)) {
-                    std::string timeString = endTime;
-                    checkTimeString(timeString);
-                    _currentEditing->setOffset(_currentEditing->getBeginTime(), toFloatSeconds(timeString));
-                }
-                ImGui::PopItemWidth();
-                
-                ImGui::SameLine();
-                ImGui::Text("Offset");
-
-                ImGui::Separator();
-
-                float volume = _currentEditing->getVolume();
-                if (ImGui::SliderFloat("Volume##SoundEditor", &volume, 0, 100)) {
-                    _currentEditing->setVolume(volume);
-                }
-
-                ImGui::Separator();
-
-                float pitch = _currentEditing->getPitch();
-                if (ImGui::InputFloat("Pitch##SoundEditor", &pitch, 0.0f, 0.0f, 2)) {
-                    _currentEditing->setPitch(pitch);
-                }
-
-                ImGui::Separator();
-
-                float attenuation = _currentEditing->getAttenuation();
-                if (ImGui::SliderFloat("Attenuation##SoundEditor", &attenuation, 0, 100)) {
-                    _currentEditing->setAttenuation(attenuation);
-                }
-
-                ImGui::Separator();
-
-                float minDistance = _currentEditing->getMinDistance();
-                if (ImGui::InputFloat("Minimum Distance##SoundEditor", &minDistance, 0.0f, 0.0f, 2)) {
-                    if(minDistance > 0) {
-                        _currentEditing->setMinDistance(minDistance);
-                    }
-                }
-
-                ImGui::Separator();
-
-
-            ImGui::End();
-        }
+		if (_isEditorDisplayed)
+			showEditor();
     }
+
+	void SoundEditor::showEditor() {
+		ImGui::Begin("Sound Editor", &_isEditorDisplayed, ImGuiWindowFlags_AlwaysAutoResize);
+
+		ImGui::Text(("Path: " + _currentEditing->getFileName()).c_str());
+
+		ImGui::Separator();
+
+		auto currName = _currentEditing->getName();
+
+		ImGui::Text("Name: ");
+		ImGui::SameLine();
+
+		size_t size = currName.length() + 100;
+		char *newText = new char[size] {};
+		strncpy(newText, currName.c_str(), size);
+
+		ImGui::PushItemWidth(300);
+		if (ImGui::InputText("##SoundNameInput", newText, size)) {
+			currName = newText;
+			_currentEditing->setName(currName);
+		}
+		ImGui::PopItemWidth();
+
+		delete[] newText;
+
+		ImGui::Separator();
+
+		bool relative = _currentEditing->isRelativeToListener();
+		ImGui::Checkbox("Relative To Listener", &relative);
+		_currentEditing->setRelativeToListener(relative);
+
+		ImGui::Separator();
+
+		if (ImGui::Button("PLAY##SoundEditor")) {
+			_currentEditing->play();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("PAUSE##SoundEditor")) {
+			_sound.pause();
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("STOP##SoundEditor")) {
+			_sound.stop();
+		}
+
+		ImGui::Separator();
+
+		char beginTime[6] = "00:00";
+		char endTime[6] = "00:00";
+
+		strncpy(beginTime, toTime(_currentEditing->getBeginTime()).c_str(), 6);
+		strncpy(endTime, toTime(_currentEditing->getEndTime()).c_str(), 6);
+
+		ImGui::PushItemWidth(50);
+		if (ImGui::InputText("##SongBeginTimeSelector", beginTime, 6, 1)) {
+			std::string timeString = beginTime;
+			checkTimeString(timeString);
+			_currentEditing->setOffset(toFloatSeconds(timeString), _currentEditing->getEndTime());
+		}
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+		ImGui::Text("-");
+		ImGui::SameLine();
+		ImGui::PushItemWidth(50);
+		if (ImGui::InputText("##SongEndTimeSelector", endTime, 6, 1)) {
+			std::string timeString = endTime;
+			checkTimeString(timeString);
+			_currentEditing->setOffset(_currentEditing->getBeginTime(), toFloatSeconds(timeString));
+		}
+		ImGui::PopItemWidth();
+
+		ImGui::SameLine();
+		ImGui::Text("Offset");
+
+		ImGui::Separator();
+
+		float volume = _currentEditing->getVolume();
+		if (ImGui::SliderFloat("Volume##SoundEditor", &volume, 0, 100)) {
+			_currentEditing->setVolume(volume);
+		}
+
+		ImGui::Separator();
+
+		float pitch = _currentEditing->getPitch();
+		if (ImGui::InputFloat("Pitch##SoundEditor", &pitch, 0.0f, 0.0f, 2)) {
+			_currentEditing->setPitch(pitch);
+		}
+
+		ImGui::Separator();
+
+		float attenuation = _currentEditing->getAttenuation();
+		if (ImGui::SliderFloat("Attenuation##SoundEditor", &attenuation, 0, 100)) {
+			_currentEditing->setAttenuation(attenuation);
+		}
+
+		ImGui::Separator();
+
+		float minDistance = _currentEditing->getMinDistance();
+		if (ImGui::InputFloat("Minimum Distance##SoundEditor", &minDistance, 0.0f, 0.0f, 2)) {
+			if (minDistance > 0) {
+				_currentEditing->setMinDistance(minDistance);
+			}
+		}
+
+		ImGui::Separator();
+
+
+		ImGui::End();
+	}
 
     void SoundEditor::save(Container_t::iterator it)
     {
@@ -234,7 +242,7 @@ namespace rat
     {
         static std::string loadingSoundName = "";
 
-		if (!ImGui::Begin("Load Sound", &_loadingSound))
+		if (!ImGui::Begin("Load Sound", &_isLoadingDisplayed))
 		{
 			ImGui::End();
 		}
@@ -261,14 +269,14 @@ namespace rat
 
 			if (ImGui::Button("CANCEL##LoadSound")) {
 				loadingSoundName = "";
-				_loadingSound = false;
+				_isLoadingDisplayed = false;
 			}
 
 			ImGui::SameLine();
 
 			if (ImGui::Button(" OK ##LoadSound")) {
 
-				_soundHolder.push_back(SoundBase(loadingSoundName));
+				_soundHolder.push_back(SoundBase(_assets, loadingSoundName));
 				_soundHolder.back().load();
 
 				auto fileName = _soundHolder.back().getFileName();
@@ -284,7 +292,7 @@ namespace rat
 
 
 				loadingSoundName = "";
-				_loadingSound = false;
+				_isLoadingDisplayed = false;
 			}
 
 			ImGui::End();
@@ -302,7 +310,7 @@ namespace rat
             filePath = path.substr(currentPath.length() + 1, path.length());
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
-            _soundHolder.push_back(SoundBase("Unnnamed"));
+            _soundHolder.push_back(SoundBase(_assets, "Unnnamed"));
             _assets.load(filePath);
             _soundHolder.back().setBuffer(_assets.get(filePath));
             _soundHolder.back().init();

@@ -10,7 +10,7 @@ namespace rat
 {
 
 	AudioEditor::AudioEditor()
-        : _musicEditor(getModule<Music>()), _soundEditor(getModule<Sound>())
+        : _musicEditor(getModule<Music>()), _soundEditor(getModule<Sound>(), _showSoundEditor)
     {
 		
 	}

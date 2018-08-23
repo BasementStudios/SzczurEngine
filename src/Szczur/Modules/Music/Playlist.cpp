@@ -30,7 +30,7 @@ namespace rat
 		if (_isFileEnding) {
 			_playlist[_currentID]->start(deltaTime, _endingFile->getFadeTime());
 			if (_endingFile->finish(deltaTime)) {
-				_endingFile->getSource().cleanAllEffects();
+				_endingFile->getSource()->cleanAllEffects();
 				_isFileEnding = false;
 			}
 		}
@@ -133,9 +133,11 @@ namespace rat
 		_playingMode = mode;
 	}
 
-	Playlist::Status Playlist::getStatus() const 
+	Playlist::Status Playlist::getStatus(const std::string& name) const 
 	{
-		return _status;
+		if (name.empty())
+			return _status;
+		return _playlist[getID(name)]->getStatus();
 	}
 
 	void Playlist::pause() 
@@ -162,6 +164,14 @@ namespace rat
 			for (auto it : _playlist)
 				it->setVolume(it->getVolume() * (volume / 100));
 		}
+	}
+
+	float Playlist::getVolume(const std::string& name) const
+	{
+		if (name.empty())
+			return _playlistVolume;
+		
+		return _playlist[getID(name)]->getVolume(); 
 	}
 
 	bool Playlist::includes(const std::string& name) const 
