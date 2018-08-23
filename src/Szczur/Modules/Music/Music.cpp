@@ -21,6 +21,10 @@ namespace rat
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
+		module.set_function("loadMusic", &Music::loadMusic, this);
+		module.set_function("removeMusic", &Music::removeMusic, this);
+		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+
 		module.set_function("play", &Music::play, this);
 		module.set_function("pause", &Music::pause, this);
 		module.set_function("stop", &Music::stop, this);
@@ -133,6 +137,35 @@ namespace rat
 			if (it != 0)
 				_playlists[it]->update(deltaTime);
 		}
+	}
+
+	MusicBase* Music::loadMusic(const std::string& name) 
+	{
+		auto ratMusic = _assets.load(name);
+
+		if (ratMusic != nullptr) {
+			auto base = new MusicBase(ratMusic);
+			_musicHolder.emplace_back(base);
+
+			LOG_INFO("[Music] Created instance of ", name);
+
+			return base;
+		}
+
+		return nullptr;
+	}
+
+	void Music::removeMusic(MusicBase* base)
+	{
+		_musicHolder.remove_if([=](auto it){ 
+            bool same = (it == base);
+            if (same) {
+				_assets.unload(base->getSource());
+                LOG_INFO("[Music] Removed instance of : ", base->getName());
+                delete base;
+            }
+            return same;
+        });
 	}
 
 	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist)
@@ -251,10 +284,10 @@ namespace rat
 		return _playlists[fnv1a_32(key.c_str())]->getStatus(name);
 	}
 
-	RatMusic* Music::getCurrentPlaying(unsigned int musicTrack)
+	MusicBase* Music::getCurrentPlaying(unsigned int musicTrack)
 	{
 		if (musicTrack < 3 && _currentPlaylistKeys[musicTrack] != 0) {
-			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource();
+			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying().get();
 		}
 		return nullptr;
 	}
@@ -319,7 +352,7 @@ namespace rat
 	{
 		for (auto i = 0; i <= 3; ++i) {
 			if (_currentPlaylistKeys[i] != 0)
-				getCurrentPlaying(i)->cleanAllEffects();
+				getCurrentPlaying(i)->getSource()->cleanAllEffects();
 		}
 	}
 

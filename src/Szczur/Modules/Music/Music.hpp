@@ -32,6 +32,8 @@ namespace rat
 		
 		std::array<Hash32_t, 3> _currentPlaylistKeys {0, 0, 0};
 
+		std::list<MusicBase*> _musicHolder;
+
 	public:
 
 		Music();
@@ -40,6 +42,9 @@ namespace rat
 		void initScript();
 
 		void update(float deltaTime);
+
+		MusicBase* loadMusic(const std::string& name);
+		void removeMusic(MusicBase* base);
 
 		void loadPlaylistFromJson(const std::string& fileName);
 
@@ -56,7 +61,7 @@ namespace rat
 		Status getStatus(unsigned int musicTrack, const std::string& name = "");
 		Status getStatus(const std::string& key, const std::string& name = "");
 
-		RatMusic* getCurrentPlaying(unsigned int musicTrack);
+		MusicBase* getCurrentPlaying(unsigned int musicTrack);
 
 		bool includes(const std::string& key, const std::string& name);
 
