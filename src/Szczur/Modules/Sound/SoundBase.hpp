@@ -54,6 +54,8 @@ namespace rat
 
     public:
 
+        SoundBase() = delete;
+        
         SoundBase(SoundAssets& assets);
         SoundBase(SoundAssets& assets, const std::string& name);
         
