@@ -1,6 +1,8 @@
 #include "SoundAssets.hpp"
 
 #include "Szczur/Utility/Logger.hpp"
+#include "Szczur/Modules/Sound/RatSound.hpp"
+#include <nlohmann/json.hpp>
 
 namespace rat
 {
@@ -20,6 +22,25 @@ namespace rat
             }    
         }
         return true;
+	}
+
+	std::vector<std::string> SoundAssets::getSoundNames()
+	{
+		nlohmann::json config;
+		std::ifstream file(SOUND_DATA_FILE_PATH);
+		std::vector<std::string> temp;
+
+		if (file.good()) {
+			file >> config;
+			file.close();
+			if (!config.is_null()) {
+				for (auto itr = config.begin(); itr != config.end(); ++itr) {
+					auto& name = itr.key();
+					temp.push_back(name);
+				}
+			}
+		}
+		return temp;
 	}
 
     void SoundAssets::unload(SoundBuffer* buffer) 

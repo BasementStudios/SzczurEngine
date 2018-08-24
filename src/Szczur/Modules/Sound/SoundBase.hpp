@@ -61,7 +61,7 @@ namespace rat
 
         void init();
         bool load();
-        
+
         bool setBuffer(SoundBuffer* buffer);
 
         static void initScript(Script& script);

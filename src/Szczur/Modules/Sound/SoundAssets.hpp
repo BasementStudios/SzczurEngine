@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <vector>
 
 #include "SoundBuffer.hpp"
 
@@ -20,6 +21,7 @@ namespace rat
 
         bool load(const std::string& fileName);
         void unload(SoundBuffer* buffer);
+		std::vector<std::string> getSoundNames();
 
         SoundBuffer* get(const std::string& fileName);
 

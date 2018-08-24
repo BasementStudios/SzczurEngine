@@ -5,6 +5,8 @@
 
 #include <experimental/filesystem>
 #include "Szczur/Modules/FileSystem/FileDialog.hpp"
+#include "Szczur/Modules/Window/Window.hpp"
+#include "Szczur/Modules/Sound/SoundAssets.hpp"
 
 #include <imgui.h>
 #include <imgui-SFML.h>
@@ -20,10 +22,7 @@ namespace rat
     }
 
     void SoundEditor::render()
-    { 
-		if (_isLoadingDisplayed)
-			load();
-
+    {		
 		ImGui::Begin("Sounds List", &_isListDisplayed);
 
 		float width = ImGui::GetWindowContentRegionWidth() * 0.33;
@@ -38,6 +37,7 @@ namespace rat
 
 		if (ImGui::Button("Load##SoundLists", { width,0 })) {
 			_isLoadingDisplayed = true;
+			_soundNames = std::move(_assets.getSoundNames());
 		}
 
 		ImGui::SameLine();
@@ -46,8 +46,9 @@ namespace rat
 			add();
 		}
 
-		if (ImGui::CollapsingHeader("Sounds list"))
+		if (ImGui::CollapsingHeader("Sounds list##SoundLists"))
 		{
+			size_t index = 1;
 			for (auto it = _soundHolder.begin(); it != _soundHolder.end();) {
 				std::string name = it->getName();
 
@@ -59,13 +60,16 @@ namespace rat
 				ImGui::Text(name.c_str());
 				
 				ImGui::SameLine();
+				ImGui::PushID(index * 1);
 				if (ImGui::SmallButton("Open editor")) {
 					if (_currentEditing != _soundHolder.end() && _currentEditing->getName() != name)
 						_sound.stop();
 					_currentEditing = it;
 					_isEditorDisplayed = true;
 				}
-				
+				ImGui::PopID();
+
+				ImGui::PushID(index);
 				ImGui::SameLine();
 				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV( 2.f / 7.f, 0.6f, 0.5f));
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(2.f / 7.f, 0.7f, 0.6f));
@@ -74,13 +78,15 @@ namespace rat
 					save(it);
 				}
 				ImGui::PopStyleColor(3);
+				ImGui::PopID();
 
+				ImGui::PushID(index);
 				ImGui::SameLine();
 				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.f, 0.6f, 0.5f));
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.f, 0.7f, 0.6f));
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.f, 0.8f, 0.7f));
 				if (ImGui::SmallButton("Delete")) {
-					if (_currentEditing->getName() == name) {
+					if (_currentEditing != _soundHolder.end() && _currentEditing->getName() == name) {
 						_currentEditing = _soundHolder.end();
 						_isEditorDisplayed = false;
 					}
@@ -90,6 +96,8 @@ namespace rat
 					++it; //dealing with skiping iterator if we delete element from list
 				}
 				ImGui::PopStyleColor(3);
+				ImGui::PopID();
+				index++;
 			}
 		}
 
@@ -97,6 +105,9 @@ namespace rat
 
 		if (_isEditorDisplayed)
 			showEditor();
+
+		if (_isLoadingDisplayed)
+			load();
     }
 
 	void SoundEditor::showEditor() {
@@ -240,7 +251,36 @@ namespace rat
 
     void SoundEditor::load()
     {
-        static std::string loadingSoundName = "";
+		if (!ImGui::Begin("Load Sound", &_isLoadingDisplayed))
+		{
+			ImGui::End();
+		}
+		else {
+			static ImGuiTextFilter filter;
+			//LOG_INFO(filter.InputBuf);
+			filter.Draw();
+			for (int i = 0; i < _soundNames.size(); i++) {
+				if (filter.PassFilter(_soundNames[i].c_str())) {
+					ImGui::Bullet();
+					ImGui::SameLine();
+					if (ImGui::Button(_soundNames[i].c_str()) || sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+						//load the file
+						_soundHolder.push_back(SoundBase(_assets, _soundNames[i]));
+						_soundHolder.back().load();
+
+						_assets.load(_soundHolder.back().getFileName());
+						_soundHolder.back().setBuffer(_assets.get(_soundHolder.back().getFileName()));
+						_soundHolder.back().init();
+
+						_isLoadingDisplayed = false;
+						break;
+					}
+				}
+			}
+			ImGui::End();
+		}
+
+        /*static std::string loadingSoundName = "";
 
 		if (!ImGui::Begin("Load Sound", &_isLoadingDisplayed))
 		{
@@ -278,7 +318,7 @@ namespace rat
 
 				_soundHolder.push_back(SoundBase(_assets, loadingSoundName));
 				_soundHolder.back().load();
-
+				
 				auto fileName = _soundHolder.back().getFileName();
 
 				if (fileName.empty()) {
@@ -296,7 +336,7 @@ namespace rat
 			}
 
 			ImGui::End();
-		}
+		}*/
     
     }
 

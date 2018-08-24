@@ -2,6 +2,7 @@
 
 #include <string>
 #include <list>
+#include <vector>
 
 #include "Szczur/Modules/Sound/Sound.hpp"
 
@@ -38,6 +39,7 @@ namespace rat
 		bool _isEditorDisplayed{ false };
 
 		Container_t _soundHolder;
+		std::vector<std::string> _soundNames;
 
 		Container_t::iterator _currentEditing;
     
