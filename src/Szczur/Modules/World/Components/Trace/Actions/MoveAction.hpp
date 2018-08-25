@@ -14,24 +14,18 @@ public:
 	// Determines whether the value is random
 	bool Random = false;
 
-	union
-	{
-		// if Random == false
+	// if Random == false
+	// if Relative == false: Position in world
+	// if Relative ==  true: Relative to current position
+	glm::vec3 Value;
 
-		// if Relative == false: Position in world
-		// if Relative ==  true: Relative to current position
-		glm::vec3 Value = { };
 
-		// if Random == true
-		struct
-		{
-			// Start range for random
-			glm::vec3 RangeStart;
+	// if Random == true
+	// Start range for random
+	glm::vec3 RangeStart;
 			
-			// End range for random
-			glm::vec3 RangeEnd;
-		};
-	};
+	// End range for random
+	glm::vec3 RangeEnd;
 };
 
 class MoveAction : public Action

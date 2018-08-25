@@ -292,7 +292,7 @@ void Timeline::initScript(Script& script)
 	));
 
 	object.set("call", sol::overload(
-		[&] (Timeline* thisa, sol::function& func) {
+		[&] (Timeline* thisa, sol::function func) {
 			auto scriptAction = new ScriptAction();
 			scriptAction->FunctionToCall = func;
 			thisa->addAction(scriptAction);
