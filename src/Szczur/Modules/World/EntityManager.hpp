@@ -1,8 +1,10 @@
 #pragma once
 
+#include <functional>
+
 #include <entt/entt.hpp>
 
-#include <functional>
+#include <nlohmann/json.hpp>
 
 #include "Entity.hpp"
 
@@ -74,11 +76,42 @@ public:
 
     /* Utility */
 
+    /// Resets whole manager, deletes everything
+    void reset();
+
     /// Invokes callable for each entity with components required by callable
     template <typename Callable>
     void forEach(Callable&& callable);
 
+    ///
+    template <typename... Components>
+    nlohmann::json saveToConfig()
+    {
+        nlohmann::json config;
+
+        _registry.each([this, &j = config](const EntityID_t id) {
+            nlohmann::json k;
+            (_saveComponentToConfig<Components>(k, id), ...);
+            j.push_back(k);
+        });
+
+        return config;
+    }
+
+    ///
+    void loadFromConfig(const nlohmann::json& config);
+
 private:
+
+    ///
+    template <typename Component>
+    void _saveComponentToConfig(nlohmann::json& config, const EntityID_t id)
+    {
+        if (_registry.has<Component>(id))
+        {
+            config.push_back(_registry.get<Component>(id));
+        }
+    }
 
     Scene& _scene;
     Registry_t _registry;

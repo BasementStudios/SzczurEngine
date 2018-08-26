@@ -9,7 +9,7 @@ namespace rat::wrd
 
 using Name_t     = std::string;
 using Registry_t = entt::DefaultRegistry;
-using EntityID_t = entt::DefaultRegistry::entity_type;
+using EntityID_t = Registry_t::entity_type;
 using Hash_t     = uint64_t;
 
 namespace detail

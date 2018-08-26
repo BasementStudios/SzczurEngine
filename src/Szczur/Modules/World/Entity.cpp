@@ -45,7 +45,7 @@ bool Entity::removeComponent(HashedID hid) const
 
 bool Entity::destroy() const
 {
-    if (getEntityManager().getRegistry().valid(_id))
+    if (isValid())
     {
         getEntityManager().getRegistry().destroy(_id);
 

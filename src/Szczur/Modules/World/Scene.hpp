@@ -1,8 +1,8 @@
 #pragma once
 
-#include <entt/entt.hpp>
-
 #include <functional>
+
+#include <entt/entt.hpp>
 
 #include "EntityManager.hpp"
 

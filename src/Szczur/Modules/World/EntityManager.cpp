@@ -82,4 +82,37 @@ bool EntityManager::removeComponent(EntityID_t id, HashedID hid)
     return ComponentRegistry::removeComponent(_registry, id, hid);
 }
 
+void EntityManager::reset()
+{
+    _registry.reset();
+}
+
+void EntityManager::loadFromConfig(const nlohmann::json& config)
+{
+    for (const nlohmann::json& j : config)
+    {
+        const auto id = _registry.create();
+
+        if (j.is_null())
+        {
+            continue;
+        }
+        else if (j.is_array())
+        {
+            for (const nlohmann::json& k : j)
+            {
+                // TODO log invalid json
+
+                ComponentRegistry::assingComponentFromJson(_registry, id, k);
+            }
+        }
+        else
+        {
+            // TODO log invalid json
+
+            continue;
+        }
+    }
+}
+
 }
