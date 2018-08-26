@@ -1,7 +1,5 @@
 #pragma once
 
-#include <imgui.h>
-
 #include <glm/vec3.hpp>
 
 namespace rat
@@ -27,8 +25,6 @@ public:
 public:
 	glm::vec3 Color = { 1.f, 1.f, 1.f };
 
-	ImVec4 ButtonColor = { 1.f, 1.f, 1.f, 1.f };
-
 protected:
 	Entity* _entity = nullptr;
 	Type _type;
@@ -48,6 +44,11 @@ public:
 	virtual void start()
 	{
 		_finished = false;
+	}
+
+	virtual void init()
+	{
+
 	}
 
 	virtual bool isFinished() { return _finished; }

@@ -39,8 +39,6 @@ void Timeline::addAction(Action* action)
 
 	float min = 10.f, max = 150.f;
 
-	action->ButtonColor = ImVec4(random.get(min, max) / 255.f, random.get(min, max) / 255.f, random.get(min, max) / 255.f, 1.f);
-
 	_actions.push_back(std::unique_ptr<Action>(action));
 }
 

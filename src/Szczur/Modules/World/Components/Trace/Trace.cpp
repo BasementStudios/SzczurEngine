@@ -67,8 +67,6 @@ void Trace::loadFromConfig(nlohmann::json& config)
 			pos.RangeEnd.x = jsonAction["rangeEnd"]["x"];
 			pos.RangeEnd.y = jsonAction["rangeEnd"]["y"];
 			pos.RangeEnd.z = jsonAction["rangeEnd"]["z"];
-
-			timeline->changeVertexArraySize(timeline->getVertexArraySize() + 2);
 		}
 		else
 		{
@@ -271,12 +269,6 @@ void Trace::update(float deltaTime)
 	if (_currentTimeline)
 	{
 		_currentTimeline->update(deltaTime);
-	}
-
-	for (auto& timeline : _timelines)
-	{
-		if (timeline->ShowLines)
-			timeline->updateVertexArray();
 	}
 }
 

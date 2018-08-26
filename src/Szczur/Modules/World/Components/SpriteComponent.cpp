@@ -216,7 +216,7 @@ namespace rat
 
 		auto size = _spriteDisplayData->getTexture().getSize();
 
-		glm::vec2 pos;
+		glm::uvec2 pos;
 
 		switch (vertical)
 		{
