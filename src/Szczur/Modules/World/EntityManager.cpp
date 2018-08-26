@@ -1,5 +1,7 @@
 #include "EntityManager.hpp"
 
+#include <iostream>
+
 #include "ComponentRegistry.hpp"
 
 namespace rat::wrd
@@ -87,23 +89,47 @@ void EntityManager::reset()
     _registry.reset();
 }
 
+nlohmann::json EntityManager::saveToConfig()
+{
+    nlohmann::json config = nlohmann::json::array_t{};
+
+    _registry.each([this, &j = config](const EntityID_t id) {
+        nlohmann::json k = nlohmann::json::array_t{};
+
+        ComponentRegistry::allComponentsToJson(_registry, id, k);
+
+        // Do not save empty entities
+        if (!k.empty())
+        {
+            j.push_back(k);
+        }
+    });
+
+    return config;
+}
+
 void EntityManager::loadFromConfig(const nlohmann::json& config)
 {
     for (const nlohmann::json& j : config)
     {
-        const auto id = _registry.create();
-
         if (j.is_null())
         {
+            // Do not load empty entities
+
             continue;
         }
-        else if (j.is_array())
+
+        const auto id = _registry.create();
+
+        if (j.is_array())
         {
             for (const nlohmann::json& k : j)
             {
-                // TODO log invalid json
+                // TODO log possible invalid json?
 
-                ComponentRegistry::assingComponentFromJson(_registry, id, k);
+                std::cout << "load: -- " << k << '\n';
+
+                ComponentRegistry::componentFromJson(_registry, id, k);
             }
         }
         else

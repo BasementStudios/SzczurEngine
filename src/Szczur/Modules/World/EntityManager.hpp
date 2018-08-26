@@ -83,35 +83,13 @@ public:
     template <typename Callable>
     void forEach(Callable&& callable);
 
-    ///
-    template <typename... Components>
-    nlohmann::json saveToConfig()
-    {
-        nlohmann::json config;
+    /// Saves each entity and all corresponding components that match Components... to Json config
+    nlohmann::json saveToConfig();
 
-        _registry.each([this, &j = config](const EntityID_t id) {
-            nlohmann::json k;
-            (_saveComponentToConfig<Components>(k, id), ...);
-            j.push_back(k);
-        });
-
-        return config;
-    }
-
-    ///
+    /// Loads entities with their components from Json config
     void loadFromConfig(const nlohmann::json& config);
 
 private:
-
-    ///
-    template <typename Component>
-    void _saveComponentToConfig(nlohmann::json& config, const EntityID_t id)
-    {
-        if (_registry.has<Component>(id))
-        {
-            config.push_back(_registry.get<Component>(id));
-        }
-    }
 
     Scene& _scene;
     Registry_t _registry;
