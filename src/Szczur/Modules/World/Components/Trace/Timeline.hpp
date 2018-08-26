@@ -82,10 +82,6 @@ public:
 
 	const auto& getName() const { return _name; }
 
-	void changeVertexArraySize(size_t newSize) { _vertexArray.resize(newSize); }
-
-	size_t getVertexArraySize() { return _vertexArray.getSize(); }
-
 	Entity* getEntity() { return _entity; }
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
@@ -95,10 +91,10 @@ public:
 // Scripts helper
 protected:
 	// Move to pos
-	void addMoveAction(const glm::vec3& pos, float speed, bool relative);
+	void addMoveAction(const glm::vec3& pos, float speed, bool relative, bool teleport = false);
 
 	// Move to random pos
-	void addMoveAction(const glm::vec3& rangeStart, const glm::vec3& rangeEnd, float speed, bool relative);
+	void addMoveAction(const glm::vec3& rangeStart, const glm::vec3& rangeEnd, float speed, bool relative, bool teleport = false);
 };
 
 }

@@ -66,13 +66,17 @@ void Timeline::update(float deltaTime)
 			{
 				_currentActionIndex++;
 
-				//LOG_INFO("Current action index: ", _currentActionIndex);
-
 				auto& currentAction = _actions[_currentActionIndex];
 				currentAction->start();
+
+				// update line
+				// updateVertexArray();
 			}
 			else
 			{
+				// update line
+				// updateVertexArray();
+
 				if (Loop)
 				{
 					start();
@@ -88,20 +92,22 @@ void Timeline::update(float deltaTime)
 
 void Timeline::updateVertexArray()
 {
-	int i = 0;
-
 	glm::vec3 lastPosition = _entity->getPosition();
 
-	auto setVertex = [&](int idx, const glm::vec3& pos, const glm::vec4& color) {
+	auto setVertex = [&] (int idx, const MovePosition& movePos, const glm::vec4& color) {
+		auto pos = movePos.Result;
+
+		if (movePos.Relative)
+			pos += lastPosition;
+
+		lastPosition = pos;
+
 		sf3d::Vertex& vert = _vertexArray.getVertex(idx);
 		vert.position = pos;
 		vert.color = color;
 	};
 
-	auto renderRange = [&] (MovePosition& pos, const glm::vec3& offset) {
-		setVertex(i++, pos.RangeStart + offset, glm::vec4(0.36f, 0.42f, 0.75f, 1.0f));
-		setVertex(i++, pos.RangeEnd + offset, glm::vec4(0.36f, 0.42f, 0.75f, 1.0f));
-	};
+	int i = 0;
 
 	for (auto& action : _actions)
 	{
@@ -109,46 +115,8 @@ void Timeline::updateVertexArray()
 		{
 			auto moveAction = static_cast<MoveAction*>(action.get());
 
-			glm::vec3 start;
-
-			if (moveAction->Start.Random)
-			{
-				auto& startPos = moveAction->Start;
-
-				renderRange(startPos, lastPosition);
-				start = (startPos.RangeStart + startPos.RangeEnd) / 2.f;
-			}
-			else
-			{
-				start = moveAction->Start.Value;
-			}
-
-			if (moveAction->Start.Relative)
-				start += lastPosition;
-
-			setVertex(i++, start, glm::vec4(action->Color, 1.f));
-
-
-			glm::vec3 end;
-
-			if (moveAction->End.Random)
-			{
-				end = (moveAction->End.RangeStart + moveAction->End.RangeEnd) / 2.f;
-			}
-			else
-			{
-				end = moveAction->End.Value;
-			}
-
-			if (moveAction->End.Relative)
-				end += start;
-
-			setVertex(i++, end, glm::vec4(action->Color, 1.f));
-
-			lastPosition = end;
-
-			if (moveAction->End.Random)
-				renderRange(moveAction->End, start);
+			setVertex(i++, moveAction->Start, glm::vec4(action->Color, 1.f));
+			setVertex(i++, moveAction->End, glm::vec4(action->Color, 1.f));
 		}
 	}
 }
@@ -158,6 +126,15 @@ void Timeline::start()
 	if (_actions.size() == 0)
 		return;
 
+	// call init
+	for (auto& action : _actions)
+	{
+		action->init();
+	}
+
+	// create line which represents path which entity will be going
+	updateVertexArray();
+
 	_status = Status::Playing;
 
 	if (_onPlayCallback.valid())
@@ -166,8 +143,6 @@ void Timeline::start()
 	_currentActionIndex = 0;
 	auto& currentAction = _actions[_currentActionIndex];
 	currentAction->start();
-
-	//LOG_INFO("Current action index: ", _currentActionIndex);
 }
 
 void Timeline::pause()
@@ -203,7 +178,7 @@ void Timeline::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	}
 }
 
-void Timeline::addMoveAction(const glm::vec3& pos, float speed, bool relative)
+void Timeline::addMoveAction(const glm::vec3& pos, float speed, bool relative, bool teleport)
 {
 	if (speed <= 0.f) 
 		speed = 1.f;
@@ -212,10 +187,17 @@ void Timeline::addMoveAction(const glm::vec3& pos, float speed, bool relative)
 	action->End.Value = pos;
 	action->End.Relative = relative;
 	action->Speed = speed;
+	action->Teleport = teleport;
+	if (teleport)
+	{
+		// blue
+		action->Color = glm::vec3(0.12f, 0.53f, 0.9f);
+	}
+
 	addAction(action);
 }
 
-void Timeline::addMoveAction(const glm::vec3& rangeStart, const glm::vec3& rangeEnd, float speed, bool relative)
+void Timeline::addMoveAction(const glm::vec3& rangeStart, const glm::vec3& rangeEnd, float speed, bool relative, bool teleport)
 {
 	if (speed <= 0.f) 
 		speed = 1.f;
@@ -226,6 +208,13 @@ void Timeline::addMoveAction(const glm::vec3& rangeStart, const glm::vec3& range
 	action->End.RangeEnd = rangeEnd;
 	action->End.Relative = relative;
 	action->Speed = speed;
+	action->Teleport = teleport;
+	if (teleport)
+	{
+		// blue
+		action->Color = glm::vec3(0.12f, 0.53f, 0.9f);
+	}
+
 	addAction(action);
 }
 
@@ -272,6 +261,24 @@ void Timeline::initScript(Script& script)
 		},
 		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ, float speed) { // move to random point with speed
 			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, speed, false);
+		}
+	));
+
+	object.set("teleport", sol::overload(
+		[&] (Timeline* thisa, float x, float y, float z) { // teleport with offset
+			thisa->addMoveAction({ x, y, z }, 0.f, true, true);
+		},
+		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ) { // teleport with random offset
+			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, 0.f, true, true);
+		}
+	));
+
+	object.set("teleportTo", sol::overload(
+		[&] (Timeline* thisa, float x, float y, float z) { // teleport to point
+			thisa->addMoveAction({ x, y, z }, 0.f, false, true);
+		},
+		[&] (Timeline* thisa, float startX, float startY, float startZ, float endX, float endY, float endZ) { // teleport to random point
+			thisa->addMoveAction({ startX, startY, startZ }, { endX, endY, endZ }, 0.f, false, true);
 		}
 	));
 

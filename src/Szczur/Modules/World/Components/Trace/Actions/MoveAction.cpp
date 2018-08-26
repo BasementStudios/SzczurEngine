@@ -40,6 +40,12 @@ void MoveAction::update(float deltaTime, Timeline* timeline)
 	}
 }
 
+void MoveAction::init()
+{
+	Start.CalcResult();
+	End.CalcResult();
+}
+
 void MoveAction::start()
 {
 	Action::start();
@@ -50,9 +56,20 @@ void MoveAction::start()
 	// reset progress
 	_progress = 0.f;
 
-	// calc position for end and start
-	calcPosition(Start, _entity->getPosition(), _startPos);
-	calcPosition(End, _startPos, _endPos);
+	// set positions
+	_startPos = Start.Result;
+
+	if (Start.Relative)
+	{
+		_startPos += _entity->getPosition();
+	}
+
+	_endPos = End.Result;
+
+	if (End.Relative)
+	{
+		_endPos += _startPos;
+	}
 
 	// calc delta
 	_delta = _endPos - _startPos;
@@ -64,27 +81,21 @@ void MoveAction::start()
 	_progressSpeed = Speed / d;
 }
 
-void MoveAction::calcPosition(const MovePosition& position, const glm::vec3& relativeValue, glm::vec3& outPosition)
+void MovePosition::CalcResult()
 {
-	if (position.Random)
+	if (Random)
 	{
-		Random random;
+		rat::Random random;
 
 		// if start is random then set random value between RangeStart and RangeEnd
-		outPosition.x = random.get(position.RangeStart.x, position.RangeEnd.x);
-		outPosition.y = random.get(position.RangeStart.y, position.RangeEnd.y);
-		outPosition.z = random.get(position.RangeStart.z, position.RangeEnd.z);
+		Result.x = random.get(RangeStart.x, RangeEnd.x);
+		Result.y = random.get(RangeStart.y, RangeEnd.y);
+		Result.z = random.get(RangeStart.z, RangeEnd.z);
 	}
 	else
 	{
 		// if start isn't random then just set value
-		outPosition = position.Value;
-	}
-
-	// if start is relative then add current position
-	if (position.Relative)
-	{
-		outPosition += relativeValue;
+		Result = Value;
 	}
 }
 

@@ -26,6 +26,12 @@ public:
 			
 	// End range for random
 	glm::vec3 RangeEnd;
+
+
+	// Temporary position for rendering line and setting position
+	glm::vec3 Result;
+
+	void CalcResult();
 };
 
 class MoveAction : public Action
@@ -40,11 +46,11 @@ public:
 	bool Teleport = false;
 
 private:
-	glm::vec3 _startPos;
-	glm::vec3 _endPos;
-
 	float _progress;
 	float _progressSpeed;
+
+	glm::vec3 _startPos;
+	glm::vec3 _endPos;
 
 	glm::vec3 _delta;
 
@@ -55,10 +61,12 @@ public:
 
 	void update(float deltaTime, Timeline* timeline) override;
 
+	void init() override;
+
 	void start() override;
 
 private:
-	void calcPosition(const MovePosition& position, const glm::vec3& relativeValue, glm::vec3& outPosition);
+	void calcPosition(MovePosition& position);
 };
 
 }
