@@ -28,8 +28,9 @@ namespace rat
 		module.set_function("play", &Music::play, this);
 		module.set_function("pause", &Music::pause, this);
 		module.set_function("stop", &Music::stop, this);
+
 		module.set_function("includes", &Music::includes, this);
-		module.set_function("cleanEffects", &Music::cleanEffects, this);
+
 		module.set_function("setPlayingMode", &Music::setPlayingMode, this);
 
 		module.set_function("setVolume", &Music::setVolume, this);
@@ -41,15 +42,14 @@ namespace rat
 			[&]() { return getVolume(-1, ""); }
 		));
 
-		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
-		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
-
 		module.set_function("getStatus", sol::overload(
 			[&](unsigned int a, const std::string& b) { return getStatus(a, b); },
 			[&](const std::string& a, const std::string& b) { return getStatus(a, b); },
 			[&](unsigned int a) { return getStatus(a, ""); },
 			[&](const std::string& a) { return getStatus(a, ""); }
 		));
+
+		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
 		module.set_function("addPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args newPlaylist) {
@@ -59,7 +59,6 @@ namespace rat
 			}
 		}
 		);
-
 		module.set_function("addToPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args musics) {
 			for (auto it : musics) {
@@ -67,7 +66,6 @@ namespace rat
 			}
 		}
 		);
-
 		module.set_function("removeFromPlaylist", sol::overload(
 			[&](const std::string& key) { removeFromPlaylist(key, ""); },
 			[owner = this](const std::string& key, sol::variadic_args musics) {
@@ -77,6 +75,8 @@ namespace rat
 		}
 		));
 
+		module.set_function("cleanEffects", &Music::cleanEffects, this);
+		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
 		module.set_function("getEqualizer", sol::overload(
 			[&](unsigned int a, const std::string& b) { return getEffect<Equalizer>(a, b); },
 			[&](const std::string& a, const std::string& b) { return getEffect<Equalizer>(a, b); }
@@ -110,6 +110,8 @@ namespace rat
 		module.set("Stopped", Status::Stopped);
 		module.set("Paused", Status::Paused);
 		module.set("Playing", Status::Playing);
+
+		script.initClasses<MusicBase>();
 	}
 
 	const Playlist::Container_t& Music::getPlaylist(const std::string& key)
@@ -161,7 +163,7 @@ namespace rat
             bool same = (it == base);
             if (same) {
 				_assets.unload(base->getSource());
-                LOG_INFO("[Music] Removed instance of : ", base->getName());
+                LOG_INFO("[Music] Removed instance of ", base->getName());
                 delete base;
             }
             return same;
