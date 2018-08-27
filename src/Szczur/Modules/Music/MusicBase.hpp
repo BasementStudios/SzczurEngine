@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Szczur/Modules/Script/Script.hpp"
+
 #include "RatMusic.hpp"
 
 namespace rat 
@@ -25,6 +27,8 @@ namespace rat
 	public:
 
 		MusicBase(RatMusic* source);
+
+		static void initScript(Script& script);
 
 		void update(float deltaTime);
 
@@ -53,11 +57,20 @@ namespace rat
 		const std::string& getName() const;
 
 		RatMusic* getSource() const;
+
+		template <typename T>
+		T& getEffect() {
+			return _base->getEffect<T>();
+		}
 		
-		void reset();
+		template <typename T>
+    	void cleanEffect() {
+			_base->cleanEffect<T>();
+		}
 
 	private:
 
+		void reset();
 		void loadMusic();
 		void getJsonData();
 

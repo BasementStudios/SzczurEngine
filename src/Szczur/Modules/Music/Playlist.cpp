@@ -151,7 +151,6 @@ namespace rat
 	void Playlist::stop() 
 	{
 		_playlist[_currentID]->stop();
-		_playlist[_currentID]->reset();
 		_status = Status::Stopped;
 	}
 

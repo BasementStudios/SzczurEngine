@@ -14,6 +14,34 @@ namespace rat
 		setVolume(_base->getVolume());
 	}
 
+	void MusicBase::initScript(Script& script)
+    {
+        auto object = script.newClass<MusicBase>("MusicBase", "Music");
+
+        object.set("play", &MusicBase::play);
+		object.set("stop", &MusicBase::stop);
+		object.set("pause", &MusicBase::pause);
+
+		object.set("getVolume", &MusicBase::getVolume);
+		object.set("setVolume", &MusicBase::setVolume);
+		object.set("getLoop", &MusicBase::getLoop);
+		object.set("setLoop", &MusicBase::setLoop);
+		object.set("getStatus", &MusicBase::getStatus);
+		object.set("getFadeTime", &MusicBase::getFadeTime);
+		object.set("getDuration", &MusicBase::getDuration);
+		object.set("getTimeLeft", &MusicBase::getTimeLeft);
+		object.set("getName", &MusicBase::getName);
+
+        object.set("getEqualizer", &MusicBase::getEffect<Equalizer>);
+		object.set("getReverb", &MusicBase::getEffect<Reverb>);
+		object.set("getEcho", &MusicBase::getEffect<Echo>);
+		object.set("cleanEqualizer", &MusicBase::cleanEffect<Equalizer>);
+		object.set("cleanReverb", &MusicBase::cleanEffect<Reverb>);
+		object.set("cleanEcho", &MusicBase::cleanEffect<Echo>);
+
+		object.init();
+    }
+
 	void MusicBase::update(float deltaTime) 
 	{
 		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
@@ -45,7 +73,6 @@ namespace rat
 			return false;
 		}
 		
-		reset();
 		stop();
 		return true;
 	}
@@ -78,6 +105,7 @@ namespace rat
 	void MusicBase::stop() 
 	{
 		_base->stop();
+		reset();
 	}
 
 	void MusicBase::setLoop(bool loop)
