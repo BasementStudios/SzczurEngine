@@ -239,6 +239,29 @@ tests[counter.get()] = function()
 
 end
 
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Load music directly form file",
+        testMusic = nil
+    }
+
+    function self.run()
+        self.testMusic = Music.loadMusic("Assets/Music/Szczur Rozpierdalacz.flac")
+        if self.testMusic == nil then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.removeMusic(self.testMusic)
+    end
+
+    return self
+
+end
+
 -- [ SOUND ]:
 
 tests[counter.get()] = function()
