@@ -156,6 +156,10 @@ namespace rat
 			_sound.stop();
 		}
 
+
+		float timeAsFraction = _currentEditing->getPlayingOffset() / _currentEditing->getLength();
+		ImGui::ProgressBar(timeAsFraction, { ImGui::GetWindowContentRegionWidth(), 0.f }, std::to_string(_currentEditing->getPlayingOffset()).c_str());
+
 		ImGui::Separator();
 
 		char beginTime[6] = "00:00";
@@ -279,64 +283,6 @@ namespace rat
 			}
 			ImGui::End();
 		}
-
-        /*static std::string loadingSoundName = "";
-
-		if (!ImGui::Begin("Load Sound", &_isLoadingDisplayed))
-		{
-			ImGui::End();
-		}
-		else {
-			ImGui::Text("Name: ");
-			ImGui::SameLine();
-
-			size_t size = loadingSoundName.length() + 100;
-			char *newText = new char[size] {};
-			strncpy(newText, loadingSoundName.c_str(), size);
-
-			ImGui::PushItemWidth(300);
-			if (ImGui::InputText("##LoadingSoundNameInput", newText, size)) {
-				loadingSoundName = newText;
-			}
-			if (ImGui::IsRootWindowOrAnyChildFocused() && !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0)) {
-				ImGui::SetKeyboardFocusHere(0);
-			}
-			ImGui::PopItemWidth();
-
-			delete[] newText;
-
-			ImGui::SetCursorPosX(260);
-
-			if (ImGui::Button("CANCEL##LoadSound")) {
-				loadingSoundName = "";
-				_isLoadingDisplayed = false;
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Button(" OK ##LoadSound")) {
-
-				_soundHolder.push_back(SoundBase(_assets, loadingSoundName));
-				_soundHolder.back().load();
-				
-				auto fileName = _soundHolder.back().getFileName();
-
-				if (fileName.empty()) {
-					_soundHolder.pop_back();
-				}
-				else {
-					_assets.load(fileName);
-					_soundHolder.back().setBuffer(_assets.get(fileName));
-					_soundHolder.back().init();
-				}
-
-
-				loadingSoundName = "";
-				_isLoadingDisplayed = false;
-			}
-
-			ImGui::End();
-		}*/
     
     }
 
@@ -350,10 +296,11 @@ namespace rat
             filePath = path.substr(currentPath.length() + 1, path.length());
             std::replace(filePath.begin(), filePath.end(), '\\', '/');
 
-            _soundHolder.push_back(SoundBase(_assets, "Unnnamed"));
+            _soundHolder.push_back(SoundBase(_assets, "Unnamed"));
             _assets.load(filePath);
             _soundHolder.back().setBuffer(_assets.get(filePath));
-            _soundHolder.back().init();
+			_soundHolder.back().setFileName(filePath);
+            _soundHolder.back().init();	//cos sie sciezka nie ustawia do dzwieku
         }
     }
 

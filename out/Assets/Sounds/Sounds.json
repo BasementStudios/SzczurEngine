@@ -18,5 +18,15 @@
         "Pitch": 1.0,
         "Relative": true,
         "Volume": 42.0
+    },
+    "Unnamed": {
+        "Attenuation": 1.0,
+        "BeginTime": 0.0,
+        "EndTime": 5.995395183563232,
+        "MinDistance": 1.0,
+        "Path": "Assets/Sounds/SFX_brama.flac",
+        "Pitch": 1.0,
+        "Relative": false,
+        "Volume": 100.0
     }
 }
