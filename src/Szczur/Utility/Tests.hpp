@@ -103,67 +103,92 @@ struct Test
 }
 
 #define TEST(NAME, CASE) \
-	struct test_##NAME##_##CASE : public ::testing::Test {}; 	\
-	::testing::detail::Tester<test_##NAME##_##CASE> tester_##NAME##_##CASE( \
-		__FILENAME__, __LINE__, #NAME, #CASE					\
-	);															\
+	struct test_##NAME##_##CASE : public ::testing::Test {}; 					\
+	::testing::detail::Tester<test_##NAME##_##CASE> tester_##NAME##_##CASE( 	\
+		__FILENAME__, __LINE__, #NAME, #CASE									\
+	);																			\
 	void test_##NAME##_##CASE::Run()
 
 #define TEST_F(CLASS, CASE) \
 	static_assert(std::is_base_of<::testing::Test, CLASS>::value, "Fixture must derive from ::testing::Test!"); \
-	struct test_##CLASS##_##CASE : public CLASS					\
-	{															\
-		virtual void Run() override; 							\
-	};															\
-	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( \
-		__FILENAME__, __LINE__, #CLASS, #CASE					\
-	);															\
+	struct test_##CLASS##_##CASE : public CLASS									\
+	{																			\
+		virtual void Run() override; 											\
+	};																			\
+	::testing::detail::Tester<test_##CLASS##_##CASE> tester_##CLASS##_##CASE( 	\
+		__FILENAME__, __LINE__, #CLASS, #CASE									\
+	);																			\
 	void test_##CLASS##_##CASE::Run()
 
 
 
 #define VISUAL_TEST_LOOP(UPDATE, RENDER, INPUT) \
-	{													\
-		sf::Event event;								\
-		rat::Clock clock;								\
-		bool testing = true;							\
+	{																			\
+		sf::Event event;														\
+		rat::Clock clock;														\
+		bool testing = true;													\
 		sf3d::RenderWindow& window = rat::detail::globalPtr<rat::Window>->getWindow(); \
-		while (testing) {								\
-			UPDATE;										\
-			RENDER;										\
-			while (window.pollEvent(event))	{			\
-				INPUT;									\
-			}											\
-		}												\
-	}
-
-#define VISUAL_TEST_INPUT_ANYKEY \
-	{													\
-		switch (event.type) {							\
-			case sf::Event::Closed:						\
-			case sf::Event::KeyReleased:				\
-				testing = false;						\
-				break;									\
-			default:									\
-				break;									\
-		}												\
-	}
-#define VISUAL_TEST_ANYKEY() \
-	VISUAL_TEST_LOOP((void)0;,(void)0;,				\
-		VISUAL_TEST_INPUT_ANYKEY					\
-	)
+		while (testing) {														\
+			UPDATE;																\
+			RENDER;																\
+			while (window.pollEvent(event))	{									\
+				INPUT;															\
+			}																	\
+		}																		\
+	}													
 
 #define VISUAL_TEST_TIME 3s
+#define VISUAL_TEST_LOOP_WAIT(TIME) \
+	{																			\
+		using namespace std::chrono_literals; 									\
+		if (clock.getElapsedTime() >= rat::Time(TIME)) { 						\
+			testing = false;													\
+			break;																\
+		}																		\
+	}																			
 #define VISUAL_TEST_WAIT(TIME) \
-	using namespace std::chrono_literals; 				\
-	std::this_thread::sleep_for(TIME);
+	VISUAL_TEST_LOOP(															\
+		VISUAL_TEST_LOOP_WAIT,													\
+		(void)0;,																\
+		(void)0;																\
+	)																			
+
+#define VISUAL_TEST_LOOP_ANYKEY \
+	{																			\
+		switch (event.type) {													\
+			case sf::Event::Closed:												\
+			case sf::Event::KeyReleased:										\
+				testing = false;												\
+				break;															\
+			default:															\
+				break;															\
+		}																		\
+	}																			
+#define VISUAL_TEST_ANYKEY() \
+	VISUAL_TEST_LOOP(															\
+		(void)0;,																\
+		(void)0;,																\
+		VISUAL_TEST_LOOP_ANYKEY													\
+	)																			
+
+#define VISUAL_TEST_ANYKEY_OR_WAIT(TIME) \
+	VISUAL_TEST_LOOP(															\
+		VISUAL_TEST_LOOP_WAIT(TIME),											\
+		(void)0;,																\
+		VISUAL_TEST_LOOP_ANYKEY													\
+	)
+
+// @todo . VISUAL_TEST_ANYKEY_OR_WAIT as default in VISUAL_TEST, but there should be way to provide it :thinking:
+
+// There we can switch default test method
+#define VISUAL_TEST_METHOD(TIME) VISUAL_TEST_ANYKEY_OR_WAIT(TIME)
 
 #define VISUAL_TEST(NAME, CASE) \
 	struct test_##NAME##_##CASE : public NAME					\
 	{															\
 		virtual ~test_##NAME##_##CASE() 						\
 		{														\
-			VISUAL_TEST_WAIT(VISUAL_TEST_TIME);					\
+			VISUAL_TEST_METHOD(VISUAL_TEST_TIME);				\
 		}														\
 		virtual void Run() override;							\
 	};															\
@@ -178,7 +203,7 @@ struct Test
 	{															\
 		virtual ~test_##CLASS##_##CASE() 						\
 		{														\
-			VISUAL_TEST_WAIT(VISUAL_TEST_TIME);					\
+			VISUAL_TEST_METHOD(VISUAL_TEST_TIME);				\
 		}														\
 		virtual void Run() override;							\
 	};															\
