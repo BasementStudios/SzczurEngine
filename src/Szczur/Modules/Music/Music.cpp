@@ -186,7 +186,7 @@ namespace rat
 			auto&& base = MusicBase(ratMusic);
 			_playlists[fnv1a_32(key.c_str())]->add(std::move(base));
 
-			LOG_INFO("Added ", name, " to playlist ", key);
+			LOG_INFO("[Music] Added ", name, " to playlist ", key);
 		}
 	}
 
@@ -200,7 +200,7 @@ namespace rat
 		}
 
 		auto log = [&](const std::string& name) {
-			LOG_INFO("Removed ", name, " form playlist ", key);
+			LOG_INFO("[Music] Removed ", name, " form playlist ", key);
 		};
 
 		if (name.empty()) {
@@ -229,7 +229,7 @@ namespace rat
 
 		for (unsigned int i = 0; i < 3; ++i) {
 			if (_currentPlaylistKeys[i] == hashKey && musicTrack != i) {
-				LOG_INFO("Can't play the same playlist on several tracks at the same time!");
+				LOG_INFO("[Music Error] Can't play the same playlist on several tracks at the same time!");
 				return;
 			}
 		}
@@ -302,9 +302,9 @@ namespace rat
 	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
 	{
 		switch (mode) {
-		case PlayingMode::Orderly: LOG_INFO("Playing Mode in playlist ", key, " changed to Orderly"); break;
-		case PlayingMode::Random: LOG_INFO("Playing Mode in playlist ", key, " changed to Random"); break;
-		case PlayingMode::Single: LOG_INFO("Playing Mode in playlist ", key, " changed to Single"); break;
+			case PlayingMode::Orderly: LOG_INFO("[Music] Playing Mode in playlist ", key, " changed to Orderly"); break;
+			case PlayingMode::Random:  LOG_INFO("[Music] Playing Mode in playlist ", key, " changed to Random");  break;
+			case PlayingMode::Single:  LOG_INFO("[Music] Playing Mode in playlist ", key, " changed to Single");  break;
 		}
 
 		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);

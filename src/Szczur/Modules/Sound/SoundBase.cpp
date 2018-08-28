@@ -294,7 +294,7 @@ namespace rat
             file.close();
 
             if(j[_name]["Path"] == nullptr) {
-                LOG_INFO("Missing data of sound: ", _name);
+                LOG_INFO("[Sound] Missing data of sound: ", _name);
                 return false;
             }
 

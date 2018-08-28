@@ -10,7 +10,7 @@ namespace rat
         if (!_buffersHolder.count(fileName)) {
             if (_buffersHolder[fileName].loadFromFile(fileName)) {
                 _buffersHolder[fileName].setName(fileName);
-                LOG_INFO("Sound Assets: ", fileName, " loaded");
+                LOG_INFO("[Sound Assets] ", fileName, " loaded");
                 return true;
             }
             else {
@@ -26,7 +26,7 @@ namespace rat
 	{
         auto fileName = buffer->getName();
 
-        LOG_INFO("Sound Assets: ", fileName, " unloaded");
+        LOG_INFO("[Sound Assets] ", fileName, " unloaded");
 		_buffersHolder.erase(fileName);
     }
 

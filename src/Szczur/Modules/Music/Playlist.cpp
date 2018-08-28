@@ -246,7 +246,7 @@ namespace rat
 	{
 		if (_effects.globalEffects()) {
 			_effects.getGlobalEffects().template sendAuxiliaryEffectsTo<RatMusic>(_playlist[_currentID]->getSource());
-			LOG_INFO("Global effects loaded into ", _playlist[_currentID]->getName());
+			LOG_INFO("[Music] Global effects loaded into ", _playlist[_currentID]->getName());
 		}
 	}
 		
