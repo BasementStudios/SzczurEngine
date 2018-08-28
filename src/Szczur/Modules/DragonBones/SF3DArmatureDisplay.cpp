@@ -18,10 +18,26 @@ SF3DArmatureDisplay::SF3DArmatureDisplay()
 
 SF3DArmatureDisplay::~SF3DArmatureDisplay()
 {
-	if (_armature)
+	dispose(false);
+}
+
+void SF3DArmatureDisplay::advanceTime(float deltaTime)
+{
+	if (!_toDelete.empty())
 	{
-		delete _armature;
-		_armature = nullptr;
+		for (auto toDelete : _toDelete)
+		{
+			delete toDelete;
+		}
+
+		_toDelete.clear();
+	}
+
+	_armature->advanceTime(deltaTime);
+
+	for (auto armatureDisplay : _armatureDisplays)
+	{
+		armatureDisplay->getArmature()->advanceTime(deltaTime);
 	}
 }
 
@@ -32,7 +48,6 @@ void SF3DArmatureDisplay::dbInit(Armature* armature)
 
 void SF3DArmatureDisplay::dbClear()
 {
-	_armature = nullptr;
 }
 
 void SF3DArmatureDisplay::dbUpdate()
@@ -53,28 +68,94 @@ void SF3DArmatureDisplay::dispatchDBEvent(const std::string& type, EventObject* 
 	_dispatcher.dispatchDBEvent(type, value);
 }
 
+void SF3DArmatureDisplay::addArmatureDisplay(SF3DArmatureDisplay* value)
+{
+	_armatureDisplays.push_back(value);
+}
+
+void SF3DArmatureDisplay::removeArmatureDisplay(SF3DArmatureDisplay* value)
+{
+	auto it = std::find_if(_armatureDisplays.begin(), _armatureDisplays.end(), [=] (SF3DArmatureDisplay* display) { return display == value; });
+
+	if (it != _armatureDisplays.end())
+	{
+		_armatureDisplays.erase(it);
+	}
+}
+
+void SF3DArmatureDisplay::addDisplay(SF3DDisplay* value)
+{
+	_displays.push_back(value);
+}
+
+void SF3DArmatureDisplay::removeDisplay(SF3DDisplay* value)
+{
+	auto it = std::find_if(_displays.begin(), _displays.end(), [=] (SF3DDisplay* display) { return display == value; });
+
+	if (it != _displays.end())
+	{
+		_displays.erase(it);
+	}
+}
+
+void SF3DArmatureDisplay::addToDelete(SF3DNode* node)
+{
+	_toDelete.push_back(node);
+}
+
 void SF3DArmatureDisplay::dispose(bool disposeProxy)
 {
 	if (_armature)
 	{
-		delete _armature;
+		_armature->dispose();
 		_armature = nullptr;
+	}
+}
+
+void SF3DArmatureDisplay::setVisible(bool visible)
+{
+	for (auto display : _displays)
+	{
+		display->setVisible(visible);
+	}
+
+	for (auto armatureDisplay : _armatureDisplays)
+	{
+		armatureDisplay->setVisible(visible);
+	}
+}
+
+void SF3DArmatureDisplay::setColor(const dragonBones::ColorTransform& color)
+{
+	for (auto display : _displays)
+	{
+		display->setColor(color);
+	}
+
+	for (auto armatureDisplay : _armatureDisplays)
+	{
+		armatureDisplay->setColor(color);
 	}
 }
 
 void SF3DArmatureDisplay::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	for (auto slot : _armature->getSlots())
-	{
-		if (!slot)
-			continue;
+	states.transform *= this->_transform;
 
-		auto display = static_cast<SF3DDisplay*>(slot->getRawDisplay());
-		
+	for (auto display : _displays)
+	{
 		if (!display)
 			continue;
 
 		display->draw(target, states);
+	}
+
+	for (auto armatureDisplay : _armatureDisplays)
+	{
+		if (!armatureDisplay)
+			continue;
+
+		armatureDisplay->draw(target, states);
 	}
 }
 

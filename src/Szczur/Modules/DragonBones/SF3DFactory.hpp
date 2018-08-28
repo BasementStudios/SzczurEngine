@@ -23,7 +23,7 @@ protected:
 	static DragonBones*											_dragonBonesInstance;
 	static SF3DFactory*											_factory;
 
-	std::unique_ptr<SFMLEventDispatcher>						_soundEventDispatcher;
+	std::unique_ptr<SF3DEventDispatcher>						_soundEventDispatcher;
 
 public:
 	SF3DFactory();
@@ -40,7 +40,7 @@ public:
 		_soundEventDispatcher->addDBEventListener(EventObject::SOUND_EVENT, listener);
 	}
 
-	void update(float lastUpdate);
+	void update(float deltaTime);
 
 	TextureAtlasData* createTextureAtlasData(std::vector<SF3DTextureData*>& texturesData, DragonBonesData* dragonBonesData);
 

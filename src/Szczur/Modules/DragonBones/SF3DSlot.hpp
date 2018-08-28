@@ -8,9 +8,9 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include "SF3DDisplay.hpp"
-
 DRAGONBONES_NAMESPACE_BEGIN
+
+class SF3DNode;
 
 class SF3DSlot : public Slot
 {
@@ -18,9 +18,9 @@ class SF3DSlot : public Slot
 
 private:
 	float _textureScale;
-	std::unique_ptr<SF3DDisplay> _renderDisplay;
+	SF3DNode* _renderDisplay = nullptr;
 
-	float _slotZOffset;
+	const float _zOffsetScale = 0.1f;
 
 public:
 	virtual void _updateVisible() override;

@@ -10,6 +10,7 @@
 #include "SF3DArmatureDisplay.hpp"
 #include "SF3DTextureAtlasData.hpp"
 #include "SF3DTextureData.hpp"
+#include "SF3DDisplay.hpp"
 
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/SFML3D/Vertex.hpp"
@@ -18,7 +19,7 @@ DRAGONBONES_NAMESPACE_BEGIN
 
 void SF3DSlot::_updateVisible()
 {
-	_renderDisplay->visible = _parent->getVisible();
+	_renderDisplay->setVisible(_parent->getVisible());
 }
 
 void SF3DSlot::_updateBlendMode()
@@ -65,27 +66,62 @@ void SF3DSlot::_initDisplay(void* value, bool isRetain)
 
 void SF3DSlot::_disposeDisplay(void* value, bool isRelease)
 {
+	delete value;
 }
 
 void SF3DSlot::_onUpdateDisplay()
 {
-	_renderDisplay = std::unique_ptr<SF3DDisplay>(static_cast<SF3DDisplay*>(_display != nullptr ? _display : _rawDisplay));
+	_renderDisplay = static_cast<SF3DNode*>(_display != nullptr ? _display : _rawDisplay);
+	_renderDisplay->setZOffset(_zOrder * _zOffsetScale);
 }
 
 void SF3DSlot::_addDisplay()
 {
+	auto arm = static_cast<SF3DArmatureDisplay*>(_armature->getDisplay());
+
+	if (_childArmature)
+		arm->addArmatureDisplay(static_cast<SF3DArmatureDisplay*>(_renderDisplay));
+	else
+		arm->addDisplay(static_cast<SF3DDisplay*>(_renderDisplay));
 }
 
 void SF3DSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
 {
+	auto prevDisplay = static_cast<SF3DNode*>(value);
+
+	auto arm = static_cast<SF3DArmatureDisplay*>(_armature->getDisplay());
+
+	_renderDisplay->setZOffset(prevDisplay->getZOffset());
+
+	_addDisplay();
+
+	if (isArmatureDisplay)
+		arm->removeArmatureDisplay(static_cast<SF3DArmatureDisplay*>(prevDisplay));
+	else
+		arm->removeDisplay(static_cast<SF3DDisplay*>(prevDisplay));
+
+	if (prevDisplay)
+	{
+		arm->addToDelete(prevDisplay);
+	}
+
+	_textureScale = 1.f;
 }
 
 void SF3DSlot::_removeDisplay()
 {
+	auto arm = static_cast<SF3DArmatureDisplay*>(_armature->getDisplay());
+
+	if (_childArmature)
+		arm->removeArmatureDisplay(static_cast<SF3DArmatureDisplay*>(_renderDisplay));
+	else
+		arm->removeDisplay(static_cast<SF3DDisplay*>(_renderDisplay));
+
 }
 
 void SF3DSlot::_updateZOrder()
 {
+	_renderDisplay->setZOffset(_zOrder * _zOffsetScale);
 }
 
 void SF3DSlot::_updateFrame()
@@ -93,18 +129,23 @@ void SF3DSlot::_updateFrame()
 	const auto currentVerticesData = (_deformVertices != nullptr && _display == _meshDisplay) ? _deformVertices->verticesData : nullptr;
 	auto currentTextureData = static_cast<SF3DTextureData*>(_textureData);
 
+	auto display = static_cast<SF3DDisplay*>(_renderDisplay);
+
 	if (_displayIndex >= 0 && _display != nullptr && currentTextureData != nullptr)
 	{
 		if (currentTextureData->texture != nullptr)
 		{
 			if (currentVerticesData != nullptr) // Mesh
 			{
+
 				const auto data = currentVerticesData->data;
 				const auto intArray = data->intArray;
 				const auto floatArray = data->floatArray;
 				const unsigned vertexCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexCount];
 				const unsigned triangleCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
 				int vertexOffset = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
+
+				printf("Size: %llu\n", triangleCount * 3);
 
 				if (vertexOffset < 0)
 				{
@@ -157,7 +198,7 @@ void SF3DSlot::_updateFrame()
 					vertexIndices.push_back(intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshVertexIndices + i]);
 				}
 
-				_renderDisplay->verticesDisplay.resize(vertexIndices.size());
+				display->verticesDisplay.resize(vertexIndices.size());
 
 				verticesInTriagles.resize(vertices.size());
 
@@ -165,14 +206,15 @@ void SF3DSlot::_updateFrame()
 				for (unsigned int i = 0; i < vertexIndices.size(); i++)
 				{
 					verticesInTriagles[vertexIndices[i]].push_back(i);
-					_renderDisplay->verticesDisplay[i] = vertices[vertexIndices[i]];
+					display->verticesDisplay[i] = vertices[vertexIndices[i]];
 				}
 
 				_textureScale = 1.f;
 
-				_renderDisplay->texture = currentTextureData->texture;
-				_renderDisplay->verticesInTriagles = std::move(verticesInTriagles);
-				_renderDisplay->verticesDisplay.setPrimitveType(GL_TRIANGLES);
+				display->texture = currentTextureData->texture;
+				display->verticesInTriagles = std::move(verticesInTriagles);
+				display->verticesDisplay.setPrimitiveType(sf3d::PrimitiveType::Triangles);
+
 
 				const auto isSkinned = currentVerticesData->weight != nullptr;
 				if (isSkinned)
@@ -185,18 +227,17 @@ void SF3DSlot::_updateFrame()
 				// Apply texture scaling
 				_textureScale = currentTextureData->parent->scale * _armature->_armatureData->scale; // @warn no scale on mesh?
 
-				_renderDisplay->texture = currentTextureData->texture;
-				_renderDisplay->verticesDisplay.resize(4);
-				_renderDisplay->verticesInTriagles.resize(0);
-				_renderDisplay->primitiveType = GL_TRIANGLE_FAN;
-
-				_renderDisplay->verticesDisplay.setPrimitveType(GL_TRIANGLE_FAN);
+				display->texture = currentTextureData->texture;
+				display->verticesDisplay.resize(4);
+				display->verticesInTriagles.resize(0);
+				display->verticesDisplay.setPrimitiveType(sf3d::PrimitiveType::TriangleFan);
+				
 				// Setup verticles
 				{
 					const auto& region = currentTextureData->region;
 
-					auto& verts = _renderDisplay->verticesDisplay;
-					auto size = _renderDisplay->texture->getSize();
+					auto& verts = display->verticesDisplay;
+					auto size = display->texture->getSize();
 
 					float sizeX = static_cast<float>(size.x);
 					float sizeY = static_cast<float>(size.y);
@@ -235,13 +276,11 @@ void SF3DSlot::_updateFrame()
 			_blendModeDirty = true;
 			_colorDirty = true;
 
-			_slotZOffset = _zOrder * 0.1f;
-
 			return;
 		}
 	}
 
-	_renderDisplay->visible = false;
+	display->setVisible(false);
 }
 
 void SF3DSlot::_updateMesh()
@@ -252,6 +291,8 @@ void SF3DSlot::_updateMesh()
 	const auto& weightData = verticesData->weight;
 
 	const auto hasFFD = !deformVertices.empty();
+
+	const auto display = static_cast<SF3DDisplay*>(_renderDisplay);
 
 	// Weightness
 	if (weightData != nullptr)
@@ -302,12 +343,12 @@ void SF3DSlot::_updateMesh()
 
 			// Update local verticles positions
 			{
-				auto& verticesDisplay = _renderDisplay->verticesDisplay;
-				const auto& verticesInTriagles = _renderDisplay->verticesInTriagles;
+				auto& verticesDisplay = display->verticesDisplay;
+				const auto& verticesInTriagles = display->verticesInTriagles;
 
 				for (const auto& vert : verticesInTriagles[i])
 				{
-					verticesDisplay[vert].position = { xG, yG,  _slotZOffset };
+					verticesDisplay[vert].position = { xG, yG,  display->getZOffset() };
 				}
 			}
 		}
@@ -335,8 +376,8 @@ void SF3DSlot::_updateMesh()
 
 			// Update local verticles positions
 			{
-				auto& verticesDisplay = _renderDisplay->verticesDisplay;
-				const auto& verticesInTriagles = _renderDisplay->verticesInTriagles;
+				auto& verticesDisplay = display->verticesDisplay;
+				const auto& verticesInTriagles = display->verticesInTriagles;
 
 				for (const auto& vert : verticesInTriagles[traingleIndex])
 				{
@@ -354,37 +395,44 @@ void SF3DSlot::_identityTransform()
 
 void SF3DSlot::_updateTransform()
 {
-	glm::vec3 pos (
+	glm::vec3 pos(
 		globalTransformMatrix.tx,
 		globalTransformMatrix.ty,
-		_slotZOffset
+		_renderDisplay->getZOffset()
 	);
 
-	if (_renderDisplay.get() == _rawDisplay || _renderDisplay.get() == _meshDisplay)
+	if (_renderDisplay == _rawDisplay || _renderDisplay == _meshDisplay)
 	{
 		pos.x -= (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
 		pos.y -= (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
 	}
-	else if (!_childArmature)
+	else if (_childArmature)
+	{
+		pos.x -= (globalTransformMatrix.a + globalTransformMatrix.c);
+		pos.y -= (globalTransformMatrix.b + globalTransformMatrix.d);
+	}
+	else
 	{
 		pos.x -= (globalTransformMatrix.a + globalTransformMatrix.c);
 		pos.y -= (globalTransformMatrix.b + globalTransformMatrix.d);
 	}
 
-	_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale);
+	if (_childArmature)
+	{
+		_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale, _textureScale * -1.f);
+	}
+	else
+	{
+		_renderDisplay->setMatrix(globalTransformMatrix, pos, _textureScale, _textureScale);
+	}
 }
 
 void SF3DSlot::_onClear()
 {
 	Slot::_onClear();
 
-	_textureScale = 1.0f;
-
-	if (_textureData)
-	{
-		delete _textureData;
-		_textureData = nullptr;
-	}
+	_textureScale = 1.f;
+	_renderDisplay = nullptr;
 }
 
 DRAGONBONES_NAMESPACE_END

@@ -12,24 +12,43 @@
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
+
+#include "SF3DNode.hpp"
 #include "SF3DEventDispatcher.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SF3DArmatureDisplay : public IArmatureProxy, public sf3d::Drawable
+class SF3DDisplay;
+
+class SF3DArmatureDisplay : public SF3DNode, public IArmatureProxy
 {
 protected:
-	Armature*									_armature = nullptr;
-	SFMLEventDispatcher							_dispatcher;
+	Armature*							_armature = nullptr;
+	SF3DEventDispatcher					_dispatcher;
+
+	std::vector<SF3DArmatureDisplay*>	_armatureDisplays;
+	std::vector<SF3DDisplay*>			_displays;
+
+	std::vector<SF3DNode*>				_toDelete;
 
 public:
 	SF3DArmatureDisplay();
 	~SF3DArmatureDisplay();
 
+	void advanceTime(float deltaTime);
+
 	bool hasDBEventListener(const std::string& type) const override { return true; }
 	void addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
 	void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
 	void dispatchDBEvent(const std::string& type, EventObject* value) override;
+
+	void addArmatureDisplay(SF3DArmatureDisplay* child);
+	void removeArmatureDisplay(SF3DArmatureDisplay* child);
+
+	void addDisplay(SF3DDisplay* child);
+	void removeDisplay(SF3DDisplay* child);
+
+	void addToDelete(SF3DNode* node);
 
 	void dbInit(Armature* armature) override;
 	void dbClear() override;
@@ -40,9 +59,12 @@ public:
 	Armature* getArmature() const override { return _armature; }
 	Animation* getAnimation() const override { return _armature->getAnimation(); }
 
-	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
+	void setVisible(bool visible) override;
+	void setColor(const dragonBones::ColorTransform& color) override;
+	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
 
-	sf::FloatRect getBoundingBox();
+	sf::FloatRect getBoundingBox() override;
+
 };
 
 DRAGONBONES_NAMESPACE_END

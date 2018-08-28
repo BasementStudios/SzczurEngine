@@ -27,7 +27,7 @@ SF3DFactory::SF3DFactory()
 
 	if (_dragonBonesInstance == nullptr)
 	{
-		_soundEventDispatcher = std::make_unique<SFMLEventDispatcher>();
+		_soundEventDispatcher = std::make_unique<SF3DEventDispatcher>();
 
 		_dragonBonesInstance = new DragonBones(nullptr);
 		_dragonBonesInstance->yDown = false;
@@ -134,9 +134,9 @@ sf3d::Texture* SF3DFactory::getTextureDisplay(const std::string& textureName, co
 	return nullptr;
 }
 
-void SF3DFactory::update(float lastUpdate)
+void SF3DFactory::update(float deltaTime)
 {
-	_dragonBonesInstance->advanceTime(lastUpdate);
+	_dragonBonesInstance->advanceTime(deltaTime);
 }
 
 TextureAtlasData* SF3DFactory::_buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const

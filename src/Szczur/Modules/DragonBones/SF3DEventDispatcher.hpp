@@ -11,7 +11,7 @@
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SFMLEventDispatcher : public IEventDispatcher
+class SF3DEventDispatcher : public IEventDispatcher
 {
 	using Func_t = std::function<void(EventObject*)>;
 
@@ -19,8 +19,8 @@ private:
 	std::unordered_map<std::string, std::vector<Func_t>> _listeners;
 
 public:
-	SFMLEventDispatcher() = default;
-	~SFMLEventDispatcher() = default;
+	SF3DEventDispatcher() = default;
+	~SF3DEventDispatcher() = default;
 
 	virtual void addDBEventListener(const std::string& type, const Func_t& listener) override
 	{
