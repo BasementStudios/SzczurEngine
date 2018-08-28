@@ -2,6 +2,7 @@
 
 /** @file RenderTexture.cpp
  ** @author Tomasz (Knayder) Jatkowski 
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
  **/
 
 #include <stdexcept>
@@ -33,9 +34,9 @@ RenderTexture::RenderTexture()
 {
 	;
 }
-RenderTexture::RenderTexture(glm::uvec2 size, ShaderProgram* program)
+RenderTexture::RenderTexture(glm::uvec2 size, const ContextSettings& contextSettings, ShaderProgram* program)
 {
-	this->create(size, program);
+	this->create(size, contextSettings, program);
 }
 RenderTexture::~RenderTexture()
 {
@@ -50,22 +51,19 @@ RenderTexture::~RenderTexture()
 
 
 /* Methods */
-void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
+void RenderTexture::create(glm::uvec2 size, const ContextSettings& contextSettings, ShaderProgram* program)
 {
-	RenderTarget::create(size, program);
+	RenderTarget::create(size, contextSettings, program);
 
-	// If same size, do nothing
-	if (this->texture.getSize() == size) {
+	// If same (or no changes), do nothing
+	if (this->texture.getSize() == size && (contextSettings == ContextSettings::None || this->contextSettings == contextSettings) ) {
+		// @todo ? clear?
 		return;
 	}
-
-	// Delete first, if it is recreation
-	if (this->FBO) {
-		glDeleteFramebuffers(1, &(this->FBO));
-	}
-	if (this->RBO) {
-		glDeleteRenderbuffers(1, &(this->RBO));
-	}
+	
+	// Make sure to delete for recreation
+	glDeleteFramebuffers(1, &(this->FBO));
+	glDeleteRenderbuffers(1, &(this->RBO));
 
 	// Generate buffers
 	glGenFramebuffers(1, &(this->FBO));
@@ -75,16 +73,16 @@ void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
 	glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
 	{
 		// Texture
-		this->texture.create(size);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texture.getID(), 0);
+		this->texture.create(this->size, this->contextSettings, TextureTarget::Simple2D);
+		this->texture.bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, TextureTarget::Simple2D, this->texture.getID(), 0);
+		this->texture.unbind();
 
 		// RenderBuffer
 		glBindRenderbuffer(GL_RENDERBUFFER, this->RBO);
-		{
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
-		}
+		glRenderbufferStorage(GL_RENDERBUFFER, this->contextSettings.getRenderInternalFormat(), this->size.x, this->size.y);
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->RBO);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, this->contextSettings.getRenderAttachmentType(), GL_RENDERBUFFER, this->RBO);
 
 		// Checks
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -95,7 +93,7 @@ void RenderTexture::create(glm::uvec2 size, ShaderProgram* program)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-bool RenderTexture::_setActive(bool /*states*/)
+bool RenderTexture::setActive(bool /*states*/)
 {
 	if (this->FBO) {
 		glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);

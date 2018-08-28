@@ -8,6 +8,7 @@
 
 #include "Drawable.hpp"
 #include "RenderTexture.hpp"
+#include "ContextSettings.hpp"
 #include "VertexArray.hpp"
 #include "ShaderProgram.hpp"
 
@@ -24,17 +25,17 @@ RenderLayer::~RenderLayer()
 	;
 }
 
-RenderLayer::RenderLayer(glm::uvec2 size, ShaderProgram* program)
+RenderLayer::RenderLayer(glm::uvec2 size, const ContextSettings& settings, ShaderProgram* program)
 {
-	this->create(size, program);
+	this->create(size, settings, program);
 }
 
 
 
 /* Methods */
-void RenderLayer::create(glm::uvec2 size, ShaderProgram* program)
+void RenderLayer::create(glm::uvec2 size, const ContextSettings& settings, ShaderProgram* program)
 {
-	RenderTexture::create(size, program);
+	RenderTexture::create(size, settings, program);
 
 	// Setup vertices	
 	this->vertices[0].position = {-1.f, 1.f, 0.f};

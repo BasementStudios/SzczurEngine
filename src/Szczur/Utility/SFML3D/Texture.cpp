@@ -12,7 +12,12 @@ namespace sf3d
 /* Properties */
 GLuint Texture::getID() const noexcept
 {
-	return this->textureID;
+	return this->ID;
+}
+
+TextureTarget Texture::getTarget() const noexcept
+{
+	return this->target;
 }
 
 glm::uvec2 Texture::getSize() const noexcept
@@ -29,33 +34,32 @@ Texture::Texture()
 }
 Texture::~Texture()
 {
-	// `glDeleteTextures` silently ignores 0's and names that do not correspond to existing textures.
-	glDeleteTextures(1, &(this->textureID));
+	this->destroy();
 }
 
 Texture::Texture(Texture&& other)
 {
 	if (this != &other) {
-		this->textureID = other.textureID; 
-		this->size      = other.size;
-		other.textureID = 0u;
+		this->ID = other.ID; 
+		this->size = other.size;
+		other.ID = 0u;
 	}
 }
 Texture& Texture::operator = (Texture&& other)
 {
 	if (this != &other) {
-		glDeleteTextures(1, &(this->textureID));
+		this->destroy();
 
-		this->textureID = other.textureID; 
-		this->size      = other.size;
-		other.textureID = 0u;
+		this->ID = other.ID; 
+		this->size = other.size;
+		other.ID = 0u;
 	}
 	return *this;
 }
 
-Texture::Texture(glm::uvec2 size) 
+Texture::Texture(glm::uvec2 size, const ContextSettings& settings, TextureTarget target) 
 {
-	this->create(size);
+	this->create(size, settings, target);
 }
 
 Texture::Texture(const char* path)
@@ -70,22 +74,56 @@ Texture::Texture(const std::string& path)
 
 
 /* Methods */
-void Texture::create(glm::uvec2 size)
+void Texture::create(glm::uvec2 size, const ContextSettings& settings, TextureTarget target)
 {
 	// Delete first, if it is recreation and size is diffrent
-	if (this->size != size) {
-		glDeleteTextures(1, &(this->textureID));
-		glGenTextures(1, &(this->textureID));
+	if (this->size != size || this->target != target) {
+		glDeleteTextures(1, &(this->ID));
+		glGenTextures(1, &(this->ID));
+	}
+	else {
+		// @todo . clear?
 	}
 
-	// Setup the texture
-	glBindTexture(GL_TEXTURE_2D, this->textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
 	this->size = size;
+	this->target = target;
+
+	// Setup the texture
+	switch (target) {
+		case TextureTarget::Simple2D:
+		{
+			this->bind();
+			glTexImage2D(GL_TEXTURE_2D, 0, settings.getColorInternalFormat(), size.x, size.y, 0, settings.getColorInternalFormat(), GL_UNSIGNED_BYTE, 0); // @todo ? Memory efficient textures - internal format =/= format?
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			this->unbind();
+		}
+		break;
+
+		case TextureTarget::Multisample2D:
+		{
+			if (settings.multisamplingLevel == 0) {
+				throw std::logic_error("Invaild multisampling level: 0");
+			}
+			
+			this->bind();
+			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, settings.multisamplingLevel, settings.getColorInternalFormat(), size.x, size.y, GL_TRUE);
+			this->unbind();
+		}
+		break;
+
+		default: 
+		{
+			throw std::logic_error(std::string("Unsupported texture target: ") + std::to_string(static_cast<GLuint>(target)));
+		}
+		break;
+	}
+}
+
+void Texture::destroy()
+{
+	// `glDeleteTextures` silently ignores 0's and names that do not correspond to existing textures.
+	glDeleteTextures(1, &(this->ID));
 }
 
 void Texture::loadFromFile(const char* path)
@@ -98,27 +136,23 @@ void Texture::loadFromFile(const char* path)
 	const glm::uvec2 size = {image.getSize().x, image.getSize().y};
 
 	// Delete first, if it is recreation and size is diffrent
-	if (this->size != size) {
-		glDeleteTextures(1, &(this->textureID));
-		glGenTextures(1, &(this->textureID));
+	if (this->size != size || this->target != TextureTarget::Simple2D) {
+		glDeleteTextures(1, &(this->ID));
+		glGenTextures(1, &(this->ID));
 	}
+
+	this->size = size;
+	this->target = TextureTarget::Simple2D;
 	
 	// Load into graphics 
-	glBindTexture(GL_TEXTURE_2D, this->textureID);
-	glTexImage2D(
-		GL_TEXTURE_2D, 0, GL_RGBA,
-		size.x, size.y,
-		0,
-		GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
-	);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	this->bind();
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()); // @todo ? Memory efficient textures 
+	glGenerateMipmap(GL_TEXTURE_2D); 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	this->size = size;
+	this->unbind();
 }
 void Texture::loadFromFile(const std::string& path)
 {
@@ -127,13 +161,13 @@ void Texture::loadFromFile(const std::string& path)
 
 void Texture::bind() const noexcept
 {
-	if (this->textureID) {
-		glBindTexture(GL_TEXTURE_2D, this->textureID);
+	if (this->ID) {
+		glBindTexture(static_cast<GLuint>(this->target), this->ID);
 	}
 }
 void Texture::unbind() const noexcept
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(static_cast<GLuint>(this->target), 0);
 }
 
 }
