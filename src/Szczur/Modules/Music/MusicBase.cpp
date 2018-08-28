@@ -46,8 +46,14 @@ namespace rat
 	{
 		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
 			_timeLeft -= deltaTime;
-			if (_timeLeft <= _base->getFadeTime())
+			if (_timeLeft <= _base->getFadeTime()) {
+				callback(CallbackType::onFadeStart);
 				_isEnding = true;
+			}
+		}
+
+		if (_timeLeft >= 0) {
+			stop();
 		}
 	}
 
@@ -94,6 +100,7 @@ namespace rat
 
 	void MusicBase::play() 
 	{
+		callback(CallbackType::onStart);
 		_base->play();
 	}
 
@@ -104,9 +111,15 @@ namespace rat
 
 	void MusicBase::stop() 
 	{
+		callback(CallbackType::onFinish);
 		_base->stop();
 		reset();
 	}
+
+	void MusicBase::setCallback(MusicBase::CallbackType type, MusicBase::SolFunction_t callback)
+    {
+        _callbacks.insert_or_assign(type, callback);
+    }
 
 	void MusicBase::setLoop(bool loop)
 	{
@@ -174,5 +187,11 @@ namespace rat
 	{
 		return _base;
 	}
+
+	void MusicBase::callback(MusicBase::CallbackType type)
+    {
+        if (auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
+    }
 
 }

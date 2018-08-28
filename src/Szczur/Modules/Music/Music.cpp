@@ -143,6 +143,10 @@ namespace rat
 			if (it != 0)
 				_playlists[it]->update(deltaTime);
 		}
+
+		for (auto& it : _musicHolder) {
+			it->update(deltaTime);
+		}
 	}
 
 	MusicBase* Music::loadMusic(const std::string& name) 

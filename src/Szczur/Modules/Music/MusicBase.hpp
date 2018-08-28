@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <boost/container/flat_map.hpp>
 
 #include "Szczur/Modules/Script/Script.hpp"
 
@@ -10,6 +11,18 @@ namespace rat
 {
 	class MusicBase
 	{
+
+		enum class CallbackType 
+        {
+            onStart,
+            onFinish,
+			onFadeStart
+        };
+
+	public:
+
+		using SolFunction_t = sol::function;
+        using CallbacksContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 
 	private:
 
@@ -23,6 +36,8 @@ namespace rat
 
 		bool _finishInit = true;
 		bool _startInit = true;
+
+		CallbacksContainer_t _callbacks;
 
 	public:
 
@@ -39,6 +54,8 @@ namespace rat
 		void play();
 		void pause();
 		void stop();
+
+		void setCallback(CallbackType type, SolFunction_t callback);
 
 		void setLoop(bool loop);
 		bool getLoop() const;
@@ -73,6 +90,8 @@ namespace rat
 		void reset();
 		void loadMusic();
 		void getJsonData();
+
+		void callback(CallbackType type);
 
 	};
 }
