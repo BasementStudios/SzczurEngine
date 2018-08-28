@@ -55,7 +55,7 @@ std::string getHeader(_EXCEPTION_POINTERS* ExceptionInfo)
 			"Base address: %p\n"
 			"Exception address: %p\n"
 			"Exception code: %lX %s\n",
-			GetModuleHandle(nullptr),
+			static_cast<void*>(GetModuleHandle(nullptr)),
 			ExceptionInfo->ExceptionRecord->ExceptionAddress,
 			ExceptionInfo->ExceptionRecord->ExceptionCode,
 			getExceptionCodeName(ExceptionInfo->ExceptionRecord->ExceptionCode).c_str());
@@ -112,7 +112,7 @@ std::string getCallStack(EXCEPTION_POINTERS* exceptionPointers)
 	std::stringstream str;
 
 	str << "Call stack:\n";
-	str << boost::stacktrace::stacktrace();
+	str << boost::stacktrace::stacktrace(-1, 128);
 
 	return str.str();
 }
@@ -179,7 +179,7 @@ std::string getModuleList()
 		char moduleInfo[MAX_PATH] = { 0 };
 
 		sprintf(moduleInfo, "%p %08lX %s\n", 
-				moduleEntry.hModule,
+				static_cast<void*>(moduleEntry.hModule),
 				moduleEntry.modBaseSize,
 				moduleEntry.szExePath);
 
