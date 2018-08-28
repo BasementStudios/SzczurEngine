@@ -208,6 +208,37 @@ tests[counter.get()] = function()
 
 end
 
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Using independent music obiect",
+        testMusic = nil
+    }
+
+    function self.run()
+        self.testMusic = Music.loadMusic("Rozpierdalacz")
+        if self.testMusic == nil then
+            return false
+        end
+        self.testMusic:setVolume(self.testMusic:getVolume() * 0.8)
+        self.testMusic:setLoop(not self.testMusic:getLoop())
+        if not self.testMusic:getStatus() == Music.Stopped then
+            return false
+        end
+        if not self.testMusic:getName() == "Rozpierdalacz" then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.removeMusic(self.testMusic)
+    end
+
+    return self
+
+end
+
 -- [ SOUND ]:
 
 tests[counter.get()] = function()
