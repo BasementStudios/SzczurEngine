@@ -70,6 +70,14 @@ namespace rat
 		return _playlist[_currentID];
 	}
 
+	Playlist::BasePointer_t Playlist::get(const std::string& name) const
+	{
+		if (auto id = getID(name); id != _playlist.size()) {
+			return _playlist[id];
+		}
+		return nullptr;
+	}
+
 	void Playlist::play(unsigned int id, float timeLeft)
 	{
 		setPlaylistToPlaying(id);

@@ -24,6 +24,10 @@ namespace rat
 		module.set_function("loadMusic", &Music::loadMusic, this);
 		module.set_function("removeMusic", &Music::removeMusic, this);
 		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+		module.set_function("get", sol::overload(
+			[&](unsigned int a, const std::string& b) { return get(a, b); },
+			[&](const std::string& a, const std::string& b) { return get(a, b); }
+		));
 
 		module.set_function("play", &Music::play, this);
 		module.set_function("pause", &Music::pause, this);
@@ -292,6 +296,19 @@ namespace rat
 			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying().get();
 		}
 		return nullptr;
+	}
+
+	MusicBase* Music::get(unsigned int musicTrack, const std::string& name)
+	{
+		if (musicTrack < 3 && _currentPlaylistKeys[musicTrack] != 0) {
+			return _playlists[_currentPlaylistKeys[musicTrack]]->get(name).get();
+		}
+		return nullptr;
+	}
+
+	MusicBase* Music::get(const std::string& key, const std::string& name)
+	{
+		return _playlists[fnv1a_32(key.c_str())]->get(name).get();
 	}
 
 	bool Music::includes(const std::string& key, const std::string& name)

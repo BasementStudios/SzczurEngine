@@ -62,6 +62,8 @@ namespace rat
 		Status getStatus(const std::string& key, const std::string& name = "");
 
 		MusicBase* getCurrentPlaying(unsigned int musicTrack);
+		MusicBase* get(unsigned int musicTrack, const std::string& name);
+		MusicBase* get(const std::string& key, const std::string& name);
 
 		bool includes(const std::string& key, const std::string& name);
 

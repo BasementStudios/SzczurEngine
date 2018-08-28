@@ -58,6 +58,7 @@ namespace rat
 		void remove(const std::string& name);
 
 		BasePointer_t getCurrentPlaying() const;
+		BasePointer_t get(const std::string& name) const;
 
 		void play(unsigned int id, float timeLeft);
 		void play(const std::string& name = "");
