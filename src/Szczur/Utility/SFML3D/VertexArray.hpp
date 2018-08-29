@@ -1,60 +1,149 @@
 #pragma once
 
-#include "Vertex.hpp"
-#include "Drawable.hpp"
+#include <vector>
+
 namespace sf3d {
-	class VertexInterface {
-	public:
-		VertexInterface(GLuint VBO, size_t index);
+    class RenderTarget;
+}
+#include "RenderStates.hpp"
+#include "Drawable.hpp"
+#include "PrimitiveType.hpp"
+#include "Vertex.hpp"
 
-		void setPosition(const glm::vec3& position);
-		void move(const glm::vec3& offset); 
- 
-		void setColor(const glm::vec4& color); 
+namespace sf3d
+{
 
-		void setTexCoord(const glm::vec2& pos); 
-	private:
-		GLuint _VBO;
-		size_t _index;
-	};
+class VertexArray : public Drawable
+{
+public:
 
-	class VertexArray : public Drawable {
-	public:
-		VertexArray() = delete;
-		VertexArray(size_t size, unsigned int storageUsage = GL_STREAM_DRAW);
-		~VertexArray();
+    using Vertices_t = std::vector<Vertex>;
 
-		void setPosition(size_t index, const glm::vec3& position);
-		void setColor(size_t index, const glm::vec4& color);
-		void setTexCoord(size_t index, const glm::vec2& texCoord);
-		void set(size_t index, const Vertex& vertex);
+    ///
+    VertexArray() = delete;
 
-		unsigned int getPrimitiveType() const;
-		unsigned int getStorageUsage() const;
+    ///
+    VertexArray(PrimitiveType type = TriangleFan);
 
-		void setPrimitveType(unsigned int type);
+    ///
+    VertexArray(size_t size, PrimitiveType type = TriangleFan);
 
-		size_t getSize() const;
+    ///
+    VertexArray(size_t size, const Vertex& value, PrimitiveType type = TriangleFan);
 
-		void resize(size_t size);
+    ///
+    VertexArray(const Vertex* vertices, size_t size, PrimitiveType type = TriangleFan);
 
-		void bind() const;
+    ///
+    VertexArray(const Vertex* begin, const Vertex* end, PrimitiveType type = TriangleFan);
 
-		virtual void draw(RenderTarget& target, RenderStates states) const override;
-		void draw();
+    ///
+    VertexArray(const VertexArray& rhs);
 
-		VertexInterface operator[](size_t index) const;
-	private:
-		unsigned int _VAO;
-		unsigned int _VBO;
+    ///
+    VertexArray& operator = (const VertexArray& rhs);
 
-		unsigned int _primitveType{GL_TRIANGLE_FAN};
-		const unsigned int _storageUsage;
+    ///
+    VertexArray(VertexArray&& rhs) noexcept;
 
-		size_t _size;
+    ///
+    VertexArray& operator = (VertexArray&& rhs) noexcept;
 
-		Vertex* _startEdit(size_t index);
+    ///
+    ~VertexArray();
 
-		void _endEdit();
-	};
+    ///
+    void clear();
+
+    ///
+    VertexArray& assign(size_t size, PrimitiveType type = TriangleFan);
+
+    ///
+    VertexArray& assign(size_t size, const Vertex& value, PrimitiveType type = TriangleFan);
+
+    ///
+    VertexArray& assign(const Vertex* vertices, size_t size, PrimitiveType type = TriangleFan);
+
+    ///
+    VertexArray& assign(const Vertex* begin, const Vertex* end, PrimitiveType type = TriangleFan);
+
+    ///
+    void resize(size_t size);
+
+    ///
+    void resize(size_t size, const Vertex& value);
+
+    ///
+    void setVertex(size_t index, const Vertex& vertex);
+
+    ///
+    Vertex& getVertex(size_t index);
+
+    ///
+    const Vertex& getVertex(size_t index) const;
+
+    ///
+    Vertex& operator [] (size_t index);
+
+    ///
+    const Vertex& operator [] (size_t index) const;
+
+    ///
+    void setPrimitiveType(PrimitiveType type);
+
+    ///
+    PrimitiveType getPrimitiveType() const;
+
+    ///
+    Vertex* getData();
+
+    ///
+    const Vertex* getData() const;
+
+    ///
+    size_t getSize() const;
+
+    ///
+    size_t getBytesCount() const;
+
+    ///
+    bool isEmpty() const;
+
+    ///
+    bool isValid() const;
+
+    /// Returns { left, top, width, height } 2D bounds of vertices
+    glm::vec4 getBounds() const;
+
+    ///
+    void bind() const;
+
+    ///
+    void unbind() const;
+
+	///
+	void update() const;
+
+    ///
+    virtual void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const override;
+
+private:
+
+    ///
+    void _init();
+
+    ///
+    void _destroy();
+
+    Vertices_t _vertices;
+    PrimitiveType _type;
+    GLuint _vao;
+    GLuint _vbo;
+    mutable size_t _lowerIndex;
+    mutable size_t _upperIndex;
+    mutable bool _needsUpdate;
+    mutable bool _needsReallocate;
+
+};
+
 }

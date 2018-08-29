@@ -1,0 +1,11 @@
+#!/bin/bash
+
+iwant () {
+grep --color=auto -rni "$@" src/*
+}
+
+logs () {
+n++ out/Crashes/"$(ls -t out/Crashes/ | head -1)"
+}
+
+

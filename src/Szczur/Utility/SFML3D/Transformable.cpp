@@ -1,71 +1,110 @@
 #include "Transformable.hpp"
 
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/trigonometric.hpp> // radians
+#include <glm/gtc/matrix_transform.hpp>
 
-namespace sf3d {
+#include "Transform.hpp"
 
+namespace sf3d
+{
 
-void Transformable::setPosition(const glm::vec3& position) {
-	_position = position;
+/* Properties */
+// Position
+void Transformable::setPosition(const glm::vec3 position)
+{
+	this->position = position;
 }
-const glm::vec3& Transformable::getPosition() const {
-	return _position;
-}
-
-
-void Transformable::setRotation(const glm::vec3& direction) {
-	_rotation = direction;
-}
-const glm::vec3& Transformable::getRotation() const {
-	return _rotation;
-}
-
-
-void Transformable::setScale(const glm::vec3& value) {
-	_scale = value;
-}
-const glm::vec3& Transformable::getScale() const {
-	return _scale;
+const glm::vec3& Transformable::getPosition() const
+{
+	return this->position;
 }
 
-
-void Transformable::setOrigin(const glm::vec3& position) {
-	_origin.x = position.x;
-	_origin.y = -position.y;
-	_origin.z = position.z;
+// Rotation
+void Transformable::setRotation(const glm::vec3 direction)
+{
+	this->rotation = direction;
 }
-const glm::vec3& Transformable::getOrigin() const {
-	return _origin;
-}
-
-
-
-
-Transform Transformable::getTransform() const {
-	Transform transform;
-	transform.translate(_position);
-	transform.rotate(glm::radians(_rotation.x), {1.f, 0.f, 0.f});
-	transform.rotate(glm::radians(_rotation.y), {0.f, 1.f, 0.f});
-	transform.rotate(glm::radians(_rotation.z), {0.f, 0.f, 1.f});
-	transform.translate(-(_origin*_scale));
-	transform.scale(_scale);
-
-	return transform;
+const glm::vec3& Transformable::getRotation() const
+{
+	return this->rotation;
 }
 
+// Scale
+void Transformable::setScale(const glm::vec3 value)
+{
+	this->scalar = value;
+}
+const glm::vec3& Transformable::getScale() const
+{
+	return this->scalar;
+}
 
-void Transformable::move(const glm::vec3& offset) {
-	_position += offset;
+// Origin
+void Transformable::setOrigin(const glm::vec3 position)
+{
+	this->origin.x = position.x;
+	this->origin.y = -position.y; // @warn To chyba nie powinno być na tym etapie, bo set(x) =/= x=gett()...
+	this->origin.z = position.z;
+}
+const glm::vec3& Transformable::getOrigin() const
+{
+	return this->origin;
 }
 
 
-void Transformable::rotate(const glm::vec3& direction) {
-	_rotation += direction;
+
+/* Operators */
+Transformable::Transformable(
+	const glm::vec3& position,
+	const glm::vec3& rotation,
+	const glm::vec3& scalar,
+	const glm::vec3& origin
+)
+:	position(position),
+	rotation(rotation),
+	scalar(scalar),
+	origin(origin)
+{
+	;
 }
 
 
-void Transformable::scale(const glm::vec3& value) {
-	_scale *= value;
+
+/* Methods */
+void Transformable::move(const glm::vec3 offset)
+{
+	this->position += offset;
+}
+
+
+void Transformable::rotate(const glm::vec3 direction)
+{
+	this->rotation += direction;
+}
+
+
+void Transformable::scale(const glm::vec3 value)
+{
+	this->scalar *= value;
+}
+
+Transform Transformable::getTransform() const
+{
+	return Transform(*this);
+}
+
+glm::mat4 Transformable::getMatrix() const
+{
+	glm::mat4 matrix = glm::translate(glm::mat4{1.0f}, this->position);
+	matrix = glm::rotate(matrix, glm::radians(this->rotation.x), glm::vec3{ 1.0f, 0.0f, 0.0f });
+	matrix = glm::rotate(matrix, glm::radians(this->rotation.y), glm::vec3{ 0.0f, 1.0f, 0.0f });
+	matrix = glm::rotate(matrix, glm::radians(this->rotation.z), glm::vec3{ 0.0f, 0.0f, 1.0f });
+	matrix = glm::scale(matrix, this->scalar);
+	matrix = glm::translate(matrix, -this->origin);
+
+	return matrix;
 }
 
 }

@@ -7,6 +7,8 @@
 #include "Szczur/Modules/Input/Input.hpp"
 #include "Szczur/Modules/DragonBones/DragonBones.hpp"
 
+#include "ImGuiStyler.hpp"
+
 namespace rat
 {
 
@@ -14,40 +16,60 @@ class Application
 {
 public:
 
-	// Default constructor
+	///
 	Application() = default;
 
-	// Disable coping
+	///
 	Application(const Application&) = delete;
+
+	///
 	Application& operator = (const Application&) = delete;
 
-	// Disable moving
+	///
 	Application(Application&&) = delete;
+
+	///
 	Application& operator = (Application&&) = delete;
 
-	// Main functions
-	int run();
+	///
+	~Application() = default;
 
+	///
 	void init();
 
-	void input();
+	///
+	bool input();
 
+	///
 	void update();
 
+	///
 	void render();
 
+	///
+	int run();
+
+	///
 	template <typename U, typename... Us>
 	void initModule(Us&&... args);
 
+	///
 	template <typename U>
 	U& getModule();
+
+	///
 	template <typename U>
 	const U& getModule() const;
 
 private:
 
+	ImGuiStyler _imGuiStyler;
 	Clock _mainClock;
 	ModulesHolder<Window, Input, DragonBones> _modules;
+
+	#ifdef EDITOR
+	bool _isImGuiInitialized = false;
+	#endif
 
 };
 

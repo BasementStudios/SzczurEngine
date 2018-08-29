@@ -14,18 +14,29 @@ public:
 
 	using Holder_t = const std::tuple<std::add_lvalue_reference_t<Ts>...>;
 
+	///
 	Module();
 
-	Module(const Module&) = default;
-	Module& operator = (const Module&) = default;
+	///
+	Module(const Module&) = delete;
 
-	Module(Module&&) = default;
-	Module& operator = (Module&&) = default;
+	///
+	Module& operator = (const Module&) = delete;
 
+	///
+	Module(Module&&) = delete;
+
+	///
+	Module& operator = (Module&&) = delete;
+
+	///
 	~Module() = default;
 
+	///
 	template <typename U>
 	U& getModule();
+
+	///
 	template <typename U>
 	const U& getModule() const;
 

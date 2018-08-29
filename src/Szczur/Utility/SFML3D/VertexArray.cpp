@@ -1,200 +1,462 @@
 #include "VertexArray.hpp"
 
-#include <glad/glad.h>
+#include <vector>
+
+#include "RenderTarget.hpp"
+#include "RenderStates.hpp"
+#include "PrimitiveType.hpp"
 #include "Vertex.hpp"
 
-namespace sf3d {
+template <typename T, typename Class>
+constexpr const void* offsetPtrOf(T Class::*member)
+{
+    return &(reinterpret_cast<Class*>(0)->*member);
+}
 
-	VertexInterface::VertexInterface(GLuint VBO, size_t index) :
-	_VBO(VBO), _index(index) {
+namespace sf3d
+{
 
-	}
+inline constexpr size_t minIndex = 0;
+inline constexpr size_t maxIndex = -1;
 
-	void VertexInterface::setPosition(const glm::vec3& position) {
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index;
-		vertex->position = position;
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
+VertexArray::VertexArray(PrimitiveType type)
+    : _vertices {}
+    , _type { type }
+    , _vao { 0 }
+    , _vbo { 0 }
+    , _lowerIndex { maxIndex }
+    , _upperIndex { minIndex }
+    , _needsUpdate { false }
+    , _needsReallocate { false }
+{
+    _init();
+}
 
-	void VertexInterface::move(const glm::vec3& offset) { 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
-		vertex->position += offset; 
-		glUnmapBuffer(GL_ARRAY_BUFFER); 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	} 
-	
-	void VertexInterface::setColor(const glm::vec4& color) { 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
-		vertex->color = color; 
-		glUnmapBuffer(GL_ARRAY_BUFFER); 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	} 
-	
-	void VertexInterface::setTexCoord(const glm::vec2& pos) { 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO); 
-		Vertex* vertex = ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + _index; 
-		vertex->texCoord = pos; 
-		glUnmapBuffer(GL_ARRAY_BUFFER); 
-		glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	} 
+VertexArray::VertexArray(size_t size, PrimitiveType type)
+    : _vertices { size, Vertex{} }
+    , _type { type }
+    , _vao { 0 }
+    , _vbo { 0 }
+    , _lowerIndex { maxIndex }
+    , _upperIndex { minIndex }
+    , _needsUpdate { false }
+    , _needsReallocate { false }
+{
+    _init();
+}
 
-	VertexArray::VertexArray(size_t size, unsigned int storageUsage) :
-		_storageUsage(storageUsage),
-		_size(size) {
-		glGenBuffers(1, &_VBO);
-		glGenVertexArrays(1, &_VAO);
+VertexArray::VertexArray(size_t size, const Vertex& value, PrimitiveType type)
+    : _vertices { size, value }
+    , _type { type }
+    , _vao { 0 }
+    , _vbo { 0 }
+    , _lowerIndex { maxIndex }
+    , _upperIndex { minIndex }
+    , _needsUpdate { false }
+    , _needsReallocate { false }
+{
+    _init();
+}
 
-		Vertex defaultVert;
+VertexArray::VertexArray(const Vertex* vertices, size_t size, PrimitiveType type)
+    : _vertices { vertices, vertices + size }
+    , _type { type }
+    , _vao { 0 }
+    , _vbo { 0 }
+    , _lowerIndex { maxIndex }
+    , _upperIndex { minIndex }
+    , _needsUpdate { false }
+    , _needsReallocate { false }
+{
+    _init();
+}
 
-		glBindVertexArray(_VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*size, nullptr, storageUsage);
+VertexArray::VertexArray(const Vertex* begin, const Vertex* end, PrimitiveType type)
+    : _vertices { begin, end }
+    , _type { type }
+    , _vao { 0 }
+    , _vbo { 0 }
+    , _lowerIndex { maxIndex }
+    , _upperIndex { minIndex }
+    , _needsUpdate { false }
+    , _needsReallocate { false }
+{
+    _init();
+}
 
-		for (size_t i = 0; i < size; ++i)
-			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
+VertexArray::VertexArray(const VertexArray& rhs)
+    : VertexArray { rhs._vertices.data(), rhs._vertices.size(), rhs._type }
+{
 
+}
 
-		// position
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-							  sizeof(Vertex),
-							  (void*)(0)
-		);
-		// color
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE,
-							  sizeof(Vertex),
-							  (void*)(sizeof(Vertex::position))
-		);
-		// texCoord
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
-							  sizeof(Vertex),
-							  (void*)(sizeof(Vertex::position) + sizeof(Vertex::color))
-		);
+VertexArray& VertexArray::operator = (const VertexArray& rhs)
+{
+    if (this != &rhs)
+    {
+        _destroy();
 
-		//  **** **** **** | **** **** **** | **** ****
+        _vertices = rhs._vertices;
+        _type = rhs._type;
 
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+        _init();
+    }
 
+    return *this;
+}
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-	}
+VertexArray::VertexArray(VertexArray&& rhs) noexcept
+    : _vertices { std::move(rhs._vertices) }
+    , _type { rhs._type }
+    , _vao { rhs._vao }
+    , _vbo { rhs._vbo }
+    , _lowerIndex { rhs._lowerIndex }
+    , _upperIndex { rhs._upperIndex }
+    , _needsUpdate { rhs._needsUpdate }
+    , _needsReallocate { rhs._needsReallocate }
+{
+    rhs._vao = 0;
+    rhs._vbo = 0;
+    rhs._lowerIndex = maxIndex;
+    rhs._upperIndex = minIndex;
+    rhs._needsUpdate = false;
+    rhs._needsReallocate = false;
+}
 
-	VertexArray::~VertexArray() {
-		glDeleteBuffers(1, &_VBO);
-		glDeleteVertexArrays(1, &_VAO);
-	}
+VertexArray& VertexArray::operator = (VertexArray&& rhs) noexcept
+{
+    if (this != &rhs)
+    {
+        _destroy();
 
-	void VertexArray::resize(size_t size) {
-		glBindVertexArray(_VAO);
-		GLuint temp;
-		glGenBuffers(1, &temp);
-		glBindBuffer(GL_ARRAY_BUFFER, temp);
-		glBufferData(GL_ARRAY_BUFFER, _size * sizeof(Vertex), nullptr, _storageUsage);
+        _vertices = std::move(rhs._vertices);
+        _type = rhs._type;
+        _vao = rhs._vao;
+        _vbo = rhs._vbo;
+        _lowerIndex = rhs._lowerIndex;
+        _upperIndex = rhs._upperIndex;
+        _needsUpdate = rhs._needsUpdate;
+        _needsReallocate = rhs._needsReallocate;
 
-		glBindBuffer(GL_COPY_READ_BUFFER, _VBO);
-		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, _size * sizeof(Vertex));
+        rhs._vao = 0;
+        rhs._vbo = 0;
+        rhs._lowerIndex = maxIndex;
+        rhs._upperIndex = minIndex;
+        rhs._needsReallocate = false;
+        rhs._needsUpdate = false;
+    }
 
+    return *this;
+}
 
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBindBuffer(GL_COPY_READ_BUFFER, temp);
-		glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vertex), nullptr, _storageUsage);
+VertexArray::~VertexArray()
+{
+    _destroy();
+}
 
-		Vertex defaultVert;
+void VertexArray::clear()
+{
+    _vertices.clear();
+}
 
-		for (size_t i = 0; i < size; ++i)
-			glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(Vertex), sizeof(Vertex), &defaultVert);
+VertexArray& VertexArray::assign(size_t size, PrimitiveType type)
+{
+    if (size != 0)
+    {
+        _needsUpdate = true;
+        _needsReallocate = _vertices.capacity() < size;
 
-		glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, ((_size>size) ? size : _size) * sizeof(Vertex));
+        _lowerIndex = minIndex;
+        _upperIndex = size - 1;
 
-		_size = size;
+        _vertices.assign(size, Vertex{});
+        _type = type;
+    }
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_COPY_READ_BUFFER, 0);
+    return *this;
+}
 
-		glBindVertexArray(0);
-		glDeleteBuffers(1, &temp);
-	}
+VertexArray& VertexArray::assign(size_t size, const Vertex& value, PrimitiveType type)
+{
+    if (size != 0)
+    {
+        _needsUpdate = true;
+        _needsReallocate = _vertices.capacity() < size;
 
-	void VertexArray::setPosition(size_t index, const glm::vec3 & position) {
-		if(index < _size) {
-			_startEdit(index)->position = position;
-			_endEdit();
-		}
-	}
+        _lowerIndex = minIndex;
+        _upperIndex = size - 1;
 
-	void VertexArray::setColor(size_t index, const glm::vec4 & color) {
-		if(index < _size) {
-			_startEdit(index)->color = color;
-			_endEdit();
-		}
-	}
+        _vertices.assign(size, value);
+        _type = type;
+    }
 
-	void VertexArray::setTexCoord(size_t index, const glm::vec2 & texCoord) {
-		if(index < _size) {
-			_startEdit(index)->texCoord = texCoord;
-			_endEdit();
-		}
-	}
+    return *this;
+}
 
-	void VertexArray::set(size_t index, const Vertex & vertex) {
-		if(index < _size) {
-			*_startEdit(index) = vertex;
-			_endEdit();
-		}
-	}
+VertexArray& VertexArray::assign(const Vertex* vertices, size_t size, PrimitiveType type)
+{
+    if (size != 0)
+    {
+        _needsUpdate = true;
+        _needsReallocate = _vertices.capacity() < size;
 
-	unsigned int VertexArray::getPrimitiveType() const {
-		return _primitveType;
-	}
+        _lowerIndex = minIndex;
+        _upperIndex = size - 1;
 
-	unsigned int VertexArray::getStorageUsage() const {
-		return _storageUsage;
-	}
+        _vertices.assign(vertices, vertices + size);
+        _type = type;
+    }
 
-	void VertexArray::setPrimitveType(unsigned int type) {
-		_primitveType = type;
-	}
+    return *this;
+}
 
-	size_t VertexArray::getSize() const {
-		return _size;
-	}
+VertexArray& VertexArray::assign(const Vertex* begin, const Vertex* end, PrimitiveType type)
+{
+    const ptrdiff_t distance = end - begin;
 
-	void VertexArray::draw(RenderTarget& /*target*/, RenderStates /*states*/) const {
-		//target.draw(this, states);
-	}
+    if (distance > 0)
+    {
+        _needsUpdate = true;
+        _needsReallocate = _vertices.capacity() < static_cast<size_t>(distance);
 
-	void VertexArray::draw() {
-		glBindVertexArray(_VAO);
+        _lowerIndex = minIndex;
+        _upperIndex = distance - 1;
 
-		glDrawArrays(GL_TRIANGLES, 0, _size);
+        _vertices.assign(begin, end);
+        _type = type;
+    }
 
-		glBindVertexArray(0);
-	}
+    return *this;
+}
 
-	void VertexArray::bind() const {
-		glBindVertexArray(_VAO);
-	}
+void VertexArray::resize(size_t size)
+{
+    if (_vertices.size() != size)
+    {
+        _needsUpdate = true;
+        _needsReallocate = _vertices.capacity() < size;
 
-	Vertex * VertexArray::_startEdit(size_t index) {
-		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		return ((Vertex*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)) + index;
-	}
+        _lowerIndex = minIndex;
+        _upperIndex = size - 1;
 
-	void VertexArray::_endEdit() {
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
+        _vertices.resize(size);
+    }
+}
 
-	VertexInterface VertexArray::operator[](size_t index) const {
-		if(index >= _size)
-			throw std::out_of_range("Vertex array out of range");
-		return VertexInterface(_VBO, index);
-	}
+void VertexArray::resize(size_t size, const Vertex& value)
+{
+    if (_vertices.size() != size)
+    {
+        _needsUpdate = true;
+        _needsReallocate = _vertices.capacity() < size;
+
+        _lowerIndex = minIndex;
+        _upperIndex = size - 1;
+
+        _vertices.resize(size, value);
+    }
+}
+
+void VertexArray::setVertex(size_t index, const Vertex& vertex)
+{
+    _vertices[index] = vertex;
+
+    _lowerIndex = std::min(_lowerIndex, index);
+    _upperIndex = std::max(_upperIndex, index);
+
+    _needsUpdate = true;
+}
+
+Vertex& VertexArray::getVertex(size_t index)
+{
+    _lowerIndex = std::min(_lowerIndex, index);
+    _upperIndex = std::max(_upperIndex, index);
+
+    _needsUpdate = true;
+
+    return _vertices[index];
+}
+
+const Vertex& VertexArray::getVertex(size_t index) const
+{
+    return _vertices[index];
+}
+
+Vertex& VertexArray::operator [] (size_t index)
+{
+    return getVertex(index);
+}
+
+const Vertex& VertexArray::operator [] (size_t index) const
+{
+    return getVertex(index);
+}
+
+void VertexArray::setPrimitiveType(PrimitiveType type)
+{
+    _type = type;
+}
+
+PrimitiveType VertexArray::getPrimitiveType() const
+{
+    return _type;
+}
+
+Vertex* VertexArray::getData()
+{
+    _lowerIndex = minIndex;
+    _upperIndex = _vertices.size() - 1;
+
+    return _vertices.empty() ? nullptr : _vertices.data();
+}
+
+const Vertex* VertexArray::getData() const
+{
+    return _vertices.empty() ? nullptr : _vertices.data();
+}
+
+size_t VertexArray::getSize() const
+{
+    return _vertices.size();
+}
+
+size_t VertexArray::getBytesCount() const
+{
+    return _vertices.size() * sizeof(Vertex);
+}
+
+bool VertexArray::isEmpty() const
+{
+    return _vertices.empty();
+}
+
+bool VertexArray::isValid() const
+{
+    return _vao != 0 && _vbo != 0;
+}
+
+glm::vec4 VertexArray::getBounds() const
+{
+    if (!_vertices.empty())
+    {
+        auto left   = _vertices[0].position.x;
+        auto top    = _vertices[0].position.y;
+        auto right  = _vertices[0].position.x;
+        auto bottom = _vertices[0].position.y;
+
+        for (size_t v = 1; v < _vertices.size(); ++v)
+        {
+            const auto pos = _vertices[v].position;
+
+            if (pos.x < left)
+            {
+                left = pos.x;
+            }
+            else if (pos.x > right)
+            {
+                right = pos.x;
+            }
+
+            if (pos.y < top)
+            {
+                top = pos.y;
+            }
+            else if (pos.y > bottom)
+            {
+                bottom = pos.y;
+            }
+        }
+
+        return { left, top, right - left, bottom - top };
+    }
+    else
+    {
+        return { 0.0f, 0.0f, 0.0f, 0.0f };
+    }
+}
+
+void VertexArray::bind() const
+{
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+}
+
+void VertexArray::unbind() const
+{
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void VertexArray::update() const
+{
+    if (_needsUpdate && _vao != 0 && _vbo != 0)
+    {
+        bind();
+
+        if (_needsReallocate)
+        {
+            glBufferData(GL_ARRAY_BUFFER, getBytesCount(), getData(), GL_DYNAMIC_DRAW);
+
+            _needsReallocate = false;
+        }
+        else
+        {
+            const GLintptr offset = sizeof(Vertex) * _lowerIndex;
+            const GLsizeiptr size = sizeof(Vertex) * (_upperIndex - _lowerIndex + 1);
+
+            glBufferSubData(GL_ARRAY_BUFFER, offset, size, getData() + _lowerIndex);
+        }
+
+        _lowerIndex = maxIndex;
+        _upperIndex = minIndex;
+
+        _needsUpdate = false;
+
+        unbind();
+    }
+}
+
+void VertexArray::draw(RenderTarget& target, RenderStates states) const
+{
+    target.draw(*this, states);
+}
+
+void VertexArray::_init()
+{
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_vbo);
+
+    bind();
+
+    glBufferData(GL_ARRAY_BUFFER, getBytesCount(), std::as_const(*this).getData(), GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, decltype(Vertex::position)::length(), GL_FLOAT, GL_FALSE, sizeof(Vertex), offsetPtrOf(&Vertex::position));
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, decltype(Vertex::color)::length(), GL_FLOAT, GL_FALSE, sizeof(Vertex), offsetPtrOf(&Vertex::color));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, decltype(Vertex::texCoord)::length(), GL_FLOAT, GL_FALSE, sizeof(Vertex), offsetPtrOf(&Vertex::texCoord));
+
+    unbind();
+}
+
+void VertexArray::_destroy()
+{
+    clear();
+
+    glDeleteVertexArrays(1, &_vao);
+    _vao = 0;
+
+    glDeleteBuffers(1, &_vbo);
+    _vbo = 0;
+
+    _lowerIndex = maxIndex;
+    _upperIndex = minIndex;
+
+    _needsUpdate = false;
+    _needsReallocate = false;
+}
 
 }

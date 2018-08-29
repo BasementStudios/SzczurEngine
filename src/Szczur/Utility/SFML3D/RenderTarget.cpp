@@ -1,193 +1,415 @@
 #include "RenderTarget.hpp"
+#include "Szczur/Utility/Logger.hpp"
+
+/** @file RenderTarget.cpp
+ ** @author Tomasz (Knayder) Jatkowski
+ ** @author Patryk (PsychoX) Ludwikowski <psychoxivi+basementstudios@gmail.com>
+ **/
+
+#include <cstdio> // snprintf
+#include <stdexcept>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/trigonometric.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glad/glad.h>
+
+#include <SFML/Graphics/Color.hpp>
+
+#include "RenderStates.hpp"
+#include "Texture.hpp"
+#include "Camera.hpp"
 #include "VertexArray.hpp"
 #include "Drawable.hpp"
-#include "Vertex.hpp"
-#include <SFML/Graphics/Color.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/rotate_vector.hpp>
-#include <iostream>
+#include "LightPoint.hpp"
+#include "Geometry/Linear.hpp"
+#include "ShaderProgram.hpp"
+#include "ContextSettings.hpp"
 
+namespace sf3d
+{
 
-namespace sf3d {
+/* Properties */
+// DefaultRenderStates
+RenderStates RenderTarget::getDefaultRenderStates() const
+{
+	return this->defaultStates;
+}
+void RenderTarget::setDefaultRenderStates(const RenderStates& states)
+{
+	this->defaultStates = states;
+}
 
-	void RenderTarget::_setBasicValues() {
-		_FOVx = glm::degrees(
-			2 * glm::atan(glm::tan(glm::radians(_FOVy / 2.f)) * ((float)_windowSize.x / (float)_windowSize.y))
-		);
-		_halfFOVxTan = glm::tan(glm::radians(_FOVx / 2.f));
-		_halfFOVyTan = glm::tan(glm::radians(_FOVy / 2.f));
-		_view.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
-		_defaultView.create(2.f / (float)_windowSize.y, {0.f, 0.f, 3 * (float)_windowSize.x / 2.f});
-		_projection = glm::perspective(glm::radians(_FOVy), (float)_windowSize.x / (float)_windowSize.y, 0.1f, 100.f);
+void RenderTarget::setDefaultShaderProgram(ShaderProgram* program)
+{
+	this->defaultStates.shader = program;
+}
+void RenderTarget::setDefaultShaderProgram(ShaderProgram& program)
+{
+	this->defaultStates.shader = &program;
+}
+
+// Camera
+Camera* RenderTarget::getCamera()
+{
+	return this->camera;
+}
+const Camera* RenderTarget::getCamera() const
+{
+	return this->camera;
+}
+void RenderTarget::setCamera(Camera* camera)
+{
+	if (camera) {
+		this->camera = camera;
 	}
-
-	RenderTarget::RenderTarget() {
-
+	else {
+		this->camera = this->defaultCamera;
 	}
+}
+void RenderTarget::setCamera(Camera& camera)
+{
+	this->setCamera(&camera);
+}
 
-	RenderTarget::RenderTarget(const glm::uvec2& size, float FOV, ShaderProgram* program) :
-	_windowSize(size),
-	_FOVy(FOV)
-		{
-		_states.shader = program;
-		_setBasicValues();
+unsigned int RenderTarget::getMultisamplingLevel() const
+{
+	return this->contextSettings.multisamplingLevel;
+}
+void RenderTarget::setMultisamplingLevel(unsigned int samples)
+{	
+	// Apply change by recreating render target with updated context settings
+	ContextSettings newContextSettings {this->contextSettings};
+	newContextSettings.multisamplingLevel = samples;
+	this->create(this->size, newContextSettings); // @todo , Maybe some `recreate` function that would use ContextSettings via `this` :thinking:
+}
+
+
+
+/* Operators */
+RenderTarget::RenderTarget()
+{}
+
+RenderTarget::RenderTarget(glm::uvec2 size, const ContextSettings& contextSettings, ShaderProgram* program)
+{
+	this->create(size, contextSettings, program);
+}
+
+RenderTarget::~RenderTarget()
+{
+	if (this->defaultCamera) {
+		delete defaultCamera;
 	}
+}
 
-	RenderTarget::~RenderTarget() {
 
+
+/* Methods */
+void RenderTarget::create(glm::uvec2 size, const ContextSettings& contextSettings, ShaderProgram* program)
+{
+	// Change default shader program if specified
+	if (program) {
+		this->setDefaultShaderProgram(program);
 	}
+	
+	// Setup multisampling
+	if (contextSettings.multisamplingLevel > 1) {
+		if (this->size != size || (contextSettings != ContextSettings::None && this->contextSettings != contextSettings)) {
+			// Make sure to delete for recreation
+			glDeleteFramebuffers(1, &(this->mutlisampledFBO));
+			glDeleteRenderbuffers(1, &(this->mutlisampledRBO));
+			
+			// Generate buffers
+			glGenFramebuffers(1, &(this->mutlisampledFBO));	
+			glGenRenderbuffers(1, &(this->mutlisampledRBO));
 
-	void RenderTarget::create(const glm::uvec2& size, float FOV, ShaderProgram* program) {
-		_windowSize = size;
-		_FOVy = FOV;
-		_states.shader = program;
-		_setBasicValues();
+			// Framebuffer
+			glBindFramebuffer(GL_FRAMEBUFFER, this->mutlisampledFBO);
+			{
+				// Texture
+				this->multisampledTexture.create(size, contextSettings, TextureTarget::Multisample2D);
+				this->multisampledTexture.bind();
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, TextureTarget::Multisample2D, this->multisampledTexture.getID(), 0);
+				this->multisampledTexture.unbind();
 
-	}
+				// Renderbuffer
+				glBindRenderbuffer(GL_RENDERBUFFER, this->mutlisampledRBO);
+				glRenderbufferStorageMultisample(GL_RENDERBUFFER, contextSettings.multisamplingLevel, contextSettings.getRenderInternalFormat(), size.x, size.y);
+				glBindRenderbuffer(GL_RENDERBUFFER, 0);
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, contextSettings.getRenderAttachmentType(), GL_RENDERBUFFER, this->mutlisampledRBO);
 
-	void RenderTarget::setProgram(ShaderProgram * program) {
-		_states.shader = program;
-	}
-
-	void RenderTarget::clear(float r, float g, float b, float a, GLbitfield flags) {
-		if(_setActive()) {
-			glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
-			glClear(flags);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-	}
-
-	void RenderTarget::clear(const sf::Color& color, GLbitfield flags) {
-		if(_setActive()) {
-			glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
-			glClear(flags);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-	}
-
-	void RenderTarget::draw(const Drawable & drawable, RenderStates states) {
-		drawable.draw(*this, states);
-	}
-
-	void RenderTarget::draw(const Drawable & drawable) {
-		draw(drawable, _states);
-	}
-
-
-
-	void RenderTarget::draw(const VertexArray& vertices, RenderStates states) {
-		if(vertices.getSize() > 0 && _setActive()) {
-			ShaderProgram* shader;
-			if(states.shader)
-				shader = states.shader;
-			else if(_states.shader)
-				shader = _states.shader;
-			else {
-				std::cout << "NO SHADER AVAILABLE!!!!\n";
-				return;
+				// Checks
+				if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+					glBindFramebuffer(GL_FRAMEBUFFER, 0);
+					throw std::runtime_error("Framebuffer creation error.");
+				}
 			}
-
-			for (int i = 0; i < 3; ++i)
-				states.transform.getMatrix()[3][i] *= 2.0f / static_cast<float>(_windowSize.y);
-
-			shader->use();
-			shader->setUniform("positionFactor", 2.0f / static_cast<float>(_windowSize.y));
-			shader->setUniform("model", states.transform.getMatrix());
-			shader->setUniform("view", _view.getTransform().getMatrix());
-			shader->setUniform("projection", _projection);
-			shader->setUniform("isTextured", states.texture != nullptr);
-
-			if(states.texture)
-				states.texture->bind();
-
-			vertices.bind();
-
-			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
-			states.texture->unbind();
-			glBindVertexArray(0);
-
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 	}
+	else {
+		// Make sure to delete multisampled things to free up memory
+		glDeleteFramebuffers(1, &(this->mutlisampledFBO));
+		glDeleteRenderbuffers(1, &(this->mutlisampledRBO));
+		this->multisampledTexture.destroy();
+	}
 
-	void RenderTarget::simpleDraw(const VertexArray & vertices, RenderStates states) {
-		if(vertices.getSize() > 0 && _setActive()) {
-			if(states.shader)
-				states.shader->use();
-			else
-				_states.shader->use();
+	this->size = size;
+	this->contextSettings = contextSettings;
 
-			if(states.texture)
-				states.texture->bind();
+	// Setup default camera
+	if (!this->defaultCamera) {
+		this->camera = this->defaultCamera = new Camera(
+			glm::vec3(0.f, 0.f, 0.f),
+			glm::vec3(0.f, 0.f, 0.f),
+			(static_cast<float>(this->size.x) / static_cast<float>(this->size.y))
+		);
+	}
 
-			vertices.bind();
+	// @warn @todo . It shouldn't be here...
+	this->positionFactor = 2.f / static_cast<float>(this->size.y);
+}
 
-			glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+bool RenderTarget::setActive([[maybe_unused]] bool state)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	throw std::runtime_error("RenderTarget::setActive not overloaded!"); 
+	return false;
+}
 
-			states.texture->unbind();
-			glBindVertexArray(0);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+// Helper functions for managing multisampling 
+bool RenderTarget::multisamplingSetActive(bool state)
+{
+	if (!this->setActive(state)) {
+		return false;
+	}
+	
+	// Multisampling needs its toys...
+	if (this->contextSettings.multisamplingLevel > 1) {
+		glBindFramebuffer(GL_FRAMEBUFFER, this->mutlisampledFBO);
+	}
+
+	return true;
+}
+bool RenderTarget::multisamplingBlitFramebuffer()
+{
+	// Draw multisampling to vaild buffers
+	if (this->contextSettings.multisamplingLevel > 1) {
+		if (!this->setActive()) {
+			return false;
 		}
+		// GL_DRAW_FRAMEBUFFER is already set to vaild active buffer, since `setActive` binds the target framebuffer to both READ and DRAW.
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->mutlisampledFBO);
+		glBlitFramebuffer(0, 0, this->size.x, this->size.y, 0, 0, this->size.x, this->size.y, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST); // @todo , rething this flags... 
 	}
 
-	void RenderTarget::draw(const VertexArray & vertices) {
-		draw(vertices, _states);
-	}
+	return true;
+}
 
-	void RenderTarget::simpleDraw(const VertexArray & vertices) {
-		simpleDraw(vertices, _states);
-	}
+/// Helper function to scale matrix coords propertly
+glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
+{
+	matrix[3][0] *= this->positionFactor;
+	matrix[3][1] *= this->positionFactor;
+	matrix[3][2] *= this->positionFactor;
+	return matrix;
+}
 
-	void RenderTarget::simpleDraw(Drawable & drawable) {
-		draw(drawable, _states);
-	}
-
-	const View& RenderTarget::getDefaultView() const {
-		return _defaultView;
-	}
-
-	const View& RenderTarget::getView() const {
-		return _view;
-	}
-
-	void RenderTarget::setView(const View& view) {
-		_view = view;
-	}
-
-	Linear RenderTarget::getLinerByScreenPos(const glm::vec2 & pos) const {
-		float x = glm::atan(
-			( 2.f * (pos.x / (float)_windowSize.x) - 1.f) * _halfFOVxTan
-		);
-
-		float y = glm::atan(
-			(-2.f * (pos.y / (float)_windowSize.y) + 1.f) * _halfFOVyTan
-		);
-
-		float siny = glm::sin(y);
-		float cosy = glm::cos(y);
-		float sinx = glm::sin(x);
-		float cosx = glm::cos(x);
-
-		glm::vec3 rotation{
-			cosy * sinx,
-			siny * cosx,
-			-cosy * cosx
-		};
-		rotation = glm::rotateX(rotation, glm::radians(-_view.getRotation().x));
-		rotation = glm::rotateY(rotation, glm::radians(-_view.getRotation().y));
-		return Linear(_view.getCenter(), {
-			rotation.x,
-			rotation.y,
-			rotation.z
-		});
-	}
-
-	bool RenderTarget::_setActive(bool /*state*/) {
+// Clearing
+void RenderTarget::clear(const glm::vec4& color, GLbitfield flags)
+{
+	if (this->multisamplingSetActive()) {
+		glClearColor(color.r, color.g, color.b, color.a);
+		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		return true;
+
+		this->multisamplingBlitFramebuffer();
+	}
+}
+void RenderTarget::clearSFML(const sf::Color& color, GLbitfield flags)
+{
+	if (this->multisamplingSetActive()) {
+		glClearColor(
+			static_cast<float>(color.r) / 255.f, 
+			static_cast<float>(color.g) / 255.f, 
+			static_cast<float>(color.b) / 255.f, 
+			static_cast<float>(color.a) / 255.f
+		);
+		glClear(flags);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		this->multisamplingBlitFramebuffer();
+	}
+}
+
+// Drawing drawables in perspective projection
+void RenderTarget::draw(const Drawable& drawable, const RenderStates& states)
+{
+	drawable.draw(*this, states);
+}
+void RenderTarget::draw(const Drawable& drawable)
+{
+	this->draw(drawable, this->defaultStates);
+}
+
+// Drawing vertices in perspective projection
+void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
+{
+	if (vertices.getSize() > 0 && this->multisamplingSetActive()) {
+		// Update vertices
+		vertices.update();
+
+		// Shader selection
+		ShaderProgram* shaderProgram = (states.shader ? states.shader : this->defaultStates.shader);
+		if (!(shaderProgram && shaderProgram->isValid())) {
+			throw std::runtime_error("No shader available for rendering!");
+		}
+
+		// Shader configuration
+		{
+			glUseProgram(shaderProgram->getNativeHandle());
+
+			// For futher testing...
+			// LOG_INFO("vertices[0] = ", vertices[0].position, " ", vertices[0].color, " ", vertices[0].texCoord);
+			// LOG_INFO("vertices[1] = ", vertices[1].position, " ", vertices[1].color, " ", vertices[1].texCoord);
+			// LOG_INFO("vertices[2] = ", vertices[2].position, " ", vertices[2].color, " ", vertices[2].texCoord);
+			// LOG_INFO("vertices[3] = ", vertices[3].position, " ", vertices[3].color, " ", vertices[3].texCoord);
+			// LOG_INFO("model       = ", scaleMatrixCoords(states.transform.getMatrix()));
+			// LOG_INFO("view        = ", scaleMatrixCoords(camera->getViewMatrix()));
+			// LOG_INFO("projection  = ", camera->getProjectionMatrix());
+			// LOG_INFO("texture ID  = ", (states.texture ? states.texture->getID() : -1));
+
+			// Model, view. projection matrixes
+			shaderProgram->setUniform("model",			scaleMatrixCoords(states.transform.getMatrix()));
+			shaderProgram->setUniform("view",			scaleMatrixCoords(camera->getViewMatrix()));
+			shaderProgram->setUniform("projection", 	camera->getProjectionMatrix());
+			shaderProgram->setUniform("positionFactor", this->positionFactor);
+
+			if (states.texture) { // @todo ? Może dodać `Lightable`, a nie oświetlać tylko oteksturowane...
+				shaderProgram->setUniform("hasTexture", true);
+				shaderProgram->setUniform("isObject", true);
+
+				// Material
+				{
+					// Diffuse
+					glActiveTexture(GL_TEXTURE0);
+					states.texture->bind();
+					shaderProgram->setUniform("material.diffuseTexture", 0);
+					shaderProgram->setUniform("texture", 0);
+
+					// Specular // @todo . specular
+					//aderProgram->setUniform("material.specularTexture", ???.texture->getID());
+					//aderProgram->setUniform("material.shininess", ???.shininess);
+				}
+
+				// Lighting
+				shaderProgram->setUniform("cameraPosition", camera->getPosition());
+				shaderProgram->setUniform("basicAmbient", glm::vec3{0.1f, 0.1f, 0.1f});
+				applyLightPoints(shaderProgram);
+			}
+			else {
+				shaderProgram->setUniform("hasTexture", false);
+				shaderProgram->setUniform("isObject", false);
+			}
+		}
+
+		// Pass the vertices
+		vertices.bind();
+		glDrawArrays(vertices.getPrimitiveType(), 0, vertices.getSize());
+		vertices.unbind();
+
+		// Unbind testures if any
+		if (states.texture) {
+			states.texture->unbind();
+		}
+
+		// Multisampling :OOOOO
+		this->multisamplingBlitFramebuffer();
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+}
+void RenderTarget::draw(const VertexArray& vertices)
+{
+	this->draw(vertices, this->defaultStates);
+}
+
+// Interaction
+Linear RenderTarget::getLinearByScreenPosition(glm::vec2 screenPosition) const
+{
+	const ProjectionData& projectionData = this->getCamera()->getProjectionData();
+	glm::vec3 rotation;
+
+	switch (this->getCamera()->getProjectionType()) {
+		case ProjectionType::Perspective:
+		{
+			const PerspectiveData& perspectiveData = projectionData.perspective;
+
+			float x = glm::atan(
+				( 2.f * (screenPosition.x / static_cast<float>(this->size.x)) - 1.f) * perspectiveData.halfFOVxTan
+			);
+			float y = glm::atan(
+				(-2.f * (screenPosition.y / static_cast<float>(this->size.y)) + 1.f) * perspectiveData.halfFOVyTan
+			);
+
+			float siny = glm::sin(y);
+			float cosy = glm::cos(y);
+			float sinx = glm::sin(x);
+			float cosx = glm::cos(x);
+
+			rotation = {cosy * sinx, siny * cosx, -cosy * cosx};
+			rotation = glm::rotateX(rotation, glm::radians(-this->camera->getRotation().x));
+			rotation = glm::rotateY(rotation, glm::radians(-this->camera->getRotation().y));
+		}
+		break;
+
+		case ProjectionType::Orthographic:
+		{
+			throw std::logic_error("getLinearByScreenPosition: Orhographics projection type not implemented yet.");
+			// @todo .
+		}
+		break;
 	}
 
+	return Linear(this->camera->getPosition(), rotation);
+}
+
+// Light points
+void RenderTarget::resetLightPoints()
+{
+	this->lightPoints.clear();
+}
+void RenderTarget::registerLightPoint(LightPoint* lightPoint)
+{
+	this->lightPoints.push_back(lightPoint);
+}
+void RenderTarget::applyLightPoints(ShaderProgram* shaderProgram)
+{
+	unsigned int i = 0;
+	for (const LightPoint* lightPoint : this->lightPoints) {
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].position", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getPosition() * this->positionFactor);
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].color", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getColor());
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.constant", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.constant);
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.linear", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.linear);
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].attenuation.quadratic", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->attenuation.quadratic);
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].ambientFactor", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getAmbientFactor());
+		std::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].diffuseFactor", i);
+		shaderProgram->setUniform(this->uniformNameBuffer, lightPoint->getDiffuseFactor());
+		//d::snprintf(this->uniformNameBuffer, 64, "pointLights[%u].specularFactor", i); // @todo . specular
+		//aderProgram->setUniform(this->uniformNameBuffer, lightPoint->getSpecularFactor());
+		i++;
+	}
+	shaderProgram->setUniform("pointLightsLength", i);
+}
 
 }

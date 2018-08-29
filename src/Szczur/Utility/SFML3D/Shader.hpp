@@ -1,109 +1,84 @@
 #pragma once
 
-#include <string>
-#include <fstream>
-#include <iomanip>
-#include <vector>
+#include "Szczur/Config.hpp"
 
-#include "Szczur/Utility/Logger.hpp"
+#ifdef EDITOR
+#   include <string>
+#endif // EDITOR
 
 #include <glad/glad.h>
 
 namespace sf3d
 {
-	
 
-	template<GLenum T>
-	class Shader
+class Shader
+{
+public:
+
+	using NativeHandle_t = GLuint;
+
+	enum ShaderType
 	{
-	public:
-		Shader() = default;
-
-		Shader(const Shader&) = delete;
-		Shader& operator = (const Shader&) = delete;
-
-		Shader(Shader&&) = delete;
-		Shader& operator = (Shader&&) = delete;
-
-		~Shader() {
-			_destroy();
-		}
-
-		bool loadFromFile(const std::string& filePath) {
-			return _compile(filePath);
-		}
-
-		operator GLuint () const {
-			return _shader;
-		}
-
-	private:
-
-		static bool getFileContent(const std::string& filePath, std::vector<char>& buffer)
-		{
-			std::ifstream file{ filePath, std::ios_base::binary };
-
-			if (file) {
-				file.seekg(0, std::ios_base::end);
-				if (auto size = file.tellg(); size > 0) {
-					file.seekg(0, std::ios_base::beg);
-					buffer.resize(static_cast<size_t>(size) + 1, '\0');
-					file.read(&buffer[0], size);
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		void _destroy() {
-			if (_shader) {
-				glDeleteShader(_shader);
-				_shader = 0u;
-			}		
-		}
-
-		bool _compile(const std::string& filePath){
-			// Obtain shader code from file
-			std::vector<char> buffer;
-
-			if (!getFileContent(filePath, buffer)) {
-				LOG_ERROR("Cannot get shader content from ", std::quoted(filePath));
-				return false;
-			}
-
-			// Destroy previous program
-			_destroy();
-
-			// Create new program
-			const char* src = buffer.data();
-			_shader = glCreateShader(T);
-			glShaderSource(_shader, 1, &src, nullptr);
-			glCompileShader(_shader);
-
-			// Handle compilation result
-			GLint success;
-			glGetShaderiv(_shader, GL_COMPILE_STATUS, &success);
-			if (success != GL_TRUE) {
-				GLchar infoLog[512];
-				glGetShaderInfoLog(_shader, sizeof(infoLog) * sizeof(GLchar), nullptr, infoLog);
-				LOG_ERROR("Unable to compile shader ", std::quoted(filePath), '\n', infoLog);
-				_destroy();
-				return false;
-			}
-
-			LOG_INFO("Shader ", std::quoted(filePath), " successfully compiled");
-
-			return true;
-		}
-
-		GLuint _shader{0u};
-
+		Vertex = GL_VERTEX_SHADER,
+		Geometry = GL_GEOMETRY_SHADER,
+		Fragment = GL_FRAGMENT_SHADER,
+		TessControl = GL_TESS_CONTROL_SHADER,
+		TessEvaluation = GL_TESS_EVALUATION_SHADER,
+		Compute = GL_COMPUTE_SHADER
 	};
 
-	using VShader = Shader<GL_VERTEX_SHADER>;
-	using FShader = Shader<GL_FRAGMENT_SHADER>;
+	///
+	Shader() = default;
 
-	
+	// Non-copyable
+	Shader(const Shader&) = delete;
+	Shader& operator = (const Shader&) = delete;
+
+	// Movable
+	Shader(Shader&& rhs) noexcept;
+	Shader& operator = (Shader&& rhs) noexcept;
+
+	///
+	~Shader();
+
+	/// Constructs, loads and compiles from type and path 
+	Shader(ShaderType type, const char* filePath);
+	Shader(ShaderType type, const std::string& filePath);
+
+	/// Loads and compiles from type and path
+	void loadFromFile(ShaderType type, const char* filePath);
+	void loadFromFile(ShaderType type, const std::string& filePath);
+
+	/// Loads and compiles from memory 
+	void loadFromMemory(ShaderType type, const char* data, GLint size = -1);
+	void loadFromMemory(ShaderType type, const std::string& data);
+
+	/// Checks whether shader is vaild
+	bool isValid() const;
+
+	/// Return native handler of shader
+	NativeHandle_t getNativeHandle() const;
+
+#ifdef EDITOR
+	ShaderType _type;
+	std::string _filePath;
+	const char* _dataPtr = nullptr;
+	GLint _dataSize = 0;
+
+	///
+	void _reload();
+#endif // EDITOR
+
+private:
+
+	///
+	void _destroy();
+
+	///
+	void _compile(ShaderType type, const char* data, GLint size);
+
+	NativeHandle_t _shader = 0;
+
+};
 
 }

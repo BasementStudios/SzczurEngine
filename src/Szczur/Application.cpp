@@ -1,14 +1,16 @@
 #include "Application.hpp"
+#include "Szczur/Utility/Tests.hpp"
 
+#include "Utility/MsgBox.hpp"
+
+#include "Szczur/Utility/Debug/ExceptionHandler.hpp"
 namespace rat
 {
 
-#ifdef EDITOR
-#   include "Szczur/Utility/Debug/NotoMono.ttf.bin"
-#endif
-
 void Application::init()
 {
+	exc::init();
+
 	LOG_INFO("Initializing modules");
 
 	initModule<Window>();
@@ -19,15 +21,21 @@ void Application::init()
 
 	#ifdef EDITOR
 	{
-		ImGui::CreateContext();
-		static ImWchar ranges[] = { 0x0020, 0x01FF, 0x0 };
-		ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(builtinFontData, builtinFontSize, 16.0f, nullptr, ranges);
+		_imGuiStyler.setPath("Editor/Gui/style.json");
+		_imGuiStyler.setupFont();
 		ImGui::SFML::Init(getModule<Window>().getWindow());
+		_imGuiStyler.reload();
+
+		LOG_INFO("ImGui initialized");
 	}
 	#endif
+	
+#ifdef TESTING
+	runTests();
+#endif
 }
 
-void Application::input()
+bool Application::input()
 {
 	sf::Event event;
 
@@ -40,18 +48,19 @@ void Application::input()
 		}
 		#endif
 
-		if (event.type == sf::Event::Closed) {
-			getModule<Window>().getWindow().close();
-		}
+		getModule<Window>().processEvent(event);
 	}
+
+	return true;
 }
 
 void Application::update()
 {
-	float deltaTime = _mainClock.restart().asFSeconds();
-	
-	getModule<DragonBones>().update(deltaTime);
-	
+	_imGuiStyler.update();
+
+	auto deltaTime = _mainClock.restart().asFSeconds();
+
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));
@@ -63,7 +72,9 @@ void Application::update()
 
 void Application::render()
 {
-	getModule<Window>().clear();
+	getModule<Window>().clear({24.f/255.f, 20.f/255.f, 28.f/255.f, 1.f});
+
+	// getModule<World>().render();
 
 	#ifdef EDITOR
 	{
@@ -77,27 +88,31 @@ void Application::render()
 int Application::run()
 {
 	try {
+		// Starting
 		init();
 
 		LOG_INFO("Starting main loop of application");
 
+		// Main loop
 		while (getModule<Window>().getWindow().isOpen()) {
-			input();
 			update();
 			render();
+			input();
 		}
+
+		// Exiting
+		#ifdef EDITOR
+		{
+			ImGui::SFML::Shutdown();
+		}
+		#endif
+
+		LOG_INFO("Shutdowning application in normal way");
 	}
 	catch (const std::exception& exception) {
 		LOG_EXCEPTION(exception);
+		return 1;
 	}
-
-	#ifdef EDITOR
-	{
-		ImGui::SFML::Shutdown();
-	}
-	#endif
-
-	LOG_INFO("Shutdowning application");
 
 	return 0;
 }

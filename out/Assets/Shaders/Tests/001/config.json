@@ -1,0 +1,131 @@
+{
+    "brightness": {
+        "type": "float",
+        "value": -0.04500000178813934
+    },
+    "colorMod": {
+        "type": "vec3",
+        "value": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    },
+    "contrast": {
+        "type": "float",
+        "value": 0.07500000298023224
+    },
+    "fog.color": {
+        "type": "vec3",
+        "value": [
+            0.13333334028720856,
+            0.14901961386203766,
+            0.5176470875740051
+        ]
+    },
+    "fog.direction": {
+        "type": "float",
+        "value": 0.7853981852531433
+    },
+    "fog.isVisible": {
+        "type": "bool",
+        "value": true
+    },
+    "fog.opacity": {
+        "type": "float",
+        "value": 0.6600000262260437
+    },
+    "fog.speed": {
+        "type": "float",
+        "value": 64.0
+    },
+    "fog.turbulence": {
+        "type": "float",
+        "value": 2.140000104904175
+    },
+    "gamma": {
+        "type": "float",
+        "value": 1.25
+    },
+    "resolution": {
+        "type": "vec2",
+        "value": [
+            1920.0,
+            1028.0
+        ]
+    },
+    "saturation": {
+        "type": "float",
+        "value": 0.2529999911785126
+    },
+    "saturationType": {
+        "type": "int",
+        "value": 0
+    },
+    "tex": {
+        "type": "int",
+        "value": 0
+    },
+    "time": {
+        "type": "float",
+        "value": 552.8575439453125
+    },
+    "vignette.isCircular": {
+        "type": "bool",
+        "value": true
+    },
+    "vignette.isVisible": {
+        "type": "bool",
+        "value": true
+    },
+    "vignette.offset": {
+        "type": "vec2",
+        "value": [
+            0.0,
+            400.0
+        ]
+    },
+    "vignette.opacity": {
+        "type": "float",
+        "value": 0.6499999761581421
+    },
+    "vignette.radius": {
+        "type": "float",
+        "value": 1.3300000429153442
+    },
+    "vignette.softness": {
+        "type": "float",
+        "value": 0.5199999809265137
+    },
+    "weather.color": {
+        "type": "vec3",
+        "value": [
+            0.4300000071525574,
+            0.550000011920929,
+            0.8500000238418579
+        ]
+    },
+    "weather.intensify": {
+        "type": "float",
+        "value": 0.44999998807907104
+    },
+    "weather.isVisible": {
+        "type": "bool",
+        "value": true
+    },
+    "weather.opacity": {
+        "type": "float",
+        "value": 1.0299999713897705
+    },
+    "weather.scale": {
+        "type": "vec2",
+        "value": [
+            8.829999923706055,
+            0.4000000059604645
+        ]
+    },
+    "weather.speed": {
+        "type": "float",
+        "value": 0.23000000417232513
+    }
+}

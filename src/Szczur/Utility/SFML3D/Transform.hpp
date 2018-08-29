@@ -1,33 +1,57 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 
 namespace sf3d {
-	class Transform {
-	public:
-		Transform();
+	class Transformable;
+}
 
-		void translate(const glm::vec3& offset);
-		void translate(const float& x, const float& y, const float& z);
+namespace sf3d
+{
 
-		void rotate(const float& angle, const glm::vec3& direction);
-		void rotate(const float& angle, const float& x, const float& y, const float& z);
-		void rotate(const glm::vec3& rotation);
-		void rotate(const float& x, const float& y, const float& z);
+/// Calculated class of Transformable.
+class Transform
+{
+	/* Variables */
+private:
+	glm::mat4 matrix;
 
-		void scale(const glm::vec3& value);
-		void scale(const float& x, const float& y, const float& z);
 
-		void combine(const Transform& trans);
 
-		void operator*=(const Transform& trans);
+	/* Properties */
+public:
+	glm::mat4& getMatrix();
+	const glm::mat4& getMatrix() const;
 
-		void operator*=(const glm::vec3& value);
 
-		glm::mat4& getMatrix();
-	
-	private:
-		glm::mat4 _mat;
-	};
+
+	/* Operators */
+public:
+	Transform();
+	Transform(const glm::mat4& matrix);
+	Transform(const Transformable& matrix);
+
+	// Combining via multipy operator
+	void operator *= (const Transform& other);
+	void operator *= (const glm::vec3 value);
+
+
+
+	/* Methods */
+public:
+	void translate(const glm::vec3 offset);
+	void translate(const float x, const float y, const float z);
+
+	void rotate(const float angle, const glm::vec3 direction);
+	void rotate(const float angle, const float x, const float y, const float z);
+	void rotate(const glm::vec3 rotation);
+	void rotate(const float x, const float y, const float z);
+
+	void scale(const glm::vec3 value);
+	void scale(const float x, const float y, const float z);
+
+	void combine(const Transform& trans);
+};
+
 }
