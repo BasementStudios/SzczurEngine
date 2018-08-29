@@ -54,6 +54,16 @@ class HashedID
 public:
 
 	///
+	HashedID(Hash_t value)
+		: hash { value }
+		#ifdef DEBUG
+		, str { "" }
+		#endif
+	{
+
+	}
+
+	///
 	template <size_t N>
 	HashedID(const char (&arr)[N])
 		: hash { detail::fnv1a_64(arr, arr + N) }
