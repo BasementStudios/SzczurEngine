@@ -45,7 +45,7 @@ protected:
 	/* Operators */
 public:
 	SF3DDisplay() = default;
-	~SF3DDisplay() {}
+	~SF3DDisplay() = default;
 
 	/* Methods */
 public:
