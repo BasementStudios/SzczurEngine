@@ -41,6 +41,8 @@ public:
 	void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
 	void dispatchDBEvent(const std::string& type, EventObject* value) override;
 
+	SF3DEventDispatcher* getEventDispatcher() { return &_dispatcher; }
+
 	void addArmatureDisplay(SF3DArmatureProxy* value);
 	void removeArmatureDisplay(SF3DArmatureProxy* value);
 

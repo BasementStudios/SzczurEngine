@@ -27,4 +27,41 @@ void SF3DArmatureDisplay::draw(sf3d::RenderTarget& target, sf3d::RenderStates st
 		_proxy->draw(target, states);
 }
 
+Armature* SF3DArmatureDisplay::getArmature() const
+{
+	if (_proxy)
+		return _proxy->getArmature();
+
+	return nullptr;
+}
+
+Animation* SF3DArmatureDisplay::getAnimation() const
+{
+	if (_proxy)
+		return _proxy->getAnimation();
+
+	return nullptr;
+}
+
+SF3DEventDispatcher* SF3DArmatureDisplay::getEvenDispatcher()
+{
+	if (_proxy)
+		return _proxy->getEventDispatcher();
+
+	return nullptr;
+}
+
+SF3DArmatureProxy* SF3DArmatureDisplay::getArmatureProxy() const
+{
+	return _proxy;
+}
+
+sf::FloatRect SF3DArmatureDisplay::getBoundingBox()
+{
+	if (_proxy)
+		return _proxy->getBoundingBox();
+
+	return sf::FloatRect();
+}
+
 DRAGONBONES_NAMESPACE_END
