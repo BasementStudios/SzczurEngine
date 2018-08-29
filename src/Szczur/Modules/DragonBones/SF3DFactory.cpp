@@ -29,7 +29,7 @@ SF3DFactory::SF3DFactory()
 	{
 		_soundEventDispatcher = std::make_unique<SF3DEventDispatcher>();
 
-		_dragonBonesInstance = new DragonBones(nullptr);
+		_dragonBonesInstance = new DragonBones(_soundEventDispatcher.get());
 		_dragonBonesInstance->yDown = false;
 	}
 
