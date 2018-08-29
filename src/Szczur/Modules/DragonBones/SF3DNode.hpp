@@ -24,7 +24,7 @@ protected:
 
 public:
 	SF3DNode() = default;
-	~SF3DNode() = default;
+	virtual ~SF3DNode() = default;
 
 	void setZOffset(float zOffset) { _zOffset = zOffset; }
 	float getZOffset() const { return _zOffset; }

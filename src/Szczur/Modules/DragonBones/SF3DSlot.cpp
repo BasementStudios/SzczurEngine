@@ -68,7 +68,7 @@ void SF3DSlot::_disposeDisplay(void* value, bool isRelease)
 {
 	if (!isRelease && value)
 	{
-		delete value;
+		delete static_cast<SF3DNode*>(value);
 	}
 }
 

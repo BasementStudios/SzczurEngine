@@ -38,14 +38,14 @@ public:
 
 	// sf::BlendMode blendMode; // @todo . BlendMode
 
-	GLuint primitiveType = GL_TRIANGLE_STRIP;
 
-protected:
 
 	/* Operators */
 public:
 	SF3DDisplay() = default;
 	~SF3DDisplay() = default;
+
+
 
 	/* Methods */
 public:
