@@ -143,8 +143,6 @@ void SF3DSlot::_updateFrame()
 				const unsigned triangleCount = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshTriangleCount];
 				int vertexOffset = intArray[currentVerticesData->offset + (unsigned)BinaryOffset::MeshFloatOffset];
 
-				printf("Size: %llu\n", triangleCount * 3);
-
 				if (vertexOffset < 0)
 				{
 					vertexOffset += 65536;
