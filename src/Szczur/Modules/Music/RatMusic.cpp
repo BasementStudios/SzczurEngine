@@ -123,7 +123,7 @@ namespace rat
 
 			j[_name]["Path"] 	 = _filePath;
 			j[_name]["BPM"] 	 = _bpm;
-			j[_name]["FadeTime"] = _fadeTime;
+			j[_name]["FadeTime"] = (_fadeTime / (240 / _bpm));
 			j[_name]["Volume"]   = getVolume();
 			j[_name]["Effects"]  = effects;
 
