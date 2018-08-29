@@ -39,6 +39,19 @@ namespace rat
 		object.set("cleanReverb", &MusicBase::cleanEffect<Reverb>);
 		object.set("cleanEcho", &MusicBase::cleanEffect<Echo>);
 
+		object.setProperty("onStart", 
+            [](){}, 
+            [](MusicBase& obj, MusicBase::SolFunction_t callback){ obj.setCallback(MusicBase::CallbackType::onStart, callback); }
+        );
+		object.setProperty("onFinish", 
+            [](){}, 
+            [](MusicBase& obj, MusicBase::SolFunction_t callback){ obj.setCallback(MusicBase::CallbackType::onFinish, callback); }
+        );
+        object.setProperty("onFadeStart", 
+            [](){}, 
+            [](MusicBase& obj, MusicBase::SolFunction_t callback){ obj.setCallback(MusicBase::CallbackType::onFadeStart, callback); }
+        );
+
 		object.init();
     }
 
