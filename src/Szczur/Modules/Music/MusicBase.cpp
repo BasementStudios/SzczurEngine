@@ -28,6 +28,8 @@ namespace rat
 		object.set("setLoop", &MusicBase::setLoop);
 		object.set("getStatus", &MusicBase::getStatus);
 		object.set("getFadeTime", &MusicBase::getFadeTime);
+		object.set("setFadeTime", &MusicBase::setFadeTime);
+		object.set("setFadeBars", &MusicBase::setFadeBars);
 		object.set("getDuration", &MusicBase::getDuration);
 		object.set("getTimeLeft", &MusicBase::getTimeLeft);
 		object.set("getName", &MusicBase::getName);
@@ -147,6 +149,16 @@ namespace rat
 	sf::SoundSource::Status MusicBase::getStatus() const 
 	{
 		return _base->getStatus();
+	}
+
+	void MusicBase::setFadeBars(float bars)
+	{
+		_base->setFadeBars(bars);
+	}
+
+	void MusicBase::setFadeTime(float fadeTime)
+	{
+		_base->setFadeTime(fadeTime);
 	}
 
 	float MusicBase::getFadeTime() const 

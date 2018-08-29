@@ -55,6 +55,12 @@ namespace rat
 		_fadeTime = fadeTime;
 	}
 
+	void RatMusic::setFadeBars(float bars)
+	{
+		float barTime = 240 / _bpm;
+		_fadeTime = barTime * bars;
+	}
+
 	float RatMusic::GetMusicVolume()
 	{
 		return MusicVolume;
@@ -221,10 +227,9 @@ namespace rat
 			}
 		}
 
-		if(numberOfBars > 0) {
-			float barTime = 240 / _bpm;
-			_fadeTime = barTime * numberOfBars;
-		}
+		if (numberOfBars > 0)
+			setFadeBars(numberOfBars);
+		
 	}
 
 }

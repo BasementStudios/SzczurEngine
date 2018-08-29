@@ -65,7 +65,10 @@ namespace rat
 
 		sf::SoundSource::Status getStatus() const;
 
+		void setFadeBars(float bars);
+		void setFadeTime(float fadeTime);
 		float getFadeTime() const;
+
 		float getDuration() const;
 
 		float getTimeLeft() const;
