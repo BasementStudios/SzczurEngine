@@ -591,6 +591,46 @@ tests[counter.get()] = function()
 
 end
 
+-- [ Audio Effects ]:
+
+tests[counter.get()] = function()
+
+    local self = {
+        name = "[E] Setting and clearing effects in music and sound objects",
+        testSound = nil,
+        testMusic = nil
+    }
+
+    function self.run()
+        self.testSound = Sound.addNewSound("Button");
+        if self.testSound == nil then
+            return false
+        end
+        self.testMusic = Music.loadMusic("Rozpierdalacz");
+        if self.testMusic == nil then
+            return false
+        end
+        self.testSound:getEqualizer():lowGain(4)            
+        local testSoundReverb = self.testSound:getReverb()  -- efekt mozna tez przypisać do zmiennej
+        testSoundReverb:decayTime(15)
+        self.testMusic:getEcho():delay(0.2)
+        local testMusicEq = self.testMusic:getEqualizer()
+        testMusicEq:highCutoff(4000)
+        self.testSound:cleanEffects()                       -- Czyści wszytkie efekty naraz
+        self.testMusic:cleanEcho()
+        self.testMusic:cleanEqualizer()
+        return true
+    end
+    
+    function self.clean()
+        Sound.removeSound(self.testSound);
+        Music.removeMusic(self.testMusic);
+    end
+
+    return self
+
+end
+
 ------------------------------------------------------------------------------------------
 
 local counter = {
