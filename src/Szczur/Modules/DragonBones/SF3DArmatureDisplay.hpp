@@ -1,6 +1,6 @@
 #pragma once
 
-/** @file SF3DArmatureProxy.hpp
+/** @file SF3DArmatureDisplay.hpp
 ** @author Piotr Krupa (piotrkrupa06@gmail.com)
 **/
 

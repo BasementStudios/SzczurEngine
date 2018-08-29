@@ -37,6 +37,9 @@ public:
 	// Disable moving
 	DragonBones(DragonBones&&) = delete;
 	DragonBones& operator = (DragonBones&&) = delete;
+
+	// Update
+	void update(float deltaTime);
 };
 
 }

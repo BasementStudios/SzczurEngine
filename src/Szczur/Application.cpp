@@ -60,6 +60,7 @@ void Application::update()
 
 	auto deltaTime = _mainClock.restart().asFSeconds();
 
+	getModule<DragonBones>().update(deltaTime);
 
 	#ifdef EDITOR
 	{

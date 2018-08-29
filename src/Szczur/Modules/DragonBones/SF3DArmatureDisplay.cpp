@@ -1,3 +1,7 @@
+/** @file SF3DArmatureDisplay.cpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
+
 #include "SF3DArmatureDisplay.hpp"
 
 #include "SF3DArmatureProxy.hpp"
