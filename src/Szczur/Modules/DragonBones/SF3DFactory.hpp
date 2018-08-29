@@ -21,10 +21,10 @@ class SF3DTextureData;
 class SF3DFactory : public BaseFactory
 {
 protected:
-	static DragonBones*											_dragonBonesInstance;
-	static SF3DFactory*											_factory;
+	static DragonBones*						_dragonBonesInstance;
+	static SF3DFactory*						_factory;
 
-	std::unique_ptr<SF3DEventDispatcher>						_soundEventDispatcher;
+	std::unique_ptr<SF3DEventDispatcher>	_soundEventDispatcher;
 
 public:
 	SF3DFactory();
