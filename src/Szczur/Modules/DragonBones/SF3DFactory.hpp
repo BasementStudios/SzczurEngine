@@ -9,13 +9,14 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include "SF3DArmatureDisplay.hpp"
-#include "SF3DSlot.hpp"
-#include "SF3DTextureData.hpp"
-
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 
+#include "SF3DEventDispatcher.hpp"
+
 DRAGONBONES_NAMESPACE_BEGIN
+
+class SF3DArmatureProxy;
+class SF3DTextureData;
 
 class SF3DFactory : public BaseFactory
 {
@@ -32,7 +33,7 @@ public:
 public:
 	DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "");
 	TextureAtlasData* loadTextureAtlasData(const std::string& filePath, sf3d::Texture *atlasTexture, const std::string& name = "", float scale = 1.0f);
-	SF3DArmatureDisplay* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "") const;
+	SF3DArmatureProxy* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "") const;
 	sf3d::Texture* getTextureDisplay(const std::string& textureName, const std::string& dragonBonesName = "") const;
 
 	void addSoundEventListener(const std::function<void(EventObject*)>& listener)

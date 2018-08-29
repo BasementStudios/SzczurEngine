@@ -1,6 +1,7 @@
 #include "VertexArray.hpp"
 
 #include <vector>
+#include <algorithm>
 
 #include "RenderTarget.hpp"
 #include "RenderStates.hpp"

@@ -20,21 +20,19 @@ private:
 
 public:
 	SF3DEventDispatcher() = default;
-	~SF3DEventDispatcher() = default;
+	~SF3DEventDispatcher() = default; 
 
-	virtual void addDBEventListener(const std::string& type, const Func_t& listener) override
+	void addDBEventListener(const std::string& type, const Func_t& listener) override
 	{
 		_listeners[type].push_back(listener);
 	}
 
-	virtual void removeDBEventListener(const std::string& type, const Func_t& listener) override
+	void removeDBEventListener(const std::string& type, const Func_t& listener) override
 	{
-		/*for (auto& callback : _listeners[type])
-		{
-		}*/
+		// TOOD
 	}
 
-	virtual void dispatchDBEvent(const std::string& type, EventObject* value) override
+	void dispatchDBEvent(const std::string& type, EventObject* value) override
 	{
 		for (auto& listener : _listeners[type])
 		{
@@ -42,7 +40,7 @@ public:
 		}
 	}
 
-	virtual bool hasDBEventListener(const std::string& type) const { return true; };
+	bool hasDBEventListener(const std::string& type) const { return true; };
 };
 
 DRAGONBONES_NAMESPACE_END

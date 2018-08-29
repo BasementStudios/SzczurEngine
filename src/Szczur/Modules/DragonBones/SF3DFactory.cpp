@@ -12,7 +12,7 @@
 #include "SF3DSlot.hpp"
 #include "SF3DTextureData.hpp"
 #include "SF3DTextureAtlasData.hpp"
-#include "SF3DArmatureDisplay.hpp"
+#include "SF3DArmatureProxy.hpp"
 #include "SF3DDisplay.hpp"
 #include "SF3DEventDispatcher.hpp"
 
@@ -108,7 +108,7 @@ TextureAtlasData* SF3DFactory::createTextureAtlasData(std::vector<SF3DTextureDat
 	return textureAtlasData;
 }
 
-SF3DArmatureDisplay* SF3DFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
+SF3DArmatureProxy* SF3DFactory::buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName) const
 {
 	const auto armature = buildArmature(armatureName, dragonBonesName, skinName, textureAtlasName);
 
@@ -116,7 +116,7 @@ SF3DArmatureDisplay* SF3DFactory::buildArmatureDisplay(const std::string& armatu
 	{
 		_dragonBones->getClock()->add(armature);
 
-		return static_cast<SF3DArmatureDisplay*>(armature->getDisplay());
+		return static_cast<SF3DArmatureProxy*>(armature->getDisplay());
 	}
 
 	return nullptr;
@@ -165,7 +165,7 @@ TextureAtlasData* SF3DFactory::_buildTextureAtlasData(TextureAtlasData* textureA
 Armature* SF3DFactory::_buildArmature(const BuildArmaturePackage& dataPackage) const
 {
 	const auto armature = BaseObject::borrowObject<Armature>();
-	const auto armatureDisplay = new SF3DArmatureDisplay();
+	const auto armatureDisplay = new SF3DArmatureProxy();
 
 	armature->init(dataPackage.armature, armatureDisplay, armatureDisplay, _dragonBones);
 

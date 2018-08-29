@@ -1,70 +1,28 @@
 #pragma once
 
-/** @file SF3DArmatureDisplay.hpp
- ** @author Piotr Krupa (piotrkrupa06@gmail.com)
- **/
+/** @file SF3DArmatureProxy.hpp
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
 #include <dragonBones/DragonBonesHeaders.h>
-#include <SFML/Graphics/Rect.hpp>
 
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Utility/SFML3D/Texture.hpp"
-#include "Szczur/Utility/SFML3D/VertexArray.hpp"
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
-
-#include "SF3DNode.hpp"
-#include "SF3DEventDispatcher.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SF3DDisplay;
+class SF3DArmatureProxy;
 
-class SF3DArmatureDisplay : public SF3DNode, public IArmatureProxy
+class SF3DArmatureDisplay : public sf3d::Drawable
 {
-protected:
-	Armature*							_armature = nullptr;
-	SF3DEventDispatcher					_dispatcher;
-
-	std::vector<SF3DArmatureDisplay*>	_armatureDisplays;
-	std::vector<SF3DDisplay*>			_displays;
-
-	std::vector<SF3DNode*>				_toDelete;
+private:
+	SF3DArmatureProxy* _proxy;
 
 public:
-	SF3DArmatureDisplay();
+	SF3DArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "");
 	~SF3DArmatureDisplay();
 
-	void advanceTime(float deltaTime);
-
-	bool hasDBEventListener(const std::string& type) const override { return true; }
-	void addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-	void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-	void dispatchDBEvent(const std::string& type, EventObject* value) override;
-
-	void addArmatureDisplay(SF3DArmatureDisplay* child);
-	void removeArmatureDisplay(SF3DArmatureDisplay* child);
-
-	void addDisplay(SF3DDisplay* child);
-	void removeDisplay(SF3DDisplay* child);
-
-	void addToDelete(SF3DNode* node);
-
-	void dbInit(Armature* armature) override;
-	void dbClear() override;
-	void dbUpdate() override;
-
-	void dispose(bool disposeProxy) override;
-	
-	Armature* getArmature() const override { return _armature; }
-	Animation* getAnimation() const override { return _armature->getAnimation(); }
-
-	void setVisible(bool visible) override;
-	void setColor(const dragonBones::ColorTransform& color) override;
-	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const override;
-
-	sf::FloatRect getBoundingBox() override;
-
+	void update(float deltaTime);
+	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 };
 
 DRAGONBONES_NAMESPACE_END

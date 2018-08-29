@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "SF3DArmatureDisplay.hpp"
+#include "SF3DArmatureProxy.hpp"
 #include "SF3DTextureAtlasData.hpp"
 #include "SF3DTextureData.hpp"
 #include "SF3DDisplay.hpp"
@@ -77,10 +77,10 @@ void SF3DSlot::_onUpdateDisplay()
 
 void SF3DSlot::_addDisplay()
 {
-	auto arm = static_cast<SF3DArmatureDisplay*>(_armature->getDisplay());
+	auto arm = static_cast<SF3DArmatureProxy*>(_armature->getDisplay());
 
 	if (_childArmature)
-		arm->addArmatureDisplay(static_cast<SF3DArmatureDisplay*>(_renderDisplay));
+		arm->addArmatureDisplay(static_cast<SF3DArmatureProxy*>(_renderDisplay));
 	else
 		arm->addDisplay(static_cast<SF3DDisplay*>(_renderDisplay));
 }
@@ -89,31 +89,26 @@ void SF3DSlot::_replaceDisplay(void* value, bool isArmatureDisplay)
 {
 	auto prevDisplay = static_cast<SF3DNode*>(value);
 
-	auto arm = static_cast<SF3DArmatureDisplay*>(_armature->getDisplay());
+	auto arm = static_cast<SF3DArmatureProxy*>(_armature->getDisplay());
 
 	_renderDisplay->setZOffset(prevDisplay->getZOffset());
 
 	_addDisplay();
 
 	if (isArmatureDisplay)
-		arm->removeArmatureDisplay(static_cast<SF3DArmatureDisplay*>(prevDisplay));
+		arm->removeArmatureDisplay(static_cast<SF3DArmatureProxy*>(prevDisplay));
 	else
 		arm->removeDisplay(static_cast<SF3DDisplay*>(prevDisplay));
-
-	if (prevDisplay)
-	{
-		arm->addToDelete(prevDisplay);
-	}
 
 	_textureScale = 1.f;
 }
 
 void SF3DSlot::_removeDisplay()
 {
-	auto arm = static_cast<SF3DArmatureDisplay*>(_armature->getDisplay());
+	auto arm = static_cast<SF3DArmatureProxy*>(_armature->getDisplay());
 
 	if (_childArmature)
-		arm->removeArmatureDisplay(static_cast<SF3DArmatureDisplay*>(_renderDisplay));
+		arm->removeArmatureDisplay(static_cast<SF3DArmatureProxy*>(_renderDisplay));
 	else
 		arm->removeDisplay(static_cast<SF3DDisplay*>(_renderDisplay));
 
