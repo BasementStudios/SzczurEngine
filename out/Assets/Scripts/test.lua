@@ -262,6 +262,45 @@ tests[counter.get()] = function()
 
 end
 
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Music Callbacks",
+        testMusic = nil
+    }
+
+    function self.run()
+        local started = false
+        local finished = false
+        self.testMusic = Music.loadMusic("Rozpierdalacz")
+        if self.testMusic == nil then
+            return false
+        end
+        function self.testMusic.onStart()
+            started = true
+        end
+        function self.testMusic.onFinish()
+            finished = true
+        end
+        function self.testMusic.onFadeStart()
+            -- Whatever
+        end
+        self.testMusic:play()
+        self.testMusic:stop()
+        if not started or not finished then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.removeMusic(self.testMusic)
+    end
+
+    return self
+
+end
+
 -- [ SOUND ]:
 
 tests[counter.get()] = function()
