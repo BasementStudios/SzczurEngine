@@ -8,62 +8,48 @@
 
 #include <vector>
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include <dragonBones/DragonBonesHeaders.h>
+
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Transform.hpp>
+#include <glad/glad.h>
 
 #include "Szczur/Utility/SFML3D/Texture.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
 #include "Szczur/Utility/SFML3D/RenderTarget.hpp"
 #include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "Szczur/Utility/SFML3D/Sprite.hpp"
+
+#include "SF3DNode.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
 /** @class SF3DDisplay
-**/
-class SF3DDisplay
+ **/
+class SF3DDisplay : public SF3DNode
 {
 	/* Fields */
 public:
 	const sf3d::Texture* texture = nullptr;
 
-	std::vector<std::vector<int>> 			verticesInTriagles;
-	sf3d::VertexArray		 				verticesDisplay{ 4 };
-
-	bool visible = true;
+	std::vector<std::vector<int>>	verticesInTriagles;
+	sf3d::VertexArray		 		verticesDisplay {4u, sf3d::PrimitiveType::TriangleFan};
 
 	// sf::BlendMode blendMode; // @todo . BlendMode
 
-	GLuint primitiveType = GL_TRIANGLE_STRIP;
 
-protected:
-	sf3d::Transform transform;
 
 	/* Operators */
 public:
 	SF3DDisplay() = default;
 	~SF3DDisplay() = default;
 
+
+
 	/* Methods */
 public:
-	void setMatrix(const Matrix& matrix, const glm::vec3& offset = { 0.f, 0.f, 0.f }, const float& scale = 1.f)
-	{
-		auto& mat = this->transform.getMatrix();
-
-		mat = glm::mat4(
-			matrix.a, matrix.b, 0.f, 0.f,
-			matrix.c, matrix.d, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			offset.x, offset.y, offset.z, 1.f
-		);
-
-		this->transform.scale(scale, scale, 1.f);
-	}
-
-	void setColor(const dragonBones::ColorTransform& color)
+	void setColor(const dragonBones::ColorTransform& color) override
 	{
 		for (std::size_t i = 0; i < this->verticesDisplay.getSize(); ++i)
 		{
@@ -73,16 +59,16 @@ public:
 
 	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 	{
-		if (visible)
+		if (_visible)
 		{
 			// states.blendMode = blendMode; // @todo . BlendMode
 			states.texture = texture;
-			states.transform *= this->transform;
+			states.transform *= this->_transform;
 			target.draw(this->verticesDisplay, states);
 		}
 	}
 
-	sf::FloatRect getBoundingBox()
+	sf::FloatRect getBoundingBox() override
 	{
 		if (texture == nullptr)
 			return sf::FloatRect();
@@ -93,7 +79,7 @@ public:
 		glm::vec3 min = verticesDisplay[0].position;
 		glm::vec3 max = min;
 
-		for (int i = 0; i < verticesDisplay.getSize(); i++)
+		for (std::size_t i = 0; i < verticesDisplay.getSize(); i++)
 		{
 			auto& vert = verticesDisplay[i];
 
@@ -107,7 +93,7 @@ public:
 
 		sf::Transform bbMatrix;
 
-		auto mat = this->transform.getMatrix();
+		auto mat = _transform.getMatrix();
 
 		bbMatrix.combine(sf::Transform(
 			mat[0][0], mat[1][0], mat[3][0],

@@ -12,6 +12,7 @@ namespace sf3d {
 }
 #include "Drawable.hpp"
 #include "RenderTexture.hpp"
+#include "ContextSettings.hpp"
 #include "VertexArray.hpp"
 #include "RenderStates.hpp"
 
@@ -31,14 +32,14 @@ public:
 	RenderLayer();
 	~RenderLayer();
 
-	RenderLayer(glm::uvec2 size, ShaderProgram* program = nullptr);
+	RenderLayer(glm::uvec2 size, const ContextSettings& settings = ContextSettings::Default, ShaderProgram* program = nullptr);
 
 
 
 	/* Methods */
 public:
-	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
-
+	void create(glm::uvec2 size, const ContextSettings& settings = ContextSettings::None, ShaderProgram* program = nullptr);
+	
 	void draw(RenderTarget& target, RenderStates states = RenderStates::Default) const override;
 	using sf3d::RenderTarget::draw;
 };

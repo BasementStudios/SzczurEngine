@@ -30,6 +30,7 @@
 #include "Szczur/Utility/SFML3D/Shader.hpp"
 #include "Szczur/Utility/SFML3D/Vertex.hpp"
 #include "Szczur/Utility/SFML3D/VertexArray.hpp"
+#include "Szczur/Utility/SFML3D/ContextSettings.hpp"
 #include "Szczur/Utility/Logger.hpp"
 
 namespace rat
@@ -204,7 +205,7 @@ void Window::recreateWindow()
 {
 	// Setup window
 	// `ShaderProgram* = nullptr`, so it will not change it from the one from `init`.
-	this->getWindow().create(this->videoMode, this->title, nullptr, this->windowStyle);
+	this->getWindow().create(this->videoMode, this->title, sf3d::ContextSettings::Default, nullptr, this->windowStyle);
 	this->setFramerateLimit(this->framerateLimit);
 
 	// Overall GL flags

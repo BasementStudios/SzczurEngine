@@ -14,6 +14,8 @@
 #include <SFML/Graphics/Color.hpp>
 
 #include "RenderStates.hpp"
+#include "Texture.hpp"
+#include "ContextSettings.hpp"
 #include "Camera.hpp"
 namespace sf3d {
 	class VertexArray;
@@ -31,17 +33,25 @@ class RenderTarget
 {
 	/* Variables */
 protected:
-	glm::uvec2 size;
+	glm::uvec2 size; // @todo ? Shouldn't be obtained by higher implementation (window/texture size)??
 
 	RenderStates defaultStates;
 	
+	ContextSettings contextSettings = ContextSettings::Default;
+
 	Camera* camera {nullptr};
 	Camera* defaultCamera {nullptr};
+
+	// Multisampling/antialiasing support
+	GLuint mutlisampledFBO {0u};
+	GLuint mutlisampledRBO {0u};
+	Texture multisampledTexture;
 
 public:
 	float positionFactor;
 
 protected:
+	// Lighting
 	std::vector<LightPoint*> lightPoints;
 
 private:
@@ -62,6 +72,10 @@ public:
 	const Camera* getCamera() const;
 	void setCamera(Camera* camera);
 	void setCamera(Camera& camera);
+
+	/// Multisampling level, one (1) means disabled.
+	unsigned int getMultisamplingLevel() const;
+	void setMultisamplingLevel(unsigned int samples = 4u);
 	
 
 
@@ -71,15 +85,20 @@ protected:
 	RenderTarget();
 	~RenderTarget();
 
-	RenderTarget(glm::uvec2 size, ShaderProgram* program = nullptr);
+	RenderTarget(glm::uvec2 size, const ContextSettings& contextSettings = ContextSettings::Default, ShaderProgram* program = nullptr);
 
 
 
 	/* Methods */
 protected:
-	void create(glm::uvec2 size, ShaderProgram* program = nullptr);
+	void create(glm::uvec2 size, const ContextSettings& contextSettings = ContextSettings::None, ShaderProgram* program = nullptr);
 
-	virtual bool _setActive(bool state = true) = 0;
+	virtual bool setActive(bool state = true) = 0;
+
+protected:
+	// Helper functions for managing multisampling 
+	bool multisamplingSetActive(bool state = true);
+	bool multisamplingBlitFramebuffer();
 
 public:
 	/// Helper function to scale matrix coords propertly

@@ -16,6 +16,7 @@
 #include <SFML/Window/ContextSettings.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "ContextSettings.hpp"
 #include "RenderTarget.hpp"
 #include "ShaderProgram.hpp"
 
@@ -39,18 +40,21 @@ RenderWindow::RenderWindow()
 RenderWindow::RenderWindow(
 	sf::VideoMode mode,
 	const std::string& title,
-	ShaderProgram* program,
+	const sf3d::ContextSettings& contextSettingsSFML3D,
+	ShaderProgram* shaderProgram,
 	sf::Uint32 style,
-	const sf::ContextSettings& settings
+	const sf::ContextSettings& contextSettingsSFML
 )
-:	sf::RenderWindow(mode, title, style, settings),
-	sf3d::RenderTarget(glm::vec2{mode.width, mode.height}, program)
+: 	sf::RenderWindow(mode, title, style, contextSettingsSFML),
+	myGLADGLLoader([](){
+		// Super assurance, that GLAD will be initalized before anything else
+		if (!gladLoadGL()) {
+			throw std::runtime_error("Failed to initialize GLAD!"); // @warn It cannot be catched by anything :| 
+		}
+		return GLADGLLoader{};
+	}())
 {
-	if (!gladLoadGL()) {
-		throw std::runtime_error("Failed to initialize GLAD!");
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, mode.width, mode.height);
+	this->create(mode, title, contextSettingsSFML3D, shaderProgram, style, contextSettingsSFML);
 }
 
 
@@ -59,31 +63,30 @@ RenderWindow::RenderWindow(
 void RenderWindow::create(
 	sf::VideoMode mode,
 	const std::string& title,
-	ShaderProgram* program,
+	const sf3d::ContextSettings& contextSettingsSFML3D,
+	ShaderProgram* shaderProgram,
 	sf::Uint32 style,
-	const sf::ContextSettings& settings
+	const sf::ContextSettings& contextSettingsSFML
 )
 {
-	sf::RenderWindow::create(mode, title, style, settings);
-	sf3d::RenderTarget::create(glm::vec2{mode.width, mode.height}, program);
+	sf::RenderWindow::create(mode, title, style, contextSettingsSFML);
 	
-	if (!gladLoadGL()) {
-		throw std::runtime_error("Failed to initialize GLAD!");
-	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, mode.width, mode.height);
+
+	sf3d::RenderTarget::create(glm::vec2{mode.width, mode.height}, contextSettingsSFML3D, shaderProgram);
 }
 
 void RenderWindow::onResize()
 {
 	const sf::Vector2u size = this->getSize();
 	
-	if (this->_setActive()) {
+	if (this->setActive()) {
 		glViewport(0, 0, size.x, size.y);
 	}
 }
 
-bool RenderWindow::_setActive(bool /*states*/)
+bool RenderWindow::setActive(bool /*states*/)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return true;

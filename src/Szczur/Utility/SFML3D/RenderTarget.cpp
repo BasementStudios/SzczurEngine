@@ -28,6 +28,7 @@
 #include "LightPoint.hpp"
 #include "Geometry/Linear.hpp"
 #include "ShaderProgram.hpp"
+#include "ContextSettings.hpp"
 
 namespace sf3d
 {
@@ -75,15 +76,27 @@ void RenderTarget::setCamera(Camera& camera)
 	this->setCamera(&camera);
 }
 
+unsigned int RenderTarget::getMultisamplingLevel() const
+{
+	return this->contextSettings.multisamplingLevel;
+}
+void RenderTarget::setMultisamplingLevel(unsigned int samples)
+{	
+	// Apply change by recreating render target with updated context settings
+	ContextSettings newContextSettings {this->contextSettings};
+	newContextSettings.multisamplingLevel = samples;
+	this->create(this->size, newContextSettings); // @todo , Maybe some `recreate` function that would use ContextSettings via `this` :thinking:
+}
+
 
 
 /* Operators */
 RenderTarget::RenderTarget()
 {}
 
-RenderTarget::RenderTarget(glm::uvec2 size, ShaderProgram* program)
+RenderTarget::RenderTarget(glm::uvec2 size, const ContextSettings& contextSettings, ShaderProgram* program)
 {
-	this->create(size, program);
+	this->create(size, contextSettings, program);
 }
 
 RenderTarget::~RenderTarget()
@@ -96,14 +109,59 @@ RenderTarget::~RenderTarget()
 
 
 /* Methods */
-void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
+void RenderTarget::create(glm::uvec2 size, const ContextSettings& contextSettings, ShaderProgram* program)
 {
-	this->size = size;
-
+	// Change default shader program if specified
 	if (program) {
 		this->setDefaultShaderProgram(program);
 	}
+	
+	// Setup multisampling
+	if (contextSettings.multisamplingLevel > 1) {
+		if (this->size != size || (contextSettings != ContextSettings::None && this->contextSettings != contextSettings)) {
+			// Make sure to delete for recreation
+			glDeleteFramebuffers(1, &(this->mutlisampledFBO));
+			glDeleteRenderbuffers(1, &(this->mutlisampledRBO));
+			
+			// Generate buffers
+			glGenFramebuffers(1, &(this->mutlisampledFBO));	
+			glGenRenderbuffers(1, &(this->mutlisampledRBO));
 
+			// Framebuffer
+			glBindFramebuffer(GL_FRAMEBUFFER, this->mutlisampledFBO);
+			{
+				// Texture
+				this->multisampledTexture.create(size, contextSettings, TextureTarget::Multisample2D);
+				this->multisampledTexture.bind();
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, TextureTarget::Multisample2D, this->multisampledTexture.getID(), 0);
+				this->multisampledTexture.unbind();
+
+				// Renderbuffer
+				glBindRenderbuffer(GL_RENDERBUFFER, this->mutlisampledRBO);
+				glRenderbufferStorageMultisample(GL_RENDERBUFFER, contextSettings.multisamplingLevel, contextSettings.getRenderInternalFormat(), size.x, size.y);
+				glBindRenderbuffer(GL_RENDERBUFFER, 0);
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, contextSettings.getRenderAttachmentType(), GL_RENDERBUFFER, this->mutlisampledRBO);
+
+				// Checks
+				if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+					glBindFramebuffer(GL_FRAMEBUFFER, 0);
+					throw std::runtime_error("Framebuffer creation error.");
+				}
+			}
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+	}
+	else {
+		// Make sure to delete multisampled things to free up memory
+		glDeleteFramebuffers(1, &(this->mutlisampledFBO));
+		glDeleteRenderbuffers(1, &(this->mutlisampledRBO));
+		this->multisampledTexture.destroy();
+	}
+
+	this->size = size;
+	this->contextSettings = contextSettings;
+
+	// Setup default camera
 	if (!this->defaultCamera) {
 		this->camera = this->defaultCamera = new Camera(
 			glm::vec3(0.f, 0.f, 0.f),
@@ -116,11 +174,40 @@ void RenderTarget::create(glm::uvec2 size, ShaderProgram* program)
 	this->positionFactor = 2.f / static_cast<float>(this->size.y);
 }
 
-bool RenderTarget::_setActive([[maybe_unused]] bool state)
+bool RenderTarget::setActive([[maybe_unused]] bool state)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	throw std::runtime_error("RenderTarget::_setActive not overloaded!"); 
+	throw std::runtime_error("RenderTarget::setActive not overloaded!"); 
 	return false;
+}
+
+// Helper functions for managing multisampling 
+bool RenderTarget::multisamplingSetActive(bool state)
+{
+	if (!this->setActive(state)) {
+		return false;
+	}
+	
+	// Multisampling needs its toys...
+	if (this->contextSettings.multisamplingLevel > 1) {
+		glBindFramebuffer(GL_FRAMEBUFFER, this->mutlisampledFBO);
+	}
+
+	return true;
+}
+bool RenderTarget::multisamplingBlitFramebuffer()
+{
+	// Draw multisampling to vaild buffers
+	if (this->contextSettings.multisamplingLevel > 1) {
+		if (!this->setActive()) {
+			return false;
+		}
+		// GL_DRAW_FRAMEBUFFER is already set to vaild active buffer, since `setActive` binds the target framebuffer to both READ and DRAW.
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->mutlisampledFBO);
+		glBlitFramebuffer(0, 0, this->size.x, this->size.y, 0, 0, this->size.x, this->size.y, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST); // @todo , rething this flags... 
+	}
+
+	return true;
 }
 
 /// Helper function to scale matrix coords propertly
@@ -135,15 +222,17 @@ glm::mat4 RenderTarget::scaleMatrixCoords(glm::mat4 matrix)
 // Clearing
 void RenderTarget::clear(const glm::vec4& color, GLbitfield flags)
 {
-	if (this->_setActive()) {
+	if (this->multisamplingSetActive()) {
 		glClearColor(color.r, color.g, color.b, color.a);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		this->multisamplingBlitFramebuffer();
 	}
 }
 void RenderTarget::clearSFML(const sf::Color& color, GLbitfield flags)
 {
-	if (this->_setActive()) {
+	if (this->multisamplingSetActive()) {
 		glClearColor(
 			static_cast<float>(color.r) / 255.f, 
 			static_cast<float>(color.g) / 255.f, 
@@ -152,6 +241,8 @@ void RenderTarget::clearSFML(const sf::Color& color, GLbitfield flags)
 		);
 		glClear(flags);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		this->multisamplingBlitFramebuffer();
 	}
 }
 
@@ -168,7 +259,8 @@ void RenderTarget::draw(const Drawable& drawable)
 // Drawing vertices in perspective projection
 void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 {
-	if (vertices.getSize() > 0 && this->_setActive()) {
+	if (vertices.getSize() > 0 && this->multisamplingSetActive()) {
+		// Update vertices
 		vertices.update();
 
 		// Shader selection
@@ -234,6 +326,9 @@ void RenderTarget::draw(const VertexArray& vertices, const RenderStates& states)
 		if (states.texture) {
 			states.texture->unbind();
 		}
+
+		// Multisampling :OOOOO
+		this->multisamplingBlitFramebuffer();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

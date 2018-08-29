@@ -4,113 +4,68 @@
 
 #include "SF3DArmatureDisplay.hpp"
 
-#include <SFML/Graphics.hpp>
-
-#include "SF3DSlot.hpp"
-#include "SF3DDisplay.hpp"
+#include "SF3DArmatureProxy.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-SF3DArmatureDisplay::SF3DArmatureDisplay()
+SF3DArmatureDisplay::SF3DArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName, const std::string& skinName, const std::string& textureAtlasName)
 {
-	_armature = nullptr;
+	_proxy = SF3DFactory::get()->buildArmatureDisplay(armatureName, dragonBonesName, skinName, textureAtlasName);
 }
 
 SF3DArmatureDisplay::~SF3DArmatureDisplay()
 {
-	if (_armature)
-	{
-		delete _armature;
-		_armature = nullptr;
-	}
+	_proxy->dispose(true);
+	_proxy = nullptr;
 }
 
-void SF3DArmatureDisplay::dbInit(Armature* armature)
+void SF3DArmatureDisplay::update(float deltaTime)
 {
-	_armature = armature;
-}
-
-void SF3DArmatureDisplay::dbClear()
-{
-	_armature = nullptr;
-}
-
-void SF3DArmatureDisplay::dbUpdate()
-{
-}
-
-void SF3DArmatureDisplay::addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener)
-{
-	_dispatcher.addDBEventListener(type, listener);
-}
-
-void SF3DArmatureDisplay::removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener)
-{
-}
-
-void SF3DArmatureDisplay::dispatchDBEvent(const std::string& type, EventObject* value)
-{
-	_dispatcher.dispatchDBEvent(type, value);
-}
-
-void SF3DArmatureDisplay::dispose(bool disposeProxy)
-{
-	if (_armature)
-	{
-		delete _armature;
-		_armature = nullptr;
-	}
+	if (_proxy)
+		_proxy->advanceTime(deltaTime);
 }
 
 void SF3DArmatureDisplay::draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const
 {
-	for (auto slot : _armature->getSlots())
-	{
-		if (!slot)
-			continue;
+	if (_proxy)
+		_proxy->draw(target, states);
+}
 
-		auto display = static_cast<SF3DDisplay*>(slot->getRawDisplay());
-		
-		if (!display)
-			continue;
+Armature* SF3DArmatureDisplay::getArmature() const
+{
+	if (_proxy)
+		return _proxy->getArmature();
 
-		display->draw(target, states);
-	}
+	return nullptr;
+}
+
+Animation* SF3DArmatureDisplay::getAnimation() const
+{
+	if (_proxy)
+		return _proxy->getAnimation();
+
+	return nullptr;
+}
+
+SF3DEventDispatcher* SF3DArmatureDisplay::getEventDispatcher()
+{
+	if (_proxy)
+		return _proxy->getEventDispatcher();
+
+	return nullptr;
+}
+
+SF3DArmatureProxy* SF3DArmatureDisplay::getArmatureProxy() const
+{
+	return _proxy;
 }
 
 sf::FloatRect SF3DArmatureDisplay::getBoundingBox()
 {
-	auto slots = _armature->getSlots();
-	bool isFirst = true;
+	if (_proxy)
+		return _proxy->getBoundingBox();
 
-	sf::Vector2f min;
-	sf::Vector2f max;
-
-	for (const auto slot : _armature->getSlots())
-	{
-		if (!slot->getVisible() || !slot->getDisplay())
-		{
-			continue;
-		}
-
-		auto display = static_cast<SF3DDisplay*>(slot->getRawDisplay());
-		const auto bounds = display->getBoundingBox();
-		if (isFirst)
-		{
-			isFirst = false;
-			min = { bounds.left, bounds.top };
-			max = { bounds.left + bounds.width, bounds.top + bounds.height };
-		}
-		else
-		{
-			min.x = std::min(min.x, bounds.left);
-			min.y = std::min(min.y, bounds.top);
-			max.x = std::max(max.x, bounds.left + bounds.width);
-			max.y = std::max(max.y, bounds.top + bounds.height);
-		}
-	}
-
-	return sf::FloatRect(min, max - min);
+	return sf::FloatRect();
 }
 
 DRAGONBONES_NAMESPACE_END

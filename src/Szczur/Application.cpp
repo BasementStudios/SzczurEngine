@@ -60,6 +60,8 @@ void Application::update()
 
 	auto deltaTime = _mainClock.restart().asFSeconds();
 
+	getModule<DragonBones>().update(deltaTime);
+
 	#ifdef EDITOR
 	{
 		ImGui::SFML::Update(getModule<Window>().getWindow(), sf::seconds(deltaTime));

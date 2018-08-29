@@ -1,46 +1,38 @@
 #pragma once
 
 /** @file SF3DArmatureDisplay.hpp
- ** @author Piotr Krupa (piotrkrupa06@gmail.com)
- **/
+** @author Piotr Krupa (piotrkrupa06@gmail.com)
+**/
 
-#include <dragonBones/DragonBonesHeaders.h>
 #include <SFML/Graphics/Rect.hpp>
 
+#include <dragonBones/DragonBonesHeaders.h>
+
 #include "Szczur/Utility/SFML3D/Drawable.hpp"
-#include "Szczur/Utility/SFML3D/Texture.hpp"
-#include "Szczur/Utility/SFML3D/VertexArray.hpp"
-#include "Szczur/Utility/SFML3D/RenderTarget.hpp"
-#include "Szczur/Utility/SFML3D/RenderStates.hpp"
-#include "SF3DEventDispatcher.hpp"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
-class SF3DArmatureDisplay : public IArmatureProxy, public sf3d::Drawable
+class SF3DArmatureProxy;
+class SF3DEventDispatcher;
+
+class SF3DArmatureDisplay : public sf3d::Drawable
 {
-protected:
-	Armature*									_armature = nullptr;
-	SFMLEventDispatcher							_dispatcher;
+private:
+	SF3DArmatureProxy* _proxy;
 
 public:
-	SF3DArmatureDisplay();
+	SF3DArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "");
 	~SF3DArmatureDisplay();
 
-	bool hasDBEventListener(const std::string& type) const override { return true; }
-	void addDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-	void removeDBEventListener(const std::string& type, const std::function<void(EventObject*)>& listener) override;
-	void dispatchDBEvent(const std::string& type, EventObject* value) override;
+	void update(float deltaTime);
+	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states = sf3d::RenderStates::Default) const override;
 
-	void dbInit(Armature* armature) override;
-	void dbClear() override;
-	void dbUpdate() override;
+	Armature* getArmature() const;
+	Animation* getAnimation() const;
 
-	void dispose(bool disposeProxy) override;
-	
-	Armature* getArmature() const override { return _armature; }
-	Animation* getAnimation() const override { return _armature->getAnimation(); }
+	SF3DEventDispatcher* getEventDispatcher();
 
-	void draw(sf3d::RenderTarget& target, sf3d::RenderStates states) const;
+	SF3DArmatureProxy* getArmatureProxy() const;
 
 	sf::FloatRect getBoundingBox();
 };

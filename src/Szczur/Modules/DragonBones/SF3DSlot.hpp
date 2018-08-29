@@ -8,9 +8,9 @@
 
 #include <dragonBones/DragonBonesHeaders.h>
 
-#include "SF3DDisplay.hpp"
-
 DRAGONBONES_NAMESPACE_BEGIN
+
+class SF3DNode;
 
 class SF3DSlot : public Slot
 {
@@ -18,28 +18,30 @@ class SF3DSlot : public Slot
 
 private:
 	float _textureScale;
-	std::unique_ptr<SF3DDisplay> _renderDisplay;
+	SF3DNode* _renderDisplay = nullptr;
+
+	const float _zOffsetScale = 0.1f;
 
 public:
-	virtual void _updateVisible() override;
-	virtual void _updateBlendMode() override;
-	virtual void _updateColor() override;
+	void _updateVisible() override;
+	void _updateBlendMode() override;
+	void _updateColor() override;
 
 protected:
-	virtual void _initDisplay(void* value, bool isRetain) override;
-	virtual void _disposeDisplay(void* value, bool isRelease) override;
-	virtual void _onUpdateDisplay() override;
-	virtual void _addDisplay() override;
-	virtual void _replaceDisplay(void* value, bool isArmatureDisplay) override;
-	virtual void _removeDisplay() override;
-	virtual void _updateZOrder() override;
+	void _initDisplay(void* value, bool isRetain) override;
+	void _disposeDisplay(void* value, bool isRelease) override;
+	void _onUpdateDisplay() override;
+	void _addDisplay() override;
+	void _replaceDisplay(void* value, bool isArmatureDisplay) override;
+	void _removeDisplay() override;
+	void _updateZOrder() override;
 
-	virtual void _updateFrame() override;
-	virtual void _updateMesh() override;
-	virtual void _updateTransform() override;
-	virtual void _identityTransform() override;
+	void _updateFrame() override;
+	void _updateMesh() override;
+	void _updateTransform() override;
+	void _identityTransform() override;
 
-	virtual void _onClear() override;
+	void _onClear() override;
 };
 
 DRAGONBONES_NAMESPACE_END
