@@ -68,6 +68,7 @@ namespace rat
 		object.set("cleanEqualizer", &SoundBase::cleanEffect<Equalizer>);
 		object.set("cleanReverb", &SoundBase::cleanEffect<Reverb>);
 		object.set("cleanEcho", &SoundBase::cleanEffect<Echo>);
+        object.set("cleanEffects", &SoundBase::cleanEffects);
 
         object.setProperty("onStart", 
             [](){}, 
@@ -282,6 +283,13 @@ namespace rat
     SoundBase::Second_t SoundBase::getEndTime() const
     {
         return offset.endTime;
+    }
+
+    void SoundBase::cleanEffects()
+    {
+        _sound.cleanEffect<Equalizer>();
+        _sound.cleanEffect<Reverb>();
+        _sound.cleanEffect<Echo>();
     }
 
     bool SoundBase::load() 

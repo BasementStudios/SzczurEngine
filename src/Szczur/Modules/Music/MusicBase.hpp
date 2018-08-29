@@ -87,6 +87,7 @@ namespace rat
     	void cleanEffect() {
 			_base->cleanEffect<T>();
 		}
+		void cleanEffects(); 
 
 	private:
 

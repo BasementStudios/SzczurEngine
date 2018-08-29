@@ -40,6 +40,7 @@ namespace rat
 		object.set("cleanEqualizer", &MusicBase::cleanEffect<Equalizer>);
 		object.set("cleanReverb", &MusicBase::cleanEffect<Reverb>);
 		object.set("cleanEcho", &MusicBase::cleanEffect<Echo>);
+		object.set("cleanEffects", &MusicBase::cleanEffects);
 
 		object.setProperty("onStart", 
             [](){}, 
@@ -193,6 +194,13 @@ namespace rat
 
 		_baseVolume = volume;
 		_base->setVolume(_baseVolume);
+	}
+
+	void MusicBase::cleanEffects()
+	{
+		_base->cleanEffect<Equalizer>();
+        _base->cleanEffect<Reverb>();
+        _base->cleanEffect<Echo>();
 	}
 	
 	void MusicBase::reset() 

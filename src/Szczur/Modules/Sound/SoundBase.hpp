@@ -123,6 +123,7 @@ namespace rat
     	void cleanEffect() {
             _sound.cleanEffect<T>();
         }
+        void cleanEffects();
 
     private:
 
