@@ -7,61 +7,61 @@ namespace rat::world
 {
 
 Entity::Entity(Scene& scene, const EntityID_t id)
-    : _scene { scene }
-    , _id { id }
+	: _scene { scene }
+	, _id { id }
 {
 
 }
 
 Scene& Entity::getScene() const
 {
-    return _scene;
+	return _scene;
 }
 
 EntityManager& Entity::getEntityManager() const
 {
-    return _scene.getEntityManager();
+	return _scene.getEntityManager();
 }
 
 EntityID_t Entity::getID() const
 {
-    return _id;
+	return _id;
 }
 
 bool Entity::addComponent(HashedID hid) const
 {
-    return getEntityManager().addComponent(_id, hid);
+	return getEntityManager().addComponent(_id, hid);
 }
 
 bool Entity::hasComponent(HashedID hid) const
 {
-    return getEntityManager().hasComponent(_id, hid);
+	return getEntityManager().hasComponent(_id, hid);
 }
 
 bool Entity::removeComponent(HashedID hid) const
 {
-    return getEntityManager().removeComponent(_id, hid);
+	return getEntityManager().removeComponent(_id, hid);
 }
 
 bool Entity::destroy() const
 {
-    if (isValid())
-    {
-        getEntityManager().getRegistry().destroy(_id);
+	if (isValid())
+	{
+		getEntityManager().getRegistry().destroy(_id);
 
-        return true;
-    }
-    else
-    {
-        // TODO log attempt of deleting invalid entity
+		return true;
+	}
+	else
+	{
+		// TODO log attempt of deleting invalid entity
 
-        return false;
-    }
+		return false;
+	}
 }
 
 bool Entity::isValid() const
 {
-    return getEntityManager().getRegistry().valid(_id);
+	return getEntityManager().getRegistry().valid(_id);
 }
 
 }

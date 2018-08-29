@@ -16,52 +16,52 @@ class Entity
 {
 public:
 
-    ///
-    Entity(Scene& scene, EntityID_t id);
+	///
+	Entity(Scene& scene, EntityID_t id);
 
-    ///
-    Entity(const Entity&) = default;
+	///
+	Entity(const Entity&) = default;
 
-    ///
-    Entity& operator = (const Entity&) = default;
+	///
+	Entity& operator = (const Entity&) = default;
 
-    ///
-    Entity(Entity&&) = default;
+	///
+	Entity(Entity&&) = default;
 
-    ///
-    Entity& operator = (Entity&&) = default;
+	///
+	Entity& operator = (Entity&&) = default;
 
-    ///
-    ~Entity() = default;
+	///
+	~Entity() = default;
 
-    ///
-    Scene& getScene() const;
+	///
+	Scene& getScene() const;
 
-    ///
-    EntityManager& getEntityManager() const;
+	///
+	EntityManager& getEntityManager() const;
 
-    ///
-    EntityID_t getID() const;
+	///
+	EntityID_t getID() const;
 
-    ///
-    bool addComponent(HashedID hid) const;
+	///
+	bool addComponent(HashedID hid) const;
 
-    ///
-    bool hasComponent(HashedID hid) const;
+	///
+	bool hasComponent(HashedID hid) const;
 
-    ///
-    bool removeComponent(HashedID hid) const;
+	///
+	bool removeComponent(HashedID hid) const;
 
-    ///
-    bool destroy() const;
+	///
+	bool destroy() const;
 
-    ///
-    bool isValid() const;
+	///
+	bool isValid() const;
 
 private:
 
-    Scene& _scene;
-    EntityID_t _id;
+	Scene& _scene;
+	EntityID_t _id;
 
 };
 
