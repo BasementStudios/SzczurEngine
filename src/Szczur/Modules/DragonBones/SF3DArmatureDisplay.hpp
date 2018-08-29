@@ -30,7 +30,7 @@ public:
 	Armature* getArmature() const;
 	Animation* getAnimation() const;
 
-	SF3DEventDispatcher* getEvenDispatcher();
+	SF3DEventDispatcher* getEventDispatcher();
 
 	SF3DArmatureProxy* getArmatureProxy() const;
 

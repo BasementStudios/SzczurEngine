@@ -47,7 +47,7 @@ Animation* SF3DArmatureDisplay::getAnimation() const
 	return nullptr;
 }
 
-SF3DEventDispatcher* SF3DArmatureDisplay::getEvenDispatcher()
+SF3DEventDispatcher* SF3DArmatureDisplay::getEventDispatcher()
 {
 	if (_proxy)
 		return _proxy->getEventDispatcher();

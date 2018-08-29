@@ -66,7 +66,10 @@ void SF3DSlot::_initDisplay(void* value, bool isRetain)
 
 void SF3DSlot::_disposeDisplay(void* value, bool isRelease)
 {
-	delete value;
+	if (!isRelease && value)
+	{
+		delete value;
+	}
 }
 
 void SF3DSlot::_onUpdateDisplay()
@@ -400,11 +403,6 @@ void SF3DSlot::_updateTransform()
 	{
 		pos.x -= (globalTransformMatrix.a * _pivotX + globalTransformMatrix.c * _pivotY);
 		pos.y -= (globalTransformMatrix.b * _pivotX + globalTransformMatrix.d * _pivotY);
-	}
-	else if (_childArmature)
-	{
-		pos.x -= (globalTransformMatrix.a + globalTransformMatrix.c);
-		pos.y -= (globalTransformMatrix.b + globalTransformMatrix.d);
 	}
 	else
 	{
