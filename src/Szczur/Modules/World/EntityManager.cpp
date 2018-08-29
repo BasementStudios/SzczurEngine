@@ -4,7 +4,7 @@
 
 #include "ComponentRegistry.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 EntityManager::EntityManager(Scene& scene)

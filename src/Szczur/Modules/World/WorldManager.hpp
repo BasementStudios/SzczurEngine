@@ -4,7 +4,7 @@
 
 #include "Config.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 // fwd decl
@@ -38,7 +38,7 @@ public:
     void reset();
 
     ///
-    Scene* addScene(const Name_t& name = "anonymous_scene");
+    Scene* addScene(const Name_t& name);
 
     ///
     bool hasScene(HashedID hid);

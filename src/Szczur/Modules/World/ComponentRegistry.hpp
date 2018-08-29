@@ -10,7 +10,7 @@
 
 #include "Scene.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 class ComponentRegistry

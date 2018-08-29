@@ -2,7 +2,7 @@
 
 #include "WorldManager.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 Scene::Scene(WorldManager& worldManager, Hash_t id, const Name_t& name)

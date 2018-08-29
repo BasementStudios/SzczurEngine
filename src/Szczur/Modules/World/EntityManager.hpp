@@ -8,7 +8,7 @@
 
 #include "Entity.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 // fwd decl

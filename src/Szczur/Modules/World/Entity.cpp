@@ -3,7 +3,7 @@
 #include "EntityManager.hpp"
 #include "Scene.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 Entity::Entity(Scene& scene, const EntityID_t id)

@@ -1,6 +1,6 @@
 #include "ComponentRegistry.hpp"
 
-namespace rat::wrd
+namespace rat::world
 {
 
 bool ComponentRegistry::assignComponent(Registry_t& registry, EntityID_t id, HashedID hid)
