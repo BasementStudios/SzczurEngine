@@ -2,13 +2,10 @@
 
 #include <entt/entt.hpp>
 
-#include "Config.hpp"
+#include "Scene.hpp"
 
 namespace rat::world
 {
-
-// fwd decl
-class Scene;
 
 class WorldManager
 {

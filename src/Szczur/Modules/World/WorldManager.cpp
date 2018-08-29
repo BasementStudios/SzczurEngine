@@ -1,7 +1,5 @@
 #include "WorldManager.hpp"
 
-#include "Scene.hpp"
-
 namespace rat::world
 {
 
@@ -47,7 +45,7 @@ bool WorldManager::removeScene(HashedID hid)
 		{
 			if (_scenes.empty())
 			{
-				_currentSceneID = addScene()->getID();
+				_currentSceneID = addScene(std::to_string(std::rand()))->getID();
 			}
 			else
 			{

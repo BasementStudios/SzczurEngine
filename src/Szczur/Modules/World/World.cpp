@@ -14,12 +14,12 @@ World::~World()
 	LOG_INFO("Module World destructed");
 }
 
-WorldManager& World::getManager()
+world::WorldManager& World::getManager()
 {
 	return _worldManager;
 }
 
-const WorldManager& World::getManager() const
+const world::WorldManager& World::getManager() const
 {
 	return _worldManager;
 }
