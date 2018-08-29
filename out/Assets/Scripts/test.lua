@@ -301,6 +301,39 @@ tests[counter.get()] = function()
 
 end
 
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Getting music object from playlist",
+    }
+
+    function self.run()
+        Music.loadPlaylistFromJson("Assets/Music/Playlists/Test Playlist.json")
+        local fromPlaylistName = Music.get("Test Playlist", "Rozpierdalacz")
+        if fromPlaylistName == nil or not fromPlaylistName:getName() == "Rozpierdalacz" then
+            return false
+        end
+        Music.play(0, "Test Playlist", "Slowianski")
+        local currentPlaying = Music.getCurrentPlaying() 
+        if currentPlaying == nil or not fromPlaylistName:getName() == "Slowianski" then
+            return false
+        end
+        local fromPlayingTrack = Music.get(0, "Rozpierdalacz")
+        if fromPlayingTrack == nil or not fromPlaylistName:getName() == "Rozpierdalacz" then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.stop()
+        Music.removeFromPlaylist("Test Playlist")
+    end
+
+    return self
+
+end
+
 -- [ SOUND ]:
 
 tests[counter.get()] = function()
