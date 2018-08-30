@@ -153,7 +153,7 @@ LS := ls -AdoGh --time-style long-iso
 MKDIR = mkdir -p 
 
 # Libraries 
-LIB_LIST := BOOST IMGUI GLAD SFML LUA SOL2 JSON GLM OPENAL FFMPEG_AV
+LIB_LIST := BOOST IMGUI GLAD SFML LUA SOL2 JSON GLM OPENAL FFMPEG_AV ENTT
 ifeq ($(TARGET_PLATFORM),win)
     LIB_LIST += WINDOWS
 endif
@@ -200,6 +200,8 @@ CXXFLAGS_DYNAMIC_LUA    :=
   LDFLAGS_STATIC_FFMPEG_AV := -lavformat -lavcodec -lavutil -lswresample
   LDFLAGS_SHARED_FFMPEG_AV := -lavformat -lavcodec -lavutil -lswresample
   LDFLAGS += -lswscale
+#   ENTT
+ PKG_CONFIG_NAME_JSON   := entt
 #   Windows
  LDFLAGS_STATIC_WINDOWS := -lcomdlg32
  LDFLAGS_SHARED_WINDOWS := -lcomdlg32
