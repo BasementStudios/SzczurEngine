@@ -6,8 +6,8 @@
 namespace rat::world
 {
 
-Entity::Entity(Scene& scene, const EntityID_t id)
-	: _scene { scene }
+Entity::Entity(EntityManager& entityManager, const EntityID_t id)
+	: _entityManager { entityManager }
 	, _id { id }
 {
 
@@ -15,12 +15,12 @@ Entity::Entity(Scene& scene, const EntityID_t id)
 
 Scene& Entity::getScene() const
 {
-	return _scene;
+	return _entityManager.getScene();
 }
 
 EntityManager& Entity::getEntityManager() const
 {
-	return _scene.getEntityManager();
+	return _entityManager;
 }
 
 EntityID_t Entity::getID() const
@@ -30,24 +30,24 @@ EntityID_t Entity::getID() const
 
 bool Entity::addComponent(HashedID hid) const
 {
-	return getEntityManager().addComponent(_id, hid);
+	return _entityManager.addComponent(_id, hid);
 }
 
 bool Entity::hasComponent(HashedID hid) const
 {
-	return getEntityManager().hasComponent(_id, hid);
+	return _entityManager.hasComponent(_id, hid);
 }
 
 bool Entity::removeComponent(HashedID hid) const
 {
-	return getEntityManager().removeComponent(_id, hid);
+	return _entityManager.removeComponent(_id, hid);
 }
 
 bool Entity::destroy() const
 {
 	if (isValid())
 	{
-		getEntityManager().getRegistry().destroy(_id);
+		_entityManager.getRegistry().destroy(_id);
 
 		return true;
 	}
@@ -61,7 +61,7 @@ bool Entity::destroy() const
 
 bool Entity::isValid() const
 {
-	return getEntityManager().getRegistry().valid(_id);
+	return _entityManager.getRegistry().valid(_id);
 }
 
 }

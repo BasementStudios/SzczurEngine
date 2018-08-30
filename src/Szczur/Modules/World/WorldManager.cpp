@@ -104,6 +104,16 @@ bool WorldManager::isCurrentSceneValid() const
 	return _currentSceneID != 0;
 }
 
+ComponentRegistry& WorldManager::getComponentRegistry()
+{
+	return _componentRegistry;
+}
+
+const ComponentRegistry& WorldManager::getComponentRegistry() const
+{
+	return _componentRegistry;
+}
+
 typename WorldManager::ScenesHolder_t::iterator WorldManager::_find(HashedID hid)
 {
 	return std::find_if(_scenes.begin(), _scenes.end(), [=](const auto& scenePtr) {

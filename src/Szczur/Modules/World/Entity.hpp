@@ -17,7 +17,7 @@ class Entity
 public:
 
 	///
-	Entity(Scene& scene, EntityID_t id);
+	Entity(EntityManager& entityManager, EntityID_t id);
 
 	///
 	Entity(const Entity&) = default;
@@ -60,7 +60,7 @@ public:
 
 private:
 
-	Scene& _scene;
+	EntityManager& _entityManager;
 	EntityID_t _id;
 
 };

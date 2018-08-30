@@ -17,124 +17,139 @@ class ComponentRegistry
 {
 public:
 
-	using Key_t                = Hash_t;
-	using RegisteredIDs_t      = std::vector<Hash_t>;
-	using Functor_t            = bool(*)(Registry_t&, EntityID_t);
-	using FunctorMap_t         = std::unordered_map<Key_t, Functor_t>;
-	using ToJsonFunctor_t      = bool(*)(Registry_t&, EntityID_t, nlohmann::json&);
-	using ToJsonFunctorMap_t   = std::unordered_map<Key_t, ToJsonFunctor_t>;
-	using FromJsonFunctor_t    = bool(*)(Registry_t&, EntityID_t, const nlohmann::json&);
-	using FromJsonFunctorMap_t = std::unordered_map<Key_t, FromJsonFunctor_t>;
+	struct ComponentData
+	{
+		using Functor_t         = bool(*)(const char*, Registry_t&, EntityID_t);
+		using ToJsonFunctor_t   = bool(*)(const char*, Registry_t&, EntityID_t, nlohmann::json&);
+		using FromJsonFunctor_t = bool(*)(const char*, Registry_t&, EntityID_t, const nlohmann::json&);
+
+		const char* name;
+
+		Functor_t assign;
+		Functor_t has;
+		Functor_t remove;
+
+		ToJsonFunctor_t toJson;
+		FromJsonFunctor_t fromJson;
+	};
+
+	using Key_t              = Hash_t;
+	using ComponentDataMap_t = std::unordered_map<Key_t, ComponentData>;
 
 	///
 	template <typename T>
-	static void registerComponent(const char* name);
+	bool registerComponent(const char* name);
 
 	///
-	static bool assignComponent(Registry_t& registry, EntityID_t id, HashedID hid);
+	const char* getComponentName(HashedID hid) const;
 
 	///
-	static bool hasComponent(Registry_t& registry, EntityID_t id, HashedID hid);
+	bool assignComponent(Registry_t& registry, EntityID_t id, HashedID hid);
 
 	///
-	static bool removeComponent(Registry_t& registry, EntityID_t id, HashedID hid);
+	bool hasComponent(Registry_t& registry, EntityID_t id, HashedID hid);
 
 	///
-	static bool componentToJson(Registry_t& registry, EntityID_t id, HashedID hid, nlohmann::json& j);
+	bool removeComponent(Registry_t& registry, EntityID_t id, HashedID hid);
 
 	///
-	static bool allComponentsToJson(Registry_t& registry, EntityID_t id, nlohmann::json& j);
+	bool componentToJson(Registry_t& registry, EntityID_t id, HashedID hid, nlohmann::json& j);
 
 	///
-	static bool componentFromJson(Registry_t& registry, EntityID_t id, const nlohmann::json& j);
+	bool allComponentsToJson(Registry_t& registry, EntityID_t id, nlohmann::json& j);
+
+	///
+	bool componentFromJson(Registry_t& registry, EntityID_t id, const char* name, const nlohmann::json& j);
 
 private:
 
-	///
-	static bool _call(const FunctorMap_t& map, Registry_t& registry, EntityID_t id, HashedID hid);
-
-	inline static RegisteredIDs_t _registeredIDs = {};
-
-	inline static FunctorMap_t _assignComponent = {};
-	inline static FunctorMap_t _hasComponent = {};
-	inline static FunctorMap_t _removeComponent = {};
-
-	inline static ToJsonFunctorMap_t _componentToJson = {};
-	inline static FromJsonFunctorMap_t _componentFromJson = {};
+	ComponentDataMap_t _componentDataMap;
 
 };
 
 template <typename T>
-void ComponentRegistry::registerComponent(const char* name)
+bool ComponentRegistry::registerComponent(const char* name)
 {
 	const auto key = HashedID{ name }.hash;
 
-	_registeredIDs.emplace_back(key);
+	if (_componentDataMap.count(key))
+	{
+		// TODO log attempt of registering component more than once
 
-	_assignComponent.emplace(key, [](Registry_t& reg, EntityID_t id) {
-		if (reg.has<T>(id))
-		{
-			// TODO log attempt of adding already existing component
+		return false;
+	}
 
-			return false;
-		}
-		else
-		{
-			reg.assign<T>(id);
+	_componentDataMap.emplace(key, ComponentData{
+		// name
+		name,
+		// assign
+		[](const char*, Registry_t& reg, EntityID_t id) {
+			if (reg.has<T>(id))
+			{
+				// TODO log attempt of adding already existing component
 
-			return true;
+				return false;
+			}
+			else
+			{
+				reg.assign<T>(id);
+
+				return true;
+			}
+		},
+		// has
+		[](const char*, Registry_t& reg, EntityID_t id) {
+			return reg.has<T>(id);
+		},
+		// remove
+		[](const char*, Registry_t& reg, EntityID_t id) {
+			if (reg.has<T>(id))
+			{
+				reg.remove<T>(id);
+
+				return true;
+			}
+			else
+			{
+				// TODO log attempt of deleting non-existing component
+
+				return false;
+			}
+		},
+		// toJson
+		[](const char* name, Registry_t& reg, EntityID_t id, nlohmann::json& j) {
+			if (reg.has<T>(id))
+			{
+				j[name] = reg.get<T>(id);
+
+				return true;
+			}
+			else
+			{
+				// TODO log attempt of adding to config non-existing component
+				// TODO do not do this yet
+
+				return false;
+			}
+		},
+		// fromJson
+		[](const char*, Registry_t& reg, EntityID_t id, const nlohmann::json& j) {
+			if (reg.has<T>(id))
+			{
+				// TODO log attempt of adding from config already existing component
+
+				return false;
+			}
+			else
+			{
+				reg.assign<T>(id) = j;
+
+				return true;
+			}
 		}
 	});
 
-	_hasComponent.emplace(key, [](Registry_t& reg, EntityID_t id) {
-		return reg.has<T>(id);
-	});
-
-	_removeComponent.emplace(key, [](Registry_t& reg, EntityID_t id) {
-		if (reg.has<T>(id))
-		{
-			reg.remove<T>(id);
-
-			return true;
-		}
-		else
-		{
-			// TODO log attempt of deleting non-existing component
-
-			return false;
-		}
-	});
-
-	_componentToJson.emplace(key, [](Registry_t& reg, EntityID_t id, nlohmann::json& j) {
-		if (reg.has<T>(id))
-		{
-			j.push_back(reg.get<T>(id));
-
-			return true;
-		}
-		else
-		{
-			// TODO log attempt of adding to config non-existing component
-			// TODO do not do this yet
-
-			return false;
-		}
-	});
-
-	_componentFromJson.emplace(key, [](Registry_t& reg, EntityID_t id, const nlohmann::json& j) {
-		if (reg.has<T>(id))
-		{
-			// TODO log attempt of adding from config already existing component
-
-			return false;
-		}
-		else
-		{
-			reg.assign<T>(id) = j;
-
-			return true;
-		}
-	});
+	return true;
 }
 
 }

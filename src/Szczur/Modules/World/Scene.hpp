@@ -10,6 +10,7 @@ namespace rat::world
 {
 
 // fwd decl
+class ComponentRegistry;
 class WorldManager;
 
 class Scene

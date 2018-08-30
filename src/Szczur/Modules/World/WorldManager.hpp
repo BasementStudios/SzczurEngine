@@ -2,7 +2,7 @@
 
 #include <entt/entt.hpp>
 
-#include "Scene.hpp"
+#include "ComponentRegistry.hpp"
 
 namespace rat::world
 {
@@ -58,6 +58,12 @@ public:
 	///
 	bool isCurrentSceneValid() const;
 
+	///
+	ComponentRegistry& getComponentRegistry();
+
+	///
+	const ComponentRegistry& getComponentRegistry() const;
+
 private:
 
 	///
@@ -68,6 +74,7 @@ private:
 
 	ScenesHolder_t _scenes;
 	Hash_t _currentSceneID;
+	ComponentRegistry _componentRegistry;
 
 };
 

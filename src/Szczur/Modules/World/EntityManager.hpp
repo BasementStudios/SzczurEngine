@@ -12,6 +12,7 @@ namespace rat::world
 {
 
 // fwd decl
+class ComponentRegistry;
 class Scene;
 
 class EntityManager
@@ -42,6 +43,9 @@ public:
 
 	/// Returns reference to scene which holds this manager
 	Scene& getScene() const;
+
+	/// Returns reference to component registry of this world
+	ComponentRegistry& getComponentRegistry() const;
 
 	/// Returns reference to entt's registry
 	Registry_t& getRegistry();

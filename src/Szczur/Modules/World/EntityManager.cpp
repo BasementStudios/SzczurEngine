@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "ComponentRegistry.hpp"
+#include "WorldManager.hpp"
 
 namespace rat::world
 {
@@ -19,6 +19,11 @@ Scene& EntityManager::getScene() const
 	return _scene;
 }
 
+ComponentRegistry& EntityManager::getComponentRegistry() const
+{
+	return _scene.getWorldManager().getComponentRegistry();
+}
+
 Registry_t& EntityManager::getRegistry()
 {
 	return _registry;
@@ -31,7 +36,7 @@ const Registry_t& EntityManager::getRegistry() const
 
 Entity EntityManager::addEntity()
 {
-	return { _scene, _registry.create() };
+	return { *this, _registry.create() };
 }
 
 bool EntityManager::hasEntity(EntityID_t id) const
@@ -59,29 +64,29 @@ Entity EntityManager::getEntity(EntityID_t id)
 {
 	if (_registry.valid(id))
 	{
-		return { _scene, id };
+		return { *this, id };
 	}
 	else
 	{
 		// TODO log attempt of obtaining invalid entity
 
-		return { _scene, entt::null };
+		return { *this, entt::null };
 	}
 }
 
 bool EntityManager::addComponent(EntityID_t id, HashedID hid)
 {
-	return ComponentRegistry::assignComponent(_registry, id, hid);
+	return getComponentRegistry().assignComponent(_registry, id, hid);
 }
 
 bool EntityManager::hasComponent(EntityID_t id, HashedID hid)
 {
-	return ComponentRegistry::hasComponent(_registry, id, hid);
+	return getComponentRegistry().hasComponent(_registry, id, hid);
 }
 
 bool EntityManager::removeComponent(EntityID_t id, HashedID hid)
 {
-	return ComponentRegistry::removeComponent(_registry, id, hid);
+	return getComponentRegistry().removeComponent(_registry, id, hid);
 }
 
 void EntityManager::reset()
@@ -94,9 +99,9 @@ nlohmann::json EntityManager::saveToConfig()
 	nlohmann::json config = nlohmann::json::array_t{};
 
 	_registry.each([this, &j = config](const EntityID_t id) {
-		nlohmann::json k = nlohmann::json::array_t{};
+		nlohmann::json k = nlohmann::json::object_t{};
 
-		ComponentRegistry::allComponentsToJson(_registry, id, k);
+		getComponentRegistry().allComponentsToJson(_registry, id, k);
 
 		// Do not save empty entities
 		if (!k.empty())
@@ -121,15 +126,14 @@ void EntityManager::loadFromConfig(const nlohmann::json& config)
 
 		const auto id = _registry.create();
 
-		if (j.is_array())
+		if (j.is_object())
 		{
-			for (const nlohmann::json& k : j)
+			// for (const nlohmann::json& k : j)
+			for (auto it = j.begin(); it != j.end(); ++it)
 			{
 				// TODO log possible invalid json?
 
-				std::cout << "load: -- " << k << '\n';
-
-				ComponentRegistry::componentFromJson(_registry, id, k);
+				getComponentRegistry().componentFromJson(_registry, id, it.key().data(), it.value());
 			}
 		}
 		else
