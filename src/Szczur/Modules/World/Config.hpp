@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <utility>
 
+#include "Szczur/Config.hpp"
+
 namespace rat::world
 {
 
@@ -106,9 +108,9 @@ public:
 	///
 	HashedID& operator = (HashedID&&) = default;
 
-	const Hash_t hash;
+	Hash_t hash;
 	#ifdef DEBUG
-	const Name_t str;
+	Name_t str;
 	#endif
 
 };
