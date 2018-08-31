@@ -240,6 +240,12 @@ namespace rat
         return _fileName;
     }
 
+    void SoundBase::setPlayingOffset(float sec)
+    {
+        _playingTime = sec;
+        _sound.setPlayingOffset(sf::seconds(_playingTime));
+    }
+
     float SoundBase::getPlayingOffset()
     {
         return _sound.getPlayingOffset().asSeconds();

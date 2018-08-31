@@ -102,6 +102,7 @@ namespace rat
 
         Status getStatus() const;
 
+        void setPlayingOffset(float sec);
         float getPlayingOffset();
         void setOffset(Second_t beginT, Second_t endT);
         Second_t getLength() const;
