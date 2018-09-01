@@ -14,12 +14,62 @@ namespace rat
 		setVolume(_base->getVolume());
 	}
 
+	void MusicBase::initScript(Script& script)
+    {
+        auto object = script.newClass<MusicBase>("MusicBase", "Music");
+
+        object.set("play", &MusicBase::play);
+		object.set("stop", &MusicBase::stop);
+		object.set("pause", &MusicBase::pause);
+
+		object.set("getVolume", &MusicBase::getVolume);
+		object.set("setVolume", &MusicBase::setVolume);
+		object.set("getLoop", &MusicBase::getLoop);
+		object.set("setLoop", &MusicBase::setLoop);
+		object.set("getStatus", &MusicBase::getStatus);
+		object.set("getFadeTime", &MusicBase::getFadeTime);
+		object.set("setFadeTime", &MusicBase::setFadeTime);
+		object.set("setFadeBars", &MusicBase::setFadeBars);
+		object.set("getDuration", &MusicBase::getDuration);
+		object.set("getTimeLeft", &MusicBase::getTimeLeft);
+		object.set("getName", &MusicBase::getName);
+
+        object.set("getEqualizer", &MusicBase::getEffect<Equalizer>);
+		object.set("getReverb", &MusicBase::getEffect<Reverb>);
+		object.set("getEcho", &MusicBase::getEffect<Echo>);
+		object.set("cleanEqualizer", &MusicBase::cleanEffect<Equalizer>);
+		object.set("cleanReverb", &MusicBase::cleanEffect<Reverb>);
+		object.set("cleanEcho", &MusicBase::cleanEffect<Echo>);
+		object.set("cleanEffects", &MusicBase::cleanEffects);
+
+		object.setProperty("onStart", 
+            [](){}, 
+            [](MusicBase& obj, MusicBase::SolFunction_t callback){ obj.setCallback(MusicBase::CallbackType::onStart, callback); }
+        );
+		object.setProperty("onFinish", 
+            [](){}, 
+            [](MusicBase& obj, MusicBase::SolFunction_t callback){ obj.setCallback(MusicBase::CallbackType::onFinish, callback); }
+        );
+        object.setProperty("onFadeStart", 
+            [](){}, 
+            [](MusicBase& obj, MusicBase::SolFunction_t callback){ obj.setCallback(MusicBase::CallbackType::onFadeStart, callback); }
+        );
+
+		object.init();
+    }
+
 	void MusicBase::update(float deltaTime) 
 	{
 		if (getStatus() == sf::SoundSource::Status::Playing && !_finishing) {
 			_timeLeft -= deltaTime;
-			if (_timeLeft <= _base->getFadeTime())
+			if (_timeLeft <= _base->getFadeTime()) {
+				callback(CallbackType::onFadeStart);
 				_isEnding = true;
+			}
+		}
+
+		if (_timeLeft >= 0) {
+			stop();
 		}
 	}
 
@@ -45,7 +95,6 @@ namespace rat
 			return false;
 		}
 		
-		reset();
 		stop();
 		return true;
 	}
@@ -67,6 +116,7 @@ namespace rat
 
 	void MusicBase::play() 
 	{
+		callback(CallbackType::onStart);
 		_base->play();
 	}
 
@@ -77,8 +127,15 @@ namespace rat
 
 	void MusicBase::stop() 
 	{
+		callback(CallbackType::onFinish);
 		_base->stop();
+		reset();
 	}
+
+	void MusicBase::setCallback(MusicBase::CallbackType type, MusicBase::SolFunction_t callback)
+    {
+        _callbacks.insert_or_assign(type, callback);
+    }
 
 	void MusicBase::setLoop(bool loop)
 	{
@@ -93,6 +150,16 @@ namespace rat
 	sf::SoundSource::Status MusicBase::getStatus() const 
 	{
 		return _base->getStatus();
+	}
+
+	void MusicBase::setFadeBars(float bars)
+	{
+		_base->setFadeBars(bars);
+	}
+
+	void MusicBase::setFadeTime(float fadeTime)
+	{
+		_base->setFadeTime(fadeTime);
 	}
 
 	float MusicBase::getFadeTime() const 
@@ -128,6 +195,13 @@ namespace rat
 		_baseVolume = volume;
 		_base->setVolume(_baseVolume);
 	}
+
+	void MusicBase::cleanEffects()
+	{
+		_base->cleanEffect<Equalizer>();
+        _base->cleanEffect<Reverb>();
+        _base->cleanEffect<Echo>();
+	}
 	
 	void MusicBase::reset() 
 	{
@@ -146,5 +220,11 @@ namespace rat
 	{
 		return _base;
 	}
+
+	void MusicBase::callback(MusicBase::CallbackType type)
+    {
+        if (auto it = _callbacks.find(type); it != _callbacks.end())
+            std::invoke(it->second, this);
+    }
 
 }

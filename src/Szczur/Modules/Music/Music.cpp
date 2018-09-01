@@ -21,11 +21,20 @@ namespace rat
 		Script& script = getModule<Script>();
 		auto module = script.newModule("Music");
 
+		module.set_function("loadMusic", &Music::loadMusic, this);
+		module.set_function("removeMusic", &Music::removeMusic, this);
+		module.set_function("getCurrentPlaying", &Music::getCurrentPlaying, this);
+		module.set_function("get", sol::overload(
+			[&](unsigned int a, const std::string& b) { return get(a, b); },
+			[&](const std::string& a, const std::string& b) { return get(a, b); }
+		));
+
 		module.set_function("play", &Music::play, this);
 		module.set_function("pause", &Music::pause, this);
 		module.set_function("stop", &Music::stop, this);
+
 		module.set_function("includes", &Music::includes, this);
-		module.set_function("cleanEffects", &Music::cleanEffects, this);
+
 		module.set_function("setPlayingMode", &Music::setPlayingMode, this);
 
 		module.set_function("setVolume", &Music::setVolume, this);
@@ -37,15 +46,14 @@ namespace rat
 			[&]() { return getVolume(-1, ""); }
 		));
 
-		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
-		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
-
 		module.set_function("getStatus", sol::overload(
 			[&](unsigned int a, const std::string& b) { return getStatus(a, b); },
 			[&](const std::string& a, const std::string& b) { return getStatus(a, b); },
 			[&](unsigned int a) { return getStatus(a, ""); },
 			[&](const std::string& a) { return getStatus(a, ""); }
 		));
+
+		module.set_function("loadPlaylistFromJson", &Music::loadPlaylistFromJson, this);
 
 		module.set_function("addPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args newPlaylist) {
@@ -55,7 +63,6 @@ namespace rat
 			}
 		}
 		);
-
 		module.set_function("addToPlaylist",
 			[owner = this](const std::string& key, sol::variadic_args musics) {
 			for (auto it : musics) {
@@ -63,7 +70,6 @@ namespace rat
 			}
 		}
 		);
-
 		module.set_function("removeFromPlaylist", sol::overload(
 			[&](const std::string& key) { removeFromPlaylist(key, ""); },
 			[owner = this](const std::string& key, sol::variadic_args musics) {
@@ -73,6 +79,8 @@ namespace rat
 		}
 		));
 
+		module.set_function("cleanEffects", &Music::cleanEffects, this);
+		module.set_function("setGlobalEffects", &Music::setGlobalEffects, this);
 		module.set_function("getEqualizer", sol::overload(
 			[&](unsigned int a, const std::string& b) { return getEffect<Equalizer>(a, b); },
 			[&](const std::string& a, const std::string& b) { return getEffect<Equalizer>(a, b); }
@@ -106,6 +114,8 @@ namespace rat
 		module.set("Stopped", Status::Stopped);
 		module.set("Paused", Status::Paused);
 		module.set("Playing", Status::Playing);
+
+		script.initClasses<MusicBase>();
 	}
 
 	const Playlist::Container_t& Music::getPlaylist(const std::string& key)
@@ -133,6 +143,39 @@ namespace rat
 			if (it != 0)
 				_playlists[it]->update(deltaTime);
 		}
+
+		for (auto& it : _musicHolder) {
+			it->update(deltaTime);
+		}
+	}
+
+	MusicBase* Music::loadMusic(const std::string& name) 
+	{
+		auto ratMusic = _assets.load(name);
+
+		if (ratMusic != nullptr) {
+			auto base = new MusicBase(ratMusic);
+			_musicHolder.emplace_back(base);
+
+			LOG_INFO("[Music] Created instance of ", name);
+
+			return base;
+		}
+
+		return nullptr;
+	}
+
+	void Music::removeMusic(MusicBase* base)
+	{
+		_musicHolder.remove_if([=](auto it){ 
+            bool same = (it == base);
+            if (same) {
+				_assets.unload(base->getSource());
+                LOG_INFO("[Music] Removed instance of ", base->getName());
+                delete base;
+            }
+            return same;
+        });
 	}
 
 	void Music::addPlaylist(const std::string& key, const std::vector<std::string>& newPlaylist)
@@ -151,7 +194,7 @@ namespace rat
 			auto&& base = MusicBase(ratMusic);
 			_playlists[fnv1a_32(key.c_str())]->add(std::move(base));
 
-			LOG_INFO("Added ", name, " to playlist ", key);
+			LOG_INFO("[Music] Added ", name, " to playlist ", key);
 		}
 	}
 
@@ -165,7 +208,7 @@ namespace rat
 		}
 
 		auto log = [&](const std::string& name) {
-			LOG_INFO("Removed ", name, " form playlist ", key);
+			LOG_INFO("[Music] Removed ", name, " form playlist ", key);
 		};
 
 		if (name.empty()) {
@@ -194,7 +237,7 @@ namespace rat
 
 		for (unsigned int i = 0; i < 3; ++i) {
 			if (_currentPlaylistKeys[i] == hashKey && musicTrack != i) {
-				LOG_INFO("Can't play the same playlist on several tracks at the same time!");
+				LOG_INFO("[Music Error] Can't play the same playlist on several tracks at the same time!");
 				return;
 			}
 		}
@@ -251,12 +294,25 @@ namespace rat
 		return _playlists[fnv1a_32(key.c_str())]->getStatus(name);
 	}
 
-	RatMusic* Music::getCurrentPlaying(unsigned int musicTrack)
+	MusicBase* Music::getCurrentPlaying(unsigned int musicTrack)
 	{
 		if (musicTrack < 3 && _currentPlaylistKeys[musicTrack] != 0) {
-			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying()->getSource();
+			return _playlists[_currentPlaylistKeys[musicTrack]]->getCurrentPlaying().get();
 		}
 		return nullptr;
+	}
+
+	MusicBase* Music::get(unsigned int musicTrack, const std::string& name)
+	{
+		if (musicTrack < 3 && _currentPlaylistKeys[musicTrack] != 0) {
+			return _playlists[_currentPlaylistKeys[musicTrack]]->get(name).get();
+		}
+		return nullptr;
+	}
+
+	MusicBase* Music::get(const std::string& key, const std::string& name)
+	{
+		return _playlists[fnv1a_32(key.c_str())]->get(name).get();
 	}
 
 	bool Music::includes(const std::string& key, const std::string& name)
@@ -267,9 +323,9 @@ namespace rat
 	void Music::setPlayingMode(const std::string& key, PlayingMode mode)
 	{
 		switch (mode) {
-		case PlayingMode::Orderly: LOG_INFO("Playing Mode in playlist ", key, " changed to Orderly"); break;
-		case PlayingMode::Random: LOG_INFO("Playing Mode in playlist ", key, " changed to Random"); break;
-		case PlayingMode::Single: LOG_INFO("Playing Mode in playlist ", key, " changed to Single"); break;
+			case PlayingMode::Orderly: LOG_INFO("[Music] Playing Mode in playlist ", key, " changed to Orderly"); break;
+			case PlayingMode::Random:  LOG_INFO("[Music] Playing Mode in playlist ", key, " changed to Random");  break;
+			case PlayingMode::Single:  LOG_INFO("[Music] Playing Mode in playlist ", key, " changed to Single");  break;
 		}
 
 		_playlists[fnv1a_32(key.c_str())]->setPlayingMode(mode);
@@ -319,7 +375,7 @@ namespace rat
 	{
 		for (auto i = 0; i <= 3; ++i) {
 			if (_currentPlaylistKeys[i] != 0)
-				getCurrentPlaying(i)->cleanAllEffects();
+				getCurrentPlaying(i)->getSource()->cleanAllEffects();
 		}
 	}
 

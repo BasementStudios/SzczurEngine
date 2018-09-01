@@ -68,6 +68,7 @@ namespace rat
 		object.set("cleanEqualizer", &SoundBase::cleanEffect<Equalizer>);
 		object.set("cleanReverb", &SoundBase::cleanEffect<Reverb>);
 		object.set("cleanEcho", &SoundBase::cleanEffect<Echo>);
+        object.set("cleanEffects", &SoundBase::cleanEffects);
 
         object.setProperty("onStart", 
             [](){}, 
@@ -239,6 +240,12 @@ namespace rat
         return _fileName;
     }
 
+    void SoundBase::setPlayingOffset(float sec)
+    {
+        _playingTime = sec;
+        _sound.setPlayingOffset(sf::seconds(_playingTime));
+    }
+
     float SoundBase::getPlayingOffset()
     {
         return _sound.getPlayingOffset().asSeconds();
@@ -284,6 +291,13 @@ namespace rat
         return offset.endTime;
     }
 
+    void SoundBase::cleanEffects()
+    {
+        _sound.cleanEffect<Equalizer>();
+        _sound.cleanEffect<Reverb>();
+        _sound.cleanEffect<Echo>();
+    }
+
     bool SoundBase::load() 
     {
         nlohmann::json j;
@@ -294,7 +308,7 @@ namespace rat
             file.close();
 
             if(j[_name]["Path"] == nullptr) {
-                LOG_INFO("Missing data of sound: ", _name);
+                LOG_INFO("[Sound] Missing data of sound: ", _name);
                 return false;
             }
 

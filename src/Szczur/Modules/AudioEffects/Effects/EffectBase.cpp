@@ -20,7 +20,7 @@ namespace rat
         _effectSlot = NULL;
         _effect = NULL;
 
-        LOG_INFO("OpenAL: Effect cleaned");
+        LOG_INFO("[AudioEffects] Effect cleaned");
         _created = false;
     }
 
@@ -35,13 +35,13 @@ namespace rat
 
         alGenAuxiliaryEffectSlots(1, &_effectSlot);
         if (alGetError() != AL_NO_ERROR) {
-            LOG_INFO("OpenAL Error: Problem with generating Auxiliary Effect Slot");
+            LOG_INFO("[AudioEffects Error] Problem with generating Auxiliary Effect Slot");
             return;
         }
 
         alGenEffects(1, &_effect);
         if (alGetError() != AL_NO_ERROR) {
-            LOG_INFO("OpenAL Error: Problem with generating Effect");
+            LOG_INFO("[AudioEffects Error] Problem with generating Effect");
             return;
         }
 
@@ -49,11 +49,11 @@ namespace rat
         if (alIsEffect(_effect)) {
             alEffecti(_effect, AL_EFFECT_TYPE, _effectType);
             if (alGetError() != AL_NO_ERROR) {
-                LOG_INFO("OpenAL Error: Effect is not supported!");
+                LOG_INFO("[AudioEffects Error] Effect is not supported!");
                 return; 
             }
             _supported = true;
-            LOG_INFO("OpenAL: Effect correctly initialized");
+            LOG_INFO("[AudioEffects] Effect correctly initialized");
         }   
     }
 
@@ -63,7 +63,7 @@ namespace rat
             alEffectf(_effect, type, value);
         }
         else {
-            LOG_INFO("OpenAL Error: Effect is not supported!");
+            LOG_INFO("[AudioEffects Error] Effect is not supported!");
             return;
         }
         
@@ -74,18 +74,18 @@ namespace rat
         alGetError();
         alAuxiliaryEffectSloti(_effectSlot, AL_EFFECTSLOT_EFFECT, _effect);
 		if (alGetError() != AL_NO_ERROR) {
-			LOG_INFO("OpenAL Error: Problem with loading Effect into Auxiliary Effect Slot");
+			LOG_INFO("[AudioEffects Error] Problem with loading Effect into Auxiliary Effect Slot");
             return;
         }
 
         alGetError();
         alSource3i(_source, AL_AUXILIARY_SEND_FILTER, _effectSlot, _sourceSlot, NULL);
 		if (alGetError() != AL_NO_ERROR && _source != 0) {
-			LOG_INFO("OpenAL Error: Problem with loading Auxiliary Effect Slot into Source");
+			LOG_INFO("[AudioEffects Error] Problem with loading Auxiliary Effect Slot into Source");
             return;
         }
 
-        LOG_INFO("OpenAL: Audio effect correctly loaded");
+        LOG_INFO("[AudioEffects] Audio effect correctly loaded");
     }
 
     void EffectBase::setAuxiliaryEffect(unsigned int aux)
@@ -95,7 +95,7 @@ namespace rat
         alGetError();
         alSource3i(_source, AL_AUXILIARY_SEND_FILTER, _effectSlot, _sourceSlot, NULL);
         if (alGetError() != AL_NO_ERROR) {
-			LOG_INFO("OpenAL Error: Problem with loading Auxiliary Effect Slot into Source");
+			LOG_INFO("[AudioEffects Error] Problem with loading Auxiliary Effect Slot into Source");
             return;
         }
     }

@@ -40,6 +40,7 @@ namespace rat
 
 		float getFadeTime() const;
 		void setFadeTime(float fadeTime);
+		void setFadeBars(float bars);
 
 		static float GetMusicVolume();
         static void SetMusicVolume(float volume);

@@ -1,10 +1,28 @@
 local tests = {}
+local Counter = function()
+    
+    local self = {
+        count = 0
+    }
+
+    function self.get()
+        self.count = self.count + 1
+        return self.count
+    end
+
+    return self
+end
+
+local counter = Counter()
 
 -- [ Music ]:
 
-tests["[M] Getting music playlist from JSON"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    
+    local self  = {
+        name = "[M] Getting music playlist from JSON"
+    }
 
     function self.run()
         Music.loadPlaylistFromJson("Assets/Music/Playlists/Test Playlist.json")
@@ -22,9 +40,11 @@ tests["[M] Getting music playlist from JSON"] = function()
 
 end
 
-tests["[M] Creating music playlist"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    local self  = {
+        name = "[M] Creating music playlist"
+    }
 
     function self.run()
         Music.addPlaylist("Playlist", "Rozpierdalacz") -- Tworzenie nowiej playlisty        
@@ -50,9 +70,11 @@ tests["[M] Creating music playlist"] = function()
 
 end
 
-tests["[M] Getting music Status"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    local self  = {
+        name = "[M] Getting music Status"
+    }
 
     function self.run()
         Music.loadPlaylistFromJson("Assets/Music/Playlists/Test Playlist.json")
@@ -82,9 +104,11 @@ tests["[M] Getting music Status"] = function()
 
 end
 
-tests["[M] Setting music Playing Mode"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    local self  = {
+        name = "[M] Setting music Playing Mode"
+    }
 
     -- Logs
     function self.run()
@@ -103,9 +127,11 @@ tests["[M] Setting music Playing Mode"] = function()
 
 end
 
-tests["[M] Getting and setting music Volume"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    local self  = {
+        name = "[M] Getting and setting music Volume"
+    }
 
     function self.run()
         Music.loadPlaylistFromJson("Assets/Music/Playlists/Test Playlist.json")
@@ -133,9 +159,11 @@ tests["[M] Getting and setting music Volume"] = function()
 
 end
 
-tests["[M] Adding music in various formats"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    local self  = {
+        name = "[M] Adding music in various formats"
+    }
 
     function self.run()
         -- Zeldowy (wav)
@@ -155,11 +183,164 @@ tests["[M] Adding music in various formats"] = function()
 
 end
 
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Getting independent music object"
+    }
+
+    function self.run()
+        local music = Music.loadMusic("Rozpierdalacz")
+        if music == nil then
+            return false
+        end
+        Music.removeMusic(music)
+        if not music == nil then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+    end
+
+    return self
+
+end
+
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Using independent music obiect",
+        testMusic = nil
+    }
+
+    function self.run()
+        self.testMusic = Music.loadMusic("Rozpierdalacz")
+        if self.testMusic == nil then
+            return false
+        end
+        self.testMusic:setVolume(self.testMusic:getVolume() * 0.8)
+        self.testMusic:setLoop(not self.testMusic:getLoop())
+        if not self.testMusic:getStatus() == Music.Stopped then
+            return false
+        end
+        if not self.testMusic:getName() == "Rozpierdalacz" then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.removeMusic(self.testMusic)
+    end
+
+    return self
+
+end
+
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Load music directly form file",
+        testMusic = nil
+    }
+
+    function self.run()
+        self.testMusic = Music.loadMusic("Assets/Music/Szczur Rozpierdalacz.flac")
+        if self.testMusic == nil then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.removeMusic(self.testMusic)
+    end
+
+    return self
+
+end
+
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Music Callbacks",
+        testMusic = nil
+    }
+
+    function self.run()
+        local started = false
+        local finished = false
+        self.testMusic = Music.loadMusic("Rozpierdalacz")
+        if self.testMusic == nil then
+            return false
+        end
+        function self.testMusic.onStart()
+            started = true
+        end
+        function self.testMusic.onFinish()
+            finished = true
+        end
+        function self.testMusic.onFadeStart()
+            -- Whatever
+        end
+        self.testMusic:play()
+        self.testMusic:stop()
+        if not started or not finished then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.removeMusic(self.testMusic)
+    end
+
+    return self
+
+end
+
+tests[counter.get()] = function()
+
+    local self  = {
+        name = "[M] Getting music object from playlist",
+    }
+
+    function self.run()
+        Music.loadPlaylistFromJson("Assets/Music/Playlists/Test Playlist.json")
+        local fromPlaylistName = Music.get("Test Playlist", "Rozpierdalacz")
+        if fromPlaylistName == nil or not fromPlaylistName:getName() == "Rozpierdalacz" then
+            return false
+        end
+        Music.play(0, "Test Playlist", "Slowianski")
+        local currentPlaying = Music.getCurrentPlaying() 
+        if currentPlaying == nil or not fromPlaylistName:getName() == "Slowianski" then
+            return false
+        end
+        local fromPlayingTrack = Music.get(0, "Rozpierdalacz")
+        if fromPlayingTrack == nil or not fromPlaylistName:getName() == "Rozpierdalacz" then
+            return false
+        end
+        return true
+    end
+
+    function self.clean()
+        Music.stop()
+        Music.removeFromPlaylist("Test Playlist")
+    end
+
+    return self
+
+end
+
 -- [ SOUND ]:
 
-tests["[S] Adding and Removing Sound without entity"] = function()
+tests[counter.get()] = function()
 
-    local self  = {}
+    local self  = {
+        name = "[S] Adding and Removing Sound without entity"
+    }
 
     -- Logs
     function self.run()
@@ -181,9 +362,10 @@ tests["[S] Adding and Removing Sound without entity"] = function()
 
 end
 
-tests["[S] Setting and getting sound Volume"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Setting and getting sound Volume",
         testSound = nil
     }
 
@@ -212,9 +394,10 @@ tests["[S] Setting and getting sound Volume"] = function()
 
 end
 
-tests["[S] Getting sound Status"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Getting sound Status",
         testSound = nil
     }
 
@@ -249,9 +432,10 @@ tests["[S] Getting sound Status"] = function()
 
 end
 
-tests["[S] Control of all sounds"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Control of all sounds",
         sound_1 = nil,
         sound_2 = nil
     }
@@ -287,9 +471,10 @@ tests["[S] Control of all sounds"] = function()
 
 end
 
-tests["[S] Control of sound position"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Control of sound position",
         testSound = nil
     }
 
@@ -318,9 +503,10 @@ tests["[S] Control of sound position"] = function()
 
 end
 
-tests["[S] Load sound directly form file"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Load sound directly form file",
         testSound = nil
     }
 
@@ -340,9 +526,10 @@ tests["[S] Load sound directly form file"] = function()
 
 end
 
-tests["[S] Sound division"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Sound division",
         testSound = nil
     }
 
@@ -368,9 +555,10 @@ tests["[S] Sound division"] = function()
 
 end
 
-tests["[S] Sound Callbacks"] = function()
+tests[counter.get()] = function()
 
     local self = {
+        name = "[S] Sound Callbacks",
         testSound = nil
     }
 
@@ -403,6 +591,46 @@ tests["[S] Sound Callbacks"] = function()
 
 end
 
+-- [ Audio Effects ]:
+
+tests[counter.get()] = function()
+
+    local self = {
+        name = "[E] Setting and clearing effects in music and sound objects",
+        testSound = nil,
+        testMusic = nil
+    }
+
+    function self.run()
+        self.testSound = Sound.addNewSound("Button");
+        if self.testSound == nil then
+            return false
+        end
+        self.testMusic = Music.loadMusic("Rozpierdalacz");
+        if self.testMusic == nil then
+            return false
+        end
+        self.testSound:getEqualizer():lowGain(4)            
+        local testSoundReverb = self.testSound:getReverb()  -- efekt mozna tez przypisać do zmiennej
+        testSoundReverb:decayTime(15)
+        self.testMusic:getEcho():delay(0.2)
+        local testMusicEq = self.testMusic:getEqualizer()
+        testMusicEq:highCutoff(4000)
+        self.testSound:cleanEffects()                       -- Czyści wszytkie efekty naraz
+        self.testMusic:cleanEcho()
+        self.testMusic:cleanEqualizer()
+        return true
+    end
+    
+    function self.clean()
+        Sound.removeSound(self.testSound);
+        Music.removeMusic(self.testMusic);
+    end
+
+    return self
+
+end
+
 ------------------------------------------------------------------------------------------
 
 local counter = {
@@ -420,9 +648,10 @@ print("---------------------------------------")
 for key, test in pairs(tests) do
     counter.all = counter.all + 1
 
-    print("Current Test:", key)
-
     local t = test()
+    
+    print("Current Test:", t.name)
+    
     local res = t:run()
 
     print("Result:", res)

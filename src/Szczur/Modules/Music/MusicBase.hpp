@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <boost/container/flat_map.hpp>
+
+#include "Szczur/Modules/Script/Script.hpp"
 
 #include "RatMusic.hpp"
 
@@ -8,6 +11,18 @@ namespace rat
 {
 	class MusicBase
 	{
+
+		enum class CallbackType 
+        {
+            onStart,
+            onFinish,
+			onFadeStart
+        };
+
+	public:
+
+		using SolFunction_t = sol::function;
+        using CallbacksContainer_t = boost::container::flat_map<CallbackType, SolFunction_t>;
 
 	private:
 
@@ -22,9 +37,13 @@ namespace rat
 		bool _finishInit = true;
 		bool _startInit = true;
 
+		CallbacksContainer_t _callbacks;
+
 	public:
 
 		MusicBase(RatMusic* source);
+
+		static void initScript(Script& script);
 
 		void update(float deltaTime);
 
@@ -36,6 +55,8 @@ namespace rat
 		void pause();
 		void stop();
 
+		void setCallback(CallbackType type, SolFunction_t callback);
+
 		void setLoop(bool loop);
 		bool getLoop() const;
 
@@ -44,7 +65,10 @@ namespace rat
 
 		sf::SoundSource::Status getStatus() const;
 
+		void setFadeBars(float bars);
+		void setFadeTime(float fadeTime);
 		float getFadeTime() const;
+
 		float getDuration() const;
 
 		float getTimeLeft() const;
@@ -53,13 +77,25 @@ namespace rat
 		const std::string& getName() const;
 
 		RatMusic* getSource() const;
+
+		template <typename T>
+		T& getEffect() {
+			return _base->getEffect<T>();
+		}
 		
-		void reset();
+		template <typename T>
+    	void cleanEffect() {
+			_base->cleanEffect<T>();
+		}
+		void cleanEffects(); 
 
 	private:
 
+		void reset();
 		void loadMusic();
 		void getJsonData();
+
+		void callback(CallbackType type);
 
 	};
 }

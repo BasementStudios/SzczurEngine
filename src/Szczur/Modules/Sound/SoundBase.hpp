@@ -54,6 +54,8 @@ namespace rat
 
     public:
 
+        SoundBase() = delete;
+        
         SoundBase(SoundAssets& assets);
         SoundBase(SoundAssets& assets, const std::string& name);
         
@@ -100,6 +102,7 @@ namespace rat
 
         Status getStatus() const;
 
+        void setPlayingOffset(float sec);
         float getPlayingOffset();
         void setOffset(Second_t beginT, Second_t endT);
         Second_t getLength() const;
@@ -121,6 +124,7 @@ namespace rat
     	void cleanEffect() {
             _sound.cleanEffect<T>();
         }
+        void cleanEffects();
 
     private:
 

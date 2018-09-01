@@ -70,6 +70,14 @@ namespace rat
 		return _playlist[_currentID];
 	}
 
+	Playlist::BasePointer_t Playlist::get(const std::string& name) const
+	{
+		if (auto id = getID(name); id != _playlist.size()) {
+			return _playlist[id];
+		}
+		return nullptr;
+	}
+
 	void Playlist::play(unsigned int id, float timeLeft)
 	{
 		setPlaylistToPlaying(id);
@@ -151,7 +159,6 @@ namespace rat
 	void Playlist::stop() 
 	{
 		_playlist[_currentID]->stop();
-		_playlist[_currentID]->reset();
 		_status = Status::Stopped;
 	}
 
@@ -247,7 +254,7 @@ namespace rat
 	{
 		if (_effects.globalEffects()) {
 			_effects.getGlobalEffects().template sendAuxiliaryEffectsTo<RatMusic>(_playlist[_currentID]->getSource());
-			LOG_INFO("Global effects loaded into ", _playlist[_currentID]->getName());
+			LOG_INFO("[Music] Global effects loaded into ", _playlist[_currentID]->getName());
 		}
 	}
 		

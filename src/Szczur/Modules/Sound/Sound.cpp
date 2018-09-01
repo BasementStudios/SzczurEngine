@@ -67,7 +67,7 @@ namespace rat
             sound->setBuffer(_soundAssets.get(fileName)) 
         ){
             sound->init();
-            LOG_INFO("Added Sound: ", name);
+            LOG_INFO("[Sound] Added: ", name);
             return sound;
         }
             
@@ -85,7 +85,7 @@ namespace rat
        _sounds.remove_if([=](auto it){ 
             bool same = (it == sound);
             if (same) {
-                LOG_INFO("Removed Sound: ", sound->getName());
+                LOG_INFO("[Sound] Removed: ", sound->getName());
                 delete sound;
             }
             return same;
