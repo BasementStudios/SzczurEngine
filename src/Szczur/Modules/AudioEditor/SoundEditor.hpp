@@ -38,6 +38,11 @@ namespace rat
 		bool _isLoadingDisplayed{ false };
 		bool _isEditorDisplayed{ false };
 
+		float arr[2] = { 0.f, 10.f }; //temp
+		float timestamp = 0.f;//temp
+		char path[64] = "";
+		bool isPlaying = false;
+
 		Container_t _soundHolder;
 		std::vector<std::string> _soundNames;
 

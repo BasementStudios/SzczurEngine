@@ -21,10 +21,10 @@ namespace rat
         _currentEditing = _soundHolder.end();
     }
 
-    void SoundEditor::render()
-    {		
+	void SoundEditor::render()
+	{	//todo move this to update
 		ImGui::Begin("Sounds List", &_isListDisplayed);
-
+		
 		float width = ImGui::GetWindowContentRegionWidth() * 0.33;
 
 		if (ImGui::Button("Save##SoundLists", { width,0 })) {
@@ -105,6 +105,11 @@ namespace rat
 
 		if (_isEditorDisplayed)
 			showEditor();
+		else if (_currentEditing != _soundHolder.end()) {
+			_currentEditing->stop();
+			isPlaying = false;
+			_currentEditing = _soundHolder.end();
+		}
 
 		if (_isLoadingDisplayed)
 			load();
@@ -148,18 +153,44 @@ namespace rat
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("PAUSE##SoundEditor")) {
-			_sound.pause();
+			_currentEditing->pause();
 		}
 
 		ImGui::SameLine();
 		if (ImGui::Button("STOP##SoundEditor")) {
-			_sound.stop();
+			_currentEditing->stop();
 		}
 
 
-		float timeAsFraction = _currentEditing->getPlayingOffset() / _currentEditing->getLength();
-		ImGui::ProgressBar(timeAsFraction, { ImGui::GetWindowContentRegionWidth(), 0.f }, std::to_string(_currentEditing->getPlayingOffset()).c_str());
+		float timeAsFraction = _currentEditing->getPlayingOffset() / _currentEditing->getLength();	//cut few last digits from timestamp
+		/*std::string jp = std::to_string(_currentEditing->getPlayingOffset());
+		const char* timeCharArr = jp.c_str();*/
+		//ImGui::ProgressBar(timeAsFraction, { ImGui::GetWindowContentRegionWidth(), 0.f }, std::to_string(_currentEditing->getPlayingOffset()).c_str());
 
+		switch (ImGui::SoundTimeline("timeline", _currentEditing->getLength(), arr, timestamp, path)) { //sprawdzac czy gra potrzebujemy
+		case 1u:
+			_currentEditing->setPlayingOffset(timestamp);
+			break;
+		case 2u:
+			_currentEditing->setOffset(arr[0], arr[1]);
+			break;
+		case 3u:
+			_currentEditing->play();
+			isPlaying = true;
+			break;
+		case 4u:
+			_currentEditing->pause();
+			isPlaying = false;
+			break;
+		case 5u:
+			_currentEditing->stop();
+			isPlaying = true;
+			break;
+		}
+		if (isPlaying)
+			timestamp = _currentEditing->getPlayingOffset();
+		else
+			//_currentEditing->setPlayingOffset(timestamp);
 		ImGui::Separator();
 
 		char beginTime[6] = "00:00";
