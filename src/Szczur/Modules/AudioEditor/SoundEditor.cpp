@@ -21,6 +21,10 @@ namespace rat
         _currentEditing = _soundHolder.end();
     }
 
+	SoundEditor::~SoundEditor() {
+		//delete[] path;
+	}
+
 	void SoundEditor::render()
 	{	//todo move this to update
 		ImGui::Begin("Sounds List", &_isListDisplayed);
@@ -65,6 +69,9 @@ namespace rat
 					if (_currentEditing != _soundHolder.end() && _currentEditing->getName() != name)
 						_sound.stop();
 					_currentEditing = it;
+					std::string currentPath = _currentEditing->getFileName();
+					std::copy(currentPath.begin(), currentPath.end(), path);
+					path[64] = '\0';
 					_isEditorDisplayed = true;
 				}
 				ImGui::PopID();
@@ -118,10 +125,6 @@ namespace rat
 	void SoundEditor::showEditor() {
 		ImGui::Begin("Sound Editor", &_isEditorDisplayed, ImGuiWindowFlags_AlwaysAutoResize);
 
-		ImGui::Text(("Path: " + _currentEditing->getFileName()).c_str());
-
-		ImGui::Separator();
-
 		auto currName = _currentEditing->getName();
 
 		ImGui::Text("Name: ");
@@ -145,22 +148,6 @@ namespace rat
 		bool relative = _currentEditing->isRelativeToListener();
 		ImGui::Checkbox("Relative To Listener", &relative);
 		_currentEditing->setRelativeToListener(relative);
-
-		ImGui::Separator();
-
-		if (ImGui::Button("PLAY##SoundEditor")) {
-			_currentEditing->play();
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("PAUSE##SoundEditor")) {
-			_currentEditing->pause();
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("STOP##SoundEditor")) {
-			_currentEditing->stop();
-		}
-
 
 		float timeAsFraction = _currentEditing->getPlayingOffset() / _currentEditing->getLength();	//cut few last digits from timestamp
 		/*std::string jp = std::to_string(_currentEditing->getPlayingOffset());
@@ -192,33 +179,6 @@ namespace rat
 		else
 			//_currentEditing->setPlayingOffset(timestamp);
 		ImGui::Separator();
-
-		char beginTime[6] = "00:00";
-		char endTime[6] = "00:00";
-
-		strncpy(beginTime, toTime(_currentEditing->getBeginTime()).c_str(), 6);
-		strncpy(endTime, toTime(_currentEditing->getEndTime()).c_str(), 6);
-
-		ImGui::PushItemWidth(50);
-		if (ImGui::InputText("##SongBeginTimeSelector", beginTime, 6, 1)) {
-			std::string timeString = beginTime;
-			checkTimeString(timeString);
-			_currentEditing->setOffset(toFloatSeconds(timeString), _currentEditing->getEndTime());
-		}
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-		ImGui::Text("-");
-		ImGui::SameLine();
-		ImGui::PushItemWidth(50);
-		if (ImGui::InputText("##SongEndTimeSelector", endTime, 6, 1)) {
-			std::string timeString = endTime;
-			checkTimeString(timeString);
-			_currentEditing->setOffset(_currentEditing->getBeginTime(), toFloatSeconds(timeString));
-		}
-		ImGui::PopItemWidth();
-
-		ImGui::SameLine();
-		ImGui::Text("Offset");
 
 		ImGui::Separator();
 

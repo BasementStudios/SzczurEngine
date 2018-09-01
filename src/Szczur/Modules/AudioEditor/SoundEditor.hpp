@@ -15,6 +15,7 @@ namespace rat
     public:
 
         SoundEditor(Sound& sound, bool& showingEditor);
+		~SoundEditor();
 
         void render();
 
@@ -40,7 +41,7 @@ namespace rat
 
 		float arr[2] = { 0.f, 10.f }; //temp
 		float timestamp = 0.f;//temp
-		char path[64] = "";
+		char* path = new char[64];
 		bool isPlaying = false;
 
 		Container_t _soundHolder;
