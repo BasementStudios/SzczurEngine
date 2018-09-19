@@ -3,6 +3,12 @@ SzczurEngine
 ============
 
 
+Uwaga
+-----
+
+### Projekt "SzczurEngine" tymczasowo lub na stałe zawieszony. ¯\_(ツ)_/¯
+
+
 
 SzczurEngine
 ------------
