@@ -8,6 +8,8 @@ Uwaga
 
 ### Projekt "SzczurEngine" tymczasowo lub na stałe zawieszony. `¯\_(ツ)_/¯`
 
+### "Szczur Projekt" jako inicjatywa tworzenia gry nadal istnieje, ale w okrojonej wersji: Bez własnego silnika ("SzczurEngine"), z użyciem Unity.
+
 
 
 SzczurEngine
